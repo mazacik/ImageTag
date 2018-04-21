@@ -1,21 +1,21 @@
 package project.backend;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Database {
-    private static final int fileCount = DatabaseBuilder.getFileCount();
-    private static final List<DatabaseItem> itemDatabase = new ArrayList<>();
-    private static final List<DatabaseItem> itemDatabaseFiltered = new ArrayList<>();
-    private static final List<String> tagDatabase = new ArrayList<>();
-    private static final List<String> tagsWhitelist = new ArrayList<>();
-    private static final List<String> tagsBlacklist = new ArrayList<>();
-    private static final List<Integer> selectedIndexes = new ArrayList<>();
+    private static final ArrayList<DatabaseItem> itemDatabase = new ArrayList<>();
+    private static final ArrayList<DatabaseItem> itemDatabaseFiltered = new ArrayList<>();
+    private static final ArrayList<String> tagDatabase = new ArrayList<>();
+    private static final ArrayList<String> tagsWhitelist = new ArrayList<>();
+    private static final ArrayList<String> tagsBlacklist = new ArrayList<>();
+    private static final ArrayList<Integer> selectedIndexes = new ArrayList<>();
+    private static final File[] validFiles = new File(Settings.DIRECTORY_PATH).listFiles((dir, name) -> name.endsWith(".jpg") || name.endsWith(".png") || name.endsWith(".JPG") || name.endsWith(".PNG") || name.endsWith(".jpeg") || name.endsWith(".JPEG"));
+    private static final int fileCount = validFiles != null ? validFiles.length : 0;
     private static int lastSelectedIndex = 0;
-    //private static int previousIndex = 0;
-    //private static int currentIndex = 0;
 
-    public static void addIndexToSelection(int index) {
+    public static void addToSelection(int index) {
         if (index < 0 || index >= fileCount) return;
         selectedIndexes.add(index);
         selectedIndexes.sort(null);
@@ -50,11 +50,38 @@ public class Database {
         selectedIndexes.clear();
     }
 
+    public static void writeToDisk(ArrayList<DatabaseItem> itemDatabase) {
+        try {
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(Settings.DIRECTORY_PATH + "/database"));
+            objectOutputStream.writeObject(itemDatabase);
+            objectOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static ArrayList<DatabaseItem> readFromDisk() {
+        try {
+            ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(Settings.DIRECTORY_PATH + "/database"));
+            ArrayList<DatabaseItem> itemDatabase = (ArrayList<DatabaseItem>) objectInputStream.readObject();
+            objectInputStream.close();
+            return itemDatabase;
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public static File[] getValidFiles() {
+        return validFiles;
+    }
+
     public static int getLastSelectedIndex() {
         return lastSelectedIndex;
     }
 
-    public static List<Integer> getSelectedIndexes() {
+    public static ArrayList<Integer> getSelectedIndexes() {
         return selectedIndexes;
     }
 
@@ -62,7 +89,7 @@ public class Database {
         return fileCount;
     }
 
-    public static List<DatabaseItem> getItemDatabase() {
+    public static ArrayList<DatabaseItem> getItemDatabase() {
         return itemDatabase;
     }
 
@@ -86,5 +113,3 @@ public class Database {
         lastSelectedIndex = index;
     }
 }
-
-//Main.getTopPane().getInfoLabel().setText(itemDatabaseFiltered.get(currentIndex).getSimpleName());

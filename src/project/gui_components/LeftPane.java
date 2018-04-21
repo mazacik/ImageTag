@@ -4,7 +4,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -45,7 +44,7 @@ public class LeftPane extends BorderPane {
     private static final Button rightButton = new Button();
     private static final ListView<ColoredText> listView = new ListView<>();
     /* variables */
-    private static ListDisplayMode listDisplayMode = ListDisplayMode.TAGS;
+    private static ListDisplayMode listDisplayMode = ListDisplayMode.NAMES;
 
     public LeftPane() {
         setPrefWidth(200);
@@ -65,16 +64,17 @@ public class LeftPane extends BorderPane {
             }
         });
 
-        //error
-        listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (listView.isFocused() && listDisplayMode == ListDisplayMode.NAMES)
-                Database.clearSelection();
-            for (int index : listView.getSelectionModel().getSelectedIndices()) {
-                Database.addIndexToSelection(index);
+        listView.setOnMouseClicked(event -> {
+            if (listDisplayMode == ListDisplayMode.NAMES) {
+                int selectedIndex = listView.getSelectionModel().getSelectedIndex();
+                if (Database.getSelectedIndexes().contains(selectedIndex))
+                    Database.removeIndexFromSelection(selectedIndex);
+                else
+                    Database.addToSelection(selectedIndex);
             }
         });
 
-        listView.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+        listView.setOnMouseClicked(event -> {
             if (listDisplayMode == ListDisplayMode.TAGS && listView.getSelectionModel().getSelectedItem() != null) {
                 String tag = listView.getSelectionModel().getSelectedItem().getText();
                 if (whitelist.contains(tag)) {
