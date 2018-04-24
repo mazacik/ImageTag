@@ -23,7 +23,7 @@ public class LeftPane extends BorderPane {
     private static final Button rightButton = new Button();
     private static final ListView<ColoredText> listView = new ListView<>();
     /* variables */
-    private static LeftPaneDisplayMode displayMode = LeftPaneDisplayMode.NAMES;
+    private static LeftPaneDisplayMode displayMode = LeftPaneDisplayMode.TAGS;
 
     public LeftPane() {
         initializeBackend();

@@ -21,9 +21,10 @@ public class PreviewPane extends Pane {
 
     public void drawPreview() {
         gc.clearRect(0, 0, getWidth(), getHeight());
-        Image originalImage = new Image("file:" + Database.getLastSelectedItem().getFullPath());
-        double imageWidth = originalImage.getWidth();
-        double imageHeight = originalImage.getHeight();
+        if (Database.getLastSelectedItem() == null) return;
+        Image image = new Image("file:" + Database.getLastSelectedItem().getFullPath());
+        double imageWidth = image.getWidth();
+        double imageHeight = image.getHeight();
         double maxWidth = canvas.getWidth();
         double maxHeight = canvas.getHeight();
         double resultWidth;
@@ -41,6 +42,6 @@ public class PreviewPane extends Pane {
         double resultX = canvas.getWidth() / 2 - resultWidth / 2;
         double resultY = canvas.getHeight() / 2 - resultHeight / 2;
 
-        gc.drawImage(originalImage, resultX, resultY, resultWidth, resultHeight);
+        gc.drawImage(image, resultX, resultY, resultWidth, resultHeight);
     }
 }

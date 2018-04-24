@@ -21,6 +21,7 @@ public class Database {
 
     public static void addToSelection(DatabaseItem databaseItem) {
         selectedItems.add(databaseItem);
+        setLastSelectedItem(databaseItem);
         databaseItem.getImageView().setEffect(Main.getGalleryTileHighlightEffect());
         selectionChanged();
     }
@@ -34,11 +35,11 @@ public class Database {
     public static void clearSelection() {
         selectedItems.clear();
         Main.getLeftPane().getListView().getSelectionModel().clearSelection();
+        Main.getRightPane().getListView().getItems().clear();
         for (DatabaseItem databaseItem : itemDatabase) {
             if (databaseItem.getImageView().getEffect() != null)
                 databaseItem.getImageView().setEffect(null);
         }
-        selectionChanged();
     }
 
     private static void selectionChanged() {
@@ -52,16 +53,16 @@ public class Database {
     }
 
     public static void filter() {
-        selectedItems.clear();
+        filteredItems.clear();
         if (tagsWhitelist.isEmpty() && tagsBlacklist.isEmpty())
-            selectedItems.addAll(itemDatabase);
+            filteredItems.addAll(itemDatabase);
         else
             for (DatabaseItem item : itemDatabase)
                 if (item.getTags().containsAll(tagsWhitelist)) {
-                    selectedItems.add(item);
+                    filteredItems.add(item);
                     for (String tag : tagsBlacklist)
                         if (item.getTags().contains(tag)) {
-                            selectedItems.remove(item);
+                            filteredItems.remove(item);
                             break;
                         }
                 }

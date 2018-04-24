@@ -48,6 +48,10 @@ public class DatabaseLoader extends Thread {
         }
         Database.getItemDatabase().addAll(loaderItemDatabase);
         Database.getFilteredItems().addAll(loaderItemDatabase);
+        for (DatabaseItem databaseItem : loaderItemDatabase)
+            for (String tag : databaseItem.getTags())
+                if (!loaderTagsDatabase.contains(tag))
+                    loaderTagsDatabase.add(tag);
         loaderTagsDatabase.sort(null);
         Database.getTagDatabase().addAll(loaderTagsDatabase);
         Platform.runLater(() -> Main.getGalleryPane().refreshContent());
