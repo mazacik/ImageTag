@@ -4,15 +4,22 @@ package project.backend;
 import javafx.application.Platform;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.DirectoryChooser;
-import project.frontend.SharedFE;
+import project.backend.components.*;
+import project.frontend.shared.Frontend;
 
 import java.io.File;
 import java.util.Optional;
 
-import static project.frontend.ImageDisplayMode.GALLERY;
-import static project.frontend.ImageDisplayMode.MAXIMIZED;
+import static project.frontend.shared.ImageDisplayMode.GALLERY;
+import static project.frontend.shared.ImageDisplayMode.MAXIMIZED;
 
-public class SharedBE {
+public class Backend {
+    private static final TopPaneBack topPaneBack = new TopPaneBack();
+    private static final LeftPaneBack leftPaneBack = new LeftPaneBack();
+    private static final RightPaneBack rightPaneBack = new RightPaneBack();
+    private static final GalleryPaneBack galleryPaneBack = new GalleryPaneBack();
+    private static final PreviewPaneBack previewPaneBack = new PreviewPaneBack();
+
     static int GALLERY_ICON_SIZE = 150;
     static String DIRECTORY_PATH;
 
@@ -33,38 +40,58 @@ public class SharedBE {
         databaseItem.getColoredText().setText(newName);
         new File(DIRECTORY_PATH + "/" + oldName).renameTo(new File(DIRECTORY_PATH + "/" + newName));
         new File(DIRECTORY_PATH + "/imagecache/" + oldName).renameTo(new File(DIRECTORY_PATH + "/imagecache/" + newName));
-        SharedFE.refreshContent();
+        Frontend.refreshContent();
     }
 
     static void initialize() {
-        if (SharedBE.DIRECTORY_PATH == null) {
+        if (Backend.DIRECTORY_PATH == null) {
             DirectoryChooser directoryChooser = new DirectoryChooser();
             directoryChooser.setTitle("Select working directory");
             directoryChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-            File selectedDirectory = directoryChooser.showDialog(SharedFE.getMainStage());
+            File selectedDirectory = directoryChooser.showDialog(Frontend.getMainStage());
             if (selectedDirectory == null) {
                 Platform.exit();
                 return;
             }
-            SharedBE.setDirectoryPath(selectedDirectory.getAbsolutePath());
+            Backend.setDirectoryPath(selectedDirectory.getAbsolutePath());
         }
         Database.initilize();
         new DatabaseLoader().start();
     }
 
     public static void swapImageDisplayMode() {
-        if (SharedFE.getImageDisplayMode() == GALLERY) {
-            SharedFE.setImageDisplayMode(MAXIMIZED);
-            SharedFE.getPreviewPane().setCanvasSize(SharedFE.getGalleryPane().getWidth(), SharedFE.getGalleryPane().getHeight());
-            SharedFE.getMainBorderPane().setCenter(SharedFE.getPreviewPane());
-            SharedFE.getPreviewPane().drawPreview();
+        if (Frontend.getImageDisplayMode() == GALLERY) {
+            Frontend.setImageDisplayMode(MAXIMIZED);
+            Frontend.getPreviewPaneFront().setCanvasSize(Frontend.getGalleryPaneFront().getWidth(), Frontend.getGalleryPaneFront().getHeight());
+            Frontend.getMainBorderPane().setCenter(Frontend.getPreviewPaneFront());
+            Backend.getPreviewPaneBack().drawPreview();
         } else {
-            SharedFE.setImageDisplayMode(GALLERY);
-            SharedFE.getMainBorderPane().setCenter(SharedFE.getGalleryPane());
+            Frontend.setImageDisplayMode(GALLERY);
+            Frontend.getMainBorderPane().setCenter(Frontend.getGalleryPaneFront());
         }
     }
 
-    public static void setDirectoryPath(String directoryPath) {
+    public static TopPaneBack getTopPaneBack() {
+        return topPaneBack;
+    }
+
+    public static LeftPaneBack getLeftPaneBack() {
+        return leftPaneBack;
+    }
+
+    public static RightPaneBack getRightPaneBack() {
+        return rightPaneBack;
+    }
+
+    public static GalleryPaneBack getGalleryPaneBack() {
+        return galleryPaneBack;
+    }
+
+    public static PreviewPaneBack getPreviewPaneBack() {
+        return previewPaneBack;
+    }
+
+    private static void setDirectoryPath(String directoryPath) {
         DIRECTORY_PATH = directoryPath;
     }
 }

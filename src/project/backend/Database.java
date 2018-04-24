@@ -1,14 +1,13 @@
 package project.backend;
 
-import project.frontend.GalleryPane;
-import project.frontend.LeftPaneDisplayMode;
-import project.frontend.SharedFE;
+import project.frontend.shared.Frontend;
+import project.frontend.shared.LeftPaneDisplayMode;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static project.frontend.ImageDisplayMode.MAXIMIZED;
+import static project.frontend.shared.ImageDisplayMode.MAXIMIZED;
 
 public class Database {
     private static final ArrayList<DatabaseItem> itemDatabase = new ArrayList<>();
@@ -22,14 +21,14 @@ public class Database {
     private static DatabaseItem lastSelectedItem = null;
 
     static void initilize() {
-        validFiles = new File(SharedBE.DIRECTORY_PATH).listFiles((dir, name) -> name.endsWith(".jpg") || name.endsWith(".png") || name.endsWith(".JPG") || name.endsWith(".PNG") || name.endsWith(".jpeg") || name.endsWith(".JPEG"));
+        validFiles = new File(Backend.DIRECTORY_PATH).listFiles((dir, name) -> name.endsWith(".jpg") || name.endsWith(".png") || name.endsWith(".JPG") || name.endsWith(".PNG") || name.endsWith(".jpeg") || name.endsWith(".JPEG"));
         fileCount = validFiles != null ? validFiles.length : 0;
     }
 
     public static void addToSelection(DatabaseItem databaseItem) {
         selectedItems.add(databaseItem);
         setLastSelectedItem(databaseItem);
-        databaseItem.getImageView().setEffect(GalleryPane.getHighlightEffect());
+        databaseItem.getImageView().setEffect(Frontend.getGalleryPaneFront().getHighlightEffect());
         selectionChanged();
     }
 
@@ -41,8 +40,8 @@ public class Database {
 
     public static void clearSelection() {
         selectedItems.clear();
-        SharedFE.getLeftPane().getListView().getSelectionModel().clearSelection();
-        SharedFE.getRightPane().getListView().getItems().clear();
+        Frontend.getLeftPaneFront().getListView().getSelectionModel().clearSelection();
+        Frontend.getRightPaneFront().getListView().getItems().clear();
         for (DatabaseItem databaseItem : itemDatabase) {
             if (databaseItem.getImageView().getEffect() != null)
                 databaseItem.getImageView().setEffect(null);
@@ -50,13 +49,13 @@ public class Database {
     }
 
     private static void selectionChanged() {
-        if (SharedFE.getLeftPane().getDisplayMode() == LeftPaneDisplayMode.NAMES)
-            SharedFE.getLeftPane().getListView().getSelectionModel().clearSelection();
+        if (Frontend.getLeftPaneFront().getDisplayMode() == LeftPaneDisplayMode.NAMES)
+            Frontend.getLeftPaneFront().getListView().getSelectionModel().clearSelection();
         for (DatabaseItem item : selectedItems)
-            SharedFE.getLeftPane().getListView().getSelectionModel().select(item.getColoredText());
-        if (SharedFE.getImageDisplayMode().equals(MAXIMIZED))
-            SharedFE.getPreviewPane().drawPreview();
-        SharedFE.getRightPane().getListView().getItems().setAll(getSelectedItemsSharedTags());
+            Frontend.getLeftPaneFront().getListView().getSelectionModel().select(item.getColoredText());
+        if (Frontend.getImageDisplayMode().equals(MAXIMIZED))
+            Backend.getPreviewPaneBack().drawPreview();
+        Frontend.getRightPaneFront().getListView().getItems().setAll(getSelectedItemsSharedTags());
     }
 
     public static void filterByTags() {
@@ -81,7 +80,7 @@ public class Database {
 
     static void writeToDisk(ArrayList<DatabaseItem> itemDatabase) {
         try {
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(SharedBE.DIRECTORY_PATH + "/database"));
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(Backend.DIRECTORY_PATH + "/database"));
             objectOutputStream.writeObject(itemDatabase);
             objectOutputStream.close();
         } catch (IOException e) {
@@ -92,7 +91,7 @@ public class Database {
     @SuppressWarnings("unchecked")
     static ArrayList<DatabaseItem> readFromDisk() {
         try {
-            ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(SharedBE.DIRECTORY_PATH + "/database"));
+            ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(Backend.DIRECTORY_PATH + "/database"));
             ArrayList<DatabaseItem> itemDatabase = (ArrayList<DatabaseItem>) objectInputStream.readObject();
             objectInputStream.close();
             return itemDatabase;

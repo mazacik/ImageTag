@@ -1,26 +1,17 @@
-package project.frontend;
+package project.backend.components;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Pane;
 import project.backend.Database;
+import project.frontend.shared.Frontend;
 
-public class PreviewPane extends Pane {
-    private static final Canvas canvas = new Canvas();
-    private static final GraphicsContext gc = canvas.getGraphicsContext2D();
-
-    PreviewPane() {
-        getChildren().add(canvas);
-    }
-
-    public void setCanvasSize(double width, double height) {
-        canvas.setWidth(width);
-        canvas.setHeight(height);
-    }
+public class PreviewPaneBack {
+    private final GraphicsContext gc = Frontend.getPreviewPaneFront().getCanvas().getGraphicsContext2D();
 
     public void drawPreview() {
-        gc.clearRect(0, 0, getWidth(), getHeight());
+        Canvas canvas = Frontend.getPreviewPaneFront().getCanvas();
+        gc.clearRect(0, 0, Frontend.getPreviewPaneFront().getWidth(), Frontend.getPreviewPaneFront().getHeight());
         if (Database.getLastSelectedItem() == null) return;
         Image image = new Image("file:" + Database.getLastSelectedItem().getFullPath());
         double imageWidth = image.getWidth();

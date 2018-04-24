@@ -6,8 +6,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import org.apache.commons.io.FilenameUtils;
-import project.frontend.ColoredText;
-import project.frontend.SharedFE;
+import project.frontend.shared.ColoredText;
+import project.frontend.shared.Frontend;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -15,15 +15,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class DatabaseLoader extends Thread {
-    private static final long loadingStartTimeMillis = System.currentTimeMillis();
+    //private static final long loadingStartTimeMillis = System.currentTimeMillis();
     private static final ArrayList<DatabaseItem> loaderItemDatabase = new ArrayList<>();
     private static final ArrayList<String> loaderTagsDatabase = new ArrayList<>();
 
     @Override
     public void run() {
-        File imageCacheDirectory = new File(SharedBE.DIRECTORY_PATH + "/imagecache/");
+        File imageCacheDirectory = new File(Backend.DIRECTORY_PATH + "/imagecache/");
         if (!imageCacheDirectory.exists()) imageCacheDirectory.mkdir();
-        File databaseCacheFile = new File(SharedBE.DIRECTORY_PATH + "/database");
+        File databaseCacheFile = new File(Backend.DIRECTORY_PATH + "/database");
         if (databaseCacheFile.exists()) {
             ArrayList<DatabaseItem> databaseCache = Database.readFromDisk();
             if (databaseCache == null) {
@@ -46,10 +46,9 @@ public class DatabaseLoader extends Thread {
                     loaderTagsDatabase.add(tag);
         loaderTagsDatabase.sort(null);
         Database.getTagDatabase().addAll(loaderTagsDatabase);
-        Platform.runLater(() -> SharedFE.getGalleryPane().refreshContent());
-        Platform.runLater(() -> SharedFE.getLeftPane().refreshContent());
-        Platform.runLater(() -> SharedFE.getTopPane().getInfoLabel().setText("Fullscreen"));
-        //Platform.runLater(() -> SharedFE.getTopPane().getInfoLabel().setText("Loading done in " + Long.toString(System.currentTimeMillis() - loadingStartTimeMillis) + " ms"));
+        Platform.runLater(Frontend::refreshContent);
+        Platform.runLater(() -> Frontend.getTopPaneFront().getInfoLabel().setText("Fullscreen"));
+        //Platform.runLater(() -> Frontend.getTopPaneBack().getInfoLabel().setText("Loading done in " + Long.toString(System.currentTimeMillis() - loadingStartTimeMillis) + " ms"));
     }
 
     private void rebuildCache() {
@@ -63,18 +62,18 @@ public class DatabaseLoader extends Thread {
             newDatabaseItem.setColoredText(new ColoredText(newDatabaseItem.getSimpleName(), Color.BLACK, newDatabaseItem));
             newDatabaseItem.setTags(new ArrayList<>());
             loaderItemDatabase.add(newDatabaseItem);
-            Platform.runLater(() -> SharedFE.getTopPane().getInfoLabel().setText("Loading item " + (loaderItemDatabase.size() + 1) + " of " + Database.getFileCount() + ", " + (loaderItemDatabase.size() + 1) * 100 / Database.getFileCount() + "% done"));
+            Platform.runLater(() -> Frontend.getTopPaneFront().getInfoLabel().setText("Loading item " + (loaderItemDatabase.size() + 1) + " of " + Database.getFileCount() + ", " + (loaderItemDatabase.size() + 1) * 100 / Database.getFileCount() + "% done"));
         }
         Database.writeToDisk(loaderItemDatabase);
     }
 
     private Image getItemImage(DatabaseItem databaseItem) {
-        String currentItemCachePath = SharedBE.DIRECTORY_PATH + "/imagecache/" + databaseItem.getSimpleName();
+        String currentItemCachePath = Backend.DIRECTORY_PATH + "/imagecache/" + databaseItem.getSimpleName();
         File currentItemCacheFile = new File(currentItemCachePath);
         if (!currentItemCacheFile.exists()) {
             try {
                 currentItemCacheFile.createNewFile();
-                Image tempImage = new Image("file:" + databaseItem.getFullPath(), SharedBE.GALLERY_ICON_SIZE, SharedBE.GALLERY_ICON_SIZE, false, true);
+                Image tempImage = new Image("file:" + databaseItem.getFullPath(), Backend.GALLERY_ICON_SIZE, Backend.GALLERY_ICON_SIZE, false, true);
                 ImageIO.write(SwingFXUtils.fromFXImage(tempImage, null), databaseItem.getExtension(), currentItemCacheFile);
             } catch (IOException e) {
                 e.printStackTrace();

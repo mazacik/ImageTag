@@ -2,14 +2,14 @@ package project.backend;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import project.frontend.SharedFE;
+import project.frontend.shared.Frontend;
 
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        SharedFE.initialize(primaryStage);
-        SharedBE.initialize();
+        Frontend.initialize(primaryStage);
+        Backend.initialize();
     }
 
     public static void main(String[] args) {
