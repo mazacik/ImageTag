@@ -8,14 +8,16 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import project.backend.Database;
-import project.backend.SharedBackend;
+import project.backend.DatabaseItem;
+import project.backend.SharedBE;
 
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.Random;
 
 import static project.frontend.ImageDisplayMode.GALLERY;
 
-public class SharedFrontend {
+public class SharedFE {
     private static final BorderPane mainBorderPane = new BorderPane();
     private static final Scene mainScene = new Scene(mainBorderPane);
     private static final TopPane topPane = new TopPane();
@@ -26,12 +28,20 @@ public class SharedFrontend {
     private static Stage mainStage = null;
     private static ImageDisplayMode imageDisplayMode = GALLERY;
 
+    public static void refreshContent() {
+        Database.getFilteredItems().sort(Comparator.comparing(DatabaseItem::getSimpleName));
+        Database.getSelectedItems().sort(Comparator.comparing(DatabaseItem::getSimpleName));
+        Database.getItemDatabase().sort(Comparator.comparing(DatabaseItem::getSimpleName));
+        leftPane.refreshContent();
+        galleryPane.refreshContent();
+    }
+
     public static void initialize(Stage primaryStage) {
         mainStage = primaryStage;
         mainStage.setMinWidth(800);
         mainStage.setMinHeight(600);
         mainStage.setMaximized(true);
-        mainStage.setOnCloseRequest(SharedFrontend::showApplicationExitPrompt);
+        mainStage.setOnCloseRequest(SharedFE::showApplicationExitPrompt);
         mainStage.setScene(mainScene);
 
         mainScene.setOnKeyPressed(event -> {
@@ -41,7 +51,7 @@ public class SharedFrontend {
                     Database.addToSelection(Database.getFilteredItems().get(new Random().nextInt(Database.getFilteredItems().size())));
                     break;
                 case F12:
-                    SharedBackend.swapImageDisplayMode();
+                    SharedBE.swapImageDisplayMode();
                     break;
                 default:
                     break;
@@ -109,6 +119,6 @@ public class SharedFrontend {
     }
 
     public static void setImageDisplayMode(ImageDisplayMode imageDisplayMode) {
-        SharedFrontend.imageDisplayMode = imageDisplayMode;
+        SharedFE.imageDisplayMode = imageDisplayMode;
     }
 }

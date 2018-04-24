@@ -17,6 +17,7 @@ public class ColoredText implements Serializable {
 
     public ColoredText(String text, Color color, DatabaseItem owner) {
         this.text = text;
+
         this.color = color;
         this.owner = owner;
     }
@@ -31,5 +32,9 @@ public class ColoredText implements Serializable {
 
     DatabaseItem getOwner() {
         return owner;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 }

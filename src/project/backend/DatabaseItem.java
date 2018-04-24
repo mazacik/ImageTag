@@ -23,7 +23,7 @@ public class DatabaseItem implements Serializable {
         return this.fullPath;
     }
 
-    String getSimpleName() {
+    public String getSimpleName() {
         return this.simpleName;
     }
 
@@ -57,7 +57,7 @@ public class DatabaseItem implements Serializable {
 
     void setImageView(ImageView imageView) {
         this.imageView = (imageView != null) ? imageView : new ImageView();
-        this.imageView.setOnMouseClicked(event -> GalleryPane.imageViewClicked(this));
+        this.imageView.setOnMouseClicked(event -> GalleryPane.imageViewClicked(this, event));
     }
 
     void setColoredText(ColoredText coloredText) {

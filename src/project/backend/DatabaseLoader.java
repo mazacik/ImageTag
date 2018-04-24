@@ -7,7 +7,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import org.apache.commons.io.FilenameUtils;
 import project.frontend.ColoredText;
-import project.frontend.SharedFrontend;
+import project.frontend.SharedFE;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -21,9 +21,9 @@ public class DatabaseLoader extends Thread {
 
     @Override
     public void run() {
-        File imageCacheDirectory = new File(SharedBackend.DIRECTORY_PATH + "/imagecache/");
+        File imageCacheDirectory = new File(SharedBE.DIRECTORY_PATH + "/imagecache/");
         if (!imageCacheDirectory.exists()) imageCacheDirectory.mkdir();
-        File databaseCacheFile = new File(SharedBackend.DIRECTORY_PATH + "/database");
+        File databaseCacheFile = new File(SharedBE.DIRECTORY_PATH + "/database");
         if (databaseCacheFile.exists()) {
             ArrayList<DatabaseItem> databaseCache = Database.readFromDisk();
             if (databaseCache == null) {
@@ -46,9 +46,10 @@ public class DatabaseLoader extends Thread {
                     loaderTagsDatabase.add(tag);
         loaderTagsDatabase.sort(null);
         Database.getTagDatabase().addAll(loaderTagsDatabase);
-        Platform.runLater(() -> SharedFrontend.getGalleryPane().refreshContent());
-        Platform.runLater(() -> SharedFrontend.getLeftPane().refreshContent());
-        Platform.runLater(() -> SharedFrontend.getTopPane().getInfoLabel().setText("Loading done in " + Long.toString(System.currentTimeMillis() - loadingStartTimeMillis) + " ms"));
+        Platform.runLater(() -> SharedFE.getGalleryPane().refreshContent());
+        Platform.runLater(() -> SharedFE.getLeftPane().refreshContent());
+        Platform.runLater(() -> SharedFE.getTopPane().getInfoLabel().setText("Fullscreen"));
+        //Platform.runLater(() -> SharedFE.getTopPane().getInfoLabel().setText("Loading done in " + Long.toString(System.currentTimeMillis() - loadingStartTimeMillis) + " ms"));
     }
 
     private void rebuildCache() {
@@ -62,18 +63,18 @@ public class DatabaseLoader extends Thread {
             newDatabaseItem.setColoredText(new ColoredText(newDatabaseItem.getSimpleName(), Color.BLACK, newDatabaseItem));
             newDatabaseItem.setTags(new ArrayList<>());
             loaderItemDatabase.add(newDatabaseItem);
-            Platform.runLater(() -> SharedFrontend.getTopPane().getInfoLabel().setText("Loading item " + (loaderItemDatabase.size() + 1) + " of " + Database.getFileCount() + ", " + (loaderItemDatabase.size() + 1) * 100 / Database.getFileCount() + "% done"));
+            Platform.runLater(() -> SharedFE.getTopPane().getInfoLabel().setText("Loading item " + (loaderItemDatabase.size() + 1) + " of " + Database.getFileCount() + ", " + (loaderItemDatabase.size() + 1) * 100 / Database.getFileCount() + "% done"));
         }
         Database.writeToDisk(loaderItemDatabase);
     }
 
     private Image getItemImage(DatabaseItem databaseItem) {
-        String currentItemCachePath = SharedBackend.DIRECTORY_PATH + "/imagecache/" + databaseItem.getSimpleName();
+        String currentItemCachePath = SharedBE.DIRECTORY_PATH + "/imagecache/" + databaseItem.getSimpleName();
         File currentItemCacheFile = new File(currentItemCachePath);
         if (!currentItemCacheFile.exists()) {
             try {
                 currentItemCacheFile.createNewFile();
-                Image tempImage = new Image("file:" + databaseItem.getFullPath(), SharedBackend.GALLERY_ICON_SIZE, SharedBackend.GALLERY_ICON_SIZE, false, true);
+                Image tempImage = new Image("file:" + databaseItem.getFullPath(), SharedBE.GALLERY_ICON_SIZE, SharedBE.GALLERY_ICON_SIZE, false, true);
                 ImageIO.write(SwingFXUtils.fromFXImage(tempImage, null), databaseItem.getExtension(), currentItemCacheFile);
             } catch (IOException e) {
                 e.printStackTrace();
