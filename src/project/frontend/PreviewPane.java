@@ -1,4 +1,4 @@
-package project.gui_components;
+package project.frontend;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -10,7 +10,7 @@ public class PreviewPane extends Pane {
     private static final Canvas canvas = new Canvas();
     private static final GraphicsContext gc = canvas.getGraphicsContext2D();
 
-    public PreviewPane() {
+    PreviewPane() {
         getChildren().add(canvas);
     }
 

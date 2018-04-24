@@ -1,4 +1,4 @@
-package project.gui_components;
+package project.frontend;
 
 import javafx.scene.paint.Color;
 import project.backend.DatabaseItem;
@@ -11,7 +11,7 @@ public class ColoredText implements Serializable {
     private String text;
     private Color color;
 
-    public ColoredText(String text, Color color) {
+    ColoredText(String text, Color color) {
         this(text, color, null);
     }
 
@@ -21,27 +21,15 @@ public class ColoredText implements Serializable {
         this.owner = owner;
     }
 
-    public String getText() {
+    String getText() {
         return text;
     }
 
-    public Color getColor() {
+    Color getColor() {
         return color;
     }
 
-    public DatabaseItem getOwner() {
+    DatabaseItem getOwner() {
         return owner;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
-    public void setOwner(DatabaseItem owner) {
-        this.owner = owner;
     }
 }

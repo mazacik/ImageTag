@@ -1,3 +1,3 @@
-package project.gui_components;
+package project.frontend;
 
 public enum LeftPaneDisplayMode {NAMES, TAGS}

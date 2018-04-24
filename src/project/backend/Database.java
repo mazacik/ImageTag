@@ -1,12 +1,14 @@
 package project.backend;
 
-import project.gui_components.LeftPaneDisplayMode;
+import project.frontend.GalleryPane;
+import project.frontend.LeftPaneDisplayMode;
+import project.frontend.SharedFrontend;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static project.backend.ImageDisplayMode.MAXIMIZED;
+import static project.frontend.ImageDisplayMode.MAXIMIZED;
 
 public class Database {
     private static final ArrayList<DatabaseItem> itemDatabase = new ArrayList<>();
@@ -15,14 +17,19 @@ public class Database {
     private static final ArrayList<String> tagDatabase = new ArrayList<>();
     private static final ArrayList<String> tagsWhitelist = new ArrayList<>();
     private static final ArrayList<String> tagsBlacklist = new ArrayList<>();
-    private static final File[] validFiles = new File(Settings.DIRECTORY_PATH).listFiles((dir, name) -> name.endsWith(".jpg") || name.endsWith(".png") || name.endsWith(".JPG") || name.endsWith(".PNG") || name.endsWith(".jpeg") || name.endsWith(".JPEG"));
-    private static final int fileCount = validFiles != null ? validFiles.length : 0;
+    private static File[] validFiles;
+    private static int fileCount;
     private static DatabaseItem lastSelectedItem = null;
+
+    static void initilize() {
+        validFiles = new File(SharedBackend.DIRECTORY_PATH).listFiles((dir, name) -> name.endsWith(".jpg") || name.endsWith(".png") || name.endsWith(".JPG") || name.endsWith(".PNG") || name.endsWith(".jpeg") || name.endsWith(".JPEG"));
+        fileCount = validFiles != null ? validFiles.length : 0;
+    }
 
     public static void addToSelection(DatabaseItem databaseItem) {
         selectedItems.add(databaseItem);
         setLastSelectedItem(databaseItem);
-        databaseItem.getImageView().setEffect(Main.getGalleryTileHighlightEffect());
+        databaseItem.getImageView().setEffect(GalleryPane.getHighlightEffect());
         selectionChanged();
     }
 
@@ -34,8 +41,8 @@ public class Database {
 
     public static void clearSelection() {
         selectedItems.clear();
-        Main.getLeftPane().getListView().getSelectionModel().clearSelection();
-        Main.getRightPane().getListView().getItems().clear();
+        SharedFrontend.getLeftPane().getListView().getSelectionModel().clearSelection();
+        SharedFrontend.getRightPane().getListView().getItems().clear();
         for (DatabaseItem databaseItem : itemDatabase) {
             if (databaseItem.getImageView().getEffect() != null)
                 databaseItem.getImageView().setEffect(null);
@@ -43,16 +50,16 @@ public class Database {
     }
 
     private static void selectionChanged() {
-        if (Main.getLeftPane().getDisplayMode() == LeftPaneDisplayMode.NAMES)
-            Main.getLeftPane().getListView().getSelectionModel().clearSelection();
+        if (SharedFrontend.getLeftPane().getDisplayMode() == LeftPaneDisplayMode.NAMES)
+            SharedFrontend.getLeftPane().getListView().getSelectionModel().clearSelection();
         for (DatabaseItem item : selectedItems)
-            Main.getLeftPane().getListView().getSelectionModel().select(item.getColoredText());
-        if (Main.getImageDisplayMode().equals(MAXIMIZED))
-            Main.getPreviewPane().drawPreview();
-        Main.getRightPane().getListView().getItems().setAll(getSelectedItemsSharedTags());
+            SharedFrontend.getLeftPane().getListView().getSelectionModel().select(item.getColoredText());
+        if (SharedFrontend.getImageDisplayMode().equals(MAXIMIZED))
+            SharedFrontend.getPreviewPane().drawPreview();
+        SharedFrontend.getRightPane().getListView().getItems().setAll(getSelectedItemsSharedTags());
     }
 
-    public static void filter() {
+    public static void filterByTags() {
         filteredItems.clear();
         if (tagsWhitelist.isEmpty() && tagsBlacklist.isEmpty())
             filteredItems.addAll(itemDatabase);
@@ -72,9 +79,9 @@ public class Database {
         writeToDisk(Database.getItemDatabase());
     }
 
-    public static void writeToDisk(ArrayList<DatabaseItem> itemDatabase) {
+    static void writeToDisk(ArrayList<DatabaseItem> itemDatabase) {
         try {
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(Settings.DIRECTORY_PATH + "/database"));
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(SharedBackend.DIRECTORY_PATH + "/database"));
             objectOutputStream.writeObject(itemDatabase);
             objectOutputStream.close();
         } catch (IOException e) {
@@ -83,15 +90,15 @@ public class Database {
     }
 
     @SuppressWarnings("unchecked")
-    public static ArrayList<DatabaseItem> readFromDisk() {
+    static ArrayList<DatabaseItem> readFromDisk() {
         try {
-            ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(Settings.DIRECTORY_PATH + "/database"));
+            ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(SharedBackend.DIRECTORY_PATH + "/database"));
             ArrayList<DatabaseItem> itemDatabase = (ArrayList<DatabaseItem>) objectInputStream.readObject();
             objectInputStream.close();
             return itemDatabase;
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
+            System.out.println("java.io.InvalidClassException: Serialization class incompatible. Rebuilding cache.");
+            return null;
         }
     }
 
@@ -119,7 +126,7 @@ public class Database {
         return selectedItems;
     }
 
-    public static File[] getValidFiles() {
+    static File[] getValidFiles() {
         return validFiles;
     }
 
@@ -127,11 +134,11 @@ public class Database {
         return lastSelectedItem;
     }
 
-    public static int getFileCount() {
+    static int getFileCount() {
         return fileCount;
     }
 
-    public static ArrayList<DatabaseItem> getItemDatabase() {
+    static ArrayList<DatabaseItem> getItemDatabase() {
         return itemDatabase;
     }
 

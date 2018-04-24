@@ -1,5 +1,6 @@
-package project.gui_components;
+package project.frontend;
 
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -9,7 +10,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import project.backend.Database;
 import project.backend.DatabaseItem;
-import project.backend.Main;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class LeftPane extends BorderPane {
     /* variables */
     private static LeftPaneDisplayMode displayMode = LeftPaneDisplayMode.TAGS;
 
-    public LeftPane() {
+    LeftPane() {
         initializeBackend();
         initializeFrontend();
     }
@@ -35,14 +35,15 @@ public class LeftPane extends BorderPane {
 
         leftButton.setText("Names");
         leftButton.setStyle("-fx-focus-color: transparent;");
-        leftButton.setPrefWidth(75);
+        leftButton.setPrefWidth(90);
 
         rightButton.setText("Tags");
         rightButton.setStyle("-fx-focus-color: transparent;");
-        rightButton.setPrefWidth(75);
+        rightButton.setPrefWidth(90);
 
         buttonPane.getChildren().addAll(leftButton, rightButton);
-
+        buttonPane.setAlignment(Pos.CENTER);
+        buttonPane.setSpacing(3);
         setCenter(listView);
         setBottom(buttonPane);
     }
@@ -83,8 +84,8 @@ public class LeftPane extends BorderPane {
                     whitelist.add(tag);
                     listView.getItems().set(listView.getSelectionModel().getSelectedIndex(), new ColoredText(tag, Color.GREEN));
                 }
-                Database.filter();
-                Main.getGalleryPane().refreshContent();
+                Database.filterByTags();
+                SharedFrontend.getGalleryPane().refreshContent();
             }
         });
 
