@@ -1,17 +1,17 @@
 package project.backend.components;
 
-import project.backend.Backend;
-import project.backend.Database;
-import project.backend.DatabaseItem;
+import project.backend.shared.Backend;
+import project.backend.shared.Database;
+import project.backend.shared.DatabaseItem;
 import project.frontend.shared.Frontend;
 import project.frontend.shared.LeftPaneDisplayMode;
 
 public class RightPaneBack {
     public void removeTag() {
-        if (!Frontend.getRightPaneFront().getListView().getSelectionModel().getSelectedIndices().isEmpty()) {
-            String tag = Frontend.getRightPaneFront().getListView().getSelectionModel().getSelectedItem();
-            if (Frontend.getLeftPaneFront().getDisplayMode() == LeftPaneDisplayMode.TAGS)
-                Backend.getLeftPaneBack().refreshContent();
+        if (!Frontend.getRightPane().getListView().getSelectionModel().getSelectedIndices().isEmpty()) {
+            String tag = Frontend.getRightPane().getListView().getSelectionModel().getSelectedItem();
+            if (Frontend.getLeftPane().getDisplayMode() == LeftPaneDisplayMode.TAGS)
+                Backend.getLeftPane().refreshContent();
             for (DatabaseItem databaseItem : Database.getSelectedItems())
                 databaseItem.getTags().remove(tag);
             refreshContent();
@@ -19,13 +19,13 @@ public class RightPaneBack {
     }
 
     public void addTag() {
-        String newTag = Frontend.getRightPaneFront().getAddTextField().getText();
-        Frontend.getRightPaneFront().getAddTextField().clear();
+        String newTag = Frontend.getRightPane().getAddTextField().getText();
+        Frontend.getRightPane().getAddTextField().clear();
         if (!newTag.isEmpty()) {
             if (!Database.getTagDatabase().contains(newTag)) {
                 Database.getTagDatabase().add(newTag);
-                if (Frontend.getLeftPaneFront().getDisplayMode() == LeftPaneDisplayMode.TAGS)
-                    Backend.getLeftPaneBack().refreshContent();
+                if (Frontend.getLeftPane().getDisplayMode() == LeftPaneDisplayMode.TAGS)
+                    Backend.getLeftPane().refreshContent();
             }
             for (DatabaseItem databaseItem : Database.getSelectedItems())
                 if (!databaseItem.getTags().contains(newTag))
@@ -35,6 +35,6 @@ public class RightPaneBack {
     }
 
     private void refreshContent() {
-        Frontend.getRightPaneFront().getListView().getItems().setAll(Database.getSelectedItemsSharedTags());
+        Frontend.getRightPane().getListView().getItems().setAll(Database.getSelectedItemsSharedTags());
     }
 }

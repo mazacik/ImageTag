@@ -5,8 +5,8 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.WindowEvent;
-import project.backend.Backend;
-import project.backend.Database;
+import project.backend.shared.Backend;
+import project.backend.shared.Database;
 import project.frontend.shared.Frontend;
 
 public class TopPaneFront extends BorderPane {

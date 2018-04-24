@@ -1,4 +1,4 @@
-package project.backend;
+package project.backend.shared;
 
 import javafx.application.Application;
 import javafx.stage.Stage;

@@ -7,9 +7,9 @@ import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import project.backend.Backend;
-import project.backend.Database;
-import project.backend.DatabaseItem;
+import project.backend.shared.Backend;
+import project.backend.shared.Database;
+import project.backend.shared.DatabaseItem;
 import project.frontend.components.*;
 
 import java.util.Comparator;
@@ -21,11 +21,11 @@ import static project.frontend.shared.ImageDisplayMode.GALLERY;
 public class Frontend {
     private static final BorderPane mainBorderPane = new BorderPane();
     private static final Scene mainScene = new Scene(mainBorderPane);
-    private static final TopPaneFront topPaneFront = new TopPaneFront();
-    private static final LeftPaneFront leftPaneFront = new LeftPaneFront();
-    private static final RightPaneFront rightPaneFront = new RightPaneFront();
-    private static final GalleryPaneFront galleryPaneFront = new GalleryPaneFront();
-    private static final PreviewPaneFront previewPaneFront = new PreviewPaneFront();
+    private static final TopPaneFront topPane = new TopPaneFront();
+    private static final LeftPaneFront leftPane = new LeftPaneFront();
+    private static final RightPaneFront rightPane = new RightPaneFront();
+    private static final GalleryPaneFront galleryPane = new GalleryPaneFront();
+    private static final PreviewPaneFront previewPane = new PreviewPaneFront();
     private static Stage mainStage = null;
     private static ImageDisplayMode imageDisplayMode = GALLERY;
 
@@ -33,8 +33,8 @@ public class Frontend {
         Database.getFilteredItems().sort(Comparator.comparing(DatabaseItem::getSimpleName));
         Database.getSelectedItems().sort(Comparator.comparing(DatabaseItem::getSimpleName));
         Database.getItemDatabase().sort(Comparator.comparing(DatabaseItem::getSimpleName));
-        Backend.getLeftPaneBack().refreshContent();
-        Backend.getGalleryPaneBack().refreshContent();
+        Backend.getLeftPane().refreshContent();
+        Backend.getGalleryPane().refreshContent();
     }
 
     public static void initialize(Stage primaryStage) {
@@ -59,10 +59,10 @@ public class Frontend {
             }
         });
 
-        mainBorderPane.setTop(topPaneFront);
-        mainBorderPane.setLeft(leftPaneFront);
-        mainBorderPane.setCenter(galleryPaneFront);
-        mainBorderPane.setRight(rightPaneFront);
+        mainBorderPane.setTop(topPane);
+        mainBorderPane.setLeft(leftPane);
+        mainBorderPane.setCenter(galleryPane);
+        mainBorderPane.setRight(rightPane);
 
         mainStage.show();
     }
@@ -91,28 +91,28 @@ public class Frontend {
         return mainBorderPane;
     }
 
-    public static PreviewPaneFront getPreviewPaneFront() {
-        return previewPaneFront;
+    public static PreviewPaneFront getPreviewPane() {
+        return previewPane;
     }
 
     public static ImageDisplayMode getImageDisplayMode() {
         return imageDisplayMode;
     }
 
-    public static GalleryPaneFront getGalleryPaneFront() {
-        return galleryPaneFront;
+    public static GalleryPaneFront getGalleryPane() {
+        return galleryPane;
     }
 
-    public static LeftPaneFront getLeftPaneFront() {
-        return leftPaneFront;
+    public static LeftPaneFront getLeftPane() {
+        return leftPane;
     }
 
-    public static RightPaneFront getRightPaneFront() {
-        return rightPaneFront;
+    public static RightPaneFront getRightPane() {
+        return rightPane;
     }
 
-    public static TopPaneFront getTopPaneFront() {
-        return topPaneFront;
+    public static TopPaneFront getTopPane() {
+        return topPane;
     }
 
     public static Stage getMainStage() {

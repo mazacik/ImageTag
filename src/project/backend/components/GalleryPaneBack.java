@@ -2,8 +2,8 @@ package project.backend.components;
 
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import project.backend.Database;
-import project.backend.DatabaseItem;
+import project.backend.shared.Database;
+import project.backend.shared.DatabaseItem;
 import project.frontend.shared.Frontend;
 
 public class GalleryPaneBack {
@@ -19,9 +19,9 @@ public class GalleryPaneBack {
     }
 
     public void refreshContent() {
-        Frontend.getGalleryPaneFront().getTilePane().getChildren().clear();
+        Frontend.getGalleryPane().getTilePane().getChildren().clear();
         for (DatabaseItem item : Database.getFilteredItems()) {
-            Frontend.getGalleryPaneFront().getTilePane().getChildren().add(item.getImageView());
+            Frontend.getGalleryPane().getTilePane().getChildren().add(item.getImageView());
         }
     }
 }

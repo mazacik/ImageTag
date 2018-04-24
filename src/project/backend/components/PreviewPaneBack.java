@@ -3,15 +3,15 @@ package project.backend.components;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import project.backend.Database;
+import project.backend.shared.Database;
 import project.frontend.shared.Frontend;
 
 public class PreviewPaneBack {
-    private final GraphicsContext gc = Frontend.getPreviewPaneFront().getCanvas().getGraphicsContext2D();
+    private final GraphicsContext gc = Frontend.getPreviewPane().getCanvas().getGraphicsContext2D();
 
     public void drawPreview() {
-        Canvas canvas = Frontend.getPreviewPaneFront().getCanvas();
-        gc.clearRect(0, 0, Frontend.getPreviewPaneFront().getWidth(), Frontend.getPreviewPaneFront().getHeight());
+        Canvas canvas = Frontend.getPreviewPane().getCanvas();
+        gc.clearRect(0, 0, Frontend.getPreviewPane().getWidth(), Frontend.getPreviewPane().getHeight());
         if (Database.getLastSelectedItem() == null) return;
         Image image = new Image("file:" + Database.getLastSelectedItem().getFullPath());
         double imageWidth = image.getWidth();

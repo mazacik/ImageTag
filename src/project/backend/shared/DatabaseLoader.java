@@ -1,4 +1,4 @@
-package project.backend;
+package project.backend.shared;
 
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
@@ -47,8 +47,8 @@ public class DatabaseLoader extends Thread {
         loaderTagsDatabase.sort(null);
         Database.getTagDatabase().addAll(loaderTagsDatabase);
         Platform.runLater(Frontend::refreshContent);
-        Platform.runLater(() -> Frontend.getTopPaneFront().getInfoLabel().setText("Fullscreen"));
-        //Platform.runLater(() -> Frontend.getTopPaneBack().getInfoLabel().setText("Loading done in " + Long.toString(System.currentTimeMillis() - loadingStartTimeMillis) + " ms"));
+        Platform.runLater(() -> Frontend.getTopPane().getInfoLabel().setText("Fullscreen"));
+        //Platform.runLater(() -> Frontend.getTopPane().getInfoLabel().setText("Loading done in " + Long.toString(System.currentTimeMillis() - loadingStartTimeMillis) + " ms"));
     }
 
     private void rebuildCache() {
@@ -62,7 +62,7 @@ public class DatabaseLoader extends Thread {
             newDatabaseItem.setColoredText(new ColoredText(newDatabaseItem.getSimpleName(), Color.BLACK, newDatabaseItem));
             newDatabaseItem.setTags(new ArrayList<>());
             loaderItemDatabase.add(newDatabaseItem);
-            Platform.runLater(() -> Frontend.getTopPaneFront().getInfoLabel().setText("Loading item " + (loaderItemDatabase.size() + 1) + " of " + Database.getFileCount() + ", " + (loaderItemDatabase.size() + 1) * 100 / Database.getFileCount() + "% done"));
+            Platform.runLater(() -> Frontend.getTopPane().getInfoLabel().setText("Loading item " + (loaderItemDatabase.size() + 1) + " of " + Database.getFileCount() + ", " + (loaderItemDatabase.size() + 1) * 100 / Database.getFileCount() + "% done"));
         }
         Database.writeToDisk(loaderItemDatabase);
     }

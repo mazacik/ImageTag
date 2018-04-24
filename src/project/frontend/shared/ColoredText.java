@@ -1,7 +1,7 @@
 package project.frontend.shared;
 
 import javafx.scene.paint.Color;
-import project.backend.DatabaseItem;
+import project.backend.shared.DatabaseItem;
 
 import java.io.Serializable;
 

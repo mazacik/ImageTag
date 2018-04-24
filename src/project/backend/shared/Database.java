@@ -1,4 +1,4 @@
-package project.backend;
+package project.backend.shared;
 
 import project.frontend.shared.Frontend;
 import project.frontend.shared.LeftPaneDisplayMode;
@@ -28,7 +28,7 @@ public class Database {
     public static void addToSelection(DatabaseItem databaseItem) {
         selectedItems.add(databaseItem);
         setLastSelectedItem(databaseItem);
-        databaseItem.getImageView().setEffect(Frontend.getGalleryPaneFront().getHighlightEffect());
+        databaseItem.getImageView().setEffect(Frontend.getGalleryPane().getHighlightEffect());
         selectionChanged();
     }
 
@@ -40,8 +40,8 @@ public class Database {
 
     public static void clearSelection() {
         selectedItems.clear();
-        Frontend.getLeftPaneFront().getListView().getSelectionModel().clearSelection();
-        Frontend.getRightPaneFront().getListView().getItems().clear();
+        Frontend.getLeftPane().getListView().getSelectionModel().clearSelection();
+        Frontend.getRightPane().getListView().getItems().clear();
         for (DatabaseItem databaseItem : itemDatabase) {
             if (databaseItem.getImageView().getEffect() != null)
                 databaseItem.getImageView().setEffect(null);
@@ -49,13 +49,13 @@ public class Database {
     }
 
     private static void selectionChanged() {
-        if (Frontend.getLeftPaneFront().getDisplayMode() == LeftPaneDisplayMode.NAMES)
-            Frontend.getLeftPaneFront().getListView().getSelectionModel().clearSelection();
+        if (Frontend.getLeftPane().getDisplayMode() == LeftPaneDisplayMode.NAMES)
+            Frontend.getLeftPane().getListView().getSelectionModel().clearSelection();
         for (DatabaseItem item : selectedItems)
-            Frontend.getLeftPaneFront().getListView().getSelectionModel().select(item.getColoredText());
+            Frontend.getLeftPane().getListView().getSelectionModel().select(item.getColoredText());
         if (Frontend.getImageDisplayMode().equals(MAXIMIZED))
-            Backend.getPreviewPaneBack().drawPreview();
-        Frontend.getRightPaneFront().getListView().getItems().setAll(getSelectedItemsSharedTags());
+            Backend.getPreviewPane().drawPreview();
+        Frontend.getRightPane().getListView().getItems().setAll(getSelectedItemsSharedTags());
     }
 
     public static void filterByTags() {

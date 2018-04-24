@@ -1,4 +1,4 @@
-package project.backend;
+package project.backend.shared;
 
 
 import javafx.application.Platform;
@@ -14,11 +14,11 @@ import static project.frontend.shared.ImageDisplayMode.GALLERY;
 import static project.frontend.shared.ImageDisplayMode.MAXIMIZED;
 
 public class Backend {
-    private static final TopPaneBack topPaneBack = new TopPaneBack();
-    private static final LeftPaneBack leftPaneBack = new LeftPaneBack();
-    private static final RightPaneBack rightPaneBack = new RightPaneBack();
-    private static final GalleryPaneBack galleryPaneBack = new GalleryPaneBack();
-    private static final PreviewPaneBack previewPaneBack = new PreviewPaneBack();
+    private static final TopPaneBack topPane = new TopPaneBack();
+    private static final LeftPaneBack leftPane = new LeftPaneBack();
+    private static final RightPaneBack rightPane = new RightPaneBack();
+    private static final GalleryPaneBack galleryPane = new GalleryPaneBack();
+    private static final PreviewPaneBack previewPane = new PreviewPaneBack();
 
     static int GALLERY_ICON_SIZE = 150;
     static String DIRECTORY_PATH;
@@ -62,33 +62,33 @@ public class Backend {
     public static void swapImageDisplayMode() {
         if (Frontend.getImageDisplayMode() == GALLERY) {
             Frontend.setImageDisplayMode(MAXIMIZED);
-            Frontend.getPreviewPaneFront().setCanvasSize(Frontend.getGalleryPaneFront().getWidth(), Frontend.getGalleryPaneFront().getHeight());
-            Frontend.getMainBorderPane().setCenter(Frontend.getPreviewPaneFront());
-            Backend.getPreviewPaneBack().drawPreview();
+            Frontend.getPreviewPane().setCanvasSize(Frontend.getGalleryPane().getWidth(), Frontend.getGalleryPane().getHeight());
+            Frontend.getMainBorderPane().setCenter(Frontend.getPreviewPane());
+            Backend.getPreviewPane().drawPreview();
         } else {
             Frontend.setImageDisplayMode(GALLERY);
-            Frontend.getMainBorderPane().setCenter(Frontend.getGalleryPaneFront());
+            Frontend.getMainBorderPane().setCenter(Frontend.getGalleryPane());
         }
     }
 
-    public static TopPaneBack getTopPaneBack() {
-        return topPaneBack;
+    public static TopPaneBack getTopPane() {
+        return topPane;
     }
 
-    public static LeftPaneBack getLeftPaneBack() {
-        return leftPaneBack;
+    public static LeftPaneBack getLeftPane() {
+        return leftPane;
     }
 
-    public static RightPaneBack getRightPaneBack() {
-        return rightPaneBack;
+    public static RightPaneBack getRightPane() {
+        return rightPane;
     }
 
-    public static GalleryPaneBack getGalleryPaneBack() {
-        return galleryPaneBack;
+    public static GalleryPaneBack getGalleryPane() {
+        return galleryPane;
     }
 
-    public static PreviewPaneBack getPreviewPaneBack() {
-        return previewPaneBack;
+    public static PreviewPaneBack getPreviewPane() {
+        return previewPane;
     }
 
     private static void setDirectoryPath(String directoryPath) {

@@ -1,4 +1,4 @@
-package project.backend;
+package project.backend.shared;
 
 import javafx.scene.image.ImageView;
 import project.frontend.shared.ColoredText;
@@ -56,7 +56,7 @@ public class DatabaseItem implements Serializable {
 
     void setImageView(ImageView imageView) {
         this.imageView = (imageView != null) ? imageView : new ImageView();
-        this.imageView.setOnMouseClicked(event -> Backend.getGalleryPaneBack().imageViewClicked(this, event));
+        this.imageView.setOnMouseClicked(event -> Backend.getGalleryPane().imageViewClicked(this, event));
     }
 
     void setColoredText(ColoredText coloredText) {
