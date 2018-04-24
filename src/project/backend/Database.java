@@ -1,53 +1,74 @@
 package project.backend;
 
+import project.gui_components.LeftPaneDisplayMode;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static project.backend.ImageDisplayMode.MAXIMIZED;
+
 public class Database {
     private static final ArrayList<DatabaseItem> itemDatabase = new ArrayList<>();
-    private static final ArrayList<DatabaseItem> itemDatabaseFiltered = new ArrayList<>();
+    private static final ArrayList<DatabaseItem> filteredItems = new ArrayList<>();
+    private static final ArrayList<DatabaseItem> selectedItems = new ArrayList<>();
     private static final ArrayList<String> tagDatabase = new ArrayList<>();
     private static final ArrayList<String> tagsWhitelist = new ArrayList<>();
     private static final ArrayList<String> tagsBlacklist = new ArrayList<>();
-    private static final ArrayList<Integer> selectedIndexes = new ArrayList<>();
     private static final File[] validFiles = new File(Settings.DIRECTORY_PATH).listFiles((dir, name) -> name.endsWith(".jpg") || name.endsWith(".png") || name.endsWith(".JPG") || name.endsWith(".PNG") || name.endsWith(".jpeg") || name.endsWith(".JPEG"));
     private static final int fileCount = validFiles != null ? validFiles.length : 0;
-    private static int lastSelectedIndex = 0;
+    private static DatabaseItem lastSelectedItem = null;
 
-    public static void addToSelection(int index) {
-        if (index < 0 || index >= fileCount) return;
-        selectedIndexes.add(index);
-        selectedIndexes.sort(null);
-        Main.selectionChanged();
+    public static void addToSelection(DatabaseItem databaseItem) {
+        selectedItems.add(databaseItem);
+        databaseItem.getImageView().setEffect(Main.getGalleryTileHighlightEffect());
+        selectionChanged();
+    }
+
+    public static void removeIndexFromSelection(DatabaseItem databaseItem) {
+        selectedItems.remove(databaseItem);
+        databaseItem.getImageView().setEffect(null);
+        selectionChanged();
     }
 
     public static void clearSelection() {
-        selectedIndexes.clear();
-        Main.selectionChanged();
+        selectedItems.clear();
+        Main.getLeftPane().getListView().getSelectionModel().clearSelection();
+        for (DatabaseItem databaseItem : itemDatabase) {
+            if (databaseItem.getImageView().getEffect() != null)
+                databaseItem.getImageView().setEffect(null);
+        }
+        selectionChanged();
     }
 
-    public static void removeIndexFromSelection(int index) {
-        selectedIndexes.remove(Integer.valueOf(index));
-        selectedIndexes.sort(null);
-        Main.selectionChanged();
+    private static void selectionChanged() {
+        if (Main.getLeftPane().getDisplayMode() == LeftPaneDisplayMode.NAMES)
+            Main.getLeftPane().getListView().getSelectionModel().clearSelection();
+        for (DatabaseItem item : selectedItems)
+            Main.getLeftPane().getListView().getSelectionModel().select(item.getColoredText());
+        if (Main.getImageDisplayMode().equals(MAXIMIZED))
+            Main.getPreviewPane().drawPreview();
+        Main.getRightPane().getListView().getItems().setAll(getSelectedItemsSharedTags());
     }
 
     public static void filter() {
-        itemDatabaseFiltered.clear();
+        selectedItems.clear();
         if (tagsWhitelist.isEmpty() && tagsBlacklist.isEmpty())
-            itemDatabaseFiltered.addAll(itemDatabase);
+            selectedItems.addAll(itemDatabase);
         else
             for (DatabaseItem item : itemDatabase)
                 if (item.getTags().containsAll(tagsWhitelist)) {
-                    itemDatabaseFiltered.add(item);
+                    selectedItems.add(item);
                     for (String tag : tagsBlacklist)
                         if (item.getTags().contains(tag)) {
-                            itemDatabaseFiltered.remove(item);
+                            selectedItems.remove(item);
                             break;
                         }
                 }
-        selectedIndexes.clear();
+    }
+
+    public static void writeToDisk() {
+        writeToDisk(Database.getItemDatabase());
     }
 
     public static void writeToDisk(ArrayList<DatabaseItem> itemDatabase) {
@@ -73,16 +94,36 @@ public class Database {
         }
     }
 
+    public static ArrayList<String> getSelectedItemsSharedTags() {
+        if (selectedItems.isEmpty()) return new ArrayList<>();
+        ArrayList<String> sharedTags = new ArrayList<>();
+        ArrayList<String> firstItemTags = selectedItems.get(0).getTags();
+        for (String tag : firstItemTags)
+            for (DatabaseItem databaseItem : selectedItems) {
+                if (databaseItem.getTags().contains(tag)) {
+                    if (databaseItem.equals(selectedItems.get(selectedItems.size() - 1)))
+                        sharedTags.add(tag);
+                    continue;
+                }
+                break;
+            }
+        return sharedTags;
+    }
+
+    public static ArrayList<DatabaseItem> getFilteredItems() {
+        return filteredItems;
+    }
+
+    public static ArrayList<DatabaseItem> getSelectedItems() {
+        return selectedItems;
+    }
+
     public static File[] getValidFiles() {
         return validFiles;
     }
 
-    public static int getLastSelectedIndex() {
-        return lastSelectedIndex;
-    }
-
-    public static ArrayList<Integer> getSelectedIndexes() {
-        return selectedIndexes;
+    public static DatabaseItem getLastSelectedItem() {
+        return lastSelectedItem;
     }
 
     public static int getFileCount() {
@@ -91,10 +132,6 @@ public class Database {
 
     public static ArrayList<DatabaseItem> getItemDatabase() {
         return itemDatabase;
-    }
-
-    public static List<DatabaseItem> getItemDatabaseFiltered() {
-        return itemDatabaseFiltered;
     }
 
     public static List<String> getTagDatabase() {
@@ -109,7 +146,7 @@ public class Database {
         return tagsWhitelist;
     }
 
-    public static void setLastSelectedIndex(int index) {
-        lastSelectedIndex = index;
+    public static void setLastSelectedItem(DatabaseItem databaseItem) {
+        lastSelectedItem = databaseItem;
     }
 }

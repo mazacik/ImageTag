@@ -1,7 +1,7 @@
 package project.backend;
 
 import javafx.application.Application;
-import javafx.scene.Node;
+import javafx.event.Event;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
@@ -34,34 +34,16 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        new DatabaseBuilder().start();
+        new DatabaseLoader().start();
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
         primaryStage.setMaximized(true);
-        primaryStage.setOnCloseRequest(event -> {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Exit application?");
-            alert.setHeaderText(null);
-            alert.setGraphic(null);
-            alert.setContentText("All unsaved changes will be lost!");
-
-            ButtonType buttonTypeSave = new ButtonType("Save and exit");
-            ButtonType buttonTypeExit = new ButtonType("Exit without saving");
-            ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-            alert.getButtonTypes().setAll(buttonTypeSave, buttonTypeExit, buttonTypeCancel);
-
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == buttonTypeSave) {
-                Database.writeToDisk(Database.getItemDatabase());
-            } else if (result.get() == buttonTypeCancel) {
-                event.consume();
-            }
-        });
+        primaryStage.setOnCloseRequest(Main::showApplicationExitPrompt);
         mainScene.setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case R:
                     Database.clearSelection();
-                    Database.addToSelection(new Random().nextInt(Database.getItemDatabaseFiltered().size()));
+                    Database.addToSelection(Database.getFilteredItems().get(new Random().nextInt(Database.getFilteredItems().size())));
                     break;
                 case F12:
                     swapImageDisplayMode();
@@ -79,6 +61,26 @@ public class Main extends Application {
         primaryStage.show();
     }
 
+    private static void showApplicationExitPrompt(Event event) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Exit application?");
+        alert.setHeaderText(null);
+        alert.setGraphic(null);
+        alert.setContentText("All unsaved changes will be lost!");
+
+        ButtonType buttonTypeSave = new ButtonType("Save and exit");
+        ButtonType buttonTypeExit = new ButtonType("Exit without saving");
+        ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(buttonTypeSave, buttonTypeExit, buttonTypeCancel);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == buttonTypeSave) {
+            Database.writeToDisk();
+        } else if (result.get() == buttonTypeCancel) {
+            event.consume();
+        }
+    }
+
     public static void main(String[] args) {
         initializeVariables();
         launch(args);
@@ -93,24 +95,6 @@ public class Main extends Application {
         galleryTileHighlightEffect.setChoke(1);
     }
 
-    public static void selectionChanged() {
-        for (Node node : galleryPane.getTilePane().getChildren()) {
-            if (node.getEffect() != null)
-                node.setEffect(null);
-        }
-        if (!leftPane.getListView().isFocused()) {
-            leftPane.getListView().getSelectionModel().clearSelection();
-            for (int index : Database.getSelectedIndexes()) {
-                leftPane.getListView().getSelectionModel().select(index);
-                galleryPane.getTilePane().getChildren().get(index).setEffect(galleryTileHighlightEffect);
-            }
-        } else
-            for (int index : Database.getSelectedIndexes())
-                galleryPane.getTilePane().getChildren().get(index).setEffect(galleryTileHighlightEffect);
-        if (imageDisplayMode == MAXIMIZED)
-            previewPane.drawPreview();
-    }
-
     private static void swapImageDisplayMode() {
         if (imageDisplayMode == GALLERY) {
             imageDisplayMode = MAXIMIZED;
@@ -121,6 +105,18 @@ public class Main extends Application {
             Main.imageDisplayMode = GALLERY;
             mainBorderPane.setCenter(galleryPane);
         }
+    }
+
+    public static InnerShadow getGalleryTileHighlightEffect() {
+        return galleryTileHighlightEffect;
+    }
+
+    public static PreviewPane getPreviewPane() {
+        return previewPane;
+    }
+
+    public static ImageDisplayMode getImageDisplayMode() {
+        return imageDisplayMode;
     }
 
     public static GalleryPane getGalleryPane() {

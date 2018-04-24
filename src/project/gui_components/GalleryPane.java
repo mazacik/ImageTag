@@ -1,7 +1,6 @@
 package project.gui_components;
 
 import javafx.scene.control.ScrollPane;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.TilePane;
 import project.backend.Database;
 import project.backend.DatabaseItem;
@@ -22,17 +21,8 @@ public class GalleryPane extends ScrollPane {
 
     public void refreshContent() {
         tilePane.getChildren().clear();
-        for (DatabaseItem item : Database.getItemDatabaseFiltered()) {
-            ImageView imageView = new ImageView(item.getImage());
-            tilePane.getChildren().add(imageView);
-            imageView.setOnMouseClicked(event -> {
-                int index = tilePane.getChildren().indexOf(imageView);
-                Database.setLastSelectedIndex(index);
-                if (!Database.getSelectedIndexes().contains(index))
-                    Database.addToSelection(index);
-                else
-                    Database.removeIndexFromSelection(index);
-            });
+        for (DatabaseItem item : Database.getFilteredItems()) {
+            tilePane.getChildren().add(item.getImageView());
         }
     }
 

@@ -3,17 +3,20 @@ package project.backend;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 import org.apache.commons.io.FilenameUtils;
+import project.gui_components.ColoredText;
 
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class DatabaseBuilder extends Thread {
+public class DatabaseLoader extends Thread {
     private static final long loadingStartTimeMillis = System.currentTimeMillis();
-    private static final ArrayList<DatabaseItem> itemDatabase = new ArrayList<>();
-    private static final ArrayList<String> tagsDatabase = new ArrayList<>();
+    private static final ArrayList<DatabaseItem> loaderItemDatabase = new ArrayList<>();
+    private static final ArrayList<String> loaderTagsDatabase = new ArrayList<>();
     private static int indexCounter = 0;
 
     @Override
@@ -22,9 +25,10 @@ public class DatabaseBuilder extends Thread {
         if (!imageCacheDirectory.exists()) imageCacheDirectory.mkdir();
         File databaseCacheFile = new File(Settings.DIRECTORY_PATH + "/database");
         if (databaseCacheFile.exists()) {
-            itemDatabase.addAll(Database.readFromDisk());
-            for (DatabaseItem databaseItem : itemDatabase) {
-                databaseItem.setImage(getItemImage(databaseItem));
+            loaderItemDatabase.addAll(Database.readFromDisk());
+            for (DatabaseItem databaseItem : loaderItemDatabase) {
+                databaseItem.setImageView(new ImageView(getItemImage(databaseItem)));
+                databaseItem.setColoredText(new ColoredText(databaseItem.getSimpleName(), Color.BLACK, databaseItem));
             }
         } else {
             for (File file : Database.getValidFiles()) {
@@ -34,17 +38,18 @@ public class DatabaseBuilder extends Thread {
                 newDatabaseItem.setSimpleName(file.getName());
                 newDatabaseItem.setExtension(FilenameUtils.getExtension(file.getName()));
                 newDatabaseItem.setIndex(indexCounter++);
-                newDatabaseItem.setImage(getItemImage(newDatabaseItem));
+                newDatabaseItem.setImageView(new ImageView(getItemImage(newDatabaseItem)));
+                newDatabaseItem.setColoredText(new ColoredText(newDatabaseItem.getSimpleName(), Color.BLACK, newDatabaseItem));
                 newDatabaseItem.setTags(new ArrayList<>());
-                itemDatabase.add(newDatabaseItem);
+                loaderItemDatabase.add(newDatabaseItem);
                 Platform.runLater(() -> Main.getTopPane().getInfoLabel().setText("Loading item " + indexCounter + " of " + Database.getFileCount() + ", " + indexCounter * 100 / Database.getFileCount() + "% done"));
             }
-            Database.writeToDisk(itemDatabase);
+            Database.writeToDisk(loaderItemDatabase);
         }
-        tagsDatabase.sort(null);
-        Database.getItemDatabase().addAll(itemDatabase);
-        Database.getItemDatabaseFiltered().addAll(itemDatabase);
-        Database.getTagDatabase().addAll(tagsDatabase);
+        Database.getItemDatabase().addAll(loaderItemDatabase);
+        Database.getFilteredItems().addAll(loaderItemDatabase);
+        loaderTagsDatabase.sort(null);
+        Database.getTagDatabase().addAll(loaderTagsDatabase);
         Platform.runLater(() -> Main.getGalleryPane().refreshContent());
         Platform.runLater(() -> Main.getLeftPane().refreshContent());
         Platform.runLater(() -> Main.getTopPane().getInfoLabel().setText("Loading done in " + Long.toString(System.currentTimeMillis() - loadingStartTimeMillis) + " ms"));

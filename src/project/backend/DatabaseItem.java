@@ -1,17 +1,19 @@
 package project.backend;
 
-import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import project.gui_components.ColoredText;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.ArrayList;
 
 public class DatabaseItem implements Serializable {
     private String fullPath;
     private String simpleName;
     private String extension;
     private int index;
-    private transient Image image;
-    private List<String> tags;
+    private transient ImageView imageView;
+    private transient ColoredText coloredText;
+    private ArrayList<String> tags;
 
     public String getExtension() {
         return this.extension;
@@ -19,10 +21,6 @@ public class DatabaseItem implements Serializable {
 
     public String getFullPath() {
         return this.fullPath;
-    }
-
-    public Image getImage() {
-        return this.image;
     }
 
     public int getIndex() {
@@ -33,8 +31,16 @@ public class DatabaseItem implements Serializable {
         return this.simpleName;
     }
 
-    public List<String> getTags() {
+    public ArrayList<String> getTags() {
         return this.tags;
+    }
+
+    public ImageView getImageView() {
+        return imageView;
+    }
+
+    public ColoredText getColoredText() {
+        return coloredText;
     }
 
     public void setExtension(String Extension) {
@@ -45,10 +51,6 @@ public class DatabaseItem implements Serializable {
         this.fullPath = FullPath;
     }
 
-    public void setImage(Image ImageIcon) {
-        this.image = ImageIcon;
-    }
-
     public void setIndex(int Index) {
         this.index = Index;
     }
@@ -57,7 +59,22 @@ public class DatabaseItem implements Serializable {
         this.simpleName = SimpleName;
     }
 
-    public void setTags(List<String> Tags) {
+    public void setTags(ArrayList<String> Tags) {
         this.tags = Tags;
+    }
+
+    public void setImageView(ImageView imageView) {
+        this.imageView = (imageView != null) ? imageView : new ImageView();
+        this.imageView.setOnMouseClicked(event -> {
+            Database.setLastSelectedItem(this);
+            if (!Database.getSelectedItems().contains(this))
+                Database.addToSelection(this);
+            else
+                Database.removeIndexFromSelection(this);
+        });
+    }
+
+    public void setColoredText(ColoredText coloredText) {
+        this.coloredText = coloredText;
     }
 }

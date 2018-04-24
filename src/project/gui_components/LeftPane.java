@@ -13,27 +13,6 @@ import project.backend.Main;
 
 import java.util.List;
 
-enum ListDisplayMode {NAMES, TAGS}
-
-class ColoredText {
-
-    private final String text;
-    private final Color color;
-
-    ColoredText(String text, Color color) {
-        this.text = text;
-        this.color = color;
-    }
-
-    Color getColor() {
-        return color;
-    }
-
-    String getText() {
-        return text;
-    }
-}
-
 public class LeftPane extends BorderPane {
     /* references */
     private static final List<String> whitelist = Database.getTagsWhitelist();
@@ -44,38 +23,54 @@ public class LeftPane extends BorderPane {
     private static final Button rightButton = new Button();
     private static final ListView<ColoredText> listView = new ListView<>();
     /* variables */
-    private static ListDisplayMode listDisplayMode = ListDisplayMode.NAMES;
+    private static LeftPaneDisplayMode displayMode = LeftPaneDisplayMode.NAMES;
 
     public LeftPane() {
-        setPrefWidth(200);
-        listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        initializeBackend();
+        initializeFrontend();
+    }
 
-        listView.setCellFactory(lv -> new ListCell<>() {
+    private void initializeFrontend() {
+        setPrefWidth(200);
+
+        leftButton.setText("Names");
+        leftButton.setStyle("-fx-focus-color: transparent;");
+        leftButton.setPrefWidth(75);
+
+        rightButton.setText("Tags");
+        rightButton.setStyle("-fx-focus-color: transparent;");
+        rightButton.setPrefWidth(75);
+
+        buttonPane.getChildren().addAll(leftButton, rightButton);
+
+        setCenter(listView);
+        setBottom(buttonPane);
+    }
+
+    private void initializeBackend() {
+        listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        listView.setCellFactory(listView -> new ListCell<>() {
             @Override
-            protected void updateItem(ColoredText item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item == null) {
+            protected void updateItem(ColoredText coloredText, boolean empty) {
+                super.updateItem(coloredText, empty);
+                if (coloredText == null) {
                     setText(null);
                     setTextFill(null);
                 } else {
-                    setText(item.getText());
-                    setTextFill(item.getColor());
+                    setText(coloredText.getText());
+                    setTextFill(coloredText.getColor());
                 }
             }
         });
-
         listView.setOnMouseClicked(event -> {
-            if (listDisplayMode == ListDisplayMode.NAMES) {
-                int selectedIndex = listView.getSelectionModel().getSelectedIndex();
-                if (Database.getSelectedIndexes().contains(selectedIndex))
-                    Database.removeIndexFromSelection(selectedIndex);
+            if (displayMode == LeftPaneDisplayMode.NAMES && listView.getSelectionModel().getSelectedItem() != null) {
+                DatabaseItem selectedItem = listView.getSelectionModel().getSelectedItem().getOwner();
+                Database.setLastSelectedItem(selectedItem);
+                if (Database.getSelectedItems().contains(selectedItem))
+                    Database.removeIndexFromSelection(selectedItem);
                 else
-                    Database.addToSelection(selectedIndex);
-            }
-        });
-
-        listView.setOnMouseClicked(event -> {
-            if (listDisplayMode == ListDisplayMode.TAGS && listView.getSelectionModel().getSelectedItem() != null) {
+                    Database.addToSelection(selectedItem);
+            } else if (displayMode == LeftPaneDisplayMode.TAGS && listView.getSelectionModel().getSelectedItem() != null) {
                 String tag = listView.getSelectionModel().getSelectedItem().getText();
                 if (whitelist.contains(tag)) {
                     whitelist.remove(tag);
@@ -93,39 +88,29 @@ public class LeftPane extends BorderPane {
             }
         });
 
-        leftButton.setText("Names");
-        leftButton.setStyle("-fx-focus-color: transparent;");
-        leftButton.setPrefWidth(75);
         leftButton.setOnMouseClicked(event -> {
-            listDisplayMode = ListDisplayMode.NAMES;
+            displayMode = LeftPaneDisplayMode.NAMES;
             refreshContent();
         });
 
-        rightButton.setText("Tags");
-        rightButton.setStyle("-fx-focus-color: transparent;");
-        rightButton.setPrefWidth(75);
         rightButton.setOnMouseClicked(event -> {
-            listDisplayMode = ListDisplayMode.TAGS;
+            displayMode = LeftPaneDisplayMode.TAGS;
             refreshContent();
         });
-
-        buttonPane.getChildren().addAll(leftButton, rightButton);
-        setCenter(listView);
-        setBottom(buttonPane);
     }
 
     public void refreshContent() {
         listView.getItems().clear();
-        if (listDisplayMode == ListDisplayMode.TAGS)
+        if (displayMode == LeftPaneDisplayMode.TAGS)
             for (String tag : Database.getTagDatabase())
                 listView.getItems().add(new ColoredText(tag, Color.BLACK));
         else
-            for (DatabaseItem item : Database.getItemDatabaseFiltered())
-                listView.getItems().add(new ColoredText(item.getSimpleName(), Color.BLACK));
+            for (DatabaseItem databaseItem : Database.getFilteredItems())
+                listView.getItems().add(databaseItem.getColoredText());
     }
 
-    ListDisplayMode getDisplayMode() {
-        return listDisplayMode;
+    public LeftPaneDisplayMode getDisplayMode() {
+        return displayMode;
     }
 
     public ListView<ColoredText> getListView() {

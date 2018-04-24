@@ -21,7 +21,7 @@ public class PreviewPane extends Pane {
 
     public void drawPreview() {
         gc.clearRect(0, 0, getWidth(), getHeight());
-        Image originalImage = new Image("file:" + Database.getItemDatabaseFiltered().get(Database.getLastSelectedIndex()).getFullPath());
+        Image originalImage = new Image("file:" + Database.getLastSelectedItem().getFullPath());
         double imageWidth = originalImage.getWidth();
         double imageHeight = originalImage.getHeight();
         double maxWidth = canvas.getWidth();
