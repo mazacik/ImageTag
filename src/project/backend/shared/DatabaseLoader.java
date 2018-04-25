@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class DatabaseLoader extends Thread {
-    //private static final long loadingStartTimeMillis = System.currentTimeMillis();
+    private static final long loadingStartTimeMillis = System.currentTimeMillis();
     private static final ArrayList<DatabaseItem> loaderItemDatabase = new ArrayList<>();
     private static final ArrayList<String> loaderTagsDatabase = new ArrayList<>();
 
@@ -24,20 +24,17 @@ public class DatabaseLoader extends Thread {
         File imageCacheDirectory = new File(Backend.DIRECTORY_PATH + "/imagecache/");
         if (!imageCacheDirectory.exists()) imageCacheDirectory.mkdir();
         File databaseCacheFile = new File(Backend.DIRECTORY_PATH + "/database");
-        if (databaseCacheFile.exists()) {
-            ArrayList<DatabaseItem> databaseCache = Database.readFromDisk();
-            if (databaseCache == null) {
-                rebuildCache();
-            } else {
-                loaderItemDatabase.addAll(databaseCache);
-
-                for (DatabaseItem databaseItem : loaderItemDatabase) {
-                    databaseItem.setImageView(new ImageView(getItemImage(databaseItem)));
-                    databaseItem.setColoredText(new ColoredText(databaseItem.getSimpleName(), Color.BLACK, databaseItem));
-                }
-            }
-        } else
+        ArrayList<DatabaseItem> databaseCache = Database.readFromDisk();
+        if (databaseCache == null || !databaseCacheFile.exists() || databaseCache.size() != Database.getFileCount()) {
             rebuildCache();
+        } else {
+            Platform.runLater(() -> Frontend.getTopPane().getInfoLabel().setText("Loading..."));
+            loaderItemDatabase.addAll(databaseCache);
+            for (DatabaseItem databaseItem : loaderItemDatabase) {
+                databaseItem.setImageView(new ImageView(getItemImage(databaseItem)));
+                databaseItem.setColoredText(new ColoredText(databaseItem.getSimpleName(), Color.BLACK, databaseItem));
+            }
+        }
         Database.getItemDatabase().addAll(loaderItemDatabase);
         Database.getFilteredItems().addAll(loaderItemDatabase);
         for (DatabaseItem databaseItem : loaderItemDatabase)
@@ -47,8 +44,8 @@ public class DatabaseLoader extends Thread {
         loaderTagsDatabase.sort(null);
         Database.getTagDatabase().addAll(loaderTagsDatabase);
         Platform.runLater(Frontend::refreshContent);
-        Platform.runLater(() -> Frontend.getTopPane().getInfoLabel().setText("Fullscreen"));
-        //Platform.runLater(() -> Frontend.getTopPane().getInfoLabel().setText("Loading done in " + Long.toString(System.currentTimeMillis() - loadingStartTimeMillis) + " ms"));
+        //Platform.runLater(() -> Frontend.getTopPane().getInfoLabel().setText("Fullscreen"));
+        Platform.runLater(() -> Frontend.getTopPane().getInfoLabel().setText("Loading done in " + Long.toString(System.currentTimeMillis() - loadingStartTimeMillis) + " ms"));
     }
 
     private void rebuildCache() {

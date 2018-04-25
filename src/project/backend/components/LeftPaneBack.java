@@ -36,7 +36,12 @@ public class LeftPaneBack {
 
         ContextMenu listContextMenu = new ContextMenu();
         MenuItem menuRename = new MenuItem("Rename");
-        menuRename.setOnAction(event -> Backend.renameFile(Database.getLastSelectedItem()));
+        menuRename.setOnAction(event -> {
+            if (Frontend.getLeftPane().getDisplayMode().equals(LeftPaneDisplayMode.NAMES))
+                Backend.renameFile(Database.getLastSelectedItem());
+            else
+                Backend.renameTag(Frontend.getLeftPane().getListView().getSelectionModel().getSelectedItem().getText());
+        });
         listContextMenu.getItems().add(menuRename);
         listView.setContextMenu(listContextMenu);
         listView.setOnContextMenuRequested(event -> listContextMenu.show(listView, event.getScreenX(), event.getScreenY()));

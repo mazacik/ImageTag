@@ -15,7 +15,7 @@ public class LeftPaneFront extends BorderPane {
     private LeftPaneDisplayMode displayMode = LeftPaneDisplayMode.TAGS;
 
     public LeftPaneFront() {
-        setPrefWidth(200);
+        setPrefWidth(250);
 
         leftButton.setText("Names");
         leftButton.setStyle("-fx-focus-color: transparent;");
