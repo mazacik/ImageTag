@@ -1,5 +1,6 @@
 package project.frontend.shared;
 
+import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -16,7 +17,6 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.Random;
 
-import static project.frontend.shared.ImageDisplayMode.GALLERY;
 
 public class Frontend {
     private static final BorderPane mainBorderPane = new BorderPane();
@@ -28,7 +28,6 @@ public class Frontend {
     private static final GalleryPaneFront galleryPane = new GalleryPaneFront();
     private static final PreviewPaneFront previewPane = new PreviewPaneFront();
     private static Stage mainStage = null;
-    private static ImageDisplayMode imageDisplayMode = GALLERY;
 
     public static void refreshContent() {
         Database.getFilteredItems().sort(Comparator.comparing(DatabaseItem::getSimpleName));
@@ -84,6 +83,9 @@ public class Frontend {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == buttonTypeSave) {
             Database.writeToDisk();
+            Platform.exit();
+        } else if (result.get() == buttonTypeExit) {
+            Platform.exit();
         } else if (result.get() == buttonTypeCancel) {
             event.consume();
         }
@@ -105,10 +107,6 @@ public class Frontend {
         return previewPane;
     }
 
-    public static ImageDisplayMode getImageDisplayMode() {
-        return imageDisplayMode;
-    }
-
     public static GalleryPaneFront getGalleryPane() {
         return galleryPane;
     }
@@ -123,9 +121,5 @@ public class Frontend {
 
     public static Stage getMainStage() {
         return mainStage;
-    }
-
-    public static void setImageDisplayMode(ImageDisplayMode imageDisplayMode) {
-        Frontend.imageDisplayMode = imageDisplayMode;
     }
 }

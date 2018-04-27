@@ -10,9 +10,6 @@ import project.frontend.shared.Frontend;
 import java.io.File;
 import java.util.Optional;
 
-import static project.frontend.shared.ImageDisplayMode.GALLERY;
-import static project.frontend.shared.ImageDisplayMode.MAXIMIZED;
-
 public class Backend {
     private static final TopPaneBack topPane = new TopPaneBack();
     private static final NamePaneBack namePane = new NamePaneBack();
@@ -40,6 +37,21 @@ public class Backend {
         new DatabaseLoader().start();
     }
 
+    public static void addTag() {
+        String newTag = Frontend.getRightPane().getAddTextField().getText();
+        Frontend.getRightPane().getAddTextField().clear();
+        if (!newTag.isEmpty()) {
+            if (!Database.getTagDatabase().contains(newTag)) {
+                Database.getTagDatabase().add(newTag);
+                Backend.getTagPane().refreshContent();
+            }
+            for (DatabaseItem databaseItem : Database.getSelectedItems())
+                if (!databaseItem.getTags().contains(newTag))
+                    databaseItem.getTags().add(newTag);
+            Backend.getRightPane().refreshContent();
+        }
+    }
+
     public static void removeTag() {
         if (!Frontend.getRightPane().getListView().getSelectionModel().getSelectedIndices().isEmpty()) {
             String tag = Frontend.getRightPane().getListView().getSelectionModel().getSelectedItem();
@@ -59,41 +71,6 @@ public class Backend {
             Backend.getTagPane().refreshContent();
             Backend.getRightPane().refreshContent();
         }
-    }
-
-    public static void addTag() {
-        String newTag = Frontend.getRightPane().getAddTextField().getText();
-        Frontend.getRightPane().getAddTextField().clear();
-        if (!newTag.isEmpty()) {
-            if (!Database.getTagDatabase().contains(newTag)) {
-                Database.getTagDatabase().add(newTag);
-                Backend.getTagPane().refreshContent();
-            }
-            for (DatabaseItem databaseItem : Database.getSelectedItems())
-                if (!databaseItem.getTags().contains(newTag))
-                    databaseItem.getTags().add(newTag);
-            Backend.getRightPane().refreshContent();
-        }
-    }
-
-    public static void renameFile(DatabaseItem databaseItem) {
-        if (databaseItem == null) return;
-        TextInputDialog renamePrompt = new TextInputDialog();
-        renamePrompt.setTitle("Rename file");
-        renamePrompt.setHeaderText(null);
-        renamePrompt.setGraphic(null);
-        renamePrompt.setContentText("New name:");
-        Optional<String> result = renamePrompt.showAndWait();
-        String oldName = databaseItem.getSimpleName();
-        String newName = databaseItem.getSimpleName(); // nullpointer prevention
-        if (result.isPresent())
-            newName = result.get() + "." + databaseItem.getExtension();
-        databaseItem.setSimpleName(newName);
-        databaseItem.setFullPath(DIRECTORY_PATH + "/" + newName);
-        databaseItem.getColoredText().setText(newName);
-        new File(DIRECTORY_PATH + "/" + oldName).renameTo(new File(DIRECTORY_PATH + "/" + newName));
-        new File(DIRECTORY_PATH + "/imagecache/" + oldName).renameTo(new File(DIRECTORY_PATH + "/imagecache/" + newName));
-        Frontend.refreshContent();
     }
 
     public static void renameTag(String oldTagName) {
@@ -117,14 +94,32 @@ public class Backend {
         }
     }
 
+    public static void renameFile(DatabaseItem databaseItem) {
+        if (databaseItem == null) return;
+        TextInputDialog renamePrompt = new TextInputDialog();
+        renamePrompt.setTitle("Rename file");
+        renamePrompt.setHeaderText(null);
+        renamePrompt.setGraphic(null);
+        renamePrompt.setContentText("New name:");
+        Optional<String> result = renamePrompt.showAndWait();
+        String oldName = databaseItem.getSimpleName();
+        String newName = databaseItem.getSimpleName(); // nullpointer prevention
+        if (result.isPresent())
+            newName = result.get() + "." + databaseItem.getExtension();
+        databaseItem.setSimpleName(newName);
+        databaseItem.setFullPath(DIRECTORY_PATH + "/" + newName);
+        databaseItem.getColoredText().setText(newName);
+        new File(DIRECTORY_PATH + "/" + oldName).renameTo(new File(DIRECTORY_PATH + "/" + newName));
+        new File(DIRECTORY_PATH + "/imagecache/" + oldName).renameTo(new File(DIRECTORY_PATH + "/imagecache/" + newName));
+        Frontend.refreshContent();
+    }
+
     public static void swapImageDisplayMode() {
-        if (Frontend.getImageDisplayMode() == GALLERY) {
-            Frontend.setImageDisplayMode(MAXIMIZED);
-            Frontend.getPreviewPane().setCanvasSize(Frontend.getGalleryPane().getWidth(), Frontend.getGalleryPane().getHeight());
+        if (Frontend.getMainBorderPane().getCenter().equals(Frontend.getGalleryPane())) {
             Frontend.getMainBorderPane().setCenter(Frontend.getPreviewPane());
+            Frontend.getPreviewPane().setCanvasSize(Frontend.getGalleryPane().getWidth(), Frontend.getGalleryPane().getHeight());
             Backend.getPreviewPane().drawPreview();
         } else {
-            Frontend.setImageDisplayMode(GALLERY);
             Frontend.getMainBorderPane().setCenter(Frontend.getGalleryPane());
         }
     }

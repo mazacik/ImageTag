@@ -6,8 +6,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static project.frontend.shared.ImageDisplayMode.MAXIMIZED;
-
 public class Database {
     private static final ArrayList<DatabaseItem> itemDatabase = new ArrayList<>();
     private static final ArrayList<DatabaseItem> filteredItems = new ArrayList<>();
@@ -17,7 +15,7 @@ public class Database {
     private static final ArrayList<String> tagsBlacklist = new ArrayList<>();
     private static File[] validFiles;
     private static int fileCount;
-    private static DatabaseItem lastSelectedItem = null;
+    private static DatabaseItem selectedItem = null;
 
     static void initilize() {
         validFiles = new File(Backend.DIRECTORY_PATH).listFiles((dir, name) -> name.endsWith(".jpg") || name.endsWith(".png") || name.endsWith(".JPG") || name.endsWith(".PNG") || name.endsWith(".jpeg") || name.endsWith(".JPEG"));
@@ -26,7 +24,7 @@ public class Database {
 
     public static void addToSelection(DatabaseItem databaseItem) {
         selectedItems.add(databaseItem);
-        setLastSelectedItem(databaseItem);
+        setSelectedItem(databaseItem);
         databaseItem.getImageView().setEffect(Frontend.getGalleryPane().getHighlightEffect());
         selectionChanged();
     }
@@ -51,7 +49,7 @@ public class Database {
         Frontend.getNamePane().getListView().getSelectionModel().clearSelection();
         for (DatabaseItem item : selectedItems)
             Frontend.getNamePane().getListView().getSelectionModel().select(item.getColoredText());
-        if (Frontend.getImageDisplayMode().equals(MAXIMIZED))
+        if (Frontend.getMainBorderPane().getCenter().equals(Frontend.getPreviewPane()))
             Backend.getPreviewPane().drawPreview();
         Frontend.getRightPane().getListView().getItems().setAll(getSelectedItemsSharedTags());
     }
@@ -127,8 +125,8 @@ public class Database {
         return validFiles;
     }
 
-    public static DatabaseItem getLastSelectedItem() {
-        return lastSelectedItem;
+    public static DatabaseItem getSelectedItem() {
+        return selectedItem;
     }
 
     static int getFileCount() {
@@ -151,7 +149,7 @@ public class Database {
         return tagsWhitelist;
     }
 
-    public static void setLastSelectedItem(DatabaseItem databaseItem) {
-        lastSelectedItem = databaseItem;
+    public static void setSelectedItem(DatabaseItem databaseItem) {
+        selectedItem = databaseItem;
     }
 }

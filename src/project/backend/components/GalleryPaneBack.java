@@ -10,7 +10,7 @@ public class GalleryPaneBack {
     public void imageViewClicked(DatabaseItem databaseItem, MouseEvent event) {
         /* assigned in DatabaseItem.setImageView() */
         if (event.getButton().equals(MouseButton.PRIMARY)) {
-            Database.setLastSelectedItem(databaseItem);
+            Database.setSelectedItem(databaseItem);
             if (!Database.getSelectedItems().contains(databaseItem))
                 Database.addToSelection(databaseItem);
             else

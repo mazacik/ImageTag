@@ -24,7 +24,7 @@ public class NamePaneBack {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
                 if (listView.getSelectionModel().getSelectedItem() != null) {
                     DatabaseItem selectedItem = listView.getSelectionModel().getSelectedItem().getOwner();
-                    Database.setLastSelectedItem(selectedItem);
+                    Database.setSelectedItem(selectedItem);
                     if (Database.getSelectedItems().contains(selectedItem))
                         Database.removeIndexFromSelection(selectedItem);
                     else
