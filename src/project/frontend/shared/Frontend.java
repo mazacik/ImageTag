@@ -22,7 +22,8 @@ public class Frontend {
     private static final BorderPane mainBorderPane = new BorderPane();
     private static final Scene mainScene = new Scene(mainBorderPane);
     private static final TopPaneFront topPane = new TopPaneFront();
-    private static final LeftPaneFront leftPane = new LeftPaneFront();
+    private static final NamePaneFront namePane = new NamePaneFront();
+    private static final TagPaneFront tagPane = new TagPaneFront();
     private static final RightPaneFront rightPane = new RightPaneFront();
     private static final GalleryPaneFront galleryPane = new GalleryPaneFront();
     private static final PreviewPaneFront previewPane = new PreviewPaneFront();
@@ -33,7 +34,8 @@ public class Frontend {
         Database.getFilteredItems().sort(Comparator.comparing(DatabaseItem::getSimpleName));
         Database.getSelectedItems().sort(Comparator.comparing(DatabaseItem::getSimpleName));
         Database.getItemDatabase().sort(Comparator.comparing(DatabaseItem::getSimpleName));
-        Backend.getLeftPane().refreshContent();
+        Backend.getNamePane().refreshContent();
+        Backend.getTagPane().refreshContent();
         Backend.getGalleryPane().refreshContent();
     }
 
@@ -60,7 +62,7 @@ public class Frontend {
         });
 
         mainBorderPane.setTop(topPane);
-        mainBorderPane.setLeft(leftPane);
+        mainBorderPane.setLeft(namePane);
         mainBorderPane.setCenter(galleryPane);
         mainBorderPane.setRight(rightPane);
 
@@ -87,6 +89,14 @@ public class Frontend {
         }
     }
 
+    public static NamePaneFront getNamePane() {
+        return namePane;
+    }
+
+    public static TagPaneFront getTagPane() {
+        return tagPane;
+    }
+
     public static BorderPane getMainBorderPane() {
         return mainBorderPane;
     }
@@ -101,10 +111,6 @@ public class Frontend {
 
     public static GalleryPaneFront getGalleryPane() {
         return galleryPane;
-    }
-
-    public static LeftPaneFront getLeftPane() {
-        return leftPane;
     }
 
     public static RightPaneFront getRightPane() {

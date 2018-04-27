@@ -13,19 +13,19 @@ public class RightPaneFront extends BorderPane {
 
     public RightPaneFront() {
         setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER) Backend.getRightPane().addTag();
-            else if (event.getCode() == KeyCode.DELETE) Backend.getRightPane().removeTag();
+            if (event.getCode() == KeyCode.ENTER) Backend.addTag();
+            else if (event.getCode() == KeyCode.DELETE) Backend.removeTag();
         });
         ContextMenu listContextMenu = new ContextMenu();
         MenuItem menuRemoveTag = new MenuItem("Remove");
-        menuRemoveTag.setOnAction(event -> Backend.getRightPane().removeTag());
+        menuRemoveTag.setOnAction(event -> Backend.removeTag());
         listContextMenu.getItems().add(menuRemoveTag);
         listView.setContextMenu(listContextMenu);
         listView.setOnContextMenuRequested(event -> listContextMenu.show(listView, event.getScreenX(), event.getScreenY()));
         setPrefWidth(200);
         Button addButton = new Button("+");
         addButton.setStyle("-fx-focus-color: transparent;");
-        addButton.setOnAction(event -> Backend.getRightPane().addTag());
+        addButton.setOnAction(event -> Backend.addTag());
         HBox addPane = new HBox();
         addPane.setAlignment(Pos.CENTER);
         addPane.setSpacing(10);

@@ -33,7 +33,7 @@ public class DatabaseLoader extends Thread {
                 databaseItem.setImageView(new ImageView(getItemImage(databaseItem)));
                 databaseItem.setColoredText(new ColoredText(databaseItem.getSimpleName(), Color.BLACK, databaseItem));
             }
-            if (databaseCache.size() != Database.getFileCount()) {
+            if (databaseCache.size() < Database.getFileCount()) {
                 System.out.println("databaseCacheSize doesn't match validFileCount, building missing databaseItems...");
                 ArrayList<String> databaseCacheItemNames = new ArrayList<>();
                 for (DatabaseItem databaseItem : databaseCache)

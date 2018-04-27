@@ -1,55 +1,42 @@
 package project.frontend.components;
 
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import project.frontend.shared.ColoredText;
-import project.frontend.shared.LeftPaneDisplayMode;
 
-public class LeftPaneFront extends BorderPane {
-    private final Button leftButton = new Button();
-    private final Button rightButton = new Button();
+public abstract class LeftPaneFront extends BorderPane {
+    final Button swapLeftPaneButton = new Button();
     private final ListView<ColoredText> listView = new ListView<>();
-    private LeftPaneDisplayMode displayMode = LeftPaneDisplayMode.TAGS;
 
-    public LeftPaneFront() {
+    LeftPaneFront() {
         setPrefWidth(250);
+        setCellFactory();
 
-        leftButton.setText("Names");
-        leftButton.setStyle("-fx-focus-color: transparent;");
-        leftButton.setPrefWidth(90);
+        swapLeftPaneButton.setPrefWidth(getPrefWidth());
 
-        rightButton.setText("Tags");
-        rightButton.setStyle("-fx-focus-color: transparent;");
-        rightButton.setPrefWidth(90);
-
-        HBox buttonPane = new HBox();
-        buttonPane.getChildren().addAll(leftButton, rightButton);
-        buttonPane.setAlignment(Pos.CENTER);
-        buttonPane.setSpacing(3);
         setCenter(listView);
-        setBottom(buttonPane);
+        setBottom(swapLeftPaneButton);
     }
 
-    public Button getLeftButton() {
-        return leftButton;
-    }
-
-    public Button getRightButton() {
-        return rightButton;
-    }
-
-    public LeftPaneDisplayMode getDisplayMode() {
-        return displayMode;
+    private void setCellFactory() {
+        listView.setCellFactory(lv -> new ListCell<>() {
+            @Override
+            protected void updateItem(ColoredText coloredText, boolean empty) {
+                super.updateItem(coloredText, empty);
+                if (coloredText == null) {
+                    setText(null);
+                    setTextFill(null);
+                } else {
+                    setText(coloredText.getText());
+                    setTextFill(coloredText.getColor());
+                }
+            }
+        });
     }
 
     public ListView<ColoredText> getListView() {
         return listView;
-    }
-
-    public void setDisplayMode(LeftPaneDisplayMode displayMode) {
-        this.displayMode = displayMode;
     }
 }

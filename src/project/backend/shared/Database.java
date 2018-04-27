@@ -1,7 +1,6 @@
 package project.backend.shared;
 
 import project.frontend.shared.Frontend;
-import project.frontend.shared.LeftPaneDisplayMode;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -40,7 +39,7 @@ public class Database {
 
     public static void clearSelection() {
         selectedItems.clear();
-        Frontend.getLeftPane().getListView().getSelectionModel().clearSelection();
+        Frontend.getNamePane().getListView().getSelectionModel().clearSelection();
         Frontend.getRightPane().getListView().getItems().clear();
         for (DatabaseItem databaseItem : itemDatabase) {
             if (databaseItem.getImageView().getEffect() != null)
@@ -49,10 +48,9 @@ public class Database {
     }
 
     private static void selectionChanged() {
-        if (Frontend.getLeftPane().getDisplayMode() == LeftPaneDisplayMode.NAMES)
-            Frontend.getLeftPane().getListView().getSelectionModel().clearSelection();
+        Frontend.getNamePane().getListView().getSelectionModel().clearSelection();
         for (DatabaseItem item : selectedItems)
-            Frontend.getLeftPane().getListView().getSelectionModel().select(item.getColoredText());
+            Frontend.getNamePane().getListView().getSelectionModel().select(item.getColoredText());
         if (Frontend.getImageDisplayMode().equals(MAXIMIZED))
             Backend.getPreviewPane().drawPreview();
         Frontend.getRightPane().getListView().getItems().setAll(getSelectedItemsSharedTags());

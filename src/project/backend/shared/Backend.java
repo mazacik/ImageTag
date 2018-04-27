@@ -6,7 +6,6 @@ import javafx.scene.control.TextInputDialog;
 import javafx.stage.DirectoryChooser;
 import project.backend.components.*;
 import project.frontend.shared.Frontend;
-import project.frontend.shared.LeftPaneDisplayMode;
 
 import java.io.File;
 import java.util.Optional;
@@ -16,7 +15,8 @@ import static project.frontend.shared.ImageDisplayMode.MAXIMIZED;
 
 public class Backend {
     private static final TopPaneBack topPane = new TopPaneBack();
-    private static final LeftPaneBack leftPane = new LeftPaneBack();
+    private static final NamePaneBack namePane = new NamePaneBack();
+    private static final TagPaneBack tagPane = new TagPaneBack();
     private static final RightPaneBack rightPane = new RightPaneBack();
     private static final GalleryPaneBack galleryPane = new GalleryPaneBack();
     private static final PreviewPaneBack previewPane = new PreviewPaneBack();
@@ -38,6 +38,42 @@ public class Backend {
         }
         Database.initilize();
         new DatabaseLoader().start();
+    }
+
+    public static void removeTag() {
+        if (!Frontend.getRightPane().getListView().getSelectionModel().getSelectedIndices().isEmpty()) {
+            String tag = Frontend.getRightPane().getListView().getSelectionModel().getSelectedItem();
+            for (DatabaseItem databaseItem : Database.getSelectedItems())
+                databaseItem.getTags().remove(tag);
+            boolean tagExists = false;
+            for (DatabaseItem databaseItem : Database.getItemDatabase())
+                if (databaseItem.getTags().contains(tag)) {
+                    tagExists = true;
+                    break;
+                }
+            if (!tagExists) {
+                Database.getTagDatabase().remove(tag);
+                Database.getTagsWhitelist().remove(tag);
+                Database.getTagsBlacklist().remove(tag);
+            }
+            Backend.getTagPane().refreshContent();
+            Backend.getRightPane().refreshContent();
+        }
+    }
+
+    public static void addTag() {
+        String newTag = Frontend.getRightPane().getAddTextField().getText();
+        Frontend.getRightPane().getAddTextField().clear();
+        if (!newTag.isEmpty()) {
+            if (!Database.getTagDatabase().contains(newTag)) {
+                Database.getTagDatabase().add(newTag);
+                Backend.getTagPane().refreshContent();
+            }
+            for (DatabaseItem databaseItem : Database.getSelectedItems())
+                if (!databaseItem.getTags().contains(newTag))
+                    databaseItem.getTags().add(newTag);
+            Backend.getRightPane().refreshContent();
+        }
     }
 
     public static void renameFile(DatabaseItem databaseItem) {
@@ -73,8 +109,7 @@ public class Backend {
         if (!newTagName.isEmpty()) {
             if (Database.getTagDatabase().contains(oldTagName)) {
                 Database.getTagDatabase().set(Database.getTagDatabase().indexOf(oldTagName), newTagName);
-                if (Frontend.getLeftPane().getDisplayMode() == LeftPaneDisplayMode.TAGS)
-                    Backend.getLeftPane().refreshContent();
+                Backend.getTagPane().refreshContent();
             }
             for (DatabaseItem databaseItem : Database.getItemDatabase())
                 if (!databaseItem.getTags().contains(oldTagName))
@@ -94,12 +129,16 @@ public class Backend {
         }
     }
 
-    public static TopPaneBack getTopPane() {
-        return topPane;
+    public static NamePaneBack getNamePane() {
+        return namePane;
     }
 
-    public static LeftPaneBack getLeftPane() {
-        return leftPane;
+    public static TagPaneBack getTagPane() {
+        return tagPane;
+    }
+
+    public static TopPaneBack getTopPane() {
+        return topPane;
     }
 
     public static RightPaneBack getRightPane() {
