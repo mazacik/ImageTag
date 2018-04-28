@@ -8,14 +8,10 @@ import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import project.backend.shared.Backend;
 import project.backend.shared.Database;
-import project.backend.shared.DatabaseItem;
 import project.frontend.components.*;
 
-import java.util.Comparator;
 import java.util.Optional;
-import java.util.Random;
 
 
 public class Frontend {
@@ -29,15 +25,6 @@ public class Frontend {
     private static final PreviewPaneFront previewPane = new PreviewPaneFront();
     private static Stage mainStage = null;
 
-    public static void refreshContent() {
-        Database.getFilteredItems().sort(Comparator.comparing(DatabaseItem::getSimpleName));
-        Database.getSelectedItems().sort(Comparator.comparing(DatabaseItem::getSimpleName));
-        Database.getItemDatabase().sort(Comparator.comparing(DatabaseItem::getSimpleName));
-        Backend.getNamePane().refreshContent();
-        Backend.getTagPane().refreshContent();
-        Backend.getGalleryPane().refreshContent();
-    }
-
     public static void initialize(Stage primaryStage) {
         mainStage = primaryStage;
         mainStage.setMinWidth(800);
@@ -45,20 +32,6 @@ public class Frontend {
         mainStage.setMaximized(true);
         mainStage.setOnCloseRequest(Frontend::showApplicationExitPrompt);
         mainStage.setScene(mainScene);
-
-        mainScene.setOnKeyPressed(event -> {
-            switch (event.getCode()) {
-                case R:
-                    Database.clearSelection();
-                    Database.addToSelection(Database.getFilteredItems().get(new Random().nextInt(Database.getFilteredItems().size())));
-                    break;
-                case F12:
-                    Backend.swapImageDisplayMode();
-                    break;
-                default:
-                    break;
-            }
-        });
 
         mainBorderPane.setTop(topPane);
         mainBorderPane.setLeft(namePane);
@@ -89,6 +62,10 @@ public class Frontend {
         } else if (result.get() == buttonTypeCancel) {
             event.consume();
         }
+    }
+
+    public static Scene getMainScene() {
+        return mainScene;
     }
 
     public static NamePaneFront getNamePane() {

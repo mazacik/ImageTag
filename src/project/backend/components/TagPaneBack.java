@@ -53,6 +53,11 @@ public class TagPaneBack {
     public void refreshContent() {
         listView.getItems().clear();
         for (String tag : Database.getTagDatabase())
-            listView.getItems().add(new ColoredText(tag, Color.BLACK));
+            if (Database.getTagsWhitelist().contains(tag))
+                listView.getItems().add(new ColoredText(tag, Color.GREEN));
+            else if (Database.getTagsBlacklist().contains(tag))
+                listView.getItems().add(new ColoredText(tag, Color.RED));
+            else
+                listView.getItems().add(new ColoredText(tag, Color.BLACK));
     }
 }

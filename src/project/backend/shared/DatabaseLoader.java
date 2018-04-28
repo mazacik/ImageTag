@@ -54,7 +54,7 @@ public class DatabaseLoader extends Thread {
                     loaderTagsDatabase.add(tag);
         loaderTagsDatabase.sort(null);
         Database.getTagDatabase().addAll(loaderTagsDatabase);
-        Platform.runLater(Frontend::refreshContent);
+        Platform.runLater(Backend::refreshContent);
         //Platform.runLater(() -> Frontend.getTopPane().getInfoLabel().setText("Fullscreen"));
         Platform.runLater(() -> Frontend.getTopPane().getInfoLabel().setText("Loading done in " + Long.toString(System.currentTimeMillis() - loadingStartTimeMillis) + " ms"));
     }

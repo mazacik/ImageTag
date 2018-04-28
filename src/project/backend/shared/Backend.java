@@ -8,7 +8,9 @@ import project.backend.components.*;
 import project.frontend.shared.Frontend;
 
 import java.io.File;
+import java.util.Comparator;
 import java.util.Optional;
+import java.util.Random;
 
 public class Backend {
     private static final TopPaneBack topPane = new TopPaneBack();
@@ -33,8 +35,68 @@ public class Backend {
             }
             Backend.setDirectoryPath(selectedDirectory.getAbsolutePath());
         }
+
+        initializeKeybindings();
         Database.initilize();
         new DatabaseLoader().start();
+    }
+
+    private static void initializeKeybindings() {
+        Frontend.getMainScene().setOnKeyPressed(event -> {
+            switch (event.getCode()) {
+                case S:
+                    DatabaseItem nextItem = Database.getFilteredItems().get(Database.getFilteredItems().indexOf(Database.getSelectedItem()) + 1);
+                    if (nextItem != null) {
+                        Database.setSelectedItem(nextItem);
+                        Database.selectionChanged();
+                        Frontend.getNamePane().getListView().getSelectionModel().select(nextItem.getColoredText());
+                    }
+                    break;
+                case W:
+                    DatabaseItem previousItem = Database.getFilteredItems().get(Database.getFilteredItems().indexOf(Database.getSelectedItem()) - 1);
+                    if (previousItem != null) {
+                        Database.setSelectedItem(previousItem);
+                        Database.selectionChanged();
+                        Frontend.getNamePane().getListView().getSelectionModel().select(previousItem.getColoredText());
+                    }
+                    break;
+                case Q:
+                    if (Database.getSelectedItems().contains(Database.getSelectedItem()))
+                        Database.removeIndexFromSelection(Database.getSelectedItem());
+                    else
+                        Database.addToSelection(Database.getSelectedItem());
+                    break;
+                case R:
+                    Database.clearSelection();
+                    Database.addToSelection(Database.getFilteredItems().get(new Random().nextInt(Database.getFilteredItems().size())));
+                    break;
+                case F12:
+                    Backend.swapImageDisplayMode();
+                    break;
+                default:
+                    break;
+            }
+        });
+    }
+
+    public static void renameFile(DatabaseItem databaseItem) {
+        if (databaseItem == null) return;
+        TextInputDialog renamePrompt = new TextInputDialog();
+        renamePrompt.setTitle("Rename file");
+        renamePrompt.setHeaderText(null);
+        renamePrompt.setGraphic(null);
+        renamePrompt.setContentText("New name:");
+        Optional<String> result = renamePrompt.showAndWait();
+        String oldName = databaseItem.getSimpleName();
+        String newName = databaseItem.getSimpleName(); // nullpointer prevention
+        if (result.isPresent())
+            newName = result.get() + "." + databaseItem.getExtension();
+        databaseItem.setSimpleName(newName);
+        databaseItem.setFullPath(DIRECTORY_PATH + "/" + newName);
+        databaseItem.getColoredText().setText(newName);
+        new File(DIRECTORY_PATH + "/" + oldName).renameTo(new File(DIRECTORY_PATH + "/" + newName));
+        new File(DIRECTORY_PATH + "/imagecache/" + oldName).renameTo(new File(DIRECTORY_PATH + "/imagecache/" + newName));
+        Backend.refreshContent();
     }
 
     public static void addTag() {
@@ -94,24 +156,13 @@ public class Backend {
         }
     }
 
-    public static void renameFile(DatabaseItem databaseItem) {
-        if (databaseItem == null) return;
-        TextInputDialog renamePrompt = new TextInputDialog();
-        renamePrompt.setTitle("Rename file");
-        renamePrompt.setHeaderText(null);
-        renamePrompt.setGraphic(null);
-        renamePrompt.setContentText("New name:");
-        Optional<String> result = renamePrompt.showAndWait();
-        String oldName = databaseItem.getSimpleName();
-        String newName = databaseItem.getSimpleName(); // nullpointer prevention
-        if (result.isPresent())
-            newName = result.get() + "." + databaseItem.getExtension();
-        databaseItem.setSimpleName(newName);
-        databaseItem.setFullPath(DIRECTORY_PATH + "/" + newName);
-        databaseItem.getColoredText().setText(newName);
-        new File(DIRECTORY_PATH + "/" + oldName).renameTo(new File(DIRECTORY_PATH + "/" + newName));
-        new File(DIRECTORY_PATH + "/imagecache/" + oldName).renameTo(new File(DIRECTORY_PATH + "/imagecache/" + newName));
-        Frontend.refreshContent();
+    public static void refreshContent() {
+        Database.getFilteredItems().sort(Comparator.comparing(DatabaseItem::getSimpleName));
+        Database.getSelectedItems().sort(Comparator.comparing(DatabaseItem::getSimpleName));
+        Database.getItemDatabase().sort(Comparator.comparing(DatabaseItem::getSimpleName));
+        Backend.getNamePane().refreshContent();
+        Backend.getTagPane().refreshContent();
+        Backend.getGalleryPane().refreshContent();
     }
 
     public static void swapImageDisplayMode() {

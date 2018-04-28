@@ -3,9 +3,7 @@ package project.frontend.shared;
 import javafx.scene.paint.Color;
 import project.backend.shared.DatabaseItem;
 
-import java.io.Serializable;
-
-public class ColoredText implements Serializable {
+public class ColoredText {
 
     private DatabaseItem owner;
     private String text;

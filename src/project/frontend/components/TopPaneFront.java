@@ -13,7 +13,6 @@ public class TopPaneFront extends BorderPane {
     private final Menu infoLabel = new Menu();
 
     public TopPaneFront() {
-        MenuBar menuBar = new MenuBar();
         Menu menuFile = new Menu("File");
         MenuItem menuSave = new MenuItem("Save");
         menuSave.setOnAction(event -> Database.writeToDisk());
@@ -25,10 +24,29 @@ public class TopPaneFront extends BorderPane {
         MenuItem menuUnselectAll = new MenuItem("Unselect All");
         menuUnselectAll.setOnAction(event -> Database.clearSelection());
         MenuItem menuRefresh = new MenuItem("Refresh");
-        menuRefresh.setOnAction(event -> Frontend.refreshContent());
+        menuRefresh.setOnAction(event -> Backend.refreshContent());
         menuActions.getItems().addAll(menuRefresh, menuUnselectAll);
 
-        menuBar.getMenus().addAll(menuFile, menuActions);
+        Menu menuFilter = new Menu("Filter");
+        MenuItem menuReset = new MenuItem("Reset");
+        menuReset.setOnAction(event -> {
+            Database.getTagsWhitelist().clear();
+            Database.getTagsBlacklist().clear();
+            Database.filterByTags();
+            Backend.refreshContent();
+        });
+        MenuItem menuUntaggedOnly = new MenuItem("Untagged only");
+        menuUntaggedOnly.setOnAction(event -> {
+            Database.getTagsWhitelist().clear();
+            Database.getTagsBlacklist().clear();
+            Database.getTagsBlacklist().addAll(Database.getTagDatabase());
+            Database.filterByTags();
+            Backend.refreshContent();
+        });
+        menuFilter.getItems().addAll(menuReset, menuUntaggedOnly);
+
+        MenuBar menuBar = new MenuBar();
+        menuBar.getMenus().addAll(menuFile, menuActions, menuFilter);
         setCenter(menuBar);
 
         MenuBar infoLabelArea = new MenuBar();

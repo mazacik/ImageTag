@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class DatabaseItem implements Serializable {
+    private static long serialVersionUID = 1L;
     private String fullPath;
     private String simpleName;
     private String extension;
@@ -14,7 +15,7 @@ public class DatabaseItem implements Serializable {
     private transient ImageView imageView;
     private transient ColoredText coloredText;
 
-    String getExtension() {
+    public String getExtension() {
         return this.extension;
     }
 
@@ -56,7 +57,8 @@ public class DatabaseItem implements Serializable {
 
     void setImageView(ImageView imageView) {
         this.imageView = (imageView != null) ? imageView : new ImageView();
-        this.imageView.setOnMouseClicked(event -> Backend.getGalleryPane().imageViewClicked(this, event));
+        this.imageView.setOnMouseClicked(
+                event -> Backend.getGalleryPane().imageViewClicked(this, event));
     }
 
     void setColoredText(ColoredText coloredText) {
