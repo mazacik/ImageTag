@@ -6,6 +6,7 @@ public class TagPaneFront extends LeftPaneFront {
     public TagPaneFront() {
         swapLeftPaneButton.setText("Mode: Tags");
         swapLeftPaneButton.setStyle("-fx-focus-color: transparent;");
-        swapLeftPaneButton.setOnMouseClicked(event -> Frontend.getMainBorderPane().setLeft(Frontend.getNamePane()));
+        swapLeftPaneButton.setOnMouseClicked(
+                event -> Frontend.getMainBorderPane().setLeft(Frontend.getNamePane()));
     }
 }

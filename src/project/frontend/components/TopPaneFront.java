@@ -17,7 +17,11 @@ public class TopPaneFront extends BorderPane {
         MenuItem menuSave = new MenuItem("Save");
         menuSave.setOnAction(event -> Database.writeToDisk());
         MenuItem menuExit = new MenuItem("Exit");
-        menuExit.setOnAction(event -> Frontend.getMainStage().fireEvent(new WindowEvent(Frontend.getMainStage(), WindowEvent.WINDOW_CLOSE_REQUEST)));
+        menuExit.setOnAction(
+                event ->
+                        Frontend.getMainStage()
+                                .fireEvent(
+                                        new WindowEvent(Frontend.getMainStage(), WindowEvent.WINDOW_CLOSE_REQUEST)));
         menuFile.getItems().addAll(menuSave, menuExit);
 
         Menu menuActions = new Menu("Actions");
@@ -29,19 +33,21 @@ public class TopPaneFront extends BorderPane {
 
         Menu menuFilter = new Menu("Filter");
         MenuItem menuReset = new MenuItem("Reset");
-        menuReset.setOnAction(event -> {
-            Database.getTagsWhitelist().clear();
-            Database.getTagsBlacklist().clear();
-            Database.filterByTags();
-            Backend.refreshContent();
+        menuReset.setOnAction(
+                event -> {
+                    Database.getTagsWhitelist().clear();
+                    Database.getTagsBlacklist().clear();
+                    Database.filterByTags();
+                    Backend.refreshContent();
         });
         MenuItem menuUntaggedOnly = new MenuItem("Untagged only");
-        menuUntaggedOnly.setOnAction(event -> {
-            Database.getTagsWhitelist().clear();
-            Database.getTagsBlacklist().clear();
-            Database.getTagsBlacklist().addAll(Database.getTagDatabase());
-            Database.filterByTags();
-            Backend.refreshContent();
+        menuUntaggedOnly.setOnAction(
+                event -> {
+                    Database.getTagsWhitelist().clear();
+                    Database.getTagsBlacklist().clear();
+                    Database.getTagsBlacklist().addAll(Database.getTagDatabase());
+                    Database.filterByTags();
+                    Backend.refreshContent();
         });
         menuFilter.getItems().addAll(menuReset, menuUntaggedOnly);
 

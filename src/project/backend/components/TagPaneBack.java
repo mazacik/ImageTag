@@ -22,31 +22,45 @@ public class TagPaneBack {
     public TagPaneBack() {
         listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         buildContextMenu();
-        listView.setOnMouseClicked(event -> {
-            if (event.getButton().equals(MouseButton.PRIMARY)) {
-                if (listView.getSelectionModel().getSelectedItem() != null) {
-                    String tag = listView.getSelectionModel().getSelectedItem().getText();
-                    if (whitelist.contains(tag)) {
-                        whitelist.remove(tag);
-                        blacklist.add(tag);
-                        listView.getItems().set(listView.getSelectionModel().getSelectedIndex(), new ColoredText(tag, Color.RED));
-                    } else if (blacklist.contains(tag)) {
-                        blacklist.remove(tag);
-                        listView.getItems().set(listView.getSelectionModel().getSelectedIndex(), new ColoredText(tag, Color.BLACK));
-                    } else {
-                        whitelist.add(tag);
-                        listView.getItems().set(listView.getSelectionModel().getSelectedIndex(), new ColoredText(tag, Color.GREEN));
+        listView.setOnMouseClicked(
+                event -> {
+                    if (event.getButton().equals(MouseButton.PRIMARY)) {
+                        if (listView.getSelectionModel().getSelectedItem() != null) {
+                            String tag = listView.getSelectionModel().getSelectedItem().getText();
+                            if (whitelist.contains(tag)) {
+                                whitelist.remove(tag);
+                                blacklist.add(tag);
+                                listView
+                                        .getItems()
+                                        .set(
+                                                listView.getSelectionModel().getSelectedIndex(),
+                                                new ColoredText(tag, Color.RED));
+                            } else if (blacklist.contains(tag)) {
+                                blacklist.remove(tag);
+                                listView
+                                        .getItems()
+                                        .set(
+                                                listView.getSelectionModel().getSelectedIndex(),
+                                                new ColoredText(tag, Color.BLACK));
+                            } else {
+                                whitelist.add(tag);
+                                listView
+                                        .getItems()
+                                        .set(
+                                                listView.getSelectionModel().getSelectedIndex(),
+                                                new ColoredText(tag, Color.GREEN));
+                            }
+                            Database.filterByTags();
+                            Backend.getGalleryPane().refreshContent();
+                        }
                     }
-                    Database.filterByTags();
-                    Backend.getGalleryPane().refreshContent();
-                }
-            }
         });
     }
 
     private void buildContextMenu() {
         MenuItem menuRename = new MenuItem("Rename");
-        menuRename.setOnAction(event -> Backend.renameTag(listView.getSelectionModel().getSelectedItem().getText()));
+        menuRename.setOnAction(
+                event -> Backend.renameTag(listView.getSelectionModel().getSelectedItem().getText()));
         listContextMenu.getItems().addAll(menuRename);
     }
 
@@ -57,7 +71,6 @@ public class TagPaneBack {
                 listView.getItems().add(new ColoredText(tag, Color.GREEN));
             else if (Database.getTagsBlacklist().contains(tag))
                 listView.getItems().add(new ColoredText(tag, Color.RED));
-            else
-                listView.getItems().add(new ColoredText(tag, Color.BLACK));
+            else listView.getItems().add(new ColoredText(tag, Color.BLACK));
     }
 }

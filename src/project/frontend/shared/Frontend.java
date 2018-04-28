@@ -13,7 +13,6 @@ import project.frontend.components.*;
 
 import java.util.Optional;
 
-
 public class Frontend {
     private static final BorderPane mainBorderPane = new BorderPane();
     private static final Scene mainScene = new Scene(mainBorderPane);

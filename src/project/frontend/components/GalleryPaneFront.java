@@ -22,7 +22,8 @@ public class GalleryPaneFront extends ScrollPane {
         highlightEffect.setChoke(1);
 
         setContextMenu(new RightClickContextMenu());
-        setOnContextMenuRequested(event -> getContextMenu().show(this, event.getScreenX(), event.getScreenY()));
+        setOnContextMenuRequested(
+                event -> getContextMenu().show(this, event.getScreenX(), event.getScreenY()));
 
         setHbarPolicy(ScrollBarPolicy.NEVER);
         setVbarPolicy(ScrollBarPolicy.AS_NEEDED);

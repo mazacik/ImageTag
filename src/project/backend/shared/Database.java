@@ -37,27 +37,6 @@ public class Database {
         selectionChanged();
     }
 
-    public static void filterByTags() {
-        filteredItems.clear();
-        if (tagsWhitelist.isEmpty() && tagsBlacklist.isEmpty()) filteredItems.addAll(itemDatabase);
-        else
-            for (DatabaseItem item : itemDatabase)
-                if (item.getTags().containsAll(tagsWhitelist)) {
-                    filteredItems.add(item);
-                    for (String tag : tagsBlacklist)
-                        if (item.getTags().contains(tag)) {
-                            filteredItems.remove(item);
-                            break;
-                        }
-                }
-    }
-
-    public static void removeIndexFromSelection(DatabaseItem databaseItem) {
-        selectedItems.remove(databaseItem);
-        databaseItem.getImageView().setEffect(null);
-        selectionChanged();
-    }
-
     static void selectionChanged() {
         Frontend.getNamePane().getListView().getSelectionModel().clearSelection();
         for (DatabaseItem item : selectedItems)
@@ -82,6 +61,31 @@ public class Database {
                 break;
             }
         return sharedTags;
+    }
+
+    public static void filterByTags() {
+        filteredItems.clear();
+        if (tagsWhitelist.isEmpty() && tagsBlacklist.isEmpty()) filteredItems.addAll(itemDatabase);
+        else
+            for (DatabaseItem item : itemDatabase)
+                if (item.getTags().containsAll(tagsWhitelist)) {
+                    filteredItems.add(item);
+                    for (String tag : tagsBlacklist)
+                        if (item.getTags().contains(tag)) {
+                            filteredItems.remove(item);
+                            break;
+                        }
+                }
+    }
+
+    public static void removeIndexFromSelection(DatabaseItem databaseItem) {
+        selectedItems.remove(databaseItem);
+        databaseItem.getImageView().setEffect(null);
+        selectionChanged();
+    }
+
+    public static ArrayList<DatabaseItem> getItemDatabase() {
+        return itemDatabase;
     }
 
     public static void clearSelection() {
@@ -109,6 +113,10 @@ public class Database {
         }
     }
 
+    public static void setSelectedItem(DatabaseItem databaseItem) {
+        selectedItem = databaseItem;
+    }
+
     @SuppressWarnings("unchecked")
     static ArrayList<DatabaseItem> readFromDisk() {
         try {
@@ -123,10 +131,6 @@ public class Database {
                     "java.io.InvalidClassException: Serialization class incompatible. Rebuilding cache.");
             return null;
         }
-    }
-
-    public static ArrayList<DatabaseItem> getItemDatabase() {
-        return itemDatabase;
     }
 
     public static ArrayList<String> getTagDatabase() {
@@ -159,9 +163,5 @@ public class Database {
 
     public static ArrayList<String> getTagsWhitelist() {
         return tagsWhitelist;
-    }
-
-    public static void setSelectedItem(DatabaseItem databaseItem) {
-        selectedItem = databaseItem;
     }
 }

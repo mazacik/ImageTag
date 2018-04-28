@@ -19,24 +19,26 @@ public class NamePaneBack {
         listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         buildContextMenu();
         listView.setContextMenu(listContextMenu);
-        listView.setOnContextMenuRequested(event -> listContextMenu.show(listView, event.getScreenX(), event.getScreenY()));
-        listView.setOnMouseClicked(event -> {
-            if (event.getButton().equals(MouseButton.PRIMARY)) {
-                if (listView.getSelectionModel().getSelectedItem() != null) {
-                    DatabaseItem selectedItem = listView.getSelectionModel().getSelectedItem().getOwner();
-                    Database.setSelectedItem(selectedItem);
-                    if (Database.getSelectedItems().contains(selectedItem))
-                        Database.removeIndexFromSelection(selectedItem);
-                    else
-                        Database.addToSelection(selectedItem);
-                }
-            }
+        listView.setOnContextMenuRequested(
+                event -> listContextMenu.show(listView, event.getScreenX(), event.getScreenY()));
+        listView.setOnMouseClicked(
+                event -> {
+                    if (event.getButton().equals(MouseButton.PRIMARY)) {
+                        if (listView.getSelectionModel().getSelectedItem() != null) {
+                            DatabaseItem selectedItem = listView.getSelectionModel().getSelectedItem().getOwner();
+                            Database.setSelectedItem(selectedItem);
+                            if (Database.getSelectedItems().contains(selectedItem))
+                                Database.removeIndexFromSelection(selectedItem);
+                            else Database.addToSelection(selectedItem);
+                        }
+                    }
         });
     }
 
     private void buildContextMenu() {
         MenuItem menuRename = new MenuItem("Rename");
-        menuRename.setOnAction(event -> Backend.renameFile(listView.getSelectionModel().getSelectedItem().getOwner()));
+        menuRename.setOnAction(
+                event -> Backend.renameFile(listView.getSelectionModel().getSelectedItem().getOwner()));
         listContextMenu.getItems().addAll(menuRename);
     }
 

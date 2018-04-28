@@ -1,6 +1,5 @@
 package project.backend.shared;
 
-
 import javafx.application.Platform;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.DirectoryChooser;
@@ -42,41 +41,70 @@ public class Backend {
     }
 
     private static void initializeKeybindings() {
-        Frontend.getMainScene().setOnKeyPressed(event -> {
-            switch (event.getCode()) {
+        Frontend.getMainScene()
+                .setOnKeyPressed(
+                        event -> {
+                            switch (event.getCode()) {
                 case S:
-                    DatabaseItem nextItem = Database.getFilteredItems().get(Database.getFilteredItems().indexOf(Database.getSelectedItem()) + 1);
+                    DatabaseItem nextItem =
+                            Database.getFilteredItems()
+                                    .get(Database.getFilteredItems().indexOf(Database.getSelectedItem()) + 1);
                     if (nextItem != null) {
                         Database.setSelectedItem(nextItem);
                         Database.selectionChanged();
-                        Frontend.getNamePane().getListView().getSelectionModel().select(nextItem.getColoredText());
+                        Frontend.getNamePane()
+                                .getListView()
+                                .getSelectionModel()
+                                .select(nextItem.getColoredText());
                     }
                     break;
                 case W:
-                    DatabaseItem previousItem = Database.getFilteredItems().get(Database.getFilteredItems().indexOf(Database.getSelectedItem()) - 1);
+                    DatabaseItem previousItem =
+                            Database.getFilteredItems()
+                                    .get(Database.getFilteredItems().indexOf(Database.getSelectedItem()) - 1);
                     if (previousItem != null) {
                         Database.setSelectedItem(previousItem);
                         Database.selectionChanged();
-                        Frontend.getNamePane().getListView().getSelectionModel().select(previousItem.getColoredText());
+                        Frontend.getNamePane()
+                                .getListView()
+                                .getSelectionModel()
+                                .select(previousItem.getColoredText());
                     }
                     break;
                 case Q:
                     if (Database.getSelectedItems().contains(Database.getSelectedItem()))
                         Database.removeIndexFromSelection(Database.getSelectedItem());
-                    else
-                        Database.addToSelection(Database.getSelectedItem());
+                    else Database.addToSelection(Database.getSelectedItem());
                     break;
                 case R:
                     Database.clearSelection();
-                    Database.addToSelection(Database.getFilteredItems().get(new Random().nextInt(Database.getFilteredItems().size())));
+                    Database.addToSelection(
+                            Database.getFilteredItems()
+                                    .get(new Random().nextInt(Database.getFilteredItems().size())));
                     break;
                 case F12:
                     Backend.swapImageDisplayMode();
                     break;
                 default:
                     break;
-            }
-        });
+                            }
+                        });
+    }
+
+    public static void swapImageDisplayMode() {
+        if (Frontend.getMainBorderPane().getCenter().equals(Frontend.getGalleryPane())) {
+            Frontend.getMainBorderPane().setCenter(Frontend.getPreviewPane());
+            Frontend.getPreviewPane()
+                    .setCanvasSize(
+                            Frontend.getGalleryPane().getWidth(), Frontend.getGalleryPane().getHeight());
+            Backend.getPreviewPane().drawPreview();
+        } else {
+            Frontend.getMainBorderPane().setCenter(Frontend.getGalleryPane());
+        }
+    }
+
+    public static PreviewPaneBack getPreviewPane() {
+        return previewPane;
     }
 
     public static void renameFile(DatabaseItem databaseItem) {
@@ -89,14 +117,35 @@ public class Backend {
         Optional<String> result = renamePrompt.showAndWait();
         String oldName = databaseItem.getSimpleName();
         String newName = databaseItem.getSimpleName(); // nullpointer prevention
-        if (result.isPresent())
-            newName = result.get() + "." + databaseItem.getExtension();
+        if (result.isPresent()) newName = result.get() + "." + databaseItem.getExtension();
         databaseItem.setSimpleName(newName);
         databaseItem.setFullPath(DIRECTORY_PATH + "/" + newName);
         databaseItem.getColoredText().setText(newName);
         new File(DIRECTORY_PATH + "/" + oldName).renameTo(new File(DIRECTORY_PATH + "/" + newName));
-        new File(DIRECTORY_PATH + "/imagecache/" + oldName).renameTo(new File(DIRECTORY_PATH + "/imagecache/" + newName));
+        new File(DIRECTORY_PATH + "/imagecache/" + oldName)
+                .renameTo(new File(DIRECTORY_PATH + "/imagecache/" + newName));
         Backend.refreshContent();
+    }
+
+    public static void refreshContent() {
+        Database.getFilteredItems().sort(Comparator.comparing(DatabaseItem::getSimpleName));
+        Database.getSelectedItems().sort(Comparator.comparing(DatabaseItem::getSimpleName));
+        Database.getItemDatabase().sort(Comparator.comparing(DatabaseItem::getSimpleName));
+        Backend.getNamePane().refreshContent();
+        Backend.getTagPane().refreshContent();
+        Backend.getGalleryPane().refreshContent();
+    }
+
+    public static NamePaneBack getNamePane() {
+        return namePane;
+    }
+
+    public static TagPaneBack getTagPane() {
+        return tagPane;
+    }
+
+    public static GalleryPaneBack getGalleryPane() {
+        return galleryPane;
     }
 
     public static void addTag() {
@@ -108,9 +157,32 @@ public class Backend {
                 Backend.getTagPane().refreshContent();
             }
             for (DatabaseItem databaseItem : Database.getSelectedItems())
-                if (!databaseItem.getTags().contains(newTag))
-                    databaseItem.getTags().add(newTag);
+                if (!databaseItem.getTags().contains(newTag)) databaseItem.getTags().add(newTag);
             Backend.getRightPane().refreshContent();
+        }
+    }
+
+    public static RightPaneBack getRightPane() {
+        return rightPane;
+    }
+
+    public static void renameTag(String oldTagName) {
+        TextInputDialog renamePrompt = new TextInputDialog();
+        renamePrompt.setTitle("Rename tag");
+        renamePrompt.setHeaderText(null);
+        renamePrompt.setGraphic(null);
+        renamePrompt.setContentText("New name:");
+        String newTagName = oldTagName;
+        Optional<String> result = renamePrompt.showAndWait();
+        if (result.isPresent()) newTagName = result.get();
+        if (!newTagName.isEmpty()) {
+            if (Database.getTagDatabase().contains(oldTagName)) {
+                Database.getTagDatabase().set(Database.getTagDatabase().indexOf(oldTagName), newTagName);
+                Backend.getTagPane().refreshContent();
+            }
+            for (DatabaseItem databaseItem : Database.getItemDatabase())
+                if (!databaseItem.getTags().contains(oldTagName))
+                    databaseItem.getTags().set(databaseItem.getTags().indexOf(oldTagName), newTagName);
         }
     }
 
@@ -135,71 +207,11 @@ public class Backend {
         }
     }
 
-    public static void renameTag(String oldTagName) {
-        TextInputDialog renamePrompt = new TextInputDialog();
-        renamePrompt.setTitle("Rename tag");
-        renamePrompt.setHeaderText(null);
-        renamePrompt.setGraphic(null);
-        renamePrompt.setContentText("New name:");
-        String newTagName = oldTagName;
-        Optional<String> result = renamePrompt.showAndWait();
-        if (result.isPresent())
-            newTagName = result.get();
-        if (!newTagName.isEmpty()) {
-            if (Database.getTagDatabase().contains(oldTagName)) {
-                Database.getTagDatabase().set(Database.getTagDatabase().indexOf(oldTagName), newTagName);
-                Backend.getTagPane().refreshContent();
-            }
-            for (DatabaseItem databaseItem : Database.getItemDatabase())
-                if (!databaseItem.getTags().contains(oldTagName))
-                    databaseItem.getTags().set(databaseItem.getTags().indexOf(oldTagName), newTagName);
-        }
-    }
-
-    public static void refreshContent() {
-        Database.getFilteredItems().sort(Comparator.comparing(DatabaseItem::getSimpleName));
-        Database.getSelectedItems().sort(Comparator.comparing(DatabaseItem::getSimpleName));
-        Database.getItemDatabase().sort(Comparator.comparing(DatabaseItem::getSimpleName));
-        Backend.getNamePane().refreshContent();
-        Backend.getTagPane().refreshContent();
-        Backend.getGalleryPane().refreshContent();
-    }
-
-    public static void swapImageDisplayMode() {
-        if (Frontend.getMainBorderPane().getCenter().equals(Frontend.getGalleryPane())) {
-            Frontend.getMainBorderPane().setCenter(Frontend.getPreviewPane());
-            Frontend.getPreviewPane().setCanvasSize(Frontend.getGalleryPane().getWidth(), Frontend.getGalleryPane().getHeight());
-            Backend.getPreviewPane().drawPreview();
-        } else {
-            Frontend.getMainBorderPane().setCenter(Frontend.getGalleryPane());
-        }
-    }
-
-    public static NamePaneBack getNamePane() {
-        return namePane;
-    }
-
-    public static TagPaneBack getTagPane() {
-        return tagPane;
+    private static void setDirectoryPath(String directoryPath) {
+        DIRECTORY_PATH = directoryPath;
     }
 
     public static TopPaneBack getTopPane() {
         return topPane;
-    }
-
-    public static RightPaneBack getRightPane() {
-        return rightPane;
-    }
-
-    public static GalleryPaneBack getGalleryPane() {
-        return galleryPane;
-    }
-
-    public static PreviewPaneBack getPreviewPane() {
-        return previewPane;
-    }
-
-    private static void setDirectoryPath(String directoryPath) {
-        DIRECTORY_PATH = directoryPath;
     }
 }

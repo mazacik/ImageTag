@@ -13,8 +13,7 @@ public class GalleryPaneBack {
             Database.setSelectedItem(databaseItem);
             if (!Database.getSelectedItems().contains(databaseItem))
                 Database.addToSelection(databaseItem);
-            else
-                Database.removeIndexFromSelection(databaseItem);
+            else Database.removeIndexFromSelection(databaseItem);
         }
     }
 

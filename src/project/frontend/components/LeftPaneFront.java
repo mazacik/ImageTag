@@ -21,9 +21,11 @@ public abstract class LeftPaneFront extends BorderPane {
     }
 
     private void setCellFactory() {
-        listView.setCellFactory(lv -> new ListCell<>() {
-            @Override
-            protected void updateItem(ColoredText coloredText, boolean empty) {
+        listView.setCellFactory(
+                lv ->
+                        new ListCell<>() {
+                            @Override
+                            protected void updateItem(ColoredText coloredText, boolean empty) {
                 super.updateItem(coloredText, empty);
                 if (coloredText == null) {
                     setText(null);
@@ -32,8 +34,8 @@ public abstract class LeftPaneFront extends BorderPane {
                     setText(coloredText.getText());
                     setTextFill(coloredText.getColor());
                 }
-            }
-        });
+                            }
+                        });
     }
 
     public ListView<ColoredText> getListView() {

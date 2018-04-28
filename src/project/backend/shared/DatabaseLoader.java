@@ -31,10 +31,12 @@ public class DatabaseLoader extends Thread {
             loaderItemDatabase.addAll(databaseCache);
             for (DatabaseItem databaseItem : loaderItemDatabase) {
                 databaseItem.setImageView(new ImageView(getItemImage(databaseItem)));
-                databaseItem.setColoredText(new ColoredText(databaseItem.getSimpleName(), Color.BLACK, databaseItem));
+                databaseItem.setColoredText(
+                        new ColoredText(databaseItem.getSimpleName(), Color.BLACK, databaseItem));
             }
             if (databaseCache.size() < Database.getFileCount()) {
-                System.out.println("databaseCacheSize doesn't match validFileCount, building missing databaseItems...");
+                System.out.println(
+                        "databaseCacheSize doesn't match validFileCount, building missing databaseItems...");
                 ArrayList<String> databaseCacheItemNames = new ArrayList<>();
                 for (DatabaseItem databaseItem : databaseCache)
                     databaseCacheItemNames.add(databaseItem.getSimpleName());
@@ -50,13 +52,19 @@ public class DatabaseLoader extends Thread {
         Database.getFilteredItems().addAll(loaderItemDatabase);
         for (DatabaseItem databaseItem : loaderItemDatabase)
             for (String tag : databaseItem.getTags())
-                if (!loaderTagsDatabase.contains(tag))
-                    loaderTagsDatabase.add(tag);
+                if (!loaderTagsDatabase.contains(tag)) loaderTagsDatabase.add(tag);
         loaderTagsDatabase.sort(null);
         Database.getTagDatabase().addAll(loaderTagsDatabase);
         Platform.runLater(Backend::refreshContent);
-        //Platform.runLater(() -> Frontend.getTopPane().getInfoLabel().setText("Fullscreen"));
-        Platform.runLater(() -> Frontend.getTopPane().getInfoLabel().setText("Loading done in " + Long.toString(System.currentTimeMillis() - loadingStartTimeMillis) + " ms"));
+        // Platform.runLater(() -> Frontend.getTopPane().getInfoLabel().setText("Fullscreen"));
+        Platform.runLater(
+                () ->
+                        Frontend.getTopPane()
+                                .getInfoLabel()
+                                .setText(
+                                        "Loading done in "
+                                                + Long.toString(System.currentTimeMillis() - loadingStartTimeMillis)
+                                                + " ms"));
     }
 
     private DatabaseItem buildNewDatabaseItem(File file) {
@@ -65,7 +73,8 @@ public class DatabaseLoader extends Thread {
         newDatabaseItem.setSimpleName(file.getName());
         newDatabaseItem.setExtension(FilenameUtils.getExtension(file.getName()));
         newDatabaseItem.setImageView(new ImageView(getItemImage(newDatabaseItem)));
-        newDatabaseItem.setColoredText(new ColoredText(newDatabaseItem.getSimpleName(), Color.BLACK, newDatabaseItem));
+        newDatabaseItem.setColoredText(
+                new ColoredText(newDatabaseItem.getSimpleName(), Color.BLACK, newDatabaseItem));
         newDatabaseItem.setTags(new ArrayList<>());
         return newDatabaseItem;
     }
@@ -74,19 +83,40 @@ public class DatabaseLoader extends Thread {
         for (File file : Database.getValidFiles()) {
             DatabaseItem newDatabaseItem = buildNewDatabaseItem(file);
             loaderItemDatabase.add(newDatabaseItem);
-            Platform.runLater(() -> Frontend.getTopPane().getInfoLabel().setText("Loading item " + (loaderItemDatabase.size() + 1) + " of " + Database.getFileCount() + ", " + (loaderItemDatabase.size() + 1) * 100 / Database.getFileCount() + "% done"));
+            Platform.runLater(
+                    () ->
+                            Frontend.getTopPane()
+                                    .getInfoLabel()
+                                    .setText(
+                                            "Loading item "
+                                                    + (loaderItemDatabase.size() + 1)
+                                                    + " of "
+                                                    + Database.getFileCount()
+                                                    + ", "
+                                                    + (loaderItemDatabase.size() + 1) * 100 / Database.getFileCount()
+                                                    + "% done"));
         }
         Database.writeToDisk(loaderItemDatabase);
     }
 
     private Image getItemImage(DatabaseItem databaseItem) {
-        String currentItemCachePath = Backend.DIRECTORY_PATH + "/imagecache/" + databaseItem.getSimpleName();
+        String currentItemCachePath =
+                Backend.DIRECTORY_PATH + "/imagecache/" + databaseItem.getSimpleName();
         File currentItemCacheFile = new File(currentItemCachePath);
         if (!currentItemCacheFile.exists()) {
             try {
                 currentItemCacheFile.createNewFile();
-                Image tempImage = new Image("file:" + databaseItem.getFullPath(), Backend.GALLERY_ICON_SIZE, Backend.GALLERY_ICON_SIZE, false, true);
-                ImageIO.write(SwingFXUtils.fromFXImage(tempImage, null), databaseItem.getExtension(), currentItemCacheFile);
+                Image tempImage =
+                        new Image(
+                                "file:" + databaseItem.getFullPath(),
+                                Backend.GALLERY_ICON_SIZE,
+                                Backend.GALLERY_ICON_SIZE,
+                                false,
+                                true);
+                ImageIO.write(
+                        SwingFXUtils.fromFXImage(tempImage, null),
+                        databaseItem.getExtension(),
+                        currentItemCacheFile);
             } catch (IOException e) {
                 e.printStackTrace();
             }
