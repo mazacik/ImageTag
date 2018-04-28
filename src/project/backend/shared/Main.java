@@ -6,13 +6,13 @@ import project.frontend.shared.Frontend;
 
 public class Main extends Application {
 
-    @Override
-    public void start(Stage primaryStage) {
-        Frontend.initialize(primaryStage);
-        Backend.initialize();
-    }
+  @Override
+  public void start(Stage primaryStage) {
+    Frontend.initialize(primaryStage);
+    Backend.initialize();
+  }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+  public static void main(String[] args) {
+    launch(args);
+  }
 }

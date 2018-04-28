@@ -14,63 +14,63 @@ import project.frontend.shared.Frontend;
 import java.util.List;
 
 public class TagPaneBack {
-    private final List<String> whitelist = Database.getTagsWhitelist();
-    private final List<String> blacklist = Database.getTagsBlacklist();
-    private final ContextMenu listContextMenu = new ContextMenu();
-    private ListView<ColoredText> listView = Frontend.getTagPane().getListView();
+  private final List<String> whitelist = Database.getTagsWhitelist();
+  private final List<String> blacklist = Database.getTagsBlacklist();
+  private final ContextMenu listContextMenu = new ContextMenu();
+  private ListView<ColoredText> listView = Frontend.getTagPane().getListView();
 
-    public TagPaneBack() {
-        listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        buildContextMenu();
-        listView.setOnMouseClicked(
-                event -> {
-                    if (event.getButton().equals(MouseButton.PRIMARY)) {
-                        if (listView.getSelectionModel().getSelectedItem() != null) {
-                            String tag = listView.getSelectionModel().getSelectedItem().getText();
-                            if (whitelist.contains(tag)) {
-                                whitelist.remove(tag);
-                                blacklist.add(tag);
-                                listView
-                                        .getItems()
-                                        .set(
-                                                listView.getSelectionModel().getSelectedIndex(),
-                                                new ColoredText(tag, Color.RED));
-                            } else if (blacklist.contains(tag)) {
-                                blacklist.remove(tag);
-                                listView
-                                        .getItems()
-                                        .set(
-                                                listView.getSelectionModel().getSelectedIndex(),
-                                                new ColoredText(tag, Color.BLACK));
-                            } else {
-                                whitelist.add(tag);
-                                listView
-                                        .getItems()
-                                        .set(
-                                                listView.getSelectionModel().getSelectedIndex(),
-                                                new ColoredText(tag, Color.GREEN));
-                            }
-                            Database.filterByTags();
-                            Backend.getGalleryPane().refreshContent();
-                        }
-                    }
+  public TagPaneBack() {
+    listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    buildContextMenu();
+    listView.setOnMouseClicked(
+        event -> {
+          if (event.getButton().equals(MouseButton.PRIMARY)) {
+            if (listView.getSelectionModel().getSelectedItem() != null) {
+              String tag = listView.getSelectionModel().getSelectedItem().getText();
+              if (whitelist.contains(tag)) {
+                whitelist.remove(tag);
+                blacklist.add(tag);
+                listView
+                    .getItems()
+                    .set(
+                        listView.getSelectionModel().getSelectedIndex(),
+                        new ColoredText(tag, Color.RED));
+              } else if (blacklist.contains(tag)) {
+                blacklist.remove(tag);
+                listView
+                    .getItems()
+                    .set(
+                        listView.getSelectionModel().getSelectedIndex(),
+                        new ColoredText(tag, Color.BLACK));
+              } else {
+                whitelist.add(tag);
+                listView
+                    .getItems()
+                    .set(
+                        listView.getSelectionModel().getSelectedIndex(),
+                        new ColoredText(tag, Color.GREEN));
+              }
+              Database.filterByTags();
+              Backend.getGalleryPane().refreshContent();
+            }
+          }
         });
-    }
+  }
 
-    private void buildContextMenu() {
-        MenuItem menuRename = new MenuItem("Rename");
-        menuRename.setOnAction(
-                event -> Backend.renameTag(listView.getSelectionModel().getSelectedItem().getText()));
-        listContextMenu.getItems().addAll(menuRename);
-    }
+  private void buildContextMenu() {
+    MenuItem menuRename = new MenuItem("Rename");
+    menuRename.setOnAction(
+        event -> Backend.renameTag(listView.getSelectionModel().getSelectedItem().getText()));
+    listContextMenu.getItems().addAll(menuRename);
+  }
 
-    public void refreshContent() {
-        listView.getItems().clear();
-        for (String tag : Database.getTagDatabase())
-            if (Database.getTagsWhitelist().contains(tag))
-                listView.getItems().add(new ColoredText(tag, Color.GREEN));
-            else if (Database.getTagsBlacklist().contains(tag))
-                listView.getItems().add(new ColoredText(tag, Color.RED));
-            else listView.getItems().add(new ColoredText(tag, Color.BLACK));
-    }
+  public void refreshContent() {
+    listView.getItems().clear();
+    for (String tag : Database.getTagDatabase())
+      if (Database.getTagsWhitelist().contains(tag))
+        listView.getItems().add(new ColoredText(tag, Color.GREEN));
+      else if (Database.getTagsBlacklist().contains(tag))
+        listView.getItems().add(new ColoredText(tag, Color.RED));
+      else listView.getItems().add(new ColoredText(tag, Color.BLACK));
+  }
 }

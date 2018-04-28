@@ -7,35 +7,35 @@ import javafx.scene.paint.Color;
 import project.frontend.shared.RightClickContextMenu;
 
 public class GalleryPaneFront extends ScrollPane {
-    private final TilePane tilePane = new TilePane();
-    private final InnerShadow highlightEffect = new InnerShadow();
+  private final TilePane tilePane = new TilePane();
+  private final InnerShadow highlightEffect = new InnerShadow();
 
-    public GalleryPaneFront() {
-        tilePane.setVgap(1);
-        tilePane.setHgap(1);
+  public GalleryPaneFront() {
+    tilePane.setVgap(1);
+    tilePane.setHgap(1);
 
-        highlightEffect.setColor(Color.RED);
-        highlightEffect.setOffsetX(0);
-        highlightEffect.setOffsetY(0);
-        highlightEffect.setWidth(5);
-        highlightEffect.setHeight(5);
-        highlightEffect.setChoke(1);
+    highlightEffect.setColor(Color.RED);
+    highlightEffect.setOffsetX(0);
+    highlightEffect.setOffsetY(0);
+    highlightEffect.setWidth(5);
+    highlightEffect.setHeight(5);
+    highlightEffect.setChoke(1);
 
-        setContextMenu(new RightClickContextMenu());
-        setOnContextMenuRequested(
-                event -> getContextMenu().show(this, event.getScreenX(), event.getScreenY()));
+    setContextMenu(new RightClickContextMenu());
+    setOnContextMenuRequested(
+        event -> getContextMenu().show(this, event.getScreenX(), event.getScreenY()));
 
-        setHbarPolicy(ScrollBarPolicy.NEVER);
-        setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
-        setFitToWidth(true);
-        setContent(tilePane);
-    }
+    setHbarPolicy(ScrollBarPolicy.NEVER);
+    setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+    setFitToWidth(true);
+    setContent(tilePane);
+  }
 
-    public TilePane getTilePane() {
-        return tilePane;
-    }
+  public TilePane getTilePane() {
+    return tilePane;
+  }
 
-    public InnerShadow getHighlightEffect() {
-        return highlightEffect;
-    }
+  public InnerShadow getHighlightEffect() {
+    return highlightEffect;
+  }
 }
