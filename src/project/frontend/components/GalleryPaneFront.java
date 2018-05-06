@@ -4,6 +4,8 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
+import project.backend.shared.Backend;
+import project.backend.shared.Main;
 import project.frontend.shared.RightClickContextMenu;
 
 public class GalleryPaneFront extends ScrollPane {
@@ -13,6 +15,8 @@ public class GalleryPaneFront extends ScrollPane {
   public GalleryPaneFront() {
     tilePane.setVgap(1);
     tilePane.setHgap(1);
+    tilePane.setPrefTileWidth(Main.GALLERY_ICON_SIZE);
+    tilePane.setPrefTileHeight(Main.GALLERY_ICON_SIZE);
 
     highlightEffect.setColor(Color.RED);
     highlightEffect.setOffsetX(0);

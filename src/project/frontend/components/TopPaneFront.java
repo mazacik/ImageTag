@@ -28,7 +28,7 @@ public class TopPaneFront extends BorderPane {
     MenuItem menuUnselectAll = new MenuItem("Unselect All");
     menuUnselectAll.setOnAction(event -> Database.clearSelection());
     MenuItem menuRefresh = new MenuItem("Refresh");
-    menuRefresh.setOnAction(event -> Backend.refreshContent());
+    menuRefresh.setOnAction(event -> Backend.reloadContent());
     menuActions.getItems().addAll(menuRefresh, menuUnselectAll);
 
     Menu menuFilter = new Menu("Filter");
@@ -38,7 +38,7 @@ public class TopPaneFront extends BorderPane {
           Database.getTagsWhitelist().clear();
           Database.getTagsBlacklist().clear();
           Database.filterByTags();
-          Backend.refreshContent();
+          Backend.reloadContent();
         });
     MenuItem menuUntaggedOnly = new MenuItem("Untagged only");
     menuUntaggedOnly.setOnAction(
@@ -47,7 +47,7 @@ public class TopPaneFront extends BorderPane {
           Database.getTagsBlacklist().clear();
           Database.getTagsBlacklist().addAll(Database.getTagDatabase());
           Database.filterByTags();
-          Backend.refreshContent();
+          Backend.reloadContent();
         });
     menuFilter.getItems().addAll(menuReset, menuUntaggedOnly);
 
