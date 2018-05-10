@@ -14,19 +14,12 @@ public class GalleryPaneFront extends ScrollPane {
     private final InnerShadow highlightEffect = new InnerShadow();
 
     public GalleryPaneFront() {
-        setMinViewportWidth(Main.GALLERY_ICON_SIZE_PREF);
         tilePane.setVgap(3);
         tilePane.setPrefTileWidth(Main.GALLERY_ICON_SIZE_PREF);
         tilePane.setPrefTileHeight(Main.GALLERY_ICON_SIZE_PREF);
         tilePane.widthProperty().addListener((observable, oldValue, newValue) -> recalculateHgap());
 
-        highlightEffect.setColor(Color.RED);
-        highlightEffect.setOffsetX(0);
-        highlightEffect.setOffsetY(0);
-        highlightEffect.setWidth(5);
-        highlightEffect.setHeight(5);
-        highlightEffect.setChoke(1);
-
+        /* gallery zoom */
         tilePane.setOnScroll(event -> {
             if (event.isControlDown()) {
                 event.consume();
@@ -51,19 +44,28 @@ public class GalleryPaneFront extends ScrollPane {
             }
         });
 
+        highlightEffect.setColor(Color.RED);
+        highlightEffect.setOffsetX(0);
+        highlightEffect.setOffsetY(0);
+        highlightEffect.setWidth(5);
+        highlightEffect.setHeight(5);
+        highlightEffect.setChoke(1);
+
         setContextMenu(new RightClickContextMenu());
         setOnContextMenuRequested(event -> getContextMenu().show(this, event.getScreenX(), event.getScreenY()));
         setHbarPolicy(ScrollBarPolicy.NEVER);
         setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+        setMinViewportWidth(Main.GALLERY_ICON_SIZE_PREF);
         setFitToWidth(true);
         setContent(tilePane);
     }
 
     private void recalculateHgap() {
-        int tileWidth = (int) tilePane.getPrefTileWidth();
-        int columnCount = (int) tilePane.getWidth() / tileWidth;
-        int emptySpace = (int) tilePane.getWidth() % tileWidth;
-        if (columnCount != 0) tilePane.setHgap(emptySpace / columnCount);
+        if (getColumnCount() != 0) tilePane.setHgap((int) tilePane.getWidth() % (int) tilePane.getPrefTileWidth() / getColumnCount());
+    }
+
+    private int getColumnCount() {
+        return (int) tilePane.getWidth() / (int) tilePane.getPrefTileWidth();
     }
 
     public TilePane getTilePane() {

@@ -5,7 +5,6 @@ import javafx.scene.control.Alert;
 import project.frontend.shared.Frontend;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -47,10 +46,6 @@ public class Database {
      * Notifies the frontend components of an item being added to or removed from the shared selection list.
      */
     public static void selectionChanged() {
-        Frontend.getNamePane().getListView().getSelectionModel().clearSelection();
-        for (DatabaseItem item : selectedItems)
-            Frontend.getNamePane().getListView().getSelectionModel().select(item.getColoredText());
-
         if (Frontend.getMainBorderPane().getCenter().equals(Frontend.getPreviewPane()))
             Backend.getPreviewPane().drawPreview();
 
@@ -94,6 +89,15 @@ public class Database {
         selectedItem = databaseItem;
     }
 
+    public static void addToSelection(ArrayList<DatabaseItem> databaseItemsToAddToSelection) {
+        for (DatabaseItem databaseItem : databaseItemsToAddToSelection)
+            if (!selectedItems.contains(databaseItem)) {
+                selectedItems.add(databaseItem);
+                databaseItem.getImageView().setEffect(Frontend.getGalleryPane().getHighlightEffect());
+            }
+        selectionChanged();
+    }
+
     /**
      * Reloads the filtered database according to current tag whitelist and blacklist.
      */
@@ -102,12 +106,12 @@ public class Database {
         if (tagsWhitelist.isEmpty() && tagsBlacklist.isEmpty())
             filteredItems.addAll(itemDatabase);
         else
-            for (DatabaseItem item : itemDatabase)
-                if (item.getTags().containsAll(tagsWhitelist)) {
-                    filteredItems.add(item);
+            for (DatabaseItem databaseItem : itemDatabase)
+                if (databaseItem.getTags().containsAll(tagsWhitelist)) {
+                    filteredItems.add(databaseItem);
                     for (String tag : tagsBlacklist)
-                        if (item.getTags().contains(tag)) {
-                            filteredItems.remove(item);
+                        if (databaseItem.getTags().contains(tag)) {
+                            filteredItems.remove(databaseItem);
                             break;
                         }
                 }
@@ -127,7 +131,6 @@ public class Database {
      */
     public static void clearSelection() {
         selectedItems.clear();
-        Frontend.getNamePane().getListView().getSelectionModel().clearSelection();
         Frontend.getRightPane().getListView().getItems().clear();
         for (DatabaseItem databaseItem : itemDatabase) {
             if (databaseItem.getImageView().getEffect() != null)

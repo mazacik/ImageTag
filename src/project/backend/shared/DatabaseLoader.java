@@ -39,7 +39,7 @@ public class DatabaseLoader extends Thread {
                 databaseItem.setImageView(new ImageView(databaseItem.getImage()));
                 databaseItem.getImageView().setFitWidth(Main.GALLERY_ICON_SIZE_PREF);
                 databaseItem.getImageView().setFitHeight(Main.GALLERY_ICON_SIZE_PREF);
-                databaseItem.setColoredText(new ColoredText(databaseItem.getSimpleName(), Color.BLACK, databaseItem));
+                databaseItem.setColoredText(new ColoredText(databaseItem.getSimpleName(), Color.BLACK));
             }
 
             /* database size check */
@@ -74,7 +74,7 @@ public class DatabaseLoader extends Thread {
         newDatabaseItem.setImageView(new ImageView(newDatabaseItem.getImage()));
         newDatabaseItem.getImageView().setFitWidth(Main.GALLERY_ICON_SIZE_PREF);
         newDatabaseItem.getImageView().setFitHeight(Main.GALLERY_ICON_SIZE_PREF);
-        newDatabaseItem.setColoredText(new ColoredText(newDatabaseItem.getSimpleName(), Color.BLACK, newDatabaseItem));
+        newDatabaseItem.setColoredText(new ColoredText(newDatabaseItem.getSimpleName(), Color.BLACK));
         newDatabaseItem.setTags(new ArrayList<>());
         return newDatabaseItem;
     }

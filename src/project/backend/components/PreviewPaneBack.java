@@ -31,11 +31,10 @@ public class PreviewPaneBack {
      */
     private void addOnResizeListener() {
         PreviewPaneFront previewPaneFront = Frontend.getPreviewPane();
-        ChangeListener<Number> previewPaneSizeListener =
-                (observable, oldValue, newValue) -> {
-                    previewPaneFront.setCanvasSize(previewPaneFront.getWidth(), previewPaneFront.getHeight());
-                    Backend.getPreviewPane().drawPreview();
-                };
+        ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) -> {
+            previewPaneFront.setCanvasSize(previewPaneFront.getWidth(), previewPaneFront.getHeight());
+            Backend.getPreviewPane().drawPreview();
+        };
         previewPaneFront.widthProperty().addListener(previewPaneSizeListener);
         previewPaneFront.heightProperty().addListener(previewPaneSizeListener);
     }

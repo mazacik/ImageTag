@@ -36,16 +36,16 @@ public class DatabaseItem implements Serializable {
         return this.tags;
     }
 
+    public Image getImage() {
+        return image;
+    }
+
     public ImageView getImageView() {
         return imageView;
     }
 
     public ColoredText getColoredText() {
         return coloredText;
-    }
-
-    public Image getImage() {
-        return image;
     }
 
     void setExtension(String Extension) {
@@ -64,17 +64,17 @@ public class DatabaseItem implements Serializable {
         this.tags = Tags;
     }
 
+    void setImage(Image image) {
+        this.image = image;
+    }
+
     void setImageView(ImageView imageView) {
         this.imageView = (imageView != null) ? imageView : new ImageView();
         this.imageView.setOnMouseClicked(
-                event -> Backend.getGalleryPane().imageViewClicked(this, event));
+            event -> Backend.getGalleryPane().imageViewClicked(this, event));
     }
 
     void setColoredText(ColoredText coloredText) {
         this.coloredText = coloredText;
-    }
-
-    void setImage(Image image) {
-        this.image = image;
     }
 }

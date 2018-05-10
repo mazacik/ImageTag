@@ -16,8 +16,7 @@ import java.util.Random;
  */
 public class Backend {
     private static final TopPaneBack topPane = new TopPaneBack();
-    private static final NamePaneBack namePane = new NamePaneBack();
-    private static final TagPaneBack tagPane = new TagPaneBack();
+    private static final LeftPaneBack tagPane = new LeftPaneBack();
     private static final RightPaneBack rightPane = new RightPaneBack();
     private static final GalleryPaneBack galleryPane = new GalleryPaneBack();
     private static final PreviewPaneBack previewPane = new PreviewPaneBack();
@@ -51,28 +50,6 @@ public class Backend {
     private static void initializeKeybindings() {
         Frontend.getMainScene().setOnKeyPressed(event -> {
             switch (event.getCode()) {
-                case S:
-                    int nextItemIndex = Database.getFilteredItems().indexOf(Database.getSelectedItem()) + 1;
-                    if (nextItemIndex < Database.getFileCount()) {
-                        DatabaseItem nextItem = Database.getFilteredItems().get(nextItemIndex);
-                        if (nextItem != null) {
-                            Database.setSelectedItem(nextItem);
-                            Database.selectionChanged();
-                            Frontend.getNamePane().getListView().getSelectionModel().select(nextItem.getColoredText());
-                        }
-                    }
-                    break;
-                case W:
-                    int previousItemIndex = Database.getFilteredItems().indexOf(Database.getSelectedItem()) - 1;
-                    if (previousItemIndex >= 0) {
-                        DatabaseItem previousItem = Database.getFilteredItems().get(previousItemIndex);
-                        if (previousItem != null) {
-                            Database.setSelectedItem(previousItem);
-                            Database.selectionChanged();
-                            Frontend.getNamePane().getListView().getSelectionModel().select(previousItem.getColoredText());
-                        }
-                    }
-                    break;
                 case Q:
                     if (Database.getSelectedItems().contains(Database.getSelectedItem()))
                         Database.removeIndexFromSelection(Database.getSelectedItem());
@@ -144,16 +121,11 @@ public class Backend {
         Database.getFilteredItems().sort(Comparator.comparing(DatabaseItem::getSimpleName));
         Database.getSelectedItems().sort(Comparator.comparing(DatabaseItem::getSimpleName));
         Database.getItemDatabase().sort(Comparator.comparing(DatabaseItem::getSimpleName));
-        Backend.getNamePane().reloadContent();
         Backend.getTagPane().reloadContent();
         Backend.getGalleryPane().reloadContent();
     }
 
-    public static NamePaneBack getNamePane() {
-        return namePane;
-    }
-
-    public static TagPaneBack getTagPane() {
+    public static LeftPaneBack getTagPane() {
         return tagPane;
     }
 
