@@ -1,9 +1,13 @@
 package project.backend.shared;
 
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import project.frontend.shared.Frontend;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Shared class for all database array lists and respective methods used across the entire project.
@@ -15,7 +19,8 @@ public class Database {
     private static final ArrayList<String> tagDatabase = new ArrayList<>();
     private static final ArrayList<String> tagsWhitelist = new ArrayList<>();
     private static final ArrayList<String> tagsBlacklist = new ArrayList<>();
-    private static File[] validFiles;
+    private static final String databaseCacheFileName = "/databasecache";
+    private static ArrayList<File> validFiles;
     private static int fileCount;
     private static DatabaseItem selectedItem = null;
 
@@ -23,8 +28,9 @@ public class Database {
      * Initialization.
      */
     public static void initilize() {
-        validFiles = new File(Backend.DIRECTORY_PATH).listFiles((dir, name) -> name.endsWith(".jpg") || name.endsWith(".png") || name.endsWith(".JPG") || name.endsWith(".PNG") || name.endsWith(".jpeg") || name.endsWith(".JPEG"));
-        fileCount = validFiles != null ? validFiles.length : 0;
+        File[] validFilesArray = new File(Backend.DIRECTORY_PATH).listFiles((dir, name) -> name.endsWith(".jpg") || name.endsWith(".png") || name.endsWith(".JPG") || name.endsWith(".PNG") || name.endsWith(".jpeg") || name.endsWith(".JPEG"));
+        validFiles = (validFilesArray != null) ? new ArrayList<>(Arrays.asList(validFilesArray)) : new ArrayList<>();
+        fileCount = validFiles.size();
     }
 
     /**
@@ -147,7 +153,7 @@ public class Database {
      */
     public static void writeToDisk(ArrayList<DatabaseItem> itemDatabase) {
         try {
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(Backend.DIRECTORY_PATH + "/database"));
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(Backend.DIRECTORY_PATH + databaseCacheFileName));
             objectOutputStream.writeObject(itemDatabase);
             objectOutputStream.close();
         } catch (IOException e) {
@@ -161,14 +167,24 @@ public class Database {
     @SuppressWarnings("unchecked")
     public static ArrayList<DatabaseItem> readFromDisk() {
         try {
-            ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(Backend.DIRECTORY_PATH + "/database"));
+            ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(Backend.DIRECTORY_PATH + databaseCacheFileName));
             ArrayList<DatabaseItem> itemDatabase = (ArrayList<DatabaseItem>) objectInputStream.readObject();
             objectInputStream.close();
             return itemDatabase;
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("java.io.InvalidClassException: Serialization class incompatible. Rebuilding cache.");
+            Platform.runLater(Database::showDatabaseLoadingFailureAlert);
             return null;
         }
+    }
+
+    private static void showDatabaseLoadingFailureAlert() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Database Loading Failed");
+        alert.setHeaderText(null);
+        alert.setGraphic(null);
+        alert.setContentText("java.io.InvalidClassException: Serialization class incompatible. Rebuilding cache.");
+        alert.showAndWait();
     }
 
     public static ArrayList<DatabaseItem> getFilteredItems() {
@@ -191,7 +207,7 @@ public class Database {
         return selectedItems;
     }
 
-    public static File[] getValidFiles() {
+    public static ArrayList<File> getValidFiles() {
         return validFiles;
     }
 

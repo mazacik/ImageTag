@@ -5,14 +5,17 @@ import javafx.stage.Stage;
 import project.frontend.shared.Frontend;
 
 public class Main extends Application {
-  public static int GALLERY_ICON_SIZE = 150;
-  @Override
-  public void start(Stage primaryStage) {
-    Frontend.initialize(primaryStage);
-    Backend.initialize();
-  }
+    public static final int GALLERY_ICON_SIZE_MAX = 200;
+    public static final int GALLERY_ICON_SIZE_MIN = 100;
+    public static int GALLERY_ICON_SIZE_PREF = 150;
 
-  public static void main(String[] args) {
-    launch(args);
-  }
+    @Override
+    public void start(Stage primaryStage) {
+        Frontend.initialize(primaryStage);
+        Backend.initialize();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
 }

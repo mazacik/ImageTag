@@ -1,5 +1,6 @@
 package project.backend.shared;
 
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import project.frontend.shared.ColoredText;
 
@@ -15,6 +16,7 @@ public class DatabaseItem implements Serializable {
     private String simpleName;
     private String extension;
     private ArrayList<String> tags;
+    private transient Image image;
     private transient ImageView imageView;
     private transient ColoredText coloredText;
 
@@ -42,6 +44,10 @@ public class DatabaseItem implements Serializable {
         return coloredText;
     }
 
+    public Image getImage() {
+        return image;
+    }
+
     void setExtension(String Extension) {
         this.extension = Extension;
     }
@@ -66,5 +72,9 @@ public class DatabaseItem implements Serializable {
 
     void setColoredText(ColoredText coloredText) {
         this.coloredText = coloredText;
+    }
+
+    void setImage(Image image) {
+        this.image = image;
     }
 }

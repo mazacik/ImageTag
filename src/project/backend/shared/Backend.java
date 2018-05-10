@@ -22,7 +22,7 @@ public class Backend {
     private static final GalleryPaneBack galleryPane = new GalleryPaneBack();
     private static final PreviewPaneBack previewPane = new PreviewPaneBack();
 
-    static String DIRECTORY_PATH;
+    static String DIRECTORY_PATH = "C:/abc/dnnsfw";
 
     /**
      * Initialization.
@@ -95,15 +95,15 @@ public class Backend {
      * Swaps the center component of the main border pane from gallery to full-screen preview, and vice versa.
      */
     public static void swapImageDisplayMode() {
-        if (Frontend.getMainBorderPane().getCenter().equals(Frontend.getGalleryPane())) {
-            Frontend.getMainBorderPane().setCenter(Frontend.getPreviewPane());
-            Frontend.getPreviewPane()
-                    .setCanvasSize(
-                            Frontend.getGalleryPane().getWidth(), Frontend.getGalleryPane().getHeight());
+        double[] dividerPositions = Frontend.getSplitPane().getDividerPositions();
+        if (Frontend.getSplitPane().getItems().contains(Frontend.getGalleryPane())) {
+            Frontend.getSplitPane().getItems().set(1, Frontend.getPreviewPane());
+            Frontend.getPreviewPane().setCanvasSize(Frontend.getGalleryPane().getWidth(), Frontend.getGalleryPane().getHeight());
             Backend.getPreviewPane().drawPreview();
         } else {
-            Frontend.getMainBorderPane().setCenter(Frontend.getGalleryPane());
+            Frontend.getSplitPane().getItems().set(1, Frontend.getGalleryPane());
         }
+        Frontend.getSplitPane().setDividerPositions(dividerPositions);
     }
 
     public static PreviewPaneBack getPreviewPane() {
