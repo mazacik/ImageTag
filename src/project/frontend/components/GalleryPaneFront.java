@@ -4,10 +4,13 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
-import project.backend.shared.Database;
-import project.backend.shared.DatabaseItem;
-import project.backend.shared.Main;
+import project.backend.database.Database;
+import project.backend.database.DatabaseItem;
+import project.Main;
+import project.frontend.shared.Frontend;
 import project.frontend.shared.RightClickContextMenu;
+
+import java.util.ArrayList;
 
 public class GalleryPaneFront extends ScrollPane {
     private final TilePane tilePane = new TilePane();
@@ -36,7 +39,7 @@ public class GalleryPaneFront extends ScrollPane {
 
                 tilePane.setPrefTileWidth(Main.GALLERY_ICON_SIZE_PREF);
                 tilePane.setPrefTileHeight(Main.GALLERY_ICON_SIZE_PREF);
-                for (DatabaseItem databaseItem : Database.getItemDatabase()) {
+                for (DatabaseItem databaseItem : Database.getDatabaseItems()) {
                     databaseItem.getImageView().setFitWidth(Main.GALLERY_ICON_SIZE_PREF);
                     databaseItem.getImageView().setFitHeight(Main.GALLERY_ICON_SIZE_PREF);
                 }
@@ -60,6 +63,13 @@ public class GalleryPaneFront extends ScrollPane {
         setContent(tilePane);
     }
 
+    public void highlight(DatabaseItem databaseItem, boolean visible) {
+        if (visible)
+            databaseItem.getImageView().setEffect(highlightEffect);
+        else
+            databaseItem.getImageView().setEffect(null);
+    }
+
     private void recalculateHgap() {
         if (getColumnCount() != 0) tilePane.setHgap((int) tilePane.getWidth() % (int) tilePane.getPrefTileWidth() / getColumnCount());
     }
@@ -70,9 +80,5 @@ public class GalleryPaneFront extends ScrollPane {
 
     public TilePane getTilePane() {
         return tilePane;
-    }
-
-    public InnerShadow getHighlightEffect() {
-        return highlightEffect;
     }
 }

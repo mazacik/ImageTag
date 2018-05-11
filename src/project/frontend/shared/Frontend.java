@@ -9,7 +9,8 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import project.backend.shared.Database;
+import project.backend.common.Serialization;
+import project.backend.Backend;
 import project.frontend.components.*;
 
 import java.util.Optional;
@@ -24,6 +25,10 @@ public class Frontend {
     private static final PreviewPaneFront previewPane = new PreviewPaneFront();
     private static final SplitPane splitPane = new SplitPane();
     private static Stage mainStage = null;
+
+    public static boolean isPreviewFullscreen() {
+        return Frontend.getSplitPane().getItems().contains(Frontend.getPreviewPane());
+    }
 
     public static void initialize(Stage primaryStage) {
         mainStage = primaryStage;
@@ -56,13 +61,25 @@ public class Frontend {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == buttonTypeSave) {
-            Database.writeToDisk();
+            Serialization.writeToDisk();
             Platform.exit();
         } else if (result.get() == buttonTypeExit) {
             Platform.exit();
         } else if (result.get() == buttonTypeCancel) {
             event.consume();
         }
+    }
+
+    public static void swapImageDisplayMode() {
+        double[] dividerPositions = getSplitPane().getDividerPositions();
+        if (getSplitPane().getItems().contains(getGalleryPane())) {
+            getSplitPane().getItems().set(1, getPreviewPane());
+            getPreviewPane().setCanvasSize(getGalleryPane().getWidth(), getGalleryPane().getHeight());
+            Backend.getPreviewPane().draw();
+        } else {
+            getSplitPane().getItems().set(1, getGalleryPane());
+        }
+        getSplitPane().setDividerPositions(dividerPositions);
     }
 
     public static SplitPane getSplitPane() {

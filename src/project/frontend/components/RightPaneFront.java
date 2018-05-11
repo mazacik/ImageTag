@@ -5,7 +5,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import project.backend.shared.Backend;
+import project.backend.common.Filter;
 
 public class RightPaneFront extends BorderPane {
     private final TextField addTextField = new TextField();
@@ -16,19 +16,19 @@ public class RightPaneFront extends BorderPane {
         setPrefWidth(200);
         setMaxWidth(300);
         setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER) Backend.addTag();
-            else if (event.getCode() == KeyCode.DELETE) Backend.removeTag();
+            if (event.getCode() == KeyCode.ENTER) addTag();
+            else if (event.getCode() == KeyCode.DELETE) Filter.removeTag();
         });
         ContextMenu listContextMenu = new ContextMenu();
         MenuItem menuRemoveTag = new MenuItem("Remove");
-        menuRemoveTag.setOnAction(event -> Backend.removeTag());
+        menuRemoveTag.setOnAction(event -> Filter.removeTag());
         listContextMenu.getItems().add(menuRemoveTag);
         listView.setContextMenu(listContextMenu);
         listView.setOnContextMenuRequested(event -> listContextMenu.show(listView, event.getScreenX(), event.getScreenY()));
         Button addButton = new Button("+");
         addButton.setStyle("-fx-focus-color: transparent;");
         addButton.setMinWidth(25);
-        addButton.setOnAction(event -> Backend.addTag());
+        addButton.setOnAction(event -> addTag());
         HBox addPane = new HBox();
         addPane.setAlignment(Pos.CENTER);
         addPane.setSpacing(5);
@@ -37,8 +37,13 @@ public class RightPaneFront extends BorderPane {
         setBottom(addPane);
     }
 
-    public TextField getAddTextField() {
-        return addTextField;
+    private void addTag() {
+        if (addTextField.getText().isEmpty())
+            new TagManager();
+        else {
+            Filter.addTag(addTextField.getText());
+            addTextField.clear();
+        }
     }
 
     public ListView<String> getListView() {

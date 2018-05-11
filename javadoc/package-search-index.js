@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"project.backend.components"},{"l":"project.backend.shared"},{"l":"project.frontend.components"},{"l":"project.frontend.shared"}]

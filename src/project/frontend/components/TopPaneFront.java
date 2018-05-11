@@ -3,10 +3,13 @@ package project.frontend.components;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.WindowEvent;
-import project.backend.shared.Backend;
-import project.backend.shared.Database;
-import project.backend.shared.DatabaseItem;
-import project.backend.shared.Utility;
+import project.backend.common.Filter;
+import project.backend.common.Selection;
+import project.backend.common.Serialization;
+import project.backend.Backend;
+import project.backend.database.Database;
+import project.backend.database.DatabaseItem;
+import project.backend.Utility;
 import project.frontend.shared.Frontend;
 
 import java.util.Optional;
@@ -31,40 +34,40 @@ public class TopPaneFront extends BorderPane {
     private final MenuItem menuReset = new MenuItem("Reset");
 
     public TopPaneFront() {
-        menuSave.setOnAction(event -> Database.writeToDisk());
+        menuSave.setOnAction(event -> Serialization.writeToDisk());
         menuRefresh.setOnAction(event -> {
-            Database.filterByTags();
+            Filter.filterByTags();
             Backend.reloadContent();
         });
         menuExit.setOnAction(event -> Frontend.getMainStage().fireEvent(new WindowEvent(Frontend.getMainStage(), WindowEvent.WINDOW_CLOSE_REQUEST)));
         menuFile.getItems().addAll(menuSave, menuRefresh, separatorFileMenu1, menuExit);
 
-        menuSelectAll.setOnAction(event -> Database.addToSelection(Database.getFilteredItems()));
-        menuClearSelection.setOnAction(event -> Database.clearSelection());
+        menuSelectAll.setOnAction(event -> Database.addToSelection(Database.getDatabaseItemsFiltered()));
+        menuClearSelection.setOnAction(event -> Selection.clear());
         menuSelection.getItems().addAll(menuSelectAll, menuClearSelection);
 
         menuUntaggedOnly.setOnAction(event -> {
-            Database.getTagsWhitelist().clear();
-            Database.getTagsBlacklist().clear();
-            Database.getTagsBlacklist().addAll(Database.getTagDatabase());
-            Database.filterByTags();
+            Database.getDatabaseTagsWhitelist().clear();
+            Database.getDatabaseTagsBlacklist().clear();
+            Database.getDatabaseTagsBlacklist().addAll(Database.getDatabaseTags());
+            Filter.filterByTags();
             Backend.reloadContent();
         });
         menuLessThanXTags.setOnAction(event -> {
             int maxTags = showNumberInputDialog("Filter Settings", "Maximum number of tags:");
             if (maxTags == 0) return;
-            Database.getTagsWhitelist().clear();
-            Database.getTagsBlacklist().clear();
-            Database.getFilteredItems().clear();
-            for (DatabaseItem databaseItem : Database.getItemDatabase())
+            Database.getDatabaseTagsWhitelist().clear();
+            Database.getDatabaseTagsBlacklist().clear();
+            Database.getDatabaseItemsFiltered().clear();
+            for (DatabaseItem databaseItem : Database.getDatabaseItems())
                 if (databaseItem.getTags().size() <= maxTags)
-                    Database.getFilteredItems().add(databaseItem);
+                    Database.getDatabaseItemsFiltered().add(databaseItem);
             Backend.reloadContent();
         });
         menuReset.setOnAction(event -> {
-            Database.getTagsWhitelist().clear();
-            Database.getTagsBlacklist().clear();
-            Database.filterByTags();
+            Database.getDatabaseTagsWhitelist().clear();
+            Database.getDatabaseTagsBlacklist().clear();
+            Filter.filterByTags();
             Backend.reloadContent();
         });
         menuFilter.getItems().addAll(menuUntaggedOnly, menuLessThanXTags, separatorFilterMenu1, menuReset);
@@ -75,8 +78,8 @@ public class TopPaneFront extends BorderPane {
 
         MenuBar infoLabelArea = new MenuBar();
         infoLabelArea.getMenus().add(infoLabel);
-        infoLabelArea.setOnMouseEntered(event -> Backend.swapImageDisplayMode());
-        infoLabelArea.setOnMouseExited(event -> Backend.swapImageDisplayMode());
+        infoLabelArea.setOnMouseEntered(event -> Frontend.swapImageDisplayMode());
+        infoLabelArea.setOnMouseExited(event -> Frontend.swapImageDisplayMode());
         setRight(infoLabelArea);
     }
 

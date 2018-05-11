@@ -6,8 +6,9 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
-import project.backend.shared.Backend;
-import project.backend.shared.Database;
+import project.backend.common.Filter;
+import project.backend.Backend;
+import project.backend.database.Database;
 import project.frontend.shared.ColoredText;
 import project.frontend.shared.Frontend;
 
@@ -17,8 +18,8 @@ import java.util.List;
  * Backend of a GUI component which displays all tags found across all items in the working directory.
  */
 public class LeftPaneBack {
-    private final List<String> whitelist = Database.getTagsWhitelist();
-    private final List<String> blacklist = Database.getTagsBlacklist();
+    private final List<String> whitelist = Database.getDatabaseTagsWhitelist();
+    private final List<String> blacklist = Database.getDatabaseTagsBlacklist();
     private final ContextMenu listContextMenu = new ContextMenu();
     private ListView<ColoredText> listView = Frontend.getLeftPane().getListView();
 
@@ -43,7 +44,7 @@ public class LeftPaneBack {
                         whitelist.add(tag);
                         listView.getItems().set(listView.getSelectionModel().getSelectedIndex(), new ColoredText(tag, Color.GREEN));
                     }
-                    Database.filterByTags();
+                    Filter.filterByTags();
                     Backend.getGalleryPane().reloadContent();
                 }
         });
@@ -54,18 +55,18 @@ public class LeftPaneBack {
      */
     private void buildContextMenu() {
         MenuItem menuRename = new MenuItem("Rename");
-        menuRename.setOnAction(event -> Backend.renameTag(listView.getSelectionModel().getSelectedItem().getText()));
+        menuRename.setOnAction(event -> Filter.renameTag(listView.getSelectionModel().getSelectedItem().getText()));
         listContextMenu.getItems().addAll(menuRename);
     }
 
     /**
      * Reloads all tags found across all items in the working directory.
      */
-    public void reloadContent() {
+    public static void reloadContent() {
         listView.getItems().clear();
-        for (String tag : Database.getTagDatabase()) {
-            if (Database.getTagsWhitelist().contains(tag)) listView.getItems().add(new ColoredText(tag, Color.GREEN));
-            else if (Database.getTagsBlacklist().contains(tag)) listView.getItems().add(new ColoredText(tag, Color.RED));
+        for (String tag : Database.getDatabaseTags()) {
+            if (Database.getDatabaseTagsWhitelist().contains(tag)) listView.getItems().add(new ColoredText(tag, Color.GREEN));
+            else if (Database.getDatabaseTagsBlacklist().contains(tag)) listView.getItems().add(new ColoredText(tag, Color.RED));
             else listView.getItems().add(new ColoredText(tag, Color.BLACK));
         }
     }

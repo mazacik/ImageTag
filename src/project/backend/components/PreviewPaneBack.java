@@ -4,9 +4,9 @@ import javafx.beans.value.ChangeListener;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import project.backend.shared.Backend;
-import project.backend.shared.Database;
-import project.backend.shared.DatabaseItem;
+import project.backend.Backend;
+import project.backend.database.Database;
+import project.backend.database.DatabaseItem;
 import project.frontend.components.PreviewPaneFront;
 import project.frontend.shared.Frontend;
 
@@ -33,7 +33,7 @@ public class PreviewPaneBack {
         PreviewPaneFront previewPaneFront = Frontend.getPreviewPane();
         ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) -> {
             previewPaneFront.setCanvasSize(previewPaneFront.getWidth(), previewPaneFront.getHeight());
-            Backend.getPreviewPane().drawPreview();
+            Backend.getPreviewPane().draw();
         };
         previewPaneFront.widthProperty().addListener(previewPaneSizeListener);
         previewPaneFront.heightProperty().addListener(previewPaneSizeListener);
@@ -43,7 +43,7 @@ public class PreviewPaneBack {
      * Main method of the component.
      * Resizes the loaded image according to available display area and uses the graphics of the canvas to draw the resized image.
      */
-    public void drawPreview() {
+    public static void draw() {
         if (Database.getSelectedItem() == null) return;
         if (!Database.getSelectedItem().equals(currentDatabaseItem)) loadImage();
         double imageWidth = currentPreviewImage.getWidth();
