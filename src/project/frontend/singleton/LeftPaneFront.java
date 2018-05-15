@@ -1,14 +1,18 @@
-package project.frontend.components;
+package project.frontend.singleton;
 
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
-import project.frontend.shared.ColoredText;
+import project.backend.listener.ListenerTemplate;
+import project.frontend.component.ColoredText;
 
 public class LeftPaneFront extends BorderPane {
+    private static LeftPaneFront instance = new LeftPaneFront();
+
     private final ListView<ColoredText> listView = new ListView<>();
 
-    public LeftPaneFront() {
+
+    private LeftPaneFront() {
         setMinWidth(150);
         setPrefWidth(200);
         setMaxWidth(300);
@@ -28,11 +32,17 @@ public class LeftPaneFront extends BorderPane {
                     setText(coloredText.getText());
                     setTextFill(coloredText.getColor());
                 }
+                ListenerTemplate.setColoredTextMouseClick(this, coloredText);
+                ListenerTemplate.setColoredTextContextMenu(this, coloredText);
             }
         });
     }
 
     public ListView<ColoredText> getListView() {
         return listView;
+    }
+
+    public static LeftPaneFront getInstance() {
+        return instance;
     }
 }

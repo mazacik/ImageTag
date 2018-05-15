@@ -1,4 +1,4 @@
-package project.frontend.components;
+package project.frontend.component;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -10,10 +10,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import project.backend.common.Filter;
-import project.backend.Backend;
+import project.backend.singleton.GalleryPaneBack;
 import project.backend.database.Database;
 import project.backend.database.DatabaseItem;
-import project.frontend.shared.ColoredText;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -41,7 +40,7 @@ public class TagManager extends Stage {
         initializeListView();
         setOnCloseRequest(event -> {
             Filter.filterByTags();
-            Backend.getGalleryPane().reloadContent();
+            GalleryPaneBack.getInstance().reloadContent();
         });
         tagManagerPane.setCenter(listView);
         tagManagerPane.setBottom(addPane);

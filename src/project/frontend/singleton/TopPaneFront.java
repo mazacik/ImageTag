@@ -1,20 +1,23 @@
-package project.frontend.components;
+package project.frontend.singleton;
 
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.WindowEvent;
+import project.backend.Backend;
 import project.backend.common.Filter;
 import project.backend.common.Selection;
 import project.backend.common.Serialization;
-import project.backend.Backend;
+import project.backend.common.Utility;
 import project.backend.database.Database;
 import project.backend.database.DatabaseItem;
-import project.backend.Utility;
-import project.frontend.shared.Frontend;
+import project.frontend.Frontend;
 
 import java.util.Optional;
 
+//todo: rework
 public class TopPaneFront extends BorderPane {
+    private static TopPaneFront instance = new TopPaneFront();
+
     private final Menu infoLabel = new Menu();
 
     private final Menu menuFile = new Menu("File");
@@ -33,16 +36,17 @@ public class TopPaneFront extends BorderPane {
     private final SeparatorMenuItem separatorFilterMenu1 = new SeparatorMenuItem();
     private final MenuItem menuReset = new MenuItem("Reset");
 
-    public TopPaneFront() {
+
+    private TopPaneFront() {
         menuSave.setOnAction(event -> Serialization.writeToDisk());
         menuRefresh.setOnAction(event -> {
             Filter.filterByTags();
-            Backend.reloadContent();
+            Backend.reloadContent(true);
         });
         menuExit.setOnAction(event -> Frontend.getMainStage().fireEvent(new WindowEvent(Frontend.getMainStage(), WindowEvent.WINDOW_CLOSE_REQUEST)));
         menuFile.getItems().addAll(menuSave, menuRefresh, separatorFileMenu1, menuExit);
 
-        menuSelectAll.setOnAction(event -> Database.addToSelection(Database.getDatabaseItemsFiltered()));
+        menuSelectAll.setOnAction(event -> Selection.add(Database.getDatabaseItemsFiltered()));
         menuClearSelection.setOnAction(event -> Selection.clear());
         menuSelection.getItems().addAll(menuSelectAll, menuClearSelection);
 
@@ -51,7 +55,7 @@ public class TopPaneFront extends BorderPane {
             Database.getDatabaseTagsBlacklist().clear();
             Database.getDatabaseTagsBlacklist().addAll(Database.getDatabaseTags());
             Filter.filterByTags();
-            Backend.reloadContent();
+            Backend.reloadContent(true);
         });
         menuLessThanXTags.setOnAction(event -> {
             int maxTags = showNumberInputDialog("Filter Settings", "Maximum number of tags:");
@@ -62,13 +66,13 @@ public class TopPaneFront extends BorderPane {
             for (DatabaseItem databaseItem : Database.getDatabaseItems())
                 if (databaseItem.getTags().size() <= maxTags)
                     Database.getDatabaseItemsFiltered().add(databaseItem);
-            Backend.reloadContent();
+            Backend.reloadContent(true);
         });
         menuReset.setOnAction(event -> {
             Database.getDatabaseTagsWhitelist().clear();
             Database.getDatabaseTagsBlacklist().clear();
             Filter.filterByTags();
-            Backend.reloadContent();
+            Backend.reloadContent(true);
         });
         menuFilter.getItems().addAll(menuUntaggedOnly, menuLessThanXTags, separatorFilterMenu1, menuReset);
 
@@ -83,6 +87,7 @@ public class TopPaneFront extends BorderPane {
         setRight(infoLabelArea);
     }
 
+    //todo: fix non-integer handling
     private Integer showNumberInputDialog(String title, String contentText) {
         TextInputDialog textInputDialog = new TextInputDialog("1");
         textInputDialog.setTitle(title);
@@ -99,5 +104,9 @@ public class TopPaneFront extends BorderPane {
 
     public Menu getInfoLabel() {
         return infoLabel;
+    }
+
+    public static TopPaneFront getInstance() {
+        return instance;
     }
 }

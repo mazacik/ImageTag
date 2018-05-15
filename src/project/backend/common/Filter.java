@@ -1,24 +1,26 @@
 package project.backend.common;
 
+import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.control.TextInputDialog;
 import org.apache.commons.text.WordUtils;
 import project.backend.Backend;
 import project.backend.database.Database;
 import project.backend.database.DatabaseItem;
-import project.frontend.shared.Frontend;
+import project.backend.singleton.LeftPaneBack;
+import project.backend.singleton.RightPaneBack;
+import project.frontend.singleton.RightPaneFront;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Optional;
 
-//todo: check, rework?
 public abstract class Filter {
     private static ArrayList<DatabaseItem> databaseItems = Database.getDatabaseItems();
     private static ArrayList<DatabaseItem> databaseItemsFiltered = Database.getDatabaseItemsFiltered();
     private static ArrayList<DatabaseItem> databaseItemsSelected = Database.getDatabaseItemsSelected();
-
     private static ArrayList<String> databaseTagsWhitelist = Database.getDatabaseTagsWhitelist();
     private static ArrayList<String> databaseTagsBlacklist = Database.getDatabaseTagsBlacklist();
+
 
     public static void addTag(String tag) {
         String finalFormat = WordUtils.capitalizeFully(tag);
@@ -28,37 +30,18 @@ public abstract class Filter {
                 Database.getDatabaseTags().sort(Comparator.naturalOrder());
                 Database.getDatabaseTagsWhitelist().add(finalFormat);
                 Database.getDatabaseTagsWhitelist().sort(Comparator.naturalOrder());
-                Backend.getLeftPane().reloadContent();
+                LeftPaneBack.getInstance().reloadContent();
             }
             for (DatabaseItem databaseItem : Database.getDatabaseItemsSelected())
                 if (!databaseItem.getTags().contains(finalFormat)) databaseItem.getTags().add(finalFormat);
-            Backend.getRightPane().reloadContent();
-        }
-    }
-
-    public static void renameTag(String oldTagName) {
-        TextInputDialog renamePrompt = new TextInputDialog();
-        renamePrompt.setTitle("Rename tag");
-        renamePrompt.setHeaderText(null);
-        renamePrompt.setGraphic(null);
-        renamePrompt.setContentText("New name:");
-        String newTagName = oldTagName;
-        Optional<String> result = renamePrompt.showAndWait();
-        if (result.isPresent()) newTagName = result.get();
-        if (!newTagName.isEmpty()) {
-            if (Database.getDatabaseTags().contains(oldTagName)) {
-                Database.getDatabaseTags().set(Database.getDatabaseTags().indexOf(oldTagName), newTagName);
-                Backend.getLeftPane().reloadContent();
-            }
-            for (DatabaseItem databaseItem : Database.getDatabaseItems())
-                if (!databaseItem.getTags().contains(oldTagName))
-                    databaseItem.getTags().set(databaseItem.getTags().indexOf(oldTagName), newTagName);
+            RightPaneBack.getInstance().reloadContent();
         }
     }
 
     public static void removeTag() {
-        if (!Frontend.getRightPane().getListView().getSelectionModel().getSelectedIndices().isEmpty()) {
-            String tag = Frontend.getRightPane().getListView().getSelectionModel().getSelectedItem();
+        MultipleSelectionModel<String> rightPaneSelectionModel = RightPaneFront.getInstance().getListView().getSelectionModel();
+        if (!rightPaneSelectionModel.getSelectedIndices().isEmpty()) {
+            String tag = rightPaneSelectionModel.getSelectedItem();
             for (DatabaseItem databaseItem : Database.getDatabaseItemsSelected())
                 databaseItem.getTags().remove(tag);
             boolean tagExists = false;
@@ -72,8 +55,28 @@ public abstract class Filter {
                 Database.getDatabaseTagsWhitelist().remove(tag);
                 Database.getDatabaseTagsBlacklist().remove(tag);
             }
-            Backend.getLeftPane().reloadContent();
-            Backend.getRightPane().reloadContent();
+            Backend.reloadContent(false);
+        }
+    }
+
+    public static void renameTag(String oldTagName) {
+        TextInputDialog renamePrompt = new TextInputDialog();
+        renamePrompt.setTitle("Rename tag");
+        renamePrompt.setHeaderText(null);
+        renamePrompt.setGraphic(null);
+        renamePrompt.setContentText("New name:");
+        String newTagName = oldTagName;
+        Optional<String> result = renamePrompt.showAndWait();
+        if (result.isPresent())
+            newTagName = result.get();
+        if (!newTagName.isEmpty()) {
+            if (Database.getDatabaseTags().contains(oldTagName)) {
+                Database.getDatabaseTags().set(Database.getDatabaseTags().indexOf(oldTagName), newTagName);
+                LeftPaneBack.getInstance().reloadContent();
+            }
+            for (DatabaseItem databaseItem : Database.getDatabaseItems())
+                if (!databaseItem.getTags().contains(oldTagName))
+                    databaseItem.getTags().set(databaseItem.getTags().indexOf(oldTagName), newTagName);
         }
     }
 

@@ -1,10 +1,11 @@
-package project.frontend.shared;
+package project.frontend.component;
 
 import javafx.scene.paint.Color;
 
 public class ColoredText {
     private String text;
     private Color color;
+
 
     public ColoredText(String text, Color color) {
         this.text = text;
@@ -21,5 +22,9 @@ public class ColoredText {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 }

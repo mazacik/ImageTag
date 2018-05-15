@@ -1,6 +1,6 @@
-package project.backend;
+package project.backend.common;
 
-public class Utility {
+public abstract class Utility {
     public static boolean isInteger(String str) {
         if (str == null) {
             return false;

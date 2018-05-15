@@ -2,37 +2,38 @@ package project.backend;
 
 import javafx.application.Platform;
 import javafx.stage.DirectoryChooser;
-import project.Main;
 import project.backend.common.Keybinds;
-import project.backend.components.GalleryPaneBack;
-import project.backend.components.LeftPaneBack;
-import project.backend.components.PreviewPaneBack;
+import project.backend.listener.Listener;
 import project.backend.database.Database;
-import project.backend.database.DatabaseItem;
-import project.frontend.shared.Frontend;
+import project.backend.database.DatabaseLoader;
+import project.backend.singleton.GalleryPaneBack;
+import project.backend.singleton.LeftPaneBack;
+import project.backend.singleton.PreviewPaneBack;
+import project.frontend.Frontend;
 
 import java.io.File;
-import java.util.Comparator;
 
-public class Backend {
+public abstract class Backend {
+    public static String DIRECTORY_PATH = "C:/abc/dnnsfw";
+
     public static void initialize() {
-        if (Main.DIRECTORY_PATH == null || Main.DIRECTORY_PATH.isEmpty())
-            Backend.setDirectoryPath(showDirectoryPicker());
+        if (DIRECTORY_PATH == null || DIRECTORY_PATH.isEmpty())
+            Backend.setDirectoryPath(showDirectoryChooser());
 
         Keybinds.initialize();
-        Database.initialize();
+        Listener.getInstance(); /* singleton initialization over lazy construction */
+        new DatabaseLoader().start();
     }
 
-    public static void reloadContent() {
-        Database.sort(); //todo: after moving lines below, just change everything from Backend.reloadContent() to Database.sort()
-        LeftPaneBack.reloadContent(); //todo: move
-        if (Frontend.isPreviewFullscreen()) //todo: move
-            PreviewPaneBack.draw();
-        else
-            GalleryPaneBack.reloadContent();
+    public static void reloadContent(boolean sortDatabase) {
+        if (sortDatabase)
+            Database.sort();
+        LeftPaneBack.getInstance().reloadContent();
+        PreviewPaneBack.getInstance().draw();
+        GalleryPaneBack.getInstance().reloadContent();
     }
 
-    private static String showDirectoryPicker() {
+    private static String showDirectoryChooser() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Select working directory");
         directoryChooser.setInitialDirectory(new File("C:/"));
@@ -45,6 +46,6 @@ public class Backend {
     }
 
     private static void setDirectoryPath(String directoryPath) {
-        Main.DIRECTORY_PATH = directoryPath;
+        DIRECTORY_PATH = directoryPath;
     }
 }

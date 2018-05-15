@@ -1,4 +1,4 @@
-package project.frontend.components;
+package project.frontend.singleton;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -6,12 +6,16 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import project.backend.common.Filter;
+import project.frontend.component.TagManager;
 
 public class RightPaneFront extends BorderPane {
+    private static RightPaneFront instance = new RightPaneFront();
+
     private final TextField addTextField = new TextField();
     private final ListView<String> listView = new ListView<>();
 
-    public RightPaneFront() {
+
+    private RightPaneFront() {
         setMinWidth(150);
         setPrefWidth(200);
         setMaxWidth(300);
@@ -48,5 +52,9 @@ public class RightPaneFront extends BorderPane {
 
     public ListView<String> getListView() {
         return listView;
+    }
+
+    public static RightPaneFront getInstance() {
+        return instance;
     }
 }

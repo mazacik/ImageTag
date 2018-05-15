@@ -1,4 +1,4 @@
-package project.frontend.shared;
+package project.frontend;
 
 import javafx.application.Platform;
 import javafx.event.Event;
@@ -10,25 +10,16 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import project.backend.common.Serialization;
-import project.backend.Backend;
-import project.frontend.components.*;
+import project.backend.singleton.PreviewPaneBack;
+import project.frontend.singleton.*;
 
 import java.util.Optional;
 
-public class Frontend {
+public abstract class Frontend {
     private static final BorderPane mainBorderPane = new BorderPane();
     private static final Scene mainScene = new Scene(mainBorderPane);
-    private static final TopPaneFront topPane = new TopPaneFront();
-    private static final LeftPaneFront leftPane = new LeftPaneFront();
-    private static final RightPaneFront rightPane = new RightPaneFront();
-    private static final GalleryPaneFront galleryPane = new GalleryPaneFront();
-    private static final PreviewPaneFront previewPane = new PreviewPaneFront();
     private static final SplitPane splitPane = new SplitPane();
     private static Stage mainStage = null;
-
-    public static boolean isPreviewFullscreen() {
-        return Frontend.getSplitPane().getItems().contains(Frontend.getPreviewPane());
-    }
 
     public static void initialize(Stage primaryStage) {
         mainStage = primaryStage;
@@ -38,13 +29,29 @@ public class Frontend {
         mainStage.setOnCloseRequest(Frontend::showApplicationExitPrompt);
         mainStage.setScene(mainScene);
 
-        splitPane.getItems().addAll(leftPane, galleryPane, rightPane);
+        splitPane.getItems().addAll(LeftPaneFront.getInstance(), GalleryPaneFront.getInstance(), RightPaneFront.getInstance());
         splitPane.setDividerPositions(0.0, 1.0);
 
-        mainBorderPane.setTop(topPane);
+        mainBorderPane.setTop(TopPaneFront.getInstance());
         mainBorderPane.setCenter(splitPane);
 
         mainStage.show();
+    }
+
+    public static boolean isPreviewFullscreen() {
+        return Frontend.getSplitPane().getItems().contains(PreviewPaneFront.getInstance());
+    }
+
+    public static void swapImageDisplayMode() {
+        double[] dividerPositions = getSplitPane().getDividerPositions();
+        if (getSplitPane().getItems().contains(GalleryPaneFront.getInstance())) {
+            getSplitPane().getItems().set(1, PreviewPaneFront.getInstance());
+            PreviewPaneFront.getInstance().setCanvasSize(GalleryPaneFront.getInstance().getWidth(), GalleryPaneFront.getInstance().getHeight());
+            PreviewPaneBack.getInstance().draw();
+        } else {
+            getSplitPane().getItems().set(1, GalleryPaneFront.getInstance());
+        }
+        getSplitPane().setDividerPositions(dividerPositions);
     }
 
     private static void showApplicationExitPrompt(Event event) {
@@ -70,48 +77,16 @@ public class Frontend {
         }
     }
 
-    public static void swapImageDisplayMode() {
-        double[] dividerPositions = getSplitPane().getDividerPositions();
-        if (getSplitPane().getItems().contains(getGalleryPane())) {
-            getSplitPane().getItems().set(1, getPreviewPane());
-            getPreviewPane().setCanvasSize(getGalleryPane().getWidth(), getGalleryPane().getHeight());
-            Backend.getPreviewPane().draw();
-        } else {
-            getSplitPane().getItems().set(1, getGalleryPane());
-        }
-        getSplitPane().setDividerPositions(dividerPositions);
-    }
-
     public static SplitPane getSplitPane() {
         return splitPane;
-    }
-
-    public static GalleryPaneFront getGalleryPane() {
-        return galleryPane;
     }
 
     public static Scene getMainScene() {
         return mainScene;
     }
 
-    public static LeftPaneFront getLeftPane() {
-        return leftPane;
-    }
-
     public static BorderPane getMainBorderPane() {
         return mainBorderPane;
-    }
-
-    public static PreviewPaneFront getPreviewPane() {
-        return previewPane;
-    }
-
-    public static RightPaneFront getRightPane() {
-        return rightPane;
-    }
-
-    public static TopPaneFront getTopPane() {
-        return topPane;
     }
 
     public static Stage getMainStage() {

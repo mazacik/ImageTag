@@ -3,48 +3,57 @@ package project.backend.database;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
 import org.apache.commons.io.FilenameUtils;
+import project.Main;
 import project.backend.Backend;
 import project.backend.common.Serialization;
-import project.Main;
-import project.frontend.shared.ColoredText;
-import project.frontend.shared.Frontend;
+import project.backend.component.GalleryTile;
+import project.frontend.common.AlertWindow;
+import project.frontend.singleton.TopPaneFront;
 
 import javax.imageio.ImageIO;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
-//todo: check, rework?
 public class DatabaseLoader extends Thread {
-    private static final long loadingStartTime = System.currentTimeMillis();
-    private static final ArrayList<DatabaseItem> temporaryItemDatabase = new ArrayList<>();
-    private static final ArrayList<String> temporaryTagsDatabase = new ArrayList<>();
+    private final long loadingStartTime = System.currentTimeMillis();
+    private final ArrayList<DatabaseItem> temporaryItemDatabase = new ArrayList<>();
+    private final ArrayList<String> temporaryTagsDatabase = new ArrayList<>();
+
+    private ArrayList<File> validFiles;
+    private int fileCount;
+
+    public String imageCacheDirectoryName = "imagecache";
+
 
     @Override
     public void run() {
-        /* initialization, deserialization */
-        File imageCacheDirectory = new File(Main.DIRECTORY_PATH + "/imagecache/");
-        if (!imageCacheDirectory.exists()) imageCacheDirectory.mkdir();
-        ArrayList<DatabaseItem> temporaryItemDatabaseLoaded = Serialization.readFromDisk();
+        /* initialization */
+        FilenameFilter filenameFilter = (dir, name) -> name.endsWith(".jpg") || name.endsWith(".JPG") || name.endsWith(".png") || name.endsWith(".PNG") || name.endsWith(".jpeg") || name.endsWith(".JPEG");
+        File[] validFilesArray = new File(Backend.DIRECTORY_PATH).listFiles(filenameFilter);
+        validFiles = (validFilesArray != null) ? new ArrayList<>(Arrays.asList(validFilesArray)) : new ArrayList<>();
+        fileCount = validFiles.size();
 
-        /* loaded database null check, database cache generation */
-        if (temporaryItemDatabaseLoaded == null) generateCache();
-        else {
-            /* load transient variables */
-            temporaryItemDatabase.addAll(temporaryItemDatabaseLoaded);
-            for (DatabaseItem databaseItem : temporaryItemDatabase) {
-                databaseItem.setImage(loadDatabaseItemImage(databaseItem));
-                databaseItem.setImageView(new ImageView(databaseItem.getImage()));
-                databaseItem.getImageView().setFitWidth(Main.GALLERY_ICON_SIZE_PREF);
-                databaseItem.getImageView().setFitHeight(Main.GALLERY_ICON_SIZE_PREF);
-                databaseItem.setColoredText(new ColoredText(databaseItem.getSimpleName(), Color.BLACK));
-            }
+        File imageCacheDirectory = new File(Backend.DIRECTORY_PATH + "/" + imageCacheDirectoryName);
+        if (!imageCacheDirectory.exists())
+            imageCacheDirectory.mkdir();
 
-            /* database size check */
-            if (temporaryItemDatabase.size() != Database.getFileCount()) databaseSizeCheck();
+        /* deserialization, loaded database null check -> database cache generation */
+        if (!temporaryItemDatabase.addAll(Serialization.readFromDisk()) || temporaryItemDatabase.isEmpty())
+            generateCache();
+
+        /* database size check */
+        if (temporaryItemDatabase.size() != fileCount) databaseSizeCheck();
+
+        /* load transient variables */
+        for (DatabaseItem databaseItem : temporaryItemDatabase) {
+            databaseItem.setImage(loadDatabaseItemImage(databaseItem));
+            databaseItem.setGalleryTile(new GalleryTile(databaseItem));
+            databaseItem.getGalleryTile().setFitWidth(Main.GALLERY_ICON_SIZE_PREF);
+            databaseItem.getGalleryTile().setFitHeight(Main.GALLERY_ICON_SIZE_PREF);
         }
 
         /* initialize application databases */
@@ -52,77 +61,73 @@ public class DatabaseLoader extends Thread {
         Database.getDatabaseItemsFiltered().addAll(temporaryItemDatabase);
         for (DatabaseItem databaseItem : temporaryItemDatabase)
             for (String tag : databaseItem.getTags())
-                if (!temporaryTagsDatabase.contains(tag)) temporaryTagsDatabase.add(tag);
-        temporaryTagsDatabase.sort(null);
+                if (!temporaryTagsDatabase.contains(tag))
+                    temporaryTagsDatabase.add(tag);
         Database.getDatabaseTags().addAll(temporaryTagsDatabase);
+        Database.sort();
+
+        /* serialization */
+        Serialization.writeToDisk();
 
         /* request backend content initialization */
-        Platform.runLater(Backend::reloadContent);
-        Platform.runLater(() -> Frontend.getTopPane().getInfoLabel().setText("Loading done in " + Long.toString(System.currentTimeMillis() - loadingStartTime) + " ms"));
-    }
-
-    private DatabaseItem buildDatabaseItem(File file) {
-        DatabaseItem newDatabaseItem = new DatabaseItem();
-        newDatabaseItem.setFullPath(file.getAbsolutePath());
-        newDatabaseItem.setSimpleName(file.getName());
-        newDatabaseItem.setExtension(FilenameUtils.getExtension(file.getName()));
-        newDatabaseItem.setImage(loadDatabaseItemImage(newDatabaseItem));
-        newDatabaseItem.setImageView(new ImageView(newDatabaseItem.getImage()));
-        newDatabaseItem.getImageView().setFitWidth(Main.GALLERY_ICON_SIZE_PREF);
-        newDatabaseItem.getImageView().setFitHeight(Main.GALLERY_ICON_SIZE_PREF);
-        newDatabaseItem.setColoredText(new ColoredText(newDatabaseItem.getSimpleName(), Color.BLACK));
-        newDatabaseItem.setTags(new ArrayList<>());
-        return newDatabaseItem;
+        Platform.runLater(() -> Backend.reloadContent(false));
+        Platform.runLater(() -> TopPaneFront.getInstance().getInfoLabel().setText("Loading done in " + Long.toString(System.currentTimeMillis() - loadingStartTime) + " ms"));
     }
 
     private Image loadDatabaseItemImage(DatabaseItem databaseItem) {
-        String currentItemCachePath = Main.DIRECTORY_PATH + "/imagecache/" + databaseItem.getSimpleName();
+        String currentItemCachePath = Backend.DIRECTORY_PATH + "/imagecache/" + databaseItem.getName();
         File currentItemCacheFile = new File(currentItemCachePath);
 
         /* write loaded image to disk if not present */
         if (!currentItemCacheFile.exists()) {
             try {
                 currentItemCacheFile.createNewFile();
-                Image tempImage = new Image("file:" + databaseItem.getFullPath(), Main.GALLERY_ICON_SIZE_MAX, Main.GALLERY_ICON_SIZE_MAX, false, true);
-                ImageIO.write(SwingFXUtils.fromFXImage(tempImage, null), databaseItem.getExtension(), currentItemCacheFile);
+                Image tempImage = new Image("file:" + Backend.DIRECTORY_PATH + "/" + databaseItem.getName(), Main.GALLERY_ICON_SIZE_MAX, Main.GALLERY_ICON_SIZE_MAX, false, true);
+                ImageIO.write(SwingFXUtils.fromFXImage(tempImage, null), FilenameUtils.getExtension(databaseItem.getName()), currentItemCacheFile);
             } catch (IOException e) {
                 e.printStackTrace();
+                AlertWindow.showErrorAlertSimple(e.toString());
             }
         }
 
-        Platform.runLater(() -> Frontend.getTopPane().getInfoLabel().setText("Loading item " + (temporaryItemDatabase.indexOf(databaseItem) + 1) + " of " + Database.getFileCount() + ", " + (temporaryItemDatabase.indexOf(databaseItem) + 1) * 100 / Database.getFileCount() + "% done"));
+        if (temporaryItemDatabase.indexOf(databaseItem) != 0)
+            Platform.runLater(() -> TopPaneFront.getInstance().getInfoLabel().setText("Loading item " + (temporaryItemDatabase.indexOf(databaseItem) + 1) + " of " + fileCount + ", " + (temporaryItemDatabase.indexOf(databaseItem) + 1) * 100 / fileCount + "% done"));
+        else
+            Platform.runLater(() -> TopPaneFront.getInstance().getInfoLabel().setText("Loading item " + (temporaryItemDatabase.size()) + " of " + fileCount + ", " + (temporaryItemDatabase.indexOf(databaseItem) + 1) * 100 / fileCount + "% done"));
         return new Image("file:" + currentItemCachePath, (double) Main.GALLERY_ICON_SIZE_MAX, (double) Main.GALLERY_ICON_SIZE_MAX, false, true);
     }
 
-    private void databaseSizeCheck() {
-        System.out.println("databaseCacheSize doesn't match validFileCount...");
+    private DatabaseItem buildDatabaseItem(File file) {
+        DatabaseItem newDatabaseItem = new DatabaseItem();
+        newDatabaseItem.setName(file.getName());
+        newDatabaseItem.setTags(new ArrayList<>());
+        return newDatabaseItem;
+    }
 
+    private void databaseSizeCheck() {
+        AlertWindow.showErrorAlertSimple("Database Size Mismatch", "Database cache size does not match file count. Unrecognized items will be added. Missing items will be removed.");
         /* add unrecognized items */
         ArrayList<String> temporaryItemDatabaseItemNames = new ArrayList<>();
         for (DatabaseItem databaseItem : temporaryItemDatabase)
-            temporaryItemDatabaseItemNames.add(databaseItem.getSimpleName());
-        for (File file : Database.getValidFiles())
+            temporaryItemDatabaseItemNames.add(databaseItem.getName());
+        for (File file : validFiles)
             if (!temporaryItemDatabaseItemNames.contains(file.getName())) {
-                DatabaseItem newDatabaseItem = buildDatabaseItem(file);
-                temporaryItemDatabase.add(newDatabaseItem);
+                temporaryItemDatabase.add(buildDatabaseItem(file));
             }
 
         /* remove missing items */
         ArrayList<String> validFilesItemNames = new ArrayList<>();
-        for (File file : Database.getValidFiles())
+        for (File file : validFiles)
             validFilesItemNames.add(file.getName());
         for (DatabaseItem databaseItem : temporaryItemDatabase)
-            if (!validFilesItemNames.contains(databaseItem.getSimpleName()))
+            if (!validFilesItemNames.contains(databaseItem.getName())) {
                 temporaryItemDatabase.remove(databaseItem);
-
-        Serialization.writeToDisk(temporaryItemDatabase);
+            }
     }
 
     private void generateCache() {
-        for (File file : Database.getValidFiles()) {
-            DatabaseItem newDatabaseItem = buildDatabaseItem(file);
-            temporaryItemDatabase.add(newDatabaseItem);
+        for (File file : validFiles) {
+            temporaryItemDatabase.add(buildDatabaseItem(file));
         }
-        Serialization.writeToDisk(temporaryItemDatabase);
     }
 }

@@ -1,15 +1,19 @@
 package project.backend.common;
 
-import project.backend.Backend;
 import project.backend.database.Database;
 import project.backend.database.DatabaseItem;
-import project.frontend.shared.Frontend;
+import project.backend.singleton.PreviewPaneBack;
+import project.frontend.Frontend;
+import project.frontend.singleton.GalleryPaneFront;
+import project.frontend.singleton.RightPaneFront;
 
 import java.util.ArrayList;
 
 public abstract class Selection {
     private static final ArrayList<DatabaseItem> databaseItemsSelected = Database.getDatabaseItemsSelected();
+
     private static DatabaseItem focusedItem = null;
+
 
     public static ArrayList<String> getSelectionTags() {
         if (databaseItemsSelected.isEmpty())
@@ -32,10 +36,10 @@ public abstract class Selection {
     }
 
     public static void add(DatabaseItem databaseItem) {
-        if (!focusedItem.equals(databaseItem))
+        if (focusedItem != databaseItem || focusedItem == null)
             setFocusedItem(databaseItem, false);
         databaseItemsSelected.add(databaseItem);
-        Frontend.getGalleryPane().highlight(databaseItem, true);
+        GalleryPaneFront.getInstance().highlight(databaseItem, true);
         changed();
     }
 
@@ -43,7 +47,7 @@ public abstract class Selection {
         for (DatabaseItem databaseItem : databaseItemsToAddToSelection)
             if (!databaseItemsSelected.contains(databaseItem)) {
                 databaseItemsSelected.add(databaseItem);
-                Frontend.getGalleryPane().highlight(databaseItem, true);
+                GalleryPaneFront.getInstance().highlight(databaseItem, true);
             }
         changed();
     }
@@ -62,23 +66,23 @@ public abstract class Selection {
         if (!focusedItem.equals(databaseItem))
             setFocusedItem(databaseItem, false);
         databaseItemsSelected.remove(databaseItem);
-        Frontend.getGalleryPane().highlight(databaseItem, false);
+        GalleryPaneFront.getInstance().highlight(databaseItem, false);
         changed();
     }
 
     public static void clear() {
         databaseItemsSelected.clear();
-        Frontend.getRightPane().getListView().getItems().clear();
+        RightPaneFront.getInstance().getListView().getItems().clear();
         for (DatabaseItem databaseItem : Database.getDatabaseItems()) {
-            if (databaseItem.getImageView().getEffect() != null)
-                databaseItem.getImageView().setEffect(null);
+            if (databaseItem.getGalleryTile().getEffect() != null)
+                databaseItem.getGalleryTile().setEffect(null);
         }
     }
 
     private static void changed() {
         if (Frontend.isPreviewFullscreen())
-            Backend.getPreviewPane().draw();
-        Frontend.getRightPane().getListView().getItems().setAll(getSelectionTags());
+            PreviewPaneBack.getInstance().draw();
+        RightPaneFront.getInstance().getListView().getItems().setAll(getSelectionTags());
     }
 
     public static void setFocusedItem(DatabaseItem databaseItem, boolean modifySelection) {
