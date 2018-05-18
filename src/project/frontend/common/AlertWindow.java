@@ -2,19 +2,19 @@ package project.frontend.common;
 
 import javafx.scene.control.Alert;
 
-public abstract class AlertWindow {
+public class AlertWindow extends Alert {
 
 
-    public static void showErrorAlertSimple(String errorMessage) {
-        showErrorAlertSimple("Error", errorMessage);
+    public AlertWindow(String errorMessage) {
+        this("Error", errorMessage);
     }
 
-    public static void showErrorAlertSimple(String title, String errorMessage) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setGraphic(null);
-        alert.setContentText(errorMessage);
-        alert.showAndWait();
+    public AlertWindow(String title, String errorMessage) {
+        super(AlertType.INFORMATION);
+        setTitle(title);
+        setHeaderText(null);
+        setGraphic(null);
+        setContentText(errorMessage);
+        show();
     }
 }

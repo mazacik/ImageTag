@@ -17,7 +17,6 @@ public class LeftPaneBack {
     private static final List<String> blacklist = Database.getDatabaseTagsBlacklist();
 
 
-    //todo: add/remove methods
     public void reloadContent() {
         listView.getItems().clear();
         for (String tag : Database.getDatabaseTags()) {

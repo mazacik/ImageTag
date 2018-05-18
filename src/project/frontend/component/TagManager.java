@@ -54,7 +54,7 @@ public class TagManager extends Stage {
             String newTag = addTextField.getText();
 
             if (!Database.getDatabaseTags().contains(newTag)) {
-                Filter.addTag(newTag);
+                Filter.addTagSelectedItems(newTag);
                 listView.getItems().add(new ColoredText(newTag, Color.GREEN));
                 listView.getItems().sort(Comparator.comparing(ColoredText::getText));
             }
@@ -79,7 +79,7 @@ public class TagManager extends Stage {
     }
 
     private void initializeListView() {
-        listView.setOpaqueInsets(new Insets(5));
+        listView.setPadding(new Insets(5));
         listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         ArrayList<String> sharedTags = Filter.getSelectedItemsSharedTags();

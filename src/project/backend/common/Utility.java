@@ -1,7 +1,10 @@
 package project.backend.common;
 
 public abstract class Utility {
-    public static boolean isInteger(String str) {
+
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public static boolean isNumber(String str) {
         if (str == null) {
             return false;
         }
@@ -18,7 +21,7 @@ public abstract class Utility {
         }
         for (; i < length; i++) {
             char c = str.charAt(i);
-            if (c < '0' || c > '9') {
+            if (c == '.' || c < '0' || c > '9') {
                 return false;
             }
         }

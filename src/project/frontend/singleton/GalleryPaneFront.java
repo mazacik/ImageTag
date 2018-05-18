@@ -4,47 +4,27 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
-import project.backend.database.Database;
+import project.backend.common.Settings;
 import project.backend.database.DatabaseItem;
-import project.Main;
 
 public class GalleryPaneFront extends ScrollPane {
-    private static GalleryPaneFront instance = new GalleryPaneFront();
+    private static final GalleryPaneFront instance = new GalleryPaneFront();
 
     private final TilePane tilePane = new TilePane();
     private final InnerShadow highlightEffect = new InnerShadow();
 
+    private int galleryIconSizePref = Settings.getGalleryIconSizePref();
+
 
     private GalleryPaneFront() {
+        setHbarPolicy(ScrollBarPolicy.NEVER);
+        setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+        setMinViewportWidth(galleryIconSizePref);
+        setFitToWidth(true);
+
         tilePane.setVgap(3);
-        tilePane.setPrefTileWidth(Main.GALLERY_ICON_SIZE_PREF);
-        tilePane.setPrefTileHeight(Main.GALLERY_ICON_SIZE_PREF);
-        tilePane.widthProperty().addListener((observable, oldValue, newValue) -> recalculateHgap());
-
-        /* gallery zoom */
-        tilePane.setOnScroll(event -> {
-            if (event.isControlDown()) {
-                event.consume();
-
-                if (event.getDeltaY() < 0) {
-                    Main.GALLERY_ICON_SIZE_PREF -= 10;
-                    if (Main.GALLERY_ICON_SIZE_PREF < Main.GALLERY_ICON_SIZE_MIN)
-                        Main.GALLERY_ICON_SIZE_PREF = Main.GALLERY_ICON_SIZE_MIN;
-                } else {
-                    Main.GALLERY_ICON_SIZE_PREF += 10;
-                    if (Main.GALLERY_ICON_SIZE_PREF > Main.GALLERY_ICON_SIZE_MAX)
-                        Main.GALLERY_ICON_SIZE_PREF = Main.GALLERY_ICON_SIZE_MAX;
-                }
-
-                tilePane.setPrefTileWidth(Main.GALLERY_ICON_SIZE_PREF);
-                tilePane.setPrefTileHeight(Main.GALLERY_ICON_SIZE_PREF);
-                for (DatabaseItem databaseItem : Database.getDatabaseItems()) {
-                    databaseItem.getGalleryTile().setFitWidth(Main.GALLERY_ICON_SIZE_PREF);
-                    databaseItem.getGalleryTile().setFitHeight(Main.GALLERY_ICON_SIZE_PREF);
-                }
-                recalculateHgap();
-            }
-        });
+        tilePane.setPrefTileWidth(galleryIconSizePref);
+        tilePane.setPrefTileHeight(galleryIconSizePref);
 
         highlightEffect.setColor(Color.RED);
         highlightEffect.setOffsetX(0);
@@ -53,27 +33,14 @@ public class GalleryPaneFront extends ScrollPane {
         highlightEffect.setHeight(5);
         highlightEffect.setChoke(1);
 
-        setOnContextMenuRequested(event -> getContextMenu().show(this, event.getScreenX(), event.getScreenY()));
-        setHbarPolicy(ScrollBarPolicy.NEVER);
-        setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
-        setMinViewportWidth(Main.GALLERY_ICON_SIZE_PREF);
-        setFitToWidth(true);
         setContent(tilePane);
     }
 
-    public void highlight(DatabaseItem databaseItem, boolean visible) {
+    public void setGalleryTileHighlight(DatabaseItem databaseItem, boolean visible) {
         if (visible)
             databaseItem.getGalleryTile().setEffect(highlightEffect);
         else
             databaseItem.getGalleryTile().setEffect(null);
-    }
-
-    private void recalculateHgap() {
-        if (getColumnCount() != 0) tilePane.setHgap((int) tilePane.getWidth() % (int) tilePane.getPrefTileWidth() / getColumnCount());
-    }
-
-    private int getColumnCount() {
-        return (int) tilePane.getWidth() / (int) tilePane.getPrefTileWidth();
     }
 
     public TilePane getTilePane() {

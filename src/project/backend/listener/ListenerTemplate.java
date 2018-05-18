@@ -50,6 +50,10 @@ public abstract class ListenerTemplate {
 
     public static void setColoredTextContextMenu(ListCell<ColoredText> source, ColoredText coloredText) {
         ContextMenu contextMenu = new ContextMenu();
+        MenuItem menuAdd = new MenuItem("Add");
+        menuAdd.setOnAction(event -> Filter.addTagToDatabase());
+        MenuItem menuRemove = new MenuItem("Remove");
+        menuRemove.setOnAction(event -> Filter.removeTagFromDatabase(coloredText.getText()));
         MenuItem menuRename = new MenuItem("Rename");
         menuRename.setOnAction(event -> Filter.renameTag(coloredText.getText()));
         contextMenu.getItems().addAll(menuRename);

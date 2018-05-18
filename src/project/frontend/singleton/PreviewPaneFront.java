@@ -4,7 +4,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Pane;
 
 public class PreviewPaneFront extends Pane {
-    private static PreviewPaneFront instance = new PreviewPaneFront();
+    private static final PreviewPaneFront instance = new PreviewPaneFront();
 
     private final Canvas canvas = new Canvas();
 

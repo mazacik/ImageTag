@@ -2,21 +2,23 @@ package project;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import project.backend.Backend;
-import project.frontend.Frontend;
+import project.frontend.common.IntroWindow;
 
 public class Main extends Application {
-    public static final int GALLERY_ICON_SIZE_MAX = 200;
-    public static final int GALLERY_ICON_SIZE_MIN = 100;
-    public static int GALLERY_ICON_SIZE_PREF = 150;
+    private static Stage mainStage;
+
 
     @Override
     public void start(Stage primaryStage) {
-        Frontend.initialize(primaryStage);
-        Backend.initialize();
+        mainStage = primaryStage;
+        new IntroWindow(mainStage);
     }
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public static Stage getMainStage() {
+        return mainStage;
     }
 }

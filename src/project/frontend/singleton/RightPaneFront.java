@@ -9,49 +9,42 @@ import project.backend.common.Filter;
 import project.frontend.component.TagManager;
 
 public class RightPaneFront extends BorderPane {
-    private static RightPaneFront instance = new RightPaneFront();
+    private static final RightPaneFront instance = new RightPaneFront();
 
-    private final TextField addTextField = new TextField();
     private final ListView<String> listView = new ListView<>();
+    private final TextField addTextField = new TextField();
+    private final Button addButton = new Button("+");
 
 
     private RightPaneFront() {
         setMinWidth(150);
         setPrefWidth(200);
         setMaxWidth(300);
-        setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER) addTag();
-            else if (event.getCode() == KeyCode.DELETE) Filter.removeTag();
-        });
-        ContextMenu listContextMenu = new ContextMenu();
-        MenuItem menuRemoveTag = new MenuItem("Remove");
-        menuRemoveTag.setOnAction(event -> Filter.removeTag());
-        listContextMenu.getItems().add(menuRemoveTag);
-        listView.setContextMenu(listContextMenu);
-        listView.setOnContextMenuRequested(event -> listContextMenu.show(listView, event.getScreenX(), event.getScreenY()));
-        Button addButton = new Button("+");
+
         addButton.setStyle("-fx-focus-color: transparent;");
         addButton.setMinWidth(25);
-        addButton.setOnAction(event -> addTag());
+
+        listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
         HBox addPane = new HBox();
         addPane.setAlignment(Pos.CENTER);
         addPane.setSpacing(5);
         addPane.getChildren().addAll(addTextField, addButton);
+
         setCenter(listView);
         setBottom(addPane);
     }
 
-    private void addTag() {
-        if (addTextField.getText().isEmpty())
-            new TagManager();
-        else {
-            Filter.addTag(addTextField.getText());
-            addTextField.clear();
-        }
-    }
-
     public ListView<String> getListView() {
         return listView;
+    }
+
+    public TextField getAddTextField() {
+        return addTextField;
+    }
+
+    public Button getAddButton() {
+        return addButton;
     }
 
     public static RightPaneFront getInstance() {

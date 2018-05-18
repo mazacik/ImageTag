@@ -7,7 +7,7 @@ import project.backend.listener.ListenerTemplate;
 import project.frontend.component.ColoredText;
 
 public class LeftPaneFront extends BorderPane {
-    private static LeftPaneFront instance = new LeftPaneFront();
+    private static final LeftPaneFront instance = new LeftPaneFront();
 
     private final ListView<ColoredText> listView = new ListView<>();
 
@@ -16,6 +16,7 @@ public class LeftPaneFront extends BorderPane {
         setMinWidth(150);
         setPrefWidth(200);
         setMaxWidth(300);
+
         setCellFactory();
         setCenter(listView);
     }

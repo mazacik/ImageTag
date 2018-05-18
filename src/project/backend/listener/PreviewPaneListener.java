@@ -4,15 +4,15 @@ import javafx.beans.value.ChangeListener;
 import project.backend.singleton.PreviewPaneBack;
 import project.frontend.singleton.PreviewPaneFront;
 
-public class Listener {
-    private static final Listener instance = new Listener();
+public class PreviewPaneListener {
+    private static final PreviewPaneListener instance = new PreviewPaneListener();
 
 
-    private Listener() {
-        setPreviewPaneOnResizeListener();
+    private PreviewPaneListener() {
+        setSizePropertyListener();
     }
 
-    private void setPreviewPaneOnResizeListener() {
+    private void setSizePropertyListener() {
         PreviewPaneFront previewPaneFront = PreviewPaneFront.getInstance();
         ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) -> {
             previewPaneFront.setCanvasSize(previewPaneFront.getWidth(), previewPaneFront.getHeight());
@@ -22,7 +22,7 @@ public class Listener {
         previewPaneFront.heightProperty().addListener(previewPaneSizeListener);
     }
 
-    public static Listener getInstance() {
+    public static PreviewPaneListener getInstance() {
         return instance;
     }
 }

@@ -13,7 +13,6 @@ public class GalleryPaneBack {
     private final ObservableList<Node> galleryTiles = GalleryPaneFront.getInstance().getTilePane().getChildren();
 
 
-    //todo: methods to add/remove instead of reload all
     public void reloadContent() {
         if (Frontend.isPreviewFullscreen()) return;
         galleryTiles.clear();

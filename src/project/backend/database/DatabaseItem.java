@@ -11,6 +11,7 @@ public class DatabaseItem implements Serializable {
 
     private String name;
     private ArrayList<String> tags;
+
     private transient Image image;
     private transient GalleryTile galleryTile;
 

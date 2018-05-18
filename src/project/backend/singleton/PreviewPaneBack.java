@@ -3,8 +3,8 @@ package project.backend.singleton;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import project.backend.Backend;
 import project.backend.common.Selection;
+import project.backend.common.Settings;
 import project.backend.database.DatabaseItem;
 import project.frontend.Frontend;
 import project.frontend.singleton.PreviewPaneFront;
@@ -46,7 +46,7 @@ public class PreviewPaneBack {
 
     private void loadImage() {
         currentDatabaseItem = Selection.getFocusedItem();
-        currentPreviewImage = new Image("file:" + Backend.DIRECTORY_PATH + "/" + Selection.getFocusedItem().getName());
+        currentPreviewImage = new Image("file:" + Settings.getMainDirectoryPath() + "/" + Selection.getFocusedItem().getName());
     }
 
     public static PreviewPaneBack getInstance() {

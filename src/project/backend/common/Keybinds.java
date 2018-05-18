@@ -7,10 +7,11 @@ import project.frontend.Frontend;
 import java.util.ArrayList;
 import java.util.Random;
 
-public abstract class Keybinds {
+public class Keybinds {
+    private static final Keybinds instance = new Keybinds();
 
 
-    public static void initialize() {
+    private Keybinds() {
         Frontend.getMainScene().setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case R:
@@ -32,5 +33,9 @@ public abstract class Keybinds {
 
     private static void swapImageDisplayMode() {
         Frontend.swapImageDisplayMode();
+    }
+
+    public static Keybinds getInstance() {
+        return instance;
     }
 }

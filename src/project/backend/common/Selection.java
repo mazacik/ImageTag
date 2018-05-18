@@ -39,7 +39,7 @@ public abstract class Selection {
         if (focusedItem != databaseItem || focusedItem == null)
             setFocusedItem(databaseItem, false);
         databaseItemsSelected.add(databaseItem);
-        GalleryPaneFront.getInstance().highlight(databaseItem, true);
+        GalleryPaneFront.getInstance().setGalleryTileHighlight(databaseItem, true);
         changed();
     }
 
@@ -47,7 +47,7 @@ public abstract class Selection {
         for (DatabaseItem databaseItem : databaseItemsToAddToSelection)
             if (!databaseItemsSelected.contains(databaseItem)) {
                 databaseItemsSelected.add(databaseItem);
-                GalleryPaneFront.getInstance().highlight(databaseItem, true);
+                GalleryPaneFront.getInstance().setGalleryTileHighlight(databaseItem, true);
             }
         changed();
     }
@@ -57,16 +57,11 @@ public abstract class Selection {
         add(databaseItem);
     }
 
-    public static void set(ArrayList<DatabaseItem> itemArrayList) {
-        clear();
-        add(itemArrayList);
-    }
-
     public static void remove(DatabaseItem databaseItem) {
         if (!focusedItem.equals(databaseItem))
             setFocusedItem(databaseItem, false);
         databaseItemsSelected.remove(databaseItem);
-        GalleryPaneFront.getInstance().highlight(databaseItem, false);
+        GalleryPaneFront.getInstance().setGalleryTileHighlight(databaseItem, false);
         changed();
     }
 
