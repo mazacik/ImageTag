@@ -2,23 +2,22 @@ package project;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import project.frontend.common.IntroWindow;
+import project.customdialog.IntroWindow;
 
 public class Main extends Application {
-    private static Stage mainStage;
-
+    private static Stage introStage;
 
     @Override
     public void start(Stage primaryStage) {
-        mainStage = primaryStage;
-        new IntroWindow(mainStage);
+        introStage = primaryStage;
+        new IntroWindow(introStage);
     }
 
     public static void main(String[] args) {
         launch(args);
     }
 
-    public static Stage getMainStage() {
-        return mainStage;
+    public static Stage getIntroStage() {
+        return introStage;
     }
 }
