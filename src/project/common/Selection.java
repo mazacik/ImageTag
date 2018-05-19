@@ -41,10 +41,10 @@ public class Selection {
     }
 
     public void add(DatabaseItem databaseItem) {
-        if (GalleryPaneFront.getInstance().getFocusedItem() != databaseItem || GalleryPaneFront.getInstance().getFocusedItem() == null)
-            GalleryPaneFront.getInstance().setFocusedItem(databaseItem);
+        GalleryPaneFront galleryPaneFront = GalleryPaneFront.getInstance();
+        galleryPaneFront.setCurrentFocusedItem(databaseItem);
         databaseItemsSelected.add(databaseItem);
-        databaseItem.getGalleryTile().setHighlight(true);
+        databaseItem.getGalleryTile().generateEffect(databaseItem);
         changed();
     }
 
@@ -52,7 +52,7 @@ public class Selection {
         for (DatabaseItem databaseItem : databaseItemsToAddToSelection)
             if (!databaseItemsSelected.contains(databaseItem)) {
                 databaseItemsSelected.add(databaseItem);
-                databaseItem.getGalleryTile().setHighlight(true);
+                databaseItem.getGalleryTile().generateEffect(databaseItem);
             }
         changed();
     }
@@ -63,10 +63,10 @@ public class Selection {
     }
 
     public void remove(DatabaseItem databaseItem) {
-        if (!GalleryPaneFront.getInstance().getFocusedItem().equals(databaseItem))
-            GalleryPaneFront.getInstance().setFocusedItem(databaseItem);
+        if (!GalleryPaneFront.getInstance().getCurrentFocusedItem().equals(databaseItem))
+            GalleryPaneFront.getInstance().setCurrentFocusedItem(databaseItem);
         databaseItemsSelected.remove(databaseItem);
-        databaseItem.getGalleryTile().setHighlight(false);
+        databaseItem.getGalleryTile().generateEffect(databaseItem);
         changed();
     }
 
@@ -81,8 +81,7 @@ public class Selection {
         databaseItemsSelected.clear();
         RightPaneFront.getInstance().getListView().getItems().clear();
         for (DatabaseItem databaseItem : Database.getDatabaseItems()) {
-            if (databaseItem.getGalleryTile().getEffect() != null)
-                databaseItem.getGalleryTile().setEffect(null);
+            databaseItem.getGalleryTile().generateEffect(databaseItem);
         }
     }
 

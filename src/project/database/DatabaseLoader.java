@@ -45,7 +45,7 @@ public class DatabaseLoader extends Thread {
             imageCacheDirectory.mkdir();
 
         /* deserialization, loaded database null check, database size check -> database cache generation */
-        if (!loaderItemDatabase.addAll(Serialization.readFromDisk()) || loaderItemDatabase.isEmpty() || loaderItemDatabase.size() != fileCount) {
+        if (!new File(Settings.getDatabaseCacheFilePath()).exists() || !loaderItemDatabase.addAll(Serialization.readFromDisk()) || loaderItemDatabase.isEmpty() || loaderItemDatabase.size() != fileCount) {
             regenerateDatabaseCache();
             loaderItemDatabase.sort(Comparator.comparing(DatabaseItem::getName));
             loaderTagsDatabase.sort(Comparator.naturalOrder());

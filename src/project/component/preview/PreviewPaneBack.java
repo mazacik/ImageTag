@@ -32,8 +32,8 @@ public class PreviewPaneBack {
     /* public methods */
     public void reloadContent() {
         if (!Utility.isPreviewFullscreen()) return;
-        if (GalleryPaneFront.getInstance().getFocusedItem() == null) return;
-        if (!GalleryPaneFront.getInstance().getFocusedItem().equals(currentDatabaseItem)) loadImage();
+        if (GalleryPaneFront.getInstance().getCurrentFocusedItem() == null) return;
+        if (!GalleryPaneFront.getInstance().getCurrentFocusedItem().equals(currentDatabaseItem)) loadImage();
 
         double imageWidth = currentPreviewImage.getWidth();
         double imageHeight = currentPreviewImage.getHeight();
@@ -59,7 +59,7 @@ public class PreviewPaneBack {
 
     /* private methods */
     private void loadImage() {
-        currentDatabaseItem = GalleryPaneFront.getInstance().getFocusedItem();
+        currentDatabaseItem = GalleryPaneFront.getInstance().getCurrentFocusedItem();
         currentPreviewImage = new Image("file:" + Settings.getMainDirectoryPath() + "/" + currentDatabaseItem.getName());
     }
 }

@@ -30,12 +30,12 @@ public class Keybinds {
                 case F12:
                     swapImageDisplayMode(); break;
                 case Q:
-                    Selection.getInstance().swap(GalleryPaneFront.getInstance().getFocusedItem()); break;
+                    Selection.getInstance().swap(GalleryPaneFront.getInstance().getCurrentFocusedItem()); break;
                 case W:
                 case A:
                 case S:
                 case D:
-                    moveFocusMarker(event.getCode()); break;
+                    moveFocus(event.getCode()); break;
                 default:
                     break;
             }
@@ -54,23 +54,25 @@ public class Keybinds {
         Utility.swapImageDisplayMode();
     }
 
-    private void moveFocusMarker(KeyCode keyCode) {
-        DatabaseItem focusedItem = GalleryPaneFront.getInstance().getFocusedItem();
-        if (focusedItem == null) return;
-
-        int newMarkPosition = databaseItemsFiltered.indexOf(focusedItem);
-
-        if (keyCode.equals(KeyCode.W)) {
-            newMarkPosition -= GalleryPaneBack.getInstance().getColumnCount();
-        } else if (keyCode.equals(KeyCode.A)) {
-            newMarkPosition -= 1;
-        } else if (keyCode.equals(KeyCode.S)) {
-            newMarkPosition += GalleryPaneBack.getInstance().getColumnCount();
-        } else if (keyCode.equals(KeyCode.D)) {
-            newMarkPosition += 1;
+    private void moveFocus(KeyCode keyCode) {
+        DatabaseItem focusedItem = GalleryPaneFront.getInstance().getCurrentFocusedItem();
+        if (focusedItem == null) {
+            DatabaseItem firstItem = Database.getDatabaseItemsFiltered().get(0);
+            GalleryPaneFront.getInstance().setCurrentFocusedItem(firstItem);
+            focusedItem = firstItem;
         }
 
-        DatabaseItem newMarkedItem = databaseItemsFiltered.get(newMarkPosition);
-        GalleryPaneFront.getInstance().markGalleryTile(newMarkedItem);
+        int newFocusPosition = databaseItemsFiltered.indexOf(focusedItem);
+        if (keyCode.equals(KeyCode.W)) {
+            newFocusPosition -= GalleryPaneBack.getInstance().getColumnCount();
+        } else if (keyCode.equals(KeyCode.A)) {
+            newFocusPosition -= 1;
+        } else if (keyCode.equals(KeyCode.S)) {
+            newFocusPosition += GalleryPaneBack.getInstance().getColumnCount();
+        } else if (keyCode.equals(KeyCode.D)) {
+            newFocusPosition += 1;
+        }
+
+        GalleryPaneFront.getInstance().focusTile(databaseItemsFiltered.get(newFocusPosition));
     }
 }

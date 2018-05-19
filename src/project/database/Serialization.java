@@ -1,43 +1,56 @@
 package project.database;
 
-import javafx.application.Platform;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import project.common.Settings;
-import project.customdialog.generic.AlertWindow;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 
 public abstract class Serialization {
     /* imports */
     private static final String databaseCacheFilePath = Settings.getDatabaseCacheFilePath();
-
     /* public methods */
     public static void writeToDisk() {
         writeToDisk(Database.getDatabaseItems());
     }
 
     public static void writeToDisk(ArrayList<DatabaseItem> itemDatabase) {
+        GsonBuilder GSONBuilder = new GsonBuilder();
+        GSONBuilder.setPrettyPrinting().serializeNulls();
+        Gson GSON = GSONBuilder.create();
+
+        Type databaseItemListType = new TypeToken<Collection<DatabaseItem>>() {}.getType();
+        String JSON = GSON.toJson(itemDatabase, databaseItemListType);
         try {
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(databaseCacheFilePath));
-            objectOutputStream.writeObject(itemDatabase);
-            objectOutputStream.close();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(databaseCacheFilePath));
+            writer.write(JSON);
+            writer.flush();
+            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public static ArrayList<DatabaseItem> readFromDisk() {
+        GsonBuilder GSONBuilder = new GsonBuilder();
+        GSONBuilder.setPrettyPrinting().serializeNulls();
+        Gson GSON = GSONBuilder.create();
+
+        Type databaseItemListType = new TypeToken<Collection<DatabaseItem>>() {}.getType();
+        String JSON = "";
         try {
-            ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(databaseCacheFilePath));
-            ArrayList<DatabaseItem> itemDatabase = (ArrayList<DatabaseItem>) objectInputStream.readObject();
-            objectInputStream.close();
-            return itemDatabase != null ? itemDatabase : new ArrayList<>();
+            JSON = new String(Files.readAllBytes(Paths.get(databaseCacheFilePath)));
         } catch (IOException e) {
-            Platform.runLater(() -> new AlertWindow("Database Loading Failed", "java.io.IOException: Database cache not found. Rebuilding cache."));
-            return new ArrayList<>();
-        } catch (ClassNotFoundException e) {
-            Platform.runLater(() -> new AlertWindow("Database Loading Failed", "java.io.ClassNotFoundException: Serialization class incompatible. Rebuilding cache."));
-            return new ArrayList<>();
+            e.printStackTrace();
         }
+        return GSON.fromJson(JSON, databaseItemListType);
     }
 }

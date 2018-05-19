@@ -7,8 +7,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class DatabaseItem implements Serializable {
-    private static final long serialVersionUID = 1L;
-
     /* variables */
     private String name;
     private ArrayList<String> tags;

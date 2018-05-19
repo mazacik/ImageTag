@@ -2,6 +2,7 @@ package project.component.gallery.part;
 
 import javafx.scene.effect.Blend;
 import javafx.scene.effect.BlendMode;
+import javafx.scene.effect.ColorInput;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -9,6 +10,7 @@ import javafx.scene.paint.Color;
 import project.common.Selection;
 import project.common.Settings;
 import project.component.gallery.GalleryPaneFront;
+import project.database.Database;
 import project.database.DatabaseItem;
 
 public class GalleryTile extends ImageView {
@@ -16,7 +18,7 @@ public class GalleryTile extends ImageView {
     private final int galleryIconSizePref = Settings.getGalleryIconSizePref();
 
     /* variables */
-    private final Blend selectionHighlight = buildSelectionHighlight();
+    private static InnerShadow selectionBorder = buildSelectionBorderEffect();
 
     /* constructors */
     public GalleryTile(DatabaseItem databaseItem) {
@@ -26,29 +28,35 @@ public class GalleryTile extends ImageView {
         setOnMouseClick(databaseItem);
     }
 
+    //todo: fix me
     /* public methods */
-    public void setHighlight() {
-        if (getEffect() != buildSelectionHighlight()) setEffect(buildSelectionHighlight());
-        else setEffect(null);
+    public void generateEffect(DatabaseItem databaseItem) {
+        boolean selection = Database.getDatabaseItemsSelected().contains(databaseItem);
+        boolean focus = GalleryPaneFront.getInstance().getCurrentFocusedItem().equals(databaseItem);
+
+        if (!selection && !focus) {
+            databaseItem.getGalleryTile().setEffect(null);
+        } else if (!selection && focus) {
+            int markSize = 6;
+            int markPosition = (galleryIconSizePref - markSize) / 2;
+            Blend effect = new Blend();
+            effect.setTopInput(new ColorInput(markPosition, markPosition, markSize, markSize, Color.RED));
+            databaseItem.getGalleryTile().setEffect(effect);
+        } else if (selection && !focus) {
+            databaseItem.getGalleryTile().setEffect(selectionBorder);
+        } else if (selection && focus) {
+            int markSize = 6;
+            int markPosition = (galleryIconSizePref - markSize) / 2;
+            Blend effect = new Blend();
+            effect.setTopInput(selectionBorder);
+            effect.setBottomInput(new ColorInput(markPosition, markPosition, markSize, markSize, Color.RED));
+            effect.setMode(BlendMode.OVERLAY);
+            databaseItem.getGalleryTile().setEffect(effect);
+        }
     }
 
-    public void setHighlight(boolean value) {
-        if (value) setEffect(selectionHighlight);
-        else setEffect(null);
-    }
-
-    /* event methods */
-    private void setOnMouseClick(DatabaseItem databaseItem) {
-        setOnMouseClicked(event -> {
-            if (event.getButton().equals(MouseButton.PRIMARY)) {
-                GalleryPaneFront.getInstance().setFocusedItem(databaseItem);
-                Selection.getInstance().swap(databaseItem);
-            }
-        });
-    }
-
-    /* builder methods */
-    private Blend buildSelectionHighlight() {
+    /* private methods */
+    private static InnerShadow buildSelectionBorderEffect() {
         InnerShadow innerShadow = new InnerShadow();
         innerShadow.setColor(Color.RED);
         innerShadow.setOffsetX(0);
@@ -56,11 +64,16 @@ public class GalleryTile extends ImageView {
         innerShadow.setWidth(5);
         innerShadow.setHeight(5);
         innerShadow.setChoke(1);
+        return innerShadow;
+    }
 
-        Blend highlightEffect = new Blend();
-        highlightEffect.setTopInput(innerShadow);
-        highlightEffect.setBottomInput(getEffect());
-        highlightEffect.setMode(BlendMode.SRC_OVER);
-        return highlightEffect;
+    /* event methods */
+    private void setOnMouseClick(DatabaseItem databaseItem) {
+        setOnMouseClicked(event -> {
+            if (event.getButton().equals(MouseButton.PRIMARY)) {
+                GalleryPaneFront.getInstance().setCurrentFocusedItem(databaseItem);
+                Selection.getInstance().swap(databaseItem);
+            }
+        });
     }
 }

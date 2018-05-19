@@ -82,7 +82,7 @@ public class IntroWindow {
             String mainDirectoryPath = new DirectoryChooserWindow("Choose Main Directory Path", "C:\\").getResultValue();
             textFieldMainDirectory.setText(mainDirectoryPath);
             textFieldImageCacheDirectory.setText(mainDirectoryPath + "\\imagecache");
-            textFieldDatabaseCacheFile.setText(mainDirectoryPath + "\\database.cache");
+            textFieldDatabaseCacheFile.setText(mainDirectoryPath + "\\databasecache.json");
         });
         buttonImageCacheDirectory.setOnAction(event -> {
             String imageCacheDirectoryPath = new DirectoryChooserWindow("Choose Image Cache Directory Path", "C:\\").getResultValue();
