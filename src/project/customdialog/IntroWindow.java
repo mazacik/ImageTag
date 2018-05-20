@@ -8,8 +8,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import project.common.Settings;
 import project.GUIController;
+import project.common.Settings;
 import project.customdialog.generic.DirectoryChooserWindow;
 import project.database.DatabaseLoader;
 
@@ -55,6 +55,7 @@ public class IntroWindow {
         addComponentsToGrid();
 
         introStage.show();
+        buttonMainDirectory.requestFocus();
         introStage.centerOnScreen();
     }
 
@@ -97,6 +98,7 @@ public class IntroWindow {
             Settings.setMainDirectoryPath(textFieldMainDirectory.getText());
             Settings.setImageCacheDirectoryPath(textFieldImageCacheDirectory.getText());
             Settings.setDatabaseCacheFilePath(textFieldDatabaseCacheFile.getText());
+            Settings.writeToFile();
             startLoading();
         });
 

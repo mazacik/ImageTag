@@ -44,15 +44,20 @@ public class DatabaseLoader extends Thread {
         if (!imageCacheDirectory.exists())
             imageCacheDirectory.mkdir();
 
-        /* deserialization, loaded database null check, database size check -> database cache generation */
+        /* deserialization, loaded database null check, database size check -> database cache regeneration */
         if (!new File(Settings.getDatabaseCacheFilePath()).exists() || !loaderItemDatabase.addAll(Serialization.readFromDisk()) || loaderItemDatabase.isEmpty() || loaderItemDatabase.size() != fileCount) {
+            if (loaderItemDatabase.size() != fileCount)
+                Platform.runLater(() -> new AlertWindow("Database Cache Size Mismatch", "Database cache size does not match file count.\n Unrecognized items will be added. Missing items will be removed."));
+            else
+                Platform.runLater(() -> new AlertWindow("Database Cache Read Error", "There was an error reading the database cache file."));
+
             regenerateDatabaseCache();
             loaderItemDatabase.sort(Comparator.comparing(DatabaseItem::getName));
             loaderTagsDatabase.sort(Comparator.naturalOrder());
             Serialization.writeToDisk();
         }
 
-        /* load transient variables */
+        /* readFromFile transient variables */
         for (DatabaseItem databaseItem : loaderItemDatabase) {
             databaseItem.setImage(loadDatabaseItemImage(databaseItem));
             databaseItem.setGalleryTile(new GalleryTile(databaseItem));
@@ -103,7 +108,6 @@ public class DatabaseLoader extends Thread {
     }
 
     private void regenerateDatabaseCache() {
-        Platform.runLater(() -> new AlertWindow("Database Size Mismatch", "Database cache size does not match file count. Unrecognized items will be added. Missing items will be removed."));
         /* add unrecognized items */
         ArrayList<String> temporaryItemDatabaseItemNames = new ArrayList<>();
         for (DatabaseItem databaseItem : loaderItemDatabase)
