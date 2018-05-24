@@ -47,7 +47,7 @@ public class Keybinds {
         ArrayList<DatabaseItem> databaseItemsFiltered = Database.getDatabaseItemsFiltered();
         int databaseItemsFilteredSize = databaseItemsFiltered.size();
         int randomIndex = new Random().nextInt(databaseItemsFilteredSize);
-        Selection.getInstance().set(databaseItemsFiltered.get(randomIndex));
+        GalleryPaneFront.getInstance().focusTile(databaseItemsFiltered.get(randomIndex));
     }
 
     private void swapImageDisplayMode() {
@@ -58,7 +58,7 @@ public class Keybinds {
         DatabaseItem focusedItem = GalleryPaneFront.getInstance().getCurrentFocusedItem();
         if (focusedItem == null) {
             DatabaseItem firstItem = Database.getDatabaseItemsFiltered().get(0);
-            GalleryPaneFront.getInstance().setCurrentFocusedItem(firstItem);
+            GalleryPaneFront.getInstance().focusTile(firstItem);
             focusedItem = firstItem;
         }
 
@@ -73,6 +73,7 @@ public class Keybinds {
             newFocusPosition += 1;
         }
 
+        if (newFocusPosition >= 0 && newFocusPosition < databaseItemsFiltered.size())
         GalleryPaneFront.getInstance().focusTile(databaseItemsFiltered.get(newFocusPosition));
     }
 }

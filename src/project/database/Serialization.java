@@ -30,9 +30,8 @@ public abstract class Serialization {
         Type databaseItemListType = new TypeToken<Collection<DatabaseItem>>() {}.getType();
         String JSON = GSON.toJson(itemDatabase, databaseItemListType);
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(databaseCacheFilePath));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(databaseCacheFilePath, false));
             writer.write(JSON);
-            writer.flush();
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();

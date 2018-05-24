@@ -3,6 +3,9 @@ package project.component.gallery;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.TilePane;
 import project.common.Settings;
+import project.component.preview.PreviewPaneBack;
+import project.component.right.RightPaneBack;
+import project.component.top.TopPaneFront;
 import project.database.DatabaseItem;
 
 public class GalleryPaneFront extends ScrollPane {
@@ -50,6 +53,11 @@ public class GalleryPaneFront extends ScrollPane {
         /* remove old marker */
         if (previousFocusedItem != null)
             previousFocusedItem.getGalleryTile().generateEffect(previousFocusedItem);
+
+        TopPaneFront.getInstance().getInfoLabelMenu().setText(databaseItem.getName());
+        RightPaneBack.getInstance().reloadContent();
+        GalleryPaneBack.getInstance().reloadContent();
+        PreviewPaneBack.getInstance().reloadContent();
     }
 
     /* getters */

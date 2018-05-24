@@ -8,13 +8,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import project.GUIController;
+import project.Main;
 import project.common.Settings;
 import project.customdialog.generic.DirectoryChooserWindow;
-import project.database.DatabaseLoader;
 
-public class IntroWindow {
-    private Stage introStage;
+public class IntroWindow extends Stage {
     private GridPane introPane = new GridPane();
     private Scene introScene = new Scene(introPane);
 
@@ -30,13 +28,11 @@ public class IntroWindow {
 
     private Button buttonOK = new Button("OK");
 
-
-    public IntroWindow(Stage primaryStage) {
+    public IntroWindow() {
         /* stage */
-        introStage = primaryStage;
-        introStage.setTitle("JavaExplorer Settings");
-        introStage.setScene(introScene);
-        introStage.setResizable(false);
+        setTitle("JavaExplorer Settings");
+        setScene(introScene);
+        setResizable(false);
 
         /* pane */
         introPane.setPadding(new Insets(10));
@@ -54,9 +50,9 @@ public class IntroWindow {
         setListeners();
         addComponentsToGrid();
 
-        introStage.show();
+        show();
+        centerOnScreen();
         buttonMainDirectory.requestFocus();
-        introStage.centerOnScreen();
     }
 
     private void addComponentsToGrid() {
@@ -72,34 +68,30 @@ public class IntroWindow {
         introPane.add(buttonOK, 2, 4);
     }
 
-    private void startLoading() {
-        GUIController.getInstance();
-        new DatabaseLoader().start();
-        introStage.close();
-    }
-
     private void setListeners() {
         buttonMainDirectory.setOnAction(event -> {
-            String mainDirectoryPath = new DirectoryChooserWindow("Choose Main Directory Path", "C:\\").getResultValue();
+            String mainDirectoryPath = new DirectoryChooserWindow(this, "Choose Main Directory Path", "C:\\").getResultValue();
             textFieldMainDirectory.setText(mainDirectoryPath);
             textFieldImageCacheDirectory.setText(mainDirectoryPath + "\\imagecache");
             textFieldDatabaseCacheFile.setText(mainDirectoryPath + "\\databasecache.json");
         });
         buttonImageCacheDirectory.setOnAction(event -> {
-            String imageCacheDirectoryPath = new DirectoryChooserWindow("Choose Image Cache Directory Path", "C:\\").getResultValue();
+            String imageCacheDirectoryPath = new DirectoryChooserWindow(this, "Choose Image Cache Directory Path", "C:\\").getResultValue();
             textFieldImageCacheDirectory.setText(imageCacheDirectoryPath);
         });
         buttonDatabaseCacheFile.setOnAction(event -> {
-            String databaseCacheFilePath = new DirectoryChooserWindow("Choose Database Cache File Path", "C:\\").getResultValue();
+            String databaseCacheFilePath = new DirectoryChooserWindow(this, "Choose Database Cache File Path", "C:\\").getResultValue();
             textFieldDatabaseCacheFile.setText(databaseCacheFilePath);
         });
 
         buttonOK.setOnAction(event -> {
+            buttonOK.setDisable(true);
             Settings.setMainDirectoryPath(textFieldMainDirectory.getText());
             Settings.setImageCacheDirectoryPath(textFieldImageCacheDirectory.getText());
             Settings.setDatabaseCacheFilePath(textFieldDatabaseCacheFile.getText());
             Settings.writeToFile();
-            startLoading();
+            Main.setLoadingWindow(new LoadingWindow());
+            close();
         });
 
         ChangeListener textFieldChangeListener = (observable, oldValue, newValue) -> {
@@ -113,6 +105,7 @@ public class IntroWindow {
                     else
                         buttonOK.setDisable(true);
         };
+
         textFieldMainDirectory.textProperty().addListener(textFieldChangeListener);
         textFieldImageCacheDirectory.textProperty().addListener(textFieldChangeListener);
         textFieldDatabaseCacheFile.textProperty().addListener(textFieldChangeListener);

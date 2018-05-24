@@ -3,8 +3,6 @@ package project.customdialog.generic;
 import javafx.scene.control.Alert;
 
 public class AlertWindow extends Alert {
-
-
     public AlertWindow(String errorMessage) {
         this("Error", errorMessage);
     }

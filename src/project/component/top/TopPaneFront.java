@@ -5,7 +5,6 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.layout.BorderPane;
-import project.common.Utility;
 
 public class TopPaneFront extends BorderPane {
     /* lazy singleton */
@@ -16,7 +15,8 @@ public class TopPaneFront extends BorderPane {
     }
 
     /* variables */
-    private final Menu infoLabel = new Menu();
+    private final MenuBar infoLabelMenuBar = new MenuBar();
+    private final Menu infoLabelMenu = new Menu();
 
     private final Menu menuFile = new Menu("File");
     private final MenuItem menuSave = new MenuItem("Save");
@@ -42,11 +42,8 @@ public class TopPaneFront extends BorderPane {
         mainArea.getMenus().addAll(menuFile, menuSelection, menuFilter);
         setCenter(mainArea);
 
-        MenuBar infoLabelArea = new MenuBar();
-        infoLabelArea.getMenus().add(infoLabel);
-        infoLabelArea.setOnMouseEntered(event -> Utility.swapImageDisplayMode());
-        infoLabelArea.setOnMouseExited(event -> Utility.swapImageDisplayMode());
-        setRight(infoLabelArea);
+        infoLabelMenuBar.getMenus().add(infoLabelMenu);
+        setRight(infoLabelMenuBar);
     }
 
     /* getters */
@@ -74,7 +71,10 @@ public class TopPaneFront extends BorderPane {
     public MenuItem getMenuReset() {
         return menuReset;
     }
-    public Menu getInfoLabel() {
-        return infoLabel;
+    public MenuBar getInfoLabelMenuBar() {
+        return infoLabelMenuBar;
+    }
+    public Menu getInfoLabelMenu() {
+        return infoLabelMenu;
     }
 }

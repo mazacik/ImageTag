@@ -1,14 +1,25 @@
 package project.component.top;
 
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.stage.WindowEvent;
 import project.GUIController;
 import project.common.Filter;
 import project.common.Selection;
+import project.common.Settings;
+import project.component.gallery.GalleryPaneFront;
 import project.customdialog.generic.NumberInputWindow;
 import project.database.Database;
 import project.database.DatabaseItem;
 import project.database.Serialization;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class TopPaneListener {
     /* lazy singleton */
@@ -19,20 +30,25 @@ public class TopPaneListener {
     }
 
     /* imports */
-    private final MenuItem menuSave = TopPaneFront.getInstance().getMenuSave();
-    private final MenuItem menuRefresh = TopPaneFront.getInstance().getMenuRefresh();
-    private final MenuItem menuExit = TopPaneFront.getInstance().getMenuExit();
+    private final TopPaneFront topPaneFront = TopPaneFront.getInstance();
+    private final MenuBar infoLabelMenuBar = topPaneFront.getInfoLabelMenuBar();
+    private final Menu infoLabelMenu = topPaneFront.getInfoLabelMenu();
 
-    private final MenuItem menuSelectAll = TopPaneFront.getInstance().getMenuSelectAll();
-    private final MenuItem menuClearSelection = TopPaneFront.getInstance().getMenuClearSelection();
+    private final MenuItem menuSave = topPaneFront.getMenuSave();
+    private final MenuItem menuRefresh = topPaneFront.getMenuRefresh();
+    private final MenuItem menuExit = topPaneFront.getMenuExit();
 
-    private final MenuItem menuUntaggedOnly = TopPaneFront.getInstance().getMenuUntaggedOnly();
-    private final MenuItem menuLessThanXTags = TopPaneFront.getInstance().getMenuLessThanXTags();
-    private final MenuItem menuReset = TopPaneFront.getInstance().getMenuReset();
+    private final MenuItem menuSelectAll = topPaneFront.getMenuSelectAll();
+    private final MenuItem menuClearSelection = topPaneFront.getMenuClearSelection();
+
+    private final MenuItem menuUntaggedOnly = topPaneFront.getMenuUntaggedOnly();
+    private final MenuItem menuLessThanXTags = topPaneFront.getMenuLessThanXTags();
+    private final MenuItem menuReset = topPaneFront.getMenuReset();
 
     /* constructors */
     private TopPaneListener() {
         setOnAction();
+        setInfoLabelContextMenu();
     }
 
     /* event methods */
@@ -71,5 +87,41 @@ public class TopPaneListener {
             Filter.filterByTags();
             GUIController.getInstance().reloadComponentData(true);
         });
+    }
+
+    private void setInfoLabelContextMenu() {
+        ContextMenu contextMenu = new ContextMenu();
+
+        MenuItem menuDelete = new MenuItem("Delete");
+        menuDelete.setOnAction(event -> {
+            String fileName = infoLabelMenu.getText();
+            try {
+                Files.delete(Paths.get(Settings.getMainDirectoryPath() + "\\" + fileName));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            for (DatabaseItem databaseItem : Database.getDatabaseItems()) {
+                if (databaseItem.getName().equals(fileName)) {
+                    int index = Database.getDatabaseItemsFiltered().indexOf(databaseItem);
+                    Database.getDatabaseItems().remove(databaseItem);
+                    Database.getDatabaseItemsFiltered().remove(databaseItem);
+                    Database.getDatabaseItemsSelected().remove(databaseItem);
+                    GalleryPaneFront.getInstance().focusTile(Database.getDatabaseItemsFiltered().get(index));
+
+                    break;
+                }
+            }
+        });
+
+        MenuItem menuCopy = new MenuItem("Copy");
+        menuCopy.setOnAction(event -> {
+            final Clipboard clipboard = Clipboard.getSystemClipboard();
+            final ClipboardContent content = new ClipboardContent();
+            content.putString(infoLabelMenu.getText());
+            clipboard.setContent(content);
+        });
+
+        contextMenu.getItems().addAll(menuCopy, menuDelete);
+        infoLabelMenuBar.setContextMenu(contextMenu);
     }
 }

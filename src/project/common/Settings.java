@@ -50,8 +50,8 @@ public abstract class Settings {
             props.setProperty("MainDirectoryPath", mainDirectoryPath);
             props.setProperty("ImageCacheDirectoryPath", imageCacheDirectoryPath);
             props.setProperty("DatabaseCacheFilePath", databaseCacheFilePath);
-            File f = new File(settingsFilePath);
-            OutputStream out = new FileOutputStream(f);
+            File file = new File(settingsFilePath);
+            OutputStream out = new FileOutputStream(file);
             props.store(out, "");
         } catch (Exception e) {
             e.printStackTrace();

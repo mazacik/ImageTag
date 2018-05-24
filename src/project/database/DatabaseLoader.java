@@ -5,10 +5,10 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import org.apache.commons.io.FilenameUtils;
 import project.GUIController;
+import project.Main;
 import project.common.Settings;
 import project.component.gallery.part.GalleryTile;
 import project.component.top.TopPaneFront;
-import project.customdialog.generic.AlertWindow;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -46,11 +46,6 @@ public class DatabaseLoader extends Thread {
 
         /* deserialization, loaded database null check, database size check -> database cache regeneration */
         if (!new File(Settings.getDatabaseCacheFilePath()).exists() || !loaderItemDatabase.addAll(Serialization.readFromDisk()) || loaderItemDatabase.isEmpty() || loaderItemDatabase.size() != fileCount) {
-            if (loaderItemDatabase.size() != fileCount)
-                Platform.runLater(() -> new AlertWindow("Database Cache Size Mismatch", "Database cache size does not match file count.\n Unrecognized items will be added. Missing items will be removed."));
-            else
-                Platform.runLater(() -> new AlertWindow("Database Cache Read Error", "There was an error reading the database cache file."));
-
             regenerateDatabaseCache();
             loaderItemDatabase.sort(Comparator.comparing(DatabaseItem::getName));
             loaderTagsDatabase.sort(Comparator.naturalOrder());
@@ -72,9 +67,16 @@ public class DatabaseLoader extends Thread {
                     loaderTagsDatabase.add(tag);
         Database.getDatabaseTags().addAll(loaderTagsDatabase);
 
+        done();
+    }
+
+    private void done() {
         /* request backend content initialization */
-        Platform.runLater(() -> GUIController.getInstance().reloadComponentData(false));
-        Platform.runLater(() -> TopPaneFront.getInstance().getInfoLabel().setText("Loading done in " + Long.toString(System.currentTimeMillis() - loadingStartTime) + " ms"));
+        Platform.runLater(() -> {
+            Main.getLoadingWindow().close();
+            GUIController.getInstance().reloadComponentData(false);
+            TopPaneFront.getInstance().getInfoLabelMenu().setText("Loading done in " + Long.toString(System.currentTimeMillis() - loadingStartTime) + " ms");
+        });
     }
 
     /* private methods */
@@ -93,10 +95,13 @@ public class DatabaseLoader extends Thread {
             }
         }
 
-        if (loaderItemDatabase.indexOf(databaseItem) != 0)
-            Platform.runLater(() -> TopPaneFront.getInstance().getInfoLabel().setText("Loading item " + (loaderItemDatabase.indexOf(databaseItem) + 1) + " of " + fileCount + ", " + (loaderItemDatabase.indexOf(databaseItem) + 1) * 100 / fileCount + "% done"));
-        else
-            Platform.runLater(() -> TopPaneFront.getInstance().getInfoLabel().setText("Loading item " + (loaderItemDatabase.size()) + " of " + fileCount + ", " + (loaderItemDatabase.indexOf(databaseItem) + 1) * 100 / fileCount + "% done"));
+        if (Main.getLoadingWindow() != null) {
+            if (loaderItemDatabase.indexOf(databaseItem) != 0)
+                Platform.runLater(() -> Main.getLoadingWindow().getProgressLabel().setText("Loading item " + (loaderItemDatabase.indexOf(databaseItem) + 1) + " of " + fileCount + ", " + (loaderItemDatabase.indexOf(databaseItem) + 1) * 100 / fileCount + "% done"));
+            else
+                Platform.runLater(() -> Main.getLoadingWindow().getProgressLabel().setText("Loading item " + (loaderItemDatabase.size()) + " of " + fileCount + ", " + (loaderItemDatabase.indexOf(databaseItem) + 1) * 100 / fileCount + "% done"));
+        }
+
         return new Image("file:" + currentItemCachePath, (double) galleryIconSizeMax, (double) galleryIconSizeMax, false, true);
     }
 
@@ -121,9 +126,13 @@ public class DatabaseLoader extends Thread {
         ArrayList<String> validFilesItemNames = new ArrayList<>();
         for (File file : validFiles)
             validFilesItemNames.add(file.getName());
+
+        ArrayList<DatabaseItem> temporaryList = new ArrayList<>(loaderItemDatabase);
         for (DatabaseItem databaseItem : loaderItemDatabase)
             if (!validFilesItemNames.contains(databaseItem.getName())) {
-                loaderItemDatabase.remove(databaseItem);
+                temporaryList.remove(databaseItem);
             }
+        loaderItemDatabase.clear();
+        loaderItemDatabase.addAll(temporaryList);
     }
 }

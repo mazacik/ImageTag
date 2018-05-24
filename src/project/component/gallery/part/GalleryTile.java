@@ -71,7 +71,7 @@ public class GalleryTile extends ImageView {
     private void setOnMouseClick(DatabaseItem databaseItem) {
         setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
-                GalleryPaneFront.getInstance().setCurrentFocusedItem(databaseItem);
+                GalleryPaneFront.getInstance().focusTile(databaseItem);
                 Selection.getInstance().swap(databaseItem);
             }
         });
