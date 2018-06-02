@@ -42,10 +42,8 @@ public class Selection {
 
     public void add(DatabaseItem databaseItem) {
         GalleryPaneFront galleryPaneFront = GalleryPaneFront.getInstance();
-        galleryPaneFront.setCurrentFocusedItem(databaseItem);
         databaseItemsSelected.add(databaseItem);
-        databaseItem.getGalleryTile().generateEffect(databaseItem);
-        changed();
+        galleryPaneFront.focusTile(databaseItem);
     }
 
     public void add(ArrayList<DatabaseItem> databaseItemsToAddToSelection) {
@@ -54,7 +52,8 @@ public class Selection {
                 databaseItemsSelected.add(databaseItem);
                 databaseItem.getGalleryTile().generateEffect(databaseItem);
             }
-        changed();
+        PreviewPaneBack.getInstance().reloadContent();
+        RightPaneFront.getInstance().getListView().getItems().setAll(getSelectionTags());
     }
 
     public void set(DatabaseItem databaseItem) {
@@ -63,11 +62,9 @@ public class Selection {
     }
 
     public void remove(DatabaseItem databaseItem) {
-        if (!GalleryPaneFront.getInstance().getCurrentFocusedItem().equals(databaseItem))
-            GalleryPaneFront.getInstance().setCurrentFocusedItem(databaseItem);
+        GalleryPaneFront galleryPaneFront = GalleryPaneFront.getInstance();
         databaseItemsSelected.remove(databaseItem);
-        databaseItem.getGalleryTile().generateEffect(databaseItem);
-        changed();
+        galleryPaneFront.focusTile(databaseItem);
     }
 
     public void swap(DatabaseItem databaseItem) {
@@ -83,11 +80,5 @@ public class Selection {
         for (DatabaseItem databaseItem : Database.getDatabaseItems()) {
             databaseItem.getGalleryTile().generateEffect(databaseItem);
         }
-    }
-
-    /* private methods */
-    private void changed() {
-        PreviewPaneBack.getInstance().reloadContent();
-        RightPaneFront.getInstance().getListView().getItems().setAll(getSelectionTags());
     }
 }

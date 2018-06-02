@@ -2,7 +2,7 @@ package project.database;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-
+//todo split me into several Database classes
 public abstract class Database {
     /* variables */
     private static final ArrayList<DatabaseItem> databaseItems = new ArrayList<>();

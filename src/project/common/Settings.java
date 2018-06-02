@@ -41,6 +41,8 @@ public abstract class Settings {
         mainDirectoryPath = props.getProperty("MainDirectoryPath", null);
         imageCacheDirectoryPath = props.getProperty("ImageCacheDirectoryPath", null);
         databaseCacheFilePath = props.getProperty("DatabaseCacheFilePath", null);
+        if (!databaseCacheFilePath.endsWith(".json"))
+            databaseCacheFilePath += ".json";
         return true;
     }
 

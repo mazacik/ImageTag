@@ -32,7 +32,12 @@ public class GalleryTile extends ImageView {
     /* public methods */
     public void generateEffect(DatabaseItem databaseItem) {
         boolean selection = Database.getDatabaseItemsSelected().contains(databaseItem);
-        boolean focus = GalleryPaneFront.getInstance().getCurrentFocusedItem().equals(databaseItem);
+        boolean focus;
+        if (GalleryPaneFront.getInstance().getCurrentFocusedItem() == null) {
+            focus = false;
+        } else {
+            focus = GalleryPaneFront.getInstance().getCurrentFocusedItem().equals(databaseItem);
+        }
 
         if (!selection && !focus) {
             databaseItem.getGalleryTile().setEffect(null);

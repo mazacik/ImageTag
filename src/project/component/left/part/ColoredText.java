@@ -44,7 +44,7 @@ public class ColoredText {
                     coloredText.setColor(Color.GREEN);
                 }
                 LeftPaneFront.getInstance().getListView().refresh();
-                Filter.filterByTags();
+                Filter.applyTagFilters();
                 GalleryPaneBack.getInstance().reloadContent();
             }
         });

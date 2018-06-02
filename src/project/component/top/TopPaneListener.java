@@ -55,7 +55,7 @@ public class TopPaneListener {
     private void setOnAction() {
         menuSave.setOnAction(event -> Serialization.writeToDisk());
         menuRefresh.setOnAction(event -> {
-            Filter.filterByTags();
+            Filter.applyTagFilters();
             GUIController.getInstance().reloadComponentData(true);
         });
         menuExit.setOnAction(event -> GUIController.getInstance().fireEvent(new WindowEvent(GUIController.getInstance(), WindowEvent.WINDOW_CLOSE_REQUEST)));
@@ -67,7 +67,7 @@ public class TopPaneListener {
             Database.getDatabaseTagsWhitelist().clear();
             Database.getDatabaseTagsBlacklist().clear();
             Database.getDatabaseTagsBlacklist().addAll(Database.getDatabaseTags());
-            Filter.filterByTags();
+            Filter.applyTagFilters();
             GUIController.getInstance().reloadComponentData(true);
         });
         menuLessThanXTags.setOnAction(event -> {
@@ -84,7 +84,7 @@ public class TopPaneListener {
         menuReset.setOnAction(event -> {
             Database.getDatabaseTagsWhitelist().clear();
             Database.getDatabaseTagsBlacklist().clear();
-            Filter.filterByTags();
+            Filter.applyTagFilters();
             GUIController.getInstance().reloadComponentData(true);
         });
     }
@@ -106,6 +106,8 @@ public class TopPaneListener {
                     Database.getDatabaseItems().remove(databaseItem);
                     Database.getDatabaseItemsFiltered().remove(databaseItem);
                     Database.getDatabaseItemsSelected().remove(databaseItem);
+                    if (Database.getDatabaseItemsFiltered().get(index) == null)
+                        index--;
                     GalleryPaneFront.getInstance().focusTile(Database.getDatabaseItemsFiltered().get(index));
 
                     break;

@@ -13,7 +13,7 @@ import project.database.DatabaseItem;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Optional;
-
+//todo after database split, move this functionality to respective classes
 public abstract class Filter {
     /* imports */
     private static final ArrayList<DatabaseItem> databaseItems = Database.getDatabaseItems();
@@ -33,16 +33,7 @@ public abstract class Filter {
         }
     }
 
-    public static void removeTagFromDatabase(String tag) {
-        for (DatabaseItem databaseItem : databaseItems)
-            databaseItem.getTags().remove(tag);
-        databaseTags.remove(tag);
-        databaseTagsWhitelist.remove(tag);
-        databaseTagsBlacklist.remove(tag);
-        GUIController.getInstance().reloadComponentData(false);
-    }
-
-    public static void addTagSelectedItems(String tag) {
+    public static void addTagToSelectedItems(String tag) {
         String finalFormat = WordUtils.capitalizeFully(tag);
         if (!finalFormat.isEmpty()) {
             if (!databaseTags.contains(finalFormat)) {
@@ -57,7 +48,16 @@ public abstract class Filter {
         }
     }
 
-    public static void removeTagSelectedItems() {
+    public static void removeTagFromDatabase(String tag) {
+        for (DatabaseItem databaseItem : databaseItems)
+            databaseItem.getTags().remove(tag);
+        databaseTags.remove(tag);
+        databaseTagsWhitelist.remove(tag);
+        databaseTagsBlacklist.remove(tag);
+        GUIController.getInstance().reloadComponentData(false);
+    }
+
+    public static void removeTagFromSelectedItems() {
         for (String tag : RightPaneFront.getInstance().getListView().getSelectionModel().getSelectedItems()) {
             for (DatabaseItem databaseItem : databaseItemsSelected)
                 databaseItem.getTags().remove(tag);
@@ -98,11 +98,12 @@ public abstract class Filter {
                     if (databaseItem.getTags().contains(oldTagName))
                         databaseItem.getTags().set(databaseItem.getTags().indexOf(oldTagName), newTagName);
                 LeftPaneBack.getInstance().reloadContent();
+                RightPaneBack.getInstance().reloadContent();
             }
         }
     }
 
-    public static void filterByTags() {
+    public static void applyTagFilters() {
         databaseItemsFiltered.clear();
         if (databaseTagsWhitelist.isEmpty() && databaseTagsBlacklist.isEmpty())
             databaseItemsFiltered.addAll(databaseItems);
@@ -119,7 +120,7 @@ public abstract class Filter {
                 }
     }
 
-    public static ArrayList<String> getSelectedItemsSharedTags() {
+    public static ArrayList<String> getIntersectingTagsOfSelectedItems() {
         if (databaseItemsSelected.isEmpty()) return new ArrayList<>();
 
         ArrayList<String> sharedTags = new ArrayList<>();

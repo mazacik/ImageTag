@@ -11,10 +11,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import project.common.Filter;
-import project.database.Database;
-import project.database.DatabaseItem;
 import project.component.gallery.GalleryPaneBack;
 import project.component.left.part.ColoredText;
+import project.database.Database;
+import project.database.DatabaseItem;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -46,7 +46,7 @@ public class TagManager extends Stage {
         addPane.getChildren().addAll(addTextField, addButton);
         initializeListView();
         setOnCloseRequest(event -> {
-            Filter.filterByTags();
+            Filter.applyTagFilters();
             GalleryPaneBack.getInstance().reloadContent();
         });
         tagManagerPane.setCenter(listView);
@@ -60,7 +60,7 @@ public class TagManager extends Stage {
         String newTag = addTextField.getText();
         if (!newTag.isEmpty()) {
             if (!Database.getDatabaseTags().contains(newTag)) {
-                Filter.addTagSelectedItems(newTag);
+                Filter.addTagToSelectedItems(newTag);
                 listView.getItems().add(new ColoredText(newTag, Color.GREEN));
                 listView.getItems().sort(Comparator.comparing(ColoredText::getText));
             }
@@ -88,7 +88,7 @@ public class TagManager extends Stage {
         listView.setPadding(new Insets(5));
         listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
-        ArrayList<String> sharedTags = Filter.getSelectedItemsSharedTags();
+        ArrayList<String> sharedTags = Filter.getIntersectingTagsOfSelectedItems();
         ArrayList<String> theOtherTags = new ArrayList<>();
         for (String tag : Database.getDatabaseTags())
             if (!sharedTags.contains(tag))

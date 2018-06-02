@@ -17,6 +17,6 @@ public class RightPaneBack {
 
     /* method */
     public void reloadContent() {
-        RightPaneFront.getInstance().getListView().getItems().setAll(Filter.getSelectedItemsSharedTags());
+        RightPaneFront.getInstance().getListView().getItems().setAll(Filter.getIntersectingTagsOfSelectedItems());
     }
 }

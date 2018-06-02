@@ -5,6 +5,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
 import project.common.Filter;
+import project.component.top.TopPaneFront;
 import project.customdialog.TagManager;
 
 public class RightPaneListener {
@@ -30,7 +31,7 @@ public class RightPaneListener {
         if (rightPaneFront.getAddTextField().getText().isEmpty())
             new TagManager();
         else {
-            Filter.addTagSelectedItems(rightPaneFront.getAddTextField().getText());
+            Filter.addTagToSelectedItems(rightPaneFront.getAddTextField().getText());
             rightPaneFront.getAddTextField().clear();
         }
     }
@@ -41,7 +42,9 @@ public class RightPaneListener {
             if (event.getCode() == KeyCode.ENTER)
                 addTag();
             else if (event.getCode() == KeyCode.DELETE)
-                Filter.removeTagSelectedItems();
+                Filter.removeTagFromSelectedItems();
+            else if (event.getCode() == KeyCode.ESCAPE)
+                TopPaneFront.getInstance().requestFocus();
         });
     }
 
@@ -52,7 +55,7 @@ public class RightPaneListener {
     private void setContextMenu(ListView<String> source) {
         ContextMenu listContextMenu = new ContextMenu();
         MenuItem menuRemoveTag = new MenuItem("Remove");
-        menuRemoveTag.setOnAction(event -> Filter.removeTagSelectedItems());
+        menuRemoveTag.setOnAction(event -> Filter.removeTagFromSelectedItems());
         listContextMenu.getItems().add(menuRemoveTag);
         source.setContextMenu(listContextMenu);
     }

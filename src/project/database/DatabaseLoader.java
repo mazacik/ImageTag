@@ -28,6 +28,8 @@ public class DatabaseLoader extends Thread {
     private final long loadingStartTime = System.currentTimeMillis();
     private final ArrayList<DatabaseItem> loaderItemDatabase = new ArrayList<>();
     private final ArrayList<String> loaderTagsDatabase = new ArrayList<>();
+    private final ArrayList<String> temporaryItemDatabaseItemNames = new ArrayList<>();
+    private final ArrayList<String> validFilesItemNames = new ArrayList<>();
     private int fileCount;
     private ArrayList<File> validFiles;
 
@@ -44,15 +46,19 @@ public class DatabaseLoader extends Thread {
         if (!imageCacheDirectory.exists())
             imageCacheDirectory.mkdir();
 
-        /* deserialization, loaded database null check, database size check -> database cache regeneration */
-        if (!new File(Settings.getDatabaseCacheFilePath()).exists() || !loaderItemDatabase.addAll(Serialization.readFromDisk()) || loaderItemDatabase.isEmpty() || loaderItemDatabase.size() != fileCount) {
+        /* deserialization, database null check -> database cache regeneration */
+        if (!new File(Settings.getDatabaseCacheFilePath()).exists() || !loaderItemDatabase.addAll(Serialization.readFromDisk()))
             regenerateDatabaseCache();
-            loaderItemDatabase.sort(Comparator.comparing(DatabaseItem::getName));
-            loaderTagsDatabase.sort(Comparator.naturalOrder());
-            Serialization.writeToDisk();
-        }
 
-        /* readFromFile transient variables */
+        /* database size check -> database cache regeneration*/
+        for (DatabaseItem databaseItem : loaderItemDatabase)
+            temporaryItemDatabaseItemNames.add(databaseItem.getName());
+        for (File file : validFiles)
+            validFilesItemNames.add(file.getName());
+        if (!temporaryItemDatabaseItemNames.equals(validFilesItemNames))
+            regenerateDatabaseCache();
+
+        /* load transient variables */
         for (DatabaseItem databaseItem : loaderItemDatabase) {
             databaseItem.setImage(loadDatabaseItemImage(databaseItem));
             databaseItem.setGalleryTile(new GalleryTile(databaseItem));
@@ -114,25 +120,22 @@ public class DatabaseLoader extends Thread {
 
     private void regenerateDatabaseCache() {
         /* add unrecognized items */
-        ArrayList<String> temporaryItemDatabaseItemNames = new ArrayList<>();
-        for (DatabaseItem databaseItem : loaderItemDatabase)
-            temporaryItemDatabaseItemNames.add(databaseItem.getName());
         for (File file : validFiles)
             if (!temporaryItemDatabaseItemNames.contains(file.getName())) {
                 loaderItemDatabase.add(buildDatabaseItem(file));
             }
 
         /* remove missing items */
-        ArrayList<String> validFilesItemNames = new ArrayList<>();
-        for (File file : validFiles)
-            validFilesItemNames.add(file.getName());
-
         ArrayList<DatabaseItem> temporaryList = new ArrayList<>(loaderItemDatabase);
         for (DatabaseItem databaseItem : loaderItemDatabase)
             if (!validFilesItemNames.contains(databaseItem.getName())) {
                 temporaryList.remove(databaseItem);
             }
+
         loaderItemDatabase.clear();
         loaderItemDatabase.addAll(temporaryList);
+        loaderItemDatabase.sort(Comparator.comparing(DatabaseItem::getName));
+        loaderTagsDatabase.sort(Comparator.naturalOrder());
+        Serialization.writeToDisk();
     }
 }
