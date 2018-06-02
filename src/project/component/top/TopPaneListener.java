@@ -8,12 +8,12 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.stage.WindowEvent;
 import project.GUIController;
+import project.common.Database;
 import project.common.Filter;
 import project.common.Selection;
 import project.common.Settings;
 import project.component.gallery.GalleryPaneFront;
 import project.customdialog.generic.NumberInputWindow;
-import project.database.Database;
 import project.database.DatabaseItem;
 import project.database.Serialization;
 
@@ -60,8 +60,8 @@ public class TopPaneListener {
         });
         menuExit.setOnAction(event -> GUIController.getInstance().fireEvent(new WindowEvent(GUIController.getInstance(), WindowEvent.WINDOW_CLOSE_REQUEST)));
 
-        menuSelectAll.setOnAction(event -> Selection.getInstance().add(Database.getDatabaseItemsFiltered()));
-        menuClearSelection.setOnAction(event -> Selection.getInstance().clear());
+        menuSelectAll.setOnAction(event -> Selection.add(Database.getDatabaseItemsFiltered()));
+        menuClearSelection.setOnAction(event -> Selection.clear());
 
         menuUntaggedOnly.setOnAction(event -> {
             Database.getDatabaseTagsWhitelist().clear();

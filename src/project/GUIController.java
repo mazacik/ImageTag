@@ -4,8 +4,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import project.common.Database;
 import project.common.Keybinds;
-import project.common.Selection;
 import project.component.gallery.GalleryPaneBack;
 import project.component.gallery.GalleryPaneFront;
 import project.component.left.LeftPaneBack;
@@ -15,7 +15,6 @@ import project.component.right.RightPaneBack;
 import project.component.right.RightPaneFront;
 import project.component.top.TopPaneBack;
 import project.component.top.TopPaneFront;
-import project.database.Database;
 import project.database.Serialization;
 
 public class GUIController extends Stage {
@@ -33,14 +32,15 @@ public class GUIController extends Stage {
 
     /* constructors */
     private GUIController() {
-        splitPane.setDividerPositions(0.0, 1.0);
-
         setTitle("JavaExplorer");
         setMinWidth(800);
         setMinHeight(600);
         setMaximized(true);
         setScene(mainScene);
         setOnCloseRequest(event -> Serialization.writeToDisk());
+
+        splitPane.setDividerPositions(0.0, 1.0);
+
         loadLazySingletons();
 
         show();
@@ -58,7 +58,6 @@ public class GUIController extends Stage {
     /* private methods */
     private void loadLazySingletons() {
         Keybinds.getInstance(mainScene);
-        Selection.getInstance();
         GalleryPaneBack.getInstance();
         LeftPaneBack.getInstance();
         PreviewPaneBack.getInstance();

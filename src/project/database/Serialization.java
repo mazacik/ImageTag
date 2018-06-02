@@ -3,6 +3,7 @@ package project.database;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import project.common.Database;
 import project.common.Settings;
 
 import java.io.BufferedWriter;
@@ -38,6 +39,17 @@ public abstract class Serialization {
         }
     }
 
+    public static void createBackup() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH-mm-ss dd-MM-yyyy");
+        String sb = databaseCacheFilePath.replace(".json", " @ " + dateFormat.format(new Date()) + ".json");
+        File file = new File(databaseCacheFilePath);
+        try {
+            Files.copy(file.toPath(), new File(sb).toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static ArrayList<DatabaseItem> readFromDisk() {
         GsonBuilder GSONBuilder = new GsonBuilder();
         GSONBuilder.setPrettyPrinting().serializeNulls();
@@ -52,16 +64,5 @@ public abstract class Serialization {
             e.printStackTrace();
         }
         return GSON.fromJson(JSON, databaseItemListType);
-    }
-
-    public static void createBackup() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH-mm-ss dd-MM-yyyy");
-        String sb = databaseCacheFilePath.replace(".json", " @ " + dateFormat.format(new Date()) + ".json");
-        File file = new File(databaseCacheFilePath);
-        try {
-            Files.copy(file.toPath(), new File(sb).toPath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

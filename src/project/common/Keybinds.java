@@ -4,7 +4,6 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import project.component.gallery.GalleryPaneBack;
 import project.component.gallery.GalleryPaneFront;
-import project.database.Database;
 import project.database.DatabaseItem;
 
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ public class Keybinds {
                 case F12:
                     swapImageDisplayMode(); break;
                 case Q:
-                    Selection.getInstance().swap(GalleryPaneFront.getInstance().getCurrentFocusedItem()); break;
+                    Selection.swap(GalleryPaneFront.getInstance().getCurrentFocusedItem()); break;
                 case W:
                 case A:
                 case S:
@@ -47,11 +46,11 @@ public class Keybinds {
         ArrayList<DatabaseItem> databaseItemsFiltered = Database.getDatabaseItemsFiltered();
         int databaseItemsFilteredSize = databaseItemsFiltered.size();
         int randomIndex = new Random().nextInt(databaseItemsFilteredSize);
-        Selection.getInstance().set(databaseItemsFiltered.get(randomIndex));
+        Selection.set(databaseItemsFiltered.get(randomIndex));
     }
 
     private void swapImageDisplayMode() {
-        Utility.swapImageDisplayMode();
+        Utility.swapPreviewMode();
     }
 
     private void moveFocus(KeyCode keyCode) {

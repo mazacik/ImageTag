@@ -7,18 +7,18 @@ import project.component.left.LeftPaneBack;
 import project.component.right.RightPaneBack;
 import project.component.right.RightPaneFront;
 import project.customdialog.generic.TextInputWindow;
-import project.database.Database;
 import project.database.DatabaseItem;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Optional;
-//todo after database split, move this functionality to respective classes
+
 public abstract class Filter {
     /* imports */
     private static final ArrayList<DatabaseItem> databaseItems = Database.getDatabaseItems();
     private static final ArrayList<DatabaseItem> databaseItemsFiltered = Database.getDatabaseItemsFiltered();
     private static final ArrayList<DatabaseItem> databaseItemsSelected = Database.getDatabaseItemsSelected();
+
     private static final ArrayList<String> databaseTags = Database.getDatabaseTags();
     private static final ArrayList<String> databaseTagsWhitelist = Database.getDatabaseTagsWhitelist();
     private static final ArrayList<String> databaseTagsBlacklist = Database.getDatabaseTagsBlacklist();

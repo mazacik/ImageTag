@@ -38,7 +38,7 @@ public abstract class Utility {
         return GUIController.getInstance().getSplitPane().getItems().contains(PreviewPaneFront.getInstance());
     }
 
-    public static void swapImageDisplayMode() {
+    public static void swapPreviewMode() {
         GalleryPaneFront galleryPaneFront = GalleryPaneFront.getInstance();
         PreviewPaneFront previewPaneFront = PreviewPaneFront.getInstance();
 

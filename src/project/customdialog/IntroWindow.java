@@ -13,6 +13,7 @@ import project.common.Settings;
 import project.customdialog.generic.DirectoryChooserWindow;
 
 public class IntroWindow extends Stage {
+    /* components */
     private GridPane introPane = new GridPane();
     private Scene introScene = new Scene(introPane);
 
@@ -28,6 +29,7 @@ public class IntroWindow extends Stage {
 
     private Button buttonOK = new Button("OK");
 
+    /* constructors */
     public IntroWindow() {
         /* stage */
         setTitle("JavaExplorer Settings");
@@ -55,6 +57,7 @@ public class IntroWindow extends Stage {
         buttonMainDirectory.requestFocus();
     }
 
+    /* private methods */
     private void addComponentsToGrid() {
         introPane.add(labelMainDirectory, 0, 0);
         introPane.add(labelImageCacheDirectory, 0, 1);

@@ -8,10 +8,12 @@ import javafx.stage.Stage;
 import project.database.DatabaseLoader;
 
 public class LoadingWindow extends Stage {
+    /* components */
     private BorderPane loadingPane = new BorderPane();
     private Scene loadingScene = new Scene(loadingPane);
     private Label progressLabel = new Label();
 
+    /* constructos */
     public LoadingWindow() {
         setTitle("JavaExplorer Loading");
         setScene(loadingScene);

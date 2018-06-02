@@ -1,8 +1,8 @@
 package project.component.gallery;
 
 import javafx.scene.layout.TilePane;
+import project.common.Database;
 import project.common.Settings;
-import project.database.Database;
 import project.database.DatabaseItem;
 
 public class GalleryPaneListener {

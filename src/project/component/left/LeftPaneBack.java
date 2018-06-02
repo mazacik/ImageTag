@@ -2,8 +2,8 @@ package project.component.left;
 
 import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
+import project.common.Database;
 import project.component.left.part.ColoredText;
-import project.database.Database;
 
 import java.util.List;
 

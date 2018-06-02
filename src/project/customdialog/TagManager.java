@@ -10,21 +10,25 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import project.common.Database;
 import project.common.Filter;
 import project.component.gallery.GalleryPaneBack;
 import project.component.left.part.ColoredText;
-import project.database.Database;
 import project.database.DatabaseItem;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-//todo: formatting
+
 public class TagManager extends Stage {
+    /* variables */
     private final ListView<ColoredText> listView = new ListView<>();
+
+    /* components */
     private BorderPane tagManagerPane = new BorderPane();
     private Scene tagManagerScene = new Scene(tagManagerPane);
     private TextField addTextField = new TextField();
 
+    /* constructors */
     public TagManager() {
         setAlwaysOnTop(true);
         setMinWidth(480);
@@ -56,6 +60,7 @@ public class TagManager extends Stage {
         show();
     }
 
+    /* private methods */
     private void addTag() {
         String newTag = addTextField.getText();
         if (!newTag.isEmpty()) {
@@ -68,6 +73,7 @@ public class TagManager extends Stage {
         }
     }
 
+    /* builder methods */
     private void setCellFactory() {
         listView.setCellFactory(lv -> new ListCell<>() {
             @Override

@@ -1,11 +1,12 @@
 package project.customdialog.generic;
 
-    import javafx.scene.control.TextInputDialog;
-    import project.common.Utility;
+import javafx.scene.control.TextInputDialog;
+import project.common.Utility;
 
-    import java.util.Optional;
+import java.util.Optional;
 
 public class NumberInputWindow extends TextInputDialog {
+    /* constructors */
     public NumberInputWindow(String title, String contentText) {
         setTitle(title);
         setHeaderText(null);
@@ -19,6 +20,7 @@ public class NumberInputWindow extends TextInputDialog {
         });
     }
 
+    /* public methods */
     public Integer getResultValue() {
         Optional<String> resultValue = showAndWait();
         if (!resultValue.isPresent()) return 0;

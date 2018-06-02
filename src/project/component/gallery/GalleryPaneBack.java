@@ -3,8 +3,8 @@ package project.component.gallery;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.layout.TilePane;
+import project.common.Database;
 import project.common.Utility;
-import project.database.Database;
 import project.database.DatabaseItem;
 
 public class GalleryPaneBack {

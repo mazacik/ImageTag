@@ -7,10 +7,10 @@ import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
+import project.common.Database;
 import project.common.Selection;
 import project.common.Settings;
 import project.component.gallery.GalleryPaneFront;
-import project.database.Database;
 import project.database.DatabaseItem;
 
 public class GalleryTile extends ImageView {
@@ -77,7 +77,7 @@ public class GalleryTile extends ImageView {
         setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
                 GalleryPaneFront.getInstance().focusTile(databaseItem);
-                Selection.getInstance().swap(databaseItem);
+                Selection.swap(databaseItem);
             }
         });
     }

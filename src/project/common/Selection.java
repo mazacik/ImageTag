@@ -3,24 +3,16 @@ package project.common;
 import project.component.gallery.GalleryPaneFront;
 import project.component.preview.PreviewPaneBack;
 import project.component.right.RightPaneFront;
-import project.database.Database;
 import project.database.DatabaseItem;
 
 import java.util.ArrayList;
 
-public class Selection {
-    /* lazy singleton */
-    private static Selection instance;
-    public static Selection getInstance() {
-        if (instance == null) instance = new Selection();
-        return instance;
-    }
-
+public abstract class Selection {
     /* imports */
-    private final ArrayList<DatabaseItem> databaseItemsSelected = Database.getDatabaseItemsSelected();
+    private static final ArrayList<DatabaseItem> databaseItemsSelected = Database.getDatabaseItemsSelected();
 
     /* public methods */
-    public ArrayList<String> getSelectionTags() {
+    public static ArrayList<String> getSelectionTags() {
         if (databaseItemsSelected.isEmpty())
             return new ArrayList<>();
 
@@ -40,13 +32,13 @@ public class Selection {
         return sharedTags;
     }
 
-    public void add(DatabaseItem databaseItem) {
+    public static void add(DatabaseItem databaseItem) {
         GalleryPaneFront galleryPaneFront = GalleryPaneFront.getInstance();
         databaseItemsSelected.add(databaseItem);
         galleryPaneFront.focusTile(databaseItem);
     }
 
-    public void add(ArrayList<DatabaseItem> databaseItemsToAddToSelection) {
+    public static void add(ArrayList<DatabaseItem> databaseItemsToAddToSelection) {
         for (DatabaseItem databaseItem : databaseItemsToAddToSelection)
             if (!databaseItemsSelected.contains(databaseItem)) {
                 databaseItemsSelected.add(databaseItem);
@@ -56,25 +48,25 @@ public class Selection {
         RightPaneFront.getInstance().getListView().getItems().setAll(getSelectionTags());
     }
 
-    public void set(DatabaseItem databaseItem) {
+    public static void set(DatabaseItem databaseItem) {
         clear();
         add(databaseItem);
     }
 
-    public void remove(DatabaseItem databaseItem) {
+    public static void remove(DatabaseItem databaseItem) {
         GalleryPaneFront galleryPaneFront = GalleryPaneFront.getInstance();
         databaseItemsSelected.remove(databaseItem);
         galleryPaneFront.focusTile(databaseItem);
     }
 
-    public void swap(DatabaseItem databaseItem) {
+    public static void swap(DatabaseItem databaseItem) {
         if (!databaseItemsSelected.contains(databaseItem))
             add(databaseItem);
         else
             remove(databaseItem);
     }
 
-    public void clear() {
+    public static void clear() {
         databaseItemsSelected.clear();
         RightPaneFront.getInstance().getListView().getItems().clear();
         for (DatabaseItem databaseItem : Database.getDatabaseItems()) {

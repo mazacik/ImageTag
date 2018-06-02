@@ -6,6 +6,7 @@ import javafx.scene.image.Image;
 import org.apache.commons.io.FilenameUtils;
 import project.GUIController;
 import project.Main;
+import project.common.Database;
 import project.common.Settings;
 import project.component.gallery.part.GalleryTile;
 import project.component.top.TopPaneFront;
@@ -28,8 +29,10 @@ public class DatabaseLoader extends Thread {
     private final long loadingStartTime = System.currentTimeMillis();
     private final ArrayList<DatabaseItem> loaderItemDatabase = new ArrayList<>();
     private final ArrayList<String> loaderTagsDatabase = new ArrayList<>();
+
     private final ArrayList<String> temporaryItemDatabaseItemNames = new ArrayList<>();
     private final ArrayList<String> validFilesItemNames = new ArrayList<>();
+
     private int fileCount;
     private ArrayList<File> validFiles;
 
