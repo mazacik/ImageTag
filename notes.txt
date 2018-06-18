@@ -1,0 +1,14 @@
+code format:
+
+- singleton declaration
+- custom imports
+
+- component declaration
+- variable declaration
+- constructors
+
+- public methods
+- utility methods
+- builder methods
+- private methods
+- event methods

@@ -3,8 +3,7 @@ package project.database;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import project.common.Database;
-import project.common.Settings;
+import project.backend.Settings;
 
 import java.io.BufferedWriter;
 import java.io.File;

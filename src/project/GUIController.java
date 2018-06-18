@@ -1,21 +1,24 @@
 package project;
 
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import project.common.Database;
-import project.common.Keybinds;
-import project.custom.component.gallery.GalleryPaneBack;
-import project.custom.component.gallery.GalleryPaneFront;
-import project.custom.component.left.LeftPaneBack;
-import project.custom.component.left.LeftPaneFront;
-import project.custom.component.preview.PreviewPaneBack;
-import project.custom.component.right.RightPaneBack;
-import project.custom.component.right.RightPaneFront;
-import project.custom.component.top.TopPaneBack;
-import project.custom.component.top.TopPaneFront;
+import project.backend.Keybinds;
+import project.database.Database;
 import project.database.Serialization;
+import project.gui.component.gallery.GalleryPaneBack;
+import project.gui.component.gallery.GalleryPaneFront;
+import project.gui.component.left.LeftPaneBack;
+import project.gui.component.left.LeftPaneFront;
+import project.gui.component.preview.PreviewPaneBack;
+import project.gui.component.preview.PreviewPaneFront;
+import project.gui.component.right.RightPaneBack;
+import project.gui.component.right.RightPaneFront;
+import project.gui.component.top.TopPaneBack;
+import project.gui.component.top.TopPaneFront;
 
 public class GUIController extends Stage {
     /* lazy singleton */
@@ -53,6 +56,30 @@ public class GUIController extends Stage {
         RightPaneBack.getInstance().reloadContent();
         GalleryPaneBack.getInstance().reloadContent();
         PreviewPaneBack.getInstance().reloadContent();
+    }
+
+    /* utility methods */
+    public static void swapPreviewMode() {
+        GalleryPaneFront galleryPaneFront = GalleryPaneFront.getInstance();
+        PreviewPaneFront previewPaneFront = PreviewPaneFront.getInstance();
+
+        SplitPane splitPane = getInstance().getSplitPane();
+        ObservableList<Node> splitPaneItems = splitPane.getItems();
+
+        double[] dividerPositions = splitPane.getDividerPositions();
+        if (splitPaneItems.contains(galleryPaneFront)) {
+            splitPaneItems.set(splitPaneItems.indexOf(galleryPaneFront), previewPaneFront);
+            previewPaneFront.setCanvasSize(galleryPaneFront.getWidth(), galleryPaneFront.getHeight());
+            PreviewPaneBack.getInstance().reloadContent();
+        } else {
+            splitPaneItems.set(splitPaneItems.indexOf(previewPaneFront), galleryPaneFront);
+            GalleryPaneBack.getInstance().reloadContent();
+        }
+        splitPane.setDividerPositions(dividerPositions);
+    }
+
+    public static boolean isPreviewFullscreen() {
+        return getInstance().getSplitPane().getItems().contains(PreviewPaneFront.getInstance());
     }
 
     /* private methods */

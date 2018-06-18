@@ -2,9 +2,9 @@ package project;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import project.common.Settings;
-import project.custom.stage.IntroWindow;
-import project.custom.stage.LoadingWindow;
+import project.backend.Settings;
+import project.gui.stage.IntroWindow;
+import project.gui.stage.LoadingWindow;
 
 public class Main extends Application {
     private static LoadingWindow loadingWindow = null;

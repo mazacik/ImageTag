@@ -6,10 +6,9 @@ import javafx.scene.image.Image;
 import org.apache.commons.io.FilenameUtils;
 import project.GUIController;
 import project.Main;
-import project.common.Database;
-import project.common.Settings;
-import project.custom.component.gallery.part.GalleryTile;
-import project.custom.component.top.TopPaneFront;
+import project.backend.Settings;
+import project.gui.component.gallery.part.GalleryTile;
+import project.gui.component.top.TopPaneFront;
 
 import javax.imageio.ImageIO;
 import java.io.File;
