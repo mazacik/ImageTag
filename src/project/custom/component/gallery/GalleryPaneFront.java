@@ -68,9 +68,4 @@ public class GalleryPaneFront extends ScrollPane {
     public DatabaseItem getCurrentFocusedItem() {
         return currentFocusedItem;
     }
-
-    /* setters */
-    public void setCurrentFocusedItem(DatabaseItem databaseItem) {
-        currentFocusedItem = databaseItem;
-    }
 }

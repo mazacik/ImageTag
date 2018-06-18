@@ -72,7 +72,9 @@ public class Keybinds {
             newFocusPosition += 1;
         }
 
-        if (newFocusPosition >= 0 && newFocusPosition < databaseItemsFiltered.size())
+        if (newFocusPosition >= 0 && newFocusPosition < databaseItemsFiltered.size()) {
             GalleryPaneFront.getInstance().focusTile(databaseItemsFiltered.get(newFocusPosition));
+            GalleryPaneBack.getInstance().adjustViewportPositionToFocus();
+        }
     }
 }
