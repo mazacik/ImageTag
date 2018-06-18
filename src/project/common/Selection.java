@@ -1,8 +1,8 @@
 package project.common;
 
-import project.component.gallery.GalleryPaneFront;
-import project.component.preview.PreviewPaneBack;
-import project.component.right.RightPaneFront;
+import project.custom.component.gallery.GalleryPaneFront;
+import project.custom.component.preview.PreviewPaneBack;
+import project.custom.component.right.RightPaneFront;
 import project.database.DatabaseItem;
 
 import java.util.ArrayList;

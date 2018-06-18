@@ -2,8 +2,8 @@ package project.common;
 
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
-import project.component.gallery.GalleryPaneBack;
-import project.component.gallery.GalleryPaneFront;
+import project.custom.component.gallery.GalleryPaneBack;
+import project.custom.component.gallery.GalleryPaneFront;
 import project.database.DatabaseItem;
 
 import java.util.ArrayList;

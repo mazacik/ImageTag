@@ -3,8 +3,8 @@ package project;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import project.common.Settings;
-import project.customdialog.IntroWindow;
-import project.customdialog.LoadingWindow;
+import project.custom.stage.IntroWindow;
+import project.custom.stage.LoadingWindow;
 
 public class Main extends Application {
     private static LoadingWindow loadingWindow = null;

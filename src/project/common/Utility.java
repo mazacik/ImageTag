@@ -4,10 +4,10 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
 import project.GUIController;
-import project.component.gallery.GalleryPaneBack;
-import project.component.gallery.GalleryPaneFront;
-import project.component.preview.PreviewPaneBack;
-import project.component.preview.PreviewPaneFront;
+import project.custom.component.gallery.GalleryPaneBack;
+import project.custom.component.gallery.GalleryPaneFront;
+import project.custom.component.preview.PreviewPaneBack;
+import project.custom.component.preview.PreviewPaneFront;
 
 public abstract class Utility {
     public static boolean isNumber(String str) {

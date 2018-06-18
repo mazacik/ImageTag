@@ -8,8 +8,8 @@ import project.GUIController;
 import project.Main;
 import project.common.Database;
 import project.common.Settings;
-import project.component.gallery.part.GalleryTile;
-import project.component.top.TopPaneFront;
+import project.custom.component.gallery.part.GalleryTile;
+import project.custom.component.top.TopPaneFront;
 
 import javax.imageio.ImageIO;
 import java.io.File;

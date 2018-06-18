@@ -3,10 +3,10 @@ package project.common;
 import javafx.scene.control.TextInputDialog;
 import org.apache.commons.text.WordUtils;
 import project.GUIController;
-import project.component.left.LeftPaneBack;
-import project.component.right.RightPaneBack;
-import project.component.right.RightPaneFront;
-import project.customdialog.generic.TextInputWindow;
+import project.custom.component.left.LeftPaneBack;
+import project.custom.component.right.RightPaneBack;
+import project.custom.component.right.RightPaneFront;
+import project.custom.stage.generic.TextInputWindow;
 import project.database.DatabaseItem;
 
 import java.util.ArrayList;

@@ -6,15 +6,15 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import project.common.Database;
 import project.common.Keybinds;
-import project.component.gallery.GalleryPaneBack;
-import project.component.gallery.GalleryPaneFront;
-import project.component.left.LeftPaneBack;
-import project.component.left.LeftPaneFront;
-import project.component.preview.PreviewPaneBack;
-import project.component.right.RightPaneBack;
-import project.component.right.RightPaneFront;
-import project.component.top.TopPaneBack;
-import project.component.top.TopPaneFront;
+import project.custom.component.gallery.GalleryPaneBack;
+import project.custom.component.gallery.GalleryPaneFront;
+import project.custom.component.left.LeftPaneBack;
+import project.custom.component.left.LeftPaneFront;
+import project.custom.component.preview.PreviewPaneBack;
+import project.custom.component.right.RightPaneBack;
+import project.custom.component.right.RightPaneFront;
+import project.custom.component.top.TopPaneBack;
+import project.custom.component.top.TopPaneFront;
 import project.database.Serialization;
 
 public class GUIController extends Stage {
