@@ -40,20 +40,19 @@ public class GalleryPaneBack {
     }
 
     public void adjustViewportPositionToFocus(){
-        double columnCount = GalleryPaneBack.getInstance().getColumnCount();
-        double currentIndex = GalleryPaneFront.getInstance().getTilePane().getChildren().indexOf(GalleryPaneFront.getInstance().getCurrentFocusedItem().getGalleryTile());
-        int currentRow = (int) (currentIndex / columnCount);
+        int columnCount = GalleryPaneBack.getInstance().getColumnCount();
+        int currentIndex = Database.getDatabaseItemsFiltered().indexOf(GalleryPaneFront.getInstance().getCurrentFocusedItem());
+        int currentRow = currentIndex / columnCount;
 
         double viewportHeight = GalleryPaneFront.getInstance().getViewportBounds().getHeight();
-        double contentHeight = GalleryPaneFront.getInstance().getTilePane().getHeight() - viewportHeight;
-        double vgap = GalleryPaneFront.getInstance().getTilePane().getVgap();
-        double rowHeight = GalleryPaneFront.getInstance().getTilePane().getPrefTileHeight() + vgap;
+        double contentHeight = tilePane.getHeight() - viewportHeight;
+        double rowHeight = tilePane.getPrefTileHeight() + tilePane.getVgap();
 
         double rowToContentRatio = rowHeight / contentHeight;
         double viewportToContentRatio = viewportHeight / contentHeight;
 
         Bounds viewportBounds = GalleryPaneFront.getInstance().getViewportBounds();
-        Bounds tileBounds = GalleryPaneFront.getInstance().getTilePane().getChildren().get((int)currentIndex).getBoundsInParent();
+        Bounds tileBounds = galleryTiles.get(currentIndex).getBoundsInParent();
 
         double viewportTop = viewportBounds.getMaxY() * -1 + viewportBounds.getHeight();
         double viewportBottom = viewportBounds.getMinY() * -1 + viewportBounds.getHeight();
