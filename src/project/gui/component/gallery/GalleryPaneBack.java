@@ -5,8 +5,8 @@ import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.layout.TilePane;
 import project.GUIController;
-import project.database.Database;
-import project.database.DatabaseItem;
+import project.database.ItemDatabase;
+import project.database.part.DatabaseItem;
 
 public class GalleryPaneBack {
     /* lazy singleton */
@@ -29,14 +29,14 @@ public class GalleryPaneBack {
     public void reloadContent() {
         if (GUIController.isPreviewFullscreen()) return;
         galleryTiles.clear();
-        for (DatabaseItem databaseItem : Database.getDatabaseItemsFiltered())
+        for (DatabaseItem databaseItem : ItemDatabase.getDatabaseItemsFiltered())
             galleryTiles.add(databaseItem.getGalleryTile());
     }
 
     /* utility methods */
     public void adjustViewportPositionToFocus() {
         int columnCount = GalleryPaneBack.getInstance().getColumnCount();
-        int currentIndex = Database.getDatabaseItemsFiltered().indexOf(GalleryPaneFront.getInstance().getCurrentFocusedItem());
+        int currentIndex = ItemDatabase.getDatabaseItemsFiltered().indexOf(GalleryPaneFront.getInstance().getCurrentFocusedItem());
         int currentRow = currentIndex / columnCount;
 
         double viewportHeight = GalleryPaneFront.getInstance().getViewportBounds().getHeight();

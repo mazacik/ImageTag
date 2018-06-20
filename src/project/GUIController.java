@@ -7,8 +7,8 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import project.backend.Keybinds;
-import project.database.Database;
-import project.database.Serialization;
+import project.database.ItemDatabase;
+import project.database.loader.Serialization;
 import project.gui.component.gallery.GalleryPaneBack;
 import project.gui.component.gallery.GalleryPaneFront;
 import project.gui.component.left.LeftPaneBack;
@@ -51,7 +51,7 @@ public class GUIController extends Stage {
 
     /* public methods */
     public void reloadComponentData(boolean sortDatabase) {
-        if (sortDatabase) Database.sort();
+        if (sortDatabase) ItemDatabase.sort();
         LeftPaneBack.getInstance().reloadContent();
         RightPaneBack.getInstance().reloadContent();
         GalleryPaneBack.getInstance().reloadContent();

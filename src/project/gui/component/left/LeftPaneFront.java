@@ -1,9 +1,10 @@
 package project.gui.component.left;
 
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.TreeCell;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
-import project.gui.component.left.part.ColoredText;
+import project.database.part.ColoredText;
 
 public class LeftPaneFront extends BorderPane {
     /* lazy singleton */
@@ -14,7 +15,8 @@ public class LeftPaneFront extends BorderPane {
     }
 
     /* components */
-    private final ListView<ColoredText> listView = new ListView<>();
+    private final TreeView<ColoredText> treeView = new TreeView(new TreeItem());
+    //private final ListView<ColoredText> listView = new ListView<>();
 
     /* constructors */
     private LeftPaneFront() {
@@ -23,12 +25,12 @@ public class LeftPaneFront extends BorderPane {
         setMaxWidth(300);
 
         setCellFactory();
-        setCenter(listView);
+        setCenter(treeView);
     }
 
     /* builder methods */
     private void setCellFactory() {
-        listView.setCellFactory(lv -> new ListCell<>() {
+        treeView.setCellFactory(treeView -> new TreeCell<>() {
             @Override
             protected void updateItem(ColoredText coloredText, boolean empty) {
                 super.updateItem(coloredText, empty);
@@ -36,7 +38,7 @@ public class LeftPaneFront extends BorderPane {
                     setText(null);
                     setTextFill(null);
                 } else {
-                    setText(coloredText.getText());
+                    setText(coloredText.getTagItem().getCategoryAndName());
                     setTextFill(coloredText.getColor());
                 }
                 ColoredText.setOnMouseClick(this, coloredText);
@@ -46,7 +48,7 @@ public class LeftPaneFront extends BorderPane {
     }
 
     /* getters */
-    public ListView<ColoredText> getListView() {
-        return listView;
+    public TreeView<ColoredText> getTreeView() {
+        return treeView;
     }
 }

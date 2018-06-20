@@ -1,4 +1,4 @@
-package project.database;
+package project.database.loader;
 
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
@@ -7,6 +7,10 @@ import org.apache.commons.io.FilenameUtils;
 import project.GUIController;
 import project.Main;
 import project.backend.Settings;
+import project.database.ItemDatabase;
+import project.database.TagDatabase;
+import project.database.part.DatabaseItem;
+import project.database.part.TagItem;
 import project.gui.component.gallery.part.GalleryTile;
 import project.gui.component.top.TopPaneFront;
 
@@ -26,10 +30,10 @@ public class DatabaseLoader extends Thread {
 
     /* variables */
     private final long loadingStartTime = System.currentTimeMillis();
-    private final ArrayList<DatabaseItem> loaderItemDatabase = new ArrayList<>();
-    private final ArrayList<String> loaderTagsDatabase = new ArrayList<>();
+    private final ArrayList<DatabaseItem> itemDatabase = ItemDatabase.getDatabaseItems();
+    private final ArrayList<TagItem> tagDatabase = TagDatabase.getDatabaseTags();
 
-    private final ArrayList<String> temporaryItemDatabaseItemNames = new ArrayList<>();
+    private final ArrayList<String> itemDatabaseItemNames = new ArrayList<>();
     private final ArrayList<String> validFilesItemNames = new ArrayList<>();
 
     private int fileCount;
@@ -49,32 +53,34 @@ public class DatabaseLoader extends Thread {
             imageCacheDirectory.mkdir();
 
         /* deserialization, database null check -> database cache regeneration */
-        if (!new File(Settings.getDatabaseCacheFilePath()).exists() || !loaderItemDatabase.addAll(Serialization.readFromDisk()))
+        if (!new File(Settings.getDatabaseCacheFilePath()).exists() || !itemDatabase.addAll(Serialization.readFromDisk()))
             regenerateDatabaseCache();
 
         /* database size check -> database cache regeneration*/
-        for (DatabaseItem databaseItem : loaderItemDatabase)
-            temporaryItemDatabaseItemNames.add(databaseItem.getName());
+        for (DatabaseItem databaseItem : itemDatabase)
+            itemDatabaseItemNames.add(databaseItem.getName());
         for (File file : validFiles)
             validFilesItemNames.add(file.getName());
-        if (!temporaryItemDatabaseItemNames.equals(validFilesItemNames))
+        if (!itemDatabaseItemNames.equals(validFilesItemNames))
             regenerateDatabaseCache();
 
         /* load transient variables */
-        for (DatabaseItem databaseItem : loaderItemDatabase) {
+        for (DatabaseItem databaseItem : itemDatabase) {
             databaseItem.setImage(loadDatabaseItemImage(databaseItem));
             databaseItem.setGalleryTile(new GalleryTile(databaseItem));
         }
 
         /* initialize application databases */
-        Database.getDatabaseItems().addAll(loaderItemDatabase);
-        Database.getDatabaseItemsFiltered().addAll(loaderItemDatabase);
-        for (DatabaseItem databaseItem : loaderItemDatabase)
-            for (String tag : databaseItem.getTags())
-                if (!loaderTagsDatabase.contains(tag))
-                    loaderTagsDatabase.add(tag);
-        Database.getDatabaseTags().addAll(loaderTagsDatabase);
-
+        ItemDatabase.getDatabaseItemsFiltered().addAll(itemDatabase);
+        for (DatabaseItem databaseItem : itemDatabase) {
+            for (TagItem tagItem : databaseItem.getTags()) {
+                if (!TagDatabase.contains(tagItem)) {
+                    tagDatabase.add(tagItem);
+                } else {
+                    databaseItem.getTags().set(databaseItem.getTags().indexOf(tagItem), TagDatabase.getTagItem(tagItem.getCategory(), tagItem.getName()));
+                }
+            }
+        }
         done();
     }
 
@@ -104,10 +110,10 @@ public class DatabaseLoader extends Thread {
         }
 
         if (Main.getLoadingWindow() != null) {
-            if (loaderItemDatabase.indexOf(databaseItem) != 0)
-                Platform.runLater(() -> Main.getLoadingWindow().getProgressLabel().setText("Loading item " + (loaderItemDatabase.indexOf(databaseItem) + 1) + " of " + fileCount + ", " + (loaderItemDatabase.indexOf(databaseItem) + 1) * 100 / fileCount + "% done"));
+            if (itemDatabase.indexOf(databaseItem) != 0)
+                Platform.runLater(() -> Main.getLoadingWindow().getProgressLabel().setText("Loading item " + (itemDatabase.indexOf(databaseItem) + 1) + " of " + fileCount + ", " + (itemDatabase.indexOf(databaseItem) + 1) * 100 / fileCount + "% done"));
             else
-                Platform.runLater(() -> Main.getLoadingWindow().getProgressLabel().setText("Loading item " + (loaderItemDatabase.size()) + " of " + fileCount + ", " + (loaderItemDatabase.indexOf(databaseItem) + 1) * 100 / fileCount + "% done"));
+                Platform.runLater(() -> Main.getLoadingWindow().getProgressLabel().setText("Loading item " + (itemDatabase.size()) + " of " + fileCount + ", " + (itemDatabase.indexOf(databaseItem) + 1) * 100 / fileCount + "% done"));
         }
 
         return new Image("file:" + currentItemCachePath, (double) galleryIconSizeMax, (double) galleryIconSizeMax, false, true);
@@ -122,22 +128,24 @@ public class DatabaseLoader extends Thread {
 
     private void regenerateDatabaseCache() {
         /* add unrecognized items */
-        for (File file : validFiles)
-            if (!temporaryItemDatabaseItemNames.contains(file.getName())) {
-                loaderItemDatabase.add(buildDatabaseItem(file));
+        for (File file : validFiles) {
+            if (!itemDatabaseItemNames.contains(file.getName())) {
+                itemDatabase.add(buildDatabaseItem(file));
             }
+        }
 
         /* remove missing items */
-        ArrayList<DatabaseItem> temporaryList = new ArrayList<>(loaderItemDatabase);
-        for (DatabaseItem databaseItem : loaderItemDatabase)
+        ArrayList<DatabaseItem> temporaryList = new ArrayList<>(itemDatabase);
+        for (DatabaseItem databaseItem : itemDatabase) {
             if (!validFilesItemNames.contains(databaseItem.getName())) {
                 temporaryList.remove(databaseItem);
             }
+        }
 
-        loaderItemDatabase.clear();
-        loaderItemDatabase.addAll(temporaryList);
-        loaderItemDatabase.sort(Comparator.comparing(DatabaseItem::getName));
-        loaderTagsDatabase.sort(Comparator.naturalOrder());
+        itemDatabase.clear();
+        itemDatabase.addAll(temporaryList);
+        itemDatabase.sort(Comparator.comparing(DatabaseItem::getName));
+        tagDatabase.sort(Comparator.comparing(TagItem::getCategoryAndName));
         Serialization.writeToDisk();
     }
 }

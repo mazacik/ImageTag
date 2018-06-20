@@ -1,17 +1,15 @@
 package project.database;
 
+import project.database.part.DatabaseItem;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public abstract class Database {
+public abstract class ItemDatabase {
     /* variables */
     private static final ArrayList<DatabaseItem> databaseItems = new ArrayList<>();
     private static final ArrayList<DatabaseItem> databaseItemsFiltered = new ArrayList<>();
     private static final ArrayList<DatabaseItem> databaseItemsSelected = new ArrayList<>();
-
-    private static final ArrayList<String> databaseTags = new ArrayList<>();
-    private static final ArrayList<String> databaseTagsWhitelist = new ArrayList<>();
-    private static final ArrayList<String> databaseTagsBlacklist = new ArrayList<>();
 
     /* public methods */
     public static void sort() {
@@ -29,15 +27,5 @@ public abstract class Database {
     }
     public static ArrayList<DatabaseItem> getDatabaseItemsSelected() {
         return databaseItemsSelected;
-    }
-
-    public static ArrayList<String> getDatabaseTags() {
-        return databaseTags;
-    }
-    public static ArrayList<String> getDatabaseTagsWhitelist() {
-        return databaseTagsWhitelist;
-    }
-    public static ArrayList<String> getDatabaseTagsBlacklist() {
-        return databaseTagsBlacklist;
     }
 }

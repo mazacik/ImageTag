@@ -3,13 +3,12 @@ package project.backend;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import project.GUIController;
-import project.database.Database;
-import project.database.DatabaseItem;
+import project.database.ItemDatabase;
+import project.database.part.DatabaseItem;
 import project.gui.component.gallery.GalleryPaneBack;
 import project.gui.component.gallery.GalleryPaneFront;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class Keybinds {
     /* lazy singleton */
@@ -20,16 +19,16 @@ public class Keybinds {
     }
 
     /* imports */
-    private final ArrayList<DatabaseItem> databaseItemsFiltered = Database.getDatabaseItemsFiltered();
+    private final ArrayList<DatabaseItem> databaseItemsFiltered = ItemDatabase.getDatabaseItemsFiltered();
 
     /* constructors */
     private Keybinds(Scene mainScene) {
         mainScene.setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case R:
-                    randomSelect(); break;
+                    Selection.selectRandomItem(); break;
                 case F12:
-                    swapImageDisplayMode(); break;
+                    GUIController.swapPreviewMode(); break;
                 case Q:
                     Selection.swap(GalleryPaneFront.getInstance().getCurrentFocusedItem()); break;
                 case W:
@@ -44,22 +43,10 @@ public class Keybinds {
     }
 
     /* private methods */
-    private void randomSelect() {
-        ArrayList<DatabaseItem> databaseItemsFiltered = Database.getDatabaseItemsFiltered();
-        int databaseItemsFilteredSize = databaseItemsFiltered.size();
-        int randomIndex = new Random().nextInt(databaseItemsFilteredSize);
-        Selection.set(databaseItemsFiltered.get(randomIndex));
-        GalleryPaneBack.getInstance().adjustViewportPositionToFocus();
-    }
-
-    private void swapImageDisplayMode() {
-        GUIController.swapPreviewMode();
-    }
-
     private void moveFocus(KeyCode keyCode) {
         DatabaseItem focusedItem = GalleryPaneFront.getInstance().getCurrentFocusedItem();
         if (focusedItem == null) {
-            DatabaseItem firstItem = Database.getDatabaseItemsFiltered().get(0);
+            DatabaseItem firstItem = ItemDatabase.getDatabaseItemsFiltered().get(0);
             GalleryPaneFront.getInstance().focusTile(firstItem);
             focusedItem = firstItem;
         }

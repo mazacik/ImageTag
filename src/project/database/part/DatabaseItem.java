@@ -1,4 +1,4 @@
-package project.database;
+package project.database.part;
 
 import javafx.scene.image.Image;
 import project.gui.component.gallery.part.GalleryTile;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class DatabaseItem implements Serializable {
     /* variables */
     private String name;
-    private ArrayList<String> tags;
+    private ArrayList<TagItem> tags;
 
     private transient Image image;
     private transient GalleryTile galleryTile;
@@ -18,7 +18,7 @@ public class DatabaseItem implements Serializable {
     public String getName() {
         return name;
     }
-    public ArrayList<String> getTags() {
+    public ArrayList<TagItem> getTags() {
         return tags;
     }
     public Image getImage() {
@@ -32,7 +32,7 @@ public class DatabaseItem implements Serializable {
     public void setName(String SimpleName) {
         this.name = SimpleName;
     }
-    public void setTags(ArrayList<String> Tags) {
+    public void setTags(ArrayList<TagItem> Tags) {
         this.tags = Tags;
     }
     public void setImage(Image image) {

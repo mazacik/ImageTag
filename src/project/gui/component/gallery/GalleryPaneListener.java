@@ -2,8 +2,8 @@ package project.gui.component.gallery;
 
 import javafx.scene.layout.TilePane;
 import project.backend.Settings;
-import project.database.Database;
-import project.database.DatabaseItem;
+import project.database.ItemDatabase;
+import project.database.part.DatabaseItem;
 
 public class GalleryPaneListener {
     /* lazy singleton */
@@ -55,7 +55,7 @@ public class GalleryPaneListener {
                 tilePane.setPrefTileWidth(galleryIconSizePref);
                 tilePane.setPrefTileHeight(galleryIconSizePref);
 
-                for (DatabaseItem databaseItem : Database.getDatabaseItems()) {
+                for (DatabaseItem databaseItem : ItemDatabase.getDatabaseItems()) {
                     databaseItem.getGalleryTile().setFitWidth(galleryIconSizePref);
                     databaseItem.getGalleryTile().setFitHeight(galleryIconSizePref);
                 }

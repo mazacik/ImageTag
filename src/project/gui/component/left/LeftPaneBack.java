@@ -1,11 +1,13 @@
 package project.gui.component.left;
 
 import javafx.collections.ObservableList;
+import javafx.scene.control.TreeItem;
 import javafx.scene.paint.Color;
-import project.database.Database;
-import project.gui.component.left.part.ColoredText;
+import project.database.TagDatabase;
+import project.database.part.ColoredText;
+import project.database.part.TagItem;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class LeftPaneBack {
     /* lazy singleton */
@@ -16,22 +18,22 @@ public class LeftPaneBack {
     }
 
     /* imports */
-    private final ObservableList<ColoredText> listViewItems = LeftPaneFront.getInstance().getListView().getItems();
+    private final ObservableList<TreeItem<ColoredText>> treeViewItems = LeftPaneFront.getInstance().getTreeView().getRoot().getChildren();
 
-    private final List<String> whitelist = Database.getDatabaseTagsWhitelist();
-    private final List<String> blacklist = Database.getDatabaseTagsBlacklist();
+    private final ArrayList<TagItem> whitelist = TagDatabase.getDatabaseTagsWhitelist();
+    private final ArrayList<TagItem> blacklist = TagDatabase.getDatabaseTagsBlacklist();
 
     /* public methods */
     public void reloadContent() {
-        listViewItems.clear();
+        treeViewItems.clear();
 
-        for (String tag : Database.getDatabaseTags()) {
-            if (whitelist.contains(tag))
-                listViewItems.add(new ColoredText(tag, Color.GREEN));
-            else if (blacklist.contains(tag))
-                listViewItems.add(new ColoredText(tag, Color.RED));
+        for (TagItem tagItem : TagDatabase.getDatabaseTags()) {
+            if (whitelist.contains(tagItem))
+                treeViewItems.add(new TreeItem(new ColoredText(tagItem, Color.GREEN)));
+            else if (blacklist.contains(tagItem))
+                treeViewItems.add(new TreeItem(new ColoredText(tagItem, Color.RED)));
             else
-                listViewItems.add(new ColoredText(tag, Color.BLACK));
+                treeViewItems.add(new TreeItem(new ColoredText(tagItem, Color.BLACK)));
         }
     }
 }

@@ -11,9 +11,10 @@ import project.GUIController;
 import project.backend.Filter;
 import project.backend.Selection;
 import project.backend.Settings;
-import project.database.Database;
-import project.database.DatabaseItem;
-import project.database.Serialization;
+import project.database.ItemDatabase;
+import project.database.TagDatabase;
+import project.database.loader.Serialization;
+import project.database.part.DatabaseItem;
 import project.gui.component.gallery.GalleryPaneFront;
 import project.gui.stage.generic.NumberInputWindow;
 
@@ -60,30 +61,30 @@ public class TopPaneListener {
         });
         menuExit.setOnAction(event -> GUIController.getInstance().fireEvent(new WindowEvent(GUIController.getInstance(), WindowEvent.WINDOW_CLOSE_REQUEST)));
 
-        menuSelectAll.setOnAction(event -> Selection.add(Database.getDatabaseItemsFiltered()));
+        menuSelectAll.setOnAction(event -> Selection.add(ItemDatabase.getDatabaseItemsFiltered()));
         menuClearSelection.setOnAction(event -> Selection.clear());
 
         menuUntaggedOnly.setOnAction(event -> {
-            Database.getDatabaseTagsWhitelist().clear();
-            Database.getDatabaseTagsBlacklist().clear();
-            Database.getDatabaseTagsBlacklist().addAll(Database.getDatabaseTags());
+            TagDatabase.getDatabaseTagsWhitelist().clear();
+            TagDatabase.getDatabaseTagsBlacklist().clear();
+            TagDatabase.getDatabaseTagsBlacklist().addAll(TagDatabase.getDatabaseTags());
             Filter.applyTagFilters();
             GUIController.getInstance().reloadComponentData(true);
         });
         menuLessThanXTags.setOnAction(event -> {
             int maxTags = new NumberInputWindow("Filter Settings", "Maximum number of tags:").getResultValue();
             if (maxTags == 0) return;
-            Database.getDatabaseTagsWhitelist().clear();
-            Database.getDatabaseTagsBlacklist().clear();
-            Database.getDatabaseItemsFiltered().clear();
-            for (DatabaseItem databaseItem : Database.getDatabaseItems())
+            TagDatabase.getDatabaseTagsWhitelist().clear();
+            TagDatabase.getDatabaseTagsBlacklist().clear();
+            ItemDatabase.getDatabaseItemsFiltered().clear();
+            for (DatabaseItem databaseItem : ItemDatabase.getDatabaseItems())
                 if (databaseItem.getTags().size() <= maxTags)
-                    Database.getDatabaseItemsFiltered().add(databaseItem);
+                    ItemDatabase.getDatabaseItemsFiltered().add(databaseItem);
             GUIController.getInstance().reloadComponentData(true);
         });
         menuReset.setOnAction(event -> {
-            Database.getDatabaseTagsWhitelist().clear();
-            Database.getDatabaseTagsBlacklist().clear();
+            TagDatabase.getDatabaseTagsWhitelist().clear();
+            TagDatabase.getDatabaseTagsBlacklist().clear();
             Filter.applyTagFilters();
             GUIController.getInstance().reloadComponentData(true);
         });
@@ -100,15 +101,15 @@ public class TopPaneListener {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            for (DatabaseItem databaseItem : Database.getDatabaseItems()) {
+            for (DatabaseItem databaseItem : ItemDatabase.getDatabaseItems()) {
                 if (databaseItem.getName().equals(fileName)) {
-                    int index = Database.getDatabaseItemsFiltered().indexOf(databaseItem);
-                    Database.getDatabaseItems().remove(databaseItem);
-                    Database.getDatabaseItemsFiltered().remove(databaseItem);
-                    Database.getDatabaseItemsSelected().remove(databaseItem);
-                    if (Database.getDatabaseItemsFiltered().get(index) == null)
+                    int index = ItemDatabase.getDatabaseItemsFiltered().indexOf(databaseItem);
+                    ItemDatabase.getDatabaseItems().remove(databaseItem);
+                    ItemDatabase.getDatabaseItemsFiltered().remove(databaseItem);
+                    ItemDatabase.getDatabaseItemsSelected().remove(databaseItem);
+                    if (ItemDatabase.getDatabaseItemsFiltered().get(index) == null)
                         index--;
-                    GalleryPaneFront.getInstance().focusTile(Database.getDatabaseItemsFiltered().get(index));
+                    GalleryPaneFront.getInstance().focusTile(ItemDatabase.getDatabaseItemsFiltered().get(index));
 
                     break;
                 }

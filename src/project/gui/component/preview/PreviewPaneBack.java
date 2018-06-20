@@ -5,7 +5,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import project.GUIController;
 import project.backend.Settings;
-import project.database.DatabaseItem;
+import project.database.part.DatabaseItem;
 import project.gui.component.gallery.GalleryPaneFront;
 
 public class PreviewPaneBack {

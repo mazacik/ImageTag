@@ -9,8 +9,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import project.backend.Selection;
 import project.backend.Settings;
-import project.database.Database;
-import project.database.DatabaseItem;
+import project.database.ItemDatabase;
+import project.database.part.DatabaseItem;
 import project.gui.component.gallery.GalleryPaneFront;
 
 public class GalleryTile extends ImageView {
@@ -31,7 +31,7 @@ public class GalleryTile extends ImageView {
 
     /* public methods */
     public static void generateEffect(DatabaseItem databaseItem) {
-        boolean selection = Database.getDatabaseItemsSelected().contains(databaseItem);
+        boolean selection = ItemDatabase.getDatabaseItemsSelected().contains(databaseItem);
         boolean focus = false;
         if (GalleryPaneFront.getInstance().getCurrentFocusedItem() != null)
             focus = GalleryPaneFront.getInstance().getCurrentFocusedItem().equals(databaseItem);

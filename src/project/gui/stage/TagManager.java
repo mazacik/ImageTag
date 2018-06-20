@@ -1,126 +1,102 @@
 package project.gui.stage;
 
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import project.backend.Filter;
-import project.database.Database;
-import project.database.DatabaseItem;
+import project.backend.Selection;
+import project.database.TagDatabase;
+import project.database.part.TagItem;
 import project.gui.component.gallery.GalleryPaneBack;
-import project.gui.component.left.part.ColoredText;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 
 public class TagManager extends Stage {
     /* components */
-    private final ListView<ColoredText> listView = new ListView<>();
     private final BorderPane tagManagerPane = new BorderPane();
     private final Scene tagManagerScene = new Scene(tagManagerPane);
-    private final TextField addTextField = new TextField();
+
+    private final TreeView<String> treeView = new TreeView(new TreeItem());
+    private final VBox addPane = new VBox(2);
+
+    private final ComboBox cbCategory = new ComboBox();
+    private final ComboBox cbName = new ComboBox();
+
+    private final Button btnAdd = new Button("Add");
+    private final Button btnNew = new Button("New");
 
     /* constructors */
     public TagManager() {
+        /* frontend */
+        setTitle("Tag Manager");
         setAlwaysOnTop(true);
-        setMinWidth(480);
+        setMinWidth(320);
         setMinHeight(640);
         centerOnScreen();
+
+        /* initialization */
         setScene(tagManagerScene);
-        setCellFactory();
-        tagManagerScene.setOnKeyPressed(event -> {
-            if (event.getCode().equals(KeyCode.ENTER))
-                addTag();
+        initializeTreeView();
+
+        cbCategory.prefWidthProperty().bind(widthProperty());
+        cbName.prefWidthProperty().bind(widthProperty());
+        btnAdd.prefWidthProperty().bind(widthProperty());
+        btnNew.prefWidthProperty().bind(widthProperty());
+
+        addPane.getChildren().addAll(cbCategory, cbName, btnAdd, btnNew);
+
+        /* action listeners */
+        cbCategory.setOnShown(event -> {
+            cbCategory.getItems().clear();
+            cbCategory.getItems().addAll(TagDatabase.getCategories());
         });
-        Button addButton = new Button("+");
-        addButton.setStyle("-fx-focus-color: transparent;");
-        addButton.setMinWidth(25);
-        addButton.setOnAction(event -> addTag());
-        HBox addPane = new HBox();
-        addPane.setAlignment(Pos.CENTER);
-        addPane.setSpacing(5);
-        addPane.getChildren().addAll(addTextField, addButton);
-        initializeListView();
+        cbName.setOnShown(event -> {
+            cbName.getItems().clear();
+            Object cbCategoryValue = cbCategory.getValue();
+            if (cbCategoryValue != null) {
+                cbName.getItems().addAll(TagDatabase.getItemsInCategory(cbCategoryValue.toString()));
+            }
+        });
+
+        btnAdd.setOnAction(event -> addTag());
+        btnNew.setOnAction(event -> new NewTagScene());
+
         setOnCloseRequest(event -> {
             Filter.applyTagFilters();
             GalleryPaneBack.getInstance().reloadContent();
         });
-        tagManagerPane.setCenter(listView);
+
+        tagManagerPane.setCenter(treeView);
         tagManagerPane.setBottom(addPane);
-        addTextField.requestFocus();
 
         show();
     }
 
     /* private methods */
     private void addTag() {
-        String newTag = addTextField.getText();
-        if (!newTag.isEmpty()) {
-            if (!Database.getDatabaseTags().contains(newTag)) {
-                Filter.addTagToSelectedItems(newTag);
-                listView.getItems().add(new ColoredText(newTag, Color.GREEN));
-                listView.getItems().sort(Comparator.comparing(ColoredText::getText));
+        Object cbCategoryValue = cbCategory.getValue();
+        Object cbNameValue = cbName.getValue();
+
+        if (cbCategoryValue != null && cbNameValue != null) {
+            TagItem tagItem = TagDatabase.getTagItem(cbCategoryValue.toString(), cbNameValue.toString());
+            if (tagItem != null) {
+                Filter.addTagToSelectedItems(tagItem);
+                treeView.getRoot().getChildren().add(new TreeItem(tagItem.getCategoryAndName()));
+                //treeView.getRoot().getChildren().sort(Comparator.comparing(TagItem::getCategoryAndName));
             }
-            addTextField.clear();
         }
     }
 
     /* builder methods */
-    private void setCellFactory() {
-        listView.setCellFactory(lv -> new ListCell<>() {
-            @Override
-            protected void updateItem(ColoredText coloredText, boolean empty) {
-                super.updateItem(coloredText, empty);
-                if (coloredText == null) {
-                    setText(null);
-                    setTextFill(null);
-                } else {
-                    setText(coloredText.getText());
-                    setTextFill(coloredText.getColor());
-                }
-            }
-        });
-    }
+    private void initializeTreeView() {
+        treeView.setPadding(new Insets(5));
+        treeView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
-    private void initializeListView() {
-        listView.setPadding(new Insets(5));
-        listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-
-        ArrayList<String> sharedTags = Filter.getIntersectingTagsOfSelectedItems();
-        ArrayList<String> theOtherTags = new ArrayList<>();
-        for (String tag : Database.getDatabaseTags())
-            if (!sharedTags.contains(tag))
-                theOtherTags.add(tag);
-
-        for (String tag : sharedTags)
-            listView.getItems().add(new ColoredText(tag, Color.GREEN));
-        for (String tag : theOtherTags)
-            listView.getItems().add(new ColoredText(tag, Color.BLACK));
-        listView.getItems().sort(Comparator.comparing(ColoredText::getText));
-
-        listView.setOnMouseClicked(event -> {
-            if (event.getButton().equals(MouseButton.PRIMARY)) {
-                ColoredText coloredText = listView.getSelectionModel().getSelectedItem();
-                if (coloredText != null) {
-                    String selectedTag = coloredText.getText();
-                    if (coloredText.getColor().equals(Color.BLACK)) {
-                        for (DatabaseItem databaseItem : Database.getDatabaseItemsSelected())
-                            if (!databaseItem.getTags().contains(selectedTag))
-                                databaseItem.getTags().add(selectedTag);
-                        listView.getItems().set(listView.getSelectionModel().getSelectedIndex(), new ColoredText(selectedTag, Color.GREEN));
-                    } else {
-                        for (DatabaseItem databaseItem : Database.getDatabaseItemsSelected())
-                            databaseItem.getTags().remove(selectedTag);
-                        listView.getItems().set(listView.getSelectionModel().getSelectedIndex(), new ColoredText(selectedTag, Color.BLACK));
-                    }
-                }
-            }
-        });
+        ArrayList<TagItem> sharedTags = Selection.getSharedTags();
+        for (TagItem tagItem : sharedTags)
+            treeView.getRoot().getChildren().add(new TreeItem(tagItem.getCategoryAndName()));
     }
 }

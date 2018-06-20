@@ -3,7 +3,7 @@ package project.gui.component.gallery;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.TilePane;
 import project.backend.Settings;
-import project.database.DatabaseItem;
+import project.database.part.DatabaseItem;
 import project.gui.component.gallery.part.GalleryTile;
 import project.gui.component.preview.PreviewPaneBack;
 import project.gui.component.right.RightPaneBack;

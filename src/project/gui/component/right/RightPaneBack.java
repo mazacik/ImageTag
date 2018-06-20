@@ -1,6 +1,9 @@
 package project.gui.component.right;
 
-import project.backend.Filter;
+import project.backend.Selection;
+import project.database.part.TagItem;
+
+import java.util.ArrayList;
 
 public class RightPaneBack {
     /* lazy singleton */
@@ -10,13 +13,16 @@ public class RightPaneBack {
         return instance;
     }
 
-    /* constructor */
+    /* constructors */
     private RightPaneBack() {
         RightPaneListener.getInstance();
     }
 
-    /* method */
+    /* public methods */
     public void reloadContent() {
-        RightPaneFront.getInstance().getListView().getItems().setAll(Filter.getIntersectingTagsOfSelectedItems());
+        ArrayList<String> sharedTags = new ArrayList<>();
+        for (TagItem tagItem : Selection.getSharedTags())
+            sharedTags.add(tagItem.getCategoryAndName());
+        RightPaneFront.getInstance().getListView().getItems().setAll(sharedTags);
     }
 }

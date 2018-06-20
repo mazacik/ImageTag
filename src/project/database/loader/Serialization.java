@@ -1,9 +1,11 @@
-package project.database;
+package project.database.loader;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import project.backend.Settings;
+import project.database.ItemDatabase;
+import project.database.part.DatabaseItem;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -28,7 +30,7 @@ public abstract class Serialization {
         Gson GSON = GSONBuilder.create();
 
         Type databaseItemListType = new TypeToken<Collection<DatabaseItem>>() {}.getType();
-        String JSON = GSON.toJson(Database.getDatabaseItems(), databaseItemListType);
+        String JSON = GSON.toJson(ItemDatabase.getDatabaseItems(), databaseItemListType);
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(databaseCacheFilePath, false));
             writer.write(JSON);
