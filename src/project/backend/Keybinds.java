@@ -49,6 +49,7 @@ public class Keybinds {
         int databaseItemsFilteredSize = databaseItemsFiltered.size();
         int randomIndex = new Random().nextInt(databaseItemsFilteredSize);
         Selection.set(databaseItemsFiltered.get(randomIndex));
+        GalleryPaneBack.getInstance().adjustViewportPositionToFocus();
     }
 
     private void swapImageDisplayMode() {

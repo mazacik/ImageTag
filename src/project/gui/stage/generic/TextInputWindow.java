@@ -16,6 +16,6 @@ public class TextInputWindow extends TextInputDialog {
     /* public methods */
     public String getResultValue() {
         Optional<String> resultValue = showAndWait();
-        return resultValue.orElse(null);
+        return resultValue.orElse("");
     }
 }

@@ -1,6 +1,5 @@
 package project.backend;
 
-import javafx.scene.control.TextInputDialog;
 import org.apache.commons.text.WordUtils;
 import project.GUIController;
 import project.database.Database;
@@ -12,7 +11,6 @@ import project.gui.stage.generic.TextInputWindow;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Optional;
 
 public abstract class Filter {
     /* imports */
@@ -78,15 +76,7 @@ public abstract class Filter {
     }
 
     public static void renameTag(String oldTagName) {
-        TextInputDialog renamePrompt = new TextInputDialog();
-        renamePrompt.setTitle("Rename tag");
-        renamePrompt.setHeaderText(null);
-        renamePrompt.setGraphic(null);
-        renamePrompt.setContentText("New name:");
-        String newTagName = "";
-        Optional<String> result = renamePrompt.showAndWait();
-        if (result.isPresent())
-            newTagName = result.get();
+        String newTagName = new TextInputWindow("Tag Rename", "New name:").getResultValue();
 
         if (!newTagName.isEmpty()) {
             if (databaseTags.contains(oldTagName)) {
