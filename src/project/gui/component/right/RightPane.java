@@ -10,14 +10,7 @@ import javafx.scene.layout.VBox;
 import project.database.TagDatabase;
 import project.gui.stage.TagManager;
 
-public class RightPaneFront extends BorderPane {
-    /* lazy singleton */
-    private static RightPaneFront instance;
-    public static RightPaneFront getInstance() {
-        if (instance == null) instance = new RightPaneFront();
-        return instance;
-    }
-
+public class RightPane extends BorderPane {
     /* components */
     private final ListView<String> listView = new ListView<>();
     private final ComboBox cbCategory = new ComboBox();
@@ -26,7 +19,7 @@ public class RightPaneFront extends BorderPane {
     private final Button btnManage = new Button("Manage");
 
     /* constructor */
-    private RightPaneFront() {
+    public RightPane() {
         /* design */
         setMinWidth(150);
         setPrefWidth(200);

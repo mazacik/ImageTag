@@ -7,7 +7,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.stage.WindowEvent;
-import project.GUIController;
 import project.backend.Filter;
 import project.backend.Selection;
 import project.backend.Settings;
@@ -15,7 +14,8 @@ import project.database.ItemDatabase;
 import project.database.TagDatabase;
 import project.database.loader.Serialization;
 import project.database.part.DatabaseItem;
-import project.gui.component.gallery.GalleryPaneFront;
+import project.gui.GUIController;
+import project.gui.component.gallery.GalleryPane;
 import project.gui.stage.generic.NumberInputWindow;
 
 import java.io.IOException;
@@ -31,20 +31,20 @@ public class TopPaneListener {
     }
 
     /* imports */
-    private final TopPaneFront topPaneFront = TopPaneFront.getInstance();
-    private final MenuBar infoLabelMenuBar = topPaneFront.getInfoLabelMenuBar();
-    private final Menu infoLabelMenu = topPaneFront.getInfoLabelMenu();
+    private final TopPane topPane = TopPane.getInstance();
+    private final MenuBar infoLabelMenuBar = topPane.getInfoLabelMenuBar();
+    private final Menu infoLabelMenu = topPane.getInfoLabelMenu();
 
-    private final MenuItem menuSave = topPaneFront.getMenuSave();
-    private final MenuItem menuRefresh = topPaneFront.getMenuRefresh();
-    private final MenuItem menuExit = topPaneFront.getMenuExit();
+    private final MenuItem menuSave = topPane.getMenuSave();
+    private final MenuItem menuRefresh = topPane.getMenuRefresh();
+    private final MenuItem menuExit = topPane.getMenuExit();
 
-    private final MenuItem menuSelectAll = topPaneFront.getMenuSelectAll();
-    private final MenuItem menuClearSelection = topPaneFront.getMenuClearSelection();
+    private final MenuItem menuSelectAll = topPane.getMenuSelectAll();
+    private final MenuItem menuClearSelection = topPane.getMenuClearSelection();
 
-    private final MenuItem menuUntaggedOnly = topPaneFront.getMenuUntaggedOnly();
-    private final MenuItem menuLessThanXTags = topPaneFront.getMenuLessThanXTags();
-    private final MenuItem menuReset = topPaneFront.getMenuReset();
+    private final MenuItem menuUntaggedOnly = topPane.getMenuUntaggedOnly();
+    private final MenuItem menuLessThanXTags = topPane.getMenuLessThanXTags();
+    private final MenuItem menuReset = topPane.getMenuReset();
 
     /* constructors */
     private TopPaneListener() {
@@ -109,7 +109,7 @@ public class TopPaneListener {
                     ItemDatabase.getDatabaseItemsSelected().remove(databaseItem);
                     if (ItemDatabase.getDatabaseItemsFiltered().get(index) == null)
                         index--;
-                    GalleryPaneFront.getInstance().focusTile(ItemDatabase.getDatabaseItemsFiltered().get(index));
+                    GalleryPane.getInstance().focusTile(ItemDatabase.getDatabaseItemsFiltered().get(index));
 
                     break;
                 }

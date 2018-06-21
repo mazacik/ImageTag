@@ -3,21 +3,17 @@ package project.backend;
 import project.database.ItemDatabase;
 import project.database.part.DatabaseItem;
 import project.database.part.TagItem;
-import project.gui.component.gallery.GalleryPaneBack;
-import project.gui.component.gallery.GalleryPaneFront;
+import project.gui.GUIStage;
+import project.gui.component.gallery.GalleryPane;
 import project.gui.component.gallery.part.GalleryTile;
 import project.gui.component.right.RightPaneBack;
-import project.gui.component.right.RightPaneFront;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public abstract class Selection {
-    /* imports */
-    private static final ArrayList<DatabaseItem> databaseItemsSelected = ItemDatabase.getDatabaseItemsSelected();
-
-    /* public methods */
     public static ArrayList<TagItem> getSharedTags() {
+        ArrayList<DatabaseItem> databaseItemsSelected = ItemDatabase.getDatabaseItemsSelected();
         if (databaseItemsSelected.isEmpty()) return new ArrayList<>();
 
         ArrayList<TagItem> sharedTags = new ArrayList<>();
@@ -43,12 +39,14 @@ public abstract class Selection {
     }
 
     public static void add(DatabaseItem databaseItem) {
-        GalleryPaneFront galleryPaneFront = GalleryPaneFront.getInstance();
+        ArrayList<DatabaseItem> databaseItemsSelected = ItemDatabase.getDatabaseItemsSelected();
+        GalleryPane galleryPane = GUIStage.getGalleryPane();
         databaseItemsSelected.add(databaseItem);
-        galleryPaneFront.focusTile(databaseItem);
+        galleryPane.focusTile(databaseItem);
     }
 
     public static void add(ArrayList<DatabaseItem> databaseItemsToAddToSelection) {
+        ArrayList<DatabaseItem> databaseItemsSelected = ItemDatabase.getDatabaseItemsSelected();
         for (DatabaseItem databaseItem : databaseItemsToAddToSelection) {
             if (!databaseItemsSelected.contains(databaseItem)) {
                 databaseItemsSelected.add(databaseItem);
@@ -66,12 +64,14 @@ public abstract class Selection {
     }
 
     public static void remove(DatabaseItem databaseItem) {
-        GalleryPaneFront galleryPaneFront = GalleryPaneFront.getInstance();
+        ArrayList<DatabaseItem> databaseItemsSelected = ItemDatabase.getDatabaseItemsSelected();
+        GalleryPane galleryPane = GUIStage.getGalleryPane();
         databaseItemsSelected.remove(databaseItem);
-        galleryPaneFront.focusTile(databaseItem);
+        galleryPane.focusTile(databaseItem);
     }
 
     public static void swap(DatabaseItem databaseItem) {
+        ArrayList<DatabaseItem> databaseItemsSelected = ItemDatabase.getDatabaseItemsSelected();
         if (!databaseItemsSelected.contains(databaseItem))
             add(databaseItem);
         else
@@ -79,8 +79,9 @@ public abstract class Selection {
     }
 
     public static void clear() {
+        ArrayList<DatabaseItem> databaseItemsSelected = ItemDatabase.getDatabaseItemsSelected();
         databaseItemsSelected.clear();
-        RightPaneFront.getInstance().getListView().getItems().clear();
+        GUIStage.getRightPane().getListView().getItems().clear();
         for (DatabaseItem databaseItem : ItemDatabase.getDatabaseItems()) {
             GalleryTile.generateEffect(databaseItem);
         }

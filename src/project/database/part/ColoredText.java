@@ -7,8 +7,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import project.backend.Filter;
 import project.database.TagDatabase;
-import project.gui.component.gallery.GalleryPaneBack;
-import project.gui.component.left.LeftPaneFront;
+import project.gui.GUIStage;
 
 import java.util.ArrayList;
 
@@ -43,7 +42,7 @@ public class ColoredText {
                     whitelist.add(tagItem);
                     coloredText.setColor(Color.GREEN);
                 }
-                LeftPaneFront.getInstance().getTreeView().refresh();
+                GUIStage.getLeftPane().getTreeView().refresh();
                 Filter.applyTagFilters();
                 GalleryPaneBack.getInstance().reloadContent();
             }

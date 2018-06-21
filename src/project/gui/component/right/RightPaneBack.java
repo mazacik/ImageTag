@@ -23,6 +23,6 @@ public class RightPaneBack {
         ArrayList<String> sharedTags = new ArrayList<>();
         for (TagItem tagItem : Selection.getSharedTags())
             sharedTags.add(tagItem.getCategoryAndName());
-        RightPaneFront.getInstance().getListView().getItems().setAll(sharedTags);
+        RightPane.getInstance().getListView().getItems().setAll(sharedTags);
     }
 }

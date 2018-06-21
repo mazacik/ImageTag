@@ -1,19 +1,17 @@
 package project.backend;
 
-import project.GUIController;
 import project.database.ItemDatabase;
 import project.database.TagDatabase;
 import project.database.part.DatabaseItem;
 import project.database.part.TagItem;
+import project.gui.GUIStage;
 import project.gui.component.left.LeftPaneBack;
 import project.gui.component.right.RightPaneBack;
-import project.gui.component.right.RightPaneFront;
 import project.gui.stage.generic.TextInputWindow;
 
 import java.util.ArrayList;
 
 public abstract class Filter {
-    /* imports */
     private static final ArrayList<DatabaseItem> databaseItems = ItemDatabase.getDatabaseItems();
     private static final ArrayList<DatabaseItem> databaseItemsFiltered = ItemDatabase.getDatabaseItemsFiltered();
     private static final ArrayList<DatabaseItem> databaseItemsSelected = ItemDatabase.getDatabaseItemsSelected();
@@ -22,7 +20,6 @@ public abstract class Filter {
     private static final ArrayList<TagItem> databaseTagsWhitelist = TagDatabase.getDatabaseTagsWhitelist();
     private static final ArrayList<TagItem> databaseTagsBlacklist = TagDatabase.getDatabaseTagsBlacklist();
 
-    /* public methods */
     public static void addTagToDatabase() {
         String tagName = new TextInputWindow("New Tag", "Name of the new tag:").getResultValue();
         String tagCategory = ""; //todo: fixme
@@ -55,11 +52,11 @@ public abstract class Filter {
         databaseTags.remove(tagItem);
         databaseTagsWhitelist.remove(tagItem);
         databaseTagsBlacklist.remove(tagItem);
-        GUIController.getInstance().reloadComponentData(false);
+        GUIStage.refresh(false);
     }
 
     public static void removeSelectedTagsFromItemSelection() {
-        for (String tagName : RightPaneFront.getInstance().getListView().getSelectionModel().getSelectedItems()) {
+        for (String tagName : GUIStage.getRightPane().getListView().getSelectionModel().getSelectedItems()) {
             TagItem tagItem = TagDatabase.getTagItem(tagName);
 
             for (DatabaseItem databaseItem : databaseItemsSelected) {
@@ -79,7 +76,7 @@ public abstract class Filter {
                 databaseTagsBlacklist.remove(tagItem);
             }
         }
-        GUIController.getInstance().reloadComponentData(false);
+        GUIStage.refresh(false);
     }
 
     public static void renameTag(TagItem tagItem) {

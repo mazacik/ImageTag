@@ -6,14 +6,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.layout.BorderPane;
 
-public class TopPaneFront extends BorderPane {
-    /* lazy singleton */
-    private static TopPaneFront instance;
-    public static TopPaneFront getInstance() {
-        if (instance == null) instance = new TopPaneFront();
-        return instance;
-    }
-
+public class TopPane extends BorderPane {
     /* variables */
     private final MenuBar infoLabelMenuBar = new MenuBar();
     private final Menu infoLabelMenu = new Menu();
@@ -33,7 +26,7 @@ public class TopPaneFront extends BorderPane {
     private final MenuItem menuReset = new MenuItem("Reset");
 
     /* constructors */
-    private TopPaneFront() {
+    public TopPane() {
         menuFile.getItems().addAll(menuSave, menuRefresh, new SeparatorMenuItem(), menuExit);
         menuSelection.getItems().addAll(menuSelectAll, menuClearSelection);
         menuFilter.getItems().addAll(menuUntaggedOnly, menuLessThanXTags, new SeparatorMenuItem(), menuReset);

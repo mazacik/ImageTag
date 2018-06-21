@@ -3,19 +3,12 @@ package project.gui.component.preview;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Pane;
 
-public class PreviewPaneFront extends Pane {
-    /* lazy singleton */
-    private static PreviewPaneFront instance;
-    public static PreviewPaneFront getInstance() {
-        if (instance == null) instance = new PreviewPaneFront();
-        return instance;
-    }
-
+public class PreviewPane extends Pane {
     /* variables */
     private final Canvas canvas = new Canvas();
 
     /* constructors */
-    private PreviewPaneFront() {
+    public PreviewPane() {
         canvas.setOnMouseClicked(event -> this.requestFocus());
         getChildren().add(canvas);
     }

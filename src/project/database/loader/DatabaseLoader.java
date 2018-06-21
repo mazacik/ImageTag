@@ -4,15 +4,14 @@ import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import org.apache.commons.io.FilenameUtils;
-import project.GUIController;
 import project.Main;
 import project.backend.Settings;
 import project.database.ItemDatabase;
 import project.database.TagDatabase;
 import project.database.part.DatabaseItem;
 import project.database.part.TagItem;
+import project.gui.GUIStage;
 import project.gui.component.gallery.part.GalleryTile;
-import project.gui.component.top.TopPaneFront;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -88,8 +87,8 @@ public class DatabaseLoader extends Thread {
         /* request backend content initialization */
         Platform.runLater(() -> {
             Main.getLoadingWindow().close();
-            GUIController.getInstance().reloadComponentData(false);
-            TopPaneFront.getInstance().getInfoLabelMenu().setText("Loading done in " + Long.toString(System.currentTimeMillis() - loadingStartTime) + " ms");
+            new GUIStage();
+            GUIStage.getTopPane().getInfoLabelMenu().setText("Loading done in " + Long.toString(System.currentTimeMillis() - loadingStartTime) + " ms");
         });
     }
 

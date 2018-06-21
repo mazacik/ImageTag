@@ -6,20 +6,13 @@ import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
 import project.database.part.ColoredText;
 
-public class LeftPaneFront extends BorderPane {
-    /* lazy singleton */
-    private static LeftPaneFront instance;
-    public static LeftPaneFront getInstance() {
-        if (instance == null) instance = new LeftPaneFront();
-        return instance;
-    }
-
+public class LeftPane extends BorderPane {
     /* components */
     private final TreeView<ColoredText> treeView = new TreeView(new TreeItem());
     //private final ListView<ColoredText> listView = new ListView<>();
 
     /* constructors */
-    private LeftPaneFront() {
+    public LeftPane() {
         setMinWidth(150);
         setPrefWidth(200);
         setMaxWidth(300);

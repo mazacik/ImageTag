@@ -11,17 +11,15 @@ import project.backend.Selection;
 import project.backend.Settings;
 import project.database.ItemDatabase;
 import project.database.part.DatabaseItem;
-import project.gui.component.gallery.GalleryPaneFront;
+import project.gui.GUIStage;
+import project.gui.component.gallery.GalleryPane;
 
 public class GalleryTile extends ImageView {
-    /* variables */
     private static InnerShadow selectionBorder = buildSelectionBorderEffect();
     private static ColorInput focusMark = buildSelectionFocusMarkEffect();
 
-    /* imports */
     private static final int galleryIconSizePref = Settings.getGalleryIconSizePref();
 
-    /* constructors */
     public GalleryTile(DatabaseItem databaseItem) {
         super(databaseItem.getImage());
         setFitWidth(galleryIconSizePref);
@@ -29,12 +27,13 @@ public class GalleryTile extends ImageView {
         setOnMouseClick(databaseItem);
     }
 
-    /* public methods */
     public static void generateEffect(DatabaseItem databaseItem) {
+        GalleryPane galleryPane = GUIStage.getGalleryPane();
+
         boolean selection = ItemDatabase.getDatabaseItemsSelected().contains(databaseItem);
         boolean focus = false;
-        if (GalleryPaneFront.getInstance().getCurrentFocusedItem() != null)
-            focus = GalleryPaneFront.getInstance().getCurrentFocusedItem().equals(databaseItem);
+        if (galleryPane.getCurrentFocusedItem() != null)
+            focus = galleryPane.getCurrentFocusedItem().equals(databaseItem);
 
         if (!selection && !focus) {
             databaseItem.getGalleryTile().setEffect(null);
@@ -53,7 +52,6 @@ public class GalleryTile extends ImageView {
         }
     }
 
-    /* builder methods */
     private static InnerShadow buildSelectionBorderEffect() {
         InnerShadow innerShadow = new InnerShadow();
         innerShadow.setColor(Color.RED);
@@ -72,11 +70,10 @@ public class GalleryTile extends ImageView {
         return new ColorInput(markPositionInTile, markPositionInTile, markSize, markSize, markColor);
     }
 
-    /* event methods */
     private void setOnMouseClick(DatabaseItem databaseItem) {
         setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
-                GalleryPaneFront.getInstance().focusTile(databaseItem);
+                GUIStage.getGalleryPane().focusTile(databaseItem);
                 Selection.swap(databaseItem);
             }
         });

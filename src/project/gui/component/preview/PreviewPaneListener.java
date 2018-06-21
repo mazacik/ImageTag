@@ -17,12 +17,12 @@ public class PreviewPaneListener {
 
     /* event methods */
     private void setSizePropertyListener() {
-        PreviewPaneFront previewPaneFront = PreviewPaneFront.getInstance();
+        PreviewPane previewPane = PreviewPane.getInstance();
         ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) -> {
-            previewPaneFront.setCanvasSize(previewPaneFront.getWidth(), previewPaneFront.getHeight());
+            previewPane.setCanvasSize(previewPane.getWidth(), previewPane.getHeight());
             PreviewPaneBack.getInstance().reloadContent();
         };
-        previewPaneFront.widthProperty().addListener(previewPaneSizeListener);
-        previewPaneFront.heightProperty().addListener(previewPaneSizeListener);
+        previewPane.widthProperty().addListener(previewPaneSizeListener);
+        previewPane.heightProperty().addListener(previewPaneSizeListener);
     }
 }

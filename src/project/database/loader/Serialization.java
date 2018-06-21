@@ -20,10 +20,8 @@ import java.util.Collection;
 import java.util.Date;
 
 public abstract class Serialization {
-    /* imports */
-    private static String databaseCacheFilePath = Settings.getDatabaseCacheFilePath();
+    private static final String databaseCacheFilePath = Settings.getDatabaseCacheFilePath();
 
-    /* public methods */
     public static void writeToDisk() {
         GsonBuilder GSONBuilder = new GsonBuilder();
         GSONBuilder.setPrettyPrinting().serializeNulls();

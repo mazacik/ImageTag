@@ -3,10 +3,10 @@ package project.gui.component.preview;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import project.GUIController;
 import project.backend.Settings;
 import project.database.part.DatabaseItem;
-import project.gui.component.gallery.GalleryPaneFront;
+import project.gui.GUIController;
+import project.gui.component.gallery.GalleryPane;
 
 public class PreviewPaneBack {
     /* lazy singleton */
@@ -17,7 +17,7 @@ public class PreviewPaneBack {
     }
 
     /* imports */
-    private final Canvas canvas = PreviewPaneFront.getInstance().getCanvas();
+    private final Canvas canvas = PreviewPane.getInstance().getCanvas();
 
     /* constructors */
     private PreviewPaneBack() {
@@ -32,8 +32,8 @@ public class PreviewPaneBack {
     /* public methods */
     public void reloadContent() {
         if (!GUIController.isPreviewFullscreen()) return;
-        if (GalleryPaneFront.getInstance().getCurrentFocusedItem() == null) return;
-        if (!GalleryPaneFront.getInstance().getCurrentFocusedItem().equals(currentDatabaseItem)) loadImage();
+        if (GalleryPane.getInstance().getCurrentFocusedItem() == null) return;
+        if (!GalleryPane.getInstance().getCurrentFocusedItem().equals(currentDatabaseItem)) loadImage();
 
         double imageWidth = currentPreviewImage.getWidth();
         double imageHeight = currentPreviewImage.getHeight();
@@ -53,13 +53,13 @@ public class PreviewPaneBack {
         double resultX = canvas.getWidth() / 2 - resultWidth / 2;
         double resultY = canvas.getHeight() / 2 - resultHeight / 2;
 
-        gc.clearRect(0, 0, PreviewPaneFront.getInstance().getWidth(), PreviewPaneFront.getInstance().getHeight());
+        gc.clearRect(0, 0, PreviewPane.getInstance().getWidth(), PreviewPane.getInstance().getHeight());
         gc.drawImage(currentPreviewImage, resultX, resultY, resultWidth, resultHeight);
     }
 
     /* private methods */
     private void loadImage() {
-        currentDatabaseItem = GalleryPaneFront.getInstance().getCurrentFocusedItem();
+        currentDatabaseItem = GalleryPane.getInstance().getCurrentFocusedItem();
         currentPreviewImage = new Image("file:" + Settings.getMainDirectoryPath() + "/" + currentDatabaseItem.getName());
     }
 }

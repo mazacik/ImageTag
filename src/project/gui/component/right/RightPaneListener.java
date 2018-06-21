@@ -6,7 +6,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
 import project.backend.Filter;
 import project.database.TagDatabase;
-import project.gui.component.top.TopPaneFront;
+import project.gui.component.top.TopPane;
 
 public class RightPaneListener {
     /* lazy singleton */
@@ -17,19 +17,19 @@ public class RightPaneListener {
     }
 
     /* imports */
-    private final RightPaneFront rightPaneFront = RightPaneFront.getInstance();
+    private final RightPane rightPane = RightPane.getInstance();
 
     /* constructors */
     private RightPaneListener() {
         setOnKeyPress();
         setAddButtonOnAction();
-        setContextMenu(rightPaneFront.getListView());
+        setContextMenu(rightPane.getListView());
     }
 
     /* private methods */
     private void addTag() {
-        Object categoryComboBoxValue = rightPaneFront.getCbCategory().getValue();
-        Object nameComboBoxValue = rightPaneFront.getCbName().getValue();
+        Object categoryComboBoxValue = rightPane.getCbCategory().getValue();
+        Object nameComboBoxValue = rightPane.getCbName().getValue();
         String category = "";
         String name = "";
 
@@ -45,18 +45,18 @@ public class RightPaneListener {
 
     /* event methods */
     private void setOnKeyPress() {
-        rightPaneFront.setOnKeyPressed(event -> {
+        rightPane.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER)
                 addTag();
             else if (event.getCode() == KeyCode.DELETE)
                 Filter.removeSelectedTagsFromItemSelection();
             else if (event.getCode() == KeyCode.ESCAPE)
-                TopPaneFront.getInstance().requestFocus();
+                TopPane.getInstance().requestFocus();
         });
     }
 
     private void setAddButtonOnAction() {
-        rightPaneFront.getBtnAdd().setOnAction(event -> addTag());
+        rightPane.getBtnAdd().setOnAction(event -> addTag());
     }
 
     private void setContextMenu(ListView<String> source) {

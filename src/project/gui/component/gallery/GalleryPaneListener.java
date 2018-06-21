@@ -14,8 +14,8 @@ public class GalleryPaneListener {
     }
 
     /* imports */
-    private final GalleryPaneFront galleryPaneFront = GalleryPaneFront.getInstance();
-    private final TilePane tilePane = galleryPaneFront.getTilePane();
+    private final GalleryPane galleryPane = GalleryPane.getInstance();
+    private final TilePane tilePane = galleryPane.getTilePane();
 
     /* constructors */
     private GalleryPaneListener() {

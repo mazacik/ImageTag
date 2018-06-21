@@ -18,7 +18,7 @@ public class LeftPaneBack {
     }
 
     /* imports */
-    private final ObservableList<TreeItem<ColoredText>> treeViewItems = LeftPaneFront.getInstance().getTreeView().getRoot().getChildren();
+    private final ObservableList<TreeItem<ColoredText>> treeViewItems = LeftPane.getInstance().getTreeView().getRoot().getChildren();
 
     private final ArrayList<TagItem> whitelist = TagDatabase.getDatabaseTagsWhitelist();
     private final ArrayList<TagItem> blacklist = TagDatabase.getDatabaseTagsBlacklist();

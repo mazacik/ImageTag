@@ -10,7 +10,6 @@ import project.backend.Filter;
 import project.backend.Selection;
 import project.database.TagDatabase;
 import project.database.part.TagItem;
-import project.gui.component.gallery.GalleryPaneBack;
 
 import java.util.ArrayList;
 
