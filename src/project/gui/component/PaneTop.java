@@ -20,12 +20,8 @@ import project.gui.stage.generic.NumberInputWindow;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 
 public class PaneTop extends BorderPane implements ChangeEventListener {
-    /* change listeners */
-    private final ArrayList<ChangeEventListener> changeListeners = new ArrayList<>();
-
     /* components */
     private final MenuBar infoLabelMenuBar = new MenuBar();
     private final Menu infoLabelMenu = new Menu();
@@ -45,25 +41,30 @@ public class PaneTop extends BorderPane implements ChangeEventListener {
 
     /* constructors */
     public PaneTop() {
+        initializeComponents();
+        initializeProperties();
+    }
+
+    /* initialize methods */
+    private void initializeComponents() {
         menuFile.getItems().addAll(menuSave, new SeparatorMenuItem(), menuExit);
         menuSelection.getItems().addAll(menuSelectAll, menuClearSelection);
         menuFilter.getItems().addAll(menuUntaggedOnly, menuLessThanXTags, new SeparatorMenuItem(), menuReset);
 
-        MenuBar mainArea = new MenuBar();
-        mainArea.getMenus().addAll(menuFile, menuSelection, menuFilter);
-        setCenter(mainArea);
-
         infoLabelMenuBar.getMenus().add(infoLabelMenu);
-        setRight(infoLabelMenuBar);
 
         setOnAction();
         setInfoLabelContextMenu();
+    }
+    private void initializeProperties() {
+        setCenter(new MenuBar(menuFile, menuSelection, menuFilter));
+        setRight(infoLabelMenuBar);
 
         ChangeEventControl.subscribe(this, ChangeEventEnum.FOCUS);
     }
 
     /* public methods */
-    public void refresh() {
+    public void refreshComponent() {
         DatabaseItem currentFocusedItem = GUIStage.getPaneGallery().getCurrentFocusedItem();
         if (currentFocusedItem != null) {
             infoLabelMenu.setText(currentFocusedItem.getName());
@@ -138,10 +139,5 @@ public class PaneTop extends BorderPane implements ChangeEventListener {
 
         contextMenu.getItems().addAll(menuCopy, menuDelete);
         infoLabelMenuBar.setContextMenu(contextMenu);
-    }
-
-    /* getters */
-    public ArrayList<ChangeEventListener> getChangeListeners() {
-        return changeListeners;
     }
 }

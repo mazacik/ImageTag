@@ -1,6 +1,5 @@
 package project.gui.component;
 
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
@@ -17,9 +16,6 @@ import project.gui.stage.TagManager;
 import java.util.ArrayList;
 
 public class PaneRight extends BorderPane implements ChangeEventListener {
-    /* change listeners */
-    private final ArrayList<ChangeEventListener> changeListeners = new ArrayList<>();
-
     /* components */
     private final ListView<String> listView = new ListView<>();
     private final ComboBox cbCategory = new ComboBox();
@@ -29,14 +25,12 @@ public class PaneRight extends BorderPane implements ChangeEventListener {
 
     /* constructors */
     public PaneRight() {
-        /* design */
-        setMinWidth(150);
-        setPrefWidth(200);
-        setMaxWidth(300);
+        initializeComponents();
+        initializeProperties();
+    }
 
-        ChangeEventControl.subscribe(this, ChangeEventEnum.FOCUS);
-
-        /* component initialization */
+    /* initialize methods */
+    private void initializeComponents() {
         btnAdd.setStyle("-fx-focus-color: transparent;");
         btnAdd.setMinWidth(25);
         btnAdd.prefWidthProperty().bind(prefWidthProperty());
@@ -64,61 +58,64 @@ public class PaneRight extends BorderPane implements ChangeEventListener {
             }
         });
 
-        setOnKeyPress();
-        setBtnAddOnAction();
-        setListviewContextMenu();
+        btnAdd.setOnAction(event -> addTagToItemSelection());
 
-        VBox addPane = new VBox();
-        addPane.setAlignment(Pos.CENTER);
-        addPane.setSpacing(2);
-        addPane.getChildren().addAll(cbCategory, cbName, btnAdd, btnManage);
-
-        /* scene initialization */
-        setCenter(listView);
-        setBottom(addPane);
-    }
-
-    /* public methods */
-    public void refresh() {
-        ArrayList<String> sharedTags = new ArrayList<>();
-        for (TagItem tagItem : Selection.getSharedTags())
-            sharedTags.add(tagItem.getCategoryAndName());
-        listView.getItems().setAll(sharedTags);
-    }
-
-    /* event methods */
-    private void setOnKeyPress() {
         setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER)
-                addTag();
-            else if (event.getCode() == KeyCode.DELETE)
+            if (event.getCode() == KeyCode.ENTER) {
+                addTagToItemSelection();
+            } else if (event.getCode() == KeyCode.DELETE) {
                 TagDatabase.removeSelectedTagsFromItemSelection();
-            else if (event.getCode() == KeyCode.ESCAPE)
+            } else if (event.getCode() == KeyCode.ESCAPE) {
                 GUIStage.getPaneTop().requestFocus();
+            }
         });
-    }
-    private void setBtnAddOnAction() {
-        btnAdd.setOnAction(event -> addTag());
-    }
-    private void setListviewContextMenu() {
+
         ContextMenu listContextMenu = new ContextMenu();
         MenuItem menuRemoveTag = new MenuItem("Remove");
         menuRemoveTag.setOnAction(event -> TagDatabase.removeSelectedTagsFromItemSelection());
         listContextMenu.getItems().add(menuRemoveTag);
         listView.setContextMenu(listContextMenu);
     }
+    private void initializeProperties() {
+        setMinWidth(150);
+        setPrefWidth(200);
+        setMaxWidth(300);
+
+        setCenter(listView);
+        setBottom(new VBox(2, cbCategory, cbName, btnAdd, btnManage));
+
+        ChangeEventControl.subscribe(this, ChangeEventEnum.FOCUS);
+    }
+
+    /* public methods */
+    public void refreshComponent() {
+        ArrayList<String> sharedTags = new ArrayList<>();
+        if (Selection.isEmpty()) {
+            for (TagItem tagItem : GUIStage.getPaneGallery().getCurrentFocusedItem().getTags()) {
+                sharedTags.add(tagItem.getCategoryAndName());
+            }
+        } else {
+
+            for (TagItem tagItem : Selection.getSharedTags()) {
+                sharedTags.add(tagItem.getCategoryAndName());
+            }
+        }
+        listView.getItems().setAll(sharedTags);
+    }
 
     /* private methods */
-    private void addTag() {
+    private void addTagToItemSelection() {
         Object categoryComboBoxValue = cbCategory.getValue();
         Object nameComboBoxValue = cbName.getValue();
         String category = "";
         String name = "";
 
-        if (categoryComboBoxValue != null)
+        if (categoryComboBoxValue != null) {
             category = categoryComboBoxValue.toString();
-        if (nameComboBoxValue != null)
+        }
+        if (nameComboBoxValue != null) {
             name = nameComboBoxValue.toString();
+        }
 
         if (!category.isEmpty() && !name.isEmpty()) {
             TagDatabase.addTagToItemSelection(TagDatabase.getTagItem(category, name));
@@ -128,8 +125,5 @@ public class PaneRight extends BorderPane implements ChangeEventListener {
     /* getters */
     public ListView<String> getListView() {
         return listView;
-    }
-    public ArrayList<ChangeEventListener> getChangeListeners() {
-        return changeListeners;
     }
 }

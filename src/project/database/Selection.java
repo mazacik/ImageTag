@@ -89,6 +89,10 @@ public abstract class Selection {
         }
     }
 
+    public static boolean isEmpty() {
+        return ItemDatabase.getDatabaseItemsSelected().isEmpty();
+    }
+
     /* getters */
     public static ArrayList<ChangeEventListener> getChangeListeners() {
         return changeListeners;

@@ -9,19 +9,19 @@ public abstract class ChangeEventControl {
     /* public methods */
     public static void notifyListeners(ChangeEventEnum changeEventNotifier) {
         for (ChangeEventListener changeEventListener : changeEventNotifier.getListeners()) {
-            changeEventListener.refresh();
+            changeEventListener.refreshComponent();
         }
     }
 
     public static void requestReload() {
         for (ChangeEventListener changeEventListener : changeListenersGlobal) {
-            changeEventListener.refresh();
+            changeEventListener.refreshComponent();
         }
     }
 
     public static void requestReload(ChangeEventListener... changeEventListeners) {
         for (ChangeEventListener changeEventListener : changeEventListeners) {
-            changeEventListener.refresh();
+            changeEventListener.refreshComponent();
         }
     }
 

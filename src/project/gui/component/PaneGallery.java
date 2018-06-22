@@ -14,12 +14,7 @@ import project.gui.ChangeEventListener;
 import project.gui.GUIUtility;
 import project.gui.component.part.GalleryTile;
 
-import java.util.ArrayList;
-
 public class PaneGallery extends ScrollPane implements ChangeEventListener {
-    /* change listeners */
-    private final ArrayList<ChangeEventListener> changeListeners = new ArrayList<>();
-
     /* components */
     private final TilePane tilePane = new TilePane();
     private final ObservableList<Node> tilePaneItems = tilePane.getChildren();
@@ -28,18 +23,25 @@ public class PaneGallery extends ScrollPane implements ChangeEventListener {
     private DatabaseItem currentFocusedItem = null;
     private DatabaseItem previousFocusedItem = null;
 
+    private static final int galleryIconSizePref = Settings.getGalleryIconSizePref();
+
     /* constructors */
     public PaneGallery() {
-        int galleryIconSizePref = Settings.getGalleryIconSizePref();
+        initializeComponents();
+        initializeProperties();
+    }
 
+    /* initialize methods */
+    private void initializeComponents() {
+        tilePane.setVgap(3);
+        tilePane.setPrefTileWidth(galleryIconSizePref);
+        tilePane.setPrefTileHeight(galleryIconSizePref);
+    }
+    private void initializeProperties() {
         setHbarPolicy(ScrollBarPolicy.NEVER);
         setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
         setMinViewportWidth(galleryIconSizePref);
         setFitToWidth(true);
-
-        tilePane.setVgap(3);
-        tilePane.setPrefTileWidth(galleryIconSizePref);
-        tilePane.setPrefTileHeight(galleryIconSizePref);
 
         setContent(tilePane);
 
@@ -95,7 +97,7 @@ public class PaneGallery extends ScrollPane implements ChangeEventListener {
         }
     }
 
-    public void refresh() {
+    public void refreshComponent() {
         if (GUIUtility.isPreviewFullscreen()) return;
 
         tilePaneItems.clear();
@@ -159,8 +161,5 @@ public class PaneGallery extends ScrollPane implements ChangeEventListener {
     }
     public DatabaseItem getCurrentFocusedItem() {
         return currentFocusedItem;
-    }
-    public ArrayList<ChangeEventListener> getChangeListeners() {
-        return changeListeners;
     }
 }

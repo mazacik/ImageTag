@@ -9,12 +9,7 @@ import project.common.Settings;
 import project.database.part.DatabaseItem;
 import project.gui.*;
 
-import java.util.ArrayList;
-
 public class PanePreview extends Pane implements ChangeEventListener {
-    /* change listeners */
-    private final ArrayList<ChangeEventListener> changeListeners = new ArrayList<>();
-
     /* components */
     private final Canvas canvas = new Canvas();
 
@@ -24,15 +19,29 @@ public class PanePreview extends Pane implements ChangeEventListener {
 
     /* constructors */
     public PanePreview() {
-        canvas.setOnMouseClicked(event -> this.requestFocus());
+        initializeComponents();
+        initializeProperties();
+    }
+
+    /* initialize methods */
+    private void initializeComponents() {
+        canvas.setOnMouseClicked(event -> requestFocus());
+    }
+    private void initializeProperties() {
         getChildren().add(canvas);
-        setSizePropertyListener();
+
+        ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) -> {
+            setCanvasSize(getWidth(), getHeight());
+            refreshComponent();
+        };
+        widthProperty().addListener(previewPaneSizeListener);
+        heightProperty().addListener(previewPaneSizeListener);
 
         ChangeEventControl.subscribe(this, ChangeEventEnum.FOCUS);
     }
 
     /* public methods */
-    public void refresh() {
+    public void refreshComponent() {
         if (!GUIUtility.isPreviewFullscreen()) return;
         if (GUIStage.getPaneGallery().getCurrentFocusedItem() == null) return;
         if (!GUIStage.getPaneGallery().getCurrentFocusedItem().equals(currentDatabaseItem)) loadImage();
@@ -64,21 +73,7 @@ public class PanePreview extends Pane implements ChangeEventListener {
     /* private methods */
     private void loadImage() {
         currentDatabaseItem = GUIStage.getPaneGallery().getCurrentFocusedItem();
-        currentPreviewImage = new Image("file:" + Settings.getMainDirectoryPath() + "/" + currentDatabaseItem.getName());
-    }
-
-    private void setSizePropertyListener() {
-        ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) -> {
-            setCanvasSize(getWidth(), getHeight());
-            refresh();
-        };
-        widthProperty().addListener(previewPaneSizeListener);
-        heightProperty().addListener(previewPaneSizeListener);
-    }
-
-    /* getters */
-    public ArrayList<ChangeEventListener> getChangeListeners() {
-        return changeListeners;
+        currentPreviewImage = new Image("file:" + Settings.getMainDirectoryPath() + "\\" + currentDatabaseItem.getName());
     }
 
     /* setters */

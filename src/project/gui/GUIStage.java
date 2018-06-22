@@ -8,7 +8,7 @@ import project.common.Keybinds;
 import project.database.loader.Serialization;
 import project.gui.component.*;
 
-public abstract class GUIStage extends Stage {
+public class GUIStage extends Stage {
     /* components */
     private static final PaneTop paneTop = new PaneTop();
     private static final PaneLeft paneLeft = new PaneLeft();

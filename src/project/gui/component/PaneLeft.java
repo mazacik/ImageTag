@@ -14,9 +14,6 @@ import project.gui.ChangeEventListener;
 import java.util.ArrayList;
 
 public class PaneLeft extends BorderPane implements ChangeEventListener {
-    /* change listeners */
-    private final ArrayList<ChangeEventListener> changeListeners = new ArrayList<>();
-
     /* components */
     private final TreeView<ColoredText> treeView = new TreeView(new TreeItem());
 
@@ -28,12 +25,10 @@ public class PaneLeft extends BorderPane implements ChangeEventListener {
 
         setCellFactory();
         setCenter(treeView);
-
-        //ChangeEventControl.subscribe(this, GUIStage.getPaneGallery());
     }
 
     /* public methods */
-    public void refresh() {
+    public void refreshComponent() {
         ArrayList<TagItem> whitelist = TagDatabase.getDatabaseTagsWhitelist();
         ArrayList<TagItem> blacklist = TagDatabase.getDatabaseTagsBlacklist();
         ObservableList<TreeItem<ColoredText>> treeViewItems = treeView.getRoot().getChildren();
