@@ -6,6 +6,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import project.database.Selection;
 import project.database.TagDatabase;
+import project.database.part.DatabaseItem;
 import project.database.part.TagItem;
 import project.gui.ChangeEventControl;
 import project.gui.ChangeEventEnum;
@@ -91,11 +92,13 @@ public class PaneRight extends BorderPane implements ChangeEventListener {
     public void refreshComponent() {
         ArrayList<String> sharedTags = new ArrayList<>();
         if (Selection.isEmpty()) {
-            for (TagItem tagItem : GUIStage.getPaneGallery().getCurrentFocusedItem().getTags()) {
-                sharedTags.add(tagItem.getCategoryAndName());
+            DatabaseItem currentFocusedItem = GUIStage.getPaneGallery().getCurrentFocusedItem();
+            if (currentFocusedItem != null) {
+                for (TagItem tagItem : currentFocusedItem.getTags()) {
+                    sharedTags.add(tagItem.getCategoryAndName());
+                }
             }
         } else {
-
             for (TagItem tagItem : Selection.getSharedTags()) {
                 sharedTags.add(tagItem.getCategoryAndName());
             }

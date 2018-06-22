@@ -20,7 +20,7 @@ public class Keybinds {
                 case F12:
                     GUIUtility.swapDisplayMode(); break;
                 case Q:
-                    Selection.swap(GUIStage.getPaneGallery().getCurrentFocusedItem()); break;
+                    Selection.swapItemStatus(GUIStage.getPaneGallery().getCurrentFocusedItem()); break;
                 case W:
                 case A:
                 case S:

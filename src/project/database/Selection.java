@@ -37,18 +37,18 @@ public abstract class Selection {
         ArrayList<DatabaseItem> databaseItemsFiltered = ItemDatabase.getDatabaseItemsFiltered();
         int databaseItemsFilteredSize = databaseItemsFiltered.size();
         int randomIndex = new Random().nextInt(databaseItemsFilteredSize);
-        Selection.set(databaseItemsFiltered.get(randomIndex));
+        Selection.setItem(databaseItemsFiltered.get(randomIndex));
         GUIStage.getPaneGallery().adjustViewportToFocus();
     }
 
-    public static void add(DatabaseItem databaseItem) {
+    public static void addItem(DatabaseItem databaseItem) {
         ArrayList<DatabaseItem> databaseItemsSelected = ItemDatabase.getDatabaseItemsSelected();
         PaneGallery paneGallery = GUIStage.getPaneGallery();
         databaseItemsSelected.add(databaseItem);
         paneGallery.focusTile(databaseItem);
     }
 
-    public static void add(ArrayList<DatabaseItem> databaseItemsToAddToSelection) {
+    public static void addItem(ArrayList<DatabaseItem> databaseItemsToAddToSelection) {
         ArrayList<DatabaseItem> databaseItemsSelected = ItemDatabase.getDatabaseItemsSelected();
         for (DatabaseItem databaseItem : databaseItemsToAddToSelection) {
             if (!databaseItemsSelected.contains(databaseItem)) {
@@ -60,24 +60,24 @@ public abstract class Selection {
         ChangeEventControl.requestReload(GUIStage.getPaneRight());
     }
 
-    public static void set(DatabaseItem databaseItem) {
+    public static void setItem(DatabaseItem databaseItem) {
         clear();
-        add(databaseItem);
+        addItem(databaseItem);
     }
 
-    public static void remove(DatabaseItem databaseItem) {
+    public static void removeItem(DatabaseItem databaseItem) {
         ArrayList<DatabaseItem> databaseItemsSelected = ItemDatabase.getDatabaseItemsSelected();
         PaneGallery paneGallery = GUIStage.getPaneGallery();
         databaseItemsSelected.remove(databaseItem);
         paneGallery.focusTile(databaseItem);
     }
 
-    public static void swap(DatabaseItem databaseItem) {
+    public static void swapItemStatus(DatabaseItem databaseItem) {
         ArrayList<DatabaseItem> databaseItemsSelected = ItemDatabase.getDatabaseItemsSelected();
         if (!databaseItemsSelected.contains(databaseItem))
-            add(databaseItem);
+            addItem(databaseItem);
         else
-            remove(databaseItem);
+            removeItem(databaseItem);
     }
 
     public static void clear() {

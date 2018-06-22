@@ -20,7 +20,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 
 public class DatabaseLoader extends Thread {
     /* imports */
@@ -29,7 +28,6 @@ public class DatabaseLoader extends Thread {
     private final int galleryIconSizeMax = Settings.getGalleryIconSizeMax();
 
     /* variables */
-    private final long loadingStartTime = System.currentTimeMillis();
     private final ArrayList<DatabaseItem> itemDatabase = ItemDatabase.getDatabaseItems();
     private final ArrayList<TagItem> tagDatabase = TagDatabase.getDatabaseTags();
 
@@ -134,7 +132,7 @@ public class DatabaseLoader extends Thread {
             }
         }
 
-        /* remove missing items */
+        /* removeItem missing items */
         ArrayList<DatabaseItem> temporaryList = new ArrayList<>(itemDatabase);
         for (DatabaseItem databaseItem : itemDatabase) {
             if (!validFilesItemNames.contains(databaseItem.getName())) {
@@ -144,8 +142,8 @@ public class DatabaseLoader extends Thread {
 
         itemDatabase.clear();
         itemDatabase.addAll(temporaryList);
-        itemDatabase.sort(Comparator.comparing(DatabaseItem::getName));
-        tagDatabase.sort(Comparator.comparing(TagItem::getCategoryAndName));
+        ItemDatabase.sort();
+        TagDatabase.sort();
         Serialization.writeToDisk();
     }
 }

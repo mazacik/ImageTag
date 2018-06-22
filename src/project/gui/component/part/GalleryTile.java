@@ -79,7 +79,7 @@ public class GalleryTile extends ImageView {
         setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
                 GUIStage.getPaneGallery().focusTile(databaseItem);
-                Selection.swap(databaseItem);
+                Selection.swapItemStatus(databaseItem);
             }
         });
     }

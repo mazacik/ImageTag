@@ -76,7 +76,7 @@ public class PaneTop extends BorderPane implements ChangeEventListener {
         menuSave.setOnAction(event -> Serialization.writeToDisk());
         menuExit.setOnAction(event -> fireEvent(new WindowEvent(null, WindowEvent.WINDOW_CLOSE_REQUEST)));
 
-        menuSelectAll.setOnAction(event -> Selection.add(ItemDatabase.getDatabaseItemsFiltered()));
+        menuSelectAll.setOnAction(event -> Selection.addItem(ItemDatabase.getDatabaseItemsFiltered()));
         menuClearSelection.setOnAction(event -> Selection.clear());
 
         menuUntaggedOnly.setOnAction(event -> {

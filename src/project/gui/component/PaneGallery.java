@@ -61,7 +61,7 @@ public class PaneGallery extends ScrollPane implements ChangeEventListener {
         currentFocusedItem = databaseItem;
         GalleryTile.generateEffect(currentFocusedItem);
 
-        /* remove old marker */
+        /* removeItem old marker */
         if (previousFocusedItem != null)
             GalleryTile.generateEffect(previousFocusedItem);
 
