@@ -1,4 +1,4 @@
-package project.gui.component.gallery.part;
+package project.gui.component.part;
 
 import javafx.scene.effect.Blend;
 import javafx.scene.effect.BlendMode;
@@ -12,14 +12,16 @@ import project.backend.Settings;
 import project.database.ItemDatabase;
 import project.database.part.DatabaseItem;
 import project.gui.GUIStage;
-import project.gui.component.gallery.GalleryPane;
+import project.gui.component.GalleryPane;
 
 public class GalleryTile extends ImageView {
-    private static InnerShadow selectionBorder = buildSelectionBorderEffect();
-    private static ColorInput focusMark = buildSelectionFocusMarkEffect();
+    /* variables */
+    private static final InnerShadow effectSelectionBorder = buildSelectionBorderEffect();
+    private static final ColorInput effectFocusMark = buildSelectionFocusMarkEffect();
 
     private static final int galleryIconSizePref = Settings.getGalleryIconSizePref();
 
+    /* constructors */
     public GalleryTile(DatabaseItem databaseItem) {
         super(databaseItem.getImage());
         setFitWidth(galleryIconSizePref);
@@ -27,6 +29,7 @@ public class GalleryTile extends ImageView {
         setOnMouseClick(databaseItem);
     }
 
+    /* public methods */
     public static void generateEffect(DatabaseItem databaseItem) {
         GalleryPane galleryPane = GUIStage.getGalleryPane();
 
@@ -39,19 +42,20 @@ public class GalleryTile extends ImageView {
             databaseItem.getGalleryTile().setEffect(null);
         } else if (!selection && focus) {
             Blend blend = new Blend();
-            blend.setTopInput(focusMark);
+            blend.setTopInput(effectFocusMark);
             databaseItem.getGalleryTile().setEffect(blend);
         } else if (selection && !focus) {
-            databaseItem.getGalleryTile().setEffect(selectionBorder);
+            databaseItem.getGalleryTile().setEffect(effectSelectionBorder);
         } else if (selection && focus) {
             Blend effect = new Blend();
-            effect.setTopInput(selectionBorder);
-            effect.setBottomInput(focusMark);
+            effect.setTopInput(effectSelectionBorder);
+            effect.setBottomInput(effectFocusMark);
             effect.setMode(BlendMode.OVERLAY);
             databaseItem.getGalleryTile().setEffect(effect);
         }
     }
 
+    /* builder methods */
     private static InnerShadow buildSelectionBorderEffect() {
         InnerShadow innerShadow = new InnerShadow();
         innerShadow.setColor(Color.RED);
@@ -70,6 +74,7 @@ public class GalleryTile extends ImageView {
         return new ColorInput(markPositionInTile, markPositionInTile, markSize, markSize, markColor);
     }
 
+    /* event methods */
     private void setOnMouseClick(DatabaseItem databaseItem) {
         setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY)) {

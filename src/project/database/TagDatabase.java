@@ -1,7 +1,8 @@
 package project.database;
 
 import project.database.part.TagItem;
-import project.gui.component.left.LeftPaneBack;
+import project.gui.GUIController;
+import project.gui.GUIStage;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -15,7 +16,7 @@ public abstract class TagDatabase {
     /* public methods */
     public static void addTag(TagItem tagItem) {
         databaseTags.add(tagItem);
-        LeftPaneBack.getInstance().reloadContent();
+        GUIController.requestReload(GUIStage.getLeftPane());
     }
 
     public static void addTag(String name, String category) {

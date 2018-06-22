@@ -10,8 +10,9 @@ import project.database.ItemDatabase;
 import project.database.TagDatabase;
 import project.database.part.DatabaseItem;
 import project.database.part.TagItem;
+import project.gui.GUIController;
 import project.gui.GUIStage;
-import project.gui.component.gallery.part.GalleryTile;
+import project.gui.component.part.GalleryTile;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -88,7 +89,7 @@ public class DatabaseLoader extends Thread {
         Platform.runLater(() -> {
             Main.getLoadingWindow().close();
             new GUIStage();
-            GUIStage.getTopPane().getInfoLabelMenu().setText("Loading done in " + Long.toString(System.currentTimeMillis() - loadingStartTime) + " ms");
+            GUIController.requestReload();
         });
     }
 

@@ -3,19 +3,40 @@ package project.gui;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
-import project.gui.component.gallery.GalleryPane;
-import project.gui.component.preview.PreviewPane;
-import project.gui.component.preview.PreviewPaneBack;
+import project.gui.component.GalleryPane;
+import project.gui.component.PreviewPane;
+
+import java.util.ArrayList;
 
 public class GUIController {
-    public static void notifyOfChange(GUIComponent notifier) {
-        for (GUIComponent listener : notifier.getChangeListeners()) {
+    /* change listeners */
+    private static final ArrayList<ChangeNotificationHelper> changeListeners = new ArrayList<>();
+
+    /* public methods */
+    public static void notifyOfChange(ChangeEvent notifier) {
+        for (ChangeNotificationHelper listener : notifier.getChangeListeners()) {
             listener.refresh();
         }
     }
 
-    public static void subscribe(GUIComponent subscriber, GUIComponent... notifiers) {
-        for (GUIComponent notifier : notifiers) {
+    public static void requestReload() {
+        for (ChangeNotificationHelper listener : changeListeners) {
+            listener.refresh();
+        }
+    }
+
+    public static void requestReload(ChangeNotificationHelper... targets) {
+        for (ChangeNotificationHelper changeNotificationHelper : targets) {
+            changeNotificationHelper.refresh();
+        }
+    }
+
+    public static void subscribe(ChangeNotificationHelper subscriber, ChangeEvent... notifiers) {
+        if (!changeListeners.contains(subscriber)) {
+            changeListeners.add(subscriber);
+        }
+
+        for (ChangeEvent notifier : notifiers) {
             notifier.addToSubscribers(subscriber);
         }
     }
@@ -30,7 +51,7 @@ public class GUIController {
         if (splitPaneItems.contains(galleryPane)) {
             splitPaneItems.set(splitPaneItems.indexOf(galleryPane), previewPane);
             previewPane.setCanvasSize(galleryPane.getWidth(), galleryPane.getHeight());
-            PreviewPaneBack.getInstance().reloadContent();
+            GUIStage.getPreviewPane().refresh();
         } else {
             splitPaneItems.set(splitPaneItems.indexOf(previewPane), galleryPane);
         }

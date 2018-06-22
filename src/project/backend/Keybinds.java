@@ -6,12 +6,12 @@ import project.database.ItemDatabase;
 import project.database.part.DatabaseItem;
 import project.gui.GUIController;
 import project.gui.GUIStage;
-import project.gui.component.gallery.GalleryPane;
+import project.gui.component.GalleryPane;
 
 import java.util.ArrayList;
 
 public class Keybinds {
-    private Keybinds(Scene mainScene) {
+    public Keybinds(Scene mainScene) {
         mainScene.setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case R:
@@ -43,18 +43,18 @@ public class Keybinds {
 
         int newFocusPosition = databaseItemsFiltered.indexOf(focusedItem);
         if (keyCode.equals(KeyCode.W)) {
-            newFocusPosition -= GalleryPaneBack.getInstance().getColumnCount();
+            newFocusPosition -= GUIStage.getGalleryPane().getColumnCount();
         } else if (keyCode.equals(KeyCode.A)) {
             newFocusPosition -= 1;
         } else if (keyCode.equals(KeyCode.S)) {
-            newFocusPosition += GalleryPaneBack.getInstance().getColumnCount();
+            newFocusPosition += GUIStage.getGalleryPane().getColumnCount();
         } else if (keyCode.equals(KeyCode.D)) {
             newFocusPosition += 1;
         }
 
         if (newFocusPosition >= 0 && newFocusPosition < databaseItemsFiltered.size()) {
             galleryPane.focusTile(databaseItemsFiltered.get(newFocusPosition));
-            GalleryPaneBack.getInstance().adjustViewportPositionToFocus();
+            GUIStage.getGalleryPane().adjustViewportToFocus();
         }
     }
 }

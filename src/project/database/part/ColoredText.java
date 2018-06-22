@@ -42,9 +42,8 @@ public class ColoredText {
                     whitelist.add(tagItem);
                     coloredText.setColor(Color.GREEN);
                 }
-                GUIStage.getLeftPane().getTreeView().refresh();
                 Filter.applyTagFilters();
-                GalleryPaneBack.getInstance().reloadContent();
+                GUIStage.getLeftPane().refreshTreeview();
             }
         });
     }
@@ -56,7 +55,7 @@ public class ColoredText {
         MenuItem menuRemove = new MenuItem("Remove");
         menuRemove.setOnAction(event -> Filter.removeTagFromDatabase(coloredText.getTagItem()));
         MenuItem menuRename = new MenuItem("Rename");
-        menuRename.setOnAction(event -> Filter.renameTag(coloredText.getTagItem()));
+        menuRename.setOnAction(event -> Filter.editTag(coloredText.getTagItem()));
         contextMenu.getItems().addAll(menuAdd, menuRemove, menuRename);
         source.setContextMenu(contextMenu);
     }

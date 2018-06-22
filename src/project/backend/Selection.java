@@ -3,15 +3,19 @@ package project.backend;
 import project.database.ItemDatabase;
 import project.database.part.DatabaseItem;
 import project.database.part.TagItem;
+import project.gui.ChangeNotificationHelper;
+import project.gui.GUIController;
 import project.gui.GUIStage;
-import project.gui.component.gallery.GalleryPane;
-import project.gui.component.gallery.part.GalleryTile;
-import project.gui.component.right.RightPaneBack;
+import project.gui.component.GalleryPane;
+import project.gui.component.part.GalleryTile;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public abstract class Selection {
+    /* change listeners */
+    private static final ArrayList<ChangeNotificationHelper> changeListeners = new ArrayList<>();
+
     public static ArrayList<TagItem> getSharedTags() {
         ArrayList<DatabaseItem> databaseItemsSelected = ItemDatabase.getDatabaseItemsSelected();
         if (databaseItemsSelected.isEmpty()) return new ArrayList<>();
@@ -35,7 +39,7 @@ public abstract class Selection {
         int databaseItemsFilteredSize = databaseItemsFiltered.size();
         int randomIndex = new Random().nextInt(databaseItemsFilteredSize);
         Selection.set(databaseItemsFiltered.get(randomIndex));
-        GalleryPaneBack.getInstance().adjustViewportPositionToFocus();
+        GUIStage.getGalleryPane().adjustViewportToFocus();
     }
 
     public static void add(DatabaseItem databaseItem) {
@@ -54,8 +58,7 @@ public abstract class Selection {
             }
         }
 
-        RightPaneBack.getInstance().reloadContent();
-        //PreviewPaneBack.getInstance().reloadContent();
+        GUIController.requestReload(GUIStage.getRightPane());
     }
 
     public static void set(DatabaseItem databaseItem) {
@@ -85,5 +88,10 @@ public abstract class Selection {
         for (DatabaseItem databaseItem : ItemDatabase.getDatabaseItems()) {
             GalleryTile.generateEffect(databaseItem);
         }
+    }
+
+    /* getters */
+    public static ArrayList<ChangeNotificationHelper> getChangeListeners() {
+        return changeListeners;
     }
 }

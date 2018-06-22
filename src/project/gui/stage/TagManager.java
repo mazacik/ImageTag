@@ -63,10 +63,7 @@ public class TagManager extends Stage {
         btnAdd.setOnAction(event -> addTag());
         btnNew.setOnAction(event -> new NewTagScene());
 
-        setOnCloseRequest(event -> {
-            Filter.applyTagFilters();
-            GalleryPaneBack.getInstance().reloadContent();
-        });
+        setOnCloseRequest(event -> Filter.applyTagFilters());
 
         tagManagerPane.setCenter(treeView);
         tagManagerPane.setBottom(addPane);
