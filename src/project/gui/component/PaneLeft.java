@@ -4,12 +4,14 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import project.database.TagDatabase;
 import project.database.part.ColoredText;
-import project.database.part.TagItem;
 import project.gui.ChangeEventControl;
+import project.gui.ChangeEventEnum;
 import project.gui.ChangeEventListener;
 
 import java.util.ArrayList;
@@ -27,24 +29,36 @@ public class PaneLeft extends BorderPane implements ChangeEventListener {
         setCellFactory();
         setCenter(treeView);
 
-        ChangeEventControl.subscribe(this, null);
+        ChangeEventControl.subscribe(this, (ChangeEventEnum[]) null);
     }
 
     /* public methods */
     public void refreshComponent() {
-        ArrayList<TagItem> whitelist = TagDatabase.getDatabaseTagsWhitelist();
-        ArrayList<TagItem> blacklist = TagDatabase.getDatabaseTagsBlacklist();
         ObservableList<TreeItem<ColoredText>> treeViewItems = treeView.getRoot().getChildren();
+        ArrayList<String> categoryNames = TagDatabase.getCategories();
 
         treeViewItems.clear();
 
-        for (TagItem tagItem : TagDatabase.getDatabaseTags()) {
-            if (whitelist.contains(tagItem))
-                treeViewItems.add(new TreeItem(new ColoredText(tagItem, Color.GREEN)));
-            else if (blacklist.contains(tagItem))
-                treeViewItems.add(new TreeItem(new ColoredText(tagItem, Color.RED)));
-            else
-                treeViewItems.add(new TreeItem(new ColoredText(tagItem, Color.BLACK)));
+        for (String categoryName : categoryNames) {
+            TreeItem categoryTreeItem;
+            if (TagDatabase.isCategoryWhitelisted(categoryName)) {
+                categoryTreeItem = new TreeItem(new ColoredText(categoryName, Color.GREEN));
+            } else if (TagDatabase.isCategoryBlacklisted(categoryName)) {
+                categoryTreeItem = new TreeItem(new ColoredText(categoryName, Color.RED));
+            } else {
+                categoryTreeItem = new TreeItem(new ColoredText(categoryName, Color.BLACK));
+            }
+
+            for (String tagName : TagDatabase.getItemsInCategory(categoryName)) {
+                if (TagDatabase.isItemWhitelisted(categoryName, tagName)) {
+                    categoryTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.GREEN)));
+                } else if (TagDatabase.isItemBlacklisted(categoryName, tagName)) {
+                    categoryTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.RED)));
+                } else {
+                    categoryTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.BLACK)));
+                }
+            }
+            treeViewItems.add(categoryTreeItem);
         }
     }
 
@@ -62,11 +76,16 @@ public class PaneLeft extends BorderPane implements ChangeEventListener {
                     setText(null);
                     setTextFill(null);
                 } else {
-                    setText(coloredText.getTagItem().getCategoryAndName());
+                    setText(coloredText.getText());
                     setTextFill(coloredText.getColor());
                 }
                 ColoredText.setOnMouseClick(this, coloredText);
-                ColoredText.setOnContextMenuRequest(this, coloredText);
+                ColoredText.setOnContextMenuRequest(this);
+
+                addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
+                    if (e.getClickCount() % 2 == 0 && e.getButton().equals(MouseButton.PRIMARY))
+                        e.consume();
+                });
             }
         });
     }

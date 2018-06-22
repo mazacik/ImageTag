@@ -134,6 +134,55 @@ public abstract class TagDatabase {
         ChangeEventControl.requestReload(GUIStage.getPaneGallery());
     }
 
+    public static void whitelistCategory(String category) {
+        ArrayList<String> tagNamesInCategory = getItemsInCategory(category);
+        for (String tagName : tagNamesInCategory) {
+            TagItem tagItem = getTagItem(category, tagName);
+            whitelistItem(tagItem);
+        }
+    }
+
+    public static void blacklistCategory(String category) {
+        ArrayList<String> tagNamesInCategory = getItemsInCategory(category);
+        for (String tagName : tagNamesInCategory) {
+            TagItem tagItem = getTagItem(category, tagName);
+            blacklistItem(tagItem);
+        }
+    }
+
+    public static void unmarkCategory(String category) {
+        ArrayList<String> tagNamesInCategory = getItemsInCategory(category);
+        for (String tagName : tagNamesInCategory) {
+            TagItem tagItem = getTagItem(category, tagName);
+            unmarkItem(tagItem);
+        }
+    }
+
+    public static void whitelistItem(TagItem tagItem) {
+        if (tagItem != null) {
+            if (!isItemWhitelisted(tagItem)) {
+                databaseTagsWhitelist.add(tagItem);
+                databaseTagsBlacklist.remove(tagItem);
+            }
+        }
+    }
+
+    public static void blacklistItem(TagItem tagItem) {
+        if (tagItem != null) {
+            if (!isItemBlacklisted(tagItem)) {
+                databaseTagsWhitelist.remove(tagItem);
+                databaseTagsBlacklist.add(tagItem);
+            }
+        }
+    }
+
+    public static void unmarkItem(TagItem tagItem) {
+        if (tagItem != null) {
+            databaseTagsWhitelist.remove(tagItem);
+            databaseTagsBlacklist.remove(tagItem);
+        }
+    }
+
     public static TagItem getTagItem(String category, String name) {
         for (TagItem tagItem : databaseTags)
             if (tagItem.getName().equals(name) && tagItem.getCategory().equals(category))
@@ -168,6 +217,46 @@ public abstract class TagDatabase {
             }
         }
         return items;
+    }
+
+    public static boolean isCategoryWhitelisted(String category) {
+        boolean value = true;
+        for (String name : getItemsInCategory(category)) {
+            if (!isItemWhitelisted(category, name)) {
+                value = false;
+                break;
+            }
+        }
+        return value;
+    }
+
+    public static boolean isCategoryBlacklisted(String category) {
+        boolean value = true;
+        for (String name : getItemsInCategory(category)) {
+            if (!isItemBlacklisted(category, name)) {
+                value = false;
+                break;
+            }
+        }
+        return value;
+    }
+
+    public static boolean isItemWhitelisted(TagItem tagItem) {
+        if (tagItem == null) return false;
+        return databaseTagsWhitelist.contains(tagItem);
+    }
+
+    public static boolean isItemBlacklisted(TagItem tagItem) {
+        if (tagItem == null) return false;
+        return databaseTagsBlacklist.contains(tagItem);
+    }
+
+    public static boolean isItemWhitelisted(String category, String name) {
+        return databaseTagsWhitelist.contains(getTagItem(category, name));
+    }
+
+    public static boolean isItemBlacklisted(String category, String name) {
+        return databaseTagsBlacklist.contains(getTagItem(category, name));
     }
 
     /* getters */
