@@ -94,13 +94,13 @@ public class PaneTop extends BorderPane implements ChangeEventListener {
             for (DatabaseItem databaseItem : ItemDatabase.getDatabaseItems())
                 if (databaseItem.getTags().size() <= maxTags)
                     ItemDatabase.getDatabaseItemsFiltered().add(databaseItem);
-            ChangeEventControl.requestReload();
+            ChangeEventControl.requestReloadGlobal();
         });
         menuReset.setOnAction(event -> {
             TagDatabase.getDatabaseTagsWhitelist().clear();
             TagDatabase.getDatabaseTagsBlacklist().clear();
             TagDatabase.applyFilters();
-            ChangeEventControl.requestReload();
+            ChangeEventControl.requestReloadGlobal();
         });
     }
     private void setInfoLabelContextMenu() {

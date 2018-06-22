@@ -79,6 +79,7 @@ public class DatabaseLoader extends Thread {
                 }
             }
         }
+
         done();
     }
 
@@ -87,7 +88,7 @@ public class DatabaseLoader extends Thread {
         Platform.runLater(() -> {
             Main.getLoadingWindow().close();
             new GUIStage();
-            ChangeEventControl.requestReload();
+            ChangeEventControl.requestReloadGlobal();
         });
     }
 
@@ -142,8 +143,6 @@ public class DatabaseLoader extends Thread {
 
         itemDatabase.clear();
         itemDatabase.addAll(temporaryList);
-        ItemDatabase.sort();
-        TagDatabase.sort();
         Serialization.writeToDisk();
     }
 }

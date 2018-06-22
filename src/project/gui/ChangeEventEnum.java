@@ -7,9 +7,10 @@ import java.util.ArrayList;
 
 public enum ChangeEventEnum {
     /* options */
-    SELECTION(Selection.getChangeListeners()),
+    FILTER(TagDatabase.getChangeListeners()),
     FOCUS(Selection.getChangeListeners()),
-    FILTER(TagDatabase.getChangeListeners());
+    SELECTION(Selection.getChangeListeners()),
+    ;
 
     /* variables */
     private ArrayList<ChangeEventListener> listeners;

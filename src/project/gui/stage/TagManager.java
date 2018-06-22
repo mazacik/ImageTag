@@ -8,7 +8,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import project.database.Selection;
 import project.database.TagDatabase;
+import project.database.part.DatabaseItem;
 import project.database.part.TagItem;
+import project.gui.GUIStage;
 
 import java.util.ArrayList;
 
@@ -36,9 +38,18 @@ public class TagManager extends Stage {
         treeView.setPadding(new Insets(5));
         treeView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
-        ArrayList<TagItem> sharedTags = Selection.getSharedTags();
-        for (TagItem tagItem : sharedTags) {
-            treeView.getRoot().getChildren().add(new TreeItem(tagItem.getCategoryAndName()));
+        if (Selection.isEmpty()) {
+            DatabaseItem currentFocusedItem = GUIStage.getPaneGallery().getCurrentFocusedItem();
+            if (currentFocusedItem != null) {
+                for (TagItem tagItem : currentFocusedItem.getTags()) {
+                    treeView.getRoot().getChildren().add(new TreeItem(tagItem.getCategoryAndName()));
+                }
+            }
+        } else {
+            ArrayList<TagItem> sharedTags = Selection.getSharedTags();
+            for (TagItem tagItem : sharedTags) {
+                treeView.getRoot().getChildren().add(new TreeItem(tagItem.getCategoryAndName()));
+            }
         }
 
         btnTagAdd.prefWidthProperty().bind(widthProperty());

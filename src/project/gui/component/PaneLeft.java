@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 import project.database.TagDatabase;
 import project.database.part.ColoredText;
 import project.database.part.TagItem;
+import project.gui.ChangeEventControl;
 import project.gui.ChangeEventListener;
 
 import java.util.ArrayList;
@@ -25,6 +26,8 @@ public class PaneLeft extends BorderPane implements ChangeEventListener {
 
         setCellFactory();
         setCenter(treeView);
+
+        ChangeEventControl.subscribe(this, null);
     }
 
     /* public methods */

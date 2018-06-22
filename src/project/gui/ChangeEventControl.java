@@ -1,5 +1,8 @@
 package project.gui;
 
+import project.database.ItemDatabase;
+import project.database.TagDatabase;
+
 import java.util.ArrayList;
 
 public abstract class ChangeEventControl {
@@ -13,7 +16,9 @@ public abstract class ChangeEventControl {
         }
     }
 
-    public static void requestReload() {
+    public static void requestReloadGlobal() {
+        ItemDatabase.sort();
+        TagDatabase.sort();
         for (ChangeEventListener changeEventListener : changeListenersGlobal) {
             changeEventListener.refreshComponent();
         }
@@ -30,8 +35,10 @@ public abstract class ChangeEventControl {
             changeListenersGlobal.add(changeEventSubscriber);
         }
 
-        for (ChangeEventEnum changeEventNotifier : changeEventNotifiers) {
-            changeEventNotifier.addToSubscribers(changeEventSubscriber);
+        if (changeEventNotifiers != null) {
+            for (ChangeEventEnum changeEventNotifier : changeEventNotifiers) {
+                changeEventNotifier.addToSubscribers(changeEventSubscriber);
+            }
         }
     }
 }

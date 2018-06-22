@@ -40,7 +40,7 @@ public abstract class TagDatabase {
         databaseTags.remove(tagItem);
         databaseTagsWhitelist.remove(tagItem);
         databaseTagsBlacklist.remove(tagItem);
-        ChangeEventControl.requestReload();
+        ChangeEventControl.requestReloadGlobal();
     }
 
     public static void editTag(TagItem tagItem) {
@@ -108,7 +108,7 @@ public abstract class TagDatabase {
                 databaseTagsBlacklist.remove(tagItem);
             }
         }
-        ChangeEventControl.requestReload();
+        ChangeEventControl.requestReloadGlobal();
     }
 
     public static void applyFilters() {
@@ -153,6 +153,8 @@ public abstract class TagDatabase {
         for (TagItem tagItem : databaseTags) {
             categories.add(tagItem.getCategory());
         }
+
+        categories.sort(Comparator.naturalOrder());
         return categories;
     }
 
