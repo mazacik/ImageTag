@@ -13,19 +13,24 @@ public class LoadingWindow extends Stage {
     private final Scene loadingScene = new Scene(loadingPane);
     private final Label progressLabel = new Label();
 
-    /* constructos */
+    /* constructors */
     public LoadingWindow() {
-        setTitle("JavaExplorer Loading");
-        setScene(loadingScene);
+        initializeComponents();
+        initializeProperties();
+    }
 
+    /* initialize methods */
+    private void initializeComponents() {
         loadingPane.setPadding(new Insets(10));
         loadingPane.setCenter(progressLabel);
         loadingPane.setPrefWidth(300);
-
-        show();
-        centerOnScreen();
+    }
+    private void initializeProperties() {
+        setTitle("JavaExplorer Loading");
+        setScene(loadingScene);
         setResizable(false);
-
+        centerOnScreen();
+        show();
         new DatabaseLoader().start();
     }
 

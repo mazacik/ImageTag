@@ -15,41 +15,44 @@ public class TagEditor extends Stage {
 
     private final TextField tfCategory = new TextField();
     private final TextField tfName = new TextField();
-    private final Button btnAdd = new Button("+");
+    private final Button btnOK = new Button("OK");
 
     /* constructors */
     public TagEditor(TagItem tagItem) {
-        if (tagItem != null) {
-            /* frontend */
-            setTitle("Edit Tag");
-            setAlwaysOnTop(true);
-            setResizable(false);
-            setWidth(300);
-            centerOnScreen();
+        if (tagItem == null) return;
+        initializeComponents(tagItem);
+        initializeProperties();
+    }
 
-            /* initialization */
-            setScene(editorScene);
-            editorPane.setCenter(new VBox(tfCategory, tfName));
-            editorPane.setBottom(btnAdd);
+    /* initialize methods */
+    private void initializeComponents(TagItem tagItem) {
+        editorPane.setCenter(new VBox(2, tfCategory, tfName));
+        editorPane.setBottom(btnOK);
 
-            tfCategory.setText(tagItem.getCategory());
-            tfName.setText(tagItem.getName());
+        tfCategory.requestFocus();
+        tfCategory.setText(tagItem.getCategory());
+        tfName.setText(tagItem.getName());
 
-            tfCategory.prefWidthProperty().bind(widthProperty());
-            tfName.prefWidthProperty().bind(widthProperty());
-            btnAdd.prefWidthProperty().bind(widthProperty());
+        tfCategory.prefWidthProperty().bind(widthProperty());
+        tfName.prefWidthProperty().bind(widthProperty());
+        btnOK.prefWidthProperty().bind(widthProperty());
 
-            /* action listeners */
-            btnAdd.setOnAction(event -> {
-                String category = tfCategory.getText();
-                String name = tfName.getText();
-                if (!category.isEmpty() && !name.isEmpty()) {
-                    tagItem.setCategory(category);
-                    tagItem.setName(name);
-                }
-            });
-
-            showAndWait();
-        }
+        btnOK.setOnAction(event -> {
+            String category = tfCategory.getText();
+            String name = tfName.getText();
+            if (!category.isEmpty() && !name.isEmpty()) {
+                tagItem.setCategory(category);
+                tagItem.setName(name);
+            }
+        });
+    }
+    private void initializeProperties() {
+        setTitle("Edit Tag");
+        setAlwaysOnTop(true);
+        setResizable(false);
+        setWidth(300);
+        setScene(editorScene);
+        centerOnScreen();
+        showAndWait();
     }
 }

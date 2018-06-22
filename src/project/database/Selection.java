@@ -1,12 +1,11 @@
-package project.backend;
+package project.database;
 
-import project.database.ItemDatabase;
 import project.database.part.DatabaseItem;
 import project.database.part.TagItem;
-import project.gui.ChangeNotificationHelper;
-import project.gui.GUIController;
+import project.gui.ChangeEventControl;
+import project.gui.ChangeEventListener;
 import project.gui.GUIStage;
-import project.gui.component.GalleryPane;
+import project.gui.component.PaneGallery;
 import project.gui.component.part.GalleryTile;
 
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ import java.util.Random;
 
 public abstract class Selection {
     /* change listeners */
-    private static final ArrayList<ChangeNotificationHelper> changeListeners = new ArrayList<>();
+    private static final ArrayList<ChangeEventListener> changeListeners = new ArrayList<>();
 
     public static ArrayList<TagItem> getSharedTags() {
         ArrayList<DatabaseItem> databaseItemsSelected = ItemDatabase.getDatabaseItemsSelected();
@@ -39,14 +38,14 @@ public abstract class Selection {
         int databaseItemsFilteredSize = databaseItemsFiltered.size();
         int randomIndex = new Random().nextInt(databaseItemsFilteredSize);
         Selection.set(databaseItemsFiltered.get(randomIndex));
-        GUIStage.getGalleryPane().adjustViewportToFocus();
+        GUIStage.getPaneGallery().adjustViewportToFocus();
     }
 
     public static void add(DatabaseItem databaseItem) {
         ArrayList<DatabaseItem> databaseItemsSelected = ItemDatabase.getDatabaseItemsSelected();
-        GalleryPane galleryPane = GUIStage.getGalleryPane();
+        PaneGallery paneGallery = GUIStage.getPaneGallery();
         databaseItemsSelected.add(databaseItem);
-        galleryPane.focusTile(databaseItem);
+        paneGallery.focusTile(databaseItem);
     }
 
     public static void add(ArrayList<DatabaseItem> databaseItemsToAddToSelection) {
@@ -58,7 +57,7 @@ public abstract class Selection {
             }
         }
 
-        GUIController.requestReload(GUIStage.getRightPane());
+        ChangeEventControl.requestReload(GUIStage.getPaneRight());
     }
 
     public static void set(DatabaseItem databaseItem) {
@@ -68,9 +67,9 @@ public abstract class Selection {
 
     public static void remove(DatabaseItem databaseItem) {
         ArrayList<DatabaseItem> databaseItemsSelected = ItemDatabase.getDatabaseItemsSelected();
-        GalleryPane galleryPane = GUIStage.getGalleryPane();
+        PaneGallery paneGallery = GUIStage.getPaneGallery();
         databaseItemsSelected.remove(databaseItem);
-        galleryPane.focusTile(databaseItem);
+        paneGallery.focusTile(databaseItem);
     }
 
     public static void swap(DatabaseItem databaseItem) {
@@ -84,14 +83,14 @@ public abstract class Selection {
     public static void clear() {
         ArrayList<DatabaseItem> databaseItemsSelected = ItemDatabase.getDatabaseItemsSelected();
         databaseItemsSelected.clear();
-        GUIStage.getRightPane().getListView().getItems().clear();
+        GUIStage.getPaneRight().getListView().getItems().clear();
         for (DatabaseItem databaseItem : ItemDatabase.getDatabaseItems()) {
             GalleryTile.generateEffect(databaseItem);
         }
     }
 
     /* getters */
-    public static ArrayList<ChangeNotificationHelper> getChangeListeners() {
+    public static ArrayList<ChangeEventListener> getChangeListeners() {
         return changeListeners;
     }
 }

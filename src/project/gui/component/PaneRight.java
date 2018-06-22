@@ -5,20 +5,20 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import project.backend.Selection;
+import project.database.Selection;
 import project.database.TagDatabase;
 import project.database.part.TagItem;
-import project.gui.ChangeEvent;
-import project.gui.ChangeNotificationHelper;
-import project.gui.GUIController;
+import project.gui.ChangeEventControl;
+import project.gui.ChangeEventEnum;
+import project.gui.ChangeEventListener;
 import project.gui.GUIStage;
 import project.gui.stage.TagManager;
 
 import java.util.ArrayList;
 
-public class RightPane extends BorderPane implements ChangeNotificationHelper {
+public class PaneRight extends BorderPane implements ChangeEventListener {
     /* change listeners */
-    private final ArrayList<ChangeNotificationHelper> changeListeners = new ArrayList<>();
+    private final ArrayList<ChangeEventListener> changeListeners = new ArrayList<>();
 
     /* components */
     private final ListView<String> listView = new ListView<>();
@@ -28,13 +28,13 @@ public class RightPane extends BorderPane implements ChangeNotificationHelper {
     private final Button btnManage = new Button("Manage");
 
     /* constructors */
-    public RightPane() {
+    public PaneRight() {
         /* design */
         setMinWidth(150);
         setPrefWidth(200);
         setMaxWidth(300);
 
-        GUIController.subscribe(this, ChangeEvent.FOCUS);
+        ChangeEventControl.subscribe(this, ChangeEventEnum.FOCUS);
 
         /* component initialization */
         btnAdd.setStyle("-fx-focus-color: transparent;");
@@ -94,7 +94,7 @@ public class RightPane extends BorderPane implements ChangeNotificationHelper {
             else if (event.getCode() == KeyCode.DELETE)
                 TagDatabase.removeSelectedTagsFromItemSelection();
             else if (event.getCode() == KeyCode.ESCAPE)
-                GUIStage.getTopPane().requestFocus();
+                GUIStage.getPaneTop().requestFocus();
         });
     }
     private void setBtnAddOnAction() {
@@ -129,7 +129,7 @@ public class RightPane extends BorderPane implements ChangeNotificationHelper {
     public ListView<String> getListView() {
         return listView;
     }
-    public ArrayList<ChangeNotificationHelper> getChangeListeners() {
+    public ArrayList<ChangeEventListener> getChangeListeners() {
         return changeListeners;
     }
 }

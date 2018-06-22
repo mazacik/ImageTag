@@ -9,99 +9,98 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import project.Main;
-import project.backend.Settings;
+import project.common.Settings;
 import project.gui.stage.generic.DirectoryChooserWindow;
 
 public class IntroWindow extends Stage {
     /* components */
-    private final GridPane introPane = new GridPane();
-    private final Scene introScene = new Scene(introPane);
+    private final GridPane paneIntro = new GridPane();
+    private final Scene sceneIntro = new Scene(paneIntro);
 
-    private final Label labelMainDirectory = new Label("Main Directory Path:");
-    private final Label labelImageCacheDirectory = new Label("Image Cache Directory Path:");
-    private final Label labelDatabaseCacheFile = new Label("Database Cache File Path:");
-    private final TextField textFieldMainDirectory = new TextField();
-    private final TextField textFieldImageCacheDirectory = new TextField();
-    private final TextField textFieldDatabaseCacheFile = new TextField();
-    private final Button buttonMainDirectory = new Button("...");
-    private final Button buttonImageCacheDirectory = new Button("...");
-    private final Button buttonDatabaseCacheFile = new Button("...");
+    private final Label lblMainDirectory = new Label("Main Directory Path:");
+    private final Label lblImageCacheDirectory = new Label("Image Cache Directory Path:");
+    private final Label lblDatabaseCacheFile = new Label("Database Cache File Path:");
+    private final TextField tfMainDirectory = new TextField();
+    private final TextField tfImageCacheDirectory = new TextField();
+    private final TextField tfDatabaseCacheFile = new TextField();
+    private final Button btnMainDirectory = new Button("...");
+    private final Button btnImageCacheDirectory = new Button("...");
+    private final Button btnDatabaseCacheFile = new Button("...");
 
     private final Button buttonOK = new Button("OK");
 
     /* constructors */
     public IntroWindow() {
-        /* stage */
-        setTitle("JavaExplorer Settings");
-        setScene(introScene);
-        setResizable(false);
+        initializeComponents();
+        initializeProperties();
+    }
 
-        /* pane */
-        introPane.setPadding(new Insets(10));
-        introPane.setHgap(5);
-        introPane.setVgap(3);
-
-        /* components */
-        textFieldMainDirectory.setPrefWidth(300);
-        buttonMainDirectory.setPrefWidth(35);
-        buttonImageCacheDirectory.setPrefWidth(35);
-        buttonDatabaseCacheFile.setPrefWidth(35);
-        buttonOK.setPrefWidth(35);
-        buttonOK.setDisable(true);
-
+    /* initialize methods */
+    private void initializeComponents() {
         setListeners();
         addComponentsToGrid();
 
-        show();
+        paneIntro.setPadding(new Insets(10));
+        paneIntro.setHgap(5);
+        paneIntro.setVgap(3);
+
+        tfMainDirectory.setPrefWidth(300);
+        btnMainDirectory.setPrefWidth(35);
+        btnImageCacheDirectory.setPrefWidth(35);
+        btnDatabaseCacheFile.setPrefWidth(35);
+        buttonOK.setPrefWidth(35);
+        buttonOK.setDisable(true);
+    }
+    private void initializeProperties() {
+        setTitle("JavaExplorer Settings");
+        setScene(sceneIntro);
+        setResizable(false);
         centerOnScreen();
-        buttonMainDirectory.requestFocus();
+        show();
+        btnMainDirectory.requestFocus();
     }
-
-    /* builder methods */
     private void addComponentsToGrid() {
-        introPane.add(labelMainDirectory, 0, 0);
-        introPane.add(labelImageCacheDirectory, 0, 1);
-        introPane.add(labelDatabaseCacheFile, 0, 2);
-        introPane.add(textFieldMainDirectory, 1, 0);
-        introPane.add(textFieldImageCacheDirectory, 1, 1);
-        introPane.add(textFieldDatabaseCacheFile, 1, 2);
-        introPane.add(buttonMainDirectory, 2, 0);
-        introPane.add(buttonImageCacheDirectory, 2, 1);
-        introPane.add(buttonDatabaseCacheFile, 2, 2);
-        introPane.add(buttonOK, 2, 4);
+        paneIntro.add(lblMainDirectory, 0, 0);
+        paneIntro.add(lblImageCacheDirectory, 0, 1);
+        paneIntro.add(lblDatabaseCacheFile, 0, 2);
+        paneIntro.add(tfMainDirectory, 1, 0);
+        paneIntro.add(tfImageCacheDirectory, 1, 1);
+        paneIntro.add(tfDatabaseCacheFile, 1, 2);
+        paneIntro.add(btnMainDirectory, 2, 0);
+        paneIntro.add(btnImageCacheDirectory, 2, 1);
+        paneIntro.add(btnDatabaseCacheFile, 2, 2);
+        paneIntro.add(buttonOK, 2, 4);
     }
-
-    /* event methods */
     private void setListeners() {
-        buttonMainDirectory.setOnAction(event -> {
+        btnMainDirectory.setOnAction(event -> {
             String mainDirectoryPath = new DirectoryChooserWindow(this, "Choose Main Directory Path", "C:\\").getResultValue();
-            textFieldMainDirectory.setText(mainDirectoryPath);
-            textFieldImageCacheDirectory.setText(mainDirectoryPath + "\\imagecache");
-            textFieldDatabaseCacheFile.setText(mainDirectoryPath + "\\databasecache.json");
+            tfMainDirectory.setText(mainDirectoryPath);
+            tfImageCacheDirectory.setText(mainDirectoryPath + "\\imagecache");
+            tfDatabaseCacheFile.setText(mainDirectoryPath + "\\databasecache.json");
         });
-        buttonImageCacheDirectory.setOnAction(event -> {
+        btnImageCacheDirectory.setOnAction(event -> {
             String imageCacheDirectoryPath = new DirectoryChooserWindow(this, "Choose Image Cache Directory Path", "C:\\").getResultValue();
-            textFieldImageCacheDirectory.setText(imageCacheDirectoryPath);
+            tfImageCacheDirectory.setText(imageCacheDirectoryPath);
         });
-        buttonDatabaseCacheFile.setOnAction(event -> {
+        btnDatabaseCacheFile.setOnAction(event -> {
             String databaseCacheFilePath = new DirectoryChooserWindow(this, "Choose Database Cache File Path", "C:\\").getResultValue();
-            textFieldDatabaseCacheFile.setText(databaseCacheFilePath);
+            tfDatabaseCacheFile.setText(databaseCacheFilePath);
         });
 
         buttonOK.setOnAction(event -> {
             buttonOK.setDisable(true);
-            Settings.setMainDirectoryPath(textFieldMainDirectory.getText());
-            Settings.setImageCacheDirectoryPath(textFieldImageCacheDirectory.getText());
-            Settings.setDatabaseCacheFilePath(textFieldDatabaseCacheFile.getText());
+            Settings.setMainDirectoryPath(tfMainDirectory.getText());
+            Settings.setImageCacheDirectoryPath(tfImageCacheDirectory.getText());
+            Settings.setDatabaseCacheFilePath(tfDatabaseCacheFile.getText());
             Settings.writeToFile();
             Main.setLoadingWindow(new LoadingWindow());
             close();
         });
 
         ChangeListener textFieldChangeListener = (observable, oldValue, newValue) -> {
-            String mainDirectoryPath = textFieldMainDirectory.getText();
-            String imageCacheDirectoryPath = textFieldImageCacheDirectory.getText();
-            String databaseCacheFilePath = textFieldDatabaseCacheFile.getText();
+            String mainDirectoryPath = tfMainDirectory.getText();
+            String imageCacheDirectoryPath = tfImageCacheDirectory.getText();
+            String databaseCacheFilePath = tfDatabaseCacheFile.getText();
             if (mainDirectoryPath.length() > 1 && mainDirectoryPath.charAt(1) == ':' && mainDirectoryPath.charAt(2) == '\\')
                 if (imageCacheDirectoryPath.length() > 1 && imageCacheDirectoryPath.charAt(1) == ':' && imageCacheDirectoryPath.charAt(2) == '\\')
                     if (databaseCacheFilePath.length() > 1 && databaseCacheFilePath.charAt(1) == ':' && databaseCacheFilePath.charAt(2) == '\\')
@@ -110,8 +109,8 @@ public class IntroWindow extends Stage {
                         buttonOK.setDisable(true);
         };
 
-        textFieldMainDirectory.textProperty().addListener(textFieldChangeListener);
-        textFieldImageCacheDirectory.textProperty().addListener(textFieldChangeListener);
-        textFieldDatabaseCacheFile.textProperty().addListener(textFieldChangeListener);
+        tfMainDirectory.textProperty().addListener(textFieldChangeListener);
+        tfImageCacheDirectory.textProperty().addListener(textFieldChangeListener);
+        tfDatabaseCacheFile.textProperty().addListener(textFieldChangeListener);
     }
 }

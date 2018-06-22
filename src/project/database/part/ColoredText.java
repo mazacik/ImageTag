@@ -42,7 +42,7 @@ public class ColoredText {
                     coloredText.setColor(Color.GREEN);
                 }
                 TagDatabase.applyFilters();
-                GUIStage.getLeftPane().refreshTreeview();
+                GUIStage.getPaneLeft().refreshTreeview();
             }
         });
     }

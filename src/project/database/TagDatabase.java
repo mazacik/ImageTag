@@ -2,8 +2,8 @@ package project.database;
 
 import project.database.part.DatabaseItem;
 import project.database.part.TagItem;
-import project.gui.ChangeNotificationHelper;
-import project.gui.GUIController;
+import project.gui.ChangeEventControl;
+import project.gui.ChangeEventListener;
 import project.gui.GUIStage;
 import project.gui.stage.TagEditor;
 
@@ -12,7 +12,7 @@ import java.util.Comparator;
 
 public abstract class TagDatabase {
     /* change listeners */
-    private static final ArrayList<ChangeNotificationHelper> changeListeners = new ArrayList<>();
+    private static final ArrayList<ChangeEventListener> changeListeners = new ArrayList<>();
 
     /* variables */
     private static final ArrayList<TagItem> databaseTags = new ArrayList<>();
@@ -29,7 +29,7 @@ public abstract class TagDatabase {
         if (tagItem != null && !contains(tagItem)) {
             databaseTags.add(tagItem);
             sort();
-            GUIController.requestReload(GUIStage.getLeftPane());
+            ChangeEventControl.requestReload(GUIStage.getPaneLeft());
         }
     }
 
@@ -40,13 +40,13 @@ public abstract class TagDatabase {
         databaseTags.remove(tagItem);
         databaseTagsWhitelist.remove(tagItem);
         databaseTagsBlacklist.remove(tagItem);
-        GUIController.requestReload();
+        ChangeEventControl.requestReload();
     }
 
     public static void editTag(TagItem tagItem) {
         if (tagItem != null) {
             new TagEditor(tagItem);
-            GUIController.requestReload(GUIStage.getLeftPane(), GUIStage.getRightPane());
+            ChangeEventControl.requestReload(GUIStage.getPaneLeft(), GUIStage.getPaneRight());
         }
     }
 
@@ -74,19 +74,19 @@ public abstract class TagDatabase {
             if (!contains(tagItem)) {
                 addTag(tagItem);
                 sort();
-                GUIController.requestReload(GUIStage.getLeftPane());
+                ChangeEventControl.requestReload(GUIStage.getPaneLeft());
             }
             for (DatabaseItem databaseItem : databaseItemsSelected)
                 if (!databaseItem.getTags().contains(tagItem)) {
                     databaseItem.getTags().add(tagItem);
                 }
-            GUIController.requestReload(GUIStage.getRightPane());
+            ChangeEventControl.requestReload(GUIStage.getPaneRight());
         }
     }
 
     public static void removeSelectedTagsFromItemSelection() {
         ArrayList<TagItem> tagsToRemove = new ArrayList<>();
-        for (String selectedTag : GUIStage.getRightPane().getListView().getSelectionModel().getSelectedItems()) {
+        for (String selectedTag : GUIStage.getPaneRight().getListView().getSelectionModel().getSelectedItems()) {
             tagsToRemove.add(getTagItem(selectedTag));
         }
 
@@ -108,7 +108,7 @@ public abstract class TagDatabase {
                 databaseTagsBlacklist.remove(tagItem);
             }
         }
-        GUIController.requestReload();
+        ChangeEventControl.requestReload();
     }
 
     public static void applyFilters() {
@@ -131,7 +131,7 @@ public abstract class TagDatabase {
                 }
             }
         }
-        GUIController.requestReload(GUIStage.getGalleryPane());
+        ChangeEventControl.requestReload(GUIStage.getPaneGallery());
     }
 
     public static TagItem getTagItem(String category, String name) {
@@ -178,7 +178,7 @@ public abstract class TagDatabase {
     public static ArrayList<TagItem> getDatabaseTagsBlacklist() {
         return databaseTagsBlacklist;
     }
-    public static ArrayList<ChangeNotificationHelper> getChangeListeners() {
+    public static ArrayList<ChangeEventListener> getChangeListeners() {
         return changeListeners;
     }
 }

@@ -6,7 +6,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import project.backend.Selection;
+import project.database.Selection;
 import project.database.TagDatabase;
 import project.database.part.TagItem;
 
@@ -14,39 +14,39 @@ import java.util.ArrayList;
 
 public class TagManager extends Stage {
     /* components */
-    private final BorderPane tagManagerPane = new BorderPane();
-    private final Scene tagManagerScene = new Scene(tagManagerPane);
+    private final BorderPane paneTagManager = new BorderPane();
+    private final Scene sceneTagManager = new Scene(paneTagManager);
 
     private final TreeView<String> treeView = new TreeView(new TreeItem());
-    private final VBox addPane = new VBox(2);
 
     private final ComboBox cbCategory = new ComboBox();
     private final ComboBox cbName = new ComboBox();
 
-    private final Button btnAdd = new Button("Add");
-    private final Button btnNew = new Button("New");
+    private final Button btnTagAdd = new Button("Add");
+    private final Button btnTagNew = new Button("New");
 
     /* constructors */
     public TagManager() {
-        /* frontend */
-        setTitle("Tag Manager");
-        setAlwaysOnTop(true);
-        setMinWidth(320);
-        setMinHeight(640);
-        centerOnScreen();
+        initializeComponents();
+        initializeProperties();
+    }
 
-        /* initialization */
-        setScene(tagManagerScene);
-        initializeTreeView();
+    /* initialize methods */
+    private void initializeComponents() {
+        treeView.setPadding(new Insets(5));
+        treeView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
+        ArrayList<TagItem> sharedTags = Selection.getSharedTags();
+        for (TagItem tagItem : sharedTags) {
+            treeView.getRoot().getChildren().add(new TreeItem(tagItem.getCategoryAndName()));
+        }
+
+        btnTagAdd.prefWidthProperty().bind(widthProperty());
+        btnTagNew.prefWidthProperty().bind(widthProperty());
         cbCategory.prefWidthProperty().bind(widthProperty());
         cbName.prefWidthProperty().bind(widthProperty());
-        btnAdd.prefWidthProperty().bind(widthProperty());
-        btnNew.prefWidthProperty().bind(widthProperty());
 
-        addPane.getChildren().addAll(cbCategory, cbName, btnAdd, btnNew);
-
-        /* action listeners */
+        cbCategory.requestFocus();
         cbCategory.setOnShown(event -> {
             cbCategory.getItems().clear();
             cbCategory.getItems().addAll(TagDatabase.getCategories());
@@ -59,14 +59,20 @@ public class TagManager extends Stage {
             }
         });
 
-        btnAdd.setOnAction(event -> addTag());
-        btnNew.setOnAction(event -> TagDatabase.createTag());
+        btnTagAdd.setOnAction(event -> addTag());
+        btnTagNew.setOnAction(event -> TagDatabase.createTag());
 
+        paneTagManager.setCenter(treeView);
+        paneTagManager.setBottom(new VBox(2, cbCategory, cbName, btnTagAdd, btnTagNew));
+    }
+    private void initializeProperties() {
+        setTitle("Tag Manager");
+        setAlwaysOnTop(true);
+        setMinWidth(320);
+        setMinHeight(640);
+        setScene(sceneTagManager);
         setOnCloseRequest(event -> TagDatabase.applyFilters());
-
-        tagManagerPane.setCenter(treeView);
-        tagManagerPane.setBottom(addPane);
-
+        centerOnScreen();
         show();
     }
 
@@ -83,15 +89,5 @@ public class TagManager extends Stage {
                 //treeView.getRoot().getChildren().sort(Comparator.comparing(TagItem::getCategoryAndName));
             }
         }
-    }
-
-    /* builder methods */
-    private void initializeTreeView() {
-        treeView.setPadding(new Insets(5));
-        treeView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-
-        ArrayList<TagItem> sharedTags = Selection.getSharedTags();
-        for (TagItem tagItem : sharedTags)
-            treeView.getRoot().getChildren().add(new TreeItem(tagItem.getCategoryAndName()));
     }
 }

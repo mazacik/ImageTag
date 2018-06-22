@@ -9,19 +9,19 @@ import javafx.scene.paint.Color;
 import project.database.TagDatabase;
 import project.database.part.ColoredText;
 import project.database.part.TagItem;
-import project.gui.ChangeNotificationHelper;
+import project.gui.ChangeEventListener;
 
 import java.util.ArrayList;
 
-public class LeftPane extends BorderPane implements ChangeNotificationHelper {
+public class PaneLeft extends BorderPane implements ChangeEventListener {
     /* change listeners */
-    private final ArrayList<ChangeNotificationHelper> changeListeners = new ArrayList<>();
+    private final ArrayList<ChangeEventListener> changeListeners = new ArrayList<>();
 
     /* components */
     private final TreeView<ColoredText> treeView = new TreeView(new TreeItem());
 
     /* constructors */
-    public LeftPane() {
+    public PaneLeft() {
         setMinWidth(150);
         setPrefWidth(200);
         setMaxWidth(300);
@@ -29,7 +29,7 @@ public class LeftPane extends BorderPane implements ChangeNotificationHelper {
         setCellFactory();
         setCenter(treeView);
 
-        //GUIController.subscribe(this, GUIStage.getGalleryPane());
+        //ChangeEventControl.subscribe(this, GUIStage.getPaneGallery());
     }
 
     /* public methods */
@@ -71,10 +71,5 @@ public class LeftPane extends BorderPane implements ChangeNotificationHelper {
                 ColoredText.setOnContextMenuRequest(this, coloredText);
             }
         });
-    }
-
-    /* getters */
-    public ArrayList<ChangeNotificationHelper> getChangeListeners() {
-        return changeListeners;
     }
 }

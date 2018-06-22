@@ -3,7 +3,7 @@ package project.database.loader;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import project.backend.Settings;
+import project.common.Settings;
 import project.database.ItemDatabase;
 import project.database.part.DatabaseItem;
 

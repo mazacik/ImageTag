@@ -5,19 +5,20 @@ import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.TilePane;
-import project.backend.Settings;
+import project.common.Settings;
 import project.database.ItemDatabase;
 import project.database.part.DatabaseItem;
-import project.gui.ChangeEvent;
-import project.gui.ChangeNotificationHelper;
-import project.gui.GUIController;
+import project.gui.ChangeEventControl;
+import project.gui.ChangeEventEnum;
+import project.gui.ChangeEventListener;
+import project.gui.GUIUtility;
 import project.gui.component.part.GalleryTile;
 
 import java.util.ArrayList;
 
-public class GalleryPane extends ScrollPane implements ChangeNotificationHelper {
+public class PaneGallery extends ScrollPane implements ChangeEventListener {
     /* change listeners */
-    private final ArrayList<ChangeNotificationHelper> changeListeners = new ArrayList<>();
+    private final ArrayList<ChangeEventListener> changeListeners = new ArrayList<>();
 
     /* components */
     private final TilePane tilePane = new TilePane();
@@ -28,7 +29,7 @@ public class GalleryPane extends ScrollPane implements ChangeNotificationHelper 
     private DatabaseItem previousFocusedItem = null;
 
     /* constructors */
-    public GalleryPane() {
+    public PaneGallery() {
         int galleryIconSizePref = Settings.getGalleryIconSizePref();
 
         setHbarPolicy(ScrollBarPolicy.NEVER);
@@ -45,7 +46,7 @@ public class GalleryPane extends ScrollPane implements ChangeNotificationHelper 
         setOnScrollListener();
         setWidthPropertyListener();
 
-        GUIController.subscribe(this, ChangeEvent.FILTER, ChangeEvent.FOCUS);
+        ChangeEventControl.subscribe(this, ChangeEventEnum.FILTER, ChangeEventEnum.FOCUS);
     }
 
     /* public methods */
@@ -62,7 +63,7 @@ public class GalleryPane extends ScrollPane implements ChangeNotificationHelper 
         if (previousFocusedItem != null)
             GalleryTile.generateEffect(previousFocusedItem);
 
-        GUIController.notifyOfChange(ChangeEvent.FOCUS);
+        ChangeEventControl.notifyListeners(ChangeEventEnum.FOCUS);
     }
 
     public void adjustViewportToFocus() {
@@ -95,7 +96,7 @@ public class GalleryPane extends ScrollPane implements ChangeNotificationHelper 
     }
 
     public void refresh() {
-        if (GUIController.isPreviewFullscreen()) return;
+        if (GUIUtility.isPreviewFullscreen()) return;
 
         tilePaneItems.clear();
 
@@ -159,7 +160,7 @@ public class GalleryPane extends ScrollPane implements ChangeNotificationHelper 
     public DatabaseItem getCurrentFocusedItem() {
         return currentFocusedItem;
     }
-    public ArrayList<ChangeNotificationHelper> getChangeListeners() {
+    public ArrayList<ChangeEventListener> getChangeListeners() {
         return changeListeners;
     }
 }

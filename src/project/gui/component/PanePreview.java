@@ -5,18 +5,15 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
-import project.backend.Settings;
+import project.common.Settings;
 import project.database.part.DatabaseItem;
-import project.gui.ChangeEvent;
-import project.gui.ChangeNotificationHelper;
-import project.gui.GUIController;
-import project.gui.GUIStage;
+import project.gui.*;
 
 import java.util.ArrayList;
 
-public class PreviewPane extends Pane implements ChangeNotificationHelper {
+public class PanePreview extends Pane implements ChangeEventListener {
     /* change listeners */
-    private final ArrayList<ChangeNotificationHelper> changeListeners = new ArrayList<>();
+    private final ArrayList<ChangeEventListener> changeListeners = new ArrayList<>();
 
     /* components */
     private final Canvas canvas = new Canvas();
@@ -26,19 +23,19 @@ public class PreviewPane extends Pane implements ChangeNotificationHelper {
     private Image currentPreviewImage = null;
 
     /* constructors */
-    public PreviewPane() {
+    public PanePreview() {
         canvas.setOnMouseClicked(event -> this.requestFocus());
         getChildren().add(canvas);
         setSizePropertyListener();
 
-        GUIController.subscribe(this, ChangeEvent.FOCUS);
+        ChangeEventControl.subscribe(this, ChangeEventEnum.FOCUS);
     }
 
     /* public methods */
     public void refresh() {
-        if (!GUIController.isPreviewFullscreen()) return;
-        if (GUIStage.getGalleryPane().getCurrentFocusedItem() == null) return;
-        if (!GUIStage.getGalleryPane().getCurrentFocusedItem().equals(currentDatabaseItem)) loadImage();
+        if (!GUIUtility.isPreviewFullscreen()) return;
+        if (GUIStage.getPaneGallery().getCurrentFocusedItem() == null) return;
+        if (!GUIStage.getPaneGallery().getCurrentFocusedItem().equals(currentDatabaseItem)) loadImage();
 
         double imageWidth = currentPreviewImage.getWidth();
         double imageHeight = currentPreviewImage.getHeight();
@@ -60,13 +57,13 @@ public class PreviewPane extends Pane implements ChangeNotificationHelper {
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        gc.clearRect(0, 0, GUIStage.getPreviewPane().getWidth(), GUIStage.getPreviewPane().getHeight());
+        gc.clearRect(0, 0, GUIStage.getPanePreview().getWidth(), GUIStage.getPanePreview().getHeight());
         gc.drawImage(currentPreviewImage, resultX, resultY, resultWidth, resultHeight);
     }
 
     /* private methods */
     private void loadImage() {
-        currentDatabaseItem = GUIStage.getGalleryPane().getCurrentFocusedItem();
+        currentDatabaseItem = GUIStage.getPaneGallery().getCurrentFocusedItem();
         currentPreviewImage = new Image("file:" + Settings.getMainDirectoryPath() + "/" + currentDatabaseItem.getName());
     }
 
@@ -80,7 +77,7 @@ public class PreviewPane extends Pane implements ChangeNotificationHelper {
     }
 
     /* getters */
-    public ArrayList<ChangeNotificationHelper> getChangeListeners() {
+    public ArrayList<ChangeEventListener> getChangeListeners() {
         return changeListeners;
     }
 

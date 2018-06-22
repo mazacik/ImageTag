@@ -5,12 +5,12 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import org.apache.commons.io.FilenameUtils;
 import project.Main;
-import project.backend.Settings;
+import project.common.Settings;
 import project.database.ItemDatabase;
 import project.database.TagDatabase;
 import project.database.part.DatabaseItem;
 import project.database.part.TagItem;
-import project.gui.GUIController;
+import project.gui.ChangeEventControl;
 import project.gui.GUIStage;
 import project.gui.component.part.GalleryTile;
 
@@ -85,11 +85,11 @@ public class DatabaseLoader extends Thread {
     }
 
     private void done() {
-        /* request backend content initialization */
+        /* request common content initialization */
         Platform.runLater(() -> {
             Main.getLoadingWindow().close();
             new GUIStage();
-            GUIController.requestReload();
+            ChangeEventControl.requestReload();
         });
     }
 

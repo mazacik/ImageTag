@@ -5,15 +5,15 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.WindowEvent;
-import project.backend.Selection;
-import project.backend.Settings;
+import project.common.Settings;
 import project.database.ItemDatabase;
+import project.database.Selection;
 import project.database.TagDatabase;
 import project.database.loader.Serialization;
 import project.database.part.DatabaseItem;
-import project.gui.ChangeEvent;
-import project.gui.ChangeNotificationHelper;
-import project.gui.GUIController;
+import project.gui.ChangeEventControl;
+import project.gui.ChangeEventEnum;
+import project.gui.ChangeEventListener;
 import project.gui.GUIStage;
 import project.gui.stage.generic.NumberInputWindow;
 
@@ -22,9 +22,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-public class TopPane extends BorderPane implements ChangeNotificationHelper {
+public class PaneTop extends BorderPane implements ChangeEventListener {
     /* change listeners */
-    private final ArrayList<ChangeNotificationHelper> changeListeners = new ArrayList<>();
+    private final ArrayList<ChangeEventListener> changeListeners = new ArrayList<>();
 
     /* components */
     private final MenuBar infoLabelMenuBar = new MenuBar();
@@ -44,7 +44,7 @@ public class TopPane extends BorderPane implements ChangeNotificationHelper {
     private final MenuItem menuReset = new MenuItem("Reset");
 
     /* constructors */
-    public TopPane() {
+    public PaneTop() {
         menuFile.getItems().addAll(menuSave, new SeparatorMenuItem(), menuExit);
         menuSelection.getItems().addAll(menuSelectAll, menuClearSelection);
         menuFilter.getItems().addAll(menuUntaggedOnly, menuLessThanXTags, new SeparatorMenuItem(), menuReset);
@@ -59,12 +59,12 @@ public class TopPane extends BorderPane implements ChangeNotificationHelper {
         setOnAction();
         setInfoLabelContextMenu();
 
-        GUIController.subscribe(this, ChangeEvent.FOCUS);
+        ChangeEventControl.subscribe(this, ChangeEventEnum.FOCUS);
     }
 
     /* public methods */
     public void refresh() {
-        DatabaseItem currentFocusedItem = GUIStage.getGalleryPane().getCurrentFocusedItem();
+        DatabaseItem currentFocusedItem = GUIStage.getPaneGallery().getCurrentFocusedItem();
         if (currentFocusedItem != null) {
             infoLabelMenu.setText(currentFocusedItem.getName());
         }
@@ -93,13 +93,13 @@ public class TopPane extends BorderPane implements ChangeNotificationHelper {
             for (DatabaseItem databaseItem : ItemDatabase.getDatabaseItems())
                 if (databaseItem.getTags().size() <= maxTags)
                     ItemDatabase.getDatabaseItemsFiltered().add(databaseItem);
-            GUIController.requestReload();
+            ChangeEventControl.requestReload();
         });
         menuReset.setOnAction(event -> {
             TagDatabase.getDatabaseTagsWhitelist().clear();
             TagDatabase.getDatabaseTagsBlacklist().clear();
             TagDatabase.applyFilters();
-            GUIController.requestReload();
+            ChangeEventControl.requestReload();
         });
     }
     private void setInfoLabelContextMenu() {
@@ -121,7 +121,7 @@ public class TopPane extends BorderPane implements ChangeNotificationHelper {
                     ItemDatabase.getDatabaseItemsSelected().remove(databaseItem);
                     if (ItemDatabase.getDatabaseItemsFiltered().get(index) == null)
                         index--;
-                    GUIStage.getGalleryPane().focusTile(ItemDatabase.getDatabaseItemsFiltered().get(index));
+                    GUIStage.getPaneGallery().focusTile(ItemDatabase.getDatabaseItemsFiltered().get(index));
 
                     break;
                 }
@@ -141,7 +141,7 @@ public class TopPane extends BorderPane implements ChangeNotificationHelper {
     }
 
     /* getters */
-    public ArrayList<ChangeNotificationHelper> getChangeListeners() {
+    public ArrayList<ChangeEventListener> getChangeListeners() {
         return changeListeners;
     }
 }

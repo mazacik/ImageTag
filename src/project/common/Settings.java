@@ -1,4 +1,4 @@
-package project.backend;
+package project.common;
 
 import java.io.*;
 import java.util.Properties;

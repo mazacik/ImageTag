@@ -2,7 +2,7 @@ package project;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import project.backend.Settings;
+import project.common.Settings;
 import project.gui.stage.IntroWindow;
 import project.gui.stage.LoadingWindow;
 

@@ -7,12 +7,12 @@ import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
-import project.backend.Selection;
-import project.backend.Settings;
+import project.common.Settings;
 import project.database.ItemDatabase;
+import project.database.Selection;
 import project.database.part.DatabaseItem;
 import project.gui.GUIStage;
-import project.gui.component.GalleryPane;
+import project.gui.component.PaneGallery;
 
 public class GalleryTile extends ImageView {
     /* variables */
@@ -31,12 +31,12 @@ public class GalleryTile extends ImageView {
 
     /* public methods */
     public static void generateEffect(DatabaseItem databaseItem) {
-        GalleryPane galleryPane = GUIStage.getGalleryPane();
+        PaneGallery paneGallery = GUIStage.getPaneGallery();
 
         boolean selection = ItemDatabase.getDatabaseItemsSelected().contains(databaseItem);
         boolean focus = false;
-        if (galleryPane.getCurrentFocusedItem() != null)
-            focus = galleryPane.getCurrentFocusedItem().equals(databaseItem);
+        if (paneGallery.getCurrentFocusedItem() != null)
+            focus = paneGallery.getCurrentFocusedItem().equals(databaseItem);
 
         if (!selection && !focus) {
             databaseItem.getGalleryTile().setEffect(null);
@@ -78,7 +78,7 @@ public class GalleryTile extends ImageView {
     private void setOnMouseClick(DatabaseItem databaseItem) {
         setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
-                GUIStage.getGalleryPane().focusTile(databaseItem);
+                GUIStage.getPaneGallery().focusTile(databaseItem);
                 Selection.swap(databaseItem);
             }
         });
