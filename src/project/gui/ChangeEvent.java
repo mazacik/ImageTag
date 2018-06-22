@@ -1,14 +1,14 @@
 package project.gui;
 
-import project.backend.Filter;
 import project.backend.Selection;
+import project.database.TagDatabase;
 
 import java.util.ArrayList;
 
 public enum ChangeEvent {
     SELECTION(Selection.getChangeListeners()),
     FOCUS(Selection.getChangeListeners()),
-    FILTER(Filter.getChangeListeners());
+    FILTER(TagDatabase.getChangeListeners());
 
     private ArrayList<ChangeNotificationHelper> changeListeners;
 

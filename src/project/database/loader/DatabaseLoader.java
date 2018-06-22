@@ -127,7 +127,7 @@ public class DatabaseLoader extends Thread {
     }
 
     private void regenerateDatabaseCache() {
-        /* add unrecognized items */
+        /* addTag unrecognized items */
         for (File file : validFiles) {
             if (!itemDatabaseItemNames.contains(file.getName())) {
                 itemDatabase.add(buildDatabaseItem(file));

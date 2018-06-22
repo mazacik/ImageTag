@@ -5,7 +5,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeCell;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
-import project.backend.Filter;
 import project.database.TagDatabase;
 import project.gui.GUIStage;
 
@@ -42,7 +41,7 @@ public class ColoredText {
                     whitelist.add(tagItem);
                     coloredText.setColor(Color.GREEN);
                 }
-                Filter.applyTagFilters();
+                TagDatabase.applyFilters();
                 GUIStage.getLeftPane().refreshTreeview();
             }
         });
@@ -51,11 +50,11 @@ public class ColoredText {
     public static void setOnContextMenuRequest(TreeCell<ColoredText> source, ColoredText coloredText) {
         ContextMenu contextMenu = new ContextMenu();
         MenuItem menuAdd = new MenuItem("Add");
-        menuAdd.setOnAction(event -> Filter.addTagToDatabase());
+        menuAdd.setOnAction(event -> TagDatabase.createTag());
         MenuItem menuRemove = new MenuItem("Remove");
-        menuRemove.setOnAction(event -> Filter.removeTagFromDatabase(coloredText.getTagItem()));
+        menuRemove.setOnAction(event -> TagDatabase.removeTag(coloredText.getTagItem()));
         MenuItem menuRename = new MenuItem("Rename");
-        menuRename.setOnAction(event -> Filter.editTag(coloredText.getTagItem()));
+        menuRename.setOnAction(event -> TagDatabase.editTag(coloredText.getTagItem()));
         contextMenu.getItems().addAll(menuAdd, menuRemove, menuRename);
         source.setContextMenu(contextMenu);
     }

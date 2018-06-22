@@ -5,7 +5,6 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.WindowEvent;
-import project.backend.Filter;
 import project.backend.Selection;
 import project.backend.Settings;
 import project.database.ItemDatabase;
@@ -83,7 +82,7 @@ public class TopPane extends BorderPane implements ChangeNotificationHelper {
             TagDatabase.getDatabaseTagsWhitelist().clear();
             TagDatabase.getDatabaseTagsBlacklist().clear();
             TagDatabase.getDatabaseTagsBlacklist().addAll(TagDatabase.getDatabaseTags());
-            Filter.applyTagFilters();
+            TagDatabase.applyFilters();
         });
         menuLessThanXTags.setOnAction(event -> {
             int maxTags = new NumberInputWindow("Filter Settings", "Maximum number of tags:").getResultValue();
@@ -99,7 +98,7 @@ public class TopPane extends BorderPane implements ChangeNotificationHelper {
         menuReset.setOnAction(event -> {
             TagDatabase.getDatabaseTagsWhitelist().clear();
             TagDatabase.getDatabaseTagsBlacklist().clear();
-            Filter.applyTagFilters();
+            TagDatabase.applyFilters();
             GUIController.requestReload();
         });
     }

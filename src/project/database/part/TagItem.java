@@ -13,6 +13,11 @@ public class TagItem {
         this.category = WordUtils.capitalizeFully(category);
     }
 
+    public TagItem() {
+        this.name = "";
+        this.category = "";
+    }
+
     /* getters */
     public String getName() {
         return name;

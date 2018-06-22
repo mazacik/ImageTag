@@ -5,7 +5,6 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import project.backend.Filter;
 import project.backend.Selection;
 import project.database.TagDatabase;
 import project.database.part.TagItem;
@@ -59,10 +58,9 @@ public class RightPane extends BorderPane implements ChangeNotificationHelper {
 
         cbName.prefWidthProperty().bind(prefWidthProperty());
         cbName.setOnShown(event -> {
-            String category = cbCategory.getValue().toString();
             cbName.getItems().clear();
-            if (cbCategory.getValue() != null && !category.isEmpty()) {
-                cbName.getItems().addAll(TagDatabase.getItemsInCategory(category));
+            if (cbCategory.getValue() != null && !cbCategory.getValue().toString().isEmpty()) {
+                cbName.getItems().addAll(TagDatabase.getItemsInCategory(cbCategory.getValue().toString()));
             }
         });
 
@@ -94,7 +92,7 @@ public class RightPane extends BorderPane implements ChangeNotificationHelper {
             if (event.getCode() == KeyCode.ENTER)
                 addTag();
             else if (event.getCode() == KeyCode.DELETE)
-                Filter.removeSelectedTagsFromItemSelection();
+                TagDatabase.removeSelectedTagsFromItemSelection();
             else if (event.getCode() == KeyCode.ESCAPE)
                 GUIStage.getTopPane().requestFocus();
         });
@@ -105,7 +103,7 @@ public class RightPane extends BorderPane implements ChangeNotificationHelper {
     private void setListviewContextMenu() {
         ContextMenu listContextMenu = new ContextMenu();
         MenuItem menuRemoveTag = new MenuItem("Remove");
-        menuRemoveTag.setOnAction(event -> Filter.removeSelectedTagsFromItemSelection());
+        menuRemoveTag.setOnAction(event -> TagDatabase.removeSelectedTagsFromItemSelection());
         listContextMenu.getItems().add(menuRemoveTag);
         listView.setContextMenu(listContextMenu);
     }
@@ -123,7 +121,7 @@ public class RightPane extends BorderPane implements ChangeNotificationHelper {
             name = nameComboBoxValue.toString();
 
         if (!category.isEmpty() && !name.isEmpty()) {
-            Filter.addTagToSelectedItems(TagDatabase.getTagItem(category, name));
+            TagDatabase.addTagToItemSelection(TagDatabase.getTagItem(category, name));
         }
     }
 

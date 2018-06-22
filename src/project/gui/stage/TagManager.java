@@ -6,7 +6,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import project.backend.Filter;
 import project.backend.Selection;
 import project.database.TagDatabase;
 import project.database.part.TagItem;
@@ -61,9 +60,9 @@ public class TagManager extends Stage {
         });
 
         btnAdd.setOnAction(event -> addTag());
-        btnNew.setOnAction(event -> new NewTagScene());
+        btnNew.setOnAction(event -> TagDatabase.createTag());
 
-        setOnCloseRequest(event -> Filter.applyTagFilters());
+        setOnCloseRequest(event -> TagDatabase.applyFilters());
 
         tagManagerPane.setCenter(treeView);
         tagManagerPane.setBottom(addPane);
@@ -79,7 +78,7 @@ public class TagManager extends Stage {
         if (cbCategoryValue != null && cbNameValue != null) {
             TagItem tagItem = TagDatabase.getTagItem(cbCategoryValue.toString(), cbNameValue.toString());
             if (tagItem != null) {
-                Filter.addTagToSelectedItems(tagItem);
+                TagDatabase.addTagToItemSelection(tagItem);
                 treeView.getRoot().getChildren().add(new TreeItem(tagItem.getCategoryAndName()));
                 //treeView.getRoot().getChildren().sort(Comparator.comparing(TagItem::getCategoryAndName));
             }
