@@ -119,9 +119,16 @@ public class PaneRight extends BorderPane implements ChangeEventListener {
         if (nameComboBoxValue != null) {
             name = nameComboBoxValue.toString();
         }
-
         if (!category.isEmpty() && !name.isEmpty()) {
-            TagDatabase.addTagToItemSelection(TagDatabase.getTagItem(category, name));
+            TagItem tagItem = TagDatabase.getTagItem(category, name);
+            if (Selection.isEmpty()) {
+                DatabaseItem currentFocusedItem = GUIStage.getPaneGallery().getCurrentFocusedItem();
+                if (currentFocusedItem != null) {
+                    currentFocusedItem.getTags().add(tagItem);
+                }
+            } else {
+                TagDatabase.addTagToItemSelection(tagItem);
+            }
         }
     }
 
