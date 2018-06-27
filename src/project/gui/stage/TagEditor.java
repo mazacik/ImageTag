@@ -30,7 +30,7 @@ public class TagEditor extends Stage {
         editorPane.setBottom(btnOK);
 
         tfCategory.requestFocus();
-        tfCategory.setText(tagItem.getCategory());
+        tfCategory.setText(tagItem.getGroup());
         tfName.setText(tagItem.getName());
 
         tfCategory.prefWidthProperty().bind(widthProperty());
@@ -41,7 +41,7 @@ public class TagEditor extends Stage {
             String category = tfCategory.getText();
             String name = tfName.getText();
             if (!category.isEmpty() && !name.isEmpty()) {
-                tagItem.setCategory(category);
+                tagItem.setGroup(category);
                 tagItem.setName(name);
             }
         });

@@ -95,12 +95,12 @@ public class PaneRight extends BorderPane implements ChangeEventListener {
             DatabaseItem currentFocusedItem = GUIStage.getPaneGallery().getCurrentFocusedItem();
             if (currentFocusedItem != null) {
                 for (TagItem tagItem : currentFocusedItem.getTags()) {
-                    sharedTags.add(tagItem.getCategoryAndName());
+                    sharedTags.add(tagItem.getGroupAndName());
                 }
             }
         } else {
             for (TagItem tagItem : Selection.getSharedTags()) {
-                sharedTags.add(tagItem.getCategoryAndName());
+                sharedTags.add(tagItem.getGroupAndName());
             }
         }
         listView.getItems().setAll(sharedTags);

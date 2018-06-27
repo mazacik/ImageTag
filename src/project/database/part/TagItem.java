@@ -4,25 +4,25 @@ import org.apache.commons.text.WordUtils;
 
 public class TagItem {
     /* variables */
-    private String category;
+    private String group;
     private String name;
 
     /* getters */
+    public String getGroup() {
+        return group;
+    }
     public String getName() {
         return name;
     }
-    public String getCategory() {
-        return category;
-    }
-    public String getCategoryAndName() {
-        return category + " - " + name;
+    public String getGroupAndName() {
+        return group + " - " + name;
     }
 
     /* setters */
+    public void setGroup(String group) {
+        this.group = WordUtils.capitalizeFully(group);
+    }
     public void setName(String name) {
         this.name = WordUtils.capitalizeFully(name);
-    }
-    public void setCategory(String category) {
-        this.category = WordUtils.capitalizeFully(category);
     }
 }

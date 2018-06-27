@@ -36,19 +36,20 @@ public class TagManager extends Stage {
     /* initialize methods */
     private void initializeComponents() {
         treeView.setPadding(new Insets(5));
+        treeView.setShowRoot(false);
         treeView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         if (Selection.isEmpty()) {
             DatabaseItem currentFocusedItem = GUIStage.getPaneGallery().getCurrentFocusedItem();
             if (currentFocusedItem != null) {
                 for (TagItem tagItem : currentFocusedItem.getTags()) {
-                    treeView.getRoot().getChildren().add(new TreeItem(tagItem.getCategoryAndName()));
+                    treeView.getRoot().getChildren().add(new TreeItem(tagItem.getGroupAndName()));
                 }
             }
         } else {
             ArrayList<TagItem> sharedTags = Selection.getSharedTags();
             for (TagItem tagItem : sharedTags) {
-                treeView.getRoot().getChildren().add(new TreeItem(tagItem.getCategoryAndName()));
+                treeView.getRoot().getChildren().add(new TreeItem(tagItem.getGroupAndName()));
             }
         }
 
@@ -96,8 +97,8 @@ public class TagManager extends Stage {
             TagItem tagItem = TagDatabase.getTagItem(cbCategoryValue.toString(), cbNameValue.toString());
             if (tagItem != null) {
                 TagDatabase.addTagToItemSelection(tagItem);
-                treeView.getRoot().getChildren().add(new TreeItem(tagItem.getCategoryAndName()));
-                //treeView.getRoot().getChildren().sort(Comparator.comparing(TagItem::getCategoryAndName));
+                treeView.getRoot().getChildren().add(new TreeItem(tagItem.getGroupAndName()));
+                //treeView.getRoot().getChildren().sort(Comparator.comparing(TagItem::getGroupAndName));
             }
         }
     }

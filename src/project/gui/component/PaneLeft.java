@@ -27,6 +27,7 @@ public class PaneLeft extends BorderPane implements ChangeEventListener {
         setMaxWidth(300);
 
         setCellFactory();
+        treeView.setShowRoot(false);
         setCenter(treeView);
 
         ChangeEventControl.subscribe(this, (ChangeEventEnum[]) null);
@@ -79,12 +80,14 @@ public class PaneLeft extends BorderPane implements ChangeEventListener {
                     setText(coloredText.getText());
                     setTextFill(coloredText.getColor());
                 }
-                ColoredText.setOnMouseClick(this, coloredText);
-                ColoredText.setOnContextMenuRequest(this);
+
+                ColoredText.setOnMouseClick(this);
+                ColoredText.setContextMenu(this);
 
                 addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
-                    if (e.getClickCount() % 2 == 0 && e.getButton().equals(MouseButton.PRIMARY))
+                    if (e.getClickCount() % 2 == 0 && e.getButton().equals(MouseButton.PRIMARY)) {
                         e.consume();
+                    }
                 });
             }
         });

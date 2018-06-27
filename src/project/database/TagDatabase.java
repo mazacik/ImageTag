@@ -1,5 +1,7 @@
 package project.database;
 
+import javafx.scene.control.TreeCell;
+import project.database.part.ColoredText;
 import project.database.part.DatabaseItem;
 import project.database.part.TagItem;
 import project.gui.ChangeEventControl;
@@ -57,14 +59,14 @@ public abstract class TagDatabase {
     }
 
     public static void sort() {
-        databaseTags.sort(Comparator.comparing(TagItem::getCategoryAndName));
-        databaseTagsWhitelist.sort(Comparator.comparing(TagItem::getCategoryAndName));
-        databaseTagsBlacklist.sort(Comparator.comparing(TagItem::getCategoryAndName));
+        databaseTags.sort(Comparator.comparing(TagItem::getGroupAndName));
+        databaseTagsWhitelist.sort(Comparator.comparing(TagItem::getGroupAndName));
+        databaseTagsBlacklist.sort(Comparator.comparing(TagItem::getGroupAndName));
     }
 
     public static boolean contains(TagItem item) {
         for (TagItem tagItem : databaseTags)
-            if (tagItem.getName().equals(item.getName()) && tagItem.getCategory().equals(item.getCategory()))
+            if (tagItem.getName().equals(item.getName()) && tagItem.getGroup().equals(item.getGroup()))
                 return true;
         return false;
     }
@@ -185,22 +187,31 @@ public abstract class TagDatabase {
 
     public static TagItem getTagItem(String category, String name) {
         for (TagItem tagItem : databaseTags)
-            if (tagItem.getName().equals(name) && tagItem.getCategory().equals(category))
+            if (tagItem.getName().equals(name) && tagItem.getGroup().equals(category))
                 return tagItem;
         return null;
     }
 
     public static TagItem getTagItem(String categoryAndName) {
         for (TagItem tagItem : databaseTags)
-            if (tagItem.getCategory().equals(categoryAndName.split("-")[0].trim()) && tagItem.getName().equals(categoryAndName.split("-")[1].trim()))
+            if (tagItem.getGroup().equals(categoryAndName.split("-")[0].trim()) && tagItem.getName().equals(categoryAndName.split("-")[1].trim()))
                 return tagItem;
         return null;
+    }
+
+    public static TagItem getTagItem(TreeCell<ColoredText> treeCell) {
+        ColoredText parentValue = treeCell.getTreeItem().getParent().getValue();
+        if (parentValue == null) return null;
+
+        String category = parentValue.getText();
+        String name = treeCell.getText();
+        return getTagItem(category, name);
     }
 
     public static ArrayList<String> getCategories() {
         ArrayList<String> categories = new ArrayList<>();
         for (TagItem tagItem : databaseTags) {
-            categories.add(tagItem.getCategory());
+            categories.add(tagItem.getGroup());
         }
 
         categories.sort(Comparator.naturalOrder());
@@ -210,7 +221,7 @@ public abstract class TagDatabase {
     public static ArrayList<String> getItemsInCategory(String category) {
         ArrayList<String> items = new ArrayList<>();
         for (TagItem tagItem : databaseTags) {
-            if (tagItem.getCategory().equals(category)) {
+            if (tagItem.getGroup().equals(category)) {
                 if (!items.contains(tagItem.getName())) {
                     items.add(tagItem.getName());
                 }

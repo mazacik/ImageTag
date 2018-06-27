@@ -21,10 +21,11 @@ public class ColoredText {
     }
 
     /* event methods */
-    public static void setOnMouseClick(TreeCell<ColoredText> source, ColoredText coloredText) {
+    public static void setOnMouseClick(TreeCell<ColoredText> source) {
         source.setOnMouseClicked(event -> {
-            if (event.getButton().equals(MouseButton.PRIMARY) && coloredText != null) {
-                TagItem tagItem = getTagItemFromTreeCell(source);
+            if (event.getButton().equals(MouseButton.PRIMARY)) {
+                TagItem tagItem = TagDatabase.getTagItem(source);
+                ColoredText coloredText = source.getTreeItem().getValue();
 
                 // if source is category level
                 if (tagItem == null) {
@@ -66,25 +67,16 @@ public class ColoredText {
         });
     }
 
-    public static void setOnContextMenuRequest(TreeCell<ColoredText> source) {
+    public static void setContextMenu(TreeCell<ColoredText> source) {
         ContextMenu contextMenu = new ContextMenu();
         MenuItem menuAdd = new MenuItem("Add");
         menuAdd.setOnAction(event -> TagDatabase.createTag());
         MenuItem menuRemove = new MenuItem("Remove");
-        menuRemove.setOnAction(event -> TagDatabase.removeTag(getTagItemFromTreeCell(source)));
+        menuRemove.setOnAction(event -> TagDatabase.removeTag(TagDatabase.getTagItem(source)));
         MenuItem menuRename = new MenuItem("Rename");
-        menuRename.setOnAction(event -> TagDatabase.editTag(getTagItemFromTreeCell(source)));
+        menuRename.setOnAction(event -> TagDatabase.editTag(TagDatabase.getTagItem(source)));
         contextMenu.getItems().addAll(menuAdd, menuRemove, menuRename);
         source.setContextMenu(contextMenu);
-    }
-
-    private static TagItem getTagItemFromTreeCell(TreeCell<ColoredText> treeCell) {
-        ColoredText parentValue = treeCell.getTreeItem().getParent().getValue();
-        if (parentValue == null) return null;
-
-        String category = parentValue.getText();
-        String name = treeCell.getText();
-        return TagDatabase.getTagItem(category, name);
     }
 
     /* getters */

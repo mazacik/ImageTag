@@ -75,7 +75,7 @@ public class DatabaseLoader extends Thread {
                 if (!TagDatabase.contains(tagItem)) {
                     tagDatabase.add(tagItem);
                 } else {
-                    databaseItem.getTags().set(databaseItem.getTags().indexOf(tagItem), TagDatabase.getTagItem(tagItem.getCategory(), tagItem.getName()));
+                    databaseItem.getTags().set(databaseItem.getTags().indexOf(tagItem), TagDatabase.getTagItem(tagItem.getGroup(), tagItem.getName()));
                 }
             }
         }
