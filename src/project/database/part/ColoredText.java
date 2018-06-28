@@ -29,11 +29,11 @@ public class ColoredText {
                 try {
                     coloredText = source.getTreeItem().getValue();
                 } catch (NullPointerException e) {
-                    coloredText = null;
+                    return;
                 }
 
                 // if source is category level
-                if (tagItem == null || coloredText == null) {
+                if (tagItem == null) {
                     String categoryName = source.getText();
                     if (TagDatabase.isCategoryWhitelisted(categoryName)) {
                         TagDatabase.blacklistCategory(categoryName);
