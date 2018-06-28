@@ -1,7 +1,6 @@
 package project.database;
 
 import javafx.scene.control.TreeCell;
-import javafx.scene.control.TreeItem;
 import project.database.part.ColoredText;
 import project.database.part.DatabaseItem;
 import project.database.part.TagItem;
@@ -201,14 +200,14 @@ public abstract class TagDatabase {
     }
 
     public static TagItem getTagItem(TreeCell<ColoredText> treeCell) {
-        TreeItem<ColoredText> parentItem = treeCell.getTreeItem().getParent();
-        if (parentItem == null) return null;
-        ColoredText parentValue = parentItem.getValue();
-        if (parentValue == null) return null;
-
-        String category = parentValue.getText();
-        String name = treeCell.getText();
-        return getTagItem(category, name);
+        try {
+            ColoredText parentValue = treeCell.getTreeItem().getParent().getValue();
+            String category = parentValue.getText();
+            String name = treeCell.getText();
+            return getTagItem(category, name);
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 
     public static ArrayList<String> getCategories() {

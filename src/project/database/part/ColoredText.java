@@ -25,10 +25,15 @@ public class ColoredText {
         source.setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
                 TagItem tagItem = TagDatabase.getTagItem(source);
-                ColoredText coloredText = source.getTreeItem().getValue();
+                ColoredText coloredText;
+                try {
+                    coloredText = source.getTreeItem().getValue();
+                } catch (NullPointerException e) {
+                    coloredText = null;
+                }
 
                 // if source is category level
-                if (tagItem == null) {
+                if (tagItem == null || coloredText == null) {
                     String categoryName = source.getText();
                     if (TagDatabase.isCategoryWhitelisted(categoryName)) {
                         TagDatabase.blacklistCategory(categoryName);
