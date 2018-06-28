@@ -52,10 +52,11 @@ public abstract class TagDatabase {
         }
     }
 
-    public static void createTag() {
+    public static TagItem createTag() {
         TagItem newTagItem = new TagItem();
         new TagEditor(newTagItem);
         addTag(newTagItem);
+        return newTagItem;
     }
 
     public static void sort() {

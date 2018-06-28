@@ -21,7 +21,7 @@ public class TagManager extends Stage {
 
     private final TreeView<String> treeView = new TreeView(new TreeItem());
 
-    private final ComboBox cbCategory = new ComboBox();
+    private final ComboBox cbGroup = new ComboBox();
     private final ComboBox cbName = new ComboBox();
 
     private final Button btnTagAdd = new Button("Add");
@@ -55,27 +55,31 @@ public class TagManager extends Stage {
 
         btnTagAdd.prefWidthProperty().bind(widthProperty());
         btnTagNew.prefWidthProperty().bind(widthProperty());
-        cbCategory.prefWidthProperty().bind(widthProperty());
+        cbGroup.prefWidthProperty().bind(widthProperty());
         cbName.prefWidthProperty().bind(widthProperty());
 
-        cbCategory.requestFocus();
-        cbCategory.setOnShown(event -> {
-            cbCategory.getItems().clear();
-            cbCategory.getItems().addAll(TagDatabase.getCategories());
+        cbGroup.requestFocus();
+        cbGroup.setOnShown(event -> {
+            cbGroup.getItems().clear();
+            cbGroup.getItems().addAll(TagDatabase.getCategories());
         });
         cbName.setOnShown(event -> {
             cbName.getItems().clear();
-            Object cbCategoryValue = cbCategory.getValue();
+            Object cbCategoryValue = cbGroup.getValue();
             if (cbCategoryValue != null) {
                 cbName.getItems().addAll(TagDatabase.getItemsInCategory(cbCategoryValue.toString()));
             }
         });
 
         btnTagAdd.setOnAction(event -> addTag());
-        btnTagNew.setOnAction(event -> TagDatabase.createTag());
+        btnTagNew.setOnAction(event -> {
+            TagItem newTagItem = TagDatabase.createTag();
+            cbGroup.setValue(newTagItem.getGroup());
+            cbName.setValue(newTagItem.getName());
+        });
 
         paneTagManager.setCenter(treeView);
-        paneTagManager.setBottom(new VBox(2, cbCategory, cbName, btnTagAdd, btnTagNew));
+        paneTagManager.setBottom(new VBox(2, cbGroup, cbName, btnTagAdd, btnTagNew));
     }
     private void initializeProperties() {
         setTitle("Tag Manager");
@@ -90,11 +94,11 @@ public class TagManager extends Stage {
 
     /* private methods */
     private void addTag() {
-        Object cbCategoryValue = cbCategory.getValue();
+        Object cbGroupValue = cbGroup.getValue();
         Object cbNameValue = cbName.getValue();
 
-        if (cbCategoryValue != null && cbNameValue != null) {
-            TagItem tagItem = TagDatabase.getTagItem(cbCategoryValue.toString(), cbNameValue.toString());
+        if (cbGroupValue != null && cbNameValue != null) {
+            TagItem tagItem = TagDatabase.getTagItem(cbGroupValue.toString(), cbNameValue.toString());
             if (tagItem != null) {
                 TagDatabase.addTagToItemSelection(tagItem);
                 treeView.getRoot().getChildren().add(new TreeItem(tagItem.getGroupAndName()));
