@@ -24,7 +24,7 @@ public class GUIStage extends Stage {
     public GUIStage() {
         initializeComponents();
         initializeProperties();
-        new Keybinds(sceneMain);
+        Keybinds.initialize(sceneMain);
     }
 
     /* initialize methods */

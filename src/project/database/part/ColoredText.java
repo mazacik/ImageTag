@@ -66,7 +66,6 @@ public class ColoredText {
             }
         });
     }
-
     public static void setContextMenu(TreeCell<ColoredText> source) {
         ContextMenu contextMenu = new ContextMenu();
         MenuItem menuAdd = new MenuItem("Add");
@@ -83,7 +82,6 @@ public class ColoredText {
     public String getText() {
         return text;
     }
-
     public Color getColor() {
         return color;
     }

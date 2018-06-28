@@ -44,6 +44,7 @@ public class TagEditor extends Stage {
                 tagItem.setGroup(category);
                 tagItem.setName(name);
             }
+            close();
         });
     }
     private void initializeProperties() {

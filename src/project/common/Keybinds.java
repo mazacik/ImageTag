@@ -11,8 +11,8 @@ import project.gui.component.PaneGallery;
 
 import java.util.ArrayList;
 
-public class Keybinds {
-    public Keybinds(Scene mainScene) {
+public abstract class Keybinds {
+    public static void initialize(Scene mainScene) {
         mainScene.setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case R:
@@ -32,7 +32,7 @@ public class Keybinds {
         });
     }
 
-    private void moveFocus(KeyCode keyCode) {
+    private static void moveFocus(KeyCode keyCode) {
         ArrayList<DatabaseItem> databaseItemsFiltered = ItemDatabase.getDatabaseItemsFiltered();
         PaneGallery paneGallery = GUIStage.getPaneGallery();
         DatabaseItem focusedItem = paneGallery.getCurrentFocusedItem();
