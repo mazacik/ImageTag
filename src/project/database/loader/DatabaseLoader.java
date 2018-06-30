@@ -90,7 +90,7 @@ public class DatabaseLoader extends Thread {
 
         Platform.runLater(() -> {
             Main.getLoadingWindow().close();
-            Main.setStage(new GUIStage());
+            Main.setStage(GUIStage.getInstance());
         });
     }
 

@@ -9,22 +9,22 @@ import project.database.loader.Serialization;
 import project.gui.component.*;
 import project.helper.Keybinds;
 
-public class GUIStage extends Stage {
+public abstract class GUIStage extends Stage {
     /* components */
+    private static Stage _this;
     private static final SplitPane splitPane = new SplitPane(LeftPane.getInstance(), GalleryPane.getInstance(), RightPane.getInstance());
     private static final BorderPane mainPane = new BorderPane(splitPane, TopPane.getInstance(), null, null, null);
     private static final Scene mainScene = new Scene(mainPane);
 
-    /* constructors */
-    public GUIStage() {
+    /* initialize */
+    public static void initialize() {
+        _this = new Stage();
         initializeComponents();
         initializeProperties();
         Keybinds.initialize(mainScene);
         ChangeEventControl.requestReloadGlobal();
     }
-
-    /* initialize */
-    private void initializeComponents() {
+    private static void initializeComponents() {
         TopPane.initialize();
         LeftPane.initialize();
         GalleryPane.initialize();
@@ -33,18 +33,22 @@ public class GUIStage extends Stage {
 
         splitPane.setDividerPositions(0.0, 1.0);
     }
-    private void initializeProperties() {
-        setTitle("JavaExplorer");
-        setMinWidth(800);
-        setMinHeight(600);
-        setMaximized(true);
-        setScene(mainScene);
-        setOnCloseRequest(event -> Serialization.writeToDisk());
-        show();
+    private static void initializeProperties() {
+        _this.setTitle("JavaExplorer");
+        _this.setMinWidth(800);
+        _this.setMinHeight(600);
+        _this.setMaximized(true);
+        _this.setScene(mainScene);
+        _this.setOnCloseRequest(event -> Serialization.writeToDisk());
+        _this.show();
     }
 
     /* get */
     public static SplitPane getSplitPane() {
         return splitPane;
+    }
+    public static Stage getInstance() {
+        if (_this == null) initialize();
+        return _this;
     }
 }
