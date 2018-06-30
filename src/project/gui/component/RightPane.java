@@ -1,9 +1,9 @@
 package project.gui.component;
 
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import project.control.FilterControl;
 import project.control.FocusControl;
@@ -13,7 +13,6 @@ import project.control.change.ChangeEventEnum;
 import project.database.control.TagElementControl;
 import project.database.element.DataElement;
 import project.database.element.TagElement;
-import project.gui.control.GUIStage;
 
 import java.util.ArrayList;
 
@@ -74,7 +73,7 @@ public abstract class RightPane extends BorderPane {
             } else if (event.getCode() == KeyCode.DELETE) {
                 FilterControl.removeTagElementSelectionFromDataElementSelection();
             } else if (event.getCode() == KeyCode.ESCAPE) {
-                GUIStage.getPaneTop().requestFocus();
+                TopPane.getInstance().requestFocus();
             }
         });
 
@@ -144,7 +143,7 @@ public abstract class RightPane extends BorderPane {
     public static ListView<String> getListView() {
         return listView;
     }
-    public static Node getInstance() {
+    public static Region getInstance() {
         return _this;
     }
 }

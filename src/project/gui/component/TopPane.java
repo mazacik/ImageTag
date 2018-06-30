@@ -5,7 +5,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.stage.WindowEvent;
 import project.Main;
 import project.control.FilterControl;
@@ -79,7 +79,7 @@ public abstract class TopPane extends BorderPane {
     }
 
     /* get */
-    public static Pane getInstance() {
+    public static Region getInstance() {
         return _this;
     }
 }

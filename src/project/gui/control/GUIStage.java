@@ -1,6 +1,5 @@
 package project.gui.control;
 
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
@@ -11,23 +10,16 @@ import project.gui.component.*;
 import project.helper.Keybinds;
 
 public class GUIStage extends Stage {
-    /* imports */
-    private static final Node TOP_PANE = TopPane.getInstance();
-    private static final Node LEFT_PANE = LeftPane.getInstance();
-    private static final Node GALLERY_PANE = GalleryPane.getInstance();
-    private static final Node PREVIEW_PANE = PreviewPane.getInstance();
-    private static final Node RIGHT_PANE = RightPane.getInstance();
-
     /* components */
-    private static final SplitPane SPLIT_PANE = new SplitPane(LEFT_PANE, GALLERY_PANE, RIGHT_PANE);
-    private static final BorderPane MAIN_PANE = new BorderPane(SPLIT_PANE, TOP_PANE, null, null, null);
-    private static final Scene MAIN_SCENE = new Scene(MAIN_PANE);
+    private static final SplitPane splitPane = new SplitPane(LeftPane.getInstance(), GalleryPane.getInstance(), RightPane.getInstance());
+    private static final BorderPane mainPane = new BorderPane(splitPane, TopPane.getInstance(), null, null, null);
+    private static final Scene mainScene = new Scene(mainPane);
 
     /* constructors */
     public GUIStage() {
         initializeComponents();
         initializeProperties();
-        Keybinds.initialize(MAIN_SCENE);
+        Keybinds.initialize(mainScene);
         ChangeEventControl.requestReloadGlobal();
     }
 
@@ -39,35 +31,20 @@ public class GUIStage extends Stage {
         PreviewPane.initialize();
         RightPane.initialize();
 
-        SPLIT_PANE.setDividerPositions(0.0, 1.0);
+        splitPane.setDividerPositions(0.0, 1.0);
     }
     private void initializeProperties() {
         setTitle("JavaExplorer");
         setMinWidth(800);
         setMinHeight(600);
         setMaximized(true);
-        setScene(MAIN_SCENE);
+        setScene(mainScene);
         setOnCloseRequest(event -> Serialization.writeToDisk());
         show();
     }
 
     /* get */
-    public static Node getPaneTop() {
-        return TOP_PANE;
-    }
-    public static Node getLeftPane() {
-        return LEFT_PANE;
-    }
-    public static Node getGalleryPane() {
-        return GALLERY_PANE;
-    }
-    public static Node getPanePreview() {
-        return PREVIEW_PANE;
-    }
-    public static Node getPaneRight() {
-        return RIGHT_PANE;
-    }
     public static SplitPane getSplitPane() {
-        return SPLIT_PANE;
+        return splitPane;
     }
 }

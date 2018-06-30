@@ -1,13 +1,13 @@
 package project.gui.component;
 
 import javafx.collections.ObservableList;
-import javafx.scene.Node;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import project.control.FilterControl;
 import project.control.change.ChangeEventControl;
@@ -95,7 +95,7 @@ public abstract class LeftPane extends BorderPane {
     }
 
     /* get */
-    public static Node getInstance() {
+    public static Region getInstance() {
         return _this;
     }
 }
