@@ -73,23 +73,17 @@ public abstract class TopPane extends BorderPane {
         menuClearSelection.setOnAction(event -> SelectionControl.clearDataElements());
 
         menuUntaggedOnly.setOnAction(event -> {
-            if (!FilterControl.isCustomFilterUntaggedOnly()) {
-                FilterControl.setCustomFilterUntaggedOnly(true);
-            } else {
-                FilterControl.setCustomFilterUntaggedOnly(false);
-            }
-            menuLessThanXTags.setSelected(false);
+            FilterControl.setCustomFilterUntaggedOnly(true);
             FilterControl.setCustomFilterLessThanXTags(false);
+            menuUntaggedOnly.setSelected(true);
+            menuLessThanXTags.setSelected(false);
             FilterControl.revalidateDataElements();
         });
         menuLessThanXTags.setOnAction(event -> {
-            if (!FilterControl.isCustomFilterLessThanXTags()) {
-                FilterControl.setCustomFilterLessThanXTags(true);
-            } else {
-                FilterControl.setCustomFilterLessThanXTags(false);
-            }
-            menuUntaggedOnly.setSelected(false);
             FilterControl.setCustomFilterUntaggedOnly(false);
+            FilterControl.setCustomFilterLessThanXTags(true);
+            menuUntaggedOnly.setSelected(false);
+            menuLessThanXTags.setSelected(true);
             FilterControl.customFilterLessThanXTags();
         });
         menuRefresh.setOnAction(event -> FilterControl.revalidateDataElements());

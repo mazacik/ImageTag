@@ -49,6 +49,7 @@ public abstract class SelectionControl {
     public static void setDataElement(DataElement dataElement) {
         dataElements.clear();
         addDataElement(dataElement);
+        FocusControl.setFocus(dataElement);
     }
     public static void clearDataElements() {
         SelectionControl.getDataElements().clear();
@@ -67,7 +68,6 @@ public abstract class SelectionControl {
         int databaseItemsFilteredSize = dataElementsFiltered.size();
         int randomIndex = new Random().nextInt(databaseItemsFilteredSize);
         SelectionControl.setDataElement(dataElementsFiltered.get(randomIndex));
-
         GalleryPane.adjustViewportToFocus();
     }
     public static void swapSelectionStateOf(DataElement dataElement) {

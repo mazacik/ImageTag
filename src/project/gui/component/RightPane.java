@@ -89,7 +89,7 @@ public abstract class RightPane extends BorderPane {
         _this.setMaxWidth(300);
 
         _this.setCenter(listView);
-        _this.setBottom(new VBox(2, cbGroup, cbName, btnAdd, btnManage));
+        _this.setTop(new VBox(2, cbGroup, cbName, btnAdd, btnManage));
 
         ChangeEventControl.subscribe(RightPane.class, ChangeEventEnum.FOCUS, ChangeEventEnum.SELECTION);
     }

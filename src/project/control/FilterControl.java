@@ -7,6 +7,7 @@ import project.database.control.TagElementControl;
 import project.database.element.DataElement;
 import project.database.element.TagElement;
 import project.gui.component.GalleryPane;
+import project.gui.component.LeftPane;
 import project.gui.component.RightPane;
 import project.gui.custom.generic.NumberInputWindow;
 
@@ -71,7 +72,7 @@ public abstract class FilterControl {
             }
         }
 
-        ChangeEventControl.requestReload(GalleryPane.class);
+        ChangeEventControl.requestReload(LeftPane.class, GalleryPane.class);
     }
     public static void addTagElementToDataElementSelection(TagElement tagElement) {
         if (tagElement != null && !tagElement.isEmpty()) {
