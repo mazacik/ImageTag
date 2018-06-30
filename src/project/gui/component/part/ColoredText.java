@@ -68,7 +68,7 @@ public class ColoredText {
                         coloredText.setColor(Color.GREEN);
                     }
                 }
-                FilterControl.refreshValidDataElements();
+                FilterControl.revalidateDataElements();
                 LeftPane.refreshTreeview();
             }
         });

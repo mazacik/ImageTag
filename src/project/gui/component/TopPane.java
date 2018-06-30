@@ -1,9 +1,6 @@
 package project.gui.component;
 
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.stage.WindowEvent;
@@ -32,8 +29,10 @@ public abstract class TopPane extends BorderPane {
     private static final MenuItem menuClearSelection = new MenuItem("Clear Selection");
 
     private static final Menu menuFilter = new Menu("Filter");
-    private static final MenuItem menuUntaggedOnly = new MenuItem("Untagged Only");
-    private static final MenuItem menuLessThanXTags = new MenuItem("Less Than X Tags");
+
+    private static final CheckMenuItem menuUntaggedOnly = new CheckMenuItem("Untagged Only");
+    private static final CheckMenuItem menuLessThanXTags = new CheckMenuItem("Less Than X Tags");
+    private static final MenuItem menuRefresh = new MenuItem("Refresh");
     private static final MenuItem menuReset = new MenuItem("Reset");
 
     /* initialize */
@@ -44,7 +43,7 @@ public abstract class TopPane extends BorderPane {
     private static void initializeComponents() {
         menuFile.getItems().addAll(menuSave, new SeparatorMenuItem(), menuExit);
         menuSelection.getItems().addAll(menuSelectAll, menuClearSelection);
-        menuFilter.getItems().addAll(menuUntaggedOnly, menuLessThanXTags, new SeparatorMenuItem(), menuReset);
+        menuFilter.getItems().addAll(menuUntaggedOnly, menuLessThanXTags, new SeparatorMenuItem(), menuRefresh, menuReset);
 
         infoLabelMenuBar.getMenus().add(infoLabelMenu);
 
@@ -73,9 +72,32 @@ public abstract class TopPane extends BorderPane {
         menuSelectAll.setOnAction(event -> SelectionControl.addDataElement(FilterControl.getValidDataElements()));
         menuClearSelection.setOnAction(event -> SelectionControl.clearDataElements());
 
-        menuUntaggedOnly.setOnAction(event -> FilterControl.customFilterUntaggedOnly());
-        menuLessThanXTags.setOnAction(event -> FilterControl.customFilterLessThanXTags());
-        menuReset.setOnAction(event -> FilterControl.customFilterResetFiltering());
+        menuUntaggedOnly.setOnAction(event -> {
+            if (!FilterControl.isCustomFilterUntaggedOnly()) {
+                FilterControl.setCustomFilterUntaggedOnly(true);
+            } else {
+                FilterControl.setCustomFilterUntaggedOnly(false);
+            }
+            menuLessThanXTags.setSelected(false);
+            FilterControl.setCustomFilterLessThanXTags(false);
+            FilterControl.revalidateDataElements();
+        });
+        menuLessThanXTags.setOnAction(event -> {
+            if (!FilterControl.isCustomFilterLessThanXTags()) {
+                FilterControl.setCustomFilterLessThanXTags(true);
+            } else {
+                FilterControl.setCustomFilterLessThanXTags(false);
+            }
+            menuUntaggedOnly.setSelected(false);
+            FilterControl.setCustomFilterUntaggedOnly(false);
+            FilterControl.customFilterLessThanXTags();
+        });
+        menuRefresh.setOnAction(event -> FilterControl.revalidateDataElements());
+        menuReset.setOnAction(event -> {
+            menuUntaggedOnly.setSelected(false);
+            menuLessThanXTags.setSelected(false);
+            FilterControl.customFilterResetFiltering();
+        });
     }
 
     /* get */

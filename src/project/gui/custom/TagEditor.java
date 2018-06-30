@@ -3,6 +3,7 @@ package project.gui.custom;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -49,6 +50,13 @@ public class TagEditor extends Stage {
     private void initializeComponents() {
         editorPane.setCenter(new VBox(2, tfGroup, tfName));
         editorPane.setBottom(btnOK);
+        editorPane.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                btnOK.fire();
+            } else if (event.getCode() == KeyCode.ESCAPE) {
+                close();
+            }
+        });
 
         tfGroup.requestFocus();
         if (tagElement != null) {

@@ -51,11 +51,13 @@ public abstract class GalleryPane extends ScrollPane {
     public static void refreshComponent() {
         if (GUIControl.isPreviewFullscreen()) return;
 
+        double scrollbarValue = _this.getVvalue();
         ObservableList<Node> tilePaneItems = tilePane.getChildren();
         tilePaneItems.clear();
         for (DataElement dataElement : FilterControl.getValidDataElements()) {
             tilePaneItems.add(dataElement.getGalleryTile());
         }
+        _this.setVvalue(scrollbarValue);
     }
     public static void adjustViewportToFocus() {
         DataElement currentFocusedItem = FocusControl.getCurrentFocus();
