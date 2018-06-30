@@ -34,23 +34,23 @@ public class ColoredText {
                     return;
                 }
 
-                // if source is category level
+                // if source is group level
                 if (tagElement == null) {
-                    String categoryName = source.getText();
-                    if (FilterControl.isGroupWhitelisted(categoryName)) {
-                        FilterControl.blacklistGroup(categoryName);
+                    String groupName = source.getText();
+                    if (FilterControl.isGroupWhitelisted(groupName)) {
+                        FilterControl.blacklistGroup(groupName);
                         coloredText.setColor(Color.RED);
                         for (TreeItem<ColoredText> children : source.getTreeItem().getChildren()) {
                             children.getValue().setColor(Color.RED);
                         }
-                    } else if (FilterControl.isGroupBlacklisted(categoryName)) {
-                        FilterControl.unlistGroup(categoryName);
+                    } else if (FilterControl.isGroupBlacklisted(groupName)) {
+                        FilterControl.unlistGroup(groupName);
                         coloredText.setColor(Color.BLACK);
                         for (TreeItem<ColoredText> children : source.getTreeItem().getChildren()) {
                             children.getValue().setColor(Color.BLACK);
                         }
                     } else {
-                        FilterControl.whitelistGroup(categoryName);
+                        FilterControl.whitelistGroup(groupName);
                         coloredText.setColor(Color.GREEN);
                         for (TreeItem<ColoredText> children : source.getTreeItem().getChildren()) {
                             children.getValue().setColor(Color.GREEN);

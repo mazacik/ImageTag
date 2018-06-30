@@ -115,20 +115,20 @@ public class PaneRight extends BorderPane implements ChangeEventListener {
 
     /* private */
     private void addTagToSelection() {
-        Object categoryComboBoxValue = cbGroup.getValue();
-        Object nameComboBoxValue = cbName.getValue();
-        String category = "";
+        Object cbGroupValue = cbGroup.getValue();
+        Object cbNameValue = cbName.getValue();
+        String group = "";
         String name = "";
 
-        if (categoryComboBoxValue != null) {
-            category = categoryComboBoxValue.toString();
+        if (cbGroupValue != null) {
+            group = cbGroupValue.toString();
         }
-        if (nameComboBoxValue != null) {
-            name = nameComboBoxValue.toString();
+        if (cbNameValue != null) {
+            name = cbNameValue.toString();
         }
 
-        if (!category.isEmpty() && !name.isEmpty()) {
-            TagElement tagElement = TagElementControl.getTagElement(category, name);
+        if (!group.isEmpty() && !name.isEmpty()) {
+            TagElement tagElement = TagElementControl.getTagElement(group, name);
             if (SelectionControl.isSelectionEmpty()) {
                 DataElement currentFocusedItem = FocusControl.getCurrentFocus();
                 if (currentFocusedItem != null) {

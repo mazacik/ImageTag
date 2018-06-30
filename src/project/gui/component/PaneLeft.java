@@ -37,30 +37,30 @@ public class PaneLeft extends BorderPane implements ChangeEventListener {
     /* public */
     public void refreshComponent() {
         ObservableList<TreeItem<ColoredText>> treeViewItems = treeView.getRoot().getChildren();
-        ArrayList<String> categoryNames = TagElementControl.getGroups();
+        ArrayList<String> groupNames = TagElementControl.getGroups();
 
         treeViewItems.clear();
 
-        for (String categoryName : categoryNames) {
-            TreeItem categoryTreeItem;
-            if (FilterControl.isGroupWhitelisted(categoryName)) {
-                categoryTreeItem = new TreeItem(new ColoredText(categoryName, Color.GREEN));
-            } else if (FilterControl.isGroupBlacklisted(categoryName)) {
-                categoryTreeItem = new TreeItem(new ColoredText(categoryName, Color.RED));
+        for (String groupName : groupNames) {
+            TreeItem groupTreeItem;
+            if (FilterControl.isGroupWhitelisted(groupName)) {
+                groupTreeItem = new TreeItem(new ColoredText(groupName, Color.GREEN));
+            } else if (FilterControl.isGroupBlacklisted(groupName)) {
+                groupTreeItem = new TreeItem(new ColoredText(groupName, Color.RED));
             } else {
-                categoryTreeItem = new TreeItem(new ColoredText(categoryName, Color.BLACK));
+                groupTreeItem = new TreeItem(new ColoredText(groupName, Color.BLACK));
             }
 
-            for (String tagName : TagElementControl.getNamesInGroup(categoryName)) {
-                if (FilterControl.isTagElementWhitelisted(categoryName, tagName)) {
-                    categoryTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.GREEN)));
-                } else if (FilterControl.isTagElementBlacklisted(categoryName, tagName)) {
-                    categoryTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.RED)));
+            for (String tagName : TagElementControl.getNamesInGroup(groupName)) {
+                if (FilterControl.isTagElementWhitelisted(groupName, tagName)) {
+                    groupTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.GREEN)));
+                } else if (FilterControl.isTagElementBlacklisted(groupName, tagName)) {
+                    groupTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.RED)));
                 } else {
-                    categoryTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.BLACK)));
+                    groupTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.BLACK)));
                 }
             }
-            treeViewItems.add(categoryTreeItem);
+            treeViewItems.add(groupTreeItem);
         }
     }
     public void refreshTreeview() {
