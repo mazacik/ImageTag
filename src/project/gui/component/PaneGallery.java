@@ -6,22 +6,19 @@ import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.TilePane;
 import project.common.Settings;
-import project.database.ItemDatabase;
-import project.database.part.DatabaseItem;
+import project.control.FilterControl;
+import project.control.FocusControl;
+import project.database.DataElementDatabase;
+import project.database.element.DataElement;
 import project.gui.ChangeEventControl;
 import project.gui.ChangeEventEnum;
 import project.gui.ChangeEventListener;
-import project.gui.GUIUtility;
-import project.gui.component.part.GalleryTile;
+import project.gui.GUIControl;
 
 public class PaneGallery extends ScrollPane implements ChangeEventListener {
     /* components */
     private final TilePane tilePane = new TilePane();
     private final ObservableList<Node> tilePaneItems = tilePane.getChildren();
-
-    /* variables */
-    private DatabaseItem currentFocusedItem = null;
-    private DatabaseItem previousFocusedItem = null;
 
     private static final int galleryIconSizePref = Settings.getGalleryIconSizePref();
 
@@ -31,7 +28,7 @@ public class PaneGallery extends ScrollPane implements ChangeEventListener {
         initializeProperties();
     }
 
-    /* initialize methods */
+    /* initialize */
     private void initializeComponents() {
         tilePane.setVgap(3);
         tilePane.setPrefTileWidth(galleryIconSizePref);
@@ -51,28 +48,13 @@ public class PaneGallery extends ScrollPane implements ChangeEventListener {
         ChangeEventControl.subscribe(this, ChangeEventEnum.FILTER, ChangeEventEnum.FOCUS);
     }
 
-    /* public methods */
-    public void focusTile(DatabaseItem databaseItem) {
-        /* store old marker position */
-        if (currentFocusedItem != null)
-            previousFocusedItem = currentFocusedItem;
-
-        /* apply new marker */
-        currentFocusedItem = databaseItem;
-        GalleryTile.generateEffect(currentFocusedItem);
-
-        /* removeItem old marker */
-        if (previousFocusedItem != null)
-            GalleryTile.generateEffect(previousFocusedItem);
-
-        ChangeEventControl.notifyListeners(ChangeEventEnum.FOCUS);
-    }
-
+    /* public */
     public void adjustViewportToFocus() {
+        DataElement currentFocusedItem = FocusControl.getCurrentFocus();
         if (currentFocusedItem == null) return;
 
         int columnCount = getColumnCount();
-        int focusIndex = ItemDatabase.getDatabaseItemsFiltered().indexOf(currentFocusedItem);
+        int focusIndex = FilterControl.getValidDataElements().indexOf(currentFocusedItem);
         int focusRow = focusIndex / columnCount;
 
         Bounds viewportBounds = getViewportBounds();
@@ -98,16 +80,15 @@ public class PaneGallery extends ScrollPane implements ChangeEventListener {
     }
 
     public void refreshComponent() {
-        if (GUIUtility.isPreviewFullscreen()) return;
+        if (GUIControl.isPreviewFullscreen()) return;
 
         tilePaneItems.clear();
-
-        for (DatabaseItem databaseItem : ItemDatabase.getDatabaseItemsFiltered()) {
-            tilePaneItems.add(databaseItem.getGalleryTile());
+        for (DataElement dataElement : FilterControl.getValidDataElements()) {
+            tilePaneItems.add(dataElement.getGalleryTile());
         }
     }
 
-    /* private methods */
+    /* private */
     private void recalculateHgap() {
         int tilePaneWidth = (int) tilePane.getWidth();
         int prefTileWidth = (int) tilePane.getPrefTileWidth();
@@ -117,7 +98,7 @@ public class PaneGallery extends ScrollPane implements ChangeEventListener {
         }
     }
 
-    /* event methods */
+    /* event */
     private void setOnScrollListener() {
         int galleryIconSizeMax = Settings.getGalleryIconSizeMax();
         int galleryIconSizeMin = Settings.getGalleryIconSizeMin();
@@ -140,9 +121,9 @@ public class PaneGallery extends ScrollPane implements ChangeEventListener {
                 tilePane.setPrefTileWidth(galleryIconSizePref);
                 tilePane.setPrefTileHeight(galleryIconSizePref);
 
-                for (DatabaseItem databaseItem : ItemDatabase.getDatabaseItems()) {
-                    databaseItem.getGalleryTile().setFitWidth(galleryIconSizePref);
-                    databaseItem.getGalleryTile().setFitHeight(galleryIconSizePref);
+                for (DataElement dataElement : DataElementDatabase.getDataElements()) {
+                    dataElement.getGalleryTile().setFitWidth(galleryIconSizePref);
+                    dataElement.getGalleryTile().setFitHeight(galleryIconSizePref);
                 }
                 recalculateHgap();
             }
@@ -153,13 +134,10 @@ public class PaneGallery extends ScrollPane implements ChangeEventListener {
         tilePane.widthProperty().addListener((observable, oldValue, newValue) -> recalculateHgap());
     }
 
-    /* getters */
+    /* get */
     public int getColumnCount() {
         int tilePaneWidth = (int) tilePane.getWidth();
         int prefTileWidth = (int) tilePane.getPrefTileWidth();
         return tilePaneWidth / prefTileWidth;
-    }
-    public DatabaseItem getCurrentFocusedItem() {
-        return currentFocusedItem;
     }
 }

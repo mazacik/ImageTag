@@ -1,18 +1,18 @@
 package project.gui;
 
-import project.database.Selection;
-import project.database.TagDatabase;
+import project.control.FocusControl;
+import project.control.SelectionControl;
+import project.database.TagElementDatabase;
 
 import java.util.ArrayList;
 
 public enum ChangeEventEnum {
     /* options */
-    FILTER(TagDatabase.getChangeListeners()),
-    FOCUS(Selection.getChangeListeners()),
-    SELECTION(Selection.getChangeListeners()),
-    ;
+    FILTER(TagElementDatabase.getChangeListeners()),
+    FOCUS(FocusControl.getChangeListeners()),
+    SELECTION(SelectionControl.getChangeListeners());
 
-    /* variables */
+    /* vars */
     private ArrayList<ChangeEventListener> listeners;
 
     /* constructors */
@@ -20,14 +20,14 @@ public enum ChangeEventEnum {
         this.listeners = listeners;
     }
 
-    /* public methods */
+    /* public */
     public void addToSubscribers(ChangeEventListener subscriber) {
         if (!listeners.contains(subscriber)) {
             listeners.add(subscriber);
         }
     }
 
-    /* getters */
+    /* get */
     public ArrayList<ChangeEventListener> getListeners() {
         return listeners;
     }

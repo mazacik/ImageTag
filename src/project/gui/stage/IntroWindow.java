@@ -35,7 +35,7 @@ public class IntroWindow extends Stage {
         initializeProperties();
     }
 
-    /* initialize methods */
+    /* initialize */
     private void initializeComponents() {
         setListeners();
         addComponentsToGrid();
@@ -93,8 +93,8 @@ public class IntroWindow extends Stage {
             Settings.setImageCacheDirectoryPath(tfImageCacheDirectory.getText());
             Settings.setDatabaseCacheFilePath(tfDatabaseCacheFile.getText());
             Settings.writeToFile();
-            Main.setLoadingWindow(new LoadingWindow());
-            close();
+            Main.getLoadingWindow().close();
+            Main.setStage(new LoadingWindow());
         });
 
         ChangeListener textFieldChangeListener = (observable, oldValue, newValue) -> {

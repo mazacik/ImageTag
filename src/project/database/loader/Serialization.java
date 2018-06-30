@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import project.common.Settings;
-import project.database.ItemDatabase;
-import project.database.part.DatabaseItem;
+import project.database.DataElementDatabase;
+import project.database.element.DataElement;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -13,6 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,15 +21,15 @@ import java.util.Collection;
 import java.util.Date;
 
 public abstract class Serialization {
-    private static final String databaseCacheFilePath = Settings.getDatabaseCacheFilePath();
 
     public static void writeToDisk() {
+        String databaseCacheFilePath = Settings.getDatabaseCacheFilePath();
         GsonBuilder GSONBuilder = new GsonBuilder();
         GSONBuilder.setPrettyPrinting().serializeNulls();
         Gson GSON = GSONBuilder.create();
 
-        Type databaseItemListType = new TypeToken<Collection<DatabaseItem>>() {}.getType();
-        String JSON = GSON.toJson(ItemDatabase.getDatabaseItems(), databaseItemListType);
+        Type databaseItemListType = new TypeToken<Collection<DataElement>>() {}.getType();
+        String JSON = GSON.toJson(DataElementDatabase.getDataElements(), databaseItemListType);
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(databaseCacheFilePath, false));
             writer.write(JSON);
@@ -39,6 +40,7 @@ public abstract class Serialization {
     }
 
     public static void createBackup() {
+        String databaseCacheFilePath = Settings.getDatabaseCacheFilePath();
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH-mm-ss dd-MM-yyyy");
         String sb = databaseCacheFilePath.replace(".json", " @ " + dateFormat.format(new Date()) + ".json");
         File file = new File(databaseCacheFilePath);
@@ -49,19 +51,20 @@ public abstract class Serialization {
         }
     }
 
-    public static ArrayList<DatabaseItem> readFromDisk() {
+    public static ArrayList<DataElement> readFromDisk() {
+        Path databaseCacheFilePath = Paths.get(Settings.getDatabaseCacheFilePath());
         GsonBuilder GSONBuilder = new GsonBuilder();
         GSONBuilder.setPrettyPrinting().serializeNulls();
         Gson GSON = GSONBuilder.create();
 
-        Type databaseItemListType = new TypeToken<Collection<DatabaseItem>>() {}.getType();
-        String JSON = "[]";
+        Type databaseItemListType = new TypeToken<Collection<DataElement>>() {}.getType();
         try {
-            JSON = new String(Files.readAllBytes(Paths.get(databaseCacheFilePath)));
-        } catch (IOException e) {
+            String JSON = new String(Files.readAllBytes(databaseCacheFilePath));
+            return GSON.fromJson(JSON, databaseItemListType);
+        } catch (Exception e) {
             Serialization.createBackup();
             e.printStackTrace();
+            return new ArrayList<>();
         }
-        return GSON.fromJson(JSON, databaseItemListType);
     }
 }

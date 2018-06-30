@@ -6,15 +6,16 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import project.common.Settings;
-import project.database.part.DatabaseItem;
+import project.control.FocusControl;
+import project.database.element.DataElement;
 import project.gui.*;
 
 public class PanePreview extends Pane implements ChangeEventListener {
     /* components */
     private final Canvas canvas = new Canvas();
 
-    /* variables */
-    private DatabaseItem currentDatabaseItem = null;
+    /* vars */
+    private DataElement currentDataElement = null;
     private Image currentPreviewImage = null;
 
     /* constructors */
@@ -23,7 +24,7 @@ public class PanePreview extends Pane implements ChangeEventListener {
         initializeProperties();
     }
 
-    /* initialize methods */
+    /* initialize */
     private void initializeComponents() {
         canvas.setOnMouseClicked(event -> requestFocus());
     }
@@ -40,11 +41,14 @@ public class PanePreview extends Pane implements ChangeEventListener {
         ChangeEventControl.subscribe(this, ChangeEventEnum.FOCUS);
     }
 
-    /* public methods */
+    /* public */
     public void refreshComponent() {
-        if (!GUIUtility.isPreviewFullscreen()) return;
-        if (GUIStage.getPaneGallery().getCurrentFocusedItem() == null) return;
-        if (!GUIStage.getPaneGallery().getCurrentFocusedItem().equals(currentDatabaseItem)) loadImage();
+        if (!GUIControl.isPreviewFullscreen()) return;
+
+        DataElement currentFocus = FocusControl.getCurrentFocus();
+
+        if (currentFocus == null) return;
+        if (!currentFocus.equals(currentDataElement)) loadImage();
 
         double imageWidth = currentPreviewImage.getWidth();
         double imageHeight = currentPreviewImage.getHeight();
@@ -70,13 +74,13 @@ public class PanePreview extends Pane implements ChangeEventListener {
         gc.drawImage(currentPreviewImage, resultX, resultY, resultWidth, resultHeight);
     }
 
-    /* private methods */
+    /* private */
     private void loadImage() {
-        currentDatabaseItem = GUIStage.getPaneGallery().getCurrentFocusedItem();
-        currentPreviewImage = new Image("file:" + Settings.getMainDirectoryPath() + "\\" + currentDatabaseItem.getName());
+        String url = "file:" + Settings.getMainDirectoryPath() + "\\" + FocusControl.getCurrentFocus().getName();
+        currentPreviewImage = new Image(url);
     }
 
-    /* setters */
+    /* set */
     public void setCanvasSize(double width, double height) {
         canvas.setWidth(width);
         canvas.setHeight(height);

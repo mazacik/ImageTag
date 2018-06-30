@@ -7,14 +7,14 @@ import project.gui.stage.IntroWindow;
 import project.gui.stage.LoadingWindow;
 
 public class Main extends Application {
-    private static LoadingWindow loadingWindow = null;
+    private static Stage primaryStage = null;
 
     @Override
     public void start(Stage primaryStage) {
         if (Settings.readFromFile(getClass())) {
-            loadingWindow = new LoadingWindow();
+            Main.setStage(new LoadingWindow());
         } else {
-            new IntroWindow();
+            Main.setStage(new IntroWindow());
         }
     }
 
@@ -22,13 +22,13 @@ public class Main extends Application {
         launch(args);
     }
 
-    /* getters */
+    /* get */
     public static LoadingWindow getLoadingWindow() {
-        return loadingWindow;
+        return (LoadingWindow) primaryStage;
     }
 
-    /* setters */
-    public static void setLoadingWindow(LoadingWindow loadingWindow) {
-        Main.loadingWindow = loadingWindow;
+    /* set */
+    public static void setStage(Stage mainStage) {
+        Main.primaryStage = mainStage;
     }
 }

@@ -1,13 +1,24 @@
-package project.database.part;
+package project.database.element;
 
 import org.apache.commons.text.WordUtils;
 
-public class TagItem {
-    /* variables */
+public class TagElement {
+    /* vars */
     private String group;
     private String name;
 
-    /* getters */
+    /* constructors */
+    public TagElement(String group, String name) {
+        setGroup(group);
+        setName(name);
+    }
+
+    /* boolean */
+    public boolean isEmpty() {
+        return group.isEmpty() || name.isEmpty();
+    }
+
+    /* get */
     public String getGroup() {
         return group;
     }
@@ -18,7 +29,7 @@ public class TagItem {
         return group + " - " + name;
     }
 
-    /* setters */
+    /* set */
     public void setGroup(String group) {
         this.group = WordUtils.capitalizeFully(group);
     }

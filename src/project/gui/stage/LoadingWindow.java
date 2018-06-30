@@ -19,7 +19,7 @@ public class LoadingWindow extends Stage {
         initializeProperties();
     }
 
-    /* initialize methods */
+    /* initialize */
     private void initializeComponents() {
         loadingPane.setPadding(new Insets(10));
         loadingPane.setCenter(progressLabel);
@@ -34,7 +34,7 @@ public class LoadingWindow extends Stage {
         new DatabaseLoader().start();
     }
 
-    /* getters */
+    /* get */
     public Label getProgressLabel() {
         return progressLabel;
     }

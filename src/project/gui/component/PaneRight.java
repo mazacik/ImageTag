@@ -4,25 +4,26 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import project.database.Selection;
-import project.database.TagDatabase;
-import project.database.part.DatabaseItem;
-import project.database.part.TagItem;
+import project.control.FilterControl;
+import project.control.FocusControl;
+import project.control.SelectionControl;
+import project.database.TagElementDatabase;
+import project.database.element.DataElement;
+import project.database.element.TagElement;
 import project.gui.ChangeEventControl;
 import project.gui.ChangeEventEnum;
 import project.gui.ChangeEventListener;
 import project.gui.GUIStage;
-import project.gui.stage.TagManager;
 
 import java.util.ArrayList;
 
 public class PaneRight extends BorderPane implements ChangeEventListener {
     /* components */
     private final ListView<String> listView = new ListView<>();
-    private final ComboBox cbCategory = new ComboBox();
+    private final ComboBox cbGroup = new ComboBox();
     private final ComboBox cbName = new ComboBox();
     private final Button btnAdd = new Button("Add");
-    private final Button btnManage = new Button("Manage");
+    private final Button btnManage = new Button("New");
 
     /* constructors */
     public PaneRight() {
@@ -30,7 +31,7 @@ public class PaneRight extends BorderPane implements ChangeEventListener {
         initializeProperties();
     }
 
-    /* initialize methods */
+    /* initialize */
     private void initializeComponents() {
         btnAdd.setStyle("-fx-focus-color: transparent;");
         btnAdd.setMinWidth(25);
@@ -39,33 +40,39 @@ public class PaneRight extends BorderPane implements ChangeEventListener {
 
         btnAdd.setMaxWidth(getMaxWidth());
         btnManage.setMaxWidth(getMaxWidth());
-        cbCategory.setMaxWidth(getMaxWidth());
+        cbGroup.setMaxWidth(getMaxWidth());
         cbName.setMaxWidth(getMaxWidth());
 
         btnManage.prefWidthProperty().bind(prefWidthProperty());
-        btnManage.setOnAction(event -> new TagManager());
+        btnManage.setOnAction(event -> {
+            TagElement newTagElement = TagElementDatabase.create();
+            if (newTagElement == null) return;
+            TagElementDatabase.add(newTagElement);
+            cbGroup.setValue(newTagElement.getGroup());
+            cbName.setValue(newTagElement.getName());
+        });
 
-        cbCategory.prefWidthProperty().bind(prefWidthProperty());
-        cbCategory.setOnShown(event -> {
-            cbCategory.getItems().clear();
-            cbCategory.getItems().addAll(TagDatabase.getCategories());
+        cbGroup.prefWidthProperty().bind(prefWidthProperty());
+        cbGroup.setOnShown(event -> {
+            cbGroup.getItems().clear();
+            cbGroup.getItems().addAll(TagElementDatabase.getGroups());
         });
 
         cbName.prefWidthProperty().bind(prefWidthProperty());
         cbName.setOnShown(event -> {
             cbName.getItems().clear();
-            if (cbCategory.getValue() != null && !cbCategory.getValue().toString().isEmpty()) {
-                cbName.getItems().addAll(TagDatabase.getItemsInCategory(cbCategory.getValue().toString()));
+            if (cbGroup.getValue() != null && !cbGroup.getValue().toString().isEmpty()) {
+                cbName.getItems().addAll(TagElementDatabase.getNamesInGroup(cbGroup.getValue().toString()));
             }
         });
 
-        btnAdd.setOnAction(event -> addTagToItemSelection());
+        btnAdd.setOnAction(event -> addTagToSelection());
 
         setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
-                addTagToItemSelection();
+                addTagToSelection();
             } else if (event.getCode() == KeyCode.DELETE) {
-                TagDatabase.removeSelectedTagsFromItemSelection();
+                FilterControl.removeTagElementSelectionFromDataElementSelection();
             } else if (event.getCode() == KeyCode.ESCAPE) {
                 GUIStage.getPaneTop().requestFocus();
             }
@@ -73,7 +80,7 @@ public class PaneRight extends BorderPane implements ChangeEventListener {
 
         ContextMenu listContextMenu = new ContextMenu();
         MenuItem menuRemoveTag = new MenuItem("Remove");
-        menuRemoveTag.setOnAction(event -> TagDatabase.removeSelectedTagsFromItemSelection());
+        menuRemoveTag.setOnAction(event -> FilterControl.removeTagElementSelectionFromDataElementSelection());
         listContextMenu.getItems().add(menuRemoveTag);
         listView.setContextMenu(listContextMenu);
     }
@@ -83,32 +90,32 @@ public class PaneRight extends BorderPane implements ChangeEventListener {
         setMaxWidth(300);
 
         setCenter(listView);
-        setBottom(new VBox(2, cbCategory, cbName, btnAdd, btnManage));
+        setBottom(new VBox(2, cbGroup, cbName, btnAdd, btnManage));
 
-        ChangeEventControl.subscribe(this, ChangeEventEnum.FOCUS);
+        ChangeEventControl.subscribe(this, ChangeEventEnum.FOCUS, ChangeEventEnum.SELECTION);
     }
 
-    /* public methods */
+    /* public */
     public void refreshComponent() {
         ArrayList<String> sharedTags = new ArrayList<>();
-        if (Selection.isEmpty()) {
-            DatabaseItem currentFocusedItem = GUIStage.getPaneGallery().getCurrentFocusedItem();
+        if (SelectionControl.isSelectionEmpty()) {
+            DataElement currentFocusedItem = FocusControl.getCurrentFocus();
             if (currentFocusedItem != null) {
-                for (TagItem tagItem : currentFocusedItem.getTags()) {
-                    sharedTags.add(tagItem.getGroupAndName());
+                for (TagElement tagElement : currentFocusedItem.getTagElements()) {
+                    sharedTags.add(tagElement.getGroupAndName());
                 }
             }
         } else {
-            for (TagItem tagItem : Selection.getSharedTags()) {
-                sharedTags.add(tagItem.getGroupAndName());
+            for (TagElement tagElement : SelectionControl.getIntersectingTags()) {
+                sharedTags.add(tagElement.getGroupAndName());
             }
         }
         listView.getItems().setAll(sharedTags);
     }
 
-    /* private methods */
-    private void addTagToItemSelection() {
-        Object categoryComboBoxValue = cbCategory.getValue();
+    /* private */
+    private void addTagToSelection() {
+        Object categoryComboBoxValue = cbGroup.getValue();
         Object nameComboBoxValue = cbName.getValue();
         String category = "";
         String name = "";
@@ -119,20 +126,21 @@ public class PaneRight extends BorderPane implements ChangeEventListener {
         if (nameComboBoxValue != null) {
             name = nameComboBoxValue.toString();
         }
+
         if (!category.isEmpty() && !name.isEmpty()) {
-            TagItem tagItem = TagDatabase.getTagItem(category, name);
-            if (Selection.isEmpty()) {
-                DatabaseItem currentFocusedItem = GUIStage.getPaneGallery().getCurrentFocusedItem();
+            TagElement tagElement = TagElementDatabase.getTagElement(category, name);
+            if (SelectionControl.isSelectionEmpty()) {
+                DataElement currentFocusedItem = FocusControl.getCurrentFocus();
                 if (currentFocusedItem != null) {
-                    currentFocusedItem.getTags().add(tagItem);
+                    currentFocusedItem.getTagElements().add(tagElement);
                 }
             } else {
-                TagDatabase.addTagToItemSelection(tagItem);
+                FilterControl.addTagElementToDataElementSelection(tagElement);
             }
         }
     }
 
-    /* getters */
+    /* get */
     public ListView<String> getListView() {
         return listView;
     }

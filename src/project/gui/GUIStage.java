@@ -25,9 +25,10 @@ public class GUIStage extends Stage {
         initializeComponents();
         initializeProperties();
         Keybinds.initialize(sceneMain);
+        ChangeEventControl.requestReloadGlobal();
     }
 
-    /* initialize methods */
+    /* initialize */
     private void initializeComponents() {
         paneSplit.setDividerPositions(0.0, 1.0);
     }
@@ -41,7 +42,7 @@ public class GUIStage extends Stage {
         show();
     }
 
-    /* getters */
+    /* get */
     public static PaneTop getPaneTop() {
         return paneTop;
     }

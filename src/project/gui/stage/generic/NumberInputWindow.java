@@ -19,7 +19,7 @@ public class NumberInputWindow extends TextInputDialog {
         });
     }
 
-    /* public methods */
+    /* public */
     public Integer getResultValue() {
         Optional<String> resultValue = showAndWait();
         if (!resultValue.isPresent()) return 0;
@@ -28,7 +28,7 @@ public class NumberInputWindow extends TextInputDialog {
         return Integer.valueOf(resultString);
     }
 
-    /* utility methods */
+    /* utility */
     public static boolean isNumber(String str) {
         if (str == null) {
             return false;

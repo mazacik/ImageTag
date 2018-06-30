@@ -17,7 +17,7 @@ public class DirectoryChooserWindow {
         directoryChooser.setInitialDirectory(new File(initialDirectory));
     }
 
-    /* public methods */
+    /* public */
     public String getResultValue() {
         File selectedDirectory = directoryChooser.showDialog(ownerWindow);
         return selectedDirectory.getAbsolutePath();

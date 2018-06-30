@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.Properties;
 
 public abstract class Settings {
-    /* variables */
+    /* vars */
     private static String mainDirectoryPath;
     private static String imageCacheDirectoryPath;
     private static String databaseCacheFilePath;
@@ -12,42 +12,40 @@ public abstract class Settings {
     private static int galleryIconSizeMax = 200;
     private static int galleryIconSizeMin = 100;
     private static int galleryIconSizePref = 150;
+    //todo when working on settings, make there values serialized, not constant
 
     private static String settingsFilePath = "JavaExplorer.ini";
 
-    /* public methods */
+    /* public */
     public static boolean readFromFile(Class mainClass) {
-        Properties props = new Properties();
+        Properties properties = new Properties();
         InputStream fileInputStream;
 
-        // First try loading from the current directory
         try {
             File file = new File(settingsFilePath);
             fileInputStream = new FileInputStream(file);
-        } catch (Exception e) {
-            fileInputStream = null;
+            properties.load(fileInputStream);
+        } catch (Exception e1) {
+            try {
+                fileInputStream = mainClass.getResourceAsStream(settingsFilePath);
+                properties.load(fileInputStream);
+            } catch (Exception e2) {
+                return false;
+            }
         }
 
-        try {
-            if (fileInputStream == null) {
-                // Try loading from classpath
-                fileInputStream = mainClass.getResourceAsStream(settingsFilePath);
-            }
+        mainDirectoryPath = properties.getProperty("MainDirectoryPath", "");
+        imageCacheDirectoryPath = properties.getProperty("ImageCacheDirectoryPath", "");
+        databaseCacheFilePath = properties.getProperty("DatabaseCacheFilePath", "");
 
-            // Try loading properties from the file (if found)
-            props.load(fileInputStream);
-        } catch (Exception e) {
+        if (mainDirectoryPath.isEmpty() || imageCacheDirectoryPath.isEmpty() || databaseCacheFilePath.isEmpty()) {
             return false;
         }
 
-        mainDirectoryPath = props.getProperty("MainDirectoryPath", null);
-        imageCacheDirectoryPath = props.getProperty("ImageCacheDirectoryPath", null);
-        databaseCacheFilePath = props.getProperty("DatabaseCacheFilePath", null);
         if (!databaseCacheFilePath.endsWith(".json"))
             databaseCacheFilePath += ".json";
         return true;
     }
-
     public static void writeToFile() {
         try {
             Properties props = new Properties();
@@ -56,13 +54,13 @@ public abstract class Settings {
             props.setProperty("DatabaseCacheFilePath", databaseCacheFilePath);
             File file = new File(settingsFilePath);
             OutputStream out = new FileOutputStream(file);
-            props.store(out, "");
+            props.store(out, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    /* getters */
+    /* get */
     public static int getGalleryIconSizeMax() {
         return galleryIconSizeMax;
     }
@@ -82,7 +80,7 @@ public abstract class Settings {
         return databaseCacheFilePath;
     }
 
-    /* setters */
+    /* set */
     public static void setGalleryIconSizeMax(int galleryIconSizeMax) {
         Settings.galleryIconSizeMax = galleryIconSizeMax;
     }

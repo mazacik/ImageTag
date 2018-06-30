@@ -2,12 +2,12 @@ package project.common;
 
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
-import project.database.ItemDatabase;
-import project.database.Selection;
-import project.database.part.DatabaseItem;
+import project.control.FilterControl;
+import project.control.FocusControl;
+import project.control.SelectionControl;
+import project.database.element.DataElement;
+import project.gui.GUIControl;
 import project.gui.GUIStage;
-import project.gui.GUIUtility;
-import project.gui.component.PaneGallery;
 
 import java.util.ArrayList;
 
@@ -16,16 +16,16 @@ public abstract class Keybinds {
         mainScene.setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case R:
-                    Selection.selectRandomItem(); break;
+                    SelectionControl.setRandomValidDataElement(); break;
                 case F12:
-                    GUIUtility.swapDisplayMode(); break;
+                    GUIControl.swapDisplayMode(); break;
                 case Q:
-                    Selection.swapItemStatus(GUIStage.getPaneGallery().getCurrentFocusedItem()); break;
+                    SelectionControl.swapSelectionStateOf(FocusControl.getCurrentFocus()); break;
                 case W:
                 case A:
                 case S:
                 case D:
-                    moveFocus(event.getCode()); break;
+                    moveFocus(event.getCode()); break; //todo move this method somewhere else
                 default:
                     break;
             }
@@ -33,12 +33,11 @@ public abstract class Keybinds {
     }
 
     private static void moveFocus(KeyCode keyCode) {
-        ArrayList<DatabaseItem> databaseItemsFiltered = ItemDatabase.getDatabaseItemsFiltered();
-        PaneGallery paneGallery = GUIStage.getPaneGallery();
-        DatabaseItem focusedItem = paneGallery.getCurrentFocusedItem();
+        ArrayList<DataElement> databaseItemsFiltered = FilterControl.getValidDataElements();
+        DataElement focusedItem = FocusControl.getCurrentFocus();
         if (focusedItem == null) {
-            DatabaseItem firstItem = ItemDatabase.getDatabaseItemsFiltered().get(0);
-            paneGallery.focusTile(firstItem);
+            DataElement firstItem = FilterControl.getValidDataElements().get(0);
+            FocusControl.setFocus(firstItem);
             focusedItem = firstItem;
         }
 
@@ -54,7 +53,7 @@ public abstract class Keybinds {
         }
 
         if (newFocusPosition >= 0 && newFocusPosition < databaseItemsFiltered.size()) {
-            paneGallery.focusTile(databaseItemsFiltered.get(newFocusPosition));
+            FocusControl.setFocus(databaseItemsFiltered.get(newFocusPosition));
             GUIStage.getPaneGallery().adjustViewportToFocus();
         }
     }

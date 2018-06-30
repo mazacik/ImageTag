@@ -6,21 +6,23 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.WindowEvent;
 import project.common.Settings;
-import project.database.ItemDatabase;
-import project.database.Selection;
-import project.database.TagDatabase;
+import project.control.FilterControl;
+import project.control.FocusControl;
+import project.control.SelectionControl;
+import project.database.DataElementDatabase;
+import project.database.TagElementDatabase;
+import project.database.element.DataElement;
 import project.database.loader.Serialization;
-import project.database.part.DatabaseItem;
 import project.gui.ChangeEventControl;
 import project.gui.ChangeEventEnum;
 import project.gui.ChangeEventListener;
-import project.gui.GUIStage;
 import project.gui.stage.generic.NumberInputWindow;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+//todo holy shit this needs to be reworked
 public class PaneTop extends BorderPane implements ChangeEventListener {
     /* components */
     private final MenuBar infoLabelMenuBar = new MenuBar();
@@ -30,9 +32,9 @@ public class PaneTop extends BorderPane implements ChangeEventListener {
     private final MenuItem menuSave = new MenuItem("Save");
     private final MenuItem menuExit = new MenuItem("Exit");
 
-    private final Menu menuSelection = new Menu("Selection");
+    private final Menu menuSelection = new Menu("SelectionControl");
     private final MenuItem menuSelectAll = new MenuItem("Select All");
-    private final MenuItem menuClearSelection = new MenuItem("Clear Selection");
+    private final MenuItem menuClearSelection = new MenuItem("Clear SelectionControl");
 
     private final Menu menuFilter = new Menu("Filter");
     private final MenuItem menuUntaggedOnly = new MenuItem("Untagged");
@@ -45,7 +47,7 @@ public class PaneTop extends BorderPane implements ChangeEventListener {
         initializeProperties();
     }
 
-    /* initialize methods */
+    /* initialize */
     private void initializeComponents() {
         menuFile.getItems().addAll(menuSave, new SeparatorMenuItem(), menuExit);
         menuSelection.getItems().addAll(menuSelectAll, menuClearSelection);
@@ -63,43 +65,43 @@ public class PaneTop extends BorderPane implements ChangeEventListener {
         ChangeEventControl.subscribe(this, ChangeEventEnum.FOCUS);
     }
 
-    /* public methods */
+    /* public */
     public void refreshComponent() {
-        DatabaseItem currentFocusedItem = GUIStage.getPaneGallery().getCurrentFocusedItem();
+        DataElement currentFocusedItem = FocusControl.getCurrentFocus();
         if (currentFocusedItem != null) {
             infoLabelMenu.setText(currentFocusedItem.getName());
         }
     }
 
-    /* event methods */
+    /* event */
     private void setOnAction() {
         menuSave.setOnAction(event -> Serialization.writeToDisk());
         menuExit.setOnAction(event -> fireEvent(new WindowEvent(null, WindowEvent.WINDOW_CLOSE_REQUEST)));
 
-        menuSelectAll.setOnAction(event -> Selection.addItem(ItemDatabase.getDatabaseItemsFiltered()));
-        menuClearSelection.setOnAction(event -> Selection.clear());
+        menuSelectAll.setOnAction(event -> SelectionControl.addDataElement(FilterControl.getValidDataElements()));
+        menuClearSelection.setOnAction(event -> SelectionControl.clearDataElements());
 
         menuUntaggedOnly.setOnAction(event -> {
-            TagDatabase.getDatabaseTagsWhitelist().clear();
-            TagDatabase.getDatabaseTagsBlacklist().clear();
-            TagDatabase.getDatabaseTagsBlacklist().addAll(TagDatabase.getDatabaseTags());
-            TagDatabase.applyFilters();
+            FilterControl.getTagElementWhitelist().clear();
+            FilterControl.getTagElementBlacklist().clear();
+            FilterControl.getTagElementBlacklist().addAll(TagElementDatabase.getTagElements());
+            FilterControl.refreshValidDataElements();
         });
         menuLessThanXTags.setOnAction(event -> {
             int maxTags = new NumberInputWindow("Filter Settings", "Maximum number of tags:").getResultValue();
             if (maxTags == 0) return;
-            TagDatabase.getDatabaseTagsWhitelist().clear();
-            TagDatabase.getDatabaseTagsBlacklist().clear();
-            ItemDatabase.getDatabaseItemsFiltered().clear();
-            for (DatabaseItem databaseItem : ItemDatabase.getDatabaseItems())
-                if (databaseItem.getTags().size() <= maxTags)
-                    ItemDatabase.getDatabaseItemsFiltered().add(databaseItem);
+            FilterControl.getTagElementWhitelist().clear();
+            FilterControl.getTagElementBlacklist().clear();
+            FilterControl.getValidDataElements().clear();
+            for (DataElement dataElement : DataElementDatabase.getDataElements())
+                if (dataElement.getTagElements().size() <= maxTags)
+                    FilterControl.getValidDataElements().add(dataElement);
             ChangeEventControl.requestReloadGlobal();
         });
         menuReset.setOnAction(event -> {
-            TagDatabase.getDatabaseTagsWhitelist().clear();
-            TagDatabase.getDatabaseTagsBlacklist().clear();
-            TagDatabase.applyFilters();
+            FilterControl.getTagElementWhitelist().clear();
+            FilterControl.getTagElementBlacklist().clear();
+            FilterControl.refreshValidDataElements();
             ChangeEventControl.requestReloadGlobal();
         });
     }
@@ -114,15 +116,15 @@ public class PaneTop extends BorderPane implements ChangeEventListener {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            for (DatabaseItem databaseItem : ItemDatabase.getDatabaseItems()) {
-                if (databaseItem.getName().equals(fileName)) {
-                    int index = ItemDatabase.getDatabaseItemsFiltered().indexOf(databaseItem);
-                    ItemDatabase.getDatabaseItems().remove(databaseItem);
-                    ItemDatabase.getDatabaseItemsFiltered().remove(databaseItem);
-                    ItemDatabase.getDatabaseItemsSelected().remove(databaseItem);
-                    if (ItemDatabase.getDatabaseItemsFiltered().get(index) == null)
+            for (DataElement dataElement : DataElementDatabase.getDataElements()) {
+                if (dataElement.getName().equals(fileName)) {
+                    int index = FilterControl.getValidDataElements().indexOf(dataElement);
+                    DataElementDatabase.getDataElements().remove(dataElement);
+                    FilterControl.getValidDataElements().remove(dataElement);
+                    SelectionControl.getDataElements().remove(dataElement);
+                    if (FilterControl.getValidDataElements().get(index) == null)
                         index--;
-                    GUIStage.getPaneGallery().focusTile(ItemDatabase.getDatabaseItemsFiltered().get(index));
+                    FocusControl.setFocus(FilterControl.getValidDataElements().get(index));
 
                     break;
                 }

@@ -8,11 +8,12 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
-import project.database.TagDatabase;
-import project.database.part.ColoredText;
+import project.control.FilterControl;
+import project.database.TagElementDatabase;
 import project.gui.ChangeEventControl;
 import project.gui.ChangeEventEnum;
 import project.gui.ChangeEventListener;
+import project.gui.component.part.ColoredText;
 
 import java.util.ArrayList;
 
@@ -33,27 +34,27 @@ public class PaneLeft extends BorderPane implements ChangeEventListener {
         ChangeEventControl.subscribe(this, (ChangeEventEnum[]) null);
     }
 
-    /* public methods */
+    /* public */
     public void refreshComponent() {
         ObservableList<TreeItem<ColoredText>> treeViewItems = treeView.getRoot().getChildren();
-        ArrayList<String> categoryNames = TagDatabase.getCategories();
+        ArrayList<String> categoryNames = TagElementDatabase.getGroups();
 
         treeViewItems.clear();
 
         for (String categoryName : categoryNames) {
             TreeItem categoryTreeItem;
-            if (TagDatabase.isCategoryWhitelisted(categoryName)) {
+            if (FilterControl.isGroupWhitelisted(categoryName)) {
                 categoryTreeItem = new TreeItem(new ColoredText(categoryName, Color.GREEN));
-            } else if (TagDatabase.isCategoryBlacklisted(categoryName)) {
+            } else if (FilterControl.isGroupBlacklisted(categoryName)) {
                 categoryTreeItem = new TreeItem(new ColoredText(categoryName, Color.RED));
             } else {
                 categoryTreeItem = new TreeItem(new ColoredText(categoryName, Color.BLACK));
             }
 
-            for (String tagName : TagDatabase.getItemsInCategory(categoryName)) {
-                if (TagDatabase.isItemWhitelisted(categoryName, tagName)) {
+            for (String tagName : TagElementDatabase.getNamesInGroup(categoryName)) {
+                if (FilterControl.isTagElementWhitelisted(categoryName, tagName)) {
                     categoryTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.GREEN)));
-                } else if (TagDatabase.isItemBlacklisted(categoryName, tagName)) {
+                } else if (FilterControl.isTagElementBlacklisted(categoryName, tagName)) {
                     categoryTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.RED)));
                 } else {
                     categoryTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.BLACK)));
@@ -67,7 +68,7 @@ public class PaneLeft extends BorderPane implements ChangeEventListener {
         treeView.refresh();
     }
 
-    /* private methods */
+    /* private */
     private void setCellFactory() {
         treeView.setCellFactory(treeView -> new TreeCell<>() {
             @Override

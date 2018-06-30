@@ -8,54 +8,52 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import project.common.Settings;
-import project.database.ItemDatabase;
-import project.database.Selection;
-import project.database.part.DatabaseItem;
-import project.gui.GUIStage;
-import project.gui.component.PaneGallery;
+import project.control.FocusControl;
+import project.control.SelectionControl;
+import project.database.element.DataElement;
 
 public class GalleryTile extends ImageView {
-    /* variables */
+    /* vars */
     private static final InnerShadow effectSelectionBorder = buildSelectionBorderEffect();
     private static final ColorInput effectFocusMark = buildSelectionFocusMarkEffect();
 
     private static final int galleryIconSizePref = Settings.getGalleryIconSizePref();
 
     /* constructors */
-    public GalleryTile(DatabaseItem databaseItem) {
-        super(databaseItem.getImage());
+    public GalleryTile(DataElement dataElement) {
+        super(dataElement.getImage());
         setFitWidth(galleryIconSizePref);
         setFitHeight(galleryIconSizePref);
-        setOnMouseClick(databaseItem);
+        setOnMouseClick(dataElement);
     }
 
-    /* public methods */
-    public static void generateEffect(DatabaseItem databaseItem) {
-        PaneGallery paneGallery = GUIStage.getPaneGallery();
+    /* public */
+    public static void generateEffect(DataElement dataElement) {
+        DataElement currentFocus = FocusControl.getCurrentFocus();
 
-        boolean selection = ItemDatabase.getDatabaseItemsSelected().contains(databaseItem);
-        boolean focus = false;
-        if (paneGallery.getCurrentFocusedItem() != null)
-            focus = paneGallery.getCurrentFocusedItem().equals(databaseItem);
+        boolean booleanSelection = SelectionControl.getDataElements().contains(dataElement);
+        boolean booleanFocus = false;
+        if (currentFocus != null)
+            booleanFocus = currentFocus.equals(dataElement);
 
-        if (!selection && !focus) {
-            databaseItem.getGalleryTile().setEffect(null);
-        } else if (!selection && focus) {
+        if (!booleanSelection && !booleanFocus) {
+            dataElement.getGalleryTile().setEffect(null);
+        } else if (!booleanSelection && booleanFocus) {
             Blend blend = new Blend();
             blend.setTopInput(effectFocusMark);
-            databaseItem.getGalleryTile().setEffect(blend);
-        } else if (selection && !focus) {
-            databaseItem.getGalleryTile().setEffect(effectSelectionBorder);
-        } else if (selection && focus) {
+            dataElement.getGalleryTile().setEffect(blend);
+        } else if (booleanSelection && !booleanFocus) {
+            dataElement.getGalleryTile().setEffect(effectSelectionBorder);
+        } else if (booleanSelection && booleanFocus) {
             Blend effect = new Blend();
             effect.setTopInput(effectSelectionBorder);
             effect.setBottomInput(effectFocusMark);
             effect.setMode(BlendMode.OVERLAY);
-            databaseItem.getGalleryTile().setEffect(effect);
+            dataElement.getGalleryTile().setEffect(effect);
         }
     }
 
-    /* builder methods */
+    /* builder */
     private static InnerShadow buildSelectionBorderEffect() {
         InnerShadow innerShadow = new InnerShadow();
         innerShadow.setColor(Color.RED);
@@ -74,12 +72,12 @@ public class GalleryTile extends ImageView {
         return new ColorInput(markPositionInTile, markPositionInTile, markSize, markSize, markColor);
     }
 
-    /* event methods */
-    private void setOnMouseClick(DatabaseItem databaseItem) {
+    /* event */
+    private void setOnMouseClick(DataElement dataElement) {
         setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
-                GUIStage.getPaneGallery().focusTile(databaseItem);
-                Selection.swapItemStatus(databaseItem);
+                FocusControl.setFocus(dataElement);
+                SelectionControl.swapSelectionStateOf(dataElement);
             }
         });
     }

@@ -1,4 +1,4 @@
-package project.database.part;
+package project.database.element;
 
 import javafx.scene.image.Image;
 import project.gui.component.part.GalleryTile;
@@ -6,20 +6,26 @@ import project.gui.component.part.GalleryTile;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class DatabaseItem implements Serializable {
-    /* variables */
+public class DataElement implements Serializable {
+    /* vars */
     private String name;
-    private ArrayList<TagItem> tags;
+    private ArrayList<TagElement> tagElements;
 
     private transient Image image;
     private transient GalleryTile galleryTile;
 
-    /* getters */
+    /* constructors */
+    public DataElement(String name, ArrayList<TagElement> tagElements) {
+        this.name = name;
+        this.tagElements = tagElements;
+    }
+
+    /* get */
     public String getName() {
         return name;
     }
-    public ArrayList<TagItem> getTags() {
-        return tags;
+    public ArrayList<TagElement> getTagElements() {
+        return tagElements;
     }
     public Image getImage() {
         return image;
@@ -28,13 +34,7 @@ public class DatabaseItem implements Serializable {
         return galleryTile;
     }
 
-    /* setters */
-    public void setName(String SimpleName) {
-        this.name = SimpleName;
-    }
-    public void setTags(ArrayList<TagItem> Tags) {
-        this.tags = Tags;
-    }
+    /* set */
     public void setImage(Image image) {
         this.image = image;
     }

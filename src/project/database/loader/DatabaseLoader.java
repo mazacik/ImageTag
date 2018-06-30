@@ -6,143 +6,157 @@ import javafx.scene.image.Image;
 import org.apache.commons.io.FilenameUtils;
 import project.Main;
 import project.common.Settings;
-import project.database.ItemDatabase;
-import project.database.TagDatabase;
-import project.database.part.DatabaseItem;
-import project.database.part.TagItem;
-import project.gui.ChangeEventControl;
+import project.database.DataElementDatabase;
+import project.database.TagElementDatabase;
+import project.database.element.DataElement;
 import project.gui.GUIStage;
 import project.gui.component.part.GalleryTile;
+import project.gui.stage.LoadingWindow;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Objects;
 
 public class DatabaseLoader extends Thread {
     /* imports */
+    private final double galleryIconSizeMax = Settings.getGalleryIconSizeMax();
     private final String pathMainDirectory = Settings.getMainDirectoryPath();
     private final String pathImageCacheDirectory = Settings.getImageCacheDirectoryPath();
-    private final int galleryIconSizeMax = Settings.getGalleryIconSizeMax();
+    private final String pathDatabaseCacheFile = Settings.getDatabaseCacheFilePath();
+    private final ArrayList<DataElement> dataElements = DataElementDatabase.getDataElements();
 
-    /* variables */
-    private final ArrayList<DatabaseItem> itemDatabase = ItemDatabase.getDatabaseItems();
-    private final ArrayList<TagItem> tagDatabase = TagDatabase.getDatabaseTags();
-
-    private final ArrayList<String> itemDatabaseItemNames = new ArrayList<>();
-    private final ArrayList<String> validFilesItemNames = new ArrayList<>();
-
-    private int fileCount;
+    /* vars */
+    private int fileCount = 0;
+    private int currentElementIndex = 0;
     private ArrayList<File> validFiles;
 
-    /* main method */
     @Override
     public void run() {
-        /* initialization */
+        initialization();
+        deserialization();
+        verification();
+        finalization();
+        TagElementDatabase.initialize();
+    }
+
+    /* private */
+    private void initialization() {
         FilenameFilter filenameFilter = (dir, name) -> name.endsWith(".jpg") || name.endsWith(".JPG") || name.endsWith(".png") || name.endsWith(".PNG") || name.endsWith(".jpeg") || name.endsWith(".JPEG");
         File[] validFilesArray = new File(pathMainDirectory).listFiles(filenameFilter);
         validFiles = (validFilesArray != null) ? new ArrayList<>(Arrays.asList(validFilesArray)) : new ArrayList<>();
         fileCount = validFiles.size();
 
         File imageCacheDirectory = new File(pathImageCacheDirectory);
-        if (!imageCacheDirectory.exists())
+        if (!imageCacheDirectory.exists()) {
             imageCacheDirectory.mkdir();
-
-        /* deserialization, database null check -> database cache regeneration */
-        if (!new File(Settings.getDatabaseCacheFilePath()).exists() || !itemDatabase.addAll(Serialization.readFromDisk()))
-            regenerateDatabaseCache();
-
-        /* database size check -> database cache regeneration*/
-        for (DatabaseItem databaseItem : itemDatabase)
-            itemDatabaseItemNames.add(databaseItem.getName());
-        for (File file : validFiles)
-            validFilesItemNames.add(file.getName());
-        if (!itemDatabaseItemNames.equals(validFilesItemNames))
-            regenerateDatabaseCache();
-
-        /* load transient variables */
-        for (DatabaseItem databaseItem : itemDatabase) {
-            databaseItem.setImage(loadDatabaseItemImage(databaseItem));
-            databaseItem.setGalleryTile(new GalleryTile(databaseItem));
         }
-
-        /* initialize application databases */
-        ItemDatabase.getDatabaseItemsFiltered().addAll(itemDatabase);
-        for (DatabaseItem databaseItem : itemDatabase) {
-            for (TagItem tagItem : databaseItem.getTags()) {
-                if (!TagDatabase.contains(tagItem)) {
-                    tagDatabase.add(tagItem);
-                } else {
-                    databaseItem.getTags().set(databaseItem.getTags().indexOf(tagItem), TagDatabase.getTagItem(tagItem.getGroup(), tagItem.getName()));
-                }
-            }
-        }
-
-        done();
     }
 
-    private void done() {
-        /* request common content initialization */
+    private void deserialization() {
+        if (!new File(pathDatabaseCacheFile).exists() || !dataElements.addAll(Serialization.readFromDisk())) {
+            createDatabaseCache();
+        }
+    }
+
+    private void verification() {
+        ArrayList<String> dataElementsItemNames = new ArrayList<>();
+        ArrayList<String> validFilesItemNames = new ArrayList<>();
+
+        for (DataElement dataElement : dataElements) {
+            dataElementsItemNames.add(dataElement.getName());
+        }
+        for (File file : validFiles) {
+            validFilesItemNames.add(file.getName());
+        }
+
+        dataElementsItemNames.sort(Comparator.naturalOrder());
+        validFilesItemNames.sort(Comparator.naturalOrder());
+
+        if (!dataElementsItemNames.equals(validFilesItemNames)) {
+            rebuildDatabaseCache(dataElementsItemNames, validFilesItemNames);
+        }
+    }
+
+    private void finalization() {
+        for (DataElement dataElement : dataElements) {
+            dataElement.setImage(getImageFromDataElement(dataElement));
+            dataElement.setGalleryTile(new GalleryTile(dataElement));
+        }
+
         Platform.runLater(() -> {
             Main.getLoadingWindow().close();
-            new GUIStage();
-            ChangeEventControl.requestReloadGlobal();
+            Main.setStage(new GUIStage());
         });
     }
 
-    /* private methods */
-    private Image loadDatabaseItemImage(DatabaseItem databaseItem) {
-        String currentItemCachePath = pathImageCacheDirectory + "/" + databaseItem.getName();
-        File currentItemCacheFile = new File(currentItemCachePath);
+    private void createDatabaseCache() {
+        for (File file : validFiles) {
+            DataElement dataElement = createDataElementFromFile(file);
+            dataElements.add(dataElement);
+        }
+
+        Serialization.writeToDisk();
+    }
+
+    private void rebuildDatabaseCache(ArrayList<String> dataElementsItemNames, ArrayList<String> validFilesItemNames) {
+        /* add unrecognized items */
+        for (File file : validFiles) {
+            if (!dataElementsItemNames.contains(file.getName())) {
+                dataElements.add(createDataElementFromFile(file));
+            }
+        }
+
+        /* remove missing items */
+        ArrayList<DataElement> temporaryList = new ArrayList<>(dataElements);
+        for (DataElement dataElement : dataElements) {
+            if (!validFilesItemNames.contains(dataElement.getName())) {
+                temporaryList.remove(dataElement);
+            }
+        }
+
+        dataElements.clear();
+        dataElements.addAll(temporaryList);
+        Serialization.writeToDisk();
+    }
+
+    private Image getImageFromDataElement(DataElement dataElement) {
+        Image currentElementImage = null;
+        currentElementIndex++;
+
+        String currentElementName = dataElement.getName();
+        String currentElementCachePath = pathImageCacheDirectory + "/" + currentElementName;
+        File currentElementCacheFile = new File(currentElementCachePath);
 
         /* write image cache to disk if not present */
-        if (!currentItemCacheFile.exists()) {
+        if (!currentElementCacheFile.exists()) {
             try {
-                currentItemCacheFile.createNewFile();
-                Image tempImage = new Image("file:" + pathMainDirectory + "/" + databaseItem.getName(), galleryIconSizeMax, galleryIconSizeMax, false, true);
-                ImageIO.write(SwingFXUtils.fromFXImage(tempImage, null), FilenameUtils.getExtension(databaseItem.getName()), currentItemCacheFile);
+                currentElementCacheFile.createNewFile();
+                String currentElementFilePath = "file:" + pathMainDirectory + "/" + currentElementName;
+                currentElementImage = new Image(currentElementFilePath, galleryIconSizeMax, galleryIconSizeMax, false, true);
+                String currentElementExtension = FilenameUtils.getExtension(currentElementName);
+                BufferedImage currentElementBufferedImage = SwingFXUtils.fromFXImage(currentElementImage, null);
+                ImageIO.write(currentElementBufferedImage, currentElementExtension, currentElementCacheFile);
             } catch (IOException e) {
                 e.printStackTrace();
+                return null;
             }
         }
 
-        if (Main.getLoadingWindow() != null) {
-            if (itemDatabase.indexOf(databaseItem) != 0)
-                Platform.runLater(() -> Main.getLoadingWindow().getProgressLabel().setText("Loading item " + (itemDatabase.indexOf(databaseItem) + 1) + " of " + fileCount + ", " + (itemDatabase.indexOf(databaseItem) + 1) * 100 / fileCount + "% done"));
-            else
-                Platform.runLater(() -> Main.getLoadingWindow().getProgressLabel().setText("Loading item " + (itemDatabase.size()) + " of " + fileCount + ", " + (itemDatabase.indexOf(databaseItem) + 1) * 100 / fileCount + "% done"));
+        /* update loading window label */
+        if (Main.getLoadingWindow().getClass().equals(LoadingWindow.class)) {
+            Platform.runLater(() -> Main.getLoadingWindow().getProgressLabel().setText("Loading item " + currentElementIndex + " of " + fileCount + ", " + currentElementIndex * 100 / fileCount + "% done"));
         }
 
-        return new Image("file:" + currentItemCachePath, (double) galleryIconSizeMax, (double) galleryIconSizeMax, false, true);
+        return Objects.requireNonNullElseGet(currentElementImage, () -> new Image("file:" + currentElementCachePath, galleryIconSizeMax, galleryIconSizeMax, false, true));
     }
 
-    private DatabaseItem buildDatabaseItem(File file) {
-        DatabaseItem newDatabaseItem = new DatabaseItem();
-        newDatabaseItem.setName(file.getName());
-        newDatabaseItem.setTags(new ArrayList<>());
-        return newDatabaseItem;
-    }
-
-    private void regenerateDatabaseCache() {
-        /* addTag unrecognized items */
-        for (File file : validFiles) {
-            if (!itemDatabaseItemNames.contains(file.getName())) {
-                itemDatabase.add(buildDatabaseItem(file));
-            }
-        }
-
-        /* removeItem missing items */
-        ArrayList<DatabaseItem> temporaryList = new ArrayList<>(itemDatabase);
-        for (DatabaseItem databaseItem : itemDatabase) {
-            if (!validFilesItemNames.contains(databaseItem.getName())) {
-                temporaryList.remove(databaseItem);
-            }
-        }
-
-        itemDatabase.clear();
-        itemDatabase.addAll(temporaryList);
-        Serialization.writeToDisk();
+    private DataElement createDataElementFromFile(File file) {
+        return new DataElement(file.getName(), new ArrayList<>());
     }
 }

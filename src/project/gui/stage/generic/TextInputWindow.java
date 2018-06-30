@@ -13,7 +13,7 @@ public class TextInputWindow extends TextInputDialog {
         setContentText(contentText);
     }
 
-    /* public methods */
+    /* public */
     public String getResultValue() {
         Optional<String> resultValue = showAndWait();
         return resultValue.orElse("");
