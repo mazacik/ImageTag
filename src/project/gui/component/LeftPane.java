@@ -17,7 +17,7 @@ import project.gui.component.part.ColoredText;
 
 import java.util.ArrayList;
 
-public abstract class LeftPane extends BorderPane {
+public abstract class LeftPane {
     /* components */
     private static final BorderPane _this = new BorderPane();
     private static final TreeView<ColoredText> treeView = new TreeView(new TreeItem());

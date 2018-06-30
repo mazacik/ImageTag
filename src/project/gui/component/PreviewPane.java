@@ -13,7 +13,7 @@ import project.database.element.DataElement;
 import project.gui.control.GUIControl;
 import project.helper.Settings;
 
-public abstract class PreviewPane extends Pane {
+public abstract class PreviewPane {
     /* components */
     private static final Pane _this = new Pane();
     private static final Canvas canvas = new Canvas();

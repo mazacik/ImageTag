@@ -13,7 +13,7 @@ import project.control.change.ChangeEventEnum;
 import project.database.element.DataElement;
 import project.database.loader.Serialization;
 
-public abstract class TopPane extends BorderPane {
+public abstract class TopPane {
     /* components */
     private static final BorderPane _this = new BorderPane();
 

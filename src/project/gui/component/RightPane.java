@@ -1,5 +1,6 @@
 package project.gui.component;
 
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
@@ -16,7 +17,7 @@ import project.database.element.TagElement;
 
 import java.util.ArrayList;
 
-public abstract class RightPane extends BorderPane {
+public abstract class RightPane {
     /* components */
     private static BorderPane _this = new BorderPane();
 
@@ -24,7 +25,7 @@ public abstract class RightPane extends BorderPane {
     private static final ComboBox cbGroup = new ComboBox();
     private static final ComboBox cbName = new ComboBox();
     private static final Button btnAdd = new Button("Add");
-    private static final Button btnManage = new Button("New");
+    private static final Button btnNew = new Button("New");
 
     /* initialize */
     public static void initialize() {
@@ -34,45 +35,64 @@ public abstract class RightPane extends BorderPane {
     private static void initializeComponents() {
         btnAdd.setStyle("-fx-focus-color: transparent;");
         btnAdd.setMinWidth(25);
+        btnAdd.setPadding(new Insets(0, 0, 2, 0));
         btnAdd.prefWidthProperty().bind(_this.prefWidthProperty());
         listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         btnAdd.setMaxWidth(_this.getMaxWidth());
-        btnManage.setMaxWidth(_this.getMaxWidth());
+        btnNew.setMaxWidth(_this.getMaxWidth());
         cbGroup.setMaxWidth(_this.getMaxWidth());
         cbName.setMaxWidth(_this.getMaxWidth());
 
-        btnManage.prefWidthProperty().bind(_this.prefWidthProperty());
-        btnManage.setOnAction(event -> {
+        btnNew.prefWidthProperty().bind(_this.prefWidthProperty());
+        btnNew.setOnAction(event -> {
             TagElement newTagElement = TagElementControl.create();
-            if (newTagElement == null) return;
-            TagElementControl.add(newTagElement);
-            cbGroup.setValue(newTagElement.getGroup());
-            cbName.setValue(newTagElement.getName());
-        });
-
-        cbGroup.prefWidthProperty().bind(_this.prefWidthProperty());
-        cbGroup.setOnShown(event -> {
-            cbGroup.getItems().clear();
-            cbGroup.getItems().addAll(TagElementControl.getGroups());
-        });
-
-        cbName.prefWidthProperty().bind(_this.prefWidthProperty());
-        cbName.setOnShown(event -> {
-            cbName.getItems().clear();
-            if (cbGroup.getValue() != null && !cbGroup.getValue().toString().isEmpty()) {
-                cbName.getItems().addAll(TagElementControl.getNamesInGroup(cbGroup.getValue().toString()));
+            if (newTagElement != null) {
+                TagElementControl.add(newTagElement);
+                cbGroup.getSelectionModel().select(newTagElement.getGroup());
+                cbName.getSelectionModel().select(newTagElement.getName());
             }
         });
 
+
+        cbGroup.prefWidthProperty().bind(_this.prefWidthProperty());
+        cbGroup.setVisibleRowCount(20);
+        cbGroup.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                cbName.setDisable(false);
+                if (newValue != oldValue) {
+                    cbName.getItems().clear();
+                }
+            } else {
+                cbName.setDisable(true);
+            }
+        });
+        cbGroup.setOnShowing(event -> cbGroup.getItems().setAll(TagElementControl.getGroups()));
+
+        cbName.prefWidthProperty().bind(_this.prefWidthProperty());
+        cbName.setDisable(true);
+        cbName.setVisibleRowCount(20);
+        cbName.setOnShowing(event -> {
+            Object value = cbGroup.getValue();
+            String group = value.toString();
+            cbName.getItems().setAll(TagElementControl.getNamesInGroup(group));
+        });
+
         btnAdd.setOnAction(event -> addTagToSelection());
+        btnAdd.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                btnAdd.fire();
+            }
+        });
+
+        listView.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.DELETE) {
+                FilterControl.removeTagElementSelectionFromDataElementSelection();
+            }
+        });
 
         _this.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                addTagToSelection();
-            } else if (event.getCode() == KeyCode.DELETE) {
-                FilterControl.removeTagElementSelectionFromDataElementSelection();
-            } else if (event.getCode() == KeyCode.ESCAPE) {
+            if (event.getCode() == KeyCode.ESCAPE) {
                 TopPane.getInstance().requestFocus();
             }
         });
@@ -89,7 +109,7 @@ public abstract class RightPane extends BorderPane {
         _this.setMaxWidth(300);
 
         _this.setCenter(listView);
-        _this.setTop(new VBox(2, cbGroup, cbName, btnAdd, btnManage));
+        _this.setTop(new VBox(2, cbGroup, cbName, btnAdd, btnNew));
 
         ChangeEventControl.subscribe(RightPane.class, ChangeEventEnum.FOCUS, ChangeEventEnum.SELECTION);
     }

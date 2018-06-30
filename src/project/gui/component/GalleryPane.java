@@ -15,7 +15,7 @@ import project.database.element.DataElement;
 import project.gui.control.GUIControl;
 import project.helper.Settings;
 
-public abstract class GalleryPane extends ScrollPane {
+public abstract class GalleryPane {
     /* components */
     private static final ScrollPane _this = new ScrollPane();
     private static final TilePane tilePane = new TilePane();
@@ -34,8 +34,8 @@ public abstract class GalleryPane extends ScrollPane {
         tilePane.setPrefTileHeight(GALLERY_ICON_SIZE_PREF);
     }
     private static void initializeProperties() {
-        _this.setHbarPolicy(ScrollBarPolicy.NEVER);
-        _this.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+        _this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        _this.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         _this.setMinViewportWidth(GALLERY_ICON_SIZE_PREF);
         _this.setFitToWidth(true);
 
