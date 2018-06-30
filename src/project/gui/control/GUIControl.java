@@ -1,8 +1,9 @@
-package project.gui;
+package project.gui.control;
 
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
+import project.gui.change.ChangeEventControl;
 import project.gui.component.PaneGallery;
 import project.gui.component.PanePreview;
 

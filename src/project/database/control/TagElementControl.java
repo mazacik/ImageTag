@@ -1,19 +1,19 @@
-package project.database;
+package project.database.control;
 
 import javafx.scene.control.TreeCell;
 import project.control.FilterControl;
 import project.database.element.DataElement;
 import project.database.element.TagElement;
-import project.gui.ChangeEventControl;
-import project.gui.ChangeEventListener;
-import project.gui.GUIStage;
+import project.gui.change.ChangeEventControl;
+import project.gui.change.ChangeEventListener;
 import project.gui.component.part.ColoredText;
-import project.gui.stage.TagEditor;
+import project.gui.control.GUIStage;
+import project.gui.custom.TagEditor;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public abstract class TagElementDatabase {
+public abstract class TagElementControl {
     /* change */
     private static final ArrayList<ChangeEventListener> changeListeners = new ArrayList<>();
     public static ArrayList<ChangeEventListener> getChangeListeners() {
@@ -25,20 +25,20 @@ public abstract class TagElementDatabase {
 
     /* public */
     public static void add(TagElement tagElement) {
-        if (tagElement != null && !TagElementDatabase.contains(tagElement)) {
-            TagElementDatabase.getTagElements().add(tagElement);
-            TagElementDatabase.sortSimple();
+        if (tagElement != null && !TagElementControl.contains(tagElement)) {
+            TagElementControl.getTagElements().add(tagElement);
+            TagElementControl.sortSimple();
             ChangeEventControl.requestReload(GUIStage.getPaneLeft());
         }
     }
     public static void remove(TagElement tagElement) {
         if (tagElement != null) {
-            ArrayList<DataElement> dataElements = DataElementDatabase.getDataElements();
+            ArrayList<DataElement> dataElements = DataElementControl.getDataElements();
             for (DataElement dataElement : dataElements) {
                 dataElement.getTagElements().remove(tagElement);
             }
             FilterControl.unlistTagElement(tagElement);
-            TagElementDatabase.getTagElements().remove(tagElement);
+            TagElementControl.getTagElements().remove(tagElement);
             ChangeEventControl.requestReloadGlobal();
         }
     }
@@ -48,9 +48,9 @@ public abstract class TagElementDatabase {
             if (editTagElement != null) {
                 String editGroup = editTagElement.getGroup();
                 String editName = editTagElement.getName();
-                TagElementDatabase.getTagElement(tagElement).setGroup(editGroup);
-                TagElementDatabase.getTagElement(tagElement).setName(editName);
-                TagElementDatabase.sortSimple();
+                TagElementControl.getTagElement(tagElement).setGroup(editGroup);
+                TagElementControl.getTagElement(tagElement).setName(editName);
+                TagElementControl.sortSimple();
 
                 ChangeEventControl.requestReload(GUIStage.getPaneLeft(), GUIStage.getPaneRight());
             }
@@ -64,25 +64,25 @@ public abstract class TagElementDatabase {
 
     public static void sortSimple() {
         Comparator tagElementComparator = Comparator.comparing(TagElement::getGroupAndName);
-        TagElementDatabase.getTagElements().sort(tagElementComparator);
+        TagElementControl.getTagElements().sort(tagElementComparator);
     }
     public static void sortAll() {
         Comparator tagElementComparator = Comparator.comparing(TagElement::getGroupAndName);
-        TagElementDatabase.getTagElements().sort(tagElementComparator);
+        TagElementControl.getTagElements().sort(tagElementComparator);
         FilterControl.getTagElementWhitelist().sort(tagElementComparator);
         FilterControl.getTagElementBlacklist().sort(tagElementComparator);
     }
     public static void initialize() {
-        ArrayList<DataElement> dataElements = DataElementDatabase.getDataElements();
+        ArrayList<DataElement> dataElements = DataElementControl.getDataElements();
         for (DataElement dataElement : dataElements) {
             ArrayList<TagElement> tagElementsOfDataElement = dataElement.getTagElements();
             for (TagElement tagElementOfDataElement : tagElementsOfDataElement) {
                 if (tagElementOfDataElement == null) continue;
-                if (!TagElementDatabase.contains(tagElementOfDataElement)) {
-                    TagElementDatabase.getTagElements().add(tagElementOfDataElement);
+                if (!TagElementControl.contains(tagElementOfDataElement)) {
+                    TagElementControl.getTagElements().add(tagElementOfDataElement);
                 } else {
                     int tagElementIndex = tagElementsOfDataElement.indexOf(tagElementOfDataElement);
-                    TagElement tagElementInDatabase = TagElementDatabase.getTagElement(tagElementOfDataElement);
+                    TagElement tagElementInDatabase = TagElementControl.getTagElement(tagElementOfDataElement);
                     tagElementsOfDataElement.set(tagElementIndex, tagElementInDatabase);
                 }
             }
@@ -95,7 +95,7 @@ public abstract class TagElementDatabase {
     public static boolean contains(TagElement tagElement) {
         String tagElementGroup = tagElement.getGroup();
         String tagElementName = tagElement.getName();
-        for (TagElement tagElementFromDatabase : TagElementDatabase.getTagElements()) {
+        for (TagElement tagElementFromDatabase : TagElementControl.getTagElements()) {
             String databaseTagElementGroup = tagElementFromDatabase.getGroup();
             String databaseTagElementName = tagElementFromDatabase.getName();
             if (tagElementGroup.equals(databaseTagElementGroup) && tagElementName.equals(databaseTagElementName)) {
@@ -107,7 +107,7 @@ public abstract class TagElementDatabase {
 
     /* get */
     public static TagElement getTagElement(String tagElementGroup, String tagElementName) {
-        for (TagElement tagElementFromDatabase : TagElementDatabase.getTagElements()) {
+        for (TagElement tagElementFromDatabase : TagElementControl.getTagElements()) {
             String databaseTagElementGroup = tagElementFromDatabase.getGroup();
             String databaseTagElementName = tagElementFromDatabase.getName();
             if (tagElementGroup.equals(databaseTagElementGroup) && tagElementName.equals(databaseTagElementName)) {
@@ -119,19 +119,19 @@ public abstract class TagElementDatabase {
     public static TagElement getTagElement(TagElement tagElement) {
         String tagElementGroup = tagElement.getGroup();
         String tagElementName = tagElement.getName();
-        return TagElementDatabase.getTagElement(tagElementGroup, tagElementName);
+        return TagElementControl.getTagElement(tagElementGroup, tagElementName);
     }
     public static TagElement getTagElement(String groupAndName) {
         String tagElementGroup = groupAndName.split("-")[0].trim();
         String tagElementName = groupAndName.split("-")[1].trim();
-        return TagElementDatabase.getTagElement(tagElementGroup, tagElementName);
+        return TagElementControl.getTagElement(tagElementGroup, tagElementName);
     }
     public static TagElement getTagElement(TreeCell<ColoredText> treeCell) {
         try {
             ColoredText parentValue = treeCell.getTreeItem().getParent().getValue();
             String tagElementGroup = parentValue.getText();
             String tagElementName = treeCell.getText();
-            return TagElementDatabase.getTagElement(tagElementGroup, tagElementName);
+            return TagElementControl.getTagElement(tagElementGroup, tagElementName);
         } catch (NullPointerException e) {
             return null;
         }
@@ -139,7 +139,7 @@ public abstract class TagElementDatabase {
 
     public static ArrayList<String> getGroups() {
         ArrayList<String> groups = new ArrayList<>();
-        for (TagElement tagElement : TagElementDatabase.getTagElements()) {
+        for (TagElement tagElement : TagElementControl.getTagElements()) {
             if (!groups.contains(tagElement.getGroup())) {
                 groups.add(tagElement.getGroup());
             }
@@ -149,7 +149,7 @@ public abstract class TagElementDatabase {
     }
     public static ArrayList<String> getNamesInGroup(String databaseTagElementGroup) {
         ArrayList<String> namesInGroup = new ArrayList<>();
-        for (TagElement tagElement : TagElementDatabase.getTagElements()) {
+        for (TagElement tagElement : TagElementControl.getTagElements()) {
             String tagElementGroup = tagElement.getGroup();
             String tagElementName = tagElement.getName();
             if (tagElementGroup.equals(databaseTagElementGroup) && !namesInGroup.contains(tagElementName)) {

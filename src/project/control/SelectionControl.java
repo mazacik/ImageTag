@@ -1,12 +1,12 @@
 package project.control;
 
-import project.database.DataElementDatabase;
+import project.database.control.DataElementControl;
 import project.database.element.DataElement;
 import project.database.element.TagElement;
-import project.gui.ChangeEventControl;
-import project.gui.ChangeEventEnum;
-import project.gui.ChangeEventListener;
-import project.gui.GUIStage;
+import project.gui.change.ChangeEventControl;
+import project.gui.change.ChangeEventEnum;
+import project.gui.change.ChangeEventListener;
+import project.gui.control.GUIStage;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -52,7 +52,7 @@ public abstract class SelectionControl {
         addDataElement(dataElement);
     }
     public static void clearDataElements() {
-        ArrayList<DataElement> dataElements = DataElementDatabase.getDataElements();
+        ArrayList<DataElement> dataElements = DataElementControl.getDataElements();
         for (DataElement dataElement : dataElements) {
             DataElement currentFocus = FocusControl.getCurrentFocus();
             if (!dataElement.equals(currentFocus)) {

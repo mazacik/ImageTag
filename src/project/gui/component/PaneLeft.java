@@ -9,10 +9,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import project.control.FilterControl;
-import project.database.TagElementDatabase;
-import project.gui.ChangeEventControl;
-import project.gui.ChangeEventEnum;
-import project.gui.ChangeEventListener;
+import project.database.control.TagElementControl;
+import project.gui.change.ChangeEventControl;
+import project.gui.change.ChangeEventEnum;
+import project.gui.change.ChangeEventListener;
 import project.gui.component.part.ColoredText;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class PaneLeft extends BorderPane implements ChangeEventListener {
     /* public */
     public void refreshComponent() {
         ObservableList<TreeItem<ColoredText>> treeViewItems = treeView.getRoot().getChildren();
-        ArrayList<String> categoryNames = TagElementDatabase.getGroups();
+        ArrayList<String> categoryNames = TagElementControl.getGroups();
 
         treeViewItems.clear();
 
@@ -51,7 +51,7 @@ public class PaneLeft extends BorderPane implements ChangeEventListener {
                 categoryTreeItem = new TreeItem(new ColoredText(categoryName, Color.BLACK));
             }
 
-            for (String tagName : TagElementDatabase.getNamesInGroup(categoryName)) {
+            for (String tagName : TagElementControl.getNamesInGroup(categoryName)) {
                 if (FilterControl.isTagElementWhitelisted(categoryName, tagName)) {
                     categoryTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.GREEN)));
                 } else if (FilterControl.isTagElementBlacklisted(categoryName, tagName)) {

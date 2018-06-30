@@ -1,7 +1,7 @@
-package project.gui;
+package project.gui.change;
 
-import project.database.DataElementDatabase;
-import project.database.TagElementDatabase;
+import project.database.control.DataElementControl;
+import project.database.control.TagElementControl;
 
 import java.util.ArrayList;
 
@@ -16,8 +16,8 @@ public abstract class ChangeEventControl {
         }
     }
     public static void requestReloadGlobal() {
-        DataElementDatabase.sort();
-        TagElementDatabase.sortAll();
+        DataElementControl.sort();
+        TagElementControl.sortAll();
         for (ChangeEventListener changeEventListener : changeListenersGlobal) {
             changeEventListener.refreshComponent();
         }

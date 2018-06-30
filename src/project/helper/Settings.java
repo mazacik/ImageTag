@@ -1,4 +1,4 @@
-package project.common;
+package project.helper;
 
 import java.io.*;
 import java.util.Properties;

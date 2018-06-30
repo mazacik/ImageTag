@@ -1,13 +1,13 @@
 package project.control;
 
 import javafx.collections.ObservableList;
-import project.database.DataElementDatabase;
-import project.database.TagElementDatabase;
+import project.database.control.DataElementControl;
+import project.database.control.TagElementControl;
 import project.database.element.DataElement;
 import project.database.element.TagElement;
-import project.gui.ChangeEventControl;
-import project.gui.GUIStage;
-import project.gui.stage.generic.NumberInputWindow;
+import project.gui.change.ChangeEventControl;
+import project.gui.control.GUIStage;
+import project.gui.custom.generic.NumberInputWindow;
 
 import java.util.ArrayList;
 
@@ -20,7 +20,7 @@ public abstract class FilterControl {
 
     /* public */
     public static void refreshValidDataElements() {
-        ArrayList<DataElement> dataElements = DataElementDatabase.getDataElements();
+        ArrayList<DataElement> dataElements = DataElementControl.getDataElements();
         validDataElements.clear();
         if (tagElementWhitelist.isEmpty() && tagElementBlacklist.isEmpty()) {
             validDataElements.addAll(dataElements);
@@ -45,8 +45,8 @@ public abstract class FilterControl {
     }
     public static void addTagElementToDataElementSelection(TagElement tagElement) {
         if (tagElement != null && !tagElement.isEmpty()) {
-            if (!TagElementDatabase.contains(tagElement)) {
-                TagElementDatabase.add(tagElement);
+            if (!TagElementControl.contains(tagElement)) {
+                TagElementControl.add(tagElement);
             }
 
             ArrayList<DataElement> dataElementSelection = SelectionControl.getDataElements();
@@ -62,7 +62,7 @@ public abstract class FilterControl {
         ArrayList<TagElement> tagElementsToRemove = new ArrayList<>();
         ObservableList<String> tagElementSelection = GUIStage.getPaneRight().getListView().getSelectionModel().getSelectedItems();
         for (String tagElement : tagElementSelection) {
-            tagElementsToRemove.add(TagElementDatabase.getTagElement(tagElement));
+            tagElementsToRemove.add(TagElementControl.getTagElement(tagElement));
         }
 
         ArrayList<DataElement> dataElementsSelected = SelectionControl.getDataElements();
@@ -72,7 +72,7 @@ public abstract class FilterControl {
             }
 
             boolean tagExists = false;
-            ArrayList<DataElement> dataElements = DataElementDatabase.getDataElements();
+            ArrayList<DataElement> dataElements = DataElementControl.getDataElements();
             for (DataElement dataElement : dataElements) {
                 if (dataElement.getTagElements().contains(tagElement)) {
                     tagExists = true;
@@ -81,7 +81,7 @@ public abstract class FilterControl {
             }
             if (!tagExists) {
                 FilterControl.unlistTagElement(tagElement);
-                TagElementDatabase.remove(tagElement);
+                TagElementControl.remove(tagElement);
             }
         }
 
@@ -89,23 +89,23 @@ public abstract class FilterControl {
     }
 
     public static void whitelistGroup(String group) {
-        ArrayList<String> namesInCategory = TagElementDatabase.getNamesInGroup(group);
+        ArrayList<String> namesInCategory = TagElementControl.getNamesInGroup(group);
         for (String name : namesInCategory) {
-            TagElement tagElement = TagElementDatabase.getTagElement(group, name);
+            TagElement tagElement = TagElementControl.getTagElement(group, name);
             FilterControl.whitelistTagElement(tagElement);
         }
     }
     public static void blacklistGroup(String group) {
-        ArrayList<String> namesInCategory = TagElementDatabase.getNamesInGroup(group);
+        ArrayList<String> namesInCategory = TagElementControl.getNamesInGroup(group);
         for (String name : namesInCategory) {
-            TagElement tagElement = TagElementDatabase.getTagElement(group, name);
+            TagElement tagElement = TagElementControl.getTagElement(group, name);
             FilterControl.blacklistTagElement(tagElement);
         }
     }
     public static void unlistGroup(String group) {
-        ArrayList<String> namesInCategory = TagElementDatabase.getNamesInGroup(group);
+        ArrayList<String> namesInCategory = TagElementControl.getNamesInGroup(group);
         for (String name : namesInCategory) {
-            TagElement tagElement = TagElementDatabase.getTagElement(group, name);
+            TagElement tagElement = TagElementControl.getTagElement(group, name);
             FilterControl.unlistTagElement(tagElement);
         }
     }
@@ -132,7 +132,7 @@ public abstract class FilterControl {
     public static void customFilterUntaggedOnly() {
         FilterControl.getTagElementWhitelist().clear();
         FilterControl.getTagElementBlacklist().clear();
-        FilterControl.getTagElementBlacklist().addAll(TagElementDatabase.getTagElements());
+        FilterControl.getTagElementBlacklist().addAll(TagElementControl.getTagElements());
         FilterControl.refreshValidDataElements();
     }
     public static void customFilterLessThanXTags() {
@@ -141,7 +141,7 @@ public abstract class FilterControl {
         FilterControl.getValidDataElements().clear();
         FilterControl.getTagElementWhitelist().clear();
         FilterControl.getTagElementBlacklist().clear();
-        for (DataElement dataElement : DataElementDatabase.getDataElements()) {
+        for (DataElement dataElement : DataElementControl.getDataElements()) {
             if (dataElement.getTagElements().size() <= maxTags) {
                 FilterControl.getValidDataElements().add(dataElement);
             }
@@ -157,7 +157,7 @@ public abstract class FilterControl {
     /* boolean */
     public static boolean isGroupWhitelisted(String group) {
         boolean value = true;
-        for (String name : TagElementDatabase.getNamesInGroup(group)) {
+        for (String name : TagElementControl.getNamesInGroup(group)) {
             if (!FilterControl.isTagElementWhitelisted(group, name)) {
                 value = false;
                 break;
@@ -167,7 +167,7 @@ public abstract class FilterControl {
     }
     public static boolean isGroupBlacklisted(String group) {
         boolean value = true;
-        for (String name : TagElementDatabase.getNamesInGroup(group)) {
+        for (String name : TagElementControl.getNamesInGroup(group)) {
             if (!FilterControl.isTagElementBlacklisted(group, name)) {
                 value = false;
                 break;
@@ -185,10 +185,10 @@ public abstract class FilterControl {
         return tagElementBlacklist.contains(tagElement);
     }
     public static boolean isTagElementWhitelisted(String group, String name) {
-        return tagElementWhitelist.contains(TagElementDatabase.getTagElement(group, name));
+        return tagElementWhitelist.contains(TagElementControl.getTagElement(group, name));
     }
     public static boolean isTagElementBlacklisted(String group, String name) {
-        return tagElementBlacklist.contains(TagElementDatabase.getTagElement(group, name));
+        return tagElementBlacklist.contains(TagElementControl.getTagElement(group, name));
     }
 
     /* get */

@@ -1,4 +1,4 @@
-package project.gui.stage;
+package project.gui.custom;
 
 import javafx.geometry.Insets;
 import javafx.scene.Scene;

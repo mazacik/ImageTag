@@ -2,10 +2,10 @@ package project.control;
 
 import javafx.scene.input.KeyCode;
 import project.database.element.DataElement;
-import project.gui.ChangeEventControl;
-import project.gui.ChangeEventEnum;
-import project.gui.ChangeEventListener;
-import project.gui.GUIStage;
+import project.gui.change.ChangeEventControl;
+import project.gui.change.ChangeEventEnum;
+import project.gui.change.ChangeEventListener;
+import project.gui.control.GUIStage;
 
 import java.util.ArrayList;
 

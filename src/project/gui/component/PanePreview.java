@@ -5,10 +5,14 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
-import project.common.Settings;
 import project.control.FocusControl;
 import project.database.element.DataElement;
-import project.gui.*;
+import project.gui.change.ChangeEventControl;
+import project.gui.change.ChangeEventEnum;
+import project.gui.change.ChangeEventListener;
+import project.gui.control.GUIControl;
+import project.gui.control.GUIStage;
+import project.helper.Settings;
 
 public class PanePreview extends Pane implements ChangeEventListener {
     /* components */

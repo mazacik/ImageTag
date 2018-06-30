@@ -1,9 +1,9 @@
-package project.common;
+package project.helper;
 
 import javafx.scene.Scene;
 import project.control.FocusControl;
 import project.control.SelectionControl;
-import project.gui.GUIControl;
+import project.gui.control.GUIControl;
 
 public abstract class Keybinds {
     public static void initialize(Scene mainScene) {

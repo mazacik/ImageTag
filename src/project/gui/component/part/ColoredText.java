@@ -7,9 +7,9 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import project.control.FilterControl;
-import project.database.TagElementDatabase;
+import project.database.control.TagElementControl;
 import project.database.element.TagElement;
-import project.gui.GUIStage;
+import project.gui.control.GUIStage;
 
 public class ColoredText {
     /* vars */
@@ -26,7 +26,7 @@ public class ColoredText {
     public static void setOnMouseClick(TreeCell<ColoredText> source) {
         source.setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
-                TagElement tagElement = TagElementDatabase.getTagElement(source);
+                TagElement tagElement = TagElementControl.getTagElement(source);
                 ColoredText coloredText;
                 try {
                     coloredText = source.getTreeItem().getValue();
@@ -76,11 +76,11 @@ public class ColoredText {
     public static void setContextMenu(TreeCell<ColoredText> source) {
         ContextMenu contextMenu = new ContextMenu();
         MenuItem menuAdd = new MenuItem("Add");
-        menuAdd.setOnAction(event -> TagElementDatabase.add(TagElementDatabase.create()));
+        menuAdd.setOnAction(event -> TagElementControl.add(TagElementControl.create()));
         MenuItem menuRemove = new MenuItem("Remove");
-        menuRemove.setOnAction(event -> TagElementDatabase.remove(TagElementDatabase.getTagElement(source)));
+        menuRemove.setOnAction(event -> TagElementControl.remove(TagElementControl.getTagElement(source)));
         MenuItem menuRename = new MenuItem("Rename");
-        menuRename.setOnAction(event -> TagElementDatabase.edit(TagElementDatabase.getTagElement(source)));
+        menuRename.setOnAction(event -> TagElementControl.edit(TagElementControl.getTagElement(source)));
         contextMenu.getItems().addAll(menuAdd, menuRemove, menuRename);
         source.setContextMenu(contextMenu);
     }

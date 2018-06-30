@@ -1,14 +1,14 @@
-package project.gui;
+package project.gui.change;
 
 import project.control.FocusControl;
 import project.control.SelectionControl;
-import project.database.TagElementDatabase;
+import project.database.control.TagElementControl;
 
 import java.util.ArrayList;
 
 public enum ChangeEventEnum {
     /* options */
-    FILTER(TagElementDatabase.getChangeListeners()),
+    FILTER(TagElementControl.getChangeListeners()),
     FOCUS(FocusControl.getChangeListeners()),
     SELECTION(SelectionControl.getChangeListeners());
 

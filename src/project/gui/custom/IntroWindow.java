@@ -1,4 +1,4 @@
-package project.gui.stage;
+package project.gui.custom;
 
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
@@ -9,8 +9,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import project.Main;
-import project.common.Settings;
-import project.gui.stage.generic.DirectoryChooserWindow;
+import project.gui.custom.generic.DirectoryChooserWindow;
+import project.helper.Settings;
 
 public class IntroWindow extends Stage {
     /* components */

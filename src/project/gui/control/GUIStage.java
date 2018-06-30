@@ -1,12 +1,13 @@
-package project.gui;
+package project.gui.control;
 
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import project.common.Keybinds;
 import project.database.loader.Serialization;
+import project.gui.change.ChangeEventControl;
 import project.gui.component.*;
+import project.helper.Keybinds;
 
 public class GUIStage extends Stage {
     /* components */

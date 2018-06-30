@@ -5,13 +5,13 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import org.apache.commons.io.FilenameUtils;
 import project.Main;
-import project.common.Settings;
-import project.database.DataElementDatabase;
-import project.database.TagElementDatabase;
+import project.database.control.DataElementControl;
+import project.database.control.TagElementControl;
 import project.database.element.DataElement;
-import project.gui.GUIStage;
 import project.gui.component.part.GalleryTile;
-import project.gui.stage.LoadingWindow;
+import project.gui.control.GUIStage;
+import project.gui.custom.LoadingWindow;
+import project.helper.Settings;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -31,7 +31,7 @@ public class DatabaseLoader extends Thread {
     private final String PATH_IMAGECACHE = Settings.getImageCacheDirectoryPath();
     private final String PATH_DATABASECACHE = Settings.getDatabaseCacheFilePath();
 
-    private final ArrayList<DataElement> DATAELEMENTS = DataElementDatabase.getDataElements();
+    private final ArrayList<DataElement> DATAELEMENTS = DataElementControl.getDataElements();
 
     /* vars */
     private int fileCount = 0;
@@ -44,7 +44,7 @@ public class DatabaseLoader extends Thread {
         deserialization();
         verification();
         finalization();
-        TagElementDatabase.initialize();
+        TagElementControl.initialize();
     }
 
     /* private */

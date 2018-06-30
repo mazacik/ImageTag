@@ -13,12 +13,12 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
-import project.common.Settings;
 import project.control.FilterControl;
 import project.control.FocusControl;
 import project.control.SelectionControl;
-import project.database.DataElementDatabase;
+import project.database.control.DataElementControl;
 import project.database.element.DataElement;
+import project.helper.Settings;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,10 +26,10 @@ import java.nio.file.Paths;
 
 public class GalleryTile extends ImageView {
     /* const */
-    private static final InnerShadow effectSelectionBorder = buildSelectionBorderEffect();
-    private static final ColorInput effectFocusMark = buildSelectionFocusMarkEffect();
+    private static final InnerShadow EFFECT_SELECTIONBORDER = buildSelectionBorderEffect();
+    private static final ColorInput EFFECT_FOCUSMARK = buildSelectionFocusMarkEffect();
 
-    private static final int galleryIconSizePref = Settings.getGalleryIconSizePref();
+    private static final int GALLERY_ICON_SIZE_PREF = Settings.getGalleryIconSizePref();
 
     /* vars */
     private final DataElement parentDataElement;
@@ -38,8 +38,8 @@ public class GalleryTile extends ImageView {
     public GalleryTile(DataElement dataElement) {
         super(dataElement.getImage());
         parentDataElement = dataElement;
-        setFitWidth(galleryIconSizePref);
-        setFitHeight(galleryIconSizePref);
+        setFitWidth(GALLERY_ICON_SIZE_PREF);
+        setFitHeight(GALLERY_ICON_SIZE_PREF);
         setOnMouseClick(dataElement);
     }
 
@@ -60,14 +60,14 @@ public class GalleryTile extends ImageView {
             setEffect(null);
         } else if (!booleanSelection && booleanFocus) {
             Blend blend = new Blend();
-            blend.setTopInput(effectFocusMark);
+            blend.setTopInput(EFFECT_FOCUSMARK);
             setEffect(blend);
         } else if (booleanSelection && !booleanFocus) {
-            setEffect(effectSelectionBorder);
+            setEffect(EFFECT_SELECTIONBORDER);
         } else if (booleanSelection && booleanFocus) {
             Blend effect = new Blend();
-            effect.setTopInput(effectSelectionBorder);
-            effect.setBottomInput(effectFocusMark);
+            effect.setTopInput(EFFECT_SELECTIONBORDER);
+            effect.setBottomInput(EFFECT_FOCUSMARK);
             effect.setMode(BlendMode.OVERLAY);
             setEffect(effect);
         }
@@ -117,7 +117,7 @@ public class GalleryTile extends ImageView {
             if (FilterControl.getValidDataElements().contains(parentDataElement)) {
                 int index = FilterControl.getValidDataElements().indexOf(parentDataElement);
 
-                DataElementDatabase.getDataElements().remove(parentDataElement);
+                DataElementControl.getDataElements().remove(parentDataElement);
                 FilterControl.getValidDataElements().remove(parentDataElement);
                 SelectionControl.getDataElements().remove(parentDataElement);
 

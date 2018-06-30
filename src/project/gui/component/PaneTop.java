@@ -12,9 +12,9 @@ import project.control.FocusControl;
 import project.control.SelectionControl;
 import project.database.element.DataElement;
 import project.database.loader.Serialization;
-import project.gui.ChangeEventControl;
-import project.gui.ChangeEventEnum;
-import project.gui.ChangeEventListener;
+import project.gui.change.ChangeEventControl;
+import project.gui.change.ChangeEventEnum;
+import project.gui.change.ChangeEventListener;
 
 public class PaneTop extends BorderPane implements ChangeEventListener {
     /* components */

@@ -7,13 +7,13 @@ import javafx.scene.layout.VBox;
 import project.control.FilterControl;
 import project.control.FocusControl;
 import project.control.SelectionControl;
-import project.database.TagElementDatabase;
+import project.database.control.TagElementControl;
 import project.database.element.DataElement;
 import project.database.element.TagElement;
-import project.gui.ChangeEventControl;
-import project.gui.ChangeEventEnum;
-import project.gui.ChangeEventListener;
-import project.gui.GUIStage;
+import project.gui.change.ChangeEventControl;
+import project.gui.change.ChangeEventEnum;
+import project.gui.change.ChangeEventListener;
+import project.gui.control.GUIStage;
 
 import java.util.ArrayList;
 
@@ -45,9 +45,9 @@ public class PaneRight extends BorderPane implements ChangeEventListener {
 
         btnManage.prefWidthProperty().bind(prefWidthProperty());
         btnManage.setOnAction(event -> {
-            TagElement newTagElement = TagElementDatabase.create();
+            TagElement newTagElement = TagElementControl.create();
             if (newTagElement == null) return;
-            TagElementDatabase.add(newTagElement);
+            TagElementControl.add(newTagElement);
             cbGroup.setValue(newTagElement.getGroup());
             cbName.setValue(newTagElement.getName());
         });
@@ -55,14 +55,14 @@ public class PaneRight extends BorderPane implements ChangeEventListener {
         cbGroup.prefWidthProperty().bind(prefWidthProperty());
         cbGroup.setOnShown(event -> {
             cbGroup.getItems().clear();
-            cbGroup.getItems().addAll(TagElementDatabase.getGroups());
+            cbGroup.getItems().addAll(TagElementControl.getGroups());
         });
 
         cbName.prefWidthProperty().bind(prefWidthProperty());
         cbName.setOnShown(event -> {
             cbName.getItems().clear();
             if (cbGroup.getValue() != null && !cbGroup.getValue().toString().isEmpty()) {
-                cbName.getItems().addAll(TagElementDatabase.getNamesInGroup(cbGroup.getValue().toString()));
+                cbName.getItems().addAll(TagElementControl.getNamesInGroup(cbGroup.getValue().toString()));
             }
         });
 
@@ -128,7 +128,7 @@ public class PaneRight extends BorderPane implements ChangeEventListener {
         }
 
         if (!category.isEmpty() && !name.isEmpty()) {
-            TagElement tagElement = TagElementDatabase.getTagElement(category, name);
+            TagElement tagElement = TagElementControl.getTagElement(category, name);
             if (SelectionControl.isSelectionEmpty()) {
                 DataElement currentFocusedItem = FocusControl.getCurrentFocus();
                 if (currentFocusedItem != null) {

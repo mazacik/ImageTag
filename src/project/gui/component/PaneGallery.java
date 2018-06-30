@@ -5,15 +5,15 @@ import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.TilePane;
-import project.common.Settings;
 import project.control.FilterControl;
 import project.control.FocusControl;
-import project.database.DataElementDatabase;
+import project.database.control.DataElementControl;
 import project.database.element.DataElement;
-import project.gui.ChangeEventControl;
-import project.gui.ChangeEventEnum;
-import project.gui.ChangeEventListener;
-import project.gui.GUIControl;
+import project.gui.change.ChangeEventControl;
+import project.gui.change.ChangeEventEnum;
+import project.gui.change.ChangeEventListener;
+import project.gui.control.GUIControl;
+import project.helper.Settings;
 
 public class PaneGallery extends ScrollPane implements ChangeEventListener {
     /* components */
@@ -120,7 +120,7 @@ public class PaneGallery extends ScrollPane implements ChangeEventListener {
                 tilePane.setPrefTileWidth(galleryIconSizePref);
                 tilePane.setPrefTileHeight(galleryIconSizePref);
 
-                for (DataElement dataElement : DataElementDatabase.getDataElements()) {
+                for (DataElement dataElement : DataElementControl.getDataElements()) {
                     dataElement.getGalleryTile().setFitWidth(galleryIconSizePref);
                     dataElement.getGalleryTile().setFitHeight(galleryIconSizePref);
                 }
