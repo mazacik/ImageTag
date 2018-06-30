@@ -8,24 +8,24 @@ import project.gui.component.PanePreview;
 
 public abstract class GUIControl {
     /* imports */
-    private static final PaneGallery PANE_GALLERY = GUIStage.getPaneGallery();
-    private static final PanePreview PANE_PREVIEW = GUIStage.getPanePreview();
-    private static final SplitPane splitPane = GUIStage.getPaneSplit();
-    private static final ObservableList<Node> splitPaneItems = splitPane.getItems();
+    private static final PaneGallery GALLERYPANE = GUIStage.getPaneGallery();
+    private static final PanePreview PREVIEWPANE = GUIStage.getPanePreview();
+    private static final SplitPane SPLITPANE = GUIStage.getPaneSplit();
+    private static final ObservableList<Node> SPLITPANE_ITEMS = SPLITPANE.getItems();
 
     /* public */
     public static void swapDisplayMode() {
-        double[] dividerPositions = splitPane.getDividerPositions();
-        if (splitPaneItems.contains(PANE_GALLERY)) {
-            splitPaneItems.set(splitPaneItems.indexOf(PANE_GALLERY), PANE_PREVIEW);
-            PANE_PREVIEW.setCanvasSize(PANE_GALLERY.getWidth(), PANE_GALLERY.getHeight());
-            ChangeEventControl.requestReload(PANE_PREVIEW);
+        double[] dividerPositions = SPLITPANE.getDividerPositions();
+        if (SPLITPANE_ITEMS.contains(GALLERYPANE)) {
+            SPLITPANE_ITEMS.set(SPLITPANE_ITEMS.indexOf(GALLERYPANE), PREVIEWPANE);
+            PREVIEWPANE.setCanvasSize(GALLERYPANE.getWidth(), GALLERYPANE.getHeight());
+            ChangeEventControl.requestReload(PREVIEWPANE);
         } else {
-            splitPaneItems.set(splitPaneItems.indexOf(PANE_PREVIEW), PANE_GALLERY);
+            SPLITPANE_ITEMS.set(SPLITPANE_ITEMS.indexOf(PREVIEWPANE), GALLERYPANE);
         }
-        splitPane.setDividerPositions(dividerPositions);
+        SPLITPANE.setDividerPositions(dividerPositions);
     }
     public static boolean isPreviewFullscreen() {
-        return splitPaneItems.contains(PANE_PREVIEW);
+        return SPLITPANE_ITEMS.contains(PREVIEWPANE);
     }
 }

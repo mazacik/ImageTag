@@ -78,7 +78,6 @@ public class PaneGallery extends ScrollPane implements ChangeEventListener {
             setVvalue((focusRow + 1) * rowToContentRatio - viewportToContentRatio);
         }
     }
-
     public void refreshComponent() {
         if (GUIControl.isPreviewFullscreen()) return;
 
@@ -129,7 +128,6 @@ public class PaneGallery extends ScrollPane implements ChangeEventListener {
             }
         });
     }
-
     private void setWidthPropertyListener() {
         tilePane.widthProperty().addListener((observable, oldValue, newValue) -> recalculateHgap());
     }

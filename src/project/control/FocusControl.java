@@ -1,10 +1,11 @@
 package project.control;
 
+import javafx.scene.input.KeyCode;
 import project.database.element.DataElement;
 import project.gui.ChangeEventControl;
 import project.gui.ChangeEventEnum;
 import project.gui.ChangeEventListener;
-import project.gui.component.part.GalleryTile;
+import project.gui.GUIStage;
 
 import java.util.ArrayList;
 
@@ -27,14 +28,39 @@ public abstract class FocusControl {
 
         /* apply new focus effect */
         currentFocus = dataElement;
-        GalleryTile.generateEffect(currentFocus);
+        currentFocus.getGalleryTile().generateEffect();
 
         /* remove old focus effect */
         if (previousFocus != null) {
-            GalleryTile.generateEffect(previousFocus);
+            previousFocus.getGalleryTile().generateEffect();
         }
 
         ChangeEventControl.notifyListeners(ChangeEventEnum.FOCUS);
+    }
+    public static void moveFocusByKeyCode(KeyCode keyCode) {
+        ArrayList<DataElement> databaseItemsFiltered = FilterControl.getValidDataElements();
+        DataElement focusedItem = FocusControl.getCurrentFocus();
+        if (focusedItem == null) {
+            DataElement firstItem = FilterControl.getValidDataElements().get(0);
+            FocusControl.setFocus(firstItem);
+            focusedItem = firstItem;
+        }
+
+        int newFocusPosition = databaseItemsFiltered.indexOf(focusedItem);
+        if (keyCode.equals(KeyCode.W)) {
+            newFocusPosition -= GUIStage.getPaneGallery().getColumnCount();
+        } else if (keyCode.equals(KeyCode.A)) {
+            newFocusPosition -= 1;
+        } else if (keyCode.equals(KeyCode.S)) {
+            newFocusPosition += GUIStage.getPaneGallery().getColumnCount();
+        } else if (keyCode.equals(KeyCode.D)) {
+            newFocusPosition += 1;
+        }
+
+        if (newFocusPosition >= 0 && newFocusPosition < databaseItemsFiltered.size()) {
+            FocusControl.setFocus(databaseItemsFiltered.get(newFocusPosition));
+            GUIStage.getPaneGallery().adjustViewportToFocus();
+        }
     }
 
     /* get */

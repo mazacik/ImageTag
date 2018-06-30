@@ -38,7 +38,6 @@ public abstract class Serialization {
             e.printStackTrace();
         }
     }
-
     public static void createBackup() {
         String databaseCacheFilePath = Settings.getDatabaseCacheFilePath();
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH-mm-ss dd-MM-yyyy");
@@ -50,7 +49,6 @@ public abstract class Serialization {
             e.printStackTrace();
         }
     }
-
     public static ArrayList<DataElement> readFromDisk() {
         Path databaseCacheFilePath = Paths.get(Settings.getDatabaseCacheFilePath());
         GsonBuilder GSONBuilder = new GsonBuilder();

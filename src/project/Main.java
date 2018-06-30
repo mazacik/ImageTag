@@ -23,6 +23,9 @@ public class Main extends Application {
     }
 
     /* get */
+    public static Stage getStage() {
+        return primaryStage;
+    }
     public static LoadingWindow getLoadingWindow() {
         return (LoadingWindow) primaryStage;
     }

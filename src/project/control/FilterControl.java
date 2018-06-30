@@ -7,6 +7,7 @@ import project.database.element.DataElement;
 import project.database.element.TagElement;
 import project.gui.ChangeEventControl;
 import project.gui.GUIStage;
+import project.gui.stage.generic.NumberInputWindow;
 
 import java.util.ArrayList;
 
@@ -128,6 +129,31 @@ public abstract class FilterControl {
         }
     }
 
+    public static void customFilterUntaggedOnly() {
+        FilterControl.getTagElementWhitelist().clear();
+        FilterControl.getTagElementBlacklist().clear();
+        FilterControl.getTagElementBlacklist().addAll(TagElementDatabase.getTagElements());
+        FilterControl.refreshValidDataElements();
+    }
+    public static void customFilterLessThanXTags() {
+        int maxTags = new NumberInputWindow("Filter Settings", "Maximum number of tags:").getResultValue();
+        if (maxTags == 0) return;
+        FilterControl.getValidDataElements().clear();
+        FilterControl.getTagElementWhitelist().clear();
+        FilterControl.getTagElementBlacklist().clear();
+        for (DataElement dataElement : DataElementDatabase.getDataElements()) {
+            if (dataElement.getTagElements().size() <= maxTags) {
+                FilterControl.getValidDataElements().add(dataElement);
+            }
+        }
+        ChangeEventControl.requestReload(GUIStage.getPaneGallery());
+    }
+    public static void customFilterResetFiltering() {
+        FilterControl.getTagElementWhitelist().clear();
+        FilterControl.getTagElementBlacklist().clear();
+        FilterControl.refreshValidDataElements();
+    }
+
     /* boolean */
     public static boolean isGroupWhitelisted(String group) {
         boolean value = true;
@@ -169,6 +195,7 @@ public abstract class FilterControl {
     public static ArrayList<DataElement> getValidDataElements() {
         return validDataElements;
     }
+
     public static ArrayList<TagElement> getTagElementWhitelist() {
         return tagElementWhitelist;
     }

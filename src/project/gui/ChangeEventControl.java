@@ -15,21 +15,18 @@ public abstract class ChangeEventControl {
             changeEventListener.refreshComponent();
         }
     }
-
     public static void requestReloadGlobal() {
-        DataElementDatabase.sortLists();
-        TagElementDatabase.sort();
+        DataElementDatabase.sort();
+        TagElementDatabase.sortAll();
         for (ChangeEventListener changeEventListener : changeListenersGlobal) {
             changeEventListener.refreshComponent();
         }
     }
-
     public static void requestReload(ChangeEventListener... changeEventListeners) {
         for (ChangeEventListener changeEventListener : changeEventListeners) {
             changeEventListener.refreshComponent();
         }
     }
-
     public static void subscribe(ChangeEventListener changeEventSubscriber, ChangeEventEnum... changeEventNotifiers) {
         if (!changeListenersGlobal.contains(changeEventSubscriber)) {
             changeListenersGlobal.add(changeEventSubscriber);

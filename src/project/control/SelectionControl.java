@@ -7,7 +7,6 @@ import project.gui.ChangeEventControl;
 import project.gui.ChangeEventEnum;
 import project.gui.ChangeEventListener;
 import project.gui.GUIStage;
-import project.gui.component.part.GalleryTile;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -26,7 +25,7 @@ public abstract class SelectionControl {
     public static void addDataElement(DataElement dataElement) {
         if (dataElement != null && !dataElements.contains(dataElement)) {
             dataElements.add(dataElement);
-            GalleryTile.generateEffect(dataElement);
+            dataElement.getGalleryTile().generateEffect();
             ChangeEventControl.notifyListeners(ChangeEventEnum.SELECTION);
         }
     }
@@ -35,7 +34,7 @@ public abstract class SelectionControl {
             for (DataElement dataElement : dataElementsToAdd) {
                 if (!dataElements.contains(dataElement)) {
                     dataElements.add(dataElement);
-                    GalleryTile.generateEffect(dataElement);
+                    dataElement.getGalleryTile().generateEffect();
                 }
             }
             ChangeEventControl.notifyListeners(ChangeEventEnum.SELECTION);
@@ -44,7 +43,7 @@ public abstract class SelectionControl {
     public static void removeDataElement(DataElement dataElement) {
         if (dataElement != null && dataElements.contains(dataElement)) {
             dataElements.remove(dataElement);
-            GalleryTile.generateEffect(dataElement);
+            dataElement.getGalleryTile().generateEffect();
             ChangeEventControl.notifyListeners(ChangeEventEnum.SELECTION);
         }
     }
@@ -59,7 +58,7 @@ public abstract class SelectionControl {
             if (!dataElement.equals(currentFocus)) {
                 dataElement.getGalleryTile().setEffect(null);
             } else {
-                GalleryTile.generateEffect(dataElement);
+                dataElement.getGalleryTile().generateEffect();
             }
         }
         ChangeEventControl.notifyListeners(ChangeEventEnum.SELECTION);
@@ -103,6 +102,9 @@ public abstract class SelectionControl {
     /* boolean */
     public static boolean isSelectionEmpty() {
         return dataElements.isEmpty();
+    }
+    public static boolean isSelectionSingleElement() {
+        return dataElements.size() == 1;
     }
 
     /* get */

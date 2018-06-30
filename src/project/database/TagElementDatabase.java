@@ -13,7 +13,6 @@ import project.gui.stage.TagEditor;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-//todo check
 public abstract class TagElementDatabase {
     /* change */
     private static final ArrayList<ChangeEventListener> changeListeners = new ArrayList<>();
@@ -28,7 +27,7 @@ public abstract class TagElementDatabase {
     public static void add(TagElement tagElement) {
         if (tagElement != null && !TagElementDatabase.contains(tagElement)) {
             TagElementDatabase.getTagElements().add(tagElement);
-            TagElementDatabase.sort();
+            TagElementDatabase.sortSimple();
             ChangeEventControl.requestReload(GUIStage.getPaneLeft());
         }
     }
@@ -51,6 +50,7 @@ public abstract class TagElementDatabase {
                 String editName = editTagElement.getName();
                 TagElementDatabase.getTagElement(tagElement).setGroup(editGroup);
                 TagElementDatabase.getTagElement(tagElement).setName(editName);
+                TagElementDatabase.sortSimple();
 
                 ChangeEventControl.requestReload(GUIStage.getPaneLeft(), GUIStage.getPaneRight());
             }
@@ -62,11 +62,15 @@ public abstract class TagElementDatabase {
         return newTagElement;
     }
 
-    public static void sort() {
-        Comparator comparator = Comparator.comparing(TagElement::getGroupAndName);
-        TagElementDatabase.getTagElements().sort(comparator);
-        FilterControl.getTagElementWhitelist().sort(comparator);
-        FilterControl.getTagElementBlacklist().sort(comparator);
+    public static void sortSimple() {
+        Comparator tagElementComparator = Comparator.comparing(TagElement::getGroupAndName);
+        TagElementDatabase.getTagElements().sort(tagElementComparator);
+    }
+    public static void sortAll() {
+        Comparator tagElementComparator = Comparator.comparing(TagElement::getGroupAndName);
+        TagElementDatabase.getTagElements().sort(tagElementComparator);
+        FilterControl.getTagElementWhitelist().sort(tagElementComparator);
+        FilterControl.getTagElementBlacklist().sort(tagElementComparator);
     }
     public static void initialize() {
         ArrayList<DataElement> dataElements = DataElementDatabase.getDataElements();

@@ -63,7 +63,6 @@ public class PaneLeft extends BorderPane implements ChangeEventListener {
             treeViewItems.add(categoryTreeItem);
         }
     }
-
     public void refreshTreeview() {
         treeView.refresh();
     }

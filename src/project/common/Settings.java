@@ -12,7 +12,6 @@ public abstract class Settings {
     private static int galleryIconSizeMax = 200;
     private static int galleryIconSizeMin = 100;
     private static int galleryIconSizePref = 150;
-    //todo when working on settings, make there values serialized, not constant
 
     private static String settingsFilePath = "JavaExplorer.ini";
 
