@@ -31,7 +31,7 @@ public class DatabaseLoader extends Thread {
     private final String PATH_IMAGECACHE = Settings.getImageCacheDirectoryPath();
     private final String PATH_DATABASECACHE = Settings.getDatabaseCacheFilePath();
 
-    private final ArrayList<DataElement> DATAELEMENTS = DataElementControl.getDataElements();
+    private final ArrayList<DataElement> DATAELEMENTSLIVE = DataElementControl.getDataElementsLive();
 
     /* vars */
     private int fileCount = 0;
@@ -60,7 +60,7 @@ public class DatabaseLoader extends Thread {
         }
     }
     private void deserialization() {
-        if (!new File(PATH_DATABASECACHE).exists() || !DATAELEMENTS.addAll(Serialization.readFromDisk())) {
+        if (!new File(PATH_DATABASECACHE).exists() || !DataElementControl.addAll(Serialization.readFromDisk())) {
             createDatabaseCache();
         }
     }
@@ -68,7 +68,7 @@ public class DatabaseLoader extends Thread {
         ArrayList<String> dataElementsItemNames = new ArrayList<>();
         ArrayList<String> validFilesItemNames = new ArrayList<>();
 
-        for (DataElement dataElement : DATAELEMENTS) {
+        for (DataElement dataElement : DATAELEMENTSLIVE) {
             dataElementsItemNames.add(dataElement.getName());
         }
         for (File file : validFiles) {
@@ -83,7 +83,7 @@ public class DatabaseLoader extends Thread {
         }
     }
     private void finalization() {
-        for (DataElement dataElement : DATAELEMENTS) {
+        for (DataElement dataElement : DATAELEMENTSLIVE) {
             dataElement.setImage(getImageFromDataElement(dataElement));
             dataElement.setGalleryTile(new GalleryTile(dataElement));
         }
@@ -97,7 +97,7 @@ public class DatabaseLoader extends Thread {
     private void createDatabaseCache() {
         for (File file : validFiles) {
             DataElement dataElement = createDataElementFromFile(file);
-            DATAELEMENTS.add(dataElement);
+            DataElementControl.add(dataElement);
         }
 
         Serialization.writeToDisk();
@@ -106,20 +106,20 @@ public class DatabaseLoader extends Thread {
         /* add unrecognized items */
         for (File file : validFiles) {
             if (!dataElementsItemNames.contains(file.getName())) {
-                DATAELEMENTS.add(createDataElementFromFile(file));
+                DATAELEMENTSLIVE.add(createDataElementFromFile(file));
             }
         }
 
         /* remove missing items */
-        ArrayList<DataElement> temporaryList = new ArrayList<>(DATAELEMENTS);
-        for (DataElement dataElement : DATAELEMENTS) {
+        ArrayList<DataElement> temporaryList = new ArrayList<>(DATAELEMENTSLIVE);
+        for (DataElement dataElement : DATAELEMENTSLIVE) {
             if (!validFilesItemNames.contains(dataElement.getName())) {
                 temporaryList.remove(dataElement);
             }
         }
 
-        DATAELEMENTS.clear();
-        DATAELEMENTS.addAll(temporaryList);
+        DATAELEMENTSLIVE.clear();
+        DATAELEMENTSLIVE.addAll(temporaryList);
         Serialization.writeToDisk();
     }
 

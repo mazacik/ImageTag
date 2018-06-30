@@ -117,8 +117,8 @@ public class GalleryTile extends ImageView {
             if (FilterControl.getValidDataElements().contains(parentDataElement)) {
                 int index = FilterControl.getValidDataElements().indexOf(parentDataElement);
 
-                DataElementControl.getDataElements().remove(parentDataElement);
-                FilterControl.getValidDataElements().remove(parentDataElement);
+                DataElementControl.remove(parentDataElement);
+                FilterControl.getValidDataElements().remove(parentDataElement); //todo remove direct links like this
                 SelectionControl.getDataElements().remove(parentDataElement);
 
                 if (FilterControl.getValidDataElements().get(index - 1) != null) {

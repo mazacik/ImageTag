@@ -9,7 +9,7 @@ import javafx.scene.paint.Color;
 import project.control.FilterControl;
 import project.database.control.TagElementControl;
 import project.database.element.TagElement;
-import project.gui.control.GUIStage;
+import project.gui.component.LeftPane;
 
 public class ColoredText {
     /* vars */
@@ -69,7 +69,7 @@ public class ColoredText {
                     }
                 }
                 FilterControl.refreshValidDataElements();
-                GUIStage.getPaneLeft().refreshTreeview();
+                LeftPane.refreshTreeview();
             }
         });
     }

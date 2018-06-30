@@ -1,6 +1,7 @@
 package project.gui.component;
 
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -9,33 +10,33 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import project.control.FilterControl;
+import project.control.change.ChangeEventControl;
+import project.control.change.ChangeEventEnum;
 import project.database.control.TagElementControl;
-import project.gui.change.ChangeEventControl;
-import project.gui.change.ChangeEventEnum;
-import project.gui.change.ChangeEventListener;
 import project.gui.component.part.ColoredText;
 
 import java.util.ArrayList;
 
-public class PaneLeft extends BorderPane implements ChangeEventListener {
+public abstract class LeftPane extends BorderPane {
     /* components */
-    private final TreeView<ColoredText> treeView = new TreeView(new TreeItem());
+    private static final BorderPane _this = new BorderPane();
+    private static final TreeView<ColoredText> treeView = new TreeView(new TreeItem());
 
-    /* constructors */
-    public PaneLeft() {
-        setMinWidth(150);
-        setPrefWidth(200);
-        setMaxWidth(300);
+    /* initialize */
+    public static void initialize() {
+        _this.setMinWidth(150);
+        _this.setPrefWidth(200);
+        _this.setMaxWidth(300);
 
-        setCellFactory();
         treeView.setShowRoot(false);
-        setCenter(treeView);
+        LeftPane.setCellFactory();
+        _this.setCenter(treeView);
 
-        ChangeEventControl.subscribe(this, (ChangeEventEnum[]) null);
+        ChangeEventControl.subscribe(LeftPane.class, (ChangeEventEnum[]) null);
     }
 
     /* public */
-    public void refreshComponent() {
+    public static void refreshComponent() {
         ObservableList<TreeItem<ColoredText>> treeViewItems = treeView.getRoot().getChildren();
         ArrayList<String> groupNames = TagElementControl.getGroups();
 
@@ -63,12 +64,12 @@ public class PaneLeft extends BorderPane implements ChangeEventListener {
             treeViewItems.add(groupTreeItem);
         }
     }
-    public void refreshTreeview() {
+    public static void refreshTreeview() {
         treeView.refresh();
     }
 
     /* private */
-    private void setCellFactory() {
+    private static void setCellFactory() {
         treeView.setCellFactory(treeView -> new TreeCell<>() {
             @Override
             protected void updateItem(ColoredText coloredText, boolean empty) {
@@ -91,5 +92,10 @@ public class PaneLeft extends BorderPane implements ChangeEventListener {
                 });
             }
         });
+    }
+
+    /* get */
+    public static Node getInstance() {
+        return _this;
     }
 }

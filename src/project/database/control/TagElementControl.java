@@ -2,24 +2,18 @@ package project.database.control;
 
 import javafx.scene.control.TreeCell;
 import project.control.FilterControl;
+import project.control.change.ChangeEventControl;
 import project.database.element.DataElement;
 import project.database.element.TagElement;
-import project.gui.change.ChangeEventControl;
-import project.gui.change.ChangeEventListener;
+import project.gui.component.LeftPane;
+import project.gui.component.RightPane;
 import project.gui.component.part.ColoredText;
-import project.gui.control.GUIStage;
 import project.gui.custom.TagEditor;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 
 public abstract class TagElementControl {
-    /* change */
-    private static final ArrayList<ChangeEventListener> changeListeners = new ArrayList<>();
-    public static ArrayList<ChangeEventListener> getChangeListeners() {
-        return changeListeners;
-    }
-
     /* vars */
     private static final ArrayList<TagElement> tagElements = new ArrayList<>();
 
@@ -28,12 +22,12 @@ public abstract class TagElementControl {
         if (tagElement != null && !TagElementControl.contains(tagElement)) {
             TagElementControl.getTagElements().add(tagElement);
             TagElementControl.sortSimple();
-            ChangeEventControl.requestReload(GUIStage.getPaneLeft());
+            ChangeEventControl.requestReload(LeftPane.class);
         }
     }
     public static void remove(TagElement tagElement) {
         if (tagElement != null) {
-            ArrayList<DataElement> dataElements = DataElementControl.getDataElements();
+            ArrayList<DataElement> dataElements = DataElementControl.getDataElementsLive();
             for (DataElement dataElement : dataElements) {
                 dataElement.getTagElements().remove(tagElement);
             }
@@ -52,7 +46,7 @@ public abstract class TagElementControl {
                 TagElementControl.getTagElement(tagElement).setName(editName);
                 TagElementControl.sortSimple();
 
-                ChangeEventControl.requestReload(GUIStage.getPaneLeft(), GUIStage.getPaneRight());
+                ChangeEventControl.requestReload(LeftPane.class, RightPane.class);
             }
         }
     }
@@ -73,7 +67,7 @@ public abstract class TagElementControl {
         FilterControl.getTagElementBlacklist().sort(tagElementComparator);
     }
     public static void initialize() {
-        ArrayList<DataElement> dataElements = DataElementControl.getDataElements();
+        ArrayList<DataElement> dataElements = DataElementControl.getDataElementsLive();
         for (DataElement dataElement : dataElements) {
             ArrayList<TagElement> tagElementsOfDataElement = dataElement.getTagElements();
             for (TagElement tagElementOfDataElement : tagElementsOfDataElement) {

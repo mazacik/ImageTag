@@ -1,20 +1,19 @@
 package project.control;
 
+import project.control.change.ChangeEventControl;
+import project.control.change.ChangeEventEnum;
 import project.database.control.DataElementControl;
 import project.database.element.DataElement;
 import project.database.element.TagElement;
-import project.gui.change.ChangeEventControl;
-import project.gui.change.ChangeEventEnum;
-import project.gui.change.ChangeEventListener;
-import project.gui.control.GUIStage;
+import project.gui.component.GalleryPane;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public abstract class SelectionControl {
     /* change */
-    private static final ArrayList<ChangeEventListener> changeListeners = new ArrayList<>();
-    public static ArrayList<ChangeEventListener> getChangeListeners() {
+    private static final ArrayList<Class> changeListeners = new ArrayList<>();
+    public static ArrayList<Class> getChangeListeners() {
         return changeListeners;
     }
 
@@ -52,9 +51,9 @@ public abstract class SelectionControl {
         addDataElement(dataElement);
     }
     public static void clearDataElements() {
-        ArrayList<DataElement> dataElements = DataElementControl.getDataElements();
-        for (DataElement dataElement : dataElements) {
-            DataElement currentFocus = FocusControl.getCurrentFocus();
+        SelectionControl.getDataElements().clear();
+        DataElement currentFocus = FocusControl.getCurrentFocus();
+        for (DataElement dataElement : DataElementControl.getDataElementsCopy()) {
             if (!dataElement.equals(currentFocus)) {
                 dataElement.getGalleryTile().setEffect(null);
             } else {
@@ -69,7 +68,7 @@ public abstract class SelectionControl {
         int randomIndex = new Random().nextInt(databaseItemsFilteredSize);
         SelectionControl.setDataElement(dataElementsFiltered.get(randomIndex));
 
-        GUIStage.getPaneGallery().adjustViewportToFocus();
+        GalleryPane.adjustViewportToFocus();
     }
     public static void swapSelectionStateOf(DataElement dataElement) {
         if (dataElement != null) {

@@ -1,5 +1,6 @@
 package project.gui.component;
 
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
@@ -7,43 +8,42 @@ import javafx.scene.layout.VBox;
 import project.control.FilterControl;
 import project.control.FocusControl;
 import project.control.SelectionControl;
+import project.control.change.ChangeEventControl;
+import project.control.change.ChangeEventEnum;
 import project.database.control.TagElementControl;
 import project.database.element.DataElement;
 import project.database.element.TagElement;
-import project.gui.change.ChangeEventControl;
-import project.gui.change.ChangeEventEnum;
-import project.gui.change.ChangeEventListener;
 import project.gui.control.GUIStage;
 
 import java.util.ArrayList;
 
-public class PaneRight extends BorderPane implements ChangeEventListener {
+public abstract class RightPane extends BorderPane {
     /* components */
-    private final ListView<String> listView = new ListView<>();
-    private final ComboBox cbGroup = new ComboBox();
-    private final ComboBox cbName = new ComboBox();
-    private final Button btnAdd = new Button("Add");
-    private final Button btnManage = new Button("New");
+    private static BorderPane _this = new BorderPane();
 
-    /* constructors */
-    public PaneRight() {
+    private static final ListView<String> listView = new ListView<>();
+    private static final ComboBox cbGroup = new ComboBox();
+    private static final ComboBox cbName = new ComboBox();
+    private static final Button btnAdd = new Button("Add");
+    private static final Button btnManage = new Button("New");
+
+    /* initialize */
+    public static void initialize() {
         initializeComponents();
         initializeProperties();
     }
-
-    /* initialize */
-    private void initializeComponents() {
+    private static void initializeComponents() {
         btnAdd.setStyle("-fx-focus-color: transparent;");
         btnAdd.setMinWidth(25);
-        btnAdd.prefWidthProperty().bind(prefWidthProperty());
+        btnAdd.prefWidthProperty().bind(_this.prefWidthProperty());
         listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
-        btnAdd.setMaxWidth(getMaxWidth());
-        btnManage.setMaxWidth(getMaxWidth());
-        cbGroup.setMaxWidth(getMaxWidth());
-        cbName.setMaxWidth(getMaxWidth());
+        btnAdd.setMaxWidth(_this.getMaxWidth());
+        btnManage.setMaxWidth(_this.getMaxWidth());
+        cbGroup.setMaxWidth(_this.getMaxWidth());
+        cbName.setMaxWidth(_this.getMaxWidth());
 
-        btnManage.prefWidthProperty().bind(prefWidthProperty());
+        btnManage.prefWidthProperty().bind(_this.prefWidthProperty());
         btnManage.setOnAction(event -> {
             TagElement newTagElement = TagElementControl.create();
             if (newTagElement == null) return;
@@ -52,13 +52,13 @@ public class PaneRight extends BorderPane implements ChangeEventListener {
             cbName.setValue(newTagElement.getName());
         });
 
-        cbGroup.prefWidthProperty().bind(prefWidthProperty());
+        cbGroup.prefWidthProperty().bind(_this.prefWidthProperty());
         cbGroup.setOnShown(event -> {
             cbGroup.getItems().clear();
             cbGroup.getItems().addAll(TagElementControl.getGroups());
         });
 
-        cbName.prefWidthProperty().bind(prefWidthProperty());
+        cbName.prefWidthProperty().bind(_this.prefWidthProperty());
         cbName.setOnShown(event -> {
             cbName.getItems().clear();
             if (cbGroup.getValue() != null && !cbGroup.getValue().toString().isEmpty()) {
@@ -68,7 +68,7 @@ public class PaneRight extends BorderPane implements ChangeEventListener {
 
         btnAdd.setOnAction(event -> addTagToSelection());
 
-        setOnKeyPressed(event -> {
+        _this.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 addTagToSelection();
             } else if (event.getCode() == KeyCode.DELETE) {
@@ -84,19 +84,19 @@ public class PaneRight extends BorderPane implements ChangeEventListener {
         listContextMenu.getItems().add(menuRemoveTag);
         listView.setContextMenu(listContextMenu);
     }
-    private void initializeProperties() {
-        setMinWidth(150);
-        setPrefWidth(200);
-        setMaxWidth(300);
+    private static void initializeProperties() {
+        _this.setMinWidth(150);
+        _this.setPrefWidth(200);
+        _this.setMaxWidth(300);
 
-        setCenter(listView);
-        setBottom(new VBox(2, cbGroup, cbName, btnAdd, btnManage));
+        _this.setCenter(listView);
+        _this.setBottom(new VBox(2, cbGroup, cbName, btnAdd, btnManage));
 
-        ChangeEventControl.subscribe(this, ChangeEventEnum.FOCUS, ChangeEventEnum.SELECTION);
+        ChangeEventControl.subscribe(RightPane.class, ChangeEventEnum.FOCUS, ChangeEventEnum.SELECTION);
     }
 
     /* public */
-    public void refreshComponent() {
+    public static void refreshComponent() {
         ArrayList<String> sharedTags = new ArrayList<>();
         if (SelectionControl.isSelectionEmpty()) {
             DataElement currentFocusedItem = FocusControl.getCurrentFocus();
@@ -114,7 +114,7 @@ public class PaneRight extends BorderPane implements ChangeEventListener {
     }
 
     /* private */
-    private void addTagToSelection() {
+    private static void addTagToSelection() {
         Object cbGroupValue = cbGroup.getValue();
         Object cbNameValue = cbName.getValue();
         String group = "";
@@ -141,7 +141,10 @@ public class PaneRight extends BorderPane implements ChangeEventListener {
     }
 
     /* get */
-    public ListView<String> getListView() {
+    public static ListView<String> getListView() {
         return listView;
+    }
+    public static Node getInstance() {
+        return _this;
     }
 }

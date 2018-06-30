@@ -5,48 +5,46 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import project.control.FocusControl;
+import project.control.change.ChangeEventControl;
+import project.control.change.ChangeEventEnum;
 import project.database.element.DataElement;
-import project.gui.change.ChangeEventControl;
-import project.gui.change.ChangeEventEnum;
-import project.gui.change.ChangeEventListener;
 import project.gui.control.GUIControl;
-import project.gui.control.GUIStage;
 import project.helper.Settings;
 
-public class PanePreview extends Pane implements ChangeEventListener {
+public abstract class PreviewPane extends Pane {
     /* components */
-    private final Canvas canvas = new Canvas();
+    private static final Pane _this = new Pane();
+    private static final Canvas canvas = new Canvas();
 
     /* vars */
-    private DataElement currentDataElement = null;
-    private Image currentPreviewImage = null;
+    private static DataElement currentDataElement = null;
+    private static Image currentPreviewImage = null;
 
-    /* constructors */
-    public PanePreview() {
+    /* initialize */
+    public static void initialize() {
         initializeComponents();
         initializeProperties();
     }
-
-    /* initialize */
-    private void initializeComponents() {
-        canvas.setOnMouseClicked(event -> requestFocus());
+    private static void initializeComponents() {
+        canvas.setOnMouseClicked(event -> _this.requestFocus());
     }
-    private void initializeProperties() {
-        getChildren().add(canvas);
+    private static void initializeProperties() {
+        _this.getChildren().add(canvas);
 
         ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) -> {
-            setCanvasSize(getWidth(), getHeight());
-            refreshComponent();
+            PreviewPane.setCanvasSize(_this.getWidth(), _this.getHeight());
+            ChangeEventControl.requestReload(PreviewPane.class);
         };
-        widthProperty().addListener(previewPaneSizeListener);
-        heightProperty().addListener(previewPaneSizeListener);
+        _this.widthProperty().addListener(previewPaneSizeListener);
+        _this.heightProperty().addListener(previewPaneSizeListener);
 
-        ChangeEventControl.subscribe(this, ChangeEventEnum.FOCUS);
+        ChangeEventControl.subscribe(PreviewPane.class, ChangeEventEnum.FOCUS);
     }
 
     /* public */
-    public void refreshComponent() {
+    public static void refreshComponent() {
         if (!GUIControl.isPreviewFullscreen()) return;
 
         DataElement currentFocus = FocusControl.getCurrentFocus();
@@ -74,18 +72,23 @@ public class PanePreview extends Pane implements ChangeEventListener {
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        gc.clearRect(0, 0, GUIStage.getPanePreview().getWidth(), GUIStage.getPanePreview().getHeight());
+        gc.clearRect(0, 0, _this.getWidth(), _this.getHeight());
         gc.drawImage(currentPreviewImage, resultX, resultY, resultWidth, resultHeight);
     }
 
     /* private */
-    private void loadImage() {
+    private static void loadImage() {
         String url = "file:" + Settings.getMainDirectoryPath() + "\\" + FocusControl.getCurrentFocus().getName();
         currentPreviewImage = new Image(url);
     }
 
+    /* get */
+    public static Region getInstance() {
+        return _this;
+    }
+
     /* set */
-    public void setCanvasSize(double width, double height) {
+    public static void setCanvasSize(double width, double height) {
         canvas.setWidth(width);
         canvas.setHeight(height);
     }

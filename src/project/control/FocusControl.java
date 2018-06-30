@@ -1,18 +1,17 @@
 package project.control;
 
 import javafx.scene.input.KeyCode;
+import project.control.change.ChangeEventControl;
+import project.control.change.ChangeEventEnum;
 import project.database.element.DataElement;
-import project.gui.change.ChangeEventControl;
-import project.gui.change.ChangeEventEnum;
-import project.gui.change.ChangeEventListener;
-import project.gui.control.GUIStage;
+import project.gui.component.GalleryPane;
 
 import java.util.ArrayList;
 
 public abstract class FocusControl {
     /* change */
-    private static final ArrayList<ChangeEventListener> changeListeners = new ArrayList<>();
-    public static ArrayList<ChangeEventListener> getChangeListeners() {
+    private static final ArrayList<Class> changeListeners = new ArrayList<>();
+    public static ArrayList<Class> getChangeListeners() {
         return changeListeners;
     }
 
@@ -48,18 +47,18 @@ public abstract class FocusControl {
 
         int newFocusPosition = databaseItemsFiltered.indexOf(focusedItem);
         if (keyCode.equals(KeyCode.W)) {
-            newFocusPosition -= GUIStage.getPaneGallery().getColumnCount();
+            newFocusPosition -= GalleryPane.getColumnCount();
         } else if (keyCode.equals(KeyCode.A)) {
             newFocusPosition -= 1;
         } else if (keyCode.equals(KeyCode.S)) {
-            newFocusPosition += GUIStage.getPaneGallery().getColumnCount();
+            newFocusPosition += GalleryPane.getColumnCount();
         } else if (keyCode.equals(KeyCode.D)) {
             newFocusPosition += 1;
         }
 
         if (newFocusPosition >= 0 && newFocusPosition < databaseItemsFiltered.size()) {
             FocusControl.setFocus(databaseItemsFiltered.get(newFocusPosition));
-            GUIStage.getPaneGallery().adjustViewportToFocus();
+            GalleryPane.adjustViewportToFocus();
         }
     }
 

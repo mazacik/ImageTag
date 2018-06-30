@@ -4,60 +4,69 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.TilePane;
 import project.control.FilterControl;
 import project.control.FocusControl;
+import project.control.change.ChangeEventControl;
+import project.control.change.ChangeEventEnum;
 import project.database.control.DataElementControl;
 import project.database.element.DataElement;
-import project.gui.change.ChangeEventControl;
-import project.gui.change.ChangeEventEnum;
-import project.gui.change.ChangeEventListener;
 import project.gui.control.GUIControl;
 import project.helper.Settings;
 
-public class PaneGallery extends ScrollPane implements ChangeEventListener {
+public abstract class GalleryPane extends ScrollPane {
     /* components */
-    private final TilePane tilePane = new TilePane();
-    private final ObservableList<Node> tilePaneItems = tilePane.getChildren();
+    private static final ScrollPane _this = new ScrollPane();
+    private static final TilePane tilePane = new TilePane();
 
-    private static final int galleryIconSizePref = Settings.getGalleryIconSizePref();
+    /* const */
+    private static final int GALLERY_ICON_SIZE_PREF = Settings.getGalleryIconSizePref();
 
-    /* constructors */
-    public PaneGallery() {
+    /* initialize */
+    public static void initialize() {
         initializeComponents();
         initializeProperties();
     }
-
-    /* initialize */
-    private void initializeComponents() {
+    private static void initializeComponents() {
         tilePane.setVgap(3);
-        tilePane.setPrefTileWidth(galleryIconSizePref);
-        tilePane.setPrefTileHeight(galleryIconSizePref);
+        tilePane.setPrefTileWidth(GALLERY_ICON_SIZE_PREF);
+        tilePane.setPrefTileHeight(GALLERY_ICON_SIZE_PREF);
     }
-    private void initializeProperties() {
-        setHbarPolicy(ScrollBarPolicy.NEVER);
-        setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
-        setMinViewportWidth(galleryIconSizePref);
-        setFitToWidth(true);
+    private static void initializeProperties() {
+        _this.setHbarPolicy(ScrollBarPolicy.NEVER);
+        _this.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+        _this.setMinViewportWidth(GALLERY_ICON_SIZE_PREF);
+        _this.setFitToWidth(true);
 
-        setContent(tilePane);
+        _this.setContent(tilePane);
 
-        setOnScrollListener();
-        setWidthPropertyListener();
+        GalleryPane.setOnScrollListener();
+        GalleryPane.setWidthPropertyListener();
 
-        ChangeEventControl.subscribe(this, ChangeEventEnum.FILTER, ChangeEventEnum.FOCUS);
+        ChangeEventControl.subscribe(GalleryPane.class, ChangeEventEnum.FILTER, ChangeEventEnum.SELECTION);
     }
 
     /* public */
-    public void adjustViewportToFocus() {
+    public static void refreshComponent() {
+        if (GUIControl.isPreviewFullscreen()) return;
+
+        ObservableList<Node> tilePaneItems = tilePane.getChildren();
+        tilePaneItems.clear();
+        for (DataElement dataElement : FilterControl.getValidDataElements()) {
+            tilePaneItems.add(dataElement.getGalleryTile());
+        }
+    }
+    public static void adjustViewportToFocus() {
         DataElement currentFocusedItem = FocusControl.getCurrentFocus();
         if (currentFocusedItem == null) return;
+        ObservableList<Node> tilePaneItems = tilePane.getChildren();
 
-        int columnCount = getColumnCount();
+        int columnCount = GalleryPane.getColumnCount();
         int focusIndex = FilterControl.getValidDataElements().indexOf(currentFocusedItem);
         int focusRow = focusIndex / columnCount;
 
-        Bounds viewportBounds = getViewportBounds();
+        Bounds viewportBounds = _this.getViewportBounds();
         Bounds tileBounds = tilePaneItems.get(focusIndex).getBoundsInParent();
 
         double viewportHeight = viewportBounds.getHeight();
@@ -73,22 +82,14 @@ public class PaneGallery extends ScrollPane implements ChangeEventListener {
         double tileBottom = tileBounds.getMinY();
 
         if (viewportTop + rowHeight > tileTop) {
-            setVvalue(focusRow * rowToContentRatio);
+            _this.setVvalue(focusRow * rowToContentRatio);
         } else if (viewportBottom - rowHeight < tileBottom) {
-            setVvalue((focusRow + 1) * rowToContentRatio - viewportToContentRatio);
-        }
-    }
-    public void refreshComponent() {
-        if (GUIControl.isPreviewFullscreen()) return;
-
-        tilePaneItems.clear();
-        for (DataElement dataElement : FilterControl.getValidDataElements()) {
-            tilePaneItems.add(dataElement.getGalleryTile());
+            _this.setVvalue((focusRow + 1) * rowToContentRatio - viewportToContentRatio);
         }
     }
 
     /* private */
-    private void recalculateHgap() {
+    private static void recalculateHgap() {
         int tilePaneWidth = (int) tilePane.getWidth();
         int prefTileWidth = (int) tilePane.getPrefTileWidth();
         int columnCount = tilePaneWidth / prefTileWidth;
@@ -98,7 +99,7 @@ public class PaneGallery extends ScrollPane implements ChangeEventListener {
     }
 
     /* event */
-    private void setOnScrollListener() {
+    private static void setOnScrollListener() {
         int galleryIconSizeMax = Settings.getGalleryIconSizeMax();
         int galleryIconSizeMin = Settings.getGalleryIconSizeMin();
         int galleryIconSizePref = Settings.getGalleryIconSizePref();
@@ -120,7 +121,7 @@ public class PaneGallery extends ScrollPane implements ChangeEventListener {
                 tilePane.setPrefTileWidth(galleryIconSizePref);
                 tilePane.setPrefTileHeight(galleryIconSizePref);
 
-                for (DataElement dataElement : DataElementControl.getDataElements()) {
+                for (DataElement dataElement : DataElementControl.getDataElementsLive()) {
                     dataElement.getGalleryTile().setFitWidth(galleryIconSizePref);
                     dataElement.getGalleryTile().setFitHeight(galleryIconSizePref);
                 }
@@ -128,14 +129,17 @@ public class PaneGallery extends ScrollPane implements ChangeEventListener {
             }
         });
     }
-    private void setWidthPropertyListener() {
+    private static void setWidthPropertyListener() {
         tilePane.widthProperty().addListener((observable, oldValue, newValue) -> recalculateHgap());
     }
 
     /* get */
-    public int getColumnCount() {
+    public static int getColumnCount() {
         int tilePaneWidth = (int) tilePane.getWidth();
         int prefTileWidth = (int) tilePane.getPrefTileWidth();
         return tilePaneWidth / prefTileWidth;
+    }
+    public static Region getInstance() {
+        return _this;
     }
 }

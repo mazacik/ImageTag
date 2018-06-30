@@ -17,9 +17,13 @@ public class TagEditor extends Stage {
     private final TextField tfName = new TextField();
     private final Button btnOK = new Button("OK");
 
+    /* vars */
+    TagElement tagElement;
+
     /* constructors */
     public TagEditor(TagElement tagElement) {
-        initializeComponents(tagElement);
+        this.tagElement = tagElement;
+        initializeComponents();
         initializeProperties();
     }
 
@@ -29,17 +33,20 @@ public class TagEditor extends Stage {
 
     /* public */
     public TagElement getResult() {
+        return tagElement;
+    }
+
+    /* private */
+    private void getValue() {
         String group = tfGroup.getText();
         String name = tfName.getText();
         if (!group.isEmpty() && !name.isEmpty()) {
-            return new TagElement(group, name);
-        } else {
-            return null;
+            tagElement = new TagElement(group, name);
         }
     }
 
     /* initialize */
-    private void initializeComponents(TagElement tagElement) {
+    private void initializeComponents() {
         editorPane.setCenter(new VBox(2, tfGroup, tfName));
         editorPane.setBottom(btnOK);
 
@@ -53,7 +60,10 @@ public class TagEditor extends Stage {
         tfName.prefWidthProperty().bind(widthProperty());
         btnOK.prefWidthProperty().bind(widthProperty());
 
-        btnOK.setOnAction(event -> close());
+        btnOK.setOnAction(event -> {
+            getValue();
+            close();
+        });
     }
     private void initializeProperties() {
         setTitle("Tag Editor");

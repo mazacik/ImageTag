@@ -12,7 +12,17 @@ public abstract class DataElementControl {
     private static final ArrayList<DataElement> dataElements = new ArrayList<>();
 
     /* public */
-    public static void sort() {
+    public static boolean add(DataElement dataElement) {
+        return DataElementControl.getDataElements().add(dataElement);
+    }
+    public static boolean addAll(ArrayList<DataElement> dataElements) {
+        return DataElementControl.getDataElements().addAll(dataElements);
+    }
+    public static boolean remove(DataElement dataElement) {
+        return DataElementControl.getDataElements().remove(dataElement);
+    }
+
+    public static void sortAll() {
         Comparator dataElementComparator = Comparator.comparing(DataElement::getName);
         DataElementControl.getDataElements().sort(dataElementComparator);
         FilterControl.getValidDataElements().sort(dataElementComparator);
@@ -20,7 +30,13 @@ public abstract class DataElementControl {
     }
 
     /* get */
-    public static ArrayList<DataElement> getDataElements() {
+    public static ArrayList<DataElement> getDataElementsLive() {
+        return dataElements;
+    }
+    public static ArrayList<DataElement> getDataElementsCopy() {
+        return new ArrayList<>(dataElements);
+    }
+    private static ArrayList<DataElement> getDataElements() {
         return dataElements;
     }
 }

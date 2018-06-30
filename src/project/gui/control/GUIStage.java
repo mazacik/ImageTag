@@ -1,65 +1,73 @@
 package project.gui.control;
 
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import project.control.change.ChangeEventControl;
 import project.database.loader.Serialization;
-import project.gui.change.ChangeEventControl;
 import project.gui.component.*;
 import project.helper.Keybinds;
 
 public class GUIStage extends Stage {
-    /* components */
-    private static final PaneTop paneTop = new PaneTop();
-    private static final PaneLeft paneLeft = new PaneLeft();
-    private static final PaneGallery paneGallery = new PaneGallery();
-    private static final PanePreview panePreview = new PanePreview();
-    private static final PaneRight paneRight = new PaneRight();
+    /* imports */
+    private static final Node TOP_PANE = TopPane.getInstance();
+    private static final Node LEFT_PANE = LeftPane.getInstance();
+    private static final Node GALLERY_PANE = GalleryPane.getInstance();
+    private static final Node PREVIEW_PANE = PreviewPane.getInstance();
+    private static final Node RIGHT_PANE = RightPane.getInstance();
 
-    private static final SplitPane paneSplit = new SplitPane(paneLeft, paneGallery, paneRight);
-    private static final BorderPane paneMain = new BorderPane(paneSplit, paneTop, null, null, null);
-    private static final Scene sceneMain = new Scene(paneMain);
+    /* components */
+    private static final SplitPane SPLIT_PANE = new SplitPane(LEFT_PANE, GALLERY_PANE, RIGHT_PANE);
+    private static final BorderPane MAIN_PANE = new BorderPane(SPLIT_PANE, TOP_PANE, null, null, null);
+    private static final Scene MAIN_SCENE = new Scene(MAIN_PANE);
 
     /* constructors */
     public GUIStage() {
         initializeComponents();
         initializeProperties();
-        Keybinds.initialize(sceneMain);
+        Keybinds.initialize(MAIN_SCENE);
         ChangeEventControl.requestReloadGlobal();
     }
 
     /* initialize */
     private void initializeComponents() {
-        paneSplit.setDividerPositions(0.0, 1.0);
+        TopPane.initialize();
+        LeftPane.initialize();
+        GalleryPane.initialize();
+        PreviewPane.initialize();
+        RightPane.initialize();
+
+        SPLIT_PANE.setDividerPositions(0.0, 1.0);
     }
     private void initializeProperties() {
         setTitle("JavaExplorer");
         setMinWidth(800);
         setMinHeight(600);
         setMaximized(true);
-        setScene(sceneMain);
+        setScene(MAIN_SCENE);
         setOnCloseRequest(event -> Serialization.writeToDisk());
         show();
     }
 
     /* get */
-    public static PaneTop getPaneTop() {
-        return paneTop;
+    public static Node getPaneTop() {
+        return TOP_PANE;
     }
-    public static PaneLeft getPaneLeft() {
-        return paneLeft;
+    public static Node getLeftPane() {
+        return LEFT_PANE;
     }
-    public static PaneGallery getPaneGallery() {
-        return paneGallery;
+    public static Node getGalleryPane() {
+        return GALLERY_PANE;
     }
-    public static PanePreview getPanePreview() {
-        return panePreview;
+    public static Node getPanePreview() {
+        return PREVIEW_PANE;
     }
-    public static PaneRight getPaneRight() {
-        return paneRight;
+    public static Node getPaneRight() {
+        return RIGHT_PANE;
     }
-    public static SplitPane getPaneSplit() {
-        return paneSplit;
+    public static SplitPane getSplitPane() {
+        return SPLIT_PANE;
     }
 }

@@ -1,17 +1,24 @@
 package project.control;
 
 import javafx.collections.ObservableList;
+import project.control.change.ChangeEventControl;
 import project.database.control.DataElementControl;
 import project.database.control.TagElementControl;
 import project.database.element.DataElement;
 import project.database.element.TagElement;
-import project.gui.change.ChangeEventControl;
-import project.gui.control.GUIStage;
+import project.gui.component.GalleryPane;
+import project.gui.component.RightPane;
 import project.gui.custom.generic.NumberInputWindow;
 
 import java.util.ArrayList;
 
 public abstract class FilterControl {
+    /* change */
+    private static final ArrayList<Class> changeListeners = new ArrayList<>();
+    public static ArrayList<Class> getChangeListeners() {
+        return changeListeners;
+    }
+
     /* vars */
     private static final ArrayList<DataElement> validDataElements = new ArrayList<>();
 
@@ -20,7 +27,7 @@ public abstract class FilterControl {
 
     /* public */
     public static void refreshValidDataElements() {
-        ArrayList<DataElement> dataElements = DataElementControl.getDataElements();
+        ArrayList<DataElement> dataElements = DataElementControl.getDataElementsCopy();
         validDataElements.clear();
         if (tagElementWhitelist.isEmpty() && tagElementBlacklist.isEmpty()) {
             validDataElements.addAll(dataElements);
@@ -41,7 +48,7 @@ public abstract class FilterControl {
             }
         }
 
-        ChangeEventControl.requestReload(GUIStage.getPaneGallery());
+        ChangeEventControl.requestReload(GalleryPane.class);
     }
     public static void addTagElementToDataElementSelection(TagElement tagElement) {
         if (tagElement != null && !tagElement.isEmpty()) {
@@ -55,12 +62,12 @@ public abstract class FilterControl {
                     dataElement.getTagElements().add(tagElement);
                 }
 
-            ChangeEventControl.requestReload(GUIStage.getPaneRight());
+            ChangeEventControl.requestReload(RightPane.class);
         }
     }
     public static void removeTagElementSelectionFromDataElementSelection() {
         ArrayList<TagElement> tagElementsToRemove = new ArrayList<>();
-        ObservableList<String> tagElementSelection = GUIStage.getPaneRight().getListView().getSelectionModel().getSelectedItems();
+        ObservableList<String> tagElementSelection = RightPane.getListView().getSelectionModel().getSelectedItems();
         for (String tagElement : tagElementSelection) {
             tagElementsToRemove.add(TagElementControl.getTagElement(tagElement));
         }
@@ -72,7 +79,7 @@ public abstract class FilterControl {
             }
 
             boolean tagExists = false;
-            ArrayList<DataElement> dataElements = DataElementControl.getDataElements();
+            ArrayList<DataElement> dataElements = DataElementControl.getDataElementsCopy();
             for (DataElement dataElement : dataElements) {
                 if (dataElement.getTagElements().contains(tagElement)) {
                     tagExists = true;
@@ -141,12 +148,12 @@ public abstract class FilterControl {
         FilterControl.getValidDataElements().clear();
         FilterControl.getTagElementWhitelist().clear();
         FilterControl.getTagElementBlacklist().clear();
-        for (DataElement dataElement : DataElementControl.getDataElements()) {
+        for (DataElement dataElement : DataElementControl.getDataElementsCopy()) {
             if (dataElement.getTagElements().size() <= maxTags) {
                 FilterControl.getValidDataElements().add(dataElement);
             }
         }
-        ChangeEventControl.requestReload(GUIStage.getPaneGallery());
+        ChangeEventControl.requestReload(GalleryPane.class);
     }
     public static void customFilterResetFiltering() {
         FilterControl.getTagElementWhitelist().clear();
