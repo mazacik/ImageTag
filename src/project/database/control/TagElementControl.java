@@ -2,9 +2,10 @@ package project.database.control;
 
 import javafx.scene.control.TreeCell;
 import project.control.FilterControl;
-import project.control.change.ChangeEventControl;
+import project.control.ReloadControl;
 import project.database.element.DataElement;
 import project.database.element.TagElement;
+import project.gui.component.GalleryPane;
 import project.gui.component.LeftPane;
 import project.gui.component.RightPane;
 import project.gui.component.part.ColoredText;
@@ -22,7 +23,7 @@ public abstract class TagElementControl {
         if (tagElement != null && !TagElementControl.contains(tagElement)) {
             TagElementControl.getTagElements().add(tagElement);
             TagElementControl.sortSimple();
-            ChangeEventControl.requestReload(LeftPane.class);
+            ReloadControl.requestReloadOf(LeftPane.class, RightPane.class);
         }
     }
     public static void remove(TagElement tagElement) {
@@ -32,8 +33,9 @@ public abstract class TagElementControl {
                 dataElement.getTagElements().remove(tagElement);
             }
             FilterControl.unlistTagElement(tagElement);
+            FilterControl.revalidateDataElements();
             TagElementControl.getTagElements().remove(tagElement);
-            ChangeEventControl.requestReloadGlobal();
+            ReloadControl.requestReloadOf(true, LeftPane.class, GalleryPane.class, RightPane.class);
         }
     }
     public static void edit(TagElement tagElement) {
@@ -46,7 +48,7 @@ public abstract class TagElementControl {
                 TagElementControl.getTagElement(tagElement).setName(editName);
                 TagElementControl.sortSimple();
 
-                ChangeEventControl.requestReload(LeftPane.class, RightPane.class);
+                ReloadControl.requestReloadOf(true, LeftPane.class, RightPane.class);
             }
         }
     }

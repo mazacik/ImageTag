@@ -8,15 +8,15 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import project.control.FilterControl;
 import project.control.FocusControl;
+import project.control.ReloadControl;
 import project.control.SelectionControl;
-import project.control.change.ChangeEventControl;
-import project.control.change.ChangeEventEnum;
 import project.database.control.TagElementControl;
 import project.database.element.DataElement;
 import project.database.element.TagElement;
 
 import java.util.ArrayList;
 
+//todo where is the rest of this component's functionality? (why is it not here?)
 public abstract class RightPane {
     /* components */
     private static BorderPane _this = new BorderPane();
@@ -32,7 +32,7 @@ public abstract class RightPane {
         initializeComponents();
         initializeProperties();
     }
-    private static void initializeComponents() {
+    private static void initializeComponents() /* todo split into parts */ {
         btnAdd.setStyle("-fx-focus-color: transparent;");
         btnAdd.setMinWidth(25);
         btnAdd.setPadding(new Insets(0, 0, 2, 0));
@@ -48,15 +48,19 @@ public abstract class RightPane {
         btnNew.setOnAction(event -> {
             TagElement newTagElement = TagElementControl.create();
             if (newTagElement != null) {
+                //todo shares most with onShowing events, do something about it
                 TagElementControl.add(newTagElement);
+                cbGroup.getItems().setAll(TagElementControl.getGroups());
                 cbGroup.getSelectionModel().select(newTagElement.getGroup());
+                Object value = cbGroup.getValue();
+                String group = value.toString();
+                cbName.getItems().setAll(TagElementControl.getNamesInGroup(group));
                 cbName.getSelectionModel().select(newTagElement.getName());
             }
         });
 
 
         cbGroup.prefWidthProperty().bind(_this.prefWidthProperty());
-        cbGroup.setVisibleRowCount(20);
         cbGroup.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 cbName.setDisable(false);
@@ -67,11 +71,12 @@ public abstract class RightPane {
                 cbName.setDisable(true);
             }
         });
+        cbGroup.setVisibleRowCount(30);
         cbGroup.setOnShowing(event -> cbGroup.getItems().setAll(TagElementControl.getGroups()));
 
         cbName.prefWidthProperty().bind(_this.prefWidthProperty());
         cbName.setDisable(true);
-        cbName.setVisibleRowCount(20);
+        cbName.setVisibleRowCount(30);
         cbName.setOnShowing(event -> {
             Object value = cbGroup.getValue();
             String group = value.toString();
@@ -110,12 +115,10 @@ public abstract class RightPane {
 
         _this.setCenter(listView);
         _this.setTop(new VBox(2, cbGroup, cbName, btnAdd, btnNew));
-
-        ChangeEventControl.subscribe(RightPane.class, ChangeEventEnum.FOCUS, ChangeEventEnum.SELECTION);
     }
 
     /* public */
-    public static void refreshComponent() {
+    public static void reload() {
         ArrayList<String> sharedTags = new ArrayList<>();
         if (SelectionControl.isSelectionEmpty()) {
             DataElement currentFocusedItem = FocusControl.getCurrentFocus();
@@ -133,7 +136,7 @@ public abstract class RightPane {
     }
 
     /* private */
-    private static void addTagToSelection() {
+    private static void addTagToSelection() /* todo split into parts */ {
         Object cbGroupValue = cbGroup.getValue();
         Object cbNameValue = cbName.getValue();
         String group = "";
@@ -155,6 +158,7 @@ public abstract class RightPane {
                 }
             } else {
                 FilterControl.addTagElementToDataElementSelection(tagElement);
+                ReloadControl.doReload();
             }
         }
     }

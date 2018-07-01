@@ -42,7 +42,7 @@ public class DatabaseLoader extends Thread {
     public void run() {
         initialization();
         deserialization();
-        verification();
+        validation();
         finalization();
         TagElementControl.initialize();
     }
@@ -64,7 +64,7 @@ public class DatabaseLoader extends Thread {
             createDatabaseCache();
         }
     }
-    private void verification() {
+    private void validation() {
         ArrayList<String> dataElementsItemNames = new ArrayList<>();
         ArrayList<String> validFilesItemNames = new ArrayList<>();
 
@@ -79,7 +79,7 @@ public class DatabaseLoader extends Thread {
         validFilesItemNames.sort(Comparator.naturalOrder());
 
         if (!dataElementsItemNames.equals(validFilesItemNames)) {
-            rebuildDatabaseCache(dataElementsItemNames, validFilesItemNames);
+            validateDatabaseCache(dataElementsItemNames, validFilesItemNames);
         }
     }
     private void finalization() {
@@ -102,7 +102,7 @@ public class DatabaseLoader extends Thread {
 
         Serialization.writeToDisk();
     }
-    private void rebuildDatabaseCache(ArrayList<String> dataElementsItemNames, ArrayList<String> validFilesItemNames) {
+    private void validateDatabaseCache(ArrayList<String> dataElementsItemNames, ArrayList<String> validFilesItemNames) {
         /* add unrecognized items */
         for (File file : validFiles) {
             if (!dataElementsItemNames.contains(file.getName())) {

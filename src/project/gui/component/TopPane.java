@@ -7,9 +7,8 @@ import javafx.stage.WindowEvent;
 import project.Main;
 import project.control.FilterControl;
 import project.control.FocusControl;
+import project.control.ReloadControl;
 import project.control.SelectionControl;
-import project.control.change.ChangeEventControl;
-import project.control.change.ChangeEventEnum;
 import project.database.element.DataElement;
 import project.database.loader.Serialization;
 
@@ -52,12 +51,10 @@ public abstract class TopPane {
     private static void initializeProperties() {
         _this.setCenter(new MenuBar(menuFile, menuSelection, menuFilter));
         _this.setRight(infoLabelMenuBar);
-
-        ChangeEventControl.subscribe(TopPane.class, ChangeEventEnum.FOCUS);
     }
 
     /* public */
-    public static void refreshComponent() {
+    public static void reload() {
         DataElement currentFocusedItem = FocusControl.getCurrentFocus();
         if (currentFocusedItem != null) {
             infoLabelMenu.setText(currentFocusedItem.getName());
@@ -78,6 +75,7 @@ public abstract class TopPane {
             menuUntaggedOnly.setSelected(true);
             menuLessThanXTags.setSelected(false);
             FilterControl.revalidateDataElements();
+            ReloadControl.doReload();
         });
         menuLessThanXTags.setOnAction(event -> {
             FilterControl.setCustomFilterUntaggedOnly(false);
@@ -85,12 +83,14 @@ public abstract class TopPane {
             menuUntaggedOnly.setSelected(false);
             menuLessThanXTags.setSelected(true);
             FilterControl.customFilterLessThanXTags();
+            ReloadControl.doReload();
         });
         menuRefresh.setOnAction(event -> FilterControl.revalidateDataElements());
         menuReset.setOnAction(event -> {
             menuUntaggedOnly.setSelected(false);
             menuLessThanXTags.setSelected(false);
             FilterControl.customFilterResetFiltering();
+            ReloadControl.doReload();
         });
     }
 

@@ -4,7 +4,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import project.control.change.ChangeEventControl;
+import project.control.ReloadControl;
 import project.database.loader.Serialization;
 import project.gui.component.*;
 import project.helper.Keybinds;
@@ -22,7 +22,7 @@ public abstract class GUIStage extends Stage {
         initializeComponents();
         initializeProperties();
         Keybinds.initialize(mainScene);
-        ChangeEventControl.requestReloadGlobal();
+        ReloadControl.requestReloadGlobal(true);
     }
     private static void initializeComponents() {
         TopPane.initialize();

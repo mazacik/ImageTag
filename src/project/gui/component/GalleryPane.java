@@ -8,20 +8,18 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.TilePane;
 import project.control.FilterControl;
 import project.control.FocusControl;
-import project.control.change.ChangeEventControl;
-import project.control.change.ChangeEventEnum;
 import project.database.control.DataElementControl;
 import project.database.element.DataElement;
 import project.gui.control.GUIControl;
 import project.helper.Settings;
 
 public abstract class GalleryPane {
+    /* const */
+    private static final int GALLERY_ICON_SIZE_PREF = Settings.getGalleryIconSizePref();
+
     /* components */
     private static final ScrollPane _this = new ScrollPane();
     private static final TilePane tilePane = new TilePane();
-
-    /* const */
-    private static final int GALLERY_ICON_SIZE_PREF = Settings.getGalleryIconSizePref();
 
     /* initialize */
     public static void initialize() {
@@ -43,12 +41,10 @@ public abstract class GalleryPane {
 
         GalleryPane.setOnScrollListener();
         GalleryPane.setWidthPropertyListener();
-
-        ChangeEventControl.subscribe(GalleryPane.class, ChangeEventEnum.FILTER, ChangeEventEnum.SELECTION);
     }
 
     /* public */
-    public static void refreshComponent() {
+    public static void reload() {
         if (GUIControl.isPreviewFullscreen()) return;
 
         double scrollbarValue = _this.getVvalue();

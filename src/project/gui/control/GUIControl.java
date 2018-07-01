@@ -4,7 +4,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.Region;
-import project.control.change.ChangeEventControl;
+import project.control.ReloadControl;
 import project.gui.component.GalleryPane;
 import project.gui.component.PreviewPane;
 
@@ -21,7 +21,7 @@ public abstract class GUIControl {
         if (SPLITPANE_ITEMS.contains(GALLERYPANE)) {
             SPLITPANE_ITEMS.set(SPLITPANE_ITEMS.indexOf(GALLERYPANE), PREVIEWPANE);
             PreviewPane.setCanvasSize(GALLERYPANE.getWidth(), GALLERYPANE.getHeight());
-            ChangeEventControl.requestReload(PreviewPane.class);
+            ReloadControl.requestReloadOf(PreviewPane.class);
         } else {
             SPLITPANE_ITEMS.set(SPLITPANE_ITEMS.indexOf(PREVIEWPANE), GALLERYPANE);
         }

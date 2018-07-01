@@ -1,20 +1,15 @@
 package project.control;
 
 import javafx.scene.input.KeyCode;
-import project.control.change.ChangeEventControl;
-import project.control.change.ChangeEventEnum;
 import project.database.element.DataElement;
 import project.gui.component.GalleryPane;
+import project.gui.component.PreviewPane;
+import project.gui.component.RightPane;
+import project.gui.component.TopPane;
 
 import java.util.ArrayList;
 
 public abstract class FocusControl {
-    /* change */
-    private static final ArrayList<Class> changeListeners = new ArrayList<>();
-    public static ArrayList<Class> getChangeListeners() {
-        return changeListeners;
-    }
-
     /* vars */
     private static DataElement currentFocus = null;
     private static DataElement previousFocus = null;
@@ -34,7 +29,7 @@ public abstract class FocusControl {
             previousFocus.getGalleryTile().generateEffect();
         }
 
-        ChangeEventControl.notifyListeners(ChangeEventEnum.FOCUS);
+        ReloadControl.requestReloadOf(true, TopPane.class, GalleryPane.class, PreviewPane.class, RightPane.class);
     }
     public static void moveFocusByKeyCode(KeyCode keyCode) {
         ArrayList<DataElement> databaseItemsFiltered = FilterControl.getValidDataElements();

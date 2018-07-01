@@ -1,7 +1,6 @@
 package project.control;
 
 import javafx.collections.ObservableList;
-import project.control.change.ChangeEventControl;
 import project.database.control.DataElementControl;
 import project.database.control.TagElementControl;
 import project.database.element.DataElement;
@@ -14,12 +13,6 @@ import project.gui.custom.generic.NumberInputWindow;
 import java.util.ArrayList;
 
 public abstract class FilterControl {
-    /* change */
-    private static final ArrayList<Class> changeListeners = new ArrayList<>();
-    public static ArrayList<Class> getChangeListeners() {
-        return changeListeners;
-    }
-
     /* vars */
     private static final ArrayList<DataElement> validDataElements = new ArrayList<>();
 
@@ -31,7 +24,7 @@ public abstract class FilterControl {
     private static int customFilterLessThanXTagsMax = 0;
 
     /* public */
-    public static void revalidateDataElements() {
+    public static void revalidateDataElements(boolean suppressNotification) {
         if (customFilterUntaggedOnly) {
             customFilterUntaggedOnly();
         } else if (customFilterLessThanXTags) {
@@ -71,8 +64,12 @@ public abstract class FilterControl {
                 }
             }
         }
-
-        ChangeEventControl.requestReload(LeftPane.class, GalleryPane.class);
+        if (!suppressNotification) {
+            ReloadControl.requestReloadOf(LeftPane.class, GalleryPane.class);
+        }
+    }
+    public static void revalidateDataElements() {
+        revalidateDataElements(false);
     }
     public static void addTagElementToDataElementSelection(TagElement tagElement) {
         if (tagElement != null && !tagElement.isEmpty()) {
@@ -86,7 +83,7 @@ public abstract class FilterControl {
                     dataElement.getTagElements().add(tagElement);
                 }
 
-            ChangeEventControl.requestReload(RightPane.class);
+            ReloadControl.requestReloadOf(RightPane.class);
         }
     }
     public static void removeTagElementSelectionFromDataElementSelection() {
@@ -116,7 +113,7 @@ public abstract class FilterControl {
             }
         }
 
-        ChangeEventControl.requestReloadGlobal();
+        ReloadControl.requestReloadOf(LeftPane.class, RightPane.class);
     }
 
     public static void whitelistGroup(String group) {
@@ -181,7 +178,7 @@ public abstract class FilterControl {
                 FilterControl.getValidDataElements().add(dataElement);
             }
         }
-        ChangeEventControl.requestReload(GalleryPane.class);
+        ReloadControl.requestReloadOf(GalleryPane.class);
     }
     public static void customFilterResetFiltering() {
         customFilterUntaggedOnly = false;
@@ -230,6 +227,7 @@ public abstract class FilterControl {
 
     /* get */
     public static ArrayList<DataElement> getValidDataElements() {
+        FilterControl.revalidateDataElements(true);
         return validDataElements;
     }
 
@@ -240,12 +238,6 @@ public abstract class FilterControl {
         return tagElementBlacklist;
     }
 
-    public static boolean isCustomFilterUntaggedOnly() {
-        return customFilterUntaggedOnly;
-    }
-    public static boolean isCustomFilterLessThanXTags() {
-        return customFilterLessThanXTags;
-    }
     /* set */
     public static void setCustomFilterUntaggedOnly(boolean value) {
         customFilterUntaggedOnly = value;

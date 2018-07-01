@@ -10,8 +10,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import project.control.FilterControl;
-import project.control.change.ChangeEventControl;
-import project.control.change.ChangeEventEnum;
 import project.database.control.TagElementControl;
 import project.gui.component.part.ColoredText;
 
@@ -31,12 +29,10 @@ public abstract class LeftPane {
         treeView.setShowRoot(false);
         LeftPane.setCellFactory();
         _this.setCenter(treeView);
-
-        ChangeEventControl.subscribe(LeftPane.class, (ChangeEventEnum[]) null);
     }
 
     /* public */
-    public static void refreshComponent() {
+    public static void reload() {
         ObservableList<TreeItem<ColoredText>> treeViewItems = treeView.getRoot().getChildren();
         ArrayList<String> groupNames = TagElementControl.getGroups();
 

@@ -1,31 +1,25 @@
 package project.control;
 
-import project.control.change.ChangeEventControl;
-import project.control.change.ChangeEventEnum;
 import project.database.control.DataElementControl;
 import project.database.element.DataElement;
 import project.database.element.TagElement;
 import project.gui.component.GalleryPane;
+import project.gui.component.RightPane;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public abstract class SelectionControl {
-    /* change */
-    private static final ArrayList<Class> changeListeners = new ArrayList<>();
-    public static ArrayList<Class> getChangeListeners() {
-        return changeListeners;
-    }
-
     /* vars */
     private static final ArrayList<DataElement> dataElements = new ArrayList<>();
 
     /* public */
+    //todo add GalleryPane to reload requests if there's a problem
     public static void addDataElement(DataElement dataElement) {
         if (dataElement != null && !dataElements.contains(dataElement)) {
             dataElements.add(dataElement);
             dataElement.getGalleryTile().generateEffect();
-            ChangeEventControl.notifyListeners(ChangeEventEnum.SELECTION);
+            ReloadControl.requestReloadOf(RightPane.class);
         }
     }
     public static void addDataElement(ArrayList<DataElement> dataElementsToAdd) {
@@ -36,14 +30,14 @@ public abstract class SelectionControl {
                     dataElement.getGalleryTile().generateEffect();
                 }
             }
-            ChangeEventControl.notifyListeners(ChangeEventEnum.SELECTION);
+            ReloadControl.requestReloadOf(RightPane.class);
         }
     }
     public static void removeDataElement(DataElement dataElement) {
         if (dataElement != null && dataElements.contains(dataElement)) {
             dataElements.remove(dataElement);
             dataElement.getGalleryTile().generateEffect();
-            ChangeEventControl.notifyListeners(ChangeEventEnum.SELECTION);
+            ReloadControl.requestReloadOf(RightPane.class);
         }
     }
     public static void setDataElement(DataElement dataElement) {
@@ -61,7 +55,7 @@ public abstract class SelectionControl {
                 dataElement.getGalleryTile().generateEffect();
             }
         }
-        ChangeEventControl.notifyListeners(ChangeEventEnum.SELECTION);
+        ReloadControl.requestReloadOf(RightPane.class);
     }
     public static void setRandomValidDataElement() {
         ArrayList<DataElement> dataElementsFiltered = FilterControl.getValidDataElements();

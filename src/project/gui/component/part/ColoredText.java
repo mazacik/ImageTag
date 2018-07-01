@@ -75,13 +75,11 @@ public class ColoredText {
     }
     public static void setContextMenu(TreeCell<ColoredText> source) {
         ContextMenu contextMenu = new ContextMenu();
-        MenuItem menuAdd = new MenuItem("Add");
-        menuAdd.setOnAction(event -> TagElementControl.add(TagElementControl.create()));
+        MenuItem menuEdit = new MenuItem("Edit");
+        menuEdit.setOnAction(event -> TagElementControl.edit(TagElementControl.getTagElement(source)));
         MenuItem menuRemove = new MenuItem("Remove");
         menuRemove.setOnAction(event -> TagElementControl.remove(TagElementControl.getTagElement(source)));
-        MenuItem menuRename = new MenuItem("Rename");
-        menuRename.setOnAction(event -> TagElementControl.edit(TagElementControl.getTagElement(source)));
-        contextMenu.getItems().addAll(menuAdd, menuRemove, menuRename);
+        contextMenu.getItems().addAll(menuEdit, menuRemove);
         source.setContextMenu(contextMenu);
     }
 

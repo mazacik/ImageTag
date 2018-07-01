@@ -7,8 +7,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import project.control.FocusControl;
-import project.control.change.ChangeEventControl;
-import project.control.change.ChangeEventEnum;
+import project.control.ReloadControl;
 import project.database.element.DataElement;
 import project.gui.control.GUIControl;
 import project.helper.Settings;
@@ -35,16 +34,14 @@ public abstract class PreviewPane {
 
         ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) -> {
             PreviewPane.setCanvasSize(_this.getWidth(), _this.getHeight());
-            ChangeEventControl.requestReload(PreviewPane.class);
+            ReloadControl.requestReloadOf(true, PreviewPane.class);
         };
         _this.widthProperty().addListener(previewPaneSizeListener);
         _this.heightProperty().addListener(previewPaneSizeListener);
-
-        ChangeEventControl.subscribe(PreviewPane.class, ChangeEventEnum.FOCUS);
     }
 
     /* public */
-    public static void refreshComponent() {
+    public static void reload() {
         if (!GUIControl.isPreviewFullscreen()) return;
 
         DataElement currentFocus = FocusControl.getCurrentFocus();
