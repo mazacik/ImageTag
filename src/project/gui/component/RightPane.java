@@ -19,8 +19,8 @@ public abstract class RightPane {
     /* components */
     private static BorderPane _this = new BorderPane();
 
-    private static final ComboBox cbGroup = new ComboBox();
-    private static final ComboBox cbName = new ComboBox();
+    private static final ChoiceBox cbGroup = new ChoiceBox();
+    private static final ChoiceBox cbName = new ChoiceBox();
     private static final Button btnAdd = new Button("Add");
     private static final Button btnNew = new Button("New");
 
@@ -36,29 +36,22 @@ public abstract class RightPane {
     }
     private static void initializeComponents() {
         cbGroup.prefWidthProperty().bind(_this.prefWidthProperty());
+        cbGroup.maxWidthProperty().bind(_this.maxWidthProperty());
         cbName.prefWidthProperty().bind(_this.prefWidthProperty());
+        cbName.maxWidthProperty().bind(_this.maxWidthProperty());
         btnAdd.prefWidthProperty().bind(_this.prefWidthProperty());
+        btnAdd.maxWidthProperty().bind(_this.maxWidthProperty());
         btnNew.prefWidthProperty().bind(_this.prefWidthProperty());
+        btnNew.maxWidthProperty().bind(_this.maxWidthProperty());
 
-        cbGroup.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null && !newValue.toString().isEmpty()) {
-                cbName.setDisable(false);
-                if (newValue != oldValue) {
-                    cbName.setValue(null);
-                }
-            } else {
-                cbName.setValue(null);
-                cbName.setDisable(true);
-            }
-        });
         cbName.setDisable(true);
 
         listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         listView.setContextMenu(listViewContextMenu);
     }
     private static void initializeInstance() {
-        _this.setMinWidth(150);
-        _this.setPrefWidth(200);
+        _this.setMinWidth(200);
+        _this.setPrefWidth(250);
         _this.setMaxWidth(300);
 
         _this.setCenter(listView);
@@ -109,10 +102,10 @@ public abstract class RightPane {
     }
 
     /* get */
-    public static ComboBox getCbGroup() {
+    public static ChoiceBox getCbGroup() {
         return cbGroup;
     }
-    public static ComboBox getCbName() {
+    public static ChoiceBox getCbName() {
         return cbName;
     }
     public static Button getBtnAdd() {

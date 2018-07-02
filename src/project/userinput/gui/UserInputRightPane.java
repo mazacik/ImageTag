@@ -1,7 +1,7 @@
 package project.userinput.gui;
 
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.input.KeyCode;
 import project.control.FilterControl;
 import project.control.ReloadControl;
@@ -12,6 +12,10 @@ import project.gui.component.RightPane;
 import project.gui.component.TopPane;
 
 public abstract class UserInputRightPane {
+    /* vars */
+    private static String cbGroupText;
+    private static String cbNameText;
+
     public static void initialize() {
         RightPane.getInstance().setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ESCAPE) {
@@ -21,6 +25,10 @@ public abstract class UserInputRightPane {
 
         setOnShowing_cbGroup();
         setOnShowing_cbName();
+
+        setOnHidden_cbGroup();
+        setOnHidden_cbName();
+
         setOnAction_btnAdd();
         setOnAction_btnNew();
 
@@ -28,18 +36,55 @@ public abstract class UserInputRightPane {
     }
 
     private static void setOnShowing_cbGroup() {
-        ComboBox cbGroup = RightPane.getCbGroup();
+        ChoiceBox cbGroup = RightPane.getCbGroup();
         cbGroup.setOnShowing(event -> {
+            Object cbGroupValue = cbGroup.getValue();
+            if (cbGroupValue != null) {
+                cbGroupText = cbGroupValue.toString();
+            }
+
             cbGroup.getItems().setAll(TagElementControl.getGroups());
         });
     }
     private static void setOnShowing_cbName() {
-        ComboBox cbGroup = RightPane.getCbGroup();
-        ComboBox cbName = RightPane.getCbName();
+        ChoiceBox cbName = RightPane.getCbName();
         cbName.setOnShowing(event -> {
-            Object value = cbGroup.getValue();
-            String group = value.toString();
-            cbName.getItems().setAll(TagElementControl.getNamesInGroup(group));
+            Object cbNameValue = cbName.getValue();
+            if (cbNameValue != null) {
+                cbNameText = cbNameValue.toString();
+            }
+
+            if (cbGroupText != null) {
+                cbName.getItems().setAll(TagElementControl.getNamesInGroup(cbGroupText));
+            }
+        });
+    }
+
+    private static void setOnHidden_cbGroup() {
+        ChoiceBox cbGroup = RightPane.getCbGroup();
+        cbGroup.setOnHidden(event -> {
+            Object cbGroupValue = cbGroup.getValue();
+            String cbGroupValueString;
+            if (cbGroupValue != null && !(cbGroupValueString = cbGroupValue.toString()).isEmpty()) {
+                if (cbGroupText != null && !cbGroupText.equals(cbGroupValueString)) {
+                    RightPane.getCbName().setValue(null);
+                }
+                cbGroupText = cbGroupValueString;
+                RightPane.getCbName().setDisable(false);
+            } else {
+                cbGroup.setValue(cbGroupText);
+            }
+        });
+    }
+    private static void setOnHidden_cbName() {
+        ChoiceBox cbName = RightPane.getCbName();
+        cbName.setOnHidden(event -> {
+            Object cbNameValue = cbName.getValue();
+            if (cbNameValue != null && !cbNameValue.toString().isEmpty()) {
+                cbNameText = cbNameValue.toString();
+            } else {
+                cbName.setValue(cbNameText);
+            }
         });
     }
 
@@ -56,8 +101,8 @@ public abstract class UserInputRightPane {
         });
     }
     private static void setOnAction_btnNew() {
-        ComboBox cbGroup = RightPane.getCbGroup();
-        ComboBox cbName = RightPane.getCbName();
+        ChoiceBox cbGroup = RightPane.getCbGroup();
+        ChoiceBox cbName = RightPane.getCbName();
         RightPane.getBtnNew().setOnAction(event -> {
             TagElement newTagElement = TagElementControl.create();
             if (newTagElement != null) {

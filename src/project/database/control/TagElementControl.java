@@ -54,7 +54,7 @@ public abstract class TagElementControl {
     }
     public static TagElement create() {
         TagElement newTagElement = new TagEditor().getResult();
-        if (newTagElement.isEmpty()) return null;
+        if (newTagElement == null || newTagElement.isEmpty()) return null;
         return newTagElement;
     }
 

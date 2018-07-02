@@ -26,8 +26,8 @@ public abstract class LeftPane {
         treeView.setShowRoot(false);
         LeftPane.setCellFactory();
 
-        _this.setMinWidth(150);
-        _this.setPrefWidth(200);
+        _this.setMinWidth(200);
+        _this.setPrefWidth(250);
         _this.setMaxWidth(300);
         _this.setCenter(treeView);
 
