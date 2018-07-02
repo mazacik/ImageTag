@@ -1,4 +1,4 @@
-package project.gui.control;
+package project.gui;
 
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
@@ -7,9 +7,9 @@ import javafx.stage.Stage;
 import project.control.ReloadControl;
 import project.database.loader.Serialization;
 import project.gui.component.*;
-import project.helper.Keybinds;
+import project.userinput.UserInputGlobal;
 
-public abstract class GUIStage extends Stage {
+public abstract class GUIMain extends Stage {
     /* components */
     private static Stage _this;
     private static final SplitPane splitPane = new SplitPane(LeftPane.getInstance(), GalleryPane.getInstance(), RightPane.getInstance());
@@ -20,8 +20,8 @@ public abstract class GUIStage extends Stage {
     public static void initialize() {
         _this = new Stage();
         initializeComponents();
-        initializeProperties();
-        Keybinds.initialize(mainScene);
+        initializeInstance();
+        UserInputGlobal.initialize();
         ReloadControl.requestReloadGlobal(true);
     }
     private static void initializeComponents() {
@@ -33,7 +33,7 @@ public abstract class GUIStage extends Stage {
 
         splitPane.setDividerPositions(0.0, 1.0);
     }
-    private static void initializeProperties() {
+    private static void initializeInstance() {
         _this.setTitle("JavaExplorer");
         _this.setMinWidth(800);
         _this.setMinHeight(600);
@@ -48,7 +48,6 @@ public abstract class GUIStage extends Stage {
         return splitPane;
     }
     public static Stage getInstance() {
-        if (_this == null) initialize();
         return _this;
     }
 }

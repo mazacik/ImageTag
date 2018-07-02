@@ -9,8 +9,9 @@ import javafx.scene.layout.Region;
 import project.control.FocusControl;
 import project.control.ReloadControl;
 import project.database.element.DataElement;
-import project.gui.control.GUIControl;
+import project.gui.GUIControl;
 import project.helper.Settings;
+import project.userinput.gui.UserInputPreviewPane;
 
 public abstract class PreviewPane {
     /* components */
@@ -24,20 +25,23 @@ public abstract class PreviewPane {
     /* initialize */
     public static void initialize() {
         initializeComponents();
-        initializeProperties();
+        initializeInstance();
+        UserInputPreviewPane.initialize();
     }
     private static void initializeComponents() {
-        canvas.setOnMouseClicked(event -> _this.requestFocus());
+
     }
-    private static void initializeProperties() {
-        _this.getChildren().add(canvas);
+    private static void initializeInstance() {
+        canvas.widthProperty().bind(_this.widthProperty());
+        canvas.heightProperty().bind(_this.heightProperty());
 
         ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) -> {
-            PreviewPane.setCanvasSize(_this.getWidth(), _this.getHeight());
             ReloadControl.requestReloadOf(true, PreviewPane.class);
         };
-        _this.widthProperty().addListener(previewPaneSizeListener);
-        _this.heightProperty().addListener(previewPaneSizeListener);
+        canvas.widthProperty().addListener(previewPaneSizeListener);
+        canvas.heightProperty().addListener(previewPaneSizeListener);
+
+        _this.getChildren().add(canvas);
     }
 
     /* public */
@@ -45,9 +49,11 @@ public abstract class PreviewPane {
         if (!GUIControl.isPreviewFullscreen()) return;
 
         DataElement currentFocus = FocusControl.getCurrentFocus();
-
         if (currentFocus == null) return;
-        if (!currentFocus.equals(currentDataElement)) loadImage();
+        if (!currentDataElement.equals(currentFocus)) {
+            loadImageOfCurrentFocus();
+            currentDataElement = currentFocus;
+        }
 
         double imageWidth = currentPreviewImage.getWidth();
         double imageHeight = currentPreviewImage.getHeight();
@@ -74,19 +80,16 @@ public abstract class PreviewPane {
     }
 
     /* private */
-    private static void loadImage() {
+    private static void loadImageOfCurrentFocus() {
         String url = "file:" + Settings.getMainDirectoryPath() + "\\" + FocusControl.getCurrentFocus().getName();
         currentPreviewImage = new Image(url);
     }
 
     /* get */
+    public static Canvas getCanvas() {
+        return canvas;
+    }
     public static Region getInstance() {
         return _this;
-    }
-
-    /* set */
-    public static void setCanvasSize(double width, double height) {
-        canvas.setWidth(width);
-        canvas.setHeight(height);
     }
 }

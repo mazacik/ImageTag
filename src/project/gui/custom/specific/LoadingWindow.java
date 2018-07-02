@@ -1,11 +1,11 @@
-package project.gui.custom;
+package project.gui.custom.specific;
 
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import project.database.loader.DatabaseLoader;
+import project.database.loader.DataLoader;
 
 public class LoadingWindow extends Stage {
     /* components */
@@ -16,7 +16,7 @@ public class LoadingWindow extends Stage {
     /* constructors */
     public LoadingWindow() {
         initializeComponents();
-        initializeProperties();
+        initializeInstance();
     }
 
     /* initialize */
@@ -25,13 +25,13 @@ public class LoadingWindow extends Stage {
         loadingPane.setCenter(progressLabel);
         loadingPane.setPrefWidth(300);
     }
-    private void initializeProperties() {
+    private void initializeInstance() {
         setTitle("JavaExplorer Loading");
         setScene(loadingScene);
         setResizable(false);
         centerOnScreen();
         show();
-        new DatabaseLoader().start();
+        new DataLoader().start();
     }
 
     /* get */

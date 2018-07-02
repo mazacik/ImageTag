@@ -8,9 +8,9 @@ import project.Main;
 import project.database.control.DataElementControl;
 import project.database.control.TagElementControl;
 import project.database.element.DataElement;
+import project.gui.GUIMain;
 import project.gui.component.part.GalleryTile;
-import project.gui.control.GUIStage;
-import project.gui.custom.LoadingWindow;
+import project.gui.custom.specific.LoadingWindow;
 import project.helper.Settings;
 
 import javax.imageio.ImageIO;
@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 
-public class DatabaseLoader extends Thread {
+public class DataLoader extends Thread {
     /* imports */
     private final double GALLERY_ICON_MAX_SIZE = Settings.getGalleryIconSizeMax();
 
@@ -90,7 +90,8 @@ public class DatabaseLoader extends Thread {
 
         Platform.runLater(() -> {
             Main.getLoadingWindow().close();
-            Main.setStage(GUIStage.getInstance());
+            GUIMain.initialize();
+            Main.setStage(GUIMain.getInstance());
         });
     }
 

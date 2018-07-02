@@ -12,6 +12,7 @@ import javafx.scene.paint.Color;
 import project.control.FilterControl;
 import project.database.control.TagElementControl;
 import project.gui.component.part.ColoredText;
+import project.userinput.gui.UserInputLeftPane;
 
 import java.util.ArrayList;
 
@@ -22,13 +23,15 @@ public abstract class LeftPane {
 
     /* initialize */
     public static void initialize() {
+        treeView.setShowRoot(false);
+        LeftPane.setCellFactory();
+
         _this.setMinWidth(150);
         _this.setPrefWidth(200);
         _this.setMaxWidth(300);
-
-        treeView.setShowRoot(false);
-        LeftPane.setCellFactory();
         _this.setCenter(treeView);
+
+        UserInputLeftPane.initialize();
     }
 
     /* public */
@@ -59,7 +62,7 @@ public abstract class LeftPane {
             }
             treeViewItems.add(groupTreeItem);
         }
-    }
+    } //todo SPLEEEET
     public static void refreshTreeview() {
         treeView.refresh();
     }
@@ -78,8 +81,8 @@ public abstract class LeftPane {
                     setTextFill(coloredText.getColor());
                 }
 
-                ColoredText.setOnMouseClick(this);
-                ColoredText.setContextMenu(this);
+                UserInputLeftPane.setOnMouseClicked_coloredText(this);
+                UserInputLeftPane.setContextMenu_coloredText(this);
 
                 addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
                     if (e.getClickCount() % 2 == 0 && e.getButton().equals(MouseButton.PRIMARY)) {

@@ -8,10 +8,10 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.TilePane;
 import project.control.FilterControl;
 import project.control.FocusControl;
-import project.database.control.DataElementControl;
 import project.database.element.DataElement;
-import project.gui.control.GUIControl;
+import project.gui.GUIControl;
 import project.helper.Settings;
+import project.userinput.gui.UserInputGalleryPane;
 
 public abstract class GalleryPane {
     /* const */
@@ -24,23 +24,21 @@ public abstract class GalleryPane {
     /* initialize */
     public static void initialize() {
         initializeComponents();
-        initializeProperties();
+        initializeInstance();
+        UserInputGalleryPane.initialize();
     }
     private static void initializeComponents() {
         tilePane.setVgap(3);
         tilePane.setPrefTileWidth(GALLERY_ICON_SIZE_PREF);
         tilePane.setPrefTileHeight(GALLERY_ICON_SIZE_PREF);
     }
-    private static void initializeProperties() {
+    private static void initializeInstance() {
         _this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         _this.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         _this.setMinViewportWidth(GALLERY_ICON_SIZE_PREF);
         _this.setFitToWidth(true);
 
         _this.setContent(tilePane);
-
-        GalleryPane.setOnScrollListener();
-        GalleryPane.setWidthPropertyListener();
     }
 
     /* public */
@@ -54,6 +52,14 @@ public abstract class GalleryPane {
             tilePaneItems.add(dataElement.getGalleryTile());
         }
         _this.setVvalue(scrollbarValue);
+    }
+    public static void recalculateHgap() {
+        int tilePaneWidth = (int) tilePane.getWidth();
+        int prefTileWidth = (int) tilePane.getPrefTileWidth();
+        int columnCount = tilePaneWidth / prefTileWidth;
+        if (columnCount != 0) {
+            tilePane.setHgap(tilePaneWidth % prefTileWidth / columnCount);
+        }
     }
     public static void adjustViewportToFocus() {
         DataElement currentFocusedItem = FocusControl.getCurrentFocus();
@@ -86,56 +92,14 @@ public abstract class GalleryPane {
         }
     }
 
-    /* private */
-    private static void recalculateHgap() {
-        int tilePaneWidth = (int) tilePane.getWidth();
-        int prefTileWidth = (int) tilePane.getPrefTileWidth();
-        int columnCount = tilePaneWidth / prefTileWidth;
-        if (columnCount != 0) {
-            tilePane.setHgap(tilePaneWidth % prefTileWidth / columnCount);
-        }
-    }
-
-    /* event */
-    private static void setOnScrollListener() {
-        int galleryIconSizeMax = Settings.getGalleryIconSizeMax();
-        int galleryIconSizeMin = Settings.getGalleryIconSizeMin();
-        int galleryIconSizePref = Settings.getGalleryIconSizePref();
-
-        tilePane.setOnScroll(event -> {
-            if (event.isControlDown()) {
-                event.consume();
-
-                if (event.getDeltaY() < 0) {
-                    Settings.setGalleryIconSizePref(Settings.getGalleryIconSizePref() - 10);
-                    if (galleryIconSizePref < galleryIconSizeMin)
-                        Settings.setGalleryIconSizePref(galleryIconSizeMin);
-                } else {
-                    Settings.setGalleryIconSizePref(Settings.getGalleryIconSizePref() + 10);
-                    if (galleryIconSizePref > galleryIconSizeMax)
-                        Settings.setGalleryIconSizePref(galleryIconSizeMax);
-                }
-
-                tilePane.setPrefTileWidth(galleryIconSizePref);
-                tilePane.setPrefTileHeight(galleryIconSizePref);
-
-                for (DataElement dataElement : DataElementControl.getDataElementsLive()) {
-                    dataElement.getGalleryTile().setFitWidth(galleryIconSizePref);
-                    dataElement.getGalleryTile().setFitHeight(galleryIconSizePref);
-                }
-                recalculateHgap();
-            }
-        });
-    }
-    private static void setWidthPropertyListener() {
-        tilePane.widthProperty().addListener((observable, oldValue, newValue) -> recalculateHgap());
-    }
-
     /* get */
     public static int getColumnCount() {
         int tilePaneWidth = (int) tilePane.getWidth();
         int prefTileWidth = (int) tilePane.getPrefTileWidth();
         return tilePaneWidth / prefTileWidth;
+    }
+    public static TilePane getTilePane() {
+        return tilePane;
     }
     public static Region getInstance() {
         return _this;

@@ -1,13 +1,13 @@
-package project.helper;
+package project.userinput;
 
-import javafx.scene.Scene;
 import project.control.FocusControl;
 import project.control.SelectionControl;
-import project.gui.control.GUIControl;
+import project.gui.GUIControl;
+import project.gui.GUIMain;
 
-public abstract class Keybinds {
-    public static void initialize(Scene mainScene) {
-        mainScene.setOnKeyPressed(event -> {
+public abstract class UserInputGlobal {
+    public static void initialize() {
+        GUIMain.getInstance().getScene().setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case Q:
                     SelectionControl.swapSelectionStateOf(FocusControl.getCurrentFocus()); break;

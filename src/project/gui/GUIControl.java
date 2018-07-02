@@ -1,4 +1,4 @@
-package project.gui.control;
+package project.gui;
 
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -12,7 +12,7 @@ public abstract class GUIControl {
     /* imports */
     private static final Region GALLERYPANE = GalleryPane.getInstance();
     private static final Region PREVIEWPANE = PreviewPane.getInstance();
-    private static final SplitPane SPLITPANE = GUIStage.getSplitPane();
+    private static final SplitPane SPLITPANE = GUIMain.getSplitPane();
     private static final ObservableList<Node> SPLITPANE_ITEMS = SPLITPANE.getItems();
 
     /* public */
@@ -20,10 +20,10 @@ public abstract class GUIControl {
         double[] dividerPositions = SPLITPANE.getDividerPositions();
         if (SPLITPANE_ITEMS.contains(GALLERYPANE)) {
             SPLITPANE_ITEMS.set(SPLITPANE_ITEMS.indexOf(GALLERYPANE), PREVIEWPANE);
-            PreviewPane.setCanvasSize(GALLERYPANE.getWidth(), GALLERYPANE.getHeight());
-            ReloadControl.requestReloadOf(PreviewPane.class);
+            ReloadControl.requestReloadOf(true, PreviewPane.class);
         } else {
             SPLITPANE_ITEMS.set(SPLITPANE_ITEMS.indexOf(PREVIEWPANE), GALLERYPANE);
+            ReloadControl.requestReloadOf(true, GalleryPane.class);
         }
         SPLITPANE.setDividerPositions(dividerPositions);
     }

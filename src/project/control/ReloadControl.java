@@ -27,7 +27,7 @@ public abstract class ReloadControl {
     public static void requestReloadOf(Class... components) {
         ReloadControl.requestReloadOf(false, components);
     }
-    public static void requestReloadOf(boolean instant, Class... components) {
+    public static void requestReloadOf(boolean doReload, Class... components) {
         for (Class component : components) {
             if (component.equals(TopPane.class)) {
                 reloadTopPane = true;
@@ -41,10 +41,9 @@ public abstract class ReloadControl {
                 reloadRightPane = true;
             }
         }
-        if (instant) {
-            doReload();
-        }
+        if (doReload) doReload();
     }
+    // todo doreload and boolean doreload allowed only on user input, check for errors
     public static void doReload() {
         if (reloadTopPane) {
             TopPane.reload();
@@ -67,5 +66,4 @@ public abstract class ReloadControl {
             reloadRightPane = false;
         }
     }
-    //todo try Object instead of Class
 }

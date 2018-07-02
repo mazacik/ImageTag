@@ -1,4 +1,4 @@
-package project.gui.custom;
+package project.gui.custom.specific;
 
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
@@ -32,7 +32,7 @@ public class IntroWindow extends Stage {
     /* constructors */
     public IntroWindow() {
         initializeComponents();
-        initializeProperties();
+        initializeInstance();
     }
 
     /* initialize */
@@ -51,7 +51,7 @@ public class IntroWindow extends Stage {
         buttonOK.setPrefWidth(35);
         buttonOK.setDisable(true);
     }
-    private void initializeProperties() {
+    private void initializeInstance() {
         setTitle("JavaExplorer Settings");
         setScene(sceneIntro);
         setResizable(false);

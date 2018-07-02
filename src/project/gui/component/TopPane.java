@@ -3,14 +3,9 @@ package project.gui.component;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
-import javafx.stage.WindowEvent;
-import project.Main;
-import project.control.FilterControl;
 import project.control.FocusControl;
-import project.control.ReloadControl;
-import project.control.SelectionControl;
 import project.database.element.DataElement;
-import project.database.loader.Serialization;
+import project.userinput.gui.UserInputTopPane;
 
 public abstract class TopPane {
     /* components */
@@ -28,7 +23,6 @@ public abstract class TopPane {
     private static final MenuItem menuClearSelection = new MenuItem("Clear Selection");
 
     private static final Menu menuFilter = new Menu("Filter");
-
     private static final CheckMenuItem menuUntaggedOnly = new CheckMenuItem("Untagged Only");
     private static final CheckMenuItem menuLessThanXTags = new CheckMenuItem("Less Than X Tags");
     private static final MenuItem menuRefresh = new MenuItem("Refresh");
@@ -37,7 +31,8 @@ public abstract class TopPane {
     /* initialize */
     public static void initialize() {
         initializeComponents();
-        initializeProperties();
+        initializeInstance();
+        UserInputTopPane.initialize();
     }
     private static void initializeComponents() {
         menuFile.getItems().addAll(menuSave, new SeparatorMenuItem(), menuExit);
@@ -45,10 +40,8 @@ public abstract class TopPane {
         menuFilter.getItems().addAll(menuUntaggedOnly, menuLessThanXTags, new SeparatorMenuItem(), menuRefresh, menuReset);
 
         infoLabelMenuBar.getMenus().add(infoLabelMenu);
-
-        setOnAction();
     }
-    private static void initializeProperties() {
+    private static void initializeInstance() {
         _this.setCenter(new MenuBar(menuFile, menuSelection, menuFilter));
         _this.setRight(infoLabelMenuBar);
     }
@@ -61,40 +54,33 @@ public abstract class TopPane {
         }
     }
 
-    /* event */
-    private static void setOnAction() {
-        menuSave.setOnAction(event -> Serialization.writeToDisk());
-        menuExit.setOnAction(event -> _this.fireEvent(new WindowEvent(Main.getStage(), WindowEvent.WINDOW_CLOSE_REQUEST)));
-
-        menuSelectAll.setOnAction(event -> SelectionControl.addDataElement(FilterControl.getValidDataElements()));
-        menuClearSelection.setOnAction(event -> SelectionControl.clearDataElements());
-
-        menuUntaggedOnly.setOnAction(event -> {
-            FilterControl.setCustomFilterUntaggedOnly(true);
-            FilterControl.setCustomFilterLessThanXTags(false);
-            menuUntaggedOnly.setSelected(true);
-            menuLessThanXTags.setSelected(false);
-            FilterControl.revalidateDataElements();
-            ReloadControl.doReload();
-        });
-        menuLessThanXTags.setOnAction(event -> {
-            FilterControl.setCustomFilterUntaggedOnly(false);
-            FilterControl.setCustomFilterLessThanXTags(true);
-            menuUntaggedOnly.setSelected(false);
-            menuLessThanXTags.setSelected(true);
-            FilterControl.customFilterLessThanXTags();
-            ReloadControl.doReload();
-        });
-        menuRefresh.setOnAction(event -> FilterControl.revalidateDataElements());
-        menuReset.setOnAction(event -> {
-            menuUntaggedOnly.setSelected(false);
-            menuLessThanXTags.setSelected(false);
-            FilterControl.customFilterResetFiltering();
-            ReloadControl.doReload();
-        });
+    /* get */
+    public static MenuItem getMenuSave() {
+        return menuSave;
+    }
+    public static MenuItem getMenuExit() {
+        return menuExit;
     }
 
-    /* get */
+    public static MenuItem getMenuSelectAll() {
+        return menuSelectAll;
+    }
+    public static MenuItem getMenuClearSelection() {
+        return menuClearSelection;
+    }
+
+    public static CheckMenuItem getMenuUntaggedOnly() {
+        return menuUntaggedOnly;
+    }
+    public static CheckMenuItem getMenuLessThanXTags() {
+        return menuLessThanXTags;
+    }
+    public static MenuItem getMenuRefresh() {
+        return menuRefresh;
+    }
+    public static MenuItem getMenuReset() {
+        return menuReset;
+    }
     public static Region getInstance() {
         return _this;
     }

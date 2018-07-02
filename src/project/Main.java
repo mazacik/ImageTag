@@ -2,8 +2,8 @@ package project;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import project.gui.custom.IntroWindow;
-import project.gui.custom.LoadingWindow;
+import project.gui.custom.specific.IntroWindow;
+import project.gui.custom.specific.LoadingWindow;
 import project.helper.Settings;
 
 public class Main extends Application {

@@ -1,4 +1,4 @@
-package project.gui.custom;
+package project.gui.custom.specific;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -25,7 +25,7 @@ public class TagEditor extends Stage {
     public TagEditor(TagElement tagElement) {
         this.tagElement = tagElement;
         initializeComponents();
-        initializeProperties();
+        initializeInstance();
     }
 
     public TagEditor() {
@@ -73,7 +73,7 @@ public class TagEditor extends Stage {
             close();
         });
     }
-    private void initializeProperties() {
+    private void initializeInstance() {
         setTitle("Tag Editor");
         setAlwaysOnTop(true);
         setResizable(false);

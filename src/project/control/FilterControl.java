@@ -24,7 +24,7 @@ public abstract class FilterControl {
     private static int customFilterLessThanXTagsMax = 0;
 
     /* public */
-    public static void revalidateDataElements(boolean suppressNotification) {
+    public static void revalidateDataElements() {
         if (customFilterUntaggedOnly) {
             customFilterUntaggedOnly();
         } else if (customFilterLessThanXTags) {
@@ -64,12 +64,7 @@ public abstract class FilterControl {
                 }
             }
         }
-        if (!suppressNotification) {
             ReloadControl.requestReloadOf(LeftPane.class, GalleryPane.class);
-        }
-    }
-    public static void revalidateDataElements() {
-        revalidateDataElements(false);
     }
     public static void addTagElementToDataElementSelection(TagElement tagElement) {
         if (tagElement != null && !tagElement.isEmpty()) {
@@ -82,8 +77,6 @@ public abstract class FilterControl {
                 if (!dataElement.getTagElements().contains(tagElement)) {
                     dataElement.getTagElements().add(tagElement);
                 }
-
-            ReloadControl.requestReloadOf(RightPane.class);
         }
     }
     public static void removeTagElementSelectionFromDataElementSelection() {
@@ -110,10 +103,11 @@ public abstract class FilterControl {
             if (!tagExists) {
                 FilterControl.unlistTagElement(tagElement);
                 TagElementControl.remove(tagElement);
+                ReloadControl.requestReloadOf(LeftPane.class);
             }
         }
 
-        ReloadControl.requestReloadOf(LeftPane.class, RightPane.class);
+        ReloadControl.requestReloadOf(RightPane.class);
     }
 
     public static void whitelistGroup(String group) {
@@ -162,7 +156,7 @@ public abstract class FilterControl {
         FilterControl.getTagElementBlacklist().clear();
         FilterControl.getTagElementBlacklist().addAll(TagElementControl.getTagElements());
     }
-    public static void customFilterLessThanXTags() {
+    public static void customFilterLessThanXTagsGetValue() {
         int maxTags = new NumberInputWindow("Filter Settings", "Maximum number of tags:").getResultValue();
         if (maxTags == 0) return;
         customFilterLessThanXTagsMax = maxTags;
@@ -227,7 +221,6 @@ public abstract class FilterControl {
 
     /* get */
     public static ArrayList<DataElement> getValidDataElements() {
-        FilterControl.revalidateDataElements(true);
         return validDataElements;
     }
 

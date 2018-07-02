@@ -9,7 +9,7 @@ import project.gui.component.GalleryPane;
 import project.gui.component.LeftPane;
 import project.gui.component.RightPane;
 import project.gui.component.part.ColoredText;
-import project.gui.custom.TagEditor;
+import project.gui.custom.specific.TagEditor;
 
 import java.util.ArrayList;
 import java.util.Comparator;
