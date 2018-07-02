@@ -1,8 +1,5 @@
 package project.userinput.gui;
 
-import javafx.collections.ObservableList;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
@@ -34,26 +31,33 @@ public abstract class UserInputGalleryPane {
             } else if (eventButton.equals(MouseButton.SECONDARY)) {
                 FocusControl.setFocus(dataElement);
                 SelectionControl.addDataElement(dataElement);
-                setContextMenu_galleryTile(dataElement, event.getScreenX(), event.getScreenY());
+                dataElement.getGalleryTile().showContextMenu(event.getScreenX(), event.getScreenY());
             }
         });
     }
-    public static void setContextMenu_galleryTile(DataElement parentDataElement, double screenX, double screenY) {
-        //todo split
-        MenuItem menuDelete = new MenuItem("Delete Selection");
-        menuDelete.setOnAction(event -> {
-            String parentDataElementName = parentDataElement.getName();
+    public static void setOnAction_menuCopy(DataElement dataElement) {
+        dataElement.getGalleryTile().getMenuCopy().setOnAction(event -> {
+            Clipboard clipboard = Clipboard.getSystemClipboard();
+            ClipboardContent content = new ClipboardContent();
+            content.putString(dataElement.getName());
+            clipboard.setContent(content);
+        });
+
+    }
+    public static void setOnAction_menuDelete(DataElement dataElement) {
+        dataElement.getGalleryTile().getMenuDelete().setOnAction(event -> {
+            String parentDataElementName = dataElement.getName();
             try {
                 Files.delete(Paths.get(Settings.getMainDirectoryPath() + "\\" + parentDataElementName));
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if (FilterControl.getValidDataElements().contains(parentDataElement)) {
-                int index = FilterControl.getValidDataElements().indexOf(parentDataElement);
+            if (FilterControl.getValidDataElements().contains(dataElement)) {
+                int index = FilterControl.getValidDataElements().indexOf(dataElement);
 
-                DataElementControl.remove(parentDataElement);
-                FilterControl.getValidDataElements().remove(parentDataElement); //todo remove direct links like this
-                SelectionControl.getDataElements().remove(parentDataElement);
+                DataElementControl.remove(dataElement);
+                FilterControl.getValidDataElements().remove(dataElement); //todo remove direct links like this
+                SelectionControl.getDataElements().remove(dataElement);
 
                 if (FilterControl.getValidDataElements().get(index - 1) != null) {
                     index--;
@@ -64,22 +68,6 @@ public abstract class UserInputGalleryPane {
                 }
             }
         });
-
-        MenuItem menuCopy = new MenuItem("Copy Name");
-        menuCopy.setOnAction(event -> {
-            Clipboard clipboard = Clipboard.getSystemClipboard();
-            ClipboardContent content = new ClipboardContent();
-            content.putString(parentDataElement.getName());
-            clipboard.setContent(content);
-        });
-
-        ContextMenu contextMenu = new ContextMenu();
-        ObservableList<MenuItem> contextMenuItems = contextMenu.getItems();
-        if (SelectionControl.isSelectionSingleElement()) {
-            contextMenuItems.add(menuCopy);
-        }
-        contextMenuItems.addAll(menuDelete);
-        contextMenu.show(parentDataElement.getGalleryTile(), screenX, screenY);
     }
 
     private static void setOnScrollListener_tilePane() {

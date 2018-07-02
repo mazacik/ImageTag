@@ -1,5 +1,8 @@
 package project.gui.component.part;
 
+import javafx.collections.ObservableList;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.effect.Blend;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.effect.ColorInput;
@@ -21,6 +24,9 @@ public class GalleryTile extends ImageView {
     /* vars */
     private final DataElement parentDataElement;
 
+    private MenuItem menuCopy = new MenuItem("Copy Name");
+    private MenuItem menuDelete = new MenuItem("Delete Selection");
+
     /* constructors */
     public GalleryTile(DataElement dataElement) {
         super(dataElement.getImage());
@@ -31,6 +37,17 @@ public class GalleryTile extends ImageView {
     }
 
     /* public */
+    public void showContextMenu(double screenX, double screenY) {
+        UserInputGalleryPane.setOnAction_menuCopy(parentDataElement);
+        UserInputGalleryPane.setOnAction_menuDelete(parentDataElement);
+        ContextMenu contextMenu = new ContextMenu();
+        ObservableList<MenuItem> contextMenuItems = contextMenu.getItems();
+        if (SelectionControl.isSelectionSingleElement()) {
+            contextMenuItems.add(menuCopy);
+        }
+        contextMenuItems.addAll(menuDelete);
+        contextMenu.show(parentDataElement.getGalleryTile(), screenX, screenY);
+    }
     public void generateEffect() {
         boolean booleanSelection = false;
         if (parentDataElement != null) {
@@ -78,4 +95,11 @@ public class GalleryTile extends ImageView {
         return new ColorInput(markPositionInTile, markPositionInTile, markSize, markSize, markColor);
     }
 
+    /* get */
+    public MenuItem getMenuDelete() {
+        return menuDelete;
+    }
+    public MenuItem getMenuCopy() {
+        return menuCopy;
+    }
 }
