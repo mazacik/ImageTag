@@ -10,6 +10,7 @@ import project.control.SelectionControl;
 import project.database.control.DataElementControl;
 import project.database.element.DataElement;
 import project.gui.component.GalleryPane;
+import project.gui.component.part.GalleryTile;
 import project.helper.Settings;
 
 import java.io.IOException;
@@ -18,12 +19,13 @@ import java.nio.file.Paths;
 
 public abstract class UserInputGalleryPane {
     public static void initialize() {
-        setOnScrollListener_tilePane();
+        setOnScroll_tilePane();
         setWidthPropertyListener_tilePane();
     }
 
-    public static void setOnMouseClicked_galleryTile(DataElement dataElement) {
-        dataElement.getGalleryTile().setOnMouseClicked(event -> {
+    public static void setOnMouseClicked_galleryTile(GalleryTile galleryTile) {
+        galleryTile.setOnMouseClicked(event -> {
+            DataElement dataElement = galleryTile.getParentDataElement();
             MouseButton eventButton = event.getButton();
             if (eventButton.equals(MouseButton.PRIMARY)) {
                 FocusControl.setFocus(dataElement);
@@ -31,7 +33,7 @@ public abstract class UserInputGalleryPane {
             } else if (eventButton.equals(MouseButton.SECONDARY)) {
                 FocusControl.setFocus(dataElement);
                 SelectionControl.addDataElement(dataElement);
-                dataElement.getGalleryTile().showContextMenu(event.getScreenX(), event.getScreenY());
+                galleryTile.showContextMenu(event.getScreenX(), event.getScreenY());
             }
         });
     }
@@ -46,18 +48,18 @@ public abstract class UserInputGalleryPane {
     }
     public static void setOnAction_menuDelete(DataElement dataElement) {
         dataElement.getGalleryTile().getMenuDelete().setOnAction(event -> {
-            String parentDataElementName = dataElement.getName();
-            try {
-                Files.delete(Paths.get(Settings.getMainDirectoryPath() + "\\" + parentDataElementName));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
             if (FilterControl.getValidDataElements().contains(dataElement)) {
                 int index = FilterControl.getValidDataElements().indexOf(dataElement);
 
                 DataElementControl.remove(dataElement);
-                FilterControl.getValidDataElements().remove(dataElement); //todo remove direct links like this
+                FilterControl.getValidDataElements().remove(dataElement);
                 SelectionControl.getDataElements().remove(dataElement);
+
+                try {
+                    Files.delete(Paths.get(Settings.getMainDirectoryPath() + "\\" + dataElement.getName()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 if (FilterControl.getValidDataElements().get(index - 1) != null) {
                     index--;
@@ -70,13 +72,12 @@ public abstract class UserInputGalleryPane {
         });
     }
 
-    private static void setOnScrollListener_tilePane() {
+    private static void setOnScroll_tilePane() {
         int galleryIconSizeMax = Settings.getGalleryIconSizeMax();
         int galleryIconSizeMin = Settings.getGalleryIconSizeMin();
         int galleryIconSizePref = Settings.getGalleryIconSizePref();
 
         TilePane tilePane = GalleryPane.getTilePane();
-
         tilePane.setOnScroll(event -> {
             if (event.isControlDown()) {
                 event.consume();

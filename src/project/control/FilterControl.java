@@ -24,7 +24,7 @@ public abstract class FilterControl {
     private static int customFilterLessThanXTagsMax = 0;
 
     /* public */
-    public static void revalidateDataElements() {
+    public static void revalidateDataElements() /* todo somethow split this */ {
         if (customFilterUntaggedOnly) {
             customFilterUntaggedOnly();
         } else if (customFilterLessThanXTags) {
@@ -64,7 +64,7 @@ public abstract class FilterControl {
                 }
             }
         }
-            ReloadControl.requestReloadOf(LeftPane.class, GalleryPane.class);
+        ReloadControl.requestReloadOf(GalleryPane.class);
     }
     public static void addTagElementToDataElementSelection(TagElement tagElement) {
         if (tagElement != null && !tagElement.isEmpty()) {
@@ -79,7 +79,7 @@ public abstract class FilterControl {
                 }
         }
     }
-    public static void removeTagElementSelectionFromDataElementSelection() {
+    public static void removeTagElementSelectionFromDataElementSelection() /* todo somethow split this */ {
         ArrayList<TagElement> tagElementsToRemove = new ArrayList<>();
         ObservableList<String> tagElementSelection = RightPane.getListView().getSelectionModel().getSelectedItems();
         for (String tagElement : tagElementSelection) {
@@ -160,7 +160,6 @@ public abstract class FilterControl {
         int maxTags = new NumberInputWindow("Filter Settings", "Maximum number of tags:").getResultValue();
         if (maxTags == 0) return;
         customFilterLessThanXTagsMax = maxTags;
-        FilterControl.revalidateDataElements();
     }
     public static void customFilterLessThanXTags(int maxTags) {
         if (maxTags == 0) return;

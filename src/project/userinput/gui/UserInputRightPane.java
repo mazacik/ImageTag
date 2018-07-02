@@ -40,7 +40,6 @@ public abstract class UserInputRightPane {
             Object value = cbGroup.getValue();
             String group = value.toString();
             cbName.getItems().setAll(TagElementControl.getNamesInGroup(group));
-            cbName.setVisibleRowCount(cbName.getItems().size());
         });
     }
 
@@ -51,8 +50,10 @@ public abstract class UserInputRightPane {
                 btnAdd.fire();
             }
         });
-        btnAdd.setOnAction(event -> RightPane.addTagToSelection());
-        ReloadControl.requestReloadOf(true, RightPane.class);
+        btnAdd.setOnAction(event -> {
+            RightPane.addTagToSelection();
+            ReloadControl.requestReloadOf(true, RightPane.class);
+        });
     }
     private static void setOnAction_btnNew() {
         ComboBox cbGroup = RightPane.getCbGroup();

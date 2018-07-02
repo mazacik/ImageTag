@@ -33,7 +33,7 @@ public class GalleryTile extends ImageView {
         parentDataElement = dataElement;
         setFitWidth(GALLERY_ICON_SIZE_PREF);
         setFitHeight(GALLERY_ICON_SIZE_PREF);
-        UserInputGalleryPane.setOnMouseClicked_galleryTile(parentDataElement);
+        UserInputGalleryPane.setOnMouseClicked_galleryTile(this);
     }
 
     /* public */
@@ -96,6 +96,9 @@ public class GalleryTile extends ImageView {
     }
 
     /* get */
+    public DataElement getParentDataElement() {
+        return parentDataElement;
+    }
     public MenuItem getMenuDelete() {
         return menuDelete;
     }

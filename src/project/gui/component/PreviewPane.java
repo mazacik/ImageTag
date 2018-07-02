@@ -42,7 +42,7 @@ public abstract class PreviewPane {
 
         DataElement currentFocus = FocusControl.getCurrentFocus();
         if (currentFocus == null) return;
-        if (!currentDataElement.equals(currentFocus)) {
+        if (currentDataElement == null || !currentDataElement.equals(currentFocus)) {
             loadImageOfCurrentFocus();
             currentDataElement = currentFocus;
         }

@@ -45,6 +45,7 @@ public abstract class UserInputTopPane {
         TopPane.getMenuUntaggedOnly().setOnAction(event -> {
             FilterControl.setCustomFilterUntaggedOnly(true);
             FilterControl.setCustomFilterLessThanXTags(false);
+            FilterControl.revalidateDataElements();
             TopPane.getMenuUntaggedOnly().setSelected(true);
             TopPane.getMenuLessThanXTags().setSelected(false);
             ReloadControl.requestReloadOf(true, LeftPane.class, GalleryPane.class);
@@ -54,9 +55,10 @@ public abstract class UserInputTopPane {
         TopPane.getMenuLessThanXTags().setOnAction(event -> {
             FilterControl.setCustomFilterUntaggedOnly(false);
             FilterControl.setCustomFilterLessThanXTags(true);
+            FilterControl.customFilterLessThanXTagsGetValue();
+            FilterControl.revalidateDataElements();
             TopPane.getMenuUntaggedOnly().setSelected(false);
             TopPane.getMenuLessThanXTags().setSelected(true);
-            FilterControl.customFilterLessThanXTagsGetValue();
             ReloadControl.requestReloadOf(true, GalleryPane.class, RightPane.class);
         });
     }

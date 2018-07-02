@@ -1,12 +1,12 @@
 package project.gui.component;
 
-import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import project.control.FilterControl;
 import project.control.FocusControl;
+import project.control.ReloadControl;
 import project.control.SelectionControl;
 import project.database.control.TagElementControl;
 import project.database.element.DataElement;
@@ -36,6 +36,10 @@ public abstract class RightPane {
     }
     private static void initializeComponents() {
         cbGroup.prefWidthProperty().bind(_this.prefWidthProperty());
+        cbName.prefWidthProperty().bind(_this.prefWidthProperty());
+        btnAdd.prefWidthProperty().bind(_this.prefWidthProperty());
+        btnNew.prefWidthProperty().bind(_this.prefWidthProperty());
+
         cbGroup.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null && !newValue.toString().isEmpty()) {
                 cbName.setDisable(false);
@@ -47,14 +51,7 @@ public abstract class RightPane {
                 cbName.setDisable(true);
             }
         });
-
-        cbName.prefWidthProperty().bind(_this.prefWidthProperty());
         cbName.setDisable(true);
-
-        btnAdd.setPadding(new Insets(0, 0, 2, 0));
-        btnAdd.prefWidthProperty().bind(_this.prefWidthProperty());
-
-        btnNew.prefWidthProperty().bind(_this.prefWidthProperty());
 
         listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         listView.setContextMenu(listViewContextMenu);
@@ -90,12 +87,13 @@ public abstract class RightPane {
             } else {
                 FilterControl.addTagElementToDataElementSelection(tagElement);
             }
+            ReloadControl.requestReloadOf(RightPane.class);
         }
     }
 
     public static void reload() {
         ArrayList<String> sharedTags = new ArrayList<>();
-        if (SelectionControl.isSelectionEmpty()) {
+        if (SelectionControl.isSelectionEmpty() || SelectionControl.isSelectionSingleElement()) {
             DataElement currentFocusedItem = FocusControl.getCurrentFocus();
             if (currentFocusedItem != null) {
                 for (TagElement tagElement : currentFocusedItem.getTagElements()) {
