@@ -35,7 +35,7 @@ public abstract class TagElementControl {
             FilterControl.unlistTagElement(tagElement);
             FilterControl.revalidateDataElements();
             TagElementControl.getTagElements().remove(tagElement);
-            ReloadControl.requestReloadOf(true, LeftPane.class, GalleryPane.class, RightPane.class);
+            ReloadControl.requestReloadOf(LeftPane.class, GalleryPane.class, RightPane.class);
         }
     }
     public static void edit(TagElement tagElement) {
@@ -48,7 +48,7 @@ public abstract class TagElementControl {
                 TagElementControl.getTagElement(tagElement).setName(editName);
                 TagElementControl.sortSimple();
 
-                ReloadControl.requestReloadOf(true, LeftPane.class, RightPane.class);
+                ReloadControl.requestReloadOf(LeftPane.class, RightPane.class);
             }
         }
     }

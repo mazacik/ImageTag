@@ -14,7 +14,6 @@ public abstract class SelectionControl {
     private static final ArrayList<DataElement> dataElements = new ArrayList<>();
 
     /* public */
-    //todo add GalleryPane to reload requests if there's a problem
     public static void addDataElement(DataElement dataElement) {
         if (dataElement != null && !dataElements.contains(dataElement)) {
             dataElements.add(dataElement);

@@ -43,7 +43,6 @@ public abstract class ReloadControl {
         }
         if (doReload) doReload();
     }
-    // todo doreload and boolean doreload allowed only on user input, check for errors
     public static void doReload() {
         if (reloadTopPane) {
             TopPane.reload();

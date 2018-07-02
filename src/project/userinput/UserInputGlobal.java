@@ -1,6 +1,7 @@
 package project.userinput;
 
 import project.control.FocusControl;
+import project.control.ReloadControl;
 import project.control.SelectionControl;
 import project.gui.GUIControl;
 import project.gui.GUIMain;
@@ -23,6 +24,7 @@ public abstract class UserInputGlobal {
                 default:
                     break;
             }
+            ReloadControl.doReload();
         });
     }
 }

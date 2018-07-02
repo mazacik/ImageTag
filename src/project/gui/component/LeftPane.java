@@ -37,10 +37,9 @@ public abstract class LeftPane {
     /* public */
     public static void reload() {
         ObservableList<TreeItem<ColoredText>> treeViewItems = treeView.getRoot().getChildren();
-        ArrayList<String> groupNames = TagElementControl.getGroups();
-
         treeViewItems.clear();
 
+        ArrayList<String> groupNames = TagElementControl.getGroups();
         for (String groupName : groupNames) {
             TreeItem groupTreeItem;
             if (FilterControl.isGroupWhitelisted(groupName)) {
@@ -60,9 +59,10 @@ public abstract class LeftPane {
                     groupTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.BLACK)));
                 }
             }
+
             treeViewItems.add(groupTreeItem);
         }
-    } //todo SPLEEEET
+    }
     public static void refreshTreeview() {
         treeView.refresh();
     }

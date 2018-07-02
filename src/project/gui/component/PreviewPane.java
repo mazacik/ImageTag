@@ -1,13 +1,11 @@
 package project.gui.component;
 
-import javafx.beans.value.ChangeListener;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import project.control.FocusControl;
-import project.control.ReloadControl;
 import project.database.element.DataElement;
 import project.gui.GUIControl;
 import project.helper.Settings;
@@ -34,12 +32,6 @@ public abstract class PreviewPane {
     private static void initializeInstance() {
         canvas.widthProperty().bind(_this.widthProperty());
         canvas.heightProperty().bind(_this.heightProperty());
-
-        ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) -> {
-            ReloadControl.requestReloadOf(true, PreviewPane.class);
-        };
-        canvas.widthProperty().addListener(previewPaneSizeListener);
-        canvas.heightProperty().addListener(previewPaneSizeListener);
 
         _this.getChildren().add(canvas);
     }

@@ -15,7 +15,6 @@ import project.userinput.gui.UserInputRightPane;
 
 import java.util.ArrayList;
 
-//todo where is the rest of this component's functionality? (why is it not here?)
 public abstract class RightPane {
     /* components */
     private static BorderPane _this = new BorderPane();
@@ -70,18 +69,16 @@ public abstract class RightPane {
     }
 
     /* public */
-    public static void addTagToSelection() /* todo split into parts */ {
+    public static void addTagToSelection() {
         Object cbGroupValue = cbGroup.getValue();
         Object cbNameValue = cbName.getValue();
         String group = "";
         String name = "";
 
-        if (cbGroupValue != null) {
+        try {
             group = cbGroupValue.toString();
-        }
-        if (cbNameValue != null) {
             name = cbNameValue.toString();
-        }
+        } catch (NullPointerException ignored) {}
 
         if (!group.isEmpty() && !name.isEmpty()) {
             TagElement tagElement = TagElementControl.getTagElement(group, name);
