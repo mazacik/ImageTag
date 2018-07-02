@@ -6,6 +6,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.TilePane;
 import project.control.FilterControl;
 import project.control.FocusControl;
+import project.control.ReloadControl;
 import project.control.SelectionControl;
 import project.database.control.DataElementControl;
 import project.database.element.DataElement;
@@ -68,6 +69,7 @@ public abstract class UserInputGalleryPane {
                     index++;
                     FocusControl.setFocus(FilterControl.getValidDataElements().get(index));
                 }
+                ReloadControl.requestReloadOf(true, GalleryPane.class);
             }
         });
     }
