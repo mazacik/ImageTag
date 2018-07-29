@@ -71,7 +71,7 @@ public abstract class GalleryPane {
         int focusRow = focusIndex / columnCount;
 
         Bounds viewportBounds = _this.getViewportBounds();
-        Bounds tileBounds = tilePaneItems.get(focusIndex).getBoundsInParent();
+        Bounds currentFocusTileBounds = tilePaneItems.get(focusIndex).getBoundsInParent();
 
         double viewportHeight = viewportBounds.getHeight();
         double contentHeight = tilePane.getHeight() - viewportHeight;
@@ -82,12 +82,18 @@ public abstract class GalleryPane {
 
         double viewportTop = viewportBounds.getMaxY() * -1 + viewportBounds.getHeight();
         double viewportBottom = viewportBounds.getMinY() * -1 + viewportBounds.getHeight();
-        double tileTop = tileBounds.getMaxY();
-        double tileBottom = tileBounds.getMinY();
+        double tileTop = currentFocusTileBounds.getMinY();
+        double tileBottom = currentFocusTileBounds.getMaxY();
 
-        if (viewportTop + rowHeight > tileTop) {
+        System.out.println("---------------------------");
+        System.out.println("tileTop = " + tileTop);
+        System.out.println("viewportTop = " + viewportTop);
+        System.out.println("tileBottom = " + tileBottom);
+        System.out.println("viewportBottom = " + viewportBottom);
+
+        if (tileTop < viewportTop + rowHeight) {
             _this.setVvalue(focusRow * rowToContentRatio);
-        } else if (viewportBottom - rowHeight < tileBottom) {
+        } else if (tileBottom + rowHeight > viewportBottom) {
             _this.setVvalue((focusRow + 1) * rowToContentRatio - viewportToContentRatio);
         }
     }

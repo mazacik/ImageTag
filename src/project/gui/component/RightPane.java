@@ -54,8 +54,8 @@ public abstract class RightPane {
         _this.setPrefWidth(250);
         _this.setMaxWidth(300);
 
-        _this.setCenter(listView);
         _this.setTop(new VBox(2, cbGroup, cbName, btnAdd, btnNew));
+        _this.setCenter(listView);
     }
 
     /* public */
@@ -83,7 +83,6 @@ public abstract class RightPane {
             ReloadControl.requestReloadOf(RightPane.class);
         }
     }
-
     public static void reload() {
         ArrayList<String> sharedTags = new ArrayList<>();
         if (SelectionControl.isSelectionEmpty() || SelectionControl.isSelectionSingleElement()) {
