@@ -56,7 +56,7 @@ public abstract class GalleryPane {
     public static void recalculateHgap() {
         int tilePaneWidth = (int) tilePane.getWidth();
         int prefTileWidth = (int) tilePane.getPrefTileWidth();
-        int columnCount = tilePaneWidth / prefTileWidth;
+        int columnCount = tilePaneWidth / prefTileWidth - 1;
         if (columnCount != 0) {
             tilePane.setHgap(tilePaneWidth % prefTileWidth / columnCount);
         }
