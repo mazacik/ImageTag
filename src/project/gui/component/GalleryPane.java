@@ -70,7 +70,7 @@ public abstract class GalleryPane {
         int focusIndex = FilterControl.getValidDataElements().indexOf(currentFocusedItem);
         int focusRow = focusIndex / columnCount;
 
-        Bounds viewportBounds = tilePane.localToParent(_this.getViewportBounds());
+        Bounds viewportBounds = tilePane.localToScene(_this.getViewportBounds());
         Bounds currentFocusTileBounds = tilePaneItems.get(focusIndex).getBoundsInParent();
 
         double viewportHeight = viewportBounds.getHeight();
