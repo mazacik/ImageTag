@@ -34,11 +34,11 @@ public abstract class UserInputTopPane {
 
     private static void setOnAction_menuSelectAll() {
         TopPane.getMenuSelectAll().setOnAction(event -> SelectionControl.addDataElement(FilterControl.getValidDataElements()));
-        ReloadControl.requestReloadOf(true, GalleryPane.class, RightPane.class);
+        ReloadControl.requestComponentReload(true, GalleryPane.class, RightPane.class);
     }
     private static void setOnAction_menuClearSelection() {
         TopPane.getMenuClearSelection().setOnAction(event -> SelectionControl.clearDataElements());
-        ReloadControl.requestReloadOf(true, GalleryPane.class, RightPane.class);
+        ReloadControl.requestComponentReload(true, GalleryPane.class, RightPane.class);
     }
 
     private static void setOnAction_menuUntaggedOnly() {
@@ -48,7 +48,7 @@ public abstract class UserInputTopPane {
             FilterControl.revalidateDataElements();
             TopPane.getMenuUntaggedOnly().setSelected(true);
             TopPane.getMenuLessThanXTags().setSelected(false);
-            ReloadControl.requestReloadOf(true, LeftPane.class, GalleryPane.class);
+            ReloadControl.requestComponentReload(true, LeftPane.class, GalleryPane.class);
         });
     }
     private static void setOnAction_menuLessThanXTags() {
@@ -59,13 +59,13 @@ public abstract class UserInputTopPane {
             FilterControl.revalidateDataElements();
             TopPane.getMenuUntaggedOnly().setSelected(false);
             TopPane.getMenuLessThanXTags().setSelected(true);
-            ReloadControl.requestReloadOf(true, GalleryPane.class, RightPane.class);
+            ReloadControl.requestComponentReload(true, GalleryPane.class, RightPane.class);
         });
     }
     private static void setOnAction_menuRefresh() {
         TopPane.getMenuRefresh().setOnAction(event -> {
             FilterControl.revalidateDataElements();
-            ReloadControl.requestReloadOf(true, GalleryPane.class, RightPane.class);
+            ReloadControl.requestComponentReload(true, GalleryPane.class, RightPane.class);
         });
     }
     private static void setOnAction_menuReset() {
@@ -73,7 +73,7 @@ public abstract class UserInputTopPane {
             TopPane.getMenuUntaggedOnly().setSelected(false);
             TopPane.getMenuLessThanXTags().setSelected(false);
             FilterControl.customFilterResetFiltering();
-            ReloadControl.requestReloadOf(true, GalleryPane.class, RightPane.class);
+            ReloadControl.requestComponentReload(true, GalleryPane.class, RightPane.class);
         });
     }
 }

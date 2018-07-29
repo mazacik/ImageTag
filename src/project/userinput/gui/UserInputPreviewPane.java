@@ -73,7 +73,7 @@ public abstract class UserInputPreviewPane {
                     index++;
                     FocusControl.setFocus(FilterControl.getValidDataElements().get(index));
                 }
-                ReloadControl.requestReloadOf(true, PreviewPane.class);
+                ReloadControl.requestComponentReload(true, PreviewPane.class);
             }
         });
     }
@@ -81,7 +81,7 @@ public abstract class UserInputPreviewPane {
     private static void setSizeListener_canvas() {
         Canvas canvas = PreviewPane.getCanvas();
         ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) -> {
-            ReloadControl.requestReloadOf(true, PreviewPane.class);
+            ReloadControl.requestComponentReload(true, PreviewPane.class);
         };
         canvas.widthProperty().addListener(previewPaneSizeListener);
         canvas.heightProperty().addListener(previewPaneSizeListener);

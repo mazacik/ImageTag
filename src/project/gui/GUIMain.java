@@ -22,7 +22,7 @@ public abstract class GUIMain extends Stage {
         initializeComponents();
         initializeInstance();
         UserInputGlobal.initialize();
-        ReloadControl.requestReloadGlobal(true);
+        ReloadControl.requestGlobalReload(true);
     }
     private static void initializeComponents() {
         TopPane.initialize();

@@ -18,7 +18,7 @@ public abstract class SelectionControl {
         if (dataElement != null && !dataElements.contains(dataElement)) {
             dataElements.add(dataElement);
             dataElement.getGalleryTile().generateEffect();
-            ReloadControl.requestReloadOf(RightPane.class);
+            ReloadControl.requestComponentReload(RightPane.class);
         }
     }
     public static void addDataElement(ArrayList<DataElement> dataElementsToAdd) {
@@ -29,14 +29,14 @@ public abstract class SelectionControl {
                     dataElement.getGalleryTile().generateEffect();
                 }
             }
-            ReloadControl.requestReloadOf(RightPane.class);
+            ReloadControl.requestComponentReload(RightPane.class);
         }
     }
     public static void removeDataElement(DataElement dataElement) {
         if (dataElement != null && dataElements.contains(dataElement)) {
             dataElements.remove(dataElement);
             dataElement.getGalleryTile().generateEffect();
-            ReloadControl.requestReloadOf(RightPane.class);
+            ReloadControl.requestComponentReload(RightPane.class);
         }
     }
     public static void setDataElement(DataElement dataElement) {
@@ -54,14 +54,14 @@ public abstract class SelectionControl {
                 dataElement.getGalleryTile().generateEffect();
             }
         }
-        ReloadControl.requestReloadOf(RightPane.class);
+        ReloadControl.requestComponentReload(RightPane.class);
     }
     public static void setRandomValidDataElement() {
         ArrayList<DataElement> dataElementsFiltered = FilterControl.getValidDataElements();
         int databaseItemsFilteredSize = dataElementsFiltered.size();
         int randomIndex = new Random().nextInt(databaseItemsFilteredSize);
         SelectionControl.setDataElement(dataElementsFiltered.get(randomIndex));
-        GalleryPane.adjustViewportToFocus();
+        GalleryPane.adjustViewportToCurrentFocus();
     }
     public static void swapSelectionStateOf(DataElement dataElement) {
         if (dataElement != null) {

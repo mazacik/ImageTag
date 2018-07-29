@@ -24,7 +24,7 @@ public abstract class UserInputGlobal {
                 default:
                     break;
             }
-            ReloadControl.doReload();
+            ReloadControl.forceReload();
         });
     }
 }

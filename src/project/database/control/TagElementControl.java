@@ -23,7 +23,7 @@ public abstract class TagElementControl {
         if (tagElement != null && !TagElementControl.contains(tagElement)) {
             TagElementControl.getTagElements().add(tagElement);
             TagElementControl.sortSimple();
-            ReloadControl.requestReloadOf(LeftPane.class, RightPane.class);
+            ReloadControl.requestComponentReload(LeftPane.class, RightPane.class);
         }
     }
     public static void remove(TagElement tagElement) {
@@ -35,7 +35,7 @@ public abstract class TagElementControl {
             FilterControl.unlistTagElement(tagElement);
             FilterControl.revalidateDataElements();
             TagElementControl.getTagElements().remove(tagElement);
-            ReloadControl.requestReloadOf(LeftPane.class, GalleryPane.class, RightPane.class);
+            ReloadControl.requestComponentReload(LeftPane.class, GalleryPane.class, RightPane.class);
         }
     }
     public static void edit(TagElement tagElement) {
@@ -48,7 +48,7 @@ public abstract class TagElementControl {
                 TagElementControl.getTagElement(tagElement).setName(editName);
                 TagElementControl.sortSimple();
 
-                ReloadControl.requestReloadOf(LeftPane.class, RightPane.class);
+                ReloadControl.requestComponentReload(LeftPane.class, RightPane.class);
             }
         }
     }

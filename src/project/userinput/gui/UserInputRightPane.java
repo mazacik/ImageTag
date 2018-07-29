@@ -97,7 +97,7 @@ public abstract class UserInputRightPane {
         });
         btnAdd.setOnAction(event -> {
             RightPane.addTagToSelection();
-            ReloadControl.requestReloadOf(true, RightPane.class);
+            ReloadControl.requestComponentReload(true, RightPane.class);
         });
     }
     private static void setOnAction_btnNew() {
@@ -113,7 +113,7 @@ public abstract class UserInputRightPane {
                 String group = value.toString();
                 cbName.getItems().setAll(TagElementControl.getNamesInGroup(group));
                 cbName.getSelectionModel().select(newTagElement.getName());
-                ReloadControl.requestReloadOf(true, LeftPane.class);
+                ReloadControl.requestComponentReload(true, LeftPane.class);
             }
         });
     }
@@ -126,7 +126,7 @@ public abstract class UserInputRightPane {
         });
         RightPane.getMenuRemoveTag().setOnAction(event -> {
             FilterControl.removeTagElementSelectionFromDataElementSelection();
-            ReloadControl.requestReloadOf(true, RightPane.class);
+            ReloadControl.requestComponentReload(true, RightPane.class);
         });
     }
 }

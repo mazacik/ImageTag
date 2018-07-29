@@ -29,7 +29,7 @@ public abstract class FocusControl {
             previousFocus.getGalleryTile().generateEffect();
         }
 
-        ReloadControl.requestReloadOf(TopPane.class, PreviewPane.class, RightPane.class);
+        ReloadControl.requestComponentReload(TopPane.class, PreviewPane.class, RightPane.class);
     }
     public static void moveFocusByKeyCode(KeyCode keyCode) {
         ArrayList<DataElement> databaseItemsFiltered = FilterControl.getValidDataElements();
@@ -53,7 +53,7 @@ public abstract class FocusControl {
 
         if (newFocusPosition >= 0 && newFocusPosition < databaseItemsFiltered.size()) {
             FocusControl.setFocus(databaseItemsFiltered.get(newFocusPosition));
-            GalleryPane.adjustViewportToFocus();
+            GalleryPane.adjustViewportToCurrentFocus();
         }
     }
 

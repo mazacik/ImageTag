@@ -69,7 +69,7 @@ public abstract class UserInputGalleryPane {
                     index++;
                     FocusControl.setFocus(FilterControl.getValidDataElements().get(index));
                 }
-                ReloadControl.requestReloadOf(true, GalleryPane.class);
+                ReloadControl.requestComponentReload(true, GalleryPane.class);
             }
         });
     }
@@ -101,11 +101,11 @@ public abstract class UserInputGalleryPane {
                     dataElement.getGalleryTile().setFitWidth(galleryIconSizePref);
                     dataElement.getGalleryTile().setFitHeight(galleryIconSizePref);
                 }
-                GalleryPane.recalculateHgap();
+                GalleryPane.calculateTilePaneHGap();
             }
         });
     }
     private static void setWidthPropertyListener_tilePane() {
-        GalleryPane.getTilePane().widthProperty().addListener((observable, oldValue, newValue) -> GalleryPane.recalculateHgap());
+        GalleryPane.getTilePane().widthProperty().addListener((observable, oldValue, newValue) -> GalleryPane.calculateTilePaneHGap());
     }
 }

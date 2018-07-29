@@ -80,7 +80,7 @@ public abstract class RightPane {
             } else {
                 FilterControl.addTagElementToDataElementSelection(tagElement);
             }
-            ReloadControl.requestReloadOf(RightPane.class);
+            ReloadControl.requestComponentReload(RightPane.class);
         }
     }
     public static void reload() {

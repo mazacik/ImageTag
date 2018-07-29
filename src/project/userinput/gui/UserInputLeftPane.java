@@ -65,7 +65,7 @@ public abstract class UserInputLeftPane {
                     }
                 }
                 FilterControl.revalidateDataElements();
-                ReloadControl.requestReloadOf(true, GalleryPane.class);
+                ReloadControl.requestComponentReload(true, GalleryPane.class);
                 LeftPane.refreshTreeview();
             }
         });

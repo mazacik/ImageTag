@@ -64,7 +64,7 @@ public abstract class FilterControl {
                 }
             }
         }
-        ReloadControl.requestReloadOf(GalleryPane.class);
+        ReloadControl.requestComponentReload(GalleryPane.class);
     }
     public static void addTagElementToDataElementSelection(TagElement tagElement) {
         if (tagElement != null && !tagElement.isEmpty()) {
@@ -103,11 +103,11 @@ public abstract class FilterControl {
             if (!tagExists) {
                 FilterControl.unlistTagElement(tagElement);
                 TagElementControl.remove(tagElement);
-                ReloadControl.requestReloadOf(LeftPane.class);
+                ReloadControl.requestComponentReload(LeftPane.class);
             }
         }
 
-        ReloadControl.requestReloadOf(RightPane.class);
+        ReloadControl.requestComponentReload(RightPane.class);
     }
 
     public static void whitelistGroup(String group) {
@@ -171,7 +171,7 @@ public abstract class FilterControl {
                 FilterControl.getValidDataElements().add(dataElement);
             }
         }
-        ReloadControl.requestReloadOf(GalleryPane.class);
+        ReloadControl.requestComponentReload(GalleryPane.class);
     }
     public static void customFilterResetFiltering() {
         customFilterUntaggedOnly = false;

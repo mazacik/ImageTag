@@ -53,7 +53,7 @@ public abstract class GalleryPane {
         }
         _this.setVvalue(scrollbarValue);
     }
-    public static void recalculateHgap() {
+    public static void calculateTilePaneHGap() {
         int tilePaneWidth = (int) tilePane.getWidth();
         int prefTileWidth = (int) tilePane.getPrefTileWidth();
         int columnCount = tilePaneWidth / prefTileWidth - 1;
@@ -61,7 +61,7 @@ public abstract class GalleryPane {
             tilePane.setHgap(tilePaneWidth % prefTileWidth / columnCount);
         }
     }
-    public static void adjustViewportToFocus() {
+    public static void adjustViewportToCurrentFocus() {
         DataElement currentFocusedItem = FocusControl.getCurrentFocus();
         if (currentFocusedItem == null) return;
         ObservableList<Node> tilePaneItems = tilePane.getChildren();

@@ -20,10 +20,10 @@ public abstract class GUIControl {
         double[] dividerPositions = SPLITPANE.getDividerPositions();
         if (SPLITPANE_ITEMS.contains(GALLERYPANE)) {
             SPLITPANE_ITEMS.set(SPLITPANE_ITEMS.indexOf(GALLERYPANE), PREVIEWPANE);
-            ReloadControl.requestReloadOf(PreviewPane.class);
+            ReloadControl.requestComponentReload(PreviewPane.class);
         } else {
             SPLITPANE_ITEMS.set(SPLITPANE_ITEMS.indexOf(PREVIEWPANE), GALLERYPANE);
-            ReloadControl.requestReloadOf(GalleryPane.class);
+            ReloadControl.requestComponentReload(GalleryPane.class);
         }
         SPLITPANE.setDividerPositions(dividerPositions);
     }

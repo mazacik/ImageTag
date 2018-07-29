@@ -13,7 +13,7 @@ public abstract class ReloadControl {
     private static boolean reloadRightPane = false;
 
     /* public */
-    public static void requestReloadGlobal(boolean sortElementControls) {
+    public static void requestGlobalReload(boolean sortElementControls) {
         if (sortElementControls) {
             DataElementControl.sortAll();
             TagElementControl.sortAll();
@@ -24,10 +24,10 @@ public abstract class ReloadControl {
         PreviewPane.reload();
         RightPane.reload();
     }
-    public static void requestReloadOf(Class... components) {
-        ReloadControl.requestReloadOf(false, components);
+    public static void requestComponentReload(Class... components) {
+        ReloadControl.requestComponentReload(false, components);
     }
-    public static void requestReloadOf(boolean doReload, Class... components) {
+    public static void requestComponentReload(boolean doReload, Class... components) {
         for (Class component : components) {
             if (component.equals(TopPane.class)) {
                 reloadTopPane = true;
@@ -41,9 +41,9 @@ public abstract class ReloadControl {
                 reloadRightPane = true;
             }
         }
-        if (doReload) doReload();
+        if (doReload) forceReload();
     }
-    public static void doReload() {
+    public static void forceReload() {
         if (reloadTopPane) {
             TopPane.reload();
             reloadTopPane = false;
