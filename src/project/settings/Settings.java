@@ -1,4 +1,4 @@
-package project.helper;
+package project.settings;
 
 import java.io.*;
 import java.util.Properties;
@@ -16,7 +16,7 @@ public abstract class Settings {
     private static String settingsFilePath = "JavaExplorer.ini";
 
     /* public */
-    public static boolean readFromFile(Class mainClass) {
+    public static boolean readFromFile(Class main) {
         Properties properties = new Properties();
         InputStream fileInputStream;
 
@@ -26,7 +26,7 @@ public abstract class Settings {
             properties.load(fileInputStream);
         } catch (Exception e1) {
             try {
-                fileInputStream = mainClass.getResourceAsStream(settingsFilePath);
+                fileInputStream = main.getResourceAsStream(settingsFilePath);
                 properties.load(fileInputStream);
             } catch (Exception e2) {
                 return false;
@@ -41,8 +41,9 @@ public abstract class Settings {
             return false;
         }
 
-        if (!databaseCacheFilePath.endsWith(".json"))
+        if (!databaseCacheFilePath.endsWith(".json")) {
             databaseCacheFilePath += ".json";
+        }
         return true;
     }
     public static void writeToFile() {

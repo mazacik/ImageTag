@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import project.database.control.DataElementControl;
 import project.database.element.DataElement;
-import project.helper.Settings;
+import project.settings.Settings;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;

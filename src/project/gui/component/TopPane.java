@@ -23,8 +23,8 @@ public abstract class TopPane {
     private static final MenuItem menuClearSelection = new MenuItem("Clear Selection");
 
     private static final Menu menuFilter = new Menu("Filter");
-    private static final CheckMenuItem menuUntaggedOnly = new CheckMenuItem("Untagged Only");
-    private static final CheckMenuItem menuLessThanXTags = new CheckMenuItem("Less Than X Tags");
+    private static final CheckMenuItem menuUntaggedOnly = new CheckMenuItem("Untagged");
+    private static final CheckMenuItem menuMaxXTags = new CheckMenuItem("Max X Tags");
     private static final MenuItem menuRefresh = new MenuItem("Refresh");
     private static final MenuItem menuReset = new MenuItem("Reset");
 
@@ -37,7 +37,7 @@ public abstract class TopPane {
     private static void initializeComponents() {
         menuFile.getItems().addAll(menuSave, new SeparatorMenuItem(), menuExit);
         menuSelection.getItems().addAll(menuSelectAll, menuClearSelection);
-        menuFilter.getItems().addAll(menuUntaggedOnly, menuLessThanXTags, new SeparatorMenuItem(), menuRefresh, menuReset);
+        menuFilter.getItems().addAll(menuUntaggedOnly, menuMaxXTags, new SeparatorMenuItem(), menuRefresh, menuReset);
 
         infoLabelMenuBar.getMenus().add(infoLabelMenu);
     }
@@ -72,8 +72,8 @@ public abstract class TopPane {
     public static CheckMenuItem getMenuUntaggedOnly() {
         return menuUntaggedOnly;
     }
-    public static CheckMenuItem getMenuLessThanXTags() {
-        return menuLessThanXTags;
+    public static CheckMenuItem getMenuMaxXTags() {
+        return menuMaxXTags;
     }
     public static MenuItem getMenuRefresh() {
         return menuRefresh;

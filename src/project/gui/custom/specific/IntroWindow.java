@@ -10,7 +10,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import project.Main;
 import project.gui.custom.generic.DirectoryChooserWindow;
-import project.helper.Settings;
+import project.settings.Settings;
 
 public class IntroWindow extends Stage {
     /* components */

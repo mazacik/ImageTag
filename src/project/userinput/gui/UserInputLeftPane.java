@@ -64,7 +64,7 @@ public abstract class UserInputLeftPane {
                         coloredText.setColor(Color.GREEN);
                     }
                 }
-                FilterControl.revalidateDataElements();
+                FilterControl.validDataElementsRefresh();
                 ReloadControl.requestComponentReload(true, GalleryPane.class);
                 LeftPane.refreshTreeview();
             }

@@ -12,7 +12,7 @@ import project.database.control.DataElementControl;
 import project.database.element.DataElement;
 import project.gui.component.GalleryPane;
 import project.gui.component.part.GalleryTile;
-import project.helper.Settings;
+import project.settings.Settings;
 
 import java.io.IOException;
 import java.nio.file.Files;

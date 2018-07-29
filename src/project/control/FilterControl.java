@@ -8,7 +8,7 @@ import project.database.element.TagElement;
 import project.gui.component.GalleryPane;
 import project.gui.component.LeftPane;
 import project.gui.component.RightPane;
-import project.gui.custom.generic.NumberInputWindow;
+import project.gui.component.TopPane;
 
 import java.util.ArrayList;
 
@@ -19,51 +19,32 @@ public abstract class FilterControl {
     private static final ArrayList<TagElement> tagElementWhitelist = new ArrayList<>();
     private static final ArrayList<TagElement> tagElementBlacklist = new ArrayList<>();
 
-    private static boolean customFilterUntaggedOnly = false;
-    private static boolean customFilterLessThanXTags = false;
-    private static int customFilterLessThanXTagsMax = 0;
+    private static FilterCollection currentFilter = FilterCollection.SHOW_EVERYTHING;
 
     /* public */
-    public static void revalidateDataElements() /* todo somethow split this */ {
-        if (customFilterUntaggedOnly) {
-            customFilterUntaggedOnly();
-        } else if (customFilterLessThanXTags) {
-            customFilterLessThanXTags(customFilterLessThanXTagsMax);
-        }
-
+    public static void validDataElementsRefresh() {
         ArrayList<DataElement> dataElements = DataElementControl.getDataElementsCopy();
+
+        currentFilter.activate();
         validDataElements.clear();
-        if (tagElementWhitelist.isEmpty() && tagElementBlacklist.isEmpty()) {
-            validDataElements.addAll(dataElements);
-        } else if (tagElementWhitelist.isEmpty() && !tagElementBlacklist.isEmpty()) {
+
+        if (tagElementWhitelist.isEmpty() && tagElementBlacklist.isEmpty()) validDataElements.addAll(dataElements);
+        else {
             for (DataElement dataElement : dataElements) {
-                boolean isDataElementValid = true;
-                for (TagElement tagElement : tagElementBlacklist) {
-                    if (dataElement.getTagElements().contains(tagElement)) {
-                        isDataElementValid = false;
-                        break;
-                    }
-                }
-                if (isDataElementValid) {
-                    validDataElements.add(dataElement);
-                }
-            }
-        } else {
-            for (DataElement dataElement : dataElements) {
-                if (dataElement.getTagElements().containsAll(tagElementWhitelist)) {
+                ArrayList<TagElement> dataElementTagElements = dataElement.getTagElements();
+                if (tagElementWhitelist.isEmpty() || dataElementTagElements.containsAll(tagElementWhitelist)) {
                     boolean isDataElementValid = true;
                     for (TagElement tagElement : tagElementBlacklist) {
-                        if (dataElement.getTagElements().contains(tagElement)) {
+                        if (dataElementTagElements.contains(tagElement)) {
                             isDataElementValid = false;
                             break;
                         }
                     }
-                    if (isDataElementValid) {
-                        validDataElements.add(dataElement);
-                    }
+                    if (isDataElementValid) validDataElements.add(dataElement);
                 }
             }
         }
+
         ReloadControl.requestComponentReload(GalleryPane.class);
     }
     public static void addTagElementToDataElementSelection(TagElement tagElement) {
@@ -79,7 +60,7 @@ public abstract class FilterControl {
                 }
         }
     }
-    public static void removeTagElementSelectionFromDataElementSelection() /* todo somethow split this */ {
+    public static void removeTagElementSelectionFromDataElementSelection() {
         ArrayList<TagElement> tagElementsToRemove = new ArrayList<>();
         ObservableList<String> tagElementSelection = RightPane.getListView().getSelectionModel().getSelectedItems();
         for (String tagElement : tagElementSelection) {
@@ -136,49 +117,22 @@ public abstract class FilterControl {
         if (tagElement != null && !FilterControl.isTagElementWhitelisted(tagElement)) {
             tagElementWhitelist.add(tagElement);
             tagElementBlacklist.remove(tagElement);
+            currentFilter = FilterCollection.CUSTOM;
         }
     }
     public static void blacklistTagElement(TagElement tagElement) {
         if (tagElement != null && !FilterControl.isTagElementBlacklisted(tagElement)) {
             tagElementWhitelist.remove(tagElement);
             tagElementBlacklist.add(tagElement);
+            currentFilter = FilterCollection.CUSTOM;
         }
     }
     public static void unlistTagElement(TagElement tagElement) {
         if (tagElement != null) {
             tagElementWhitelist.remove(tagElement);
             tagElementBlacklist.remove(tagElement);
+            currentFilter = FilterCollection.CUSTOM;
         }
-    }
-
-    public static void customFilterUntaggedOnly() {
-        FilterControl.getTagElementWhitelist().clear();
-        FilterControl.getTagElementBlacklist().clear();
-        FilterControl.getTagElementBlacklist().addAll(TagElementControl.getTagElements());
-    }
-    public static void customFilterLessThanXTagsGetValue() {
-        int maxTags = new NumberInputWindow("Filter Settings", "Maximum number of tags:").getResultValue();
-        if (maxTags == 0) return;
-        customFilterLessThanXTagsMax = maxTags;
-    }
-    public static void customFilterLessThanXTags(int maxTags) {
-        if (maxTags == 0) return;
-        FilterControl.getValidDataElements().clear();
-        FilterControl.getTagElementWhitelist().clear();
-        FilterControl.getTagElementBlacklist().clear();
-        for (DataElement dataElement : DataElementControl.getDataElementsCopy()) {
-            if (dataElement.getTagElements().size() <= maxTags) {
-                FilterControl.getValidDataElements().add(dataElement);
-            }
-        }
-        ReloadControl.requestComponentReload(GalleryPane.class);
-    }
-    public static void customFilterResetFiltering() {
-        customFilterUntaggedOnly = false;
-        customFilterLessThanXTags = false;
-        FilterControl.getTagElementWhitelist().clear();
-        FilterControl.getTagElementBlacklist().clear();
-        FilterControl.revalidateDataElements();
     }
 
     /* boolean */
@@ -231,10 +185,30 @@ public abstract class FilterControl {
     }
 
     /* set */
-    public static void setCustomFilterUntaggedOnly(boolean value) {
-        customFilterUntaggedOnly = value;
-    }
-    public static void setCustomFilterLessThanXTags(boolean value) {
-        customFilterLessThanXTags = value;
+    public static void setFilter(FilterCollection filter) {
+        currentFilter = filter;
+
+        validDataElementsRefresh();
+
+        switch (currentFilter) {
+            case SHOW_EVERYTHING:
+                TopPane.getMenuUntaggedOnly().setSelected(false);
+                TopPane.getMenuMaxXTags().setSelected(false);
+                break;
+            case SHOW_UNTAGGED:
+                TopPane.getMenuUntaggedOnly().setSelected(true);
+                TopPane.getMenuMaxXTags().setSelected(false);
+                break;
+            case SHOW_MAX_X_TAGS:
+                TopPane.getMenuUntaggedOnly().setSelected(false);
+                TopPane.getMenuMaxXTags().setSelected(true);
+                break;
+            case CUSTOM:
+                TopPane.getMenuUntaggedOnly().setSelected(false);
+                TopPane.getMenuMaxXTags().setSelected(false);
+                break;
+            default:
+                break;
+        }
     }
 }

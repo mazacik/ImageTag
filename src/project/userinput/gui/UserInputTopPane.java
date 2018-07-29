@@ -2,6 +2,7 @@ package project.userinput.gui;
 
 import javafx.stage.WindowEvent;
 import project.Main;
+import project.control.FilterCollection;
 import project.control.FilterControl;
 import project.control.ReloadControl;
 import project.control.SelectionControl;
@@ -10,6 +11,7 @@ import project.gui.component.GalleryPane;
 import project.gui.component.LeftPane;
 import project.gui.component.RightPane;
 import project.gui.component.TopPane;
+import project.gui.custom.generic.NumberInputWindow;
 
 public abstract class UserInputTopPane {
     public static void initialize() {
@@ -20,7 +22,7 @@ public abstract class UserInputTopPane {
         setOnAction_menuClearSelection();
 
         setOnAction_menuUntaggedOnly();
-        setOnAction_menuLessThanXTags();
+        setOnAction_menuMaxXTags();
         setOnAction_menuRefresh();
         setOnAction_menuReset();
     }
@@ -43,36 +45,28 @@ public abstract class UserInputTopPane {
 
     private static void setOnAction_menuUntaggedOnly() {
         TopPane.getMenuUntaggedOnly().setOnAction(event -> {
-            FilterControl.setCustomFilterUntaggedOnly(true);
-            FilterControl.setCustomFilterLessThanXTags(false);
-            FilterControl.revalidateDataElements();
-            TopPane.getMenuUntaggedOnly().setSelected(true);
-            TopPane.getMenuLessThanXTags().setSelected(false);
+            FilterControl.setFilter(FilterCollection.SHOW_UNTAGGED);
             ReloadControl.requestComponentReload(true, LeftPane.class, GalleryPane.class);
         });
     }
-    private static void setOnAction_menuLessThanXTags() {
-        TopPane.getMenuLessThanXTags().setOnAction(event -> {
-            FilterControl.setCustomFilterUntaggedOnly(false);
-            FilterControl.setCustomFilterLessThanXTags(true);
-            FilterControl.customFilterLessThanXTagsGetValue();
-            FilterControl.revalidateDataElements();
-            TopPane.getMenuUntaggedOnly().setSelected(false);
-            TopPane.getMenuLessThanXTags().setSelected(true);
+    private static void setOnAction_menuMaxXTags() {
+        TopPane.getMenuMaxXTags().setOnAction(event -> {
+            int maxTags = new NumberInputWindow("FilterCollection Settings", "Maximum number of tags:").getResultValue();
+            if (maxTags == 0) return;
+            FilterCollection.setMaxTagsValue(maxTags);
+
+            FilterControl.setFilter(FilterCollection.SHOW_MAX_X_TAGS);
             ReloadControl.requestComponentReload(true, GalleryPane.class, RightPane.class);
         });
     }
     private static void setOnAction_menuRefresh() {
         TopPane.getMenuRefresh().setOnAction(event -> {
-            FilterControl.revalidateDataElements();
             ReloadControl.requestComponentReload(true, GalleryPane.class, RightPane.class);
         });
     }
     private static void setOnAction_menuReset() {
         TopPane.getMenuReset().setOnAction(event -> {
-            TopPane.getMenuUntaggedOnly().setSelected(false);
-            TopPane.getMenuLessThanXTags().setSelected(false);
-            FilterControl.customFilterResetFiltering();
+            FilterControl.setFilter(FilterCollection.SHOW_EVERYTHING);
             ReloadControl.requestComponentReload(true, GalleryPane.class, RightPane.class);
         });
     }

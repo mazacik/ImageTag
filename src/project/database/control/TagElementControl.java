@@ -33,7 +33,7 @@ public abstract class TagElementControl {
                 dataElement.getTagElements().remove(tagElement);
             }
             FilterControl.unlistTagElement(tagElement);
-            FilterControl.revalidateDataElements();
+            FilterControl.validDataElementsRefresh();
             TagElementControl.getTagElements().remove(tagElement);
             ReloadControl.requestComponentReload(LeftPane.class, GalleryPane.class, RightPane.class);
         }

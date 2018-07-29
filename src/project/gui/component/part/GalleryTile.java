@@ -12,7 +12,7 @@ import javafx.scene.paint.Color;
 import project.control.FocusControl;
 import project.control.SelectionControl;
 import project.database.element.DataElement;
-import project.helper.Settings;
+import project.settings.Settings;
 import project.userinput.gui.UserInputGalleryPane;
 
 public class GalleryTile extends ImageView {

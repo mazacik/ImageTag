@@ -11,7 +11,7 @@ import project.database.element.DataElement;
 import project.gui.GUIMain;
 import project.gui.component.part.GalleryTile;
 import project.gui.custom.specific.LoadingWindow;
-import project.helper.Settings;
+import project.settings.Settings;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

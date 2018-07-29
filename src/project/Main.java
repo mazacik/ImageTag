@@ -4,7 +4,7 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import project.gui.custom.specific.IntroWindow;
 import project.gui.custom.specific.LoadingWindow;
-import project.helper.Settings;
+import project.settings.Settings;
 
 public class Main extends Application {
     private static Stage primaryStage = null;

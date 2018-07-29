@@ -10,7 +10,7 @@ import project.control.FilterControl;
 import project.control.FocusControl;
 import project.database.element.DataElement;
 import project.gui.GUIControl;
-import project.helper.Settings;
+import project.settings.Settings;
 import project.userinput.gui.UserInputGalleryPane;
 
 public abstract class GalleryPane {

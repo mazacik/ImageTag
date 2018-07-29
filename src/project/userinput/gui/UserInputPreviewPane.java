@@ -12,7 +12,7 @@ import project.control.SelectionControl;
 import project.database.control.DataElementControl;
 import project.database.element.DataElement;
 import project.gui.component.PreviewPane;
-import project.helper.Settings;
+import project.settings.Settings;
 
 import java.io.IOException;
 import java.nio.file.Files;
