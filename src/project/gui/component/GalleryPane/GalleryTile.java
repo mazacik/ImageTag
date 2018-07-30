@@ -1,4 +1,4 @@
-package project.gui.component.part;
+package project.gui.component.GalleryPane;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.ContextMenu;
@@ -13,7 +13,7 @@ import project.control.FocusControl;
 import project.control.SelectionControl;
 import project.database.element.DataElement;
 import project.settings.Settings;
-import project.userinput.gui.UserInputGalleryPane;
+import project.userinput.UserInputGalleryPane;
 
 public class GalleryTile extends ImageView {
     /* const */

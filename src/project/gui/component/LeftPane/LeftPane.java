@@ -1,4 +1,4 @@
-package project.gui.component;
+package project.gui.component.LeftPane;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.TreeCell;
@@ -11,8 +11,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import project.control.FilterControl;
 import project.database.control.TagElementControl;
-import project.gui.component.part.ColoredText;
-import project.userinput.gui.UserInputLeftPane;
+import project.userinput.UserInputLeftPane;
 
 import java.util.ArrayList;
 

@@ -1,16 +1,16 @@
-package project.userinput.gui;
+package project.userinput;
 
 import javafx.stage.WindowEvent;
 import project.Main;
-import project.control.FilterCollection;
 import project.control.FilterControl;
 import project.control.ReloadControl;
 import project.control.SelectionControl;
 import project.database.loader.Serialization;
-import project.gui.component.GalleryPane;
-import project.gui.component.LeftPane;
-import project.gui.component.RightPane;
-import project.gui.component.TopPane;
+import project.enums.FilterCollection;
+import project.gui.component.GalleryPane.GalleryPane;
+import project.gui.component.LeftPane.LeftPane;
+import project.gui.component.RightPane.RightPane;
+import project.gui.component.TopPane.TopPane;
 import project.gui.custom.generic.NumberInputWindow;
 
 public abstract class UserInputTopPane {

@@ -5,14 +5,14 @@ import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.Region;
 import project.control.ReloadControl;
-import project.gui.component.GalleryPane;
-import project.gui.component.PreviewPane;
+import project.gui.component.GalleryPane.GalleryPane;
+import project.gui.component.PreviewPane.PreviewPane;
 
-public abstract class GUIControl {
+public abstract class GUI_Utility {
     /* imports */
     private static final Region GALLERYPANE = GalleryPane.getInstance();
     private static final Region PREVIEWPANE = PreviewPane.getInstance();
-    private static final SplitPane SPLITPANE = GUIMain.getSplitPane();
+    private static final SplitPane SPLITPANE = GUI_Instance.getSplitPane();
     private static final ObservableList<Node> SPLITPANE_ITEMS = SPLITPANE.getItems();
 
     /* public */

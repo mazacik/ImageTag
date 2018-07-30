@@ -1,4 +1,4 @@
-package project.userinput.gui;
+package project.userinput;
 
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -10,8 +10,8 @@ import project.control.ReloadControl;
 import project.control.SelectionControl;
 import project.database.control.DataElementControl;
 import project.database.element.DataElement;
-import project.gui.component.GalleryPane;
-import project.gui.component.part.GalleryTile;
+import project.gui.component.GalleryPane.GalleryPane;
+import project.gui.component.GalleryPane.GalleryTile;
 import project.settings.Settings;
 
 import java.io.IOException;

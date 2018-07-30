@@ -1,4 +1,4 @@
-package project.gui.component;
+package project.gui.component.GalleryPane;
 
 import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
@@ -9,9 +9,9 @@ import javafx.scene.layout.TilePane;
 import project.control.FilterControl;
 import project.control.FocusControl;
 import project.database.element.DataElement;
-import project.gui.GUIControl;
+import project.gui.GUI_Utility;
 import project.settings.Settings;
-import project.userinput.gui.UserInputGalleryPane;
+import project.userinput.UserInputGalleryPane;
 
 public abstract class GalleryPane {
     /* const */
@@ -43,7 +43,7 @@ public abstract class GalleryPane {
 
     /* public */
     public static void reload() {
-        if (GUIControl.isPreviewFullscreen()) return;
+        if (GUI_Utility.isPreviewFullscreen()) return;
 
         double scrollbarValue = _this.getVvalue();
         ObservableList<Node> tilePaneItems = tilePane.getChildren();

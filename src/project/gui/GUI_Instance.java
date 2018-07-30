@@ -6,10 +6,14 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import project.control.ReloadControl;
 import project.database.loader.Serialization;
-import project.gui.component.*;
+import project.gui.component.GalleryPane.GalleryPane;
+import project.gui.component.LeftPane.LeftPane;
+import project.gui.component.PreviewPane.PreviewPane;
+import project.gui.component.RightPane.RightPane;
+import project.gui.component.TopPane.TopPane;
 import project.userinput.UserInputGlobal;
 
-public abstract class GUIMain extends Stage {
+public abstract class GUI_Instance extends Stage {
     /* components */
     private static Stage _this;
     private static final SplitPane splitPane = new SplitPane(LeftPane.getInstance(), GalleryPane.getInstance(), RightPane.getInstance());

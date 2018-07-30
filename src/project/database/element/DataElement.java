@@ -1,7 +1,7 @@
 package project.database.element;
 
 import javafx.scene.image.Image;
-import project.gui.component.part.GalleryTile;
+import project.gui.component.GalleryPane.GalleryTile;
 
 import java.io.Serializable;
 import java.util.ArrayList;

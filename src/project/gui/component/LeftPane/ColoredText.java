@@ -1,4 +1,4 @@
-package project.gui.component.part;
+package project.gui.component.LeftPane;
 
 import javafx.scene.paint.Color;
 

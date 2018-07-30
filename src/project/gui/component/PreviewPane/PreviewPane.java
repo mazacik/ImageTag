@@ -1,26 +1,23 @@
-package project.gui.component;
+package project.gui.component.PreviewPane;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import project.control.FocusControl;
 import project.database.element.DataElement;
-import project.gui.GUIControl;
+import project.gui.GUI_Utility;
 import project.settings.Settings;
-import project.userinput.gui.UserInputPreviewPane;
+import project.userinput.UserInputPreviewPane;
 
 public abstract class PreviewPane {
     /* components */
     private static final Pane _this = new Pane();
     private static final Canvas canvas = new Canvas();
 
-    private static MenuItem menuCopy = new MenuItem("Copy Name");
-    private static MenuItem menuDelete = new MenuItem("Delete Selection");
-    private static ContextMenu contextMenu = new ContextMenu(menuCopy, menuDelete);
+    private static RightClickMenu contextMenu = new RightClickMenu();
 
     /* vars */
     private static DataElement currentDataElement = null;
@@ -44,7 +41,7 @@ public abstract class PreviewPane {
 
     /* public */
     public static void reload() {
-        if (!GUIControl.isPreviewFullscreen()) return;
+        if (!GUI_Utility.isPreviewFullscreen()) return;
 
         DataElement currentFocus = FocusControl.getCurrentFocus();
         if (currentFocus == null) return;
@@ -86,12 +83,6 @@ public abstract class PreviewPane {
     /* get */
     public static Canvas getCanvas() {
         return canvas;
-    }
-    public static MenuItem getMenuCopy() {
-        return menuCopy;
-    }
-    public static MenuItem getMenuDelete() {
-        return menuDelete;
     }
     public static ContextMenu getContextMenu() {
         return contextMenu;

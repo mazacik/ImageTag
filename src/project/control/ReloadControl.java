@@ -2,7 +2,11 @@ package project.control;
 
 import project.database.control.DataElementControl;
 import project.database.control.TagElementControl;
-import project.gui.component.*;
+import project.gui.component.GalleryPane.GalleryPane;
+import project.gui.component.LeftPane.LeftPane;
+import project.gui.component.PreviewPane.PreviewPane;
+import project.gui.component.RightPane.RightPane;
+import project.gui.component.TopPane.TopPane;
 
 public abstract class ReloadControl {
     /* vars */

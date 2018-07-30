@@ -1,11 +1,11 @@
-package project.gui.component;
+package project.gui.component.TopPane;
 
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import project.control.FocusControl;
 import project.database.element.DataElement;
-import project.userinput.gui.UserInputTopPane;
+import project.userinput.UserInputTopPane;
 
 public abstract class TopPane {
     /* components */

@@ -1,4 +1,4 @@
-package project.userinput.gui;
+package project.userinput;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -7,9 +7,9 @@ import project.control.FilterControl;
 import project.control.ReloadControl;
 import project.database.control.TagElementControl;
 import project.database.element.TagElement;
-import project.gui.component.LeftPane;
-import project.gui.component.RightPane;
-import project.gui.component.TopPane;
+import project.gui.component.LeftPane.LeftPane;
+import project.gui.component.RightPane.RightPane;
+import project.gui.component.TopPane.TopPane;
 
 public abstract class UserInputRightPane {
     /* vars */

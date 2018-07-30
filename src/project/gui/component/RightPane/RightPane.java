@@ -1,4 +1,4 @@
-package project.gui.component;
+package project.gui.component.RightPane;
 
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -11,7 +11,7 @@ import project.control.SelectionControl;
 import project.database.control.TagElementControl;
 import project.database.element.DataElement;
 import project.database.element.TagElement;
-import project.userinput.gui.UserInputRightPane;
+import project.userinput.UserInputRightPane;
 
 import java.util.ArrayList;
 

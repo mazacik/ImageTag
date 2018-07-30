@@ -1,4 +1,4 @@
-package project.userinput.gui;
+package project.userinput;
 
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -10,9 +10,9 @@ import project.control.FilterControl;
 import project.control.ReloadControl;
 import project.database.control.TagElementControl;
 import project.database.element.TagElement;
-import project.gui.component.GalleryPane;
-import project.gui.component.LeftPane;
-import project.gui.component.part.ColoredText;
+import project.gui.component.GalleryPane.GalleryPane;
+import project.gui.component.LeftPane.ColoredText;
+import project.gui.component.LeftPane.LeftPane;
 
 public abstract class UserInputLeftPane {
     public static void initialize() {

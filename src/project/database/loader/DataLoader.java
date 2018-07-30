@@ -8,8 +8,8 @@ import project.Main;
 import project.database.control.DataElementControl;
 import project.database.control.TagElementControl;
 import project.database.element.DataElement;
-import project.gui.GUIMain;
-import project.gui.component.part.GalleryTile;
+import project.gui.GUI_Instance;
+import project.gui.component.GalleryPane.GalleryTile;
 import project.gui.custom.specific.LoadingWindow;
 import project.settings.Settings;
 
@@ -90,8 +90,8 @@ public class DataLoader extends Thread {
 
         Platform.runLater(() -> {
             Main.getLoadingWindow().close();
-            GUIMain.initialize();
-            Main.setStage(GUIMain.getInstance());
+            GUI_Instance.initialize();
+            Main.setStage(GUI_Instance.getInstance());
         });
     }
 

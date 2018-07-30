@@ -1,9 +1,11 @@
-package project.control;
+package project.enums;
 
+import project.control.FilterControl;
+import project.control.ReloadControl;
 import project.database.control.DataElementControl;
 import project.database.control.TagElementControl;
 import project.database.element.DataElement;
-import project.gui.component.GalleryPane;
+import project.gui.component.GalleryPane.GalleryPane;
 
 public enum FilterCollection {
     SHOW_EVERYTHING {

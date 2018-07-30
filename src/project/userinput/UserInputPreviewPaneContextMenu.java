@@ -1,47 +1,29 @@
-package project.userinput.gui;
+package project.userinput;
 
-import javafx.beans.value.ChangeListener;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.MouseButton;
 import project.control.FilterControl;
 import project.control.FocusControl;
 import project.control.ReloadControl;
 import project.control.SelectionControl;
 import project.database.control.DataElementControl;
 import project.database.element.DataElement;
-import project.gui.component.PreviewPane;
+import project.gui.component.PreviewPane.PreviewPane;
+import project.gui.component.PreviewPane.RightClickMenu;
 import project.settings.Settings;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public abstract class UserInputPreviewPane {
+public abstract class UserInputPreviewPaneContextMenu {
     public static void initialize() {
-        setOnMouseClicked_canvas();
         setOnAction_menuCopy();
         setOnAction_menuDelete();
-        setSizeListener_canvas();
-    }
-
-    private static void setOnMouseClicked_canvas() {
-        PreviewPane.getCanvas().setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY) {
-                PreviewPane.getInstance().requestFocus();
-                PreviewPane.getContextMenu().hide();
-            } else if (event.getButton() == MouseButton.SECONDARY) {
-                DataElement dataElement = FocusControl.getCurrentFocus();
-                FocusControl.setFocus(dataElement);
-                SelectionControl.addDataElement(dataElement);
-                PreviewPane.getContextMenu().show(PreviewPane.getInstance(), event.getScreenX(), event.getScreenY());
-            }
-        });
     }
 
     public static void setOnAction_menuCopy() {
-        PreviewPane.getMenuCopy().setOnAction(event -> {
+        RightClickMenu.getMenuCopy().setOnAction(event -> {
             DataElement dataElement = FocusControl.getCurrentFocus();
             Clipboard clipboard = Clipboard.getSystemClipboard();
             ClipboardContent content = new ClipboardContent();
@@ -51,7 +33,7 @@ public abstract class UserInputPreviewPane {
 
     }
     public static void setOnAction_menuDelete() {
-        PreviewPane.getMenuDelete().setOnAction(event -> {
+        RightClickMenu.getMenuDelete().setOnAction(event -> {
             DataElement dataElement = FocusControl.getCurrentFocus();
             if (FilterControl.getValidDataElements().contains(dataElement)) {
                 int index = FilterControl.getValidDataElements().indexOf(dataElement);
@@ -76,14 +58,5 @@ public abstract class UserInputPreviewPane {
                 ReloadControl.requestComponentReload(true, PreviewPane.class);
             }
         });
-    }
-
-    private static void setSizeListener_canvas() {
-        Canvas canvas = PreviewPane.getCanvas();
-        ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) -> {
-            ReloadControl.requestComponentReload(true, PreviewPane.class);
-        };
-        canvas.widthProperty().addListener(previewPaneSizeListener);
-        canvas.heightProperty().addListener(previewPaneSizeListener);
     }
 }

@@ -5,10 +5,11 @@ import project.database.control.DataElementControl;
 import project.database.control.TagElementControl;
 import project.database.element.DataElement;
 import project.database.element.TagElement;
-import project.gui.component.GalleryPane;
-import project.gui.component.LeftPane;
-import project.gui.component.RightPane;
-import project.gui.component.TopPane;
+import project.enums.FilterCollection;
+import project.gui.component.GalleryPane.GalleryPane;
+import project.gui.component.LeftPane.LeftPane;
+import project.gui.component.RightPane.RightPane;
+import project.gui.component.TopPane.TopPane;
 
 import java.util.ArrayList;
 
@@ -161,12 +162,12 @@ public abstract class FilterControl {
         if (tagElement == null) return false;
         return tagElementWhitelist.contains(tagElement);
     }
+    public static boolean isTagElementWhitelisted(String group, String name) {
+        return tagElementWhitelist.contains(TagElementControl.getTagElement(group, name));
+    }
     public static boolean isTagElementBlacklisted(TagElement tagElement) {
         if (tagElement == null) return false;
         return tagElementBlacklist.contains(tagElement);
-    }
-    public static boolean isTagElementWhitelisted(String group, String name) {
-        return tagElementWhitelist.contains(TagElementControl.getTagElement(group, name));
     }
     public static boolean isTagElementBlacklisted(String group, String name) {
         return tagElementBlacklist.contains(TagElementControl.getTagElement(group, name));

@@ -2,10 +2,10 @@ package project.control;
 
 import javafx.scene.input.KeyCode;
 import project.database.element.DataElement;
-import project.gui.component.GalleryPane;
-import project.gui.component.PreviewPane;
-import project.gui.component.RightPane;
-import project.gui.component.TopPane;
+import project.gui.component.GalleryPane.GalleryPane;
+import project.gui.component.PreviewPane.PreviewPane;
+import project.gui.component.RightPane.RightPane;
+import project.gui.component.TopPane.TopPane;
 
 import java.util.ArrayList;
 

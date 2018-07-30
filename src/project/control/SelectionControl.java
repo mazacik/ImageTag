@@ -3,8 +3,8 @@ package project.control;
 import project.database.control.DataElementControl;
 import project.database.element.DataElement;
 import project.database.element.TagElement;
-import project.gui.component.GalleryPane;
-import project.gui.component.RightPane;
+import project.gui.component.GalleryPane.GalleryPane;
+import project.gui.component.RightPane.RightPane;
 
 import java.util.ArrayList;
 import java.util.Random;
