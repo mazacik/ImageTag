@@ -57,9 +57,20 @@ public abstract class GalleryPane {
         int tilePaneWidth = (int) tilePane.getWidth();
         int prefTileWidth = (int) tilePane.getPrefTileWidth();
         int columnCount = tilePaneWidth / prefTileWidth - 1;
+
+        int vgap = (int) tilePane.getVgap();
+        int hgap = vgap;
+
         if (columnCount != 0) {
-            tilePane.setHgap(tilePaneWidth % prefTileWidth / columnCount);
+            hgap = tilePaneWidth % prefTileWidth / columnCount;
+            while (hgap < vgap) {
+                tilePaneWidth += vgap * columnCount;
+                prefTileWidth += vgap;
+                hgap = tilePaneWidth % prefTileWidth / (columnCount - 1);
+            }
         }
+
+        tilePane.setHgap(hgap);
     }
     public static void adjustViewportToCurrentFocus() {
         DataElement currentFocusedItem = FocusControl.getCurrentFocus();
