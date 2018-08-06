@@ -1,12 +1,12 @@
 package project.control;
 
-import project.database.control.DataElementControl;
+import project.database.control.DataObjectControl;
 import project.database.control.TagElementControl;
-import project.gui.component.GalleryPane.GalleryPane;
-import project.gui.component.LeftPane.LeftPane;
-import project.gui.component.PreviewPane.PreviewPane;
-import project.gui.component.RightPane.RightPane;
-import project.gui.component.TopPane.TopPane;
+import project.gui.component.gallerypane.GalleryPane;
+import project.gui.component.leftpane.LeftPane;
+import project.gui.component.previewpane.PreviewPane;
+import project.gui.component.rightpane.RightPane;
+import project.gui.component.toppane.TopPane;
 
 public abstract class ReloadControl {
     /* vars */
@@ -19,7 +19,7 @@ public abstract class ReloadControl {
     /* public */
     public static void requestGlobalReload(boolean sortElementControls) {
         if (sortElementControls) {
-            DataElementControl.sortAll();
+            DataObjectControl.sortAll();
             TagElementControl.sortAll();
         }
         TopPane.reload();
@@ -31,7 +31,7 @@ public abstract class ReloadControl {
     public static void requestComponentReload(Class... components) {
         ReloadControl.requestComponentReload(false, components);
     }
-    public static void requestComponentReload(boolean doReload, Class... components) {
+    public static void requestComponentReload(boolean instant, Class... components) {
         for (Class component : components) {
             if (component.equals(TopPane.class)) {
                 reloadTopPane = true;
@@ -45,7 +45,7 @@ public abstract class ReloadControl {
                 reloadRightPane = true;
             }
         }
-        if (doReload) forceReload();
+        if (instant) forceReload();
     }
     public static void forceReload() {
         if (reloadTopPane) {

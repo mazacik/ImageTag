@@ -3,8 +3,8 @@ package project.database.loader;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import project.database.control.DataElementControl;
-import project.database.element.DataElement;
+import project.database.control.DataObjectControl;
+import project.database.element.DataObject;
 import project.settings.Settings;
 
 import java.io.BufferedWriter;
@@ -25,8 +25,8 @@ public abstract class Serialization {
         GSONBuilder.setPrettyPrinting().serializeNulls();
         Gson GSON = GSONBuilder.create();
 
-        Type databaseItemListType = new TypeToken<Collection<DataElement>>() {}.getType();
-        String JSON = GSON.toJson(DataElementControl.getDataElementsLive(), databaseItemListType);
+        Type databaseItemListType = new TypeToken<Collection<DataObject>>() {}.getType();
+        String JSON = GSON.toJson(DataObjectControl.getDataElementsLive(), databaseItemListType);
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(databaseCacheFilePath, false));
             writer.write(JSON);
@@ -35,13 +35,13 @@ public abstract class Serialization {
             e.printStackTrace();
         }
     }
-    public static ArrayList<DataElement> readFromDisk() {
+    public static ArrayList<DataObject> readFromDisk() {
         Path databaseCacheFilePath = Paths.get(Settings.getDatabaseCacheFilePath());
         GsonBuilder GSONBuilder = new GsonBuilder();
         GSONBuilder.setPrettyPrinting().serializeNulls();
         Gson GSON = GSONBuilder.create();
 
-        Type databaseItemListType = new TypeToken<Collection<DataElement>>() {}.getType();
+        Type databaseItemListType = new TypeToken<Collection<DataObject>>() {}.getType();
         try {
             String JSON = new String(Files.readAllBytes(databaseCacheFilePath));
             return GSON.fromJson(JSON, databaseItemListType);

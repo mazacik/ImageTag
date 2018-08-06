@@ -2,10 +2,10 @@ package project.enums;
 
 import project.control.FilterControl;
 import project.control.ReloadControl;
-import project.database.control.DataElementControl;
+import project.database.control.DataObjectControl;
 import project.database.control.TagElementControl;
-import project.database.element.DataElement;
-import project.gui.component.GalleryPane.GalleryPane;
+import project.database.element.DataObject;
+import project.gui.component.gallerypane.GalleryPane;
 
 public enum FilterCollection {
     SHOW_EVERYTHING {
@@ -24,12 +24,12 @@ public enum FilterCollection {
     SHOW_MAX_X_TAGS {
         public void activate() {
             if (maxTagsValue == 0) return;
-            FilterControl.getValidDataElements().clear();
+            FilterControl.getValidObjects().clear();
             FilterControl.getTagElementWhitelist().clear();
             FilterControl.getTagElementBlacklist().clear();
-            for (DataElement dataElement : DataElementControl.getDataElementsCopy()) {
-                if (dataElement.getTagElements().size() <= maxTagsValue) {
-                    FilterControl.getValidDataElements().add(dataElement);
+            for (DataObject dataObject : DataObjectControl.getDataElementsCopy()) {
+                if (dataObject.getTagElements().size() <= maxTagsValue) {
+                    FilterControl.getValidObjects().add(dataObject);
                 }
             }
             ReloadControl.requestComponentReload(GalleryPane.class);

@@ -3,12 +3,12 @@ package project.database.control;
 import javafx.scene.control.TreeCell;
 import project.control.FilterControl;
 import project.control.ReloadControl;
-import project.database.element.DataElement;
+import project.database.element.DataObject;
 import project.database.element.TagElement;
-import project.gui.component.GalleryPane.GalleryPane;
-import project.gui.component.LeftPane.ColoredText;
-import project.gui.component.LeftPane.LeftPane;
-import project.gui.component.RightPane.RightPane;
+import project.gui.component.gallerypane.GalleryPane;
+import project.gui.component.leftpane.ColoredText;
+import project.gui.component.leftpane.LeftPane;
+import project.gui.component.rightpane.RightPane;
 import project.gui.custom.specific.TagEditor;
 
 import java.util.ArrayList;
@@ -28,9 +28,9 @@ public abstract class TagElementControl {
     }
     public static void remove(TagElement tagElement) {
         if (tagElement != null) {
-            ArrayList<DataElement> dataElements = DataElementControl.getDataElementsLive();
-            for (DataElement dataElement : dataElements) {
-                dataElement.getTagElements().remove(tagElement);
+            ArrayList<DataObject> dataObjects = DataObjectControl.getDataElementsLive();
+            for (DataObject dataObject : dataObjects) {
+                dataObject.getTagElements().remove(tagElement);
             }
             FilterControl.unlistTagElement(tagElement);
             FilterControl.validDataElementsRefresh();
@@ -69,9 +69,9 @@ public abstract class TagElementControl {
         FilterControl.getTagElementBlacklist().sort(tagElementComparator);
     }
     public static void initialize() {
-        ArrayList<DataElement> dataElements = DataElementControl.getDataElementsLive();
-        for (DataElement dataElement : dataElements) {
-            ArrayList<TagElement> tagElementsOfDataElement = dataElement.getTagElements();
+        ArrayList<DataObject> dataObjects = DataObjectControl.getDataElementsLive();
+        for (DataObject dataObject : dataObjects) {
+            ArrayList<TagElement> tagElementsOfDataElement = dataObject.getTagElements();
             for (TagElement tagElementOfDataElement : tagElementsOfDataElement) {
                 if (tagElementOfDataElement == null) continue;
                 if (!TagElementControl.contains(tagElementOfDataElement)) {
@@ -84,7 +84,7 @@ public abstract class TagElementControl {
             }
         }
 
-        FilterControl.getValidDataElements().addAll(dataElements);
+        FilterControl.getValidObjects().addAll(dataObjects);
     }
 
     /* boolean */

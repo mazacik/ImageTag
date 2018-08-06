@@ -1,21 +1,21 @@
 package project.control;
 
 import javafx.collections.ObservableList;
-import project.database.control.DataElementControl;
+import project.database.control.DataObjectControl;
 import project.database.control.TagElementControl;
-import project.database.element.DataElement;
+import project.database.element.DataObject;
 import project.database.element.TagElement;
 import project.enums.FilterCollection;
-import project.gui.component.GalleryPane.GalleryPane;
-import project.gui.component.LeftPane.LeftPane;
-import project.gui.component.RightPane.RightPane;
-import project.gui.component.TopPane.TopPane;
+import project.gui.component.gallerypane.GalleryPane;
+import project.gui.component.leftpane.LeftPane;
+import project.gui.component.rightpane.RightPane;
+import project.gui.component.toppane.TopPane;
 
 import java.util.ArrayList;
 
 public abstract class FilterControl {
     /* vars */
-    private static final ArrayList<DataElement> validDataElements = new ArrayList<>();
+    private static final ArrayList<DataObject> dataObjectsValid = new ArrayList<>();
 
     private static final ArrayList<TagElement> tagElementWhitelist = new ArrayList<>();
     private static final ArrayList<TagElement> tagElementBlacklist = new ArrayList<>();
@@ -24,15 +24,15 @@ public abstract class FilterControl {
 
     /* public */
     public static void validDataElementsRefresh() {
-        ArrayList<DataElement> dataElements = DataElementControl.getDataElementsCopy();
+        ArrayList<DataObject> dataObjects = DataObjectControl.getDataElementsCopy();
 
         currentFilter.activate();
-        validDataElements.clear();
+        dataObjectsValid.clear();
 
-        if (tagElementWhitelist.isEmpty() && tagElementBlacklist.isEmpty()) validDataElements.addAll(dataElements);
+        if (tagElementWhitelist.isEmpty() && tagElementBlacklist.isEmpty()) dataObjectsValid.addAll(dataObjects);
         else {
-            for (DataElement dataElement : dataElements) {
-                ArrayList<TagElement> dataElementTagElements = dataElement.getTagElements();
+            for (DataObject dataObject : dataObjects) {
+                ArrayList<TagElement> dataElementTagElements = dataObject.getTagElements();
                 if (tagElementWhitelist.isEmpty() || dataElementTagElements.containsAll(tagElementWhitelist)) {
                     boolean isDataElementValid = true;
                     for (TagElement tagElement : tagElementBlacklist) {
@@ -41,7 +41,7 @@ public abstract class FilterControl {
                             break;
                         }
                     }
-                    if (isDataElementValid) validDataElements.add(dataElement);
+                    if (isDataElementValid) dataObjectsValid.add(dataObject);
                 }
             }
         }
@@ -54,10 +54,10 @@ public abstract class FilterControl {
                 TagElementControl.add(tagElement);
             }
 
-            ArrayList<DataElement> dataElementSelection = SelectionControl.getDataElements();
-            for (DataElement dataElement : dataElementSelection)
-                if (!dataElement.getTagElements().contains(tagElement)) {
-                    dataElement.getTagElements().add(tagElement);
+            ArrayList<DataObject> dataObjectSelection = SelectionControl.getDataObjects();
+            for (DataObject dataObject : dataObjectSelection)
+                if (!dataObject.getTagElements().contains(tagElement)) {
+                    dataObject.getTagElements().add(tagElement);
                 }
         }
     }
@@ -68,16 +68,16 @@ public abstract class FilterControl {
             tagElementsToRemove.add(TagElementControl.getTagElement(tagElement));
         }
 
-        ArrayList<DataElement> dataElementsSelected = SelectionControl.getDataElements();
+        ArrayList<DataObject> dataElementsSelected = SelectionControl.getDataObjects();
         for (TagElement tagElement : tagElementsToRemove) {
-            for (DataElement dataElement : dataElementsSelected) {
-                dataElement.getTagElements().remove(tagElement);
+            for (DataObject dataObject : dataElementsSelected) {
+                dataObject.getTagElements().remove(tagElement);
             }
 
             boolean tagExists = false;
-            ArrayList<DataElement> dataElements = DataElementControl.getDataElementsCopy();
-            for (DataElement dataElement : dataElements) {
-                if (dataElement.getTagElements().contains(tagElement)) {
+            ArrayList<DataObject> dataObjects = DataObjectControl.getDataElementsCopy();
+            for (DataObject dataObject : dataObjects) {
+                if (dataObject.getTagElements().contains(tagElement)) {
                     tagExists = true;
                     break;
                 }
@@ -174,8 +174,8 @@ public abstract class FilterControl {
     }
 
     /* get */
-    public static ArrayList<DataElement> getValidDataElements() {
-        return validDataElements;
+    public static ArrayList<DataObject> getValidObjects() {
+        return dataObjectsValid;
     }
 
     public static ArrayList<TagElement> getTagElementWhitelist() {

@@ -5,11 +5,11 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import org.apache.commons.io.FilenameUtils;
 import project.Main;
-import project.database.control.DataElementControl;
+import project.database.control.DataObjectControl;
 import project.database.control.TagElementControl;
-import project.database.element.DataElement;
-import project.gui.GUI_Instance;
-import project.gui.component.GalleryPane.GalleryTile;
+import project.database.element.DataObject;
+import project.gui.GUIInstance;
+import project.gui.component.gallerypane.GalleryTile;
 import project.gui.custom.specific.LoadingWindow;
 import project.settings.Settings;
 
@@ -31,7 +31,7 @@ public class DataLoader extends Thread {
     private final String PATH_IMAGECACHE = Settings.getImageCacheDirectoryPath();
     private final String PATH_DATABASECACHE = Settings.getDatabaseCacheFilePath();
 
-    private final ArrayList<DataElement> DATAELEMENTSLIVE = DataElementControl.getDataElementsLive();
+    private final ArrayList<DataObject> dataElementsLive = DataObjectControl.getDataElementsLive();
 
     /* vars */
     private int fileCount = 0;
@@ -60,7 +60,7 @@ public class DataLoader extends Thread {
         }
     }
     private void deserialization() {
-        if (!new File(PATH_DATABASECACHE).exists() || !DataElementControl.addAll(Serialization.readFromDisk())) {
+        if (!new File(PATH_DATABASECACHE).exists() || !DataObjectControl.addAll(Serialization.readFromDisk())) {
             createDatabaseCache();
         }
     }
@@ -68,8 +68,8 @@ public class DataLoader extends Thread {
         ArrayList<String> dataElementsItemNames = new ArrayList<>();
         ArrayList<String> validFilesItemNames = new ArrayList<>();
 
-        for (DataElement dataElement : DATAELEMENTSLIVE) {
-            dataElementsItemNames.add(dataElement.getName());
+        for (DataObject dataObject : dataElementsLive) {
+            dataElementsItemNames.add(dataObject.getName());
         }
         for (File file : validFiles) {
             validFilesItemNames.add(file.getName());
@@ -83,22 +83,22 @@ public class DataLoader extends Thread {
         }
     }
     private void finalization() {
-        for (DataElement dataElement : DATAELEMENTSLIVE) {
-            dataElement.setImage(getImageFromDataElement(dataElement));
-            dataElement.setGalleryTile(new GalleryTile(dataElement));
+        for (DataObject dataObject : dataElementsLive) {
+            dataObject.setImage(getImageFromDataElement(dataObject));
+            dataObject.setGalleryTile(new GalleryTile(dataObject));
         }
 
         Platform.runLater(() -> {
             Main.getLoadingWindow().close();
-            GUI_Instance.initialize();
-            Main.setStage(GUI_Instance.getInstance());
+            GUIInstance.initialize();
+            Main.setStage(GUIInstance.getInstance());
         });
     }
 
     private void createDatabaseCache() {
         for (File file : validFiles) {
-            DataElement dataElement = createDataElementFromFile(file);
-            DataElementControl.add(dataElement);
+            DataObject dataObject = createDataElementFromFile(file);
+            DataObjectControl.add(dataObject);
         }
 
         Serialization.writeToDisk();
@@ -107,28 +107,28 @@ public class DataLoader extends Thread {
         /* add unrecognized items */
         for (File file : validFiles) {
             if (!dataElementsItemNames.contains(file.getName())) {
-                DATAELEMENTSLIVE.add(createDataElementFromFile(file));
+                dataElementsLive.add(createDataElementFromFile(file));
             }
         }
 
         /* remove missing items */
-        ArrayList<DataElement> temporaryList = new ArrayList<>(DATAELEMENTSLIVE);
-        for (DataElement dataElement : DATAELEMENTSLIVE) {
-            if (!validFilesItemNames.contains(dataElement.getName())) {
-                temporaryList.remove(dataElement);
+        ArrayList<DataObject> temporaryList = new ArrayList<>(dataElementsLive);
+        for (DataObject dataObject : dataElementsLive) {
+            if (!validFilesItemNames.contains(dataObject.getName())) {
+                temporaryList.remove(dataObject);
             }
         }
 
-        DATAELEMENTSLIVE.clear();
-        DATAELEMENTSLIVE.addAll(temporaryList);
+        dataElementsLive.clear();
+        dataElementsLive.addAll(temporaryList);
         Serialization.writeToDisk();
     }
 
-    private Image getImageFromDataElement(DataElement dataElement) {
+    private Image getImageFromDataElement(DataObject dataObject) {
         Image currentElementImage = null;
         currentElementIndex++;
 
-        String currentElementName = dataElement.getName();
+        String currentElementName = dataObject.getName();
         String currentElementCachePath = PATH_IMAGECACHE + "/" + currentElementName;
         File currentElementCacheFile = new File(currentElementCachePath);
 
@@ -154,7 +154,7 @@ public class DataLoader extends Thread {
 
         return Objects.requireNonNullElseGet(currentElementImage, () -> new Image("file:" + currentElementCachePath, GALLERY_ICON_MAX_SIZE, GALLERY_ICON_MAX_SIZE, false, true));
     }
-    private DataElement createDataElementFromFile(File file) {
-        return new DataElement(file.getName(), new ArrayList<>());
+    private DataObject createDataElementFromFile(File file) {
+        return new DataObject(file.getName(), new ArrayList<>());
     }
 }

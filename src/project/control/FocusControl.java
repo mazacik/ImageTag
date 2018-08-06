@@ -1,27 +1,27 @@
 package project.control;
 
 import javafx.scene.input.KeyCode;
-import project.database.element.DataElement;
-import project.gui.component.GalleryPane.GalleryPane;
-import project.gui.component.PreviewPane.PreviewPane;
-import project.gui.component.RightPane.RightPane;
-import project.gui.component.TopPane.TopPane;
+import project.database.element.DataObject;
+import project.gui.component.gallerypane.GalleryPane;
+import project.gui.component.previewpane.PreviewPane;
+import project.gui.component.rightpane.RightPane;
+import project.gui.component.toppane.TopPane;
 
 import java.util.ArrayList;
 
 public abstract class FocusControl {
     /* vars */
-    private static DataElement currentFocus = null;
-    private static DataElement previousFocus = null;
+    private static DataObject currentFocus = null;
+    private static DataObject previousFocus = null;
 
     /* public */
-    public static void setFocus(DataElement dataElement) {
+    public static void setFocus(DataObject dataObject) {
         /* store old focus position */
         if (currentFocus != null)
             previousFocus = currentFocus;
 
         /* apply new focus effect */
-        currentFocus = dataElement;
+        currentFocus = dataObject;
         currentFocus.getGalleryTile().generateEffect();
 
         /* remove old focus effect */
@@ -32,10 +32,10 @@ public abstract class FocusControl {
         ReloadControl.requestComponentReload(TopPane.class, PreviewPane.class, RightPane.class);
     }
     public static void moveFocusByKeyCode(KeyCode keyCode) {
-        ArrayList<DataElement> databaseItemsFiltered = FilterControl.getValidDataElements();
-        DataElement focusedItem = FocusControl.getCurrentFocus();
+        ArrayList<DataObject> databaseItemsFiltered = FilterControl.getValidObjects();
+        DataObject focusedItem = FocusControl.getCurrentFocus();
         if (focusedItem == null) {
-            DataElement firstItem = FilterControl.getValidDataElements().get(0);
+            DataObject firstItem = FilterControl.getValidObjects().get(0);
             FocusControl.setFocus(firstItem);
             focusedItem = firstItem;
         }
@@ -58,7 +58,7 @@ public abstract class FocusControl {
     }
 
     /* get */
-    public static DataElement getCurrentFocus() {
+    public static DataObject getCurrentFocus() {
         return currentFocus;
     }
 }
