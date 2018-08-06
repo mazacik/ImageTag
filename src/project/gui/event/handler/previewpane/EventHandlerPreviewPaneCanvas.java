@@ -2,18 +2,19 @@ package project.gui.event.handler.previewpane;
 
 import javafx.beans.value.ChangeListener;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import project.control.FocusControl;
 import project.control.ReloadControl;
 import project.control.SelectionControl;
+import project.gui.GUIInstance;
 import project.gui.component.previewpane.PreviewPane;
+import project.gui.custom.generic.DataObjectContextMenu;
 
 public abstract class EventHandlerPreviewPaneCanvas {
+    private static final DataObjectContextMenu contextMenu = GUIInstance.getDataObjectContextMenu();
     private static final Region previewPane = PreviewPane.getInstance();
     private static final Canvas canvas = PreviewPane.getCanvas();
-    private static final ContextMenu contextMenu = PreviewPane.getContextMenu();
 
     public static void onLeftClick() {
         previewPane.requestFocus();

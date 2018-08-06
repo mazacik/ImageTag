@@ -2,7 +2,6 @@ package project.gui.component.previewpane;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
@@ -16,8 +15,6 @@ public abstract class PreviewPane {
     /* components */
     private static final Pane _this = new Pane();
     private static final Canvas canvas = new Canvas();
-
-    private static RightClickMenu contextMenu = new RightClickMenu();
 
     /* vars */
     private static DataObject currentDataObject = null;
@@ -83,9 +80,6 @@ public abstract class PreviewPane {
     /* get */
     public static Canvas getCanvas() {
         return canvas;
-    }
-    public static ContextMenu getContextMenu() {
-        return contextMenu;
     }
     public static Region getInstance() {
         return _this;

@@ -2,13 +2,11 @@ package project.gui.event.listener.previewpane;
 
 import project.gui.component.previewpane.PreviewPane;
 import project.gui.event.handler.previewpane.EventHandlerPreviewPaneCanvas;
-import project.gui.event.listener.contextmenu.EventListenerContextMenuUtil;
 
 public abstract class EventListenerPreviewPaneCanvas {
     public static void initialize() {
         EventListenerPreviewPaneCanvas.onMouseClick();
         EventListenerPreviewPaneCanvas.onResize();
-        EventListenerContextMenuUtil.initialize();
     }
 
     private static void onMouseClick() {
