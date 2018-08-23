@@ -93,7 +93,7 @@ public class IntroWindow extends Stage {
             Settings.setImageCacheDirectoryPath(tfImageCacheDirectory.getText());
             Settings.setDatabaseCacheFilePath(tfDatabaseCacheFile.getText());
             Settings.writeToFile();
-            Main.getLoadingWindow().close();
+            Main.getIntroWindow().close();
             Main.setStage(new LoadingWindow());
         });
 

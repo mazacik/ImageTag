@@ -51,11 +51,13 @@ public abstract class GalleryPane {
         }
         _this.setVvalue(scrollbarValue);
         calculateTilePaneHGap();
+        adjustViewportToCurrentFocus();
     }
     public static void calculateTilePaneHGap() {
-        int tilePaneWidth = (int) tilePane.getWidth();
+        int tilePaneWidth = (int) tilePane.getWidth() + (int) tilePane.getVgap();
         int prefTileWidth = (int) tilePane.getPrefTileWidth();
-        int columnCount = tilePaneWidth / prefTileWidth - 1;
+        //int columnCount = tilePaneWidth / prefTileWidth - 1;
+        int columnCount = tilePaneWidth / prefTileWidth;
 
         int vgap = (int) tilePane.getVgap();
         int hgap = vgap;
@@ -74,6 +76,7 @@ public abstract class GalleryPane {
     public static void adjustViewportToCurrentFocus() {
         DataObject currentFocusedItem = FocusControl.getCurrentFocus();
         if (currentFocusedItem == null) return;
+        if (GUIUtils.isPreviewFullscreen()) return;
         ObservableList<Node> tilePaneItems = tilePane.getChildren();
 
         int columnCount = GalleryPane.getColumnCount();
@@ -104,7 +107,7 @@ public abstract class GalleryPane {
 
     /* get */
     public static int getColumnCount() {
-        int tilePaneWidth = (int) tilePane.getWidth();
+        int tilePaneWidth = (int) tilePane.getWidth() + (int) tilePane.getVgap();
         int prefTileWidth = (int) tilePane.getPrefTileWidth();
         return tilePaneWidth / prefTileWidth;
     }

@@ -29,6 +29,9 @@ public class Main extends Application {
     public static LoadingWindow getLoadingWindow() {
         return (LoadingWindow) primaryStage;
     }
+    public static IntroWindow getIntroWindow() {
+        return (IntroWindow) primaryStage;
+    }
 
     /* set */
     public static void setStage(Stage mainStage) {
