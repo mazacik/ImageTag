@@ -1,4 +1,4 @@
-package project.gui.event.listener.contextmenu;
+package project.gui.event.listener.datacontextmenu;
 
 public abstract class EventListenerContextMenuUtil {
     public static void initialize() {

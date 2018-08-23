@@ -12,8 +12,8 @@ import project.gui.component.previewpane.PreviewPane;
 import project.gui.component.rightpane.RightPane;
 import project.gui.component.toppane.TopPane;
 import project.gui.custom.generic.DataObjectContextMenu;
+import project.gui.event.listener.EventListenerGlobal;
 import project.gui.event.listener.EventListenerUtil;
-import project.gui.event.listener.UserInputGlobal;
 
 public abstract class GUIInstance extends Stage {
     /* components */
@@ -30,7 +30,7 @@ public abstract class GUIInstance extends Stage {
         initializeComponents();
         initializeInstance();
         EventListenerUtil.initialize();
-        UserInputGlobal.initialize();
+        EventListenerGlobal.initialize();
         ReloadControl.requestGlobalReload(true);
     }
     private static void initializeComponents() {

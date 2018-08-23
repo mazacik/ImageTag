@@ -8,7 +8,6 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.TilePane;
 import project.control.FilterControl;
 import project.control.FocusControl;
-import project.database.control.DataObjectControl;
 import project.database.element.DataObject;
 import project.gui.GUIUtils;
 import project.settings.Settings;
@@ -16,10 +15,6 @@ import project.settings.Settings;
 public abstract class GalleryPane {
     /* const */
     private static final int GALLERY_ICON_SIZE_PREF = Settings.getGalleryIconSizePref();
-
-    private static int galleryIconSizeMax = Settings.getGalleryIconSizeMax();
-    private static int galleryIconSizeMin = Settings.getGalleryIconSizeMin();
-    private static int galleryIconSizePref = Settings.getGalleryIconSizePref();
 
     /* components */
     private static final ScrollPane _this = new ScrollPane();
@@ -105,28 +100,6 @@ public abstract class GalleryPane {
         } else if (tileBottom - rowHeight < viewportTop) {
             _this.setVvalue(focusRow * rowToContentRatio);
         }
-    }
-
-    public static void makeTilesLarger() {
-        Settings.setGalleryIconSizePref(Settings.getGalleryIconSizePref() + 10);
-        if (galleryIconSizePref > galleryIconSizeMax)
-            Settings.setGalleryIconSizePref(galleryIconSizeMax);
-        GalleryPane.resizeTiles();
-    }
-    public static void makeTilesSmaller() {
-        Settings.setGalleryIconSizePref(Settings.getGalleryIconSizePref() - 10);
-        if (galleryIconSizePref < galleryIconSizeMin)
-            Settings.setGalleryIconSizePref(galleryIconSizeMin);
-        GalleryPane.resizeTiles();
-    }
-    public static void resizeTiles() {
-        tilePane.setPrefTileWidth(galleryIconSizePref);
-        tilePane.setPrefTileHeight(galleryIconSizePref);
-        for (DataObject dataObject : DataObjectControl.getDataElementsLive()) {
-            dataObject.getGalleryTile().setFitWidth(galleryIconSizePref);
-            dataObject.getGalleryTile().setFitHeight(galleryIconSizePref);
-        }
-        GalleryPane.calculateTilePaneHGap();
     }
 
     /* get */

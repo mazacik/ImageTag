@@ -6,8 +6,8 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
 
 public class DataObjectContextMenu extends ContextMenu {
-    private final MenuItem menuCopy = new MenuItem("Copy");
-    private final MenuItem menuDelete = new MenuItem("Delete");
+    private final MenuItem menuCopy = new MenuItem("Copy Filename");
+    private final MenuItem menuDelete = new MenuItem("Delete File");
 
     public DataObjectContextMenu() {
         this.getItems().addAll(menuCopy, menuDelete);

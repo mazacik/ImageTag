@@ -1,4 +1,4 @@
-package project.gui.event.listener.contextmenu;
+package project.gui.event.listener.datacontextmenu;
 
 import project.gui.GUIInstance;
 import project.gui.event.handler.contextmenu.EventHandlerContextMenuDelete;

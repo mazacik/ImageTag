@@ -1,6 +1,9 @@
 package project.gui.component.rightpane;
 
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -11,7 +14,8 @@ import project.control.SelectionControl;
 import project.database.control.TagElementControl;
 import project.database.element.DataObject;
 import project.database.element.TagElement;
-import project.gui.event.listener.rightpane.UserInputRightPane;
+import project.gui.custom.specific.RightPaneContextMenu;
+import project.gui.event.listener.rightpane.EventListenerRightPane;
 
 import java.util.ArrayList;
 
@@ -24,15 +28,14 @@ public abstract class RightPane {
     private static final Button btnAdd = new Button("Add");
     private static final Button btnNew = new Button("New");
 
-    private static final MenuItem menuRemoveTag = new MenuItem("Remove");
-    private static final ContextMenu listViewContextMenu = new ContextMenu(menuRemoveTag);
+    private static final RightPaneContextMenu contextMenu = new RightPaneContextMenu();
     private static final ListView<String> listView = new ListView<>();
 
     /* initialize */
     public static void initialize() {
         initializeComponents();
         initializeInstance();
-        UserInputRightPane.initialize();
+        EventListenerRightPane.initialize();
     }
     private static void initializeComponents() {
         cbGroup.prefWidthProperty().bind(_this.prefWidthProperty());
@@ -47,7 +50,7 @@ public abstract class RightPane {
         cbName.setDisable(true);
 
         listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        listView.setContextMenu(listViewContextMenu);
+        listView.setContextMenu(contextMenu);
     }
     private static void initializeInstance() {
         _this.setMinWidth(200);
@@ -114,14 +117,14 @@ public abstract class RightPane {
         return btnNew;
     }
 
-    public static MenuItem getMenuRemoveTag() {
-        return menuRemoveTag;
-    }
     public static ListView<String> getListView() {
         return listView;
     }
 
     public static Region getInstance() {
         return _this;
+    }
+    public static RightPaneContextMenu getContextMenu() {
+        return contextMenu;
     }
 }

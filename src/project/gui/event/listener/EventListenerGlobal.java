@@ -6,7 +6,7 @@ import project.control.SelectionControl;
 import project.gui.GUIInstance;
 import project.gui.GUIUtils;
 
-public abstract class UserInputGlobal {
+public abstract class EventListenerGlobal {
     public static void initialize() {
         GUIInstance.getInstance().getScene().setOnKeyPressed(event -> {
             switch (event.getCode()) {

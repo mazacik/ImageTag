@@ -11,6 +11,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import project.control.FilterControl;
 import project.database.control.TagElementControl;
+import project.gui.custom.specific.LeftPaneContextMenu;
 import project.gui.event.listener.leftpane.EventListenerLeftPaneColoredText;
 
 import java.util.ArrayList;
@@ -78,7 +79,7 @@ public abstract class LeftPane {
                     setTextFill(coloredText.getColor());
                 }
 
-                ColoredText.setContextMenu(this);
+                this.setContextMenu(new LeftPaneContextMenu(this));
                 EventListenerLeftPaneColoredText.onMouseClick(this);
 
                 addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {

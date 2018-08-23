@@ -9,7 +9,7 @@ import java.util.Comparator;
 
 public abstract class DataObjectControl {
     /* vars */
-    private static final ArrayList<DataObject> DATA_OBJECTS = new ArrayList<>();
+    private static final ArrayList<DataObject> dataObjects = new ArrayList<>();
 
     /* public */
     public static boolean add(DataObject dataObject) {
@@ -31,12 +31,12 @@ public abstract class DataObjectControl {
 
     /* get */
     public static ArrayList<DataObject> getDataElementsLive() {
-        return DATA_OBJECTS;
+        return dataObjects;
     }
     public static ArrayList<DataObject> getDataElementsCopy() {
-        return new ArrayList<>(DATA_OBJECTS);
+        return new ArrayList<>(dataObjects);
     }
     private static ArrayList<DataObject> getDataObjects() {
-        return DATA_OBJECTS;
+        return dataObjects;
     }
 }
