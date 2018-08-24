@@ -5,8 +5,8 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.paint.Color;
 import project.control.FilterControl;
 import project.control.ReloadControl;
-import project.database.control.TagElementControl;
-import project.database.element.TagElement;
+import project.database.control.TagControl;
+import project.database.element.TagObject;
 import project.gui.component.gallerypane.GalleryPane;
 import project.gui.component.leftpane.ColoredText;
 import project.gui.component.leftpane.LeftPane;
@@ -14,7 +14,7 @@ import project.gui.component.leftpane.LeftPane;
 //todo refactor
 public abstract class EventHandlerLeftPaneColoredText {
     public static void onLeftClick(TreeCell<ColoredText> sourceCell) {
-        TagElement tagElement = TagElementControl.getTagElement(sourceCell);
+        TagObject tagObject = TagControl.getTagObject(sourceCell);
         ColoredText coloredText;
         try {
             coloredText = sourceCell.getTreeItem().getValue();
@@ -23,8 +23,8 @@ public abstract class EventHandlerLeftPaneColoredText {
         }
 
         // if sourceCell is group level
-        if (tagElement == null) {
-            String groupName = sourceCell.getText();
+        if (tagObject == null) {
+            String groupName = coloredText.getText();
             if (FilterControl.isGroupWhitelisted(groupName)) {
                 FilterControl.blacklistGroup(groupName);
                 coloredText.setColor(Color.RED);
@@ -45,19 +45,19 @@ public abstract class EventHandlerLeftPaneColoredText {
                 }
             }
         } else {
-            if (FilterControl.isTagElementWhitelisted(tagElement)) {
-                FilterControl.blacklistTagElement(tagElement);
+            if (FilterControl.isTagElementWhitelisted(tagObject)) {
+                FilterControl.blacklistTagElement(tagObject);
                 coloredText.setColor(Color.RED);
-            } else if (FilterControl.isTagElementBlacklisted(tagElement)) {
-                FilterControl.unlistTagElement(tagElement);
+            } else if (FilterControl.isTagElementBlacklisted(tagObject)) {
+                FilterControl.removeTagObject(tagObject);
                 coloredText.setColor(Color.BLACK);
             } else {
-                FilterControl.whitelistTagElement(tagElement);
+                FilterControl.whitelistTagElement(tagObject);
                 coloredText.setColor(Color.GREEN);
             }
         }
-        FilterControl.validDataElementsRefresh();
-        ReloadControl.requestComponentReload(true, GalleryPane.class);
+        FilterControl.refresh();
+        ReloadControl.request(true, GalleryPane.class);
         LeftPane.refreshTreeview();
     }
 }

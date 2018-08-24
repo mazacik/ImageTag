@@ -34,7 +34,7 @@ public class GalleryTile extends ImageView {
     public void generateEffect() {
         boolean booleanSelection = false;
         if (parentDataObject != null) {
-            booleanSelection = SelectionControl.getDataObjects().contains(parentDataObject);
+            booleanSelection = SelectionControl.getCollection().contains(parentDataObject);
         }
 
         DataObject currentFocus = FocusControl.getCurrentFocus();

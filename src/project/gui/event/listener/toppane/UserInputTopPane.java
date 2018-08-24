@@ -35,18 +35,18 @@ public abstract class UserInputTopPane {
     }
 
     private static void setOnAction_menuSelectAll() {
-        TopPane.getMenuSelectAll().setOnAction(event -> SelectionControl.addDataElement(FilterControl.getValidObjects()));
-        ReloadControl.requestComponentReload(true, GalleryPane.class, RightPane.class);
+        TopPane.getMenuSelectAll().setOnAction(event -> SelectionControl.addDataElement(FilterControl.getCollection()));
+        ReloadControl.request(true, GalleryPane.class, RightPane.class);
     }
     private static void setOnAction_menuClearSelection() {
         TopPane.getMenuClearSelection().setOnAction(event -> SelectionControl.clearDataElements());
-        ReloadControl.requestComponentReload(true, GalleryPane.class, RightPane.class);
+        ReloadControl.request(true, GalleryPane.class, RightPane.class);
     }
 
     private static void setOnAction_menuUntaggedOnly() {
         TopPane.getMenuUntaggedOnly().setOnAction(event -> {
             FilterControl.setFilter(FilterCollection.SHOW_UNTAGGED);
-            ReloadControl.requestComponentReload(true, LeftPane.class, GalleryPane.class);
+            ReloadControl.request(true, LeftPane.class, GalleryPane.class);
         });
     }
     private static void setOnAction_menuMaxXTags() {
@@ -56,18 +56,18 @@ public abstract class UserInputTopPane {
             FilterCollection.setMaxTagsValue(maxTags);
 
             FilterControl.setFilter(FilterCollection.SHOW_MAX_X_TAGS);
-            ReloadControl.requestComponentReload(true, GalleryPane.class, RightPane.class);
+            ReloadControl.request(true, GalleryPane.class, RightPane.class);
         });
     }
     private static void setOnAction_menuRefresh() {
         TopPane.getMenuRefresh().setOnAction(event -> {
-            ReloadControl.requestComponentReload(true, GalleryPane.class, RightPane.class);
+            ReloadControl.request(true, GalleryPane.class, RightPane.class);
         });
     }
     private static void setOnAction_menuReset() {
         TopPane.getMenuReset().setOnAction(event -> {
             FilterControl.setFilter(FilterCollection.SHOW_EVERYTHING);
-            ReloadControl.requestComponentReload(true, GalleryPane.class, RightPane.class);
+            ReloadControl.request(true, GalleryPane.class, RightPane.class);
         });
     }
 }

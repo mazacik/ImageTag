@@ -10,7 +10,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import project.control.FilterControl;
-import project.database.control.TagElementControl;
+import project.database.control.TagControl;
 import project.gui.custom.specific.LeftPaneContextMenu;
 import project.gui.event.listener.leftpane.EventListenerLeftPaneColoredText;
 
@@ -37,7 +37,7 @@ public abstract class LeftPane {
         ObservableList<TreeItem<ColoredText>> treeViewItems = treeView.getRoot().getChildren();
         treeViewItems.clear();
 
-        ArrayList<String> groupNames = TagElementControl.getGroups();
+        ArrayList<String> groupNames = TagControl.getGroups();
         for (String groupName : groupNames) {
             TreeItem groupTreeItem;
             if (FilterControl.isGroupWhitelisted(groupName)) {
@@ -48,7 +48,7 @@ public abstract class LeftPane {
                 groupTreeItem = new TreeItem(new ColoredText(groupName, Color.BLACK));
             }
 
-            for (String tagName : TagElementControl.getNamesInGroup(groupName)) {
+            for (String tagName : TagControl.getNames(groupName)) {
                 if (FilterControl.isTagElementWhitelisted(groupName, tagName)) {
                     groupTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.GREEN)));
                 } else if (FilterControl.isTagElementBlacklisted(groupName, tagName)) {

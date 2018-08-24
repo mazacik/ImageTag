@@ -15,7 +15,7 @@ public class EventListenerButtonAdd {
         });
         btnAdd.setOnAction(event -> {
             RightPane.addTagToSelection();
-            ReloadControl.requestComponentReload(true, RightPane.class);
+            ReloadControl.request(true, RightPane.class);
         });
     }
 }

@@ -11,7 +11,7 @@ public abstract class EventHandlerContextMenuCopy {
         DataObject dataObject;
 
         if (!GUIUtils.isPreviewFullscreen()) {
-            dataObject = SelectionControl.getDataObjects().get(0);
+            dataObject = SelectionControl.getCollection().get(0);
         } else {
             dataObject = FocusControl.getCurrentFocus();
         }

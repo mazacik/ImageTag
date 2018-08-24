@@ -5,9 +5,11 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import org.apache.commons.io.FilenameUtils;
 import project.Main;
-import project.database.control.DataObjectControl;
-import project.database.control.TagElementControl;
+import project.database.control.DataControl;
+import project.database.control.TagControl;
+import project.database.element.DataCollection;
 import project.database.element.DataObject;
+import project.database.element.TagCollection;
 import project.gui.GUIInstance;
 import project.gui.component.gallerypane.GalleryTile;
 import project.gui.custom.specific.LoadingWindow;
@@ -31,7 +33,7 @@ public class DataLoader extends Thread {
     private final String PATH_IMAGECACHE = Settings.getImageCacheDirectoryPath();
     private final String PATH_DATABASECACHE = Settings.getDatabaseCacheFilePath();
 
-    private final ArrayList<DataObject> dataElementsLive = DataObjectControl.getDataElementsLive();
+    private final DataCollection dataCollection = DataControl.getCollection();
 
     /* vars */
     private int fileCount = 0;
@@ -44,7 +46,7 @@ public class DataLoader extends Thread {
         deserialization();
         validation();
         finalization();
-        TagElementControl.initialize();
+        TagControl.initialize();
     }
 
     /* private */
@@ -60,7 +62,7 @@ public class DataLoader extends Thread {
         }
     }
     private void deserialization() {
-        if (!new File(PATH_DATABASECACHE).exists() || !DataObjectControl.addAll(Serialization.readFromDisk())) {
+        if (!new File(PATH_DATABASECACHE).exists() || !DataControl.addAll(Serialization.readFromDisk())) {
             createDatabaseCache();
         }
     }
@@ -68,8 +70,8 @@ public class DataLoader extends Thread {
         ArrayList<String> dataElementsItemNames = new ArrayList<>();
         ArrayList<String> validFilesItemNames = new ArrayList<>();
 
-        for (DataObject dataObject : dataElementsLive) {
-            dataElementsItemNames.add(dataObject.getName());
+        for (Object dataObject : dataCollection) {
+            dataElementsItemNames.add(((DataObject) dataObject).getName());
         }
         for (File file : validFiles) {
             validFilesItemNames.add(file.getName());
@@ -83,7 +85,8 @@ public class DataLoader extends Thread {
         }
     }
     private void finalization() {
-        for (DataObject dataObject : dataElementsLive) {
+        for (Object iterator : dataCollection) {
+            DataObject dataObject = (DataObject) iterator;
             dataObject.setImage(getImageFromDataElement(dataObject));
             dataObject.setGalleryTile(new GalleryTile(dataObject));
         }
@@ -98,7 +101,7 @@ public class DataLoader extends Thread {
     private void createDatabaseCache() {
         for (File file : validFiles) {
             DataObject dataObject = createDataElementFromFile(file);
-            DataObjectControl.add(dataObject);
+            DataControl.add(dataObject);
         }
 
         Serialization.writeToDisk();
@@ -107,20 +110,20 @@ public class DataLoader extends Thread {
         /* add unrecognized items */
         for (File file : validFiles) {
             if (!dataElementsItemNames.contains(file.getName())) {
-                dataElementsLive.add(createDataElementFromFile(file));
+                dataCollection.add(createDataElementFromFile(file));
             }
         }
 
         /* remove missing items */
-        ArrayList<DataObject> temporaryList = new ArrayList<>(dataElementsLive);
-        for (DataObject dataObject : dataElementsLive) {
+        DataCollection temporaryList = new DataCollection(dataCollection);
+        for (DataObject dataObject : dataCollection) {
             if (!validFilesItemNames.contains(dataObject.getName())) {
                 temporaryList.remove(dataObject);
             }
         }
 
-        dataElementsLive.clear();
-        dataElementsLive.addAll(temporaryList);
+        dataCollection.clear();
+        dataCollection.addAll(temporaryList);
         Serialization.writeToDisk();
     }
 
@@ -155,6 +158,6 @@ public class DataLoader extends Thread {
         return Objects.requireNonNullElseGet(currentElementImage, () -> new Image("file:" + currentElementCachePath, GALLERY_ICON_MAX_SIZE, GALLERY_ICON_MAX_SIZE, false, true));
     }
     private DataObject createDataElementFromFile(File file) {
-        return new DataObject(file.getName(), new ArrayList<>());
+        return new DataObject(file.getName(), new TagCollection());
     }
 }

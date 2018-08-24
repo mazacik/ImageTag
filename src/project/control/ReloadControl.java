@@ -1,7 +1,7 @@
 package project.control;
 
-import project.database.control.DataObjectControl;
-import project.database.control.TagElementControl;
+import project.database.control.DataControl;
+import project.database.control.TagControl;
 import project.gui.component.gallerypane.GalleryPane;
 import project.gui.component.leftpane.LeftPane;
 import project.gui.component.previewpane.PreviewPane;
@@ -19,8 +19,13 @@ public abstract class ReloadControl {
     /* public */
     public static void requestGlobalReload(boolean sortElementControls) {
         if (sortElementControls) {
-            DataObjectControl.sortAll();
-            TagElementControl.sortAll();
+            DataControl.getCollection().sort();
+            FilterControl.getCollection().sort();
+            SelectionControl.getCollection().sort();
+
+            TagControl.getCollection().sort();
+            FilterControl.getWhitelist().sort();
+            FilterControl.getBlacklist().sort();
         }
         TopPane.reload();
         LeftPane.reload();
@@ -28,10 +33,10 @@ public abstract class ReloadControl {
         PreviewPane.reload();
         RightPane.reload();
     }
-    public static void requestComponentReload(Class... components) {
-        ReloadControl.requestComponentReload(false, components);
+    public static void request(Class... components) {
+        ReloadControl.request(false, components);
     }
-    public static void requestComponentReload(boolean instant, Class... components) {
+    public static void request(boolean instant, Class... components) {
         for (Class component : components) {
             if (component.equals(TopPane.class)) {
                 reloadTopPane = true;

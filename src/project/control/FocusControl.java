@@ -29,13 +29,13 @@ public abstract class FocusControl {
             previousFocus.getGalleryTile().generateEffect();
         }
 
-        ReloadControl.requestComponentReload(TopPane.class, PreviewPane.class, RightPane.class);
+        ReloadControl.request(TopPane.class, PreviewPane.class, RightPane.class);
     }
     public static void moveFocusByKeyCode(KeyCode keyCode) {
-        ArrayList<DataObject> databaseItemsFiltered = FilterControl.getValidObjects();
+        ArrayList<DataObject> databaseItemsFiltered = FilterControl.getCollection();
         DataObject focusedItem = FocusControl.getCurrentFocus();
         if (focusedItem == null) {
-            DataObject firstItem = FilterControl.getValidObjects().get(0);
+            DataObject firstItem = FilterControl.getCollection().get(0);
             FocusControl.setFocus(firstItem);
             focusedItem = firstItem;
         }

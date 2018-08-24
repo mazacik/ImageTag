@@ -3,7 +3,7 @@ package project.gui.custom.specific;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeCell;
-import project.database.control.TagElementControl;
+import project.database.control.TagControl;
 import project.gui.component.leftpane.ColoredText;
 
 public class LeftPaneContextMenu extends ContextMenu {
@@ -13,7 +13,7 @@ public class LeftPaneContextMenu extends ContextMenu {
     public LeftPaneContextMenu(TreeCell<ColoredText> source) {
         getItems().addAll(menuEdit, menuRemove);
 
-        menuEdit.setOnAction(event -> TagElementControl.edit(TagElementControl.getTagElement(source)));
-        menuRemove.setOnAction(event -> TagElementControl.remove(TagElementControl.getTagElement(source)));
+        menuEdit.setOnAction(event -> TagControl.edit(TagControl.getTagObject(source)));
+        menuRemove.setOnAction(event -> TagControl.remove(TagControl.getTagObject(source)));
     }
 }

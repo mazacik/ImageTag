@@ -2,13 +2,15 @@ package project.database.element;
 
 import org.apache.commons.text.WordUtils;
 
-public class TagElement {
+import java.util.Comparator;
+
+public class TagObject {
     /* vars */
     private String group;
     private String name;
 
     /* constructors */
-    public TagElement(String group, String name) {
+    public TagObject(String group, String name) {
         setGroup(group);
         setName(name);
     }
@@ -29,7 +31,15 @@ public class TagElement {
         return group + " - " + name;
     }
 
+    public static Comparator getComparator() {
+        return Comparator.comparing(TagObject::getGroupAndName);
+    }
+
     /* set */
+    public void setValue(String group, String name) {
+        this.setGroup(group);
+        this.setName(name);
+    }
     public void setGroup(String group) {
         this.group = WordUtils.capitalizeFully(group);
     }

@@ -2,37 +2,37 @@ package project.enums;
 
 import project.control.FilterControl;
 import project.control.ReloadControl;
-import project.database.control.DataObjectControl;
-import project.database.control.TagElementControl;
+import project.database.control.DataControl;
+import project.database.control.TagControl;
 import project.database.element.DataObject;
 import project.gui.component.gallerypane.GalleryPane;
 
 public enum FilterCollection {
     SHOW_EVERYTHING {
         public void activate() {
-            FilterControl.getTagElementWhitelist().clear();
-            FilterControl.getTagElementBlacklist().clear();
+            FilterControl.getWhitelist().clear();
+            FilterControl.getBlacklist().clear();
         }
     },
     SHOW_UNTAGGED {
         public void activate() {
-            FilterControl.getTagElementWhitelist().clear();
-            FilterControl.getTagElementBlacklist().clear();
-            FilterControl.getTagElementBlacklist().addAll(TagElementControl.getTagElements());
+            FilterControl.getWhitelist().clear();
+            FilterControl.getBlacklist().clear();
+            FilterControl.getBlacklist().addAll(TagControl.getCollection());
         }
     },
     SHOW_MAX_X_TAGS {
         public void activate() {
             if (maxTagsValue == 0) return;
-            FilterControl.getValidObjects().clear();
-            FilterControl.getTagElementWhitelist().clear();
-            FilterControl.getTagElementBlacklist().clear();
-            for (DataObject dataObject : DataObjectControl.getDataElementsCopy()) {
-                if (dataObject.getTagElements().size() <= maxTagsValue) {
-                    FilterControl.getValidObjects().add(dataObject);
+            FilterControl.getCollection().clear();
+            FilterControl.getWhitelist().clear();
+            FilterControl.getBlacklist().clear();
+            for (DataObject dataObject : DataControl.getDataElementsCopy()) {
+                if (dataObject.getTagCollection().size() <= maxTagsValue) {
+                    FilterControl.getCollection().add(dataObject);
                 }
             }
-            ReloadControl.requestComponentReload(GalleryPane.class);
+            ReloadControl.request(GalleryPane.class);
         }
     },
     CUSTOM;

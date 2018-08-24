@@ -7,7 +7,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import project.database.element.TagElement;
+import project.database.element.TagObject;
 
 public class TagEditor extends Stage {
     /* components */
@@ -19,11 +19,11 @@ public class TagEditor extends Stage {
     private final Button btnOK = new Button("OK");
 
     /* vars */
-    TagElement tagElement;
+    TagObject tagObject;
 
     /* constructors */
-    public TagEditor(TagElement tagElement) {
-        this.tagElement = tagElement;
+    public TagEditor(TagObject tagObject) {
+        this.tagObject = tagObject;
         initializeComponents();
         initializeInstance();
     }
@@ -33,8 +33,14 @@ public class TagEditor extends Stage {
     }
 
     /* public */
-    public TagElement getResult() {
-        return tagElement;
+    public static TagObject createTag() {
+        TagObject newTagObject = new TagEditor().getResult();
+        if (newTagObject.equals(null) || newTagObject.isEmpty()) return null;
+        return newTagObject;
+    }
+
+    public TagObject getResult() {
+        return tagObject;
     }
 
     /* private */
@@ -42,7 +48,7 @@ public class TagEditor extends Stage {
         String group = tfGroup.getText();
         String name = tfName.getText();
         if (!group.isEmpty() && !name.isEmpty()) {
-            tagElement = new TagElement(group, name);
+            tagObject = new TagObject(group, name);
         }
     }
 
@@ -59,9 +65,9 @@ public class TagEditor extends Stage {
         });
 
         tfGroup.requestFocus();
-        if (tagElement != null) {
-            tfGroup.setText(tagElement.getGroup());
-            tfName.setText(tagElement.getName());
+        if (tagObject != null) {
+            tfGroup.setText(tagObject.getGroup());
+            tfName.setText(tagObject.getName());
         }
 
         tfGroup.prefWidthProperty().bind(widthProperty());

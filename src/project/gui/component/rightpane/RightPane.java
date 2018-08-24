@@ -11,9 +11,9 @@ import project.control.FilterControl;
 import project.control.FocusControl;
 import project.control.ReloadControl;
 import project.control.SelectionControl;
-import project.database.control.TagElementControl;
+import project.database.control.TagControl;
 import project.database.element.DataObject;
-import project.database.element.TagElement;
+import project.database.element.TagObject;
 import project.gui.custom.specific.RightPaneContextMenu;
 import project.gui.event.listener.rightpane.EventListenerRightPane;
 
@@ -74,16 +74,16 @@ public abstract class RightPane {
         } catch (NullPointerException ignored) {}
 
         if (!group.isEmpty() && !name.isEmpty()) {
-            TagElement tagElement = TagElementControl.getTagElement(group, name);
+            TagObject tagObject = TagControl.getTagObject(group, name);
             if (SelectionControl.isSelectionEmpty()) {
                 DataObject currentFocusedItem = FocusControl.getCurrentFocus();
                 if (currentFocusedItem != null) {
-                    currentFocusedItem.getTagElements().add(tagElement);
+                    currentFocusedItem.getTagCollection().add(tagObject);
                 }
             } else {
-                FilterControl.addTagElementToDataElementSelection(tagElement);
+                FilterControl.addTagElementToDataElementSelection(tagObject);
             }
-            ReloadControl.requestComponentReload(RightPane.class);
+            ReloadControl.request(RightPane.class);
         }
     }
     public static void reload() {
@@ -91,13 +91,13 @@ public abstract class RightPane {
         if (SelectionControl.isSelectionEmpty() || SelectionControl.isSelectionSingleElement()) {
             DataObject currentFocusedItem = FocusControl.getCurrentFocus();
             if (currentFocusedItem != null) {
-                for (TagElement tagElement : currentFocusedItem.getTagElements()) {
-                    sharedTags.add(tagElement.getGroupAndName());
+                for (TagObject tagObject : currentFocusedItem.getTagCollection()) {
+                    sharedTags.add(tagObject.getGroupAndName());
                 }
             }
         } else {
-            for (TagElement tagElement : SelectionControl.getIntersectingTags()) {
-                sharedTags.add(tagElement.getGroupAndName());
+            for (TagObject tagObject : SelectionControl.getIntersectingTags()) {
+                sharedTags.add(tagObject.getGroupAndName());
             }
         }
         listView.getItems().setAll(sharedTags);

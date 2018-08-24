@@ -1,10 +1,12 @@
 package project.control;
 
 import javafx.collections.ObservableList;
-import project.database.control.DataObjectControl;
-import project.database.control.TagElementControl;
+import project.database.control.DataControl;
+import project.database.control.TagControl;
+import project.database.element.DataCollection;
 import project.database.element.DataObject;
-import project.database.element.TagElement;
+import project.database.element.TagCollection;
+import project.database.element.TagObject;
 import project.enums.FilterCollection;
 import project.gui.component.gallerypane.GalleryPane;
 import project.gui.component.leftpane.LeftPane;
@@ -15,123 +17,123 @@ import java.util.ArrayList;
 
 public abstract class FilterControl {
     /* vars */
-    private static final ArrayList<DataObject> dataObjectsValid = new ArrayList<>();
+    private static final DataCollection dataCollectionValid = new DataCollection();
 
-    private static final ArrayList<TagElement> tagElementWhitelist = new ArrayList<>();
-    private static final ArrayList<TagElement> tagElementBlacklist = new ArrayList<>();
+    private static final TagCollection whitelist = new TagCollection();
+    private static final TagCollection blacklist = new TagCollection();
 
     private static FilterCollection currentFilter = FilterCollection.SHOW_EVERYTHING;
 
     /* public */
-    public static void validDataElementsRefresh() {
-        ArrayList<DataObject> dataObjects = DataObjectControl.getDataElementsCopy();
-
+    public static void refresh() {
+        DataCollection dataCollection = DataControl.getDataElementsCopy();
         currentFilter.activate();
-        dataObjectsValid.clear();
 
-        if (tagElementWhitelist.isEmpty() && tagElementBlacklist.isEmpty()) dataObjectsValid.addAll(dataObjects);
+        if (whitelist.isEmpty() && blacklist.isEmpty())
+            dataCollectionValid.setAll(dataCollection);
         else {
-            for (DataObject dataObject : dataObjects) {
-                ArrayList<TagElement> dataElementTagElements = dataObject.getTagElements();
-                if (tagElementWhitelist.isEmpty() || dataElementTagElements.containsAll(tagElementWhitelist)) {
-                    boolean isDataElementValid = true;
-                    for (TagElement tagElement : tagElementBlacklist) {
-                        if (dataElementTagElements.contains(tagElement)) {
-                            isDataElementValid = false;
+            dataCollectionValid.clear();
+            for (DataObject dataObject : dataCollection) {
+                TagCollection dataObjectTagCollection = dataObject.getTagCollection();
+                if (whitelist.isEmpty() || dataObjectTagCollection.containsAll(whitelist)) {
+                    boolean isValid = true;
+                    for (TagObject tagObject : blacklist) {
+                        if (dataObjectTagCollection.contains(tagObject)) {
+                            isValid = false;
                             break;
                         }
                     }
-                    if (isDataElementValid) dataObjectsValid.add(dataObject);
+                    if (isValid) dataCollectionValid.add(dataObject);
                 }
             }
         }
 
-        ReloadControl.requestComponentReload(GalleryPane.class);
+        ReloadControl.request(GalleryPane.class);
     }
-    public static void addTagElementToDataElementSelection(TagElement tagElement) {
-        if (tagElement != null && !tagElement.isEmpty()) {
-            if (!TagElementControl.contains(tagElement)) {
-                TagElementControl.add(tagElement);
+    public static void addTagElementToDataElementSelection(TagObject tagObject) {
+        if (tagObject != null && !tagObject.isEmpty()) {
+            if (!TagControl.getCollection().contains(tagObject)) {
+                TagControl.add(tagObject);
             }
 
-            ArrayList<DataObject> dataObjectSelection = SelectionControl.getDataObjects();
+            ArrayList<DataObject> dataObjectSelection = SelectionControl.getCollection();
             for (DataObject dataObject : dataObjectSelection)
-                if (!dataObject.getTagElements().contains(tagElement)) {
-                    dataObject.getTagElements().add(tagElement);
+                if (!dataObject.getTagCollection().contains(tagObject)) {
+                    dataObject.getTagCollection().add(tagObject);
                 }
         }
     }
     public static void removeTagElementSelectionFromDataElementSelection() {
-        ArrayList<TagElement> tagElementsToRemove = new ArrayList<>();
+        ArrayList<TagObject> tagElementsToRemove = new ArrayList<>();
         ObservableList<String> tagElementSelection = RightPane.getListView().getSelectionModel().getSelectedItems();
         for (String tagElement : tagElementSelection) {
-            tagElementsToRemove.add(TagElementControl.getTagElement(tagElement));
+            tagElementsToRemove.add(TagControl.getTagObject(tagElement));
         }
 
-        ArrayList<DataObject> dataElementsSelected = SelectionControl.getDataObjects();
-        for (TagElement tagElement : tagElementsToRemove) {
+        ArrayList<DataObject> dataElementsSelected = SelectionControl.getCollection();
+        for (TagObject tagObject : tagElementsToRemove) {
             for (DataObject dataObject : dataElementsSelected) {
-                dataObject.getTagElements().remove(tagElement);
+                dataObject.getTagCollection().remove(tagObject);
             }
 
             boolean tagExists = false;
-            ArrayList<DataObject> dataObjects = DataObjectControl.getDataElementsCopy();
+            ArrayList<DataObject> dataObjects = DataControl.getDataElementsCopy();
             for (DataObject dataObject : dataObjects) {
-                if (dataObject.getTagElements().contains(tagElement)) {
+                if (dataObject.getTagCollection().contains(tagObject)) {
                     tagExists = true;
                     break;
                 }
             }
             if (!tagExists) {
-                FilterControl.unlistTagElement(tagElement);
-                TagElementControl.remove(tagElement);
-                ReloadControl.requestComponentReload(LeftPane.class);
+                FilterControl.removeTagObject(tagObject);
+                TagControl.remove(tagObject);
+                ReloadControl.request(LeftPane.class);
             }
         }
 
-        ReloadControl.requestComponentReload(RightPane.class);
+        ReloadControl.request(RightPane.class);
     }
 
     public static void whitelistGroup(String group) {
-        ArrayList<String> namesInCategory = TagElementControl.getNamesInGroup(group);
+        ArrayList<String> namesInCategory = TagControl.getNames(group);
         for (String name : namesInCategory) {
-            TagElement tagElement = TagElementControl.getTagElement(group, name);
-            FilterControl.whitelistTagElement(tagElement);
+            TagObject tagObject = TagControl.getTagObject(group, name);
+            FilterControl.whitelistTagElement(tagObject);
         }
     }
     public static void blacklistGroup(String group) {
-        ArrayList<String> namesInCategory = TagElementControl.getNamesInGroup(group);
+        ArrayList<String> namesInCategory = TagControl.getNames(group);
         for (String name : namesInCategory) {
-            TagElement tagElement = TagElementControl.getTagElement(group, name);
-            FilterControl.blacklistTagElement(tagElement);
+            TagObject tagObject = TagControl.getTagObject(group, name);
+            FilterControl.blacklistTagElement(tagObject);
         }
     }
     public static void unlistGroup(String group) {
-        ArrayList<String> namesInCategory = TagElementControl.getNamesInGroup(group);
+        ArrayList<String> namesInCategory = TagControl.getNames(group);
         for (String name : namesInCategory) {
-            TagElement tagElement = TagElementControl.getTagElement(group, name);
-            FilterControl.unlistTagElement(tagElement);
+            TagObject tagObject = TagControl.getTagObject(group, name);
+            FilterControl.removeTagObject(tagObject);
         }
     }
 
-    public static void whitelistTagElement(TagElement tagElement) {
-        if (tagElement != null && !FilterControl.isTagElementWhitelisted(tagElement)) {
-            tagElementWhitelist.add(tagElement);
-            tagElementBlacklist.remove(tagElement);
+    public static void whitelistTagElement(TagObject tagObject) {
+        if (tagObject != null && !FilterControl.isTagElementWhitelisted(tagObject)) {
+            whitelist.add(tagObject);
+            blacklist.remove(tagObject);
             currentFilter = FilterCollection.CUSTOM;
         }
     }
-    public static void blacklistTagElement(TagElement tagElement) {
-        if (tagElement != null && !FilterControl.isTagElementBlacklisted(tagElement)) {
-            tagElementWhitelist.remove(tagElement);
-            tagElementBlacklist.add(tagElement);
+    public static void blacklistTagElement(TagObject tagObject) {
+        if (tagObject != null && !FilterControl.isTagElementBlacklisted(tagObject)) {
+            whitelist.remove(tagObject);
+            blacklist.add(tagObject);
             currentFilter = FilterCollection.CUSTOM;
         }
     }
-    public static void unlistTagElement(TagElement tagElement) {
-        if (tagElement != null) {
-            tagElementWhitelist.remove(tagElement);
-            tagElementBlacklist.remove(tagElement);
+    public static void removeTagObject(TagObject tagObject) {
+        if (tagObject != null) {
+            whitelist.remove(tagObject);
+            blacklist.remove(tagObject);
             currentFilter = FilterCollection.CUSTOM;
         }
     }
@@ -139,7 +141,7 @@ public abstract class FilterControl {
     /* boolean */
     public static boolean isGroupWhitelisted(String group) {
         boolean value = true;
-        for (String name : TagElementControl.getNamesInGroup(group)) {
+        for (String name : TagControl.getNames(group)) {
             if (!FilterControl.isTagElementWhitelisted(group, name)) {
                 value = false;
                 break;
@@ -149,7 +151,7 @@ public abstract class FilterControl {
     }
     public static boolean isGroupBlacklisted(String group) {
         boolean value = true;
-        for (String name : TagElementControl.getNamesInGroup(group)) {
+        for (String name : TagControl.getNames(group)) {
             if (!FilterControl.isTagElementBlacklisted(group, name)) {
                 value = false;
                 break;
@@ -158,38 +160,38 @@ public abstract class FilterControl {
         return value;
     }
 
-    public static boolean isTagElementWhitelisted(TagElement tagElement) {
-        if (tagElement == null) return false;
-        return tagElementWhitelist.contains(tagElement);
+    public static boolean isTagElementWhitelisted(TagObject tagObject) {
+        if (tagObject == null) return false;
+        return whitelist.contains(tagObject);
     }
     public static boolean isTagElementWhitelisted(String group, String name) {
-        return tagElementWhitelist.contains(TagElementControl.getTagElement(group, name));
+        return whitelist.contains(TagControl.getTagObject(group, name));
     }
-    public static boolean isTagElementBlacklisted(TagElement tagElement) {
-        if (tagElement == null) return false;
-        return tagElementBlacklist.contains(tagElement);
+    public static boolean isTagElementBlacklisted(TagObject tagObject) {
+        if (tagObject == null) return false;
+        return blacklist.contains(tagObject);
     }
     public static boolean isTagElementBlacklisted(String group, String name) {
-        return tagElementBlacklist.contains(TagElementControl.getTagElement(group, name));
+        return blacklist.contains(TagControl.getTagObject(group, name));
     }
 
     /* get */
-    public static ArrayList<DataObject> getValidObjects() {
-        return dataObjectsValid;
+    public static DataCollection getCollection() {
+        return dataCollectionValid;
     }
 
-    public static ArrayList<TagElement> getTagElementWhitelist() {
-        return tagElementWhitelist;
+    public static TagCollection getWhitelist() {
+        return whitelist;
     }
-    public static ArrayList<TagElement> getTagElementBlacklist() {
-        return tagElementBlacklist;
+    public static TagCollection getBlacklist() {
+        return blacklist;
     }
 
     /* set */
     public static void setFilter(FilterCollection filter) {
         currentFilter = filter;
 
-        validDataElementsRefresh();
+        refresh();
 
         switch (currentFilter) {
             case SHOW_EVERYTHING:

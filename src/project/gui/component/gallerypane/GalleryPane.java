@@ -46,8 +46,8 @@ public abstract class GalleryPane {
         double scrollbarValue = _this.getVvalue();
         ObservableList<Node> tilePaneItems = tilePane.getChildren();
         tilePaneItems.clear();
-        for (DataObject dataObject : FilterControl.getValidObjects()) {
-            tilePaneItems.add(dataObject.getGalleryTile());
+        for (Object dataObject : FilterControl.getCollection()) {
+            tilePaneItems.add(((DataObject) dataObject).getGalleryTile());
         }
         _this.setVvalue(scrollbarValue);
         calculateTilePaneHGap();
@@ -80,7 +80,7 @@ public abstract class GalleryPane {
         ObservableList<Node> tilePaneItems = tilePane.getChildren();
 
         int columnCount = GalleryPane.getColumnCount();
-        int focusIndex = FilterControl.getValidObjects().indexOf(currentFocusedItem);
+        int focusIndex = FilterControl.getCollection().indexOf(currentFocusedItem);
         int focusRow = focusIndex / columnCount;
 
         Bounds viewportBounds = tilePane.localToScene(_this.getViewportBounds());

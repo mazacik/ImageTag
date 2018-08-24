@@ -1,7 +1,7 @@
 package project.gui.event.handler.rightpane;
 
 import javafx.scene.control.ChoiceBox;
-import project.database.control.TagElementControl;
+import project.database.control.TagControl;
 import project.gui.component.rightpane.RightPane;
 import project.gui.event.listener.rightpane.EventListenerRightPane;
 
@@ -12,7 +12,7 @@ public abstract class EventHandlerGroupNode {
             EventListenerRightPane.setGroupText(cbGroupValue.toString());
         }
 
-        cbGroup.getItems().setAll(TagElementControl.getGroups());
+        cbGroup.getItems().setAll(TagControl.getGroups());
     }
     public static void cbGroupOnHidden(ChoiceBox cbGroup) {
         Object cbGroupValue = cbGroup.getValue();

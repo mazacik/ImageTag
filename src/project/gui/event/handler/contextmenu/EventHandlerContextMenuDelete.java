@@ -4,7 +4,7 @@ import project.control.FilterControl;
 import project.control.FocusControl;
 import project.control.ReloadControl;
 import project.control.SelectionControl;
-import project.database.control.DataObjectControl;
+import project.database.control.DataControl;
 import project.database.element.DataObject;
 import project.gui.GUIUtils;
 import project.gui.component.gallerypane.GalleryPane;
@@ -21,10 +21,10 @@ public abstract class EventHandlerContextMenuDelete {
     private static ArrayList<DataObject> dataObjectsValid;
 
     public static void onAction() {
-        dataObjectsValid = FilterControl.getValidObjects();
+        dataObjectsValid = FilterControl.getCollection();
 
         if (!GUIUtils.isPreviewFullscreen()) {
-            doWork(GalleryPane.class, SelectionControl.getDataObjects());
+            doWork(GalleryPane.class, SelectionControl.getCollection());
         } else {
             doWork(PreviewPane.class, FocusControl.getCurrentFocus());
         }
@@ -40,8 +40,8 @@ public abstract class EventHandlerContextMenuDelete {
             Files.delete(path);
 
             dataObjectsValid.remove(dataObject);
-            DataObjectControl.remove(dataObject);
-            SelectionControl.getDataObjects().remove(dataObject);
+            DataControl.remove(dataObject);
+            SelectionControl.getCollection().remove(dataObject);
 
             if (dataObjectsValid.get(index - 1) != null) {
                 index--;
@@ -50,7 +50,7 @@ public abstract class EventHandlerContextMenuDelete {
             }
 
             FocusControl.setFocus(dataObjectsValid.get(index));
-            ReloadControl.requestComponentReload(true, sender);
+            ReloadControl.request(true, sender);
         } catch (IOException e) {
             System.out.println("IOException: Trying to delete non-existent file; Path: " + pathString);
             e.printStackTrace();

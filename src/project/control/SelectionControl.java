@@ -1,8 +1,10 @@
 package project.control;
 
-import project.database.control.DataObjectControl;
+import project.database.control.DataControl;
+import project.database.element.DataCollection;
 import project.database.element.DataObject;
-import project.database.element.TagElement;
+import project.database.element.TagCollection;
+import project.database.element.TagObject;
 import project.gui.component.gallerypane.GalleryPane;
 import project.gui.component.rightpane.RightPane;
 
@@ -11,17 +13,17 @@ import java.util.Random;
 
 public abstract class SelectionControl {
     /* vars */
-    private static final ArrayList<DataObject> dataObjects = new ArrayList<>();
+    private static final DataCollection dataObjects = new DataCollection();
 
     /* public */
     public static void addDataElement(DataObject dataObject) {
         if (dataObject != null && !dataObjects.contains(dataObject)) {
             dataObjects.add(dataObject);
             dataObject.getGalleryTile().generateEffect();
-            ReloadControl.requestComponentReload(RightPane.class);
+            ReloadControl.request(RightPane.class);
         }
     }
-    public static void addDataElement(ArrayList<DataObject> dataElementsToAdd) {
+    public static void addDataElement(DataCollection dataElementsToAdd) {
         if (dataElementsToAdd != null) {
             for (DataObject dataObject : dataElementsToAdd) {
                 if (!dataObjects.contains(dataObject)) {
@@ -29,14 +31,14 @@ public abstract class SelectionControl {
                     dataObject.getGalleryTile().generateEffect();
                 }
             }
-            ReloadControl.requestComponentReload(RightPane.class);
+            ReloadControl.request(RightPane.class);
         }
     }
     public static void removeDataElement(DataObject dataObject) {
         if (dataObject != null && dataObjects.contains(dataObject)) {
             dataObjects.remove(dataObject);
             dataObject.getGalleryTile().generateEffect();
-            ReloadControl.requestComponentReload(RightPane.class);
+            ReloadControl.request(RightPane.class);
         }
     }
     public static void setDataElement(DataObject dataObject) {
@@ -45,19 +47,19 @@ public abstract class SelectionControl {
         FocusControl.setFocus(dataObject);
     }
     public static void clearDataElements() {
-        SelectionControl.getDataObjects().clear();
+        SelectionControl.getCollection().clear();
         DataObject currentFocus = FocusControl.getCurrentFocus();
-        for (DataObject dataObject : DataObjectControl.getDataElementsCopy()) {
+        for (Object dataObject : DataControl.getDataElementsCopy()) {
             if (!dataObject.equals(currentFocus)) {
-                dataObject.getGalleryTile().setEffect(null);
+                ((DataObject) dataObject).getGalleryTile().setEffect(null);
             } else {
-                dataObject.getGalleryTile().generateEffect();
+                ((DataObject) dataObject).getGalleryTile().generateEffect();
             }
         }
-        ReloadControl.requestComponentReload(RightPane.class);
+        ReloadControl.request(RightPane.class);
     }
     public static void setRandomValidDataElement() {
-        ArrayList<DataObject> dataElementsFiltered = FilterControl.getValidObjects();
+        ArrayList<DataObject> dataElementsFiltered = FilterControl.getCollection();
         int databaseItemsFilteredSize = dataElementsFiltered.size();
         int randomIndex = new Random().nextInt(databaseItemsFilteredSize);
         SelectionControl.setDataElement(dataElementsFiltered.get(randomIndex));
@@ -72,18 +74,18 @@ public abstract class SelectionControl {
             }
         }
     }
-    public static ArrayList<TagElement> getIntersectingTags() {
-        if (isSelectionEmpty()) return new ArrayList<>();
+    public static TagCollection getIntersectingTags() {
+        if (isSelectionEmpty()) return new TagCollection();
 
-        ArrayList<TagElement> sharedTags = new ArrayList<>();
-        ArrayList<TagElement> firstItemTags = dataObjects.get(0).getTagElements();
+        TagCollection sharedTags = new TagCollection();
+        TagCollection firstItemTags = dataObjects.get(0).getTagCollection();
         DataObject lastItemInSelection = dataObjects.get(dataObjects.size() - 1);
 
-        for (TagElement tagElement : firstItemTags) {
+        for (TagObject tagObject : firstItemTags) {
             for (DataObject dataObject : dataObjects) {
-                if (dataObject.getTagElements().contains(tagElement)) {
+                if (dataObject.getTagCollection().contains(tagObject)) {
                     if (dataObject.equals(lastItemInSelection)) {
-                        sharedTags.add(tagElement);
+                        sharedTags.add(tagObject);
                     }
                 } else break;
             }
@@ -100,7 +102,7 @@ public abstract class SelectionControl {
     }
 
     /* get */
-    public static ArrayList<DataObject> getDataObjects() {
+    public static DataCollection getCollection() {
         return dataObjects;
     }
 }

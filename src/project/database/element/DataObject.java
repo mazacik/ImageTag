@@ -4,34 +4,38 @@ import javafx.scene.image.Image;
 import project.gui.component.gallerypane.GalleryTile;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Comparator;
 
 public class DataObject implements Serializable {
     /* vars */
     private String name;
-    private ArrayList<TagElement> tagElements;
+    private TagCollection tagCollection;
 
     private transient Image image;
     private transient GalleryTile galleryTile;
 
     /* constructors */
-    public DataObject(String name, ArrayList<TagElement> tagElements) {
+    public DataObject(String name, TagCollection tagObjects) {
         this.name = name;
-        this.tagElements = tagElements;
+        this.tagCollection = tagObjects;
     }
 
     /* get */
     public String getName() {
         return name;
     }
-    public ArrayList<TagElement> getTagElements() {
-        return tagElements;
+    public TagCollection getTagCollection() {
+        return tagCollection;
     }
     public Image getImage() {
         return image;
     }
     public GalleryTile getGalleryTile() {
         return galleryTile;
+    }
+
+    public static Comparator getComparator() {
+        return Comparator.comparing(DataObject::getName);
     }
 
     /* set */
