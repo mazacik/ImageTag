@@ -9,6 +9,8 @@ public abstract class EventListenerRightPane {
 
     public static void initialize() {
         EventListenerRightPane.onKeyPress();
+        EventListenerButtonAdd.onAction();
+        EventListenerButtonNew.onAction();
         EventListenerRightPane.onChoiceBoxValueChange();
         EventListenerRightPane.onContextMenuAction();
     }

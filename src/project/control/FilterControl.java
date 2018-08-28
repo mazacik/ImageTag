@@ -26,28 +26,31 @@ public abstract class FilterControl {
 
     /* public */
     public static void refresh() {
-        DataCollection dataCollection = DataControl.getDataElementsCopy();
+        DataCollection dataCollection = DataControl.getDataCollectionCopy();
         currentFilter.activate();
 
-        if (whitelist.isEmpty() && blacklist.isEmpty())
+        if (whitelist.isEmpty() && blacklist.isEmpty()) {
             dataCollectionValid.setAll(dataCollection);
-        else {
+        } else {
             dataCollectionValid.clear();
-            for (DataObject dataObject : dataCollection) {
-                TagCollection dataObjectTagCollection = dataObject.getTagCollection();
-                if (whitelist.isEmpty() || dataObjectTagCollection.containsAll(whitelist)) {
-                    boolean isValid = true;
-                    for (TagObject tagObject : blacklist) {
-                        if (dataObjectTagCollection.contains(tagObject)) {
-                            isValid = false;
-                            break;
+            for (DataObject dataIterator : dataCollection) {
+                TagCollection dataIteratorTagCollection = dataIterator.getTagCollection();
+                if (whitelist.isEmpty() || dataIteratorTagCollection.containsAll(whitelist)) {
+                    if (blacklist.isEmpty()) {
+                        dataCollectionValid.add(dataIterator);
+                    } else {
+                        boolean isValid = true;
+                        for (TagObject tagObject : blacklist) {
+                            if (dataIteratorTagCollection.contains(tagObject)) {
+                                isValid = false;
+                                break;
+                            }
                         }
+                        if (isValid) dataCollectionValid.add(dataIterator);
                     }
-                    if (isValid) dataCollectionValid.add(dataObject);
                 }
             }
         }
-
         ReloadControl.request(GalleryPane.class);
     }
     public static void addTagElementToDataElementSelection(TagObject tagObject) {
@@ -77,7 +80,7 @@ public abstract class FilterControl {
             }
 
             boolean tagExists = false;
-            ArrayList<DataObject> dataObjects = DataControl.getDataElementsCopy();
+            ArrayList<DataObject> dataObjects = DataControl.getDataCollectionCopy();
             for (DataObject dataObject : dataObjects) {
                 if (dataObject.getTagCollection().contains(tagObject)) {
                     tagExists = true;

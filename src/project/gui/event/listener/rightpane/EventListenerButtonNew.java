@@ -9,7 +9,7 @@ import project.gui.component.rightpane.RightPane;
 import project.gui.custom.specific.TagEditor;
 
 public class EventListenerButtonNew {
-    private static void btnNewOnAction() {
+    public static void onAction() {
         ChoiceBox cbGroup = RightPane.getCbGroup();
         ChoiceBox cbName = RightPane.getCbName();
         RightPane.getBtnNew().setOnAction(event -> {

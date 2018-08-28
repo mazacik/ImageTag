@@ -49,7 +49,7 @@ public abstract class SelectionControl {
     public static void clearDataElements() {
         SelectionControl.getCollection().clear();
         DataObject currentFocus = FocusControl.getCurrentFocus();
-        for (Object dataObject : DataControl.getDataElementsCopy()) {
+        for (Object dataObject : DataControl.getDataCollectionCopy()) {
             if (!dataObject.equals(currentFocus)) {
                 ((DataObject) dataObject).getGalleryTile().setEffect(null);
             } else {

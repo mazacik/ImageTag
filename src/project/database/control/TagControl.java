@@ -23,18 +23,17 @@ public abstract class TagControl {
     /* init */
     public static void initialize() {
         DataCollection dataCollection = DataControl.getCollection();
-        for (DataObject dataObject : dataCollection) {
-            TagCollection tagCollection = dataObject.getTagCollection();
-            for (TagObject tagObject : tagCollection) {
-                if (!collection.contains(tagObject)) {
-                    collection.add(tagObject);
+        for (DataObject dataIterator : dataCollection) {
+            TagCollection tagCollection = dataIterator.getTagCollection();
+            for (TagObject tagIterator : tagCollection) {
+                if (!collection.contains(tagIterator)) {
+                    collection.add(tagIterator);
                 } else {
-                    tagCollection.set(tagCollection.indexOf(tagObject), TagControl.getTagObject(tagObject));
+                    tagCollection.set(tagCollection.indexOf(tagIterator), TagControl.getTagObject(tagIterator));
                 }
             }
         }
-        //todo use setAll when it's implemented
-        FilterControl.getCollection().addAll(dataCollection);
+        FilterControl.getCollection().setAll(dataCollection);
     }
 
     /* public */
@@ -47,7 +46,6 @@ public abstract class TagControl {
     }
     public static boolean remove(TagObject tagObject) {
         if (collection.remove(tagObject)) {
-            DataCollection.removeTagObject(tagObject, DataControl.getCollection());
             FilterControl.removeTagObject(tagObject);
             FilterControl.refresh();
             ReloadControl.request(LeftPane.class, GalleryPane.class, RightPane.class);
@@ -57,7 +55,7 @@ public abstract class TagControl {
     }
     public static boolean edit(TagObject tagObject) {
         TagObject newTagObject = new TagEditor(tagObject).getResult();
-        if (!newTagObject.equals(null)) {
+        if (newTagObject != null) {
             TagControl.getTagObject(tagObject).setValue(newTagObject.getGroup(), newTagObject.getName());
             // ^ this relies on the value to change everywhere
             collection.sort();
@@ -90,11 +88,13 @@ public abstract class TagControl {
         return TagControl.getTagObject(tagElementGroup, tagElementName);
     }
     public static TagObject getTagObject(TreeCell<ColoredText> treeCell) {
-        //todo fixme trycatch
-        if (treeCell.equals(null)) return null;
-        ColoredText parentValue = treeCell.getTreeItem().getParent().getValue();
-        if (parentValue.equals(null)) return null;
-        String tagElementGroup = parentValue.getText();
+        if (treeCell == null) return null;
+        String tagElementGroup;
+        try {
+            tagElementGroup = treeCell.getTreeItem().getParent().getValue().getText();
+        } catch (NullPointerException e) {
+            return null;
+        }
         String tagElementName = treeCell.getText();
         return TagControl.getTagObject(tagElementGroup, tagElementName);
     }

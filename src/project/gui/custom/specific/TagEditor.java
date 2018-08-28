@@ -35,7 +35,7 @@ public class TagEditor extends Stage {
     /* public */
     public static TagObject createTag() {
         TagObject newTagObject = new TagEditor().getResult();
-        if (newTagObject.equals(null) || newTagObject.isEmpty()) return null;
+        if (newTagObject == null || newTagObject.isEmpty()) return null;
         return newTagObject;
     }
 

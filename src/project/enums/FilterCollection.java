@@ -27,7 +27,7 @@ public enum FilterCollection {
             FilterControl.getCollection().clear();
             FilterControl.getWhitelist().clear();
             FilterControl.getBlacklist().clear();
-            for (DataObject dataObject : DataControl.getDataElementsCopy()) {
+            for (DataObject dataObject : DataControl.getDataCollectionCopy()) {
                 if (dataObject.getTagCollection().size() <= maxTagsValue) {
                     FilterControl.getCollection().add(dataObject);
                 }
@@ -35,7 +35,11 @@ public enum FilterCollection {
             ReloadControl.request(GalleryPane.class);
         }
     },
-    CUSTOM;
+    CUSTOM {
+        public void activate() {
+
+        }
+    };
 
     /* vars */
     private static int maxTagsValue = 0;

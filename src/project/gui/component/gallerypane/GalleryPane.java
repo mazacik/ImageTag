@@ -42,33 +42,26 @@ public abstract class GalleryPane {
     /* public */
     public static void reload() {
         if (GUIUtils.isPreviewFullscreen()) return;
-
         double scrollbarValue = _this.getVvalue();
         ObservableList<Node> tilePaneItems = tilePane.getChildren();
         tilePaneItems.clear();
-        for (Object dataObject : FilterControl.getCollection()) {
-            tilePaneItems.add(((DataObject) dataObject).getGalleryTile());
+        for (DataObject dataObject : FilterControl.getCollection()) {
+            tilePaneItems.add(dataObject.getGalleryTile());
         }
         _this.setVvalue(scrollbarValue);
         calculateTilePaneHGap();
         adjustViewportToCurrentFocus();
     }
     public static void calculateTilePaneHGap() {
-        int tilePaneWidth = (int) tilePane.getWidth() + (int) tilePane.getVgap();
-        int prefTileWidth = (int) tilePane.getPrefTileWidth();
-        //int columnCount = tilePaneWidth / prefTileWidth - 1;
-        int columnCount = tilePaneWidth / prefTileWidth;
-
         int vgap = (int) tilePane.getVgap();
         int hgap = vgap;
 
-        if (columnCount != 0) {
-            hgap = tilePaneWidth % prefTileWidth / columnCount;
-            while (hgap < vgap) {
-                tilePaneWidth += vgap * columnCount;
-                prefTileWidth += vgap;
-                hgap = tilePaneWidth % prefTileWidth / (columnCount - 1);
-            }
+        int tilePaneWidth = (int) tilePane.getWidth() + (int) tilePane.getVgap();
+        int prefTileWidth = (int) tilePane.getPrefTileWidth();
+        int columnCount = tilePaneWidth / prefTileWidth - 1;
+
+        if (columnCount > 0) {
+            hgap = (tilePaneWidth + vgap * columnCount) % (prefTileWidth + vgap) / columnCount;
         }
 
         tilePane.setHgap(hgap);
@@ -77,10 +70,11 @@ public abstract class GalleryPane {
         DataObject currentFocusedItem = FocusControl.getCurrentFocus();
         if (currentFocusedItem == null) return;
         if (GUIUtils.isPreviewFullscreen()) return;
-        ObservableList<Node> tilePaneItems = tilePane.getChildren();
-
-        int columnCount = GalleryPane.getColumnCount();
         int focusIndex = FilterControl.getCollection().indexOf(currentFocusedItem);
+        if (focusIndex < 0) return;
+
+        ObservableList<Node> tilePaneItems = tilePane.getChildren();
+        int columnCount = GalleryPane.getColumnCount();
         int focusRow = focusIndex / columnCount;
 
         Bounds viewportBounds = tilePane.localToScene(_this.getViewportBounds());

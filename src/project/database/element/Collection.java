@@ -6,13 +6,12 @@ public class Collection<T> extends ArrayList<T> {
     public Collection() {
         super();
     }
-
     public Collection(Collection<T> collection) {
         super(collection);
     }
 
     public boolean add(T t) {
-        if (t.equals(null) || this.contains(t)) return false;
+        if (t == null || this.contains(t)) return false;
         if (super.add(t)) {
             this.sort();
             return true;
@@ -20,7 +19,7 @@ public class Collection<T> extends ArrayList<T> {
         return false;
     }
     public boolean addAll(Collection<T> collection) {
-        if (collection.equals(null)) return false;
+        if (collection == null) return false;
         collection.removeAll(this.getIntersection(collection));
         if (super.addAll(collection)) {
             this.sort();
@@ -33,11 +32,11 @@ public class Collection<T> extends ArrayList<T> {
         return this.addAll(collection);
     }
     public boolean remove(Object o) {
-        if (o.equals(null)) return false;
+        if (o == null) return false;
         return super.remove(o);
     }
     public boolean removeAll(Collection<T> collection) {
-        if (collection.equals(null)) return false;
+        if (collection == null) return false;
         return super.removeAll(collection);
     }
     public void sort() {}

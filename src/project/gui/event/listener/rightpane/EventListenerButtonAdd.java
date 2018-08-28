@@ -6,7 +6,7 @@ import project.control.ReloadControl;
 import project.gui.component.rightpane.RightPane;
 
 public class EventListenerButtonAdd {
-    private static void btnAddOnAction() {
+    public static void onAction() {
         Button btnAdd = RightPane.getBtnAdd();
         btnAdd.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
