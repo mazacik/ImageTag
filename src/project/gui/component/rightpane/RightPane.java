@@ -7,7 +7,6 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import project.control.FilterControl;
 import project.control.FocusControl;
 import project.control.ReloadControl;
 import project.control.SelectionControl;
@@ -81,9 +80,9 @@ public abstract class RightPane {
                     currentFocusedItem.getTagCollection().add(tagObject);
                 }
             } else {
-                FilterControl.addTagElementToDataElementSelection(tagObject);
+                SelectionControl.addTagObjectToDataObjectSelection(tagObject);
             }
-            ReloadControl.request(RightPane.class);
+            ReloadControl.reload(RightPane.class);
         }
     }
     public static void reload() {

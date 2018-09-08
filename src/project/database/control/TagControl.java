@@ -39,7 +39,8 @@ public abstract class TagControl {
     /* public */
     public static boolean add(TagObject tagObject) {
         if (collection.add(tagObject)) {
-            ReloadControl.request(LeftPane.class, RightPane.class);
+            //does this not need FilterControl.doWork() ?
+            ReloadControl.reload(LeftPane.class, RightPane.class);
             return true;
         }
         return false;
@@ -47,8 +48,8 @@ public abstract class TagControl {
     public static boolean remove(TagObject tagObject) {
         if (collection.remove(tagObject)) {
             FilterControl.removeTagObject(tagObject);
-            FilterControl.refresh();
-            ReloadControl.request(LeftPane.class, GalleryPane.class, RightPane.class);
+            FilterControl.doWork();
+            ReloadControl.reload(LeftPane.class, GalleryPane.class, RightPane.class);
             return true;
         }
         return false;
@@ -59,7 +60,7 @@ public abstract class TagControl {
             TagControl.getTagObject(tagObject).setValue(newTagObject.getGroup(), newTagObject.getName());
             // ^ this relies on the value to change everywhere
             collection.sort();
-            ReloadControl.request(LeftPane.class, RightPane.class);
+            ReloadControl.reload(LeftPane.class, RightPane.class);
             return true;
         }
         return false;

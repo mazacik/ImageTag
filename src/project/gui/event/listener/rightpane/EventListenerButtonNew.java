@@ -22,7 +22,7 @@ public class EventListenerButtonNew {
                 String group = value.toString();
                 cbName.getItems().setAll(TagControl.getNames(group));
                 cbName.getSelectionModel().select(newTagObject.getName());
-                ReloadControl.request(true, LeftPane.class);
+                ReloadControl.reload(true, LeftPane.class);
             }
         });
     }

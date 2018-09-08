@@ -20,10 +20,10 @@ public abstract class GUIUtils {
         double[] dividerPositions = splitPane.getDividerPositions();
         if (splitPaneItems.contains(galleryPane)) {
             splitPaneItems.set(splitPaneItems.indexOf(galleryPane), previewPane);
-            ReloadControl.request(PreviewPane.class);
+            ReloadControl.reload(PreviewPane.class);
         } else {
             splitPaneItems.set(splitPaneItems.indexOf(previewPane), galleryPane);
-            ReloadControl.request(GalleryPane.class);
+            ReloadControl.reload(GalleryPane.class);
         }
         splitPane.setDividerPositions(dividerPositions);
     }

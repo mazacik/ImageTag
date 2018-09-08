@@ -29,7 +29,7 @@ public abstract class FocusControl {
             previousFocus.getGalleryTile().generateEffect();
         }
 
-        ReloadControl.request(TopPane.class, PreviewPane.class, RightPane.class);
+        ReloadControl.reload(TopPane.class, PreviewPane.class, RightPane.class);
     }
     public static void moveFocusByKeyCode(KeyCode keyCode) {
         ArrayList<DataObject> databaseItemsFiltered = FilterControl.getCollection();

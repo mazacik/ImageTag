@@ -1,11 +1,14 @@
 package project.control;
 
+import javafx.collections.ObservableList;
 import project.database.control.DataControl;
+import project.database.control.TagControl;
 import project.database.element.DataCollection;
 import project.database.element.DataObject;
 import project.database.element.TagCollection;
 import project.database.element.TagObject;
 import project.gui.component.gallerypane.GalleryPane;
+import project.gui.component.leftpane.LeftPane;
 import project.gui.component.rightpane.RightPane;
 
 import java.util.ArrayList;
@@ -20,7 +23,7 @@ public abstract class SelectionControl {
         if (dataObject != null && !dataObjects.contains(dataObject)) {
             dataObjects.add(dataObject);
             dataObject.getGalleryTile().generateEffect();
-            ReloadControl.request(RightPane.class);
+            ReloadControl.reload(RightPane.class);
         }
     }
     public static void addDataElement(DataCollection dataElementsToAdd) {
@@ -31,14 +34,14 @@ public abstract class SelectionControl {
                     dataObject.getGalleryTile().generateEffect();
                 }
             }
-            ReloadControl.request(RightPane.class);
+            ReloadControl.reload(RightPane.class);
         }
     }
     public static void removeDataElement(DataObject dataObject) {
         if (dataObject != null && dataObjects.contains(dataObject)) {
             dataObjects.remove(dataObject);
             dataObject.getGalleryTile().generateEffect();
-            ReloadControl.request(RightPane.class);
+            ReloadControl.reload(RightPane.class);
         }
     }
     public static void setDataElement(DataObject dataObject) {
@@ -49,14 +52,14 @@ public abstract class SelectionControl {
     public static void clearDataElements() {
         SelectionControl.getCollection().clear();
         DataObject currentFocus = FocusControl.getCurrentFocus();
-        for (Object dataObject : DataControl.getDataCollectionCopy()) {
+        for (Object dataObject : DataControl.getCollection()) {
             if (!dataObject.equals(currentFocus)) {
                 ((DataObject) dataObject).getGalleryTile().setEffect(null);
             } else {
                 ((DataObject) dataObject).getGalleryTile().generateEffect();
             }
         }
-        ReloadControl.request(RightPane.class);
+        ReloadControl.reload(RightPane.class);
     }
     public static void setRandomValidDataElement() {
         ArrayList<DataObject> dataElementsFiltered = FilterControl.getCollection();
@@ -91,6 +94,51 @@ public abstract class SelectionControl {
             }
         }
         return sharedTags;
+    }
+
+    public static void addTagObjectToDataObjectSelection(TagObject tagObject) {
+        if (tagObject != null && !tagObject.isEmpty()) {
+            if (!TagControl.getCollection().contains(tagObject)) {
+                TagControl.add(tagObject);
+            }
+
+            TagCollection tagCollection;
+            for (DataObject dataObject : getCollection()) {
+                tagCollection = dataObject.getTagCollection();
+                if (!tagCollection.contains(tagObject)) {
+                    tagCollection.add(tagObject);
+                }
+            }
+        }
+    }
+    public static void removeTagObjectSelectionFromDataObjectSelection() {
+        TagCollection tagElementsToRemove = new TagCollection();
+        ObservableList<String> tagElementSelection = RightPane.getListView().getSelectionModel().getSelectedItems();
+        for (String tagElement : tagElementSelection) {
+            tagElementsToRemove.add(TagControl.getTagObject(tagElement));
+        }
+
+        for (TagObject tagObject : tagElementsToRemove) {
+            for (DataObject dataObject : getCollection()) {
+                dataObject.getTagCollection().remove(tagObject);
+            }
+
+            boolean tagExists = false;
+            DataCollection dataObjects = DataControl.getCollection();
+            for (DataObject dataObject : dataObjects) {
+                if (dataObject.getTagCollection().contains(tagObject)) {
+                    tagExists = true;
+                    break;
+                }
+            }
+            if (!tagExists) {
+                FilterControl.removeTagObject(tagObject);
+                TagControl.remove(tagObject);
+                ReloadControl.reload(LeftPane.class);
+            }
+        }
+
+        ReloadControl.reload(RightPane.class);
     }
 
     /* boolean */

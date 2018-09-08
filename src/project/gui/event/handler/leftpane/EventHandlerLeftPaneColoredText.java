@@ -46,18 +46,18 @@ public abstract class EventHandlerLeftPaneColoredText {
             }
         } else {
             if (FilterControl.isTagElementWhitelisted(tagObject)) {
-                FilterControl.blacklistTagElement(tagObject);
+                FilterControl.blacklistTagObject(tagObject);
                 coloredText.setColor(Color.RED);
             } else if (FilterControl.isTagElementBlacklisted(tagObject)) {
                 FilterControl.removeTagObject(tagObject);
                 coloredText.setColor(Color.BLACK);
             } else {
-                FilterControl.whitelistTagElement(tagObject);
+                FilterControl.whitelistTagObject(tagObject);
                 coloredText.setColor(Color.GREEN);
             }
         }
-        FilterControl.refresh();
-        ReloadControl.request(true, GalleryPane.class);
+        FilterControl.doWork();
+        ReloadControl.reload(true, GalleryPane.class);
         LeftPane.refreshTreeview();
     }
 }

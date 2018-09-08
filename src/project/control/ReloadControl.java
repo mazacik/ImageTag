@@ -2,6 +2,7 @@ package project.control;
 
 import project.database.control.DataControl;
 import project.database.control.TagControl;
+import project.gui.GUIUtils;
 import project.gui.component.gallerypane.GalleryPane;
 import project.gui.component.leftpane.LeftPane;
 import project.gui.component.previewpane.PreviewPane;
@@ -33,18 +34,19 @@ public abstract class ReloadControl {
         PreviewPane.reload();
         RightPane.reload();
     }
-    public static void request(Class... components) {
-        ReloadControl.request(false, components);
+    public static void reload(Class... components) {
+        ReloadControl.reload(false, components);
     }
-    public static void request(boolean instant, Class... components) {
+    public static void reload(boolean instant, Class... components) {
+        boolean isPreviewFullscreen = GUIUtils.isPreviewFullscreen();
         for (Class component : components) {
             if (component.equals(TopPane.class)) {
                 reloadTopPane = true;
             } else if (component.equals(LeftPane.class)) {
                 reloadLeftPane = true;
-            } else if (component.equals(GalleryPane.class)) {
+            } else if (!isPreviewFullscreen && component.equals(GalleryPane.class)) {
                 reloadGalleryPane = true;
-            } else if (component.equals(PreviewPane.class)) {
+            } else if (isPreviewFullscreen && component.equals(PreviewPane.class)) {
                 reloadPreviewPane = true;
             } else if (component.equals(RightPane.class)) {
                 reloadRightPane = true;

@@ -27,7 +27,7 @@ public abstract class EventHandlerPreviewPaneCanvas {
 
     public static void onResize() {
         ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) ->
-                ReloadControl.request(true, PreviewPane.class);
+                ReloadControl.reload(true, PreviewPane.class);
         canvas.widthProperty().addListener(previewPaneSizeListener);
         canvas.heightProperty().addListener(previewPaneSizeListener);
     }

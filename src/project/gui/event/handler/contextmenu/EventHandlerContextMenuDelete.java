@@ -50,7 +50,7 @@ public abstract class EventHandlerContextMenuDelete {
             }
 
             FocusControl.setFocus(dataObjectsValid.get(index));
-            ReloadControl.request(true, sender);
+            ReloadControl.reload(true, sender);
         } catch (IOException e) {
             System.out.println("IOException: Trying to delete non-existent file; Path: " + pathString);
             e.printStackTrace();

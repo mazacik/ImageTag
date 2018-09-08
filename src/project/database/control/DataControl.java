@@ -19,10 +19,6 @@ public abstract class DataControl {
     }
 
     /* get */
-    public static DataCollection getDataCollectionCopy() {
-        return new DataCollection(collection);
-    }
-
     public static DataCollection getCollection() {
         return collection;
     }
