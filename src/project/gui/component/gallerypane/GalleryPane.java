@@ -8,7 +8,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.TilePane;
 import project.control.FilterControl;
 import project.control.FocusControl;
-import project.database.element.DataObject;
+import project.database.object.DataObject;
 import project.gui.GUIUtils;
 import project.settings.Settings;
 

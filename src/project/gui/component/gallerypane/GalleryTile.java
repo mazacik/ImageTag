@@ -8,7 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import project.control.FocusControl;
 import project.control.SelectionControl;
-import project.database.element.DataObject;
+import project.database.object.DataObject;
 import project.gui.event.listener.gallerypane.EventListenerGalleryTile;
 import project.settings.Settings;
 

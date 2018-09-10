@@ -2,14 +2,12 @@ package project.gui.event.listener.toppane;
 
 import javafx.stage.WindowEvent;
 import project.Main;
+import project.control.Filter;
 import project.control.FilterControl;
 import project.control.ReloadControl;
 import project.control.SelectionControl;
 import project.database.loader.Serialization;
-import project.enums.Filter;
-import project.gui.component.gallerypane.GalleryPane;
-import project.gui.component.leftpane.LeftPane;
-import project.gui.component.rightpane.RightPane;
+import project.gui.component.GUINode;
 import project.gui.component.toppane.TopPane;
 import project.gui.custom.generic.NumberInputWindow;
 
@@ -35,18 +33,18 @@ public abstract class UserInputTopPane {
     }
 
     private static void setOnAction_menuSelectAll() {
-        TopPane.getMenuSelectAll().setOnAction(event -> SelectionControl.addDataElement(FilterControl.getCollection()));
-        ReloadControl.reload(true, GalleryPane.class, RightPane.class);
+        TopPane.getMenuSelectAll().setOnAction(event -> SelectionControl.addDataObject(FilterControl.getCollection()));
+        ReloadControl.reload(true, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
     }
     private static void setOnAction_menuClearSelection() {
-        TopPane.getMenuClearSelection().setOnAction(event -> SelectionControl.clearDataElements());
-        ReloadControl.reload(true, GalleryPane.class, RightPane.class);
+        TopPane.getMenuClearSelection().setOnAction(event -> SelectionControl.clearDataObjects());
+        ReloadControl.reload(true, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
     }
 
     private static void setOnAction_menuUntaggedOnly() {
         TopPane.getMenuUntaggedOnly().setOnAction(event -> {
             FilterControl.setFilter(Filter.SHOW_UNTAGGED);
-            ReloadControl.reload(true, LeftPane.class, GalleryPane.class);
+            ReloadControl.reload(true, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
         });
     }
     private static void setOnAction_menuMaxXTags() {
@@ -56,18 +54,18 @@ public abstract class UserInputTopPane {
             Filter.setMaxTagsValue(maxTags);
 
             FilterControl.setFilter(Filter.SHOW_MAX_X_TAGS);
-            ReloadControl.reload(true, GalleryPane.class, RightPane.class);
+            ReloadControl.reload(true, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
         });
     }
     private static void setOnAction_menuRefresh() {
         TopPane.getMenuRefresh().setOnAction(event -> {
-            ReloadControl.reload(true, GalleryPane.class, RightPane.class);
+            ReloadControl.reload(true, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
         });
     }
     private static void setOnAction_menuReset() {
         TopPane.getMenuReset().setOnAction(event -> {
             FilterControl.setFilter(Filter.SHOW_EVERYTHING);
-            ReloadControl.reload(true, GalleryPane.class, RightPane.class);
+            ReloadControl.reload(true, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
         });
     }
 }

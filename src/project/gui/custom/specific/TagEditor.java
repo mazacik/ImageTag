@@ -7,7 +7,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import project.database.element.TagObject;
+import project.database.object.TagObject;
 
 public class TagEditor extends Stage {
     /* components */

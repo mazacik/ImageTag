@@ -1,4 +1,4 @@
-package project.database.element;
+package project.database.object;
 
 import javafx.scene.image.Image;
 import project.gui.component.gallerypane.GalleryTile;

@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import project.database.control.DataControl;
-import project.database.element.DataCollection;
-import project.database.element.DataObject;
+import project.database.object.DataCollection;
+import project.database.object.DataObject;
 import project.settings.Settings;
 
 import java.io.BufferedWriter;

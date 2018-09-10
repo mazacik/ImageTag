@@ -1,11 +1,8 @@
-package project.database.element;
+package project.database.object;
 
 public class TagCollection extends Collection<TagObject> {
     public TagCollection() {
         super();
-    }
-    public TagCollection(TagCollection collection) {
-        super(collection);
     }
 
     public boolean contains(TagObject object) {
@@ -26,15 +23,5 @@ public class TagCollection extends Collection<TagObject> {
     }
     public void sort() {
         super.sort(TagObject.getComparator());
-    }
-
-    public TagCollection getIntersection(TagCollection collection) {
-        TagCollection value = new TagCollection(collection);
-        for (Object iterator : collection) {
-            if (!this.contains(iterator)) {
-                value.remove(iterator);
-            }
-        }
-        return value;
     }
 }

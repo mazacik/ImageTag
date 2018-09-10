@@ -16,7 +16,7 @@ public abstract class EventHandlerRightPane {
         contextMenu.hide();
     }
     public static void onRightClick(MouseEvent event) {
-        SelectionControl.addDataElement(FocusControl.getCurrentFocus());
+        SelectionControl.addDataObject(FocusControl.getCurrentFocus());
         contextMenu.show(rightPane, event.getScreenX(), event.getScreenY());
     }
 }

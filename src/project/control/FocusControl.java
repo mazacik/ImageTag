@@ -1,13 +1,10 @@
 package project.control;
 
 import javafx.scene.input.KeyCode;
-import project.database.element.DataObject;
+import project.database.object.DataCollection;
+import project.database.object.DataObject;
+import project.gui.component.GUINode;
 import project.gui.component.gallerypane.GalleryPane;
-import project.gui.component.previewpane.PreviewPane;
-import project.gui.component.rightpane.RightPane;
-import project.gui.component.toppane.TopPane;
-
-import java.util.ArrayList;
 
 public abstract class FocusControl {
     /* vars */
@@ -17,8 +14,7 @@ public abstract class FocusControl {
     /* public */
     public static void setFocus(DataObject dataObject) {
         /* store old focus position */
-        if (currentFocus != null)
-            previousFocus = currentFocus;
+        previousFocus = currentFocus;
 
         /* apply new focus effect */
         currentFocus = dataObject;
@@ -29,18 +25,17 @@ public abstract class FocusControl {
             previousFocus.getGalleryTile().generateEffect();
         }
 
-        ReloadControl.reload(TopPane.class, PreviewPane.class, RightPane.class);
+        ReloadControl.reload(GUINode.PREVIEWPANE);
     }
     public static void moveFocusByKeyCode(KeyCode keyCode) {
-        ArrayList<DataObject> databaseItemsFiltered = FilterControl.getCollection();
-        DataObject focusedItem = FocusControl.getCurrentFocus();
-        if (focusedItem == null) {
-            DataObject firstItem = FilterControl.getCollection().get(0);
-            FocusControl.setFocus(firstItem);
-            focusedItem = firstItem;
+        DataCollection dataCollectionFiltered = FilterControl.getCollection();
+        DataObject currentFocus = FocusControl.getCurrentFocus();
+        if (currentFocus == null) {
+            currentFocus = FilterControl.getCollection().get(0);
+            FocusControl.setFocus(currentFocus);
         }
 
-        int newFocusPosition = databaseItemsFiltered.indexOf(focusedItem);
+        int newFocusPosition = dataCollectionFiltered.indexOf(currentFocus);
         if (keyCode.equals(KeyCode.W)) {
             newFocusPosition -= GalleryPane.getColumnCount();
         } else if (keyCode.equals(KeyCode.A)) {
@@ -51,8 +46,8 @@ public abstract class FocusControl {
             newFocusPosition += 1;
         }
 
-        if (newFocusPosition >= 0 && newFocusPosition < databaseItemsFiltered.size()) {
-            FocusControl.setFocus(databaseItemsFiltered.get(newFocusPosition));
+        if (newFocusPosition >= 0 && newFocusPosition < dataCollectionFiltered.size()) {
+            FocusControl.setFocus(dataCollectionFiltered.get(newFocusPosition));
             GalleryPane.adjustViewportToCurrentFocus();
         }
     }

@@ -49,9 +49,9 @@ public abstract class LeftPane {
             }
 
             for (String tagName : TagControl.getNames(groupName)) {
-                if (FilterControl.isTagElementWhitelisted(groupName, tagName)) {
+                if (FilterControl.isTagObjectWhitelisted(groupName, tagName)) {
                     groupTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.GREEN)));
-                } else if (FilterControl.isTagElementBlacklisted(groupName, tagName)) {
+                } else if (FilterControl.isTagObjectBlacklisted(groupName, tagName)) {
                     groupTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.RED)));
                 } else {
                     groupTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.BLACK)));

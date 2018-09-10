@@ -1,7 +1,7 @@
 package project.database.control;
 
-import project.database.element.DataCollection;
-import project.database.element.DataObject;
+import project.database.object.DataCollection;
+import project.database.object.DataObject;
 
 public abstract class DataControl {
     /* vars */

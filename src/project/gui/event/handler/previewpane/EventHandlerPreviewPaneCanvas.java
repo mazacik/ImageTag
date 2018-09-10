@@ -8,6 +8,7 @@ import project.control.FocusControl;
 import project.control.ReloadControl;
 import project.control.SelectionControl;
 import project.gui.GUIInstance;
+import project.gui.component.GUINode;
 import project.gui.component.previewpane.PreviewPane;
 import project.gui.custom.generic.DataObjectContextMenu;
 
@@ -21,13 +22,13 @@ public abstract class EventHandlerPreviewPaneCanvas {
         contextMenu.hide();
     }
     public static void onRightClick(MouseEvent event) {
-        SelectionControl.addDataElement(FocusControl.getCurrentFocus());
+        SelectionControl.addDataObject(FocusControl.getCurrentFocus());
         contextMenu.show(previewPane, event.getScreenX(), event.getScreenY());
     }
 
     public static void onResize() {
         ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) ->
-                ReloadControl.reload(true, PreviewPane.class);
+                ReloadControl.reload(true, GUINode.PREVIEWPANE);
         canvas.widthProperty().addListener(previewPaneSizeListener);
         canvas.heightProperty().addListener(previewPaneSizeListener);
     }

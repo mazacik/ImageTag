@@ -13,7 +13,8 @@ public abstract class EventListenerGlobal {
                 case Q:
                     SelectionControl.swapSelectionStateOf(FocusControl.getCurrentFocus()); break;
                 case R:
-                    SelectionControl.setRandomValidDataElement(); break;
+                    SelectionControl.setRandomValidDataObject();
+                    break;
                 case F12:
                     GUIUtils.swapDisplayMode();
                     break;
@@ -25,7 +26,7 @@ public abstract class EventListenerGlobal {
                 default:
                     break;
             }
-            ReloadControl.forceReload();
+            ReloadControl.doReload();
         });
     }
 }

@@ -4,7 +4,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import project.control.FocusControl;
-import project.database.element.DataObject;
+import project.database.object.DataObject;
 import project.gui.event.listener.toppane.UserInputTopPane;
 
 public abstract class TopPane {

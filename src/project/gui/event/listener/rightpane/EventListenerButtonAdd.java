@@ -3,6 +3,7 @@ package project.gui.event.listener.rightpane;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import project.control.ReloadControl;
+import project.gui.component.GUINode;
 import project.gui.component.rightpane.RightPane;
 
 public class EventListenerButtonAdd {
@@ -15,7 +16,7 @@ public class EventListenerButtonAdd {
         });
         btnAdd.setOnAction(event -> {
             RightPane.addTagToSelection();
-            ReloadControl.reload(true, RightPane.class);
+            ReloadControl.reload(true, GUINode.RIGHTPANE);
         });
     }
 }

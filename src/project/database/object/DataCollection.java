@@ -1,4 +1,4 @@
-package project.database.element;
+package project.database.object;
 
 public class DataCollection extends Collection<DataObject> {
     public DataCollection() {

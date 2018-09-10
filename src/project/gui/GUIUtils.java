@@ -5,6 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.Region;
 import project.control.ReloadControl;
+import project.gui.component.GUINode;
 import project.gui.component.gallerypane.GalleryPane;
 import project.gui.component.previewpane.PreviewPane;
 
@@ -20,10 +21,10 @@ public abstract class GUIUtils {
         double[] dividerPositions = splitPane.getDividerPositions();
         if (splitPaneItems.contains(galleryPane)) {
             splitPaneItems.set(splitPaneItems.indexOf(galleryPane), previewPane);
-            ReloadControl.reload(PreviewPane.class);
+            ReloadControl.reload(GUINode.PREVIEWPANE);
         } else {
             splitPaneItems.set(splitPaneItems.indexOf(previewPane), galleryPane);
-            ReloadControl.reload(GalleryPane.class);
+            ReloadControl.reload(GUINode.PREVIEWPANE);
         }
         splitPane.setDividerPositions(dividerPositions);
     }

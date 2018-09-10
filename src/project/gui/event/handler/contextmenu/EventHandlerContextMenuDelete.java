@@ -5,10 +5,10 @@ import project.control.FocusControl;
 import project.control.ReloadControl;
 import project.control.SelectionControl;
 import project.database.control.DataControl;
-import project.database.element.DataObject;
+import project.database.object.DataCollection;
+import project.database.object.DataObject;
 import project.gui.GUIUtils;
-import project.gui.component.gallerypane.GalleryPane;
-import project.gui.component.previewpane.PreviewPane;
+import project.gui.component.GUINode;
 import project.settings.Settings;
 
 import java.io.IOException;
@@ -18,19 +18,19 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public abstract class EventHandlerContextMenuDelete {
-    private static ArrayList<DataObject> dataObjectsValid;
+    private static DataCollection dataObjectsValid;
 
     public static void onAction() {
         dataObjectsValid = FilterControl.getCollection();
 
         if (!GUIUtils.isPreviewFullscreen()) {
-            doWork(GalleryPane.class, SelectionControl.getCollection());
+            doWork(GUINode.GALLERYPANE, SelectionControl.getCollection());
         } else {
-            doWork(PreviewPane.class, FocusControl.getCurrentFocus());
+            doWork(GUINode.PREVIEWPANE, FocusControl.getCurrentFocus());
         }
     }
 
-    private static void doWork(Class sender, DataObject dataObject) {
+    private static void doWork(GUINode sender, DataObject dataObject) {
         int index = dataObjectsValid.indexOf(dataObject);
 
         String pathString = Settings.getMainDirectoryPath() + "\\" + dataObject.getName();
@@ -56,7 +56,7 @@ public abstract class EventHandlerContextMenuDelete {
             e.printStackTrace();
         }
     }
-    private static void doWork(Class sender, ArrayList<DataObject> dataObjects) {
+    private static void doWork(GUINode sender, ArrayList<DataObject> dataObjects) {
         for (DataObject dataObject : dataObjects) {
             if (dataObjectsValid.contains(dataObject)) {
                 doWork(sender, dataObject);

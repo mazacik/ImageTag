@@ -2,7 +2,7 @@ package project.control;
 
 import project.database.control.DataControl;
 import project.database.control.TagControl;
-import project.gui.GUIUtils;
+import project.gui.component.GUINode;
 import project.gui.component.gallerypane.GalleryPane;
 import project.gui.component.leftpane.LeftPane;
 import project.gui.component.previewpane.PreviewPane;
@@ -11,15 +11,42 @@ import project.gui.component.toppane.TopPane;
 
 public abstract class ReloadControl {
     /* vars */
-    private static boolean reloadTopPane = false;
-    private static boolean reloadLeftPane = false;
-    private static boolean reloadGalleryPane = false;
-    private static boolean reloadPreviewPane = false;
-    private static boolean reloadRightPane = false;
+    private static boolean topPane = false;
+    private static boolean leftPane = false;
+    private static boolean galleryPane = false;
+    private static boolean previewPane = false;
+    private static boolean rightPane = false;
 
     /* public */
-    public static void requestGlobalReload(boolean sortElementControls) {
-        if (sortElementControls) {
+    public static void reload(boolean instant, GUINode... nodes) {
+        for (GUINode node : nodes) {
+            switch (node) {
+                case TOPPANE:
+                    topPane = true;
+                    break;
+                case LEFTPANE:
+                    leftPane = true;
+                    break;
+                case GALLERYPANE:
+                    galleryPane = true;
+                    break;
+                case PREVIEWPANE:
+                    previewPane = true;
+                    break;
+                case RIGHTPANE:
+                    rightPane = true;
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (instant) doReload();
+    }
+    public static void reload(GUINode... items) {
+        reload(false, items);
+    }
+    public static void reloadAll(boolean sortObjectControls) {
+        if (sortObjectControls) {
             DataControl.getCollection().sort();
             FilterControl.getCollection().sort();
             SelectionControl.getCollection().sort();
@@ -34,46 +61,26 @@ public abstract class ReloadControl {
         PreviewPane.reload();
         RightPane.reload();
     }
-    public static void reload(Class... components) {
-        ReloadControl.reload(false, components);
-    }
-    public static void reload(boolean instant, Class... components) {
-        boolean isPreviewFullscreen = GUIUtils.isPreviewFullscreen();
-        for (Class component : components) {
-            if (component.equals(TopPane.class)) {
-                reloadTopPane = true;
-            } else if (component.equals(LeftPane.class)) {
-                reloadLeftPane = true;
-            } else if (!isPreviewFullscreen && component.equals(GalleryPane.class)) {
-                reloadGalleryPane = true;
-            } else if (isPreviewFullscreen && component.equals(PreviewPane.class)) {
-                reloadPreviewPane = true;
-            } else if (component.equals(RightPane.class)) {
-                reloadRightPane = true;
-            }
-        }
-        if (instant) forceReload();
-    }
-    public static void forceReload() {
-        if (reloadTopPane) {
+    public static void doReload() {
+        if (topPane) {
             TopPane.reload();
-            reloadTopPane = false;
+            topPane = false;
         }
-        if (reloadLeftPane) {
+        if (leftPane) {
             LeftPane.reload();
-            reloadLeftPane = false;
+            leftPane = false;
         }
-        if (reloadGalleryPane) {
+        if (galleryPane) {
             GalleryPane.reload();
-            reloadGalleryPane = false;
+            galleryPane = false;
         }
-        if (reloadPreviewPane) {
+        if (previewPane) {
             PreviewPane.reload();
-            reloadPreviewPane = false;
+            previewPane = false;
         }
-        if (reloadRightPane) {
+        if (rightPane) {
             RightPane.reload();
-            reloadRightPane = false;
+            rightPane = false;
         }
     }
 }

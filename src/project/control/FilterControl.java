@@ -1,11 +1,10 @@
 package project.control;
 
 import project.database.control.TagControl;
-import project.database.element.DataCollection;
-import project.database.element.TagCollection;
-import project.database.element.TagObject;
-import project.enums.Filter;
-import project.gui.component.gallerypane.GalleryPane;
+import project.database.object.DataCollection;
+import project.database.object.TagCollection;
+import project.database.object.TagObject;
+import project.gui.component.GUINode;
 import project.gui.component.toppane.TopPane;
 
 public abstract class FilterControl {
@@ -20,29 +19,27 @@ public abstract class FilterControl {
     /* public */
     public static void doWork() {
         currentFilter.apply();
-        ReloadControl.reload(GalleryPane.class);
+        ReloadControl.reload(GUINode.GALLERYPANE);
     }
 
     public static void whitelistTagObject(TagObject tagObject) {
-        if (tagObject != null && !FilterControl.isTagElementWhitelisted(tagObject)) {
+        if (!FilterControl.isTagObjectWhitelisted(tagObject)) {
             whitelist.add(tagObject);
             blacklist.remove(tagObject);
             currentFilter = Filter.CUSTOM;
         }
     }
     public static void blacklistTagObject(TagObject tagObject) {
-        if (tagObject != null && !FilterControl.isTagElementBlacklisted(tagObject)) {
+        if (!FilterControl.isTagObjectBlacklisted(tagObject)) {
             whitelist.remove(tagObject);
             blacklist.add(tagObject);
             currentFilter = Filter.CUSTOM;
         }
     }
-    public static void removeTagObject(TagObject tagObject) {
-        if (tagObject != null) {
-            whitelist.remove(tagObject);
-            blacklist.remove(tagObject);
-            currentFilter = Filter.CUSTOM;
-        }
+    public static void unlistTagObject(TagObject tagObject) {
+        whitelist.remove(tagObject);
+        blacklist.remove(tagObject);
+        currentFilter = Filter.CUSTOM;
     }
 
     public static void whitelistGroup(String group) {
@@ -57,7 +54,7 @@ public abstract class FilterControl {
     }
     public static void unlistGroup(String group) {
         for (String name : TagControl.getNames(group)) {
-            FilterControl.removeTagObject(TagControl.getTagObject(group, name));
+            FilterControl.unlistTagObject(TagControl.getTagObject(group, name));
         }
     }
 
@@ -65,7 +62,7 @@ public abstract class FilterControl {
     public static boolean isGroupWhitelisted(String group) {
         boolean value = true;
         for (String name : TagControl.getNames(group)) {
-            if (!FilterControl.isTagElementWhitelisted(group, name)) {
+            if (!FilterControl.isTagObjectWhitelisted(group, name)) {
                 value = false;
                 break;
             }
@@ -75,7 +72,7 @@ public abstract class FilterControl {
     public static boolean isGroupBlacklisted(String group) {
         boolean value = true;
         for (String name : TagControl.getNames(group)) {
-            if (!FilterControl.isTagElementBlacklisted(group, name)) {
+            if (!FilterControl.isTagObjectBlacklisted(group, name)) {
                 value = false;
                 break;
             }
@@ -83,16 +80,16 @@ public abstract class FilterControl {
         return value;
     }
 
-    public static boolean isTagElementWhitelisted(TagObject tagObject) {
+    public static boolean isTagObjectWhitelisted(TagObject tagObject) {
         return whitelist.contains(tagObject);
     }
-    public static boolean isTagElementWhitelisted(String group, String name) {
+    public static boolean isTagObjectWhitelisted(String group, String name) {
         return whitelist.contains(TagControl.getTagObject(group, name));
     }
-    public static boolean isTagElementBlacklisted(TagObject tagObject) {
+    public static boolean isTagObjectBlacklisted(TagObject tagObject) {
         return blacklist.contains(tagObject);
     }
-    public static boolean isTagElementBlacklisted(String group, String name) {
+    public static boolean isTagObjectBlacklisted(String group, String name) {
         return blacklist.contains(TagControl.getTagObject(group, name));
     }
 
@@ -114,6 +111,10 @@ public abstract class FilterControl {
         doWork();
 
         switch (currentFilter) {
+            case CUSTOM:
+                TopPane.getMenuUntaggedOnly().setSelected(false);
+                TopPane.getMenuMaxXTags().setSelected(false);
+                break;
             case SHOW_EVERYTHING:
                 TopPane.getMenuUntaggedOnly().setSelected(false);
                 TopPane.getMenuMaxXTags().setSelected(false);
@@ -125,10 +126,6 @@ public abstract class FilterControl {
             case SHOW_MAX_X_TAGS:
                 TopPane.getMenuUntaggedOnly().setSelected(false);
                 TopPane.getMenuMaxXTags().setSelected(true);
-                break;
-            case CUSTOM:
-                TopPane.getMenuUntaggedOnly().setSelected(false);
-                TopPane.getMenuMaxXTags().setSelected(false);
                 break;
             default:
                 break;

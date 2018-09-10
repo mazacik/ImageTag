@@ -7,9 +7,9 @@ import org.apache.commons.io.FilenameUtils;
 import project.Main;
 import project.database.control.DataControl;
 import project.database.control.TagControl;
-import project.database.element.DataCollection;
-import project.database.element.DataObject;
-import project.database.element.TagCollection;
+import project.database.object.DataCollection;
+import project.database.object.DataObject;
+import project.database.object.TagCollection;
 import project.gui.GUIInstance;
 import project.gui.component.gallerypane.GalleryTile;
 import project.gui.custom.specific.LoadingWindow;
@@ -37,7 +37,7 @@ public class DataLoader extends Thread {
 
     /* vars */
     private int fileCount = 0;
-    private int currentElementIndex = 0;
+    private int currentObjectIndex = 0;
     private ArrayList<File> validFiles;
 
     @Override
@@ -67,27 +67,27 @@ public class DataLoader extends Thread {
         }
     }
     private void validation() {
-        ArrayList<String> dataElementsItemNames = new ArrayList<>();
+        ArrayList<String> dataObjectsItemNames = new ArrayList<>();
         ArrayList<String> validFilesItemNames = new ArrayList<>();
 
         for (Object dataObject : dataCollection) {
-            dataElementsItemNames.add(((DataObject) dataObject).getName());
+            dataObjectsItemNames.add(((DataObject) dataObject).getName());
         }
         for (File file : validFiles) {
             validFilesItemNames.add(file.getName());
         }
 
-        dataElementsItemNames.sort(Comparator.naturalOrder());
+        dataObjectsItemNames.sort(Comparator.naturalOrder());
         validFilesItemNames.sort(Comparator.naturalOrder());
 
-        if (!dataElementsItemNames.equals(validFilesItemNames)) {
-            validateDatabaseCache(dataElementsItemNames, validFilesItemNames);
+        if (!dataObjectsItemNames.equals(validFilesItemNames)) {
+            validateDatabaseCache(dataObjectsItemNames, validFilesItemNames);
         }
     }
     private void finalization() {
         for (Object iterator : dataCollection) {
             DataObject dataObject = (DataObject) iterator;
-            dataObject.setImage(getImageFromDataElement(dataObject));
+            dataObject.setImage(getImageFromDataObject(dataObject));
             dataObject.setGalleryTile(new GalleryTile(dataObject));
         }
 
@@ -100,17 +100,17 @@ public class DataLoader extends Thread {
 
     private void createDatabaseCache() {
         for (File file : validFiles) {
-            DataObject dataObject = createDataElementFromFile(file);
+            DataObject dataObject = createDataObjectFromFile(file);
             DataControl.add(dataObject);
         }
 
         Serialization.writeToDisk();
     }
-    private void validateDatabaseCache(ArrayList<String> dataElementsItemNames, ArrayList<String> validFilesItemNames) {
+    private void validateDatabaseCache(ArrayList<String> dataObjectsItemNames, ArrayList<String> validFilesItemNames) {
         /* add unrecognized items */
         for (File file : validFiles) {
-            if (!dataElementsItemNames.contains(file.getName())) {
-                dataCollection.add(createDataElementFromFile(file));
+            if (!dataObjectsItemNames.contains(file.getName())) {
+                dataCollection.add(createDataObjectFromFile(file));
             }
         }
 
@@ -127,23 +127,23 @@ public class DataLoader extends Thread {
         Serialization.writeToDisk();
     }
 
-    private Image getImageFromDataElement(DataObject dataObject) {
-        Image currentElementImage = null;
-        currentElementIndex++;
+    private Image getImageFromDataObject(DataObject dataObject) {
+        Image currentObjectImage = null;
+        currentObjectIndex++;
 
-        String currentElementName = dataObject.getName();
-        String currentElementCachePath = PATH_IMAGECACHE + "/" + currentElementName;
-        File currentElementCacheFile = new File(currentElementCachePath);
+        String currentObjectName = dataObject.getName();
+        String currentObjectCachePath = PATH_IMAGECACHE + "/" + currentObjectName;
+        File currentObjectCacheFile = new File(currentObjectCachePath);
 
         /* write image cache to disk if not present */
-        if (!currentElementCacheFile.exists()) {
+        if (!currentObjectCacheFile.exists()) {
             try {
-                currentElementCacheFile.createNewFile();
-                String currentElementFilePath = "file:" + PATH_MAINDIR + "/" + currentElementName;
-                currentElementImage = new Image(currentElementFilePath, GALLERY_ICON_MAX_SIZE, GALLERY_ICON_MAX_SIZE, false, true);
-                String currentElementExtension = FilenameUtils.getExtension(currentElementName);
-                BufferedImage currentElementBufferedImage = SwingFXUtils.fromFXImage(currentElementImage, null);
-                ImageIO.write(currentElementBufferedImage, currentElementExtension, currentElementCacheFile);
+                currentObjectCacheFile.createNewFile();
+                String currentObjectFilePath = "file:" + PATH_MAINDIR + "/" + currentObjectName;
+                currentObjectImage = new Image(currentObjectFilePath, GALLERY_ICON_MAX_SIZE, GALLERY_ICON_MAX_SIZE, false, true);
+                String currentObjectExtension = FilenameUtils.getExtension(currentObjectName);
+                BufferedImage currentObjectBufferedImage = SwingFXUtils.fromFXImage(currentObjectImage, null);
+                ImageIO.write(currentObjectBufferedImage, currentObjectExtension, currentObjectCacheFile);
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;
@@ -152,12 +152,12 @@ public class DataLoader extends Thread {
 
         /* update loading window label */
         if (Main.getLoadingWindow().getClass().equals(LoadingWindow.class)) {
-            Platform.runLater(() -> Main.getLoadingWindow().getProgressLabel().setText("Loading item " + currentElementIndex + " of " + fileCount + ", " + currentElementIndex * 100 / fileCount + "% done"));
+            Platform.runLater(() -> Main.getLoadingWindow().getProgressLabel().setText("Loading item " + currentObjectIndex + " of " + fileCount + ", " + currentObjectIndex * 100 / fileCount + "% done"));
         }
 
-        return Objects.requireNonNullElseGet(currentElementImage, () -> new Image("file:" + currentElementCachePath, GALLERY_ICON_MAX_SIZE, GALLERY_ICON_MAX_SIZE, false, true));
+        return Objects.requireNonNullElseGet(currentObjectImage, () -> new Image("file:" + currentObjectCachePath, GALLERY_ICON_MAX_SIZE, GALLERY_ICON_MAX_SIZE, false, true));
     }
-    private DataObject createDataElementFromFile(File file) {
+    private DataObject createDataObjectFromFile(File file) {
         return new DataObject(file.getName(), new TagCollection());
     }
 }

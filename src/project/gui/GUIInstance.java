@@ -31,7 +31,7 @@ public abstract class GUIInstance extends Stage {
         initializeInstance();
         EventListenerUtil.initialize();
         EventListenerGlobal.initialize();
-        ReloadControl.requestGlobalReload(true);
+        ReloadControl.reloadAll(true);
     }
     private static void initializeComponents() {
         TopPane.initialize();

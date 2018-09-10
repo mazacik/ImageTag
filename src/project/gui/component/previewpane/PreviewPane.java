@@ -6,7 +6,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import project.control.FocusControl;
-import project.database.element.DataObject;
+import project.database.object.DataObject;
 import project.gui.GUIUtils;
 import project.gui.event.listener.previewpane.EventListenerPreviewPaneCanvas;
 import project.settings.Settings;

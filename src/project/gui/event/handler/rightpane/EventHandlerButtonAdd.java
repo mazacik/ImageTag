@@ -1,8 +1,9 @@
 package project.gui.event.handler.rightpane;
-
+//todo
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import project.control.ReloadControl;
+import project.gui.component.GUINode;
 import project.gui.component.rightpane.RightPane;
 
 public class EventHandlerButtonAdd {
@@ -15,7 +16,7 @@ public class EventHandlerButtonAdd {
         });
         btnAdd.setOnAction(event -> {
             RightPane.addTagToSelection();
-            ReloadControl.reload(true, RightPane.class);
+            ReloadControl.reload(true, GUINode.RIGHTPANE);
         });
     }
 }

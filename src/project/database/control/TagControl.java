@@ -3,14 +3,12 @@ package project.database.control;
 import javafx.scene.control.TreeCell;
 import project.control.FilterControl;
 import project.control.ReloadControl;
-import project.database.element.DataCollection;
-import project.database.element.DataObject;
-import project.database.element.TagCollection;
-import project.database.element.TagObject;
-import project.gui.component.gallerypane.GalleryPane;
+import project.database.object.DataCollection;
+import project.database.object.DataObject;
+import project.database.object.TagCollection;
+import project.database.object.TagObject;
+import project.gui.component.GUINode;
 import project.gui.component.leftpane.ColoredText;
-import project.gui.component.leftpane.LeftPane;
-import project.gui.component.rightpane.RightPane;
 import project.gui.custom.specific.TagEditor;
 
 import java.util.ArrayList;
@@ -40,16 +38,16 @@ public abstract class TagControl {
     public static boolean add(TagObject tagObject) {
         if (collection.add(tagObject)) {
             //does this not need FilterControl.doWork() ?
-            ReloadControl.reload(LeftPane.class, RightPane.class);
+            ReloadControl.reload(GUINode.LEFTPANE, GUINode.RIGHTPANE);
             return true;
         }
         return false;
     }
     public static boolean remove(TagObject tagObject) {
         if (collection.remove(tagObject)) {
-            FilterControl.removeTagObject(tagObject);
+            FilterControl.unlistTagObject(tagObject);
             FilterControl.doWork();
-            ReloadControl.reload(LeftPane.class, GalleryPane.class, RightPane.class);
+            ReloadControl.reload(GUINode.LEFTPANE, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
             return true;
         }
         return false;
@@ -60,7 +58,7 @@ public abstract class TagControl {
             TagControl.getTagObject(tagObject).setValue(newTagObject.getGroup(), newTagObject.getName());
             // ^ this relies on the value to change everywhere
             collection.sort();
-            ReloadControl.reload(LeftPane.class, RightPane.class);
+            ReloadControl.reload(GUINode.LEFTPANE, GUINode.RIGHTPANE);
             return true;
         }
         return false;
@@ -84,20 +82,20 @@ public abstract class TagControl {
     }
     public static TagObject getTagObject(String groupAndName) {
         String[] split = groupAndName.split("-");
-        String tagElementGroup = split[0].trim();
-        String tagElementName = split[1].trim();
-        return TagControl.getTagObject(tagElementGroup, tagElementName);
+        String tagObjectGroup = split[0].trim();
+        String tagObjectName = split[1].trim();
+        return TagControl.getTagObject(tagObjectGroup, tagObjectName);
     }
     public static TagObject getTagObject(TreeCell<ColoredText> treeCell) {
         if (treeCell == null) return null;
-        String tagElementGroup;
+        String tagObjectGroup;
         try {
-            tagElementGroup = treeCell.getTreeItem().getParent().getValue().getText();
+            tagObjectGroup = treeCell.getTreeItem().getParent().getValue().getText();
         } catch (NullPointerException e) {
             return null;
         }
-        String tagElementName = treeCell.getText();
-        return TagControl.getTagObject(tagElementGroup, tagElementName);
+        String tagObjectName = treeCell.getText();
+        return TagControl.getTagObject(tagObjectGroup, tagObjectName);
     }
 
     public static ArrayList<String> getGroups() {

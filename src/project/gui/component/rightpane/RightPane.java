@@ -11,8 +11,9 @@ import project.control.FocusControl;
 import project.control.ReloadControl;
 import project.control.SelectionControl;
 import project.database.control.TagControl;
-import project.database.element.DataObject;
-import project.database.element.TagObject;
+import project.database.object.DataObject;
+import project.database.object.TagObject;
+import project.gui.component.GUINode;
 import project.gui.custom.specific.RightPaneContextMenu;
 import project.gui.event.listener.rightpane.EventListenerRightPane;
 
@@ -80,14 +81,14 @@ public abstract class RightPane {
                     currentFocusedItem.getTagCollection().add(tagObject);
                 }
             } else {
-                SelectionControl.addTagObjectToDataObjectSelection(tagObject);
+                SelectionControl.addTagObject(tagObject);
             }
-            ReloadControl.reload(RightPane.class);
+            ReloadControl.reload(GUINode.RIGHTPANE);
         }
     }
     public static void reload() {
         ArrayList<String> sharedTags = new ArrayList<>();
-        if (SelectionControl.isSelectionEmpty() || SelectionControl.isSelectionSingleElement()) {
+        if (SelectionControl.isSelectionEmpty() || SelectionControl.isSelectionSingleObject()) {
             DataObject currentFocusedItem = FocusControl.getCurrentFocus();
             if (currentFocusedItem != null) {
                 for (TagObject tagObject : currentFocusedItem.getTagCollection()) {

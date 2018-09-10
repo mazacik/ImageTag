@@ -1,12 +1,11 @@
-package project.enums;
+package project.control;
 
-import project.control.FilterControl;
 import project.database.control.DataControl;
 import project.database.control.TagControl;
-import project.database.element.DataCollection;
-import project.database.element.DataObject;
-import project.database.element.TagCollection;
-import project.database.element.TagObject;
+import project.database.object.DataCollection;
+import project.database.object.DataObject;
+import project.database.object.TagCollection;
+import project.database.object.TagObject;
 
 public enum Filter {
     SHOW_EVERYTHING {

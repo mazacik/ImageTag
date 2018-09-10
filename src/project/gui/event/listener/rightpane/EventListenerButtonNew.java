@@ -3,8 +3,8 @@ package project.gui.event.listener.rightpane;
 import javafx.scene.control.ChoiceBox;
 import project.control.ReloadControl;
 import project.database.control.TagControl;
-import project.database.element.TagObject;
-import project.gui.component.leftpane.LeftPane;
+import project.database.object.TagObject;
+import project.gui.component.GUINode;
 import project.gui.component.rightpane.RightPane;
 import project.gui.custom.specific.TagEditor;
 
@@ -22,7 +22,7 @@ public class EventListenerButtonNew {
                 String group = value.toString();
                 cbName.getItems().setAll(TagControl.getNames(group));
                 cbName.getSelectionModel().select(newTagObject.getName());
-                ReloadControl.reload(true, LeftPane.class);
+                ReloadControl.reload(true, GUINode.LEFTPANE);
             }
         });
     }

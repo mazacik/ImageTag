@@ -6,8 +6,8 @@ import javafx.scene.paint.Color;
 import project.control.FilterControl;
 import project.control.ReloadControl;
 import project.database.control.TagControl;
-import project.database.element.TagObject;
-import project.gui.component.gallerypane.GalleryPane;
+import project.database.object.TagObject;
+import project.gui.component.GUINode;
 import project.gui.component.leftpane.ColoredText;
 import project.gui.component.leftpane.LeftPane;
 
@@ -45,11 +45,11 @@ public abstract class EventHandlerLeftPaneColoredText {
                 }
             }
         } else {
-            if (FilterControl.isTagElementWhitelisted(tagObject)) {
+            if (FilterControl.isTagObjectWhitelisted(tagObject)) {
                 FilterControl.blacklistTagObject(tagObject);
                 coloredText.setColor(Color.RED);
-            } else if (FilterControl.isTagElementBlacklisted(tagObject)) {
-                FilterControl.removeTagObject(tagObject);
+            } else if (FilterControl.isTagObjectBlacklisted(tagObject)) {
+                FilterControl.unlistTagObject(tagObject);
                 coloredText.setColor(Color.BLACK);
             } else {
                 FilterControl.whitelistTagObject(tagObject);
@@ -57,7 +57,7 @@ public abstract class EventHandlerLeftPaneColoredText {
             }
         }
         FilterControl.doWork();
-        ReloadControl.reload(true, GalleryPane.class);
+        ReloadControl.reload(true, GUINode.GALLERYPANE);
         LeftPane.refreshTreeview();
     }
 }
