@@ -13,7 +13,7 @@ public class NumberInputWindow extends TextInputDialog {
         setContentText(contentText);
 
         getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.equals("") && !isNumber(newValue)) {
+            if (!newValue.equals("") && !isNumberPositive(newValue)) {
                 getEditor().setText(oldValue);
             }
         });
@@ -24,7 +24,7 @@ public class NumberInputWindow extends TextInputDialog {
         Optional<String> resultValue = showAndWait();
         if (!resultValue.isPresent()) return 0;
         String resultString = resultValue.get();
-        if (!isNumber(resultString)) return 0;
+        if (!isNumberPositive(resultString)) return 0;
         return Integer.valueOf(resultString);
     }
 
@@ -51,5 +51,9 @@ public class NumberInputWindow extends TextInputDialog {
             }
         }
         return true;
+    }
+    public static boolean isNumberPositive(String str) {
+        if (!isNumber(str)) return false;
+        return !(str.charAt(0) == '-');
     }
 }

@@ -15,7 +15,7 @@ import project.database.object.DataObject;
 import project.database.object.TagObject;
 import project.gui.component.GUINode;
 import project.gui.custom.specific.RightPaneContextMenu;
-import project.gui.event.listener.rightpane.EventListenerRightPane;
+import project.gui.event.rightpane.RightPaneEvent;
 
 import java.util.ArrayList;
 
@@ -35,7 +35,7 @@ public abstract class RightPane {
     public static void initialize() {
         initializeComponents();
         initializeInstance();
-        EventListenerRightPane.initialize();
+        RightPaneEvent.initialize();
     }
     private static void initializeComponents() {
         cbGroup.prefWidthProperty().bind(_this.prefWidthProperty());

@@ -29,7 +29,6 @@ public enum Filter {
     },
     SHOW_MAX_X_TAGS {
         public void apply() {
-            if (maxTagsValue == 0) return; // todo exception
             FilterControl.getWhitelist().clear();
             FilterControl.getBlacklist().clear();
             DataCollection dataCollectionFiltered = FilterControl.getCollection();
@@ -78,7 +77,7 @@ public enum Filter {
 
     /* public */
     public void apply() {
-        // todo exception
+        throw new RuntimeException();
     }
 
     /* set */

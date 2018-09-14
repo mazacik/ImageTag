@@ -5,7 +5,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import project.control.FocusControl;
 import project.database.object.DataObject;
-import project.gui.event.listener.toppane.UserInputTopPane;
+import project.gui.event.toppane.TopPaneEvent;
 
 public abstract class TopPane {
     /* components */
@@ -32,7 +32,7 @@ public abstract class TopPane {
     public static void initialize() {
         initializeComponents();
         initializeInstance();
-        UserInputTopPane.initialize();
+        TopPaneEvent.initialize();
     }
     private static void initializeComponents() {
         menuFile.getItems().addAll(menuSave, new SeparatorMenuItem(), menuExit);

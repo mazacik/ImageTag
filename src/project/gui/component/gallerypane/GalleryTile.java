@@ -9,7 +9,7 @@ import javafx.scene.paint.Color;
 import project.control.FocusControl;
 import project.control.SelectionControl;
 import project.database.object.DataObject;
-import project.gui.event.listener.gallerypane.EventListenerGalleryTile;
+import project.gui.event.gallerypane.GalleryTileEvent;
 import project.settings.Settings;
 
 public class GalleryTile extends ImageView {
@@ -27,7 +27,7 @@ public class GalleryTile extends ImageView {
         parentDataObject = dataObject;
         setFitWidth(GALLERY_ICON_SIZE_PREF);
         setFitHeight(GALLERY_ICON_SIZE_PREF);
-        EventListenerGalleryTile.onMouseClick(this);
+        GalleryTileEvent.initialize(this);
     }
 
     /* public */

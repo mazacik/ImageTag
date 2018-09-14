@@ -12,8 +12,8 @@ import project.gui.component.previewpane.PreviewPane;
 import project.gui.component.rightpane.RightPane;
 import project.gui.component.toppane.TopPane;
 import project.gui.custom.generic.DataObjectContextMenu;
-import project.gui.event.listener.EventListenerGlobal;
-import project.gui.event.listener.EventListenerUtil;
+import project.gui.event.global.ContextMenuEvent;
+import project.gui.event.global.GlobalEvent;
 
 public abstract class GUIInstance extends Stage {
     /* components */
@@ -29,8 +29,8 @@ public abstract class GUIInstance extends Stage {
         _this = new Stage();
         initializeComponents();
         initializeInstance();
-        EventListenerUtil.initialize();
-        EventListenerGlobal.initialize();
+        ContextMenuEvent.initialize();
+        GlobalEvent.initialize();
         ReloadControl.reloadAll(true);
     }
     private static void initializeComponents() {

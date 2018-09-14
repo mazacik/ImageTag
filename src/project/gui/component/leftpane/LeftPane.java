@@ -12,7 +12,7 @@ import javafx.scene.paint.Color;
 import project.control.FilterControl;
 import project.database.control.TagControl;
 import project.gui.custom.specific.LeftPaneContextMenu;
-import project.gui.event.listener.leftpane.EventListenerLeftPaneColoredText;
+import project.gui.event.leftpane.ColoredTextEvent;
 
 import java.util.ArrayList;
 
@@ -61,7 +61,7 @@ public abstract class LeftPane {
             treeViewItems.add(groupTreeItem);
         }
     }
-    public static void refreshTreeview() {
+    public static void refreshTreeView() {
         treeView.refresh();
     }
 
@@ -80,7 +80,7 @@ public abstract class LeftPane {
                 }
 
                 this.setContextMenu(new LeftPaneContextMenu(this));
-                EventListenerLeftPaneColoredText.onMouseClick(this);
+                ColoredTextEvent.onMouseClick(this);
 
                 addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
                     if (e.getClickCount() % 2 == 0 && e.getButton().equals(MouseButton.PRIMARY)) {

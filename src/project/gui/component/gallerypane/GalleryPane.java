@@ -10,6 +10,7 @@ import project.control.FilterControl;
 import project.control.FocusControl;
 import project.database.object.DataObject;
 import project.gui.GUIUtils;
+import project.gui.event.gallerypane.GalleryPaneEvent;
 import project.settings.Settings;
 
 public abstract class GalleryPane {
@@ -24,6 +25,7 @@ public abstract class GalleryPane {
     public static void initialize() {
         initializeComponents();
         initializeInstance();
+        GalleryPaneEvent.initialize();
     }
     private static void initializeComponents() {
         tilePane.setVgap(3);
