@@ -8,7 +8,6 @@ import project.database.object.DataObject;
 import project.database.object.TagCollection;
 import project.database.object.TagObject;
 import project.gui.component.GUINode;
-import project.gui.component.leftpane.ColoredText;
 import project.gui.custom.specific.TagEditor;
 
 import java.util.ArrayList;

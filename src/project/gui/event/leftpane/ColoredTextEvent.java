@@ -8,7 +8,6 @@ import project.control.ReloadControl;
 import project.database.control.TagControl;
 import project.database.object.TagObject;
 import project.gui.component.GUINode;
-import project.gui.component.leftpane.ColoredText;
 import project.gui.component.leftpane.LeftPane;
 
 public abstract class ColoredTextEvent {
