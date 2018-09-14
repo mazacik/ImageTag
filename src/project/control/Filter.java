@@ -41,12 +41,12 @@ public enum Filter {
         }
     },
     CUSTOM {
+        //todo whitelist aj blacklist musia mat separatne all/any moznost
         public void apply() {
             TagCollection whitelist = FilterControl.getWhitelist();
             TagCollection blacklist = FilterControl.getBlacklist();
             DataCollection dataCollectionFiltered = FilterControl.getCollection();
             DataCollection dataCollection = DataControl.getCollection();
-
             if (whitelist.isEmpty() && blacklist.isEmpty()) {
                 dataCollectionFiltered.setAll(dataCollection);
             } else {
