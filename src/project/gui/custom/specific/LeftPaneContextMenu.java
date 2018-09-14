@@ -4,6 +4,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeCell;
 import project.database.control.TagControl;
+import project.gui.component.leftpane.ColoredText;
 
 public class LeftPaneContextMenu extends ContextMenu {
     private final MenuItem menuEdit = new MenuItem("Edit Tag");
