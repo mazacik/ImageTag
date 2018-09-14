@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import project.database.loader.DataLoader;
+import project.gui.GUIInstance;
 
 public class LoadingWindow extends Stage {
     /* components */
@@ -32,6 +33,7 @@ public class LoadingWindow extends Stage {
         centerOnScreen();
         show();
         new DataLoader().start();
+        GUIInstance.initialize();
     }
 
     /* get */

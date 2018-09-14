@@ -4,7 +4,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import project.control.ReloadControl;
 import project.database.loader.Serialization;
 import project.gui.component.gallerypane.GalleryPane;
 import project.gui.component.leftpane.LeftPane;
@@ -31,7 +30,6 @@ public abstract class GUIInstance extends Stage {
         initializeInstance();
         ContextMenuEvent.initialize();
         GlobalEvent.initialize();
-        ReloadControl.reloadAll(true);
     }
     private static void initializeComponents() {
         TopPane.initialize();
@@ -49,7 +47,7 @@ public abstract class GUIInstance extends Stage {
         _this.setMaximized(true);
         _this.setScene(mainScene);
         _this.setOnCloseRequest(event -> Serialization.writeToDisk());
-        _this.show();
+        //_this.show();
     }
 
     /* get */

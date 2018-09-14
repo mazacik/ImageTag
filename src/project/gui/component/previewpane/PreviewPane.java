@@ -73,7 +73,7 @@ public abstract class PreviewPane {
 
     /* private */
     private static void loadImageOfCurrentFocus() {
-        String url = "file:" + Settings.getMainDirectoryPath() + "\\" + FocusControl.getCurrentFocus().getName();
+        String url = "file:" + Settings.getPath_source() + "\\" + FocusControl.getCurrentFocus().getName();
         currentPreviewImage = new Image(url);
     }
 

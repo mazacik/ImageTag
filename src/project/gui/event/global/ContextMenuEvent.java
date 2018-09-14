@@ -48,7 +48,7 @@ public abstract class ContextMenuEvent {
     private static void deleteDataObject(GUINode sender, DataObject dataObject, DataCollection dataObjectsValid) {
         int index = dataObjectsValid.indexOf(dataObject);
 
-        String pathString = Settings.getMainDirectoryPath() + "\\" + dataObject.getName();
+        String pathString = Settings.getPath_source() + "\\" + dataObject.getName();
         Path path = Paths.get(pathString);
 
         try {

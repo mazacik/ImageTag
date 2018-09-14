@@ -5,9 +5,9 @@ import java.util.Properties;
 
 public abstract class Settings {
     /* vars */
-    private static String mainDirectoryPath;
-    private static String imageCacheDirectoryPath;
-    private static String databaseCacheFilePath;
+    private static String path_source;
+    private static String path_cache;
+    private static String path_data;
 
     private static int galleryIconSizeMax = 200;
     private static int galleryIconSizeMin = 100;
@@ -33,25 +33,18 @@ public abstract class Settings {
             }
         }
 
-        mainDirectoryPath = properties.getProperty("MainDirectoryPath", "");
-        imageCacheDirectoryPath = properties.getProperty("ImageCacheDirectoryPath", "");
-        databaseCacheFilePath = properties.getProperty("DatabaseCacheFilePath", "");
+        path_source = properties.getProperty("SourcePath", "");
+        path_cache = properties.getProperty("CachePath", "");
+        path_data = properties.getProperty("DataPath", "");
 
-        if (mainDirectoryPath.isEmpty() || imageCacheDirectoryPath.isEmpty() || databaseCacheFilePath.isEmpty()) {
-            return false;
-        }
-
-        if (!databaseCacheFilePath.endsWith(".json")) {
-            databaseCacheFilePath += ".json";
-        }
-        return true;
+        return !path_source.isEmpty() && !path_cache.isEmpty() && !path_data.isEmpty();
     }
     public static void writeToFile() {
         try {
             Properties props = new Properties();
-            props.setProperty("MainDirectoryPath", mainDirectoryPath);
-            props.setProperty("ImageCacheDirectoryPath", imageCacheDirectoryPath);
-            props.setProperty("DatabaseCacheFilePath", databaseCacheFilePath);
+            props.setProperty("SourcePath", path_source);
+            props.setProperty("CachePath", path_cache);
+            props.setProperty("DataPath", path_data);
             File file = new File(settingsFilePath);
             OutputStream out = new FileOutputStream(file);
             props.store(out, null);
@@ -70,14 +63,14 @@ public abstract class Settings {
     public static int getGalleryIconSizePref() {
         return galleryIconSizePref;
     }
-    public static String getMainDirectoryPath() {
-        return mainDirectoryPath;
+    public static String getPath_source() {
+        return path_source;
     }
-    public static String getImageCacheDirectoryPath() {
-        return imageCacheDirectoryPath;
+    public static String getPath_cache() {
+        return path_cache;
     }
-    public static String getDatabaseCacheFilePath() {
-        return databaseCacheFilePath;
+    public static String getPath_data() {
+        return path_data;
     }
 
     /* set */
@@ -90,13 +83,13 @@ public abstract class Settings {
     public static void setGalleryIconSizePref(int galleryIconSizePref) {
         Settings.galleryIconSizePref = galleryIconSizePref;
     }
-    public static void setMainDirectoryPath(String mainDirectoryPath) {
-        Settings.mainDirectoryPath = mainDirectoryPath;
+    public static void setPath_source(String path_source) {
+        Settings.path_source = path_source;
     }
-    public static void setImageCacheDirectoryPath(String imageCacheDirectoryPath) {
-        Settings.imageCacheDirectoryPath = imageCacheDirectoryPath;
+    public static void setPath_cache(String path_cache) {
+        Settings.path_cache = path_cache;
     }
-    public static void setDatabaseCacheFilePath(String databaseCacheFilePath) {
-        Settings.databaseCacheFilePath = databaseCacheFilePath;
+    public static void setPath_data(String path_data) {
+        Settings.path_data = path_data;
     }
 }

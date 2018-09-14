@@ -18,9 +18,8 @@ import java.nio.file.Paths;
 import java.util.Collection;
 
 public abstract class Serialization {
-
     public static void writeToDisk() {
-        String databaseCacheFilePath = Settings.getDatabaseCacheFilePath();
+        String path_data = Settings.getPath_data() + "\\data.json";
         GsonBuilder GSONBuilder = new GsonBuilder();
         GSONBuilder.setPrettyPrinting().serializeNulls();
         Gson GSON = GSONBuilder.create();
@@ -28,7 +27,7 @@ public abstract class Serialization {
         Type databaseItemListType = new TypeToken<Collection<DataObject>>() {}.getType();
         String JSON = GSON.toJson(DataControl.getCollection(), databaseItemListType);
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(databaseCacheFilePath, false));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(path_data, false));
             writer.write(JSON);
             writer.close();
         } catch (IOException e) {
@@ -36,17 +35,16 @@ public abstract class Serialization {
         }
     }
     public static DataCollection readFromDisk() {
-        Path databaseCacheFilePath = Paths.get(Settings.getDatabaseCacheFilePath());
+        Path path_data = Paths.get(Settings.getPath_data() + "\\data.json");
         GsonBuilder GSONBuilder = new GsonBuilder();
         GSONBuilder.setPrettyPrinting().serializeNulls();
         Gson GSON = GSONBuilder.create();
 
         Type databaseItemListType = new TypeToken<DataCollection>() {}.getType();
         try {
-            String JSON = new String(Files.readAllBytes(databaseCacheFilePath));
+            String JSON = new String(Files.readAllBytes(path_data));
             return GSON.fromJson(JSON, databaseItemListType);
         } catch (Exception e) {
-            e.printStackTrace();
             return new DataCollection();
         }
     }

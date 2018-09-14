@@ -45,8 +45,8 @@ public abstract class ReloadControl {
     public static void reload(GUINode... items) {
         reload(false, items);
     }
-    public static void reloadAll(boolean sortObjectControls) {
-        if (sortObjectControls) {
+    public static void reloadAll(boolean sort) {
+        if (sort) {
             DataControl.getCollection().sort();
             FilterControl.getCollection().sort();
             SelectionControl.getCollection().sort();

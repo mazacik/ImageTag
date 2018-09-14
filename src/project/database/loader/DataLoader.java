@@ -5,6 +5,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import org.apache.commons.io.FilenameUtils;
 import project.Main;
+import project.control.ReloadControl;
 import project.database.control.DataControl;
 import project.database.control.TagControl;
 import project.database.object.DataCollection;
@@ -12,7 +13,6 @@ import project.database.object.DataObject;
 import project.database.object.TagCollection;
 import project.gui.GUIInstance;
 import project.gui.component.gallerypane.GalleryTile;
-import project.gui.custom.specific.LoadingWindow;
 import project.settings.Settings;
 
 import javax.imageio.ImageIO;
@@ -29,9 +29,9 @@ public class DataLoader extends Thread {
     /* imports */
     private final double GALLERY_ICON_MAX_SIZE = Settings.getGalleryIconSizeMax();
 
-    private final String PATH_MAINDIR = Settings.getMainDirectoryPath();
-    private final String PATH_IMAGECACHE = Settings.getImageCacheDirectoryPath();
-    private final String PATH_DATABASECACHE = Settings.getDatabaseCacheFilePath();
+    private final String PATH_SOURCE = Settings.getPath_source();
+    private final String PATH_CACHE = Settings.getPath_cache();
+    private final String PATH_DATA = Settings.getPath_data();
 
     private final DataCollection dataCollection = DataControl.getCollection();
 
@@ -43,62 +43,63 @@ public class DataLoader extends Thread {
     @Override
     public void run() {
         initialization();
-        deserialization();
         validation();
         finalization();
-        TagControl.initialize();
     }
 
     /* private */
     private void initialization() {
         FilenameFilter filenameFilter = (dir, name) -> name.endsWith(".jpg") || name.endsWith(".JPG") || name.endsWith(".png") || name.endsWith(".PNG") || name.endsWith(".jpeg") || name.endsWith(".JPEG");
-        File[] validFilesArray = new File(PATH_MAINDIR).listFiles(filenameFilter);
+        File[] validFilesArray = new File(PATH_SOURCE).listFiles(filenameFilter);
         validFiles = (validFilesArray != null) ? new ArrayList<>(Arrays.asList(validFilesArray)) : new ArrayList<>();
         fileCount = validFiles.size();
 
-        File imageCacheDirectory = new File(PATH_IMAGECACHE);
-        if (!imageCacheDirectory.exists()) {
-            imageCacheDirectory.mkdir();
-        }
-    }
-    private void deserialization() {
-        if (!new File(PATH_DATABASECACHE).exists() || !DataControl.addAll(Serialization.readFromDisk())) {
-            createDatabaseCache();
+        File path_cache = new File(PATH_CACHE);
+        if (!path_cache.exists()) path_cache.mkdir();
+
+        File path_data = new File(PATH_DATA);
+        if (!path_data.exists()) path_data.mkdir();
+
+        if (!DataControl.addAll(Serialization.readFromDisk())) {
+            createDatabase();
         }
     }
     private void validation() {
-        ArrayList<String> dataObjectsItemNames = new ArrayList<>();
-        ArrayList<String> validFilesItemNames = new ArrayList<>();
+        ArrayList<String> dataObjectsNames = new ArrayList<>();
+        ArrayList<String> validFilesNames = new ArrayList<>();
 
-        for (Object dataObject : dataCollection) {
-            dataObjectsItemNames.add(((DataObject) dataObject).getName());
+        for (DataObject dataObject : dataCollection) {
+            dataObjectsNames.add(dataObject.getName());
         }
         for (File file : validFiles) {
-            validFilesItemNames.add(file.getName());
+            validFilesNames.add(file.getName());
         }
 
-        dataObjectsItemNames.sort(Comparator.naturalOrder());
-        validFilesItemNames.sort(Comparator.naturalOrder());
+        dataObjectsNames.sort(Comparator.naturalOrder());
+        validFilesNames.sort(Comparator.naturalOrder());
 
-        if (!dataObjectsItemNames.equals(validFilesItemNames)) {
-            validateDatabaseCache(dataObjectsItemNames, validFilesItemNames);
+        if (!dataObjectsNames.equals(validFilesNames)) {
+            validateDatabaseCache(dataObjectsNames, validFilesNames);
         }
     }
     private void finalization() {
-        for (Object iterator : dataCollection) {
-            DataObject dataObject = (DataObject) iterator;
+        //room for optimization here, we already foreach dataCollection in validation() method
+        for (DataObject dataObject : dataCollection) {
             dataObject.setImage(getImageFromDataObject(dataObject));
             dataObject.setGalleryTile(new GalleryTile(dataObject));
         }
 
         Platform.runLater(() -> {
             Main.getLoadingWindow().close();
-            GUIInstance.initialize();
             Main.setStage(GUIInstance.getInstance());
+
+            TagControl.initialize();
+            ReloadControl.reloadAll(true);
+            GUIInstance.getInstance().show();
         });
     }
 
-    private void createDatabaseCache() {
+    private void createDatabase() {
         for (File file : validFiles) {
             DataObject dataObject = createDataObjectFromFile(file);
             DataControl.add(dataObject);
@@ -114,7 +115,7 @@ public class DataLoader extends Thread {
             }
         }
 
-        /* remove missing items */
+        /* discard missing items */
         DataCollection temporaryList = new DataCollection(dataCollection);
         for (DataObject dataObject : dataCollection) {
             if (!validFilesItemNames.contains(dataObject.getName())) {
@@ -132,14 +133,14 @@ public class DataLoader extends Thread {
         currentObjectIndex++;
 
         String currentObjectName = dataObject.getName();
-        String currentObjectCachePath = PATH_IMAGECACHE + "/" + currentObjectName;
+        String currentObjectCachePath = PATH_CACHE + "/" + currentObjectName;
         File currentObjectCacheFile = new File(currentObjectCachePath);
 
         /* write image cache to disk if not present */
         if (!currentObjectCacheFile.exists()) {
             try {
                 currentObjectCacheFile.createNewFile();
-                String currentObjectFilePath = "file:" + PATH_MAINDIR + "/" + currentObjectName;
+                String currentObjectFilePath = "file:" + PATH_SOURCE + "/" + currentObjectName;
                 currentObjectImage = new Image(currentObjectFilePath, GALLERY_ICON_MAX_SIZE, GALLERY_ICON_MAX_SIZE, false, true);
                 String currentObjectExtension = FilenameUtils.getExtension(currentObjectName);
                 BufferedImage currentObjectBufferedImage = SwingFXUtils.fromFXImage(currentObjectImage, null);
@@ -151,10 +152,7 @@ public class DataLoader extends Thread {
         }
 
         /* update loading window label */
-        if (Main.getLoadingWindow().getClass().equals(LoadingWindow.class)) {
-            Platform.runLater(() -> Main.getLoadingWindow().getProgressLabel().setText("Loading item " + currentObjectIndex + " of " + fileCount + ", " + currentObjectIndex * 100 / fileCount + "% done"));
-        }
-
+        Platform.runLater(() -> Main.getLoadingWindow().getProgressLabel().setText("Loading item " + currentObjectIndex + " of " + fileCount + ", " + currentObjectIndex * 100 / fileCount + "% done"));
         return Objects.requireNonNullElseGet(currentObjectImage, () -> new Image("file:" + currentObjectCachePath, GALLERY_ICON_MAX_SIZE, GALLERY_ICON_MAX_SIZE, false, true));
     }
     private DataObject createDataObjectFromFile(File file) {

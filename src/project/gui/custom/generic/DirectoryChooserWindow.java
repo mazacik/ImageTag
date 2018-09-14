@@ -20,6 +20,10 @@ public class DirectoryChooserWindow {
     /* public */
     public String getResultValue() {
         File selectedDirectory = directoryChooser.showDialog(ownerWindow);
-        return selectedDirectory.getAbsolutePath();
+        try {
+            return selectedDirectory.getAbsolutePath();
+        } catch (Exception e) {
+            return "";
+        }
     }
 }
