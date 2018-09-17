@@ -26,8 +26,12 @@ public abstract class TopPane {
     private static final CheckMenuItem menuUntaggedOnly = new CheckMenuItem("Untagged");
     private static final CheckMenuItem menuMaxXTags = new CheckMenuItem("Max X Tags");
     private static final Menu menuMode = new Menu("Mode");
-    private static final CheckMenuItem menuAll = new CheckMenuItem("All");
-    private static final CheckMenuItem menuAny = new CheckMenuItem("Any");
+    private static final Menu menuModeWhitelist = new Menu("Whitelist");
+    private static final CheckMenuItem menuModeWhitelistAll = new CheckMenuItem("All");
+    private static final CheckMenuItem menuModeWhitelistAny = new CheckMenuItem("Any");
+    private static final Menu menuModeBlacklist = new Menu("Blacklist");
+    private static final CheckMenuItem menuModeBlacklistAll = new CheckMenuItem("All");
+    private static final CheckMenuItem menuModeBlacklistAny = new CheckMenuItem("Any");
     private static final MenuItem menuRefresh = new MenuItem("Refresh");
     private static final MenuItem menuReset = new MenuItem("Reset");
 
@@ -41,8 +45,11 @@ public abstract class TopPane {
         menuFile.getItems().addAll(menuSave, new SeparatorMenuItem(), menuExit);
         menuSelection.getItems().addAll(menuSelectAll, menuClearSelection);
 
-        menuMode.getItems().addAll(menuAll, menuAny);
-        menuAll.setSelected(true);
+        menuMode.getItems().addAll(menuModeWhitelist, menuModeBlacklist);
+        menuModeWhitelist.getItems().addAll(menuModeWhitelistAll, menuModeWhitelistAny);
+        menuModeBlacklist.getItems().addAll(menuModeBlacklistAll, menuModeBlacklistAny);
+        menuModeWhitelistAll.setSelected(true);
+        menuModeBlacklistAny.setSelected(true);
         menuFilter.getItems().addAll(menuUntaggedOnly, menuMaxXTags, new SeparatorMenuItem(), menuMode, menuRefresh, menuReset);
 
         infoLabelMenuBar.getMenus().add(infoLabelMenu);
@@ -81,11 +88,17 @@ public abstract class TopPane {
     public static CheckMenuItem getMenuMaxXTags() {
         return menuMaxXTags;
     }
-    public static CheckMenuItem getMenuAll() {
-        return menuAll;
+    public static CheckMenuItem getMenuModeWhitelistAll() {
+        return menuModeWhitelistAll;
     }
-    public static CheckMenuItem getMenuAny() {
-        return menuAny;
+    public static CheckMenuItem getMenuModeWhitelistAny() {
+        return menuModeWhitelistAny;
+    }
+    public static CheckMenuItem getMenuModeBlacklistAll() {
+        return menuModeBlacklistAll;
+    }
+    public static CheckMenuItem getMenuModeBlacklistAny() {
+        return menuModeBlacklistAny;
     }
     public static MenuItem getMenuRefresh() {
         return menuRefresh;

@@ -41,30 +41,21 @@ public enum Filter {
         }
     },
     CUSTOM {
-        //todo whitelist aj blacklist musia mat separatne all/any moznost
         public void apply() {
             TagCollection whitelist = FilterControl.getWhitelist();
             TagCollection blacklist = FilterControl.getBlacklist();
-            DataCollection dataCollectionFiltered = FilterControl.getCollection();
             DataCollection dataCollection = DataControl.getCollection();
+            DataCollection dataCollectionFiltered = FilterControl.getCollection();
+
             if (whitelist.isEmpty() && blacklist.isEmpty()) {
                 dataCollectionFiltered.setAll(dataCollection);
             } else {
                 dataCollectionFiltered.clear();
-                for (DataObject dataIterator : dataCollection) {
-                    TagCollection dataIteratorTagCollection = dataIterator.getTagCollection();
-                    if (whitelist.isEmpty() || dataIteratorTagCollection.containsAll(whitelist)) {
-                        if (blacklist.isEmpty()) {
-                            dataCollectionFiltered.add(dataIterator);
-                        } else {
-                            boolean isValid = true;
-                            for (TagObject tagObject : blacklist) {
-                                if (dataIteratorTagCollection.contains(tagObject)) {
-                                    isValid = false;
-                                    break;
-                                }
-                            }
-                            if (isValid) dataCollectionFiltered.add(dataIterator);
+                for (DataObject dataObject : dataCollection) {
+                    TagCollection dataObjectTagCollection = dataObject.getTagCollection();
+                    if (isWhitelistOk(whitelist, dataObjectTagCollection)) {
+                        if (isBlacklistOk(blacklist, dataObjectTagCollection)) {
+                            dataCollectionFiltered.add(dataObject);
                         }
                     }
                 }
@@ -78,6 +69,40 @@ public enum Filter {
     /* public */
     public void apply() {
         throw new RuntimeException();
+    }
+
+    /* boolean */
+    private static boolean isWhitelistOk(TagCollection whitelist, TagCollection tagCollection) {
+        FilterMode whitelistMode = FilterControl.getWhitelistMode();
+        if (whitelist.isEmpty()) {
+            return true;
+        } else if (whitelistMode.equals(FilterMode.All) && tagCollection.containsAll(whitelist)) {
+            return true;
+        } else if (whitelistMode.equals(FilterMode.Any)) {
+            for (TagObject tagObject : whitelist) {
+                if (tagCollection.contains(tagObject)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+    private static boolean isBlacklistOk(TagCollection blacklist, TagCollection tagCollection) {
+        FilterMode blacklistMode = FilterControl.getBlacklistMode();
+        if (blacklist.isEmpty()) {
+            return true;
+        } else if (blacklistMode.equals(FilterMode.All) && tagCollection.containsAll(blacklist)) {
+            return false;
+        } else if (blacklistMode.equals(FilterMode.Any)) {
+            for (TagObject tagObject : blacklist) {
+                if (tagCollection.contains(tagObject)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     /* set */

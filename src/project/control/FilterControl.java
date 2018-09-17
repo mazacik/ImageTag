@@ -14,6 +14,9 @@ public abstract class FilterControl {
     private static final TagCollection whitelist = new TagCollection();
     private static final TagCollection blacklist = new TagCollection();
 
+    private static FilterMode whitelistMode = FilterMode.All;
+    private static FilterMode blacklistMode = FilterMode.Any;
+
     private static Filter currentFilter = Filter.SHOW_EVERYTHING;
 
     /* public */
@@ -105,6 +108,13 @@ public abstract class FilterControl {
         return blacklist;
     }
 
+    public static FilterMode getWhitelistMode() {
+        return whitelistMode;
+    }
+    public static FilterMode getBlacklistMode() {
+        return blacklistMode;
+    }
+
     /* set */
     public static void setFilter(Filter filter) {
         currentFilter = filter;
@@ -130,5 +140,12 @@ public abstract class FilterControl {
             default:
                 break;
         }
+    }
+
+    public static void setWhitelistMode(FilterMode whitelistMode) {
+        FilterControl.whitelistMode = whitelistMode;
+    }
+    public static void setBlacklistMode(FilterMode blacklistMode) {
+        FilterControl.blacklistMode = blacklistMode;
     }
 }

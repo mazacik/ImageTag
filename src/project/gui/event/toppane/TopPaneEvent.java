@@ -2,10 +2,7 @@ package project.gui.event.toppane;
 
 import javafx.stage.WindowEvent;
 import project.Main;
-import project.control.Filter;
-import project.control.FilterControl;
-import project.control.ReloadControl;
-import project.control.SelectionControl;
+import project.control.*;
 import project.database.loader.Serialization;
 import project.gui.component.GUINode;
 import project.gui.component.toppane.TopPane;
@@ -21,6 +18,10 @@ public abstract class TopPaneEvent {
 
         onAction_menuUntaggedOnly();
         onAction_menuMaxXTags();
+        onAction_menuModeWhitelistAll();
+        onAction_menuModeWhitelistAny();
+        onAction_menuModeBlacklistAll();
+        onAction_menuModeBlacklistAny();
         onAction_menuRefresh();
         onAction_menuReset();
     }
@@ -58,6 +59,38 @@ public abstract class TopPaneEvent {
 
             FilterControl.setFilter(Filter.SHOW_MAX_X_TAGS);
             ReloadControl.reload(true, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
+        });
+    }
+    private static void onAction_menuModeWhitelistAll() {
+        TopPane.getMenuModeWhitelistAll().setOnAction(event -> {
+            TopPane.getMenuModeWhitelistAll().setSelected(true);
+            TopPane.getMenuModeWhitelistAny().setSelected(false);
+            FilterControl.setWhitelistMode(FilterMode.All);
+            FilterControl.doWork();
+        });
+    }
+    private static void onAction_menuModeWhitelistAny() {
+        TopPane.getMenuModeWhitelistAny().setOnAction(event -> {
+            TopPane.getMenuModeWhitelistAll().setSelected(false);
+            TopPane.getMenuModeWhitelistAny().setSelected(true);
+            FilterControl.setWhitelistMode(FilterMode.Any);
+            FilterControl.doWork();
+        });
+    }
+    private static void onAction_menuModeBlacklistAll() {
+        TopPane.getMenuModeBlacklistAll().setOnAction(event -> {
+            TopPane.getMenuModeBlacklistAll().setSelected(true);
+            TopPane.getMenuModeBlacklistAny().setSelected(false);
+            FilterControl.setBlacklistMode(FilterMode.All);
+            FilterControl.doWork();
+        });
+    }
+    private static void onAction_menuModeBlacklistAny() {
+        TopPane.getMenuModeBlacklistAny().setOnAction(event -> {
+            TopPane.getMenuModeBlacklistAll().setSelected(false);
+            TopPane.getMenuModeBlacklistAny().setSelected(true);
+            FilterControl.setBlacklistMode(FilterMode.Any);
+            FilterControl.doWork();
         });
     }
     private static void onAction_menuRefresh() {

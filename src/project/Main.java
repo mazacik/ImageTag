@@ -21,6 +21,7 @@ public class Main extends Application {
     public static Stage getStage() {
         return primaryStage;
     }
+    //todo just stage
     public static LoadingWindow getLoadingWindow() {
         return (LoadingWindow) primaryStage;
     }
