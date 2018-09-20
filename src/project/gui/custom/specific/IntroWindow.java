@@ -17,9 +17,9 @@ public class IntroWindow extends Stage {
     private final GridPane introPane = new GridPane();
     private final Scene sceneIntro = new Scene(introPane);
 
-    private final Label lblSource = new Label("Path - Source:");
-    private final Label lblCache = new Label("Path - Cache:");
-    private final Label lblData = new Label("Path - Database:");
+    private final Label lblSource = new Label("Source:");
+    private final Label lblCache = new Label("Cache:");
+    private final Label lblData = new Label("Database:");
     private final TextField tfSource = new TextField();
     private final TextField tfCache = new TextField();
     private final TextField tfData = new TextField();
