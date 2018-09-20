@@ -2,6 +2,7 @@ package project;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import project.control.Log;
 import project.gui.custom.specific.IntroWindow;
 
 public class Main extends Application {
@@ -9,6 +10,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        Log.out(Main.class, "starting application");
         Main.setStage(new IntroWindow());
     }
 
