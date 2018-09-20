@@ -14,8 +14,8 @@ import project.settings.Settings;
 
 public class IntroWindow extends Stage {
     /* components */
-    private final GridPane paneIntro = new GridPane();
-    private final Scene sceneIntro = new Scene(paneIntro);
+    private final GridPane introPane = new GridPane();
+    private final Scene sceneIntro = new Scene(introPane);
 
     private final Label lblSource = new Label("Path - Source:");
     private final Label lblCache = new Label("Path - Cache:");
@@ -39,9 +39,9 @@ public class IntroWindow extends Stage {
         setListeners();
         addComponentsToGrid();
 
-        paneIntro.setPadding(new Insets(10));
-        paneIntro.setHgap(5);
-        paneIntro.setVgap(3);
+        introPane.setPadding(new Insets(10));
+        introPane.setHgap(5);
+        introPane.setVgap(3);
 
         tfSource.setPrefWidth(300);
         btnSource.setPrefWidth(35);
@@ -67,16 +67,16 @@ public class IntroWindow extends Stage {
         show();
     }
     private void addComponentsToGrid() {
-        paneIntro.add(lblSource, 0, 0);
-        paneIntro.add(lblCache, 0, 1);
-        paneIntro.add(lblData, 0, 2);
-        paneIntro.add(tfSource, 1, 0);
-        paneIntro.add(tfCache, 1, 1);
-        paneIntro.add(tfData, 1, 2);
-        paneIntro.add(btnSource, 2, 0);
-        paneIntro.add(btnCache, 2, 1);
-        paneIntro.add(btnData, 2, 2);
-        paneIntro.add(btnOk, 2, 4);
+        introPane.add(lblSource, 0, 0);
+        introPane.add(lblCache, 0, 1);
+        introPane.add(lblData, 0, 2);
+        introPane.add(tfSource, 1, 0);
+        introPane.add(tfCache, 1, 1);
+        introPane.add(tfData, 1, 2);
+        introPane.add(btnSource, 2, 0);
+        introPane.add(btnCache, 2, 1);
+        introPane.add(btnData, 2, 2);
+        introPane.add(btnOk, 2, 4);
     }
     private void setListeners() {
         btnSource.setOnAction(event -> {
