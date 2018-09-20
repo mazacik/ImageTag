@@ -13,6 +13,7 @@ import project.database.object.DataObject;
 import project.database.object.TagCollection;
 import project.gui.GUIInstance;
 import project.gui.component.gallerypane.GalleryTile;
+import project.gui.custom.specific.LoadingWindow;
 import project.settings.Settings;
 
 import javax.imageio.ImageIO;
@@ -90,7 +91,8 @@ public class DataLoader extends Thread {
         }
 
         Platform.runLater(() -> {
-            Main.getLoadingWindow().close();
+            Main.getStage().close();
+            //Main.getLoadingWindow().close();
             Main.setStage(GUIInstance.getInstance());
 
             TagControl.initialize();
@@ -152,7 +154,8 @@ public class DataLoader extends Thread {
         }
 
         /* update loading window label */
-        Platform.runLater(() -> Main.getLoadingWindow().getProgressLabel().setText("Loading item " + currentObjectIndex + " of " + fileCount + ", " + currentObjectIndex * 100 / fileCount + "% done"));
+        Platform.runLater(() -> ((LoadingWindow) Main.getStage()).getProgressLabel().setText("Loading item " + currentObjectIndex + " of " + fileCount + ", " + currentObjectIndex * 100 / fileCount + "% done"));
+        //Platform.runLater(() -> Main.getLoadingWindow().getProgressLabel().setText("Loading item " + currentObjectIndex + " of " + fileCount + ", " + currentObjectIndex * 100 / fileCount + "% done"));
         return Objects.requireNonNullElseGet(currentObjectImage, () -> new Image("file:" + currentObjectCachePath, GALLERY_ICON_MAX_SIZE, GALLERY_ICON_MAX_SIZE, false, true));
     }
     private DataObject createDataObjectFromFile(File file) {

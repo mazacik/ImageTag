@@ -3,7 +3,6 @@ package project;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import project.gui.custom.specific.IntroWindow;
-import project.gui.custom.specific.LoadingWindow;
 
 public class Main extends Application {
     private static Stage primaryStage = null;
@@ -20,13 +19,6 @@ public class Main extends Application {
     /* get */
     public static Stage getStage() {
         return primaryStage;
-    }
-    //todo just stage
-    public static LoadingWindow getLoadingWindow() {
-        return (LoadingWindow) primaryStage;
-    }
-    public static IntroWindow getIntroWindow() {
-        return (IntroWindow) primaryStage;
     }
 
     /* set */

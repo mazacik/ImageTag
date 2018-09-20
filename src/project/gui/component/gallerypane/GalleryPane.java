@@ -55,15 +55,16 @@ public abstract class GalleryPane {
         adjustViewportToCurrentFocus();
     }
     public static void calculateTilePaneHGap() {
-        int vgap = (int) tilePane.getVgap();
-        int hgap = vgap;
+        //todo fix poslednych par pixelov
+        int minGap = (int) tilePane.getVgap();
+        int hgap = minGap;
 
-        int tilePaneWidth = (int) tilePane.getWidth() + (int) tilePane.getVgap();
+        int tilePaneWidth = (int) tilePane.getWidth() + minGap;
         int prefTileWidth = (int) tilePane.getPrefTileWidth();
         int columnCount = tilePaneWidth / prefTileWidth - 1;
 
         if (columnCount > 0) {
-            hgap = (tilePaneWidth + vgap * columnCount) % (prefTileWidth + vgap) / columnCount;
+            hgap = (tilePaneWidth + minGap * columnCount) % (prefTileWidth + minGap) / columnCount;
         }
 
         tilePane.setHgap(hgap);

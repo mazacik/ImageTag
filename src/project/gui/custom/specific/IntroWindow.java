@@ -26,7 +26,7 @@ public class IntroWindow extends Stage {
     private final Button btnSource = new Button("...");
     private final Button btnCache = new Button("...");
     private final Button btnData = new Button("...");
-    private final Button buttonOK = new Button("OK");
+    private final Button btnOk = new Button("OK");
 
     /* constructors */
     public IntroWindow() {
@@ -47,14 +47,16 @@ public class IntroWindow extends Stage {
         btnSource.setPrefWidth(35);
         btnCache.setPrefWidth(35);
         btnData.setPrefWidth(35);
-        buttonOK.setPrefWidth(35);
+        btnOk.setPrefWidth(35);
 
         if (Settings.readFromFile(getClass())) {
             tfSource.setText(Settings.getPath_source());
             tfCache.setText(Settings.getPath_cache());
             tfData.setText(Settings.getPath_data());
+            btnOk.requestFocus();
         } else {
-            buttonOK.setDisable(true);
+            btnOk.setDisable(true);
+            btnSource.requestFocus();
         }
     }
     private void initializeInstance() {
@@ -63,7 +65,6 @@ public class IntroWindow extends Stage {
         setResizable(false);
         centerOnScreen();
         show();
-        btnSource.requestFocus();
     }
     private void addComponentsToGrid() {
         paneIntro.add(lblSource, 0, 0);
@@ -75,7 +76,7 @@ public class IntroWindow extends Stage {
         paneIntro.add(btnSource, 2, 0);
         paneIntro.add(btnCache, 2, 1);
         paneIntro.add(btnData, 2, 2);
-        paneIntro.add(buttonOK, 2, 4);
+        paneIntro.add(btnOk, 2, 4);
     }
     private void setListeners() {
         btnSource.setOnAction(event -> {
@@ -99,13 +100,13 @@ public class IntroWindow extends Stage {
             tfData.setText(dataPath);
         });
 
-        buttonOK.setOnAction(event -> {
-            buttonOK.setDisable(true);
+        btnOk.setOnAction(event -> {
+            btnOk.setDisable(true);
             Settings.setPath_source(tfSource.getText());
             Settings.setPath_cache(tfCache.getText());
             Settings.setPath_data(tfData.getText());
             Settings.writeToFile();
-            Main.getIntroWindow().close();
+            Main.getStage().close();
             Main.setStage(new LoadingWindow());
         });
 
@@ -116,9 +117,9 @@ public class IntroWindow extends Stage {
             if (sourcePath.length() > 3 && sourcePath.charAt(1) == ':' && sourcePath.charAt(2) == '\\')
                 if (!sourcePath.equals(cachePath) && cachePath.length() > 4 && cachePath.charAt(1) == ':' && cachePath.charAt(2) == '\\')
                     if (!sourcePath.equals(dataPath) && dataPath.length() > 4 && dataPath.charAt(1) == ':' && dataPath.charAt(2) == '\\')
-                        buttonOK.setDisable(false);
+                        btnOk.setDisable(false);
                     else
-                        buttonOK.setDisable(true);
+                        btnOk.setDisable(true);
         };
 
         tfSource.textProperty().addListener(textFieldChangeListener);
