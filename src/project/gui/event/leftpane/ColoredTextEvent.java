@@ -3,8 +3,7 @@ package project.gui.event.leftpane;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.paint.Color;
-import project.control.FilterControl;
-import project.control.ReloadControl;
+import project.control.Control;
 import project.database.control.TagControl;
 import project.database.object.TagObject;
 import project.gui.component.GUINode;
@@ -36,39 +35,39 @@ public abstract class ColoredTextEvent {
         // if sourceCell is group level
         if (tagObject == null) {
             String groupName = coloredText.getText();
-            if (FilterControl.isGroupWhitelisted(groupName)) {
-                FilterControl.blacklistGroup(groupName);
+            if (Control.getFilterControl().isGroupWhitelisted(groupName)) {
+                Control.getFilterControl().blacklistGroup(groupName);
                 coloredText.setColor(Color.RED);
                 for (TreeItem<ColoredText> children : sourceCell.getTreeItem().getChildren()) {
                     children.getValue().setColor(Color.RED);
                 }
-            } else if (FilterControl.isGroupBlacklisted(groupName)) {
-                FilterControl.unlistGroup(groupName);
+            } else if (Control.getFilterControl().isGroupBlacklisted(groupName)) {
+                Control.getFilterControl().unlistGroup(groupName);
                 coloredText.setColor(Color.BLACK);
                 for (TreeItem<ColoredText> children : sourceCell.getTreeItem().getChildren()) {
                     children.getValue().setColor(Color.BLACK);
                 }
             } else {
-                FilterControl.whitelistGroup(groupName);
+                Control.getFilterControl().whitelistGroup(groupName);
                 coloredText.setColor(Color.GREEN);
                 for (TreeItem<ColoredText> children : sourceCell.getTreeItem().getChildren()) {
                     children.getValue().setColor(Color.GREEN);
                 }
             }
         } else {
-            if (FilterControl.isTagObjectWhitelisted(tagObject)) {
-                FilterControl.blacklistTagObject(tagObject);
+            if (Control.getFilterControl().isTagObjectWhitelisted(tagObject)) {
+                Control.getFilterControl().blacklistTagObject(tagObject);
                 coloredText.setColor(Color.RED);
-            } else if (FilterControl.isTagObjectBlacklisted(tagObject)) {
-                FilterControl.unlistTagObject(tagObject);
+            } else if (Control.getFilterControl().isTagObjectBlacklisted(tagObject)) {
+                Control.getFilterControl().unlistTagObject(tagObject);
                 coloredText.setColor(Color.BLACK);
             } else {
-                FilterControl.whitelistTagObject(tagObject);
+                Control.getFilterControl().whitelistTagObject(tagObject);
                 coloredText.setColor(Color.GREEN);
             }
         }
-        FilterControl.doWork();
-        ReloadControl.reload(true, GUINode.GALLERYPANE);
+        Control.getFilterControl().doWork();
+        Control.getReloadControl().reload(true, GUINode.GALLERYPANE);
         LeftPane.refreshTreeView();
     }
 }

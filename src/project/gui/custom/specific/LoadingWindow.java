@@ -9,18 +9,15 @@ import project.database.loader.DataLoader;
 import project.gui.GUIInstance;
 
 public class LoadingWindow extends Stage {
-    /* components */
     private final BorderPane loadingPane = new BorderPane();
     private final Scene loadingScene = new Scene(loadingPane);
     private final Label progressLabel = new Label();
 
-    /* constructors */
     public LoadingWindow() {
         initializeComponents();
         initializeInstance();
     }
 
-    /* initialize */
     private void initializeComponents() {
         loadingPane.setPadding(new Insets(10));
         loadingPane.setCenter(progressLabel);
@@ -36,7 +33,6 @@ public class LoadingWindow extends Stage {
         GUIInstance.initialize();
     }
 
-    /* get */
     public Label getProgressLabel() {
         return progressLabel;
     }

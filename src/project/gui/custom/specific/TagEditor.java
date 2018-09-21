@@ -11,7 +11,6 @@ import javafx.stage.Stage;
 import project.database.object.TagObject;
 
 public class TagEditor extends Stage {
-    /* components */
     private final GridPane editorPane = new GridPane();
     private final Scene editorScene = new Scene(editorPane);
 
@@ -21,10 +20,8 @@ public class TagEditor extends Stage {
     private final Label lblName = new Label("Name");
     private final Button btnOK = new Button("OK");
 
-    /* vars */
     TagObject tagObject;
 
-    /* constructors */
     public TagEditor(TagObject tagObject) {
         this.tagObject = tagObject;
         initializeComponents();
@@ -35,7 +32,6 @@ public class TagEditor extends Stage {
         this(null);
     }
 
-    /* public */
     public static TagObject createTag() {
         TagObject newTagObject = new TagEditor().getResult();
         if (newTagObject == null || newTagObject.isEmpty()) return null;
@@ -46,7 +42,6 @@ public class TagEditor extends Stage {
         return tagObject;
     }
 
-    /* private */
     private void getValue() {
         String group = tfGroup.getText();
         String name = tfName.getText();
@@ -55,7 +50,6 @@ public class TagEditor extends Stage {
         }
     }
 
-    /* initialize */
     private void initializeComponents() {
         editorPane.add(lblGroup, 0, 0);
         editorPane.add(lblName, 0, 1);

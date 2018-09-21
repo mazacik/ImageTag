@@ -7,20 +7,17 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 public class DataObject implements Serializable {
-    /* vars */
     private String name;
     private TagCollection tagCollection;
 
     private transient Image image;
     private transient GalleryTile galleryTile;
 
-    /* constructors */
     public DataObject(String name, TagCollection tagObjects) {
         this.name = name;
         this.tagCollection = tagObjects;
     }
 
-    /* get */
     public String getName() {
         return name;
     }
@@ -38,7 +35,6 @@ public class DataObject implements Serializable {
         return Comparator.comparing(DataObject::getName);
     }
 
-    /* set */
     public void setImage(Image image) {
         this.image = image;
     }

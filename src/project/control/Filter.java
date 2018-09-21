@@ -10,16 +10,18 @@ import project.database.object.TagObject;
 public enum Filter {
     SHOW_EVERYTHING {
         public void apply() {
-            FilterControl.getWhitelist().clear();
-            FilterControl.getBlacklist().clear();
-            FilterControl.getCollection().setAll(DataControl.getCollection());
+            FilterControl filterControl = Control.getFilterControl();
+            filterControl.getWhitelist().clear();
+            filterControl.getBlacklist().clear();
+            filterControl.getCollection().setAll(DataControl.getCollection());
         }
     },
     SHOW_UNTAGGED {
         public void apply() {
-            FilterControl.getWhitelist().clear();
-            FilterControl.getBlacklist().setAll(TagControl.getCollection());
-            DataCollection dataCollectionFiltered = FilterControl.getCollection();
+            FilterControl filterControl = Control.getFilterControl();
+            filterControl.getWhitelist().clear();
+            filterControl.getBlacklist().setAll(TagControl.getCollection());
+            DataCollection dataCollectionFiltered = filterControl.getCollection();
             dataCollectionFiltered.clear();
             for (DataObject dataObject : DataControl.getCollection()) {
                 if (dataObject.getTagCollection().size() == 0)
@@ -29,9 +31,10 @@ public enum Filter {
     },
     SHOW_MAX_X_TAGS {
         public void apply() {
-            FilterControl.getWhitelist().clear();
-            FilterControl.getBlacklist().clear();
-            DataCollection dataCollectionFiltered = FilterControl.getCollection();
+            FilterControl filterControl = Control.getFilterControl();
+            filterControl.getWhitelist().clear();
+            filterControl.getBlacklist().clear();
+            DataCollection dataCollectionFiltered = filterControl.getCollection();
             dataCollectionFiltered.clear();
             for (DataObject dataObject : DataControl.getCollection()) {
                 if (dataObject.getTagCollection().size() <= maxTagsValue) {
@@ -42,10 +45,11 @@ public enum Filter {
     },
     CUSTOM {
         public void apply() {
-            TagCollection whitelist = FilterControl.getWhitelist();
-            TagCollection blacklist = FilterControl.getBlacklist();
+            FilterControl filterControl = Control.getFilterControl();
+            TagCollection whitelist = filterControl.getWhitelist();
+            TagCollection blacklist = filterControl.getBlacklist();
             DataCollection dataCollection = DataControl.getCollection();
-            DataCollection dataCollectionFiltered = FilterControl.getCollection();
+            DataCollection dataCollectionFiltered = filterControl.getCollection();
 
             if (whitelist.isEmpty() && blacklist.isEmpty()) {
                 dataCollectionFiltered.setAll(dataCollection);
@@ -63,22 +67,19 @@ public enum Filter {
         }
     };
 
-    /* vars */
     private static int maxTagsValue = 0;
 
-    /* public */
     public void apply() {
         throw new RuntimeException();
     }
 
-    /* boolean */
     private static boolean isWhitelistOk(TagCollection whitelist, TagCollection tagCollection) {
-        FilterMode whitelistMode = FilterControl.getWhitelistMode();
+        FilterControl.FilterMode whitelistMode = Control.getFilterControl().getWhitelistMode();
         if (whitelist.isEmpty()) {
             return true;
-        } else if (whitelistMode.equals(FilterMode.All) && tagCollection.containsAll(whitelist)) {
+        } else if (whitelistMode.equals(FilterControl.FilterMode.All) && tagCollection.containsAll(whitelist)) {
             return true;
-        } else if (whitelistMode.equals(FilterMode.Any)) {
+        } else if (whitelistMode.equals(FilterControl.FilterMode.Any)) {
             for (TagObject tagObject : whitelist) {
                 if (tagCollection.contains(tagObject)) {
                     return true;
@@ -89,12 +90,12 @@ public enum Filter {
         return false;
     }
     private static boolean isBlacklistOk(TagCollection blacklist, TagCollection tagCollection) {
-        FilterMode blacklistMode = FilterControl.getBlacklistMode();
+        FilterControl.FilterMode blacklistMode = Control.getFilterControl().getBlacklistMode();
         if (blacklist.isEmpty()) {
             return true;
-        } else if (blacklistMode.equals(FilterMode.All) && tagCollection.containsAll(blacklist)) {
+        } else if (blacklistMode.equals(FilterControl.FilterMode.All) && tagCollection.containsAll(blacklist)) {
             return false;
-        } else if (blacklistMode.equals(FilterMode.Any)) {
+        } else if (blacklistMode.equals(FilterControl.FilterMode.Any)) {
             for (TagObject tagObject : blacklist) {
                 if (tagCollection.contains(tagObject)) {
                     return false;
@@ -105,7 +106,6 @@ public enum Filter {
         return true;
     }
 
-    /* set */
     public static void setMaxTagsValue(int value) {
         maxTagsValue = value;
     }

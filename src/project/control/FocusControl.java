@@ -6,13 +6,16 @@ import project.database.object.DataObject;
 import project.gui.component.GUINode;
 import project.gui.component.gallerypane.GalleryPane;
 
-public abstract class FocusControl {
-    /* vars */
-    private static DataObject currentFocus = null;
-    private static DataObject previousFocus = null;
+public class FocusControl {
+    private DataObject currentFocus;
+    private DataObject previousFocus;
 
-    /* public */
-    public static void setFocus(DataObject dataObject) {
+    public FocusControl() {
+        currentFocus = null;
+        previousFocus = null;
+    }
+
+    public void setFocus(DataObject dataObject) {
         /* store old focus position */
         previousFocus = currentFocus;
 
@@ -25,14 +28,14 @@ public abstract class FocusControl {
             previousFocus.getGalleryTile().generateEffect();
         }
 
-        ReloadControl.reload(GUINode.PREVIEWPANE);
+        Control.getReloadControl().reload(GUINode.PREVIEWPANE);
     }
-    public static void moveFocusByKeyCode(KeyCode keyCode) {
-        DataCollection dataCollectionFiltered = FilterControl.getCollection();
-        DataObject currentFocus = FocusControl.getCurrentFocus();
+    public void moveFocusByKeyCode(KeyCode keyCode) {
+        DataCollection dataCollectionFiltered = Control.getFilterControl().getCollection();
+        DataObject currentFocus = getCurrentFocus();
         if (currentFocus == null) {
-            currentFocus = FilterControl.getCollection().get(0);
-            FocusControl.setFocus(currentFocus);
+            currentFocus = dataCollectionFiltered.get(0);
+            setFocus(currentFocus);
         }
 
         int newFocusPosition = dataCollectionFiltered.indexOf(currentFocus);
@@ -47,13 +50,12 @@ public abstract class FocusControl {
         }
 
         if (newFocusPosition >= 0 && newFocusPosition < dataCollectionFiltered.size()) {
-            FocusControl.setFocus(dataCollectionFiltered.get(newFocusPosition));
+            setFocus(dataCollectionFiltered.get(newFocusPosition));
             GalleryPane.adjustViewportToCurrentFocus();
         }
     }
 
-    /* get */
-    public static DataObject getCurrentFocus() {
+    public DataObject getCurrentFocus() {
         return currentFocus;
     }
 }

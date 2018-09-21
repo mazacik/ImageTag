@@ -5,7 +5,6 @@ import javafx.scene.control.TextInputDialog;
 import java.util.Optional;
 
 public class NumberInputWindow extends TextInputDialog {
-    /* constructors */
     public NumberInputWindow(String title, String contentText) {
         setTitle(title);
         setHeaderText(null);
@@ -19,7 +18,6 @@ public class NumberInputWindow extends TextInputDialog {
         });
     }
 
-    /* public */
     public Integer getResultValue() {
         Optional<String> resultValue = showAndWait();
         if (!resultValue.isPresent()) return 0;
@@ -28,7 +26,6 @@ public class NumberInputWindow extends TextInputDialog {
         return Integer.valueOf(resultString);
     }
 
-    /* utility */
     public static boolean isNumber(String str) {
         if (str == null) {
             return false;

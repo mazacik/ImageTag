@@ -9,16 +9,14 @@ import project.gui.component.previewpane.PreviewPane;
 import project.gui.component.rightpane.RightPane;
 import project.gui.component.toppane.TopPane;
 
-public abstract class ReloadControl {
-    /* vars */
-    private static boolean topPane = false;
-    private static boolean leftPane = false;
-    private static boolean galleryPane = false;
-    private static boolean previewPane = false;
-    private static boolean rightPane = false;
+public class ReloadControl {
+    private boolean topPane = false;
+    private boolean leftPane = false;
+    private boolean galleryPane = false;
+    private boolean previewPane = false;
+    private boolean rightPane = false;
 
-    /* public */
-    public static void reload(boolean instant, GUINode... nodes) {
+    public void reload(boolean instant, GUINode... nodes) {
         for (GUINode node : nodes) {
             switch (node) {
                 case TOPPANE:
@@ -42,18 +40,18 @@ public abstract class ReloadControl {
         }
         if (instant) doReload();
     }
-    public static void reload(GUINode... items) {
+    public void reload(GUINode... items) {
         reload(false, items);
     }
-    public static void reloadAll(boolean sort) {
+    public void reloadAll(boolean sort) {
         if (sort) {
             DataControl.getCollection().sort();
-            FilterControl.getCollection().sort();
-            SelectionControl.getCollection().sort();
+            Control.getFilterControl().getCollection().sort();
+            Control.getSelectionControl().getCollection().sort();
 
             TagControl.getCollection().sort();
-            FilterControl.getWhitelist().sort();
-            FilterControl.getBlacklist().sort();
+            Control.getFilterControl().getWhitelist().sort();
+            Control.getFilterControl().getBlacklist().sort();
         }
         TopPane.reload();
         LeftPane.reload();
@@ -61,7 +59,7 @@ public abstract class ReloadControl {
         PreviewPane.reload();
         RightPane.reload();
     }
-    public static void doReload() {
+    public void doReload() {
         if (topPane) {
             TopPane.reload();
             topPane = false;

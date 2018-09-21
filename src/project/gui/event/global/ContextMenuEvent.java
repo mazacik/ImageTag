@@ -1,6 +1,7 @@
 package project.gui.event.global;
 
-import project.control.*;
+import project.control.Control;
+import project.control.Utils;
 import project.database.control.DataControl;
 import project.database.object.DataCollection;
 import project.database.object.DataObject;
@@ -25,9 +26,9 @@ public abstract class ContextMenuEvent {
             DataObject dataObject;
 
             if (!GUIUtils.isPreviewFullscreen()) {
-                dataObject = SelectionControl.getCollection().get(0);
+                dataObject = Control.getSelectionControl().getCollection().get(0);
             } else {
-                dataObject = FocusControl.getCurrentFocus();
+                dataObject = Control.getFocusControl().getCurrentFocus();
             }
 
             Utils.setClipboardContent(dataObject.getName());
@@ -35,12 +36,12 @@ public abstract class ContextMenuEvent {
     }
     private static void onAction_menuDelete() {
         GUIInstance.getDataObjectContextMenu().getMenuDelete().setOnAction(event -> {
-            DataCollection dataObjectsValid = FilterControl.getCollection();
+            DataCollection dataObjectsValid = Control.getFilterControl().getCollection();
 
             if (!GUIUtils.isPreviewFullscreen()) {
-                deleteDataObject(GUINode.GALLERYPANE, SelectionControl.getCollection(), dataObjectsValid);
+                deleteDataObject(GUINode.GALLERYPANE, Control.getSelectionControl().getCollection(), dataObjectsValid);
             } else {
-                deleteDataObject(GUINode.PREVIEWPANE, FocusControl.getCurrentFocus(), dataObjectsValid);
+                deleteDataObject(GUINode.PREVIEWPANE, Control.getFocusControl().getCurrentFocus(), dataObjectsValid);
             }
         });
     }
@@ -56,7 +57,7 @@ public abstract class ContextMenuEvent {
 
             dataObjectsValid.remove(dataObject);
             DataControl.remove(dataObject);
-            SelectionControl.getCollection().remove(dataObject);
+            Control.getSelectionControl().getCollection().remove(dataObject);
 
             if (dataObjectsValid.get(index - 1) != null) {
                 index--;
@@ -64,8 +65,8 @@ public abstract class ContextMenuEvent {
                 index++;
             }
 
-            FocusControl.setFocus(dataObjectsValid.get(index));
-            ReloadControl.reload(true, sender);
+            Control.getFocusControl().setFocus(dataObjectsValid.get(index));
+            Control.getReloadControl().reload(true, sender);
         } catch (IOException e) {
             System.out.println("IOException: Trying to delete non-existent file; Path: " + pathString);
             e.printStackTrace();

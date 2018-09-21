@@ -3,12 +3,11 @@ package project.gui.component.toppane;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
-import project.control.FocusControl;
+import project.control.Control;
 import project.database.object.DataObject;
 import project.gui.event.toppane.TopPaneEvent;
 
 public abstract class TopPane {
-    /* components */
     private static final BorderPane _this = new BorderPane();
 
     private static final MenuBar infoLabelMenuBar = new MenuBar();
@@ -35,7 +34,6 @@ public abstract class TopPane {
     private static final MenuItem menuRefresh = new MenuItem("Refresh");
     private static final MenuItem menuReset = new MenuItem("Reset");
 
-    /* initialize */
     public static void initialize() {
         initializeComponents();
         initializeInstance();
@@ -59,15 +57,13 @@ public abstract class TopPane {
         _this.setRight(infoLabelMenuBar);
     }
 
-    /* public */
     public static void reload() {
-        DataObject currentFocusedItem = FocusControl.getCurrentFocus();
+        DataObject currentFocusedItem = Control.getFocusControl().getCurrentFocus();
         if (currentFocusedItem != null) {
             infoLabelMenu.setText(currentFocusedItem.getName());
         }
     }
 
-    /* get */
     public static MenuItem getMenuSave() {
         return menuSave;
     }

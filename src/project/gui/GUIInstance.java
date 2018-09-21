@@ -15,7 +15,6 @@ import project.gui.event.global.ContextMenuEvent;
 import project.gui.event.global.GlobalEvent;
 
 public abstract class GUIInstance extends Stage {
-    /* components */
     private static final DataObjectContextMenu dataObjectContextMenu = new DataObjectContextMenu();
 
     private static Stage _this;
@@ -23,7 +22,6 @@ public abstract class GUIInstance extends Stage {
     private static final BorderPane mainPane = new BorderPane(splitPane, TopPane.getInstance(), null, null, null);
     private static final Scene mainScene = new Scene(mainPane);
 
-    /* initialize */
     public static void initialize() {
         _this = new Stage();
         initializeComponents();
@@ -50,7 +48,6 @@ public abstract class GUIInstance extends Stage {
         //_this.show();
     }
 
-    /* get */
     public static SplitPane getSplitPane() {
         return splitPane;
     }

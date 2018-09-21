@@ -6,22 +6,18 @@ import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.TilePane;
-import project.control.FilterControl;
-import project.control.FocusControl;
+import project.control.Control;
 import project.database.object.DataObject;
 import project.gui.GUIUtils;
 import project.gui.event.gallerypane.GalleryPaneEvent;
 import project.settings.Settings;
 
 public abstract class GalleryPane {
-    /* const */
     private static final int GALLERY_ICON_SIZE_PREF = Settings.getGalleryIconSizePref();
 
-    /* components */
     private static final ScrollPane _this = new ScrollPane();
     private static final TilePane tilePane = new TilePane();
 
-    /* initialize */
     public static void initialize() {
         initializeComponents();
         initializeInstance();
@@ -41,13 +37,12 @@ public abstract class GalleryPane {
         _this.setContent(tilePane);
     }
 
-    /* public */
     public static void reload() {
         if (GUIUtils.isPreviewFullscreen()) return;
         double scrollbarValue = _this.getVvalue();
         ObservableList<Node> tilePaneItems = tilePane.getChildren();
         tilePaneItems.clear();
-        for (DataObject dataObject : FilterControl.getCollection()) {
+        for (DataObject dataObject : Control.getFilterControl().getCollection()) {
             tilePaneItems.add(dataObject.getGalleryTile());
         }
         _this.setVvalue(scrollbarValue);
@@ -70,10 +65,10 @@ public abstract class GalleryPane {
         tilePane.setHgap(hgap);
     }
     public static void adjustViewportToCurrentFocus() {
-        DataObject currentFocusedItem = FocusControl.getCurrentFocus();
+        DataObject currentFocusedItem = Control.getFocusControl().getCurrentFocus();
         if (currentFocusedItem == null) return;
         if (GUIUtils.isPreviewFullscreen()) return;
-        int focusIndex = FilterControl.getCollection().indexOf(currentFocusedItem);
+        int focusIndex = Control.getFilterControl().getCollection().indexOf(currentFocusedItem);
         if (focusIndex < 0) return;
 
         ObservableList<Node> tilePaneItems = tilePane.getChildren();
@@ -102,7 +97,6 @@ public abstract class GalleryPane {
         }
     }
 
-    /* get */
     public static int getColumnCount() {
         int tilePaneWidth = (int) tilePane.getWidth() + (int) tilePane.getVgap();
         int prefTileWidth = (int) tilePane.getPrefTileWidth();

@@ -5,22 +5,19 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
-import project.control.FocusControl;
+import project.control.Control;
 import project.database.object.DataObject;
 import project.gui.GUIUtils;
 import project.gui.event.previewpane.PreviewPaneEvent;
 import project.settings.Settings;
 
 public abstract class PreviewPane {
-    /* components */
     private static final Pane _this = new Pane();
     private static final Canvas canvas = new Canvas();
 
-    /* vars */
     private static DataObject currentDataObject = null;
     private static Image currentPreviewImage = null;
 
-    /* initialize */
     public static void initialize() {
         initializeComponents();
         initializeInstance();
@@ -36,11 +33,10 @@ public abstract class PreviewPane {
         _this.getChildren().add(canvas);
     }
 
-    /* public */
     public static void reload() {
         if (!GUIUtils.isPreviewFullscreen()) return;
 
-        DataObject currentFocus = FocusControl.getCurrentFocus();
+        DataObject currentFocus = Control.getFocusControl().getCurrentFocus();
         if (currentFocus == null) return;
         if (currentDataObject == null || !currentDataObject.equals(currentFocus)) {
             loadImageOfCurrentFocus();
@@ -71,13 +67,11 @@ public abstract class PreviewPane {
         gc.drawImage(currentPreviewImage, resultX, resultY, resultWidth, resultHeight);
     }
 
-    /* private */
     private static void loadImageOfCurrentFocus() {
-        String url = "file:" + Settings.getPath_source() + "\\" + FocusControl.getCurrentFocus().getName();
+        String url = "file:" + Settings.getPath_source() + "\\" + Control.getFocusControl().getCurrentFocus().getName();
         currentPreviewImage = new Image(url);
     }
 
-    /* get */
     public static Canvas getCanvas() {
         return canvas;
     }

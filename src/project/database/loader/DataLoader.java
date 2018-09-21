@@ -5,7 +5,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import org.apache.commons.io.FilenameUtils;
 import project.Main;
-import project.control.ReloadControl;
+import project.control.Control;
 import project.database.control.DataControl;
 import project.database.control.TagControl;
 import project.database.object.DataCollection;
@@ -27,7 +27,6 @@ import java.util.Comparator;
 import java.util.Objects;
 
 public class DataLoader extends Thread {
-    /* imports */
     private final double GALLERY_ICON_MAX_SIZE = Settings.getGalleryIconSizeMax();
 
     private final String PATH_SOURCE = Settings.getPath_source();
@@ -36,7 +35,6 @@ public class DataLoader extends Thread {
 
     private final DataCollection dataCollection = DataControl.getCollection();
 
-    /* vars */
     private int fileCount = 0;
     private int currentObjectIndex = 0;
     private ArrayList<File> validFiles;
@@ -48,7 +46,6 @@ public class DataLoader extends Thread {
         finalization();
     }
 
-    /* private */
     private void initialization() {
         FilenameFilter filenameFilter = (dir, name) -> name.endsWith(".jpg") || name.endsWith(".JPG") || name.endsWith(".png") || name.endsWith(".PNG") || name.endsWith(".jpeg") || name.endsWith(".JPEG");
         File[] validFilesArray = new File(PATH_SOURCE).listFiles(filenameFilter);
@@ -96,7 +93,7 @@ public class DataLoader extends Thread {
             Main.setStage(GUIInstance.getInstance());
 
             TagControl.initialize();
-            ReloadControl.reloadAll(true);
+            Control.getReloadControl().reloadAll(true);
             GUIInstance.getInstance().show();
         });
     }

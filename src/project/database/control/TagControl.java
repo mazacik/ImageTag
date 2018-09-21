@@ -1,8 +1,7 @@
 package project.database.control;
 
 import javafx.scene.control.TreeCell;
-import project.control.FilterControl;
-import project.control.ReloadControl;
+import project.control.Control;
 import project.database.object.DataCollection;
 import project.database.object.DataObject;
 import project.database.object.TagCollection;
@@ -15,10 +14,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 public abstract class TagControl {
-    /* vars */
     private static final TagCollection collection = new TagCollection();
 
-    /* init */
     public static void initialize() {
         DataCollection dataCollection = DataControl.getCollection();
         for (DataObject dataIterator : dataCollection) {
@@ -31,23 +28,22 @@ public abstract class TagControl {
                 }
             }
         }
-        FilterControl.getCollection().setAll(dataCollection);
+        Control.getFilterControl().getCollection().setAll(dataCollection);
     }
 
-    /* public */
     public static boolean add(TagObject tagObject) {
         if (collection.add(tagObject)) {
             //does this not need FilterControl.doWork() ?
-            ReloadControl.reload(GUINode.LEFTPANE, GUINode.RIGHTPANE);
+            Control.getReloadControl().reload(GUINode.LEFTPANE, GUINode.RIGHTPANE);
             return true;
         }
         return false;
     }
     public static boolean remove(TagObject tagObject) {
         if (collection.remove(tagObject)) {
-            FilterControl.unlistTagObject(tagObject);
-            FilterControl.doWork();
-            ReloadControl.reload(GUINode.LEFTPANE, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
+            Control.getFilterControl().unlistTagObject(tagObject);
+            Control.getFilterControl().doWork();
+            Control.getReloadControl().reload(GUINode.LEFTPANE, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
             return true;
         }
         return false;
@@ -58,13 +54,12 @@ public abstract class TagControl {
             TagControl.getTagObject(tagObject).setValue(newTagObject.getGroup(), newTagObject.getName());
             // ^ this relies on the value to change everywhere
             collection.sort();
-            ReloadControl.reload(GUINode.LEFTPANE, GUINode.RIGHTPANE);
+            Control.getReloadControl().reload(GUINode.LEFTPANE, GUINode.RIGHTPANE);
             return true;
         }
         return false;
     }
 
-    /* get */
     public static TagObject getTagObject(String group, String name) {
         for (TagObject iterator : collection) {
             String iteratorGroup = iterator.getGroup();

@@ -6,22 +6,18 @@ import javafx.scene.effect.ColorInput;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import project.control.FocusControl;
-import project.control.SelectionControl;
+import project.control.Control;
 import project.database.object.DataObject;
 import project.gui.event.gallerypane.GalleryTileEvent;
 import project.settings.Settings;
 
 public class GalleryTile extends ImageView {
-    /* const */
     private static final InnerShadow EFFECT_SELECTIONBORDER = buildSelectionBorderEffect();
     private static final ColorInput EFFECT_FOCUSMARK = buildSelectionFocusMarkEffect();
     private static final int GALLERY_ICON_SIZE_PREF = Settings.getGalleryIconSizePref();
 
-    /* vars */
     private final DataObject parentDataObject;
 
-    /* constructors */
     public GalleryTile(DataObject dataObject) {
         super(dataObject.getImage());
         parentDataObject = dataObject;
@@ -30,14 +26,13 @@ public class GalleryTile extends ImageView {
         GalleryTileEvent.initialize(this);
     }
 
-    /* public */
     public void generateEffect() {
         boolean booleanSelection = false;
         if (parentDataObject != null) {
-            booleanSelection = SelectionControl.getCollection().contains(parentDataObject);
+            booleanSelection = Control.getSelectionControl().getCollection().contains(parentDataObject);
         }
 
-        DataObject currentFocus = FocusControl.getCurrentFocus();
+        DataObject currentFocus = Control.getFocusControl().getCurrentFocus();
         boolean booleanFocus = false;
         if (currentFocus != null) {
             booleanFocus = currentFocus.equals(parentDataObject);
@@ -60,7 +55,6 @@ public class GalleryTile extends ImageView {
         }
     }
 
-    /* builder */
     private static InnerShadow buildSelectionBorderEffect() {
         InnerShadow innerShadow = new InnerShadow();
         innerShadow.setColor(Color.RED);
@@ -78,7 +72,6 @@ public class GalleryTile extends ImageView {
         return new ColorInput(markPositionInTile, markPositionInTile, markSize, markSize, markColor);
     }
 
-    /* get */
     public DataObject getParentDataObject() {
         return parentDataObject;
     }

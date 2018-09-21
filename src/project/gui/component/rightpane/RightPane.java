@@ -7,9 +7,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import project.control.FocusControl;
-import project.control.ReloadControl;
-import project.control.SelectionControl;
+import project.control.Control;
 import project.database.control.TagControl;
 import project.database.object.DataObject;
 import project.database.object.TagObject;
@@ -20,7 +18,6 @@ import project.gui.event.rightpane.RightPaneEvent;
 import java.util.ArrayList;
 
 public abstract class RightPane {
-    /* components */
     private static BorderPane _this = new BorderPane();
 
     private static final ChoiceBox cbGroup = new ChoiceBox();
@@ -31,7 +28,6 @@ public abstract class RightPane {
     private static final RightPaneContextMenu contextMenu = new RightPaneContextMenu();
     private static final ListView<String> listView = new ListView<>();
 
-    /* initialize */
     public static void initialize() {
         initializeComponents();
         initializeInstance();
@@ -61,7 +57,6 @@ public abstract class RightPane {
         _this.setCenter(listView);
     }
 
-    /* public */
     public static void addTagToSelection() {
         Object cbGroupValue = cbGroup.getValue();
         Object cbNameValue = cbName.getValue();
@@ -75,35 +70,34 @@ public abstract class RightPane {
 
         if (!group.isEmpty() && !name.isEmpty()) {
             TagObject tagObject = TagControl.getTagObject(group, name);
-            if (SelectionControl.isSelectionEmpty()) {
-                DataObject currentFocusedItem = FocusControl.getCurrentFocus();
+            if (Control.getSelectionControl().isSelectionEmpty()) {
+                DataObject currentFocusedItem = Control.getFocusControl().getCurrentFocus();
                 if (currentFocusedItem != null) {
                     currentFocusedItem.getTagCollection().add(tagObject);
                 }
             } else {
-                SelectionControl.addTagObject(tagObject);
+                Control.getSelectionControl().addTagObject(tagObject);
             }
-            ReloadControl.reload(GUINode.RIGHTPANE);
+            Control.getReloadControl().reload(GUINode.RIGHTPANE);
         }
     }
     public static void reload() {
         ArrayList<String> sharedTags = new ArrayList<>();
-        if (SelectionControl.isSelectionEmpty() || SelectionControl.isSelectionSingleObject()) {
-            DataObject currentFocusedItem = FocusControl.getCurrentFocus();
+        if (Control.getSelectionControl().isSelectionEmpty() || Control.getSelectionControl().isSelectionSingleObject()) {
+            DataObject currentFocusedItem = Control.getFocusControl().getCurrentFocus();
             if (currentFocusedItem != null) {
                 for (TagObject tagObject : currentFocusedItem.getTagCollection()) {
                     sharedTags.add(tagObject.getGroupAndName());
                 }
             }
         } else {
-            for (TagObject tagObject : SelectionControl.getIntersectingTags()) {
+            for (TagObject tagObject : Control.getSelectionControl().getIntersectingTags()) {
                 sharedTags.add(tagObject.getGroupAndName());
             }
         }
         listView.getItems().setAll(sharedTags);
     }
 
-    /* get */
     public static ChoiceBox getCbGroup() {
         return cbGroup;
     }

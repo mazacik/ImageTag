@@ -14,42 +14,40 @@ import project.gui.component.rightpane.RightPane;
 import java.util.ArrayList;
 import java.util.Random;
 
-public abstract class SelectionControl {
-    /* vars */
-    private static final DataCollection dataObjects = new DataCollection();
+public class SelectionControl {
+    private final DataCollection dataObjects = new DataCollection();
 
-    /* public */
-    public static void addDataObject(DataObject dataObject) {
+    public void addDataObject(DataObject dataObject) {
         if (!dataObjects.contains(dataObject)) {
             dataObjects.add(dataObject);
             dataObject.getGalleryTile().generateEffect();
-            ReloadControl.reload(GUINode.RIGHTPANE);
+            Control.getReloadControl().reload(GUINode.RIGHTPANE);
         }
     }
-    public static void addDataObject(DataCollection dataObjectsToAdd) {
+    public void addDataObject(DataCollection dataObjectsToAdd) {
         for (DataObject dataObject : dataObjectsToAdd) {
             if (!dataObjects.contains(dataObject)) {
                 dataObjects.add(dataObject);
                 dataObject.getGalleryTile().generateEffect();
             }
         }
-        ReloadControl.reload(GUINode.RIGHTPANE);
+        Control.getReloadControl().reload(GUINode.RIGHTPANE);
     }
-    public static void removeDataObject(DataObject dataObject) {
+    public void removeDataObject(DataObject dataObject) {
         if (dataObjects.contains(dataObject)) {
             dataObjects.remove(dataObject);
             dataObject.getGalleryTile().generateEffect();
-            ReloadControl.reload(GUINode.RIGHTPANE);
+            Control.getReloadControl().reload(GUINode.RIGHTPANE);
         }
     }
-    public static void setDataObject(DataObject dataObject) {
+    public void setDataObject(DataObject dataObject) {
         dataObjects.clear();
         addDataObject(dataObject);
-        FocusControl.setFocus(dataObject);
+        Control.getFocusControl().setFocus(dataObject);
     }
-    public static void clearDataObjects() {
-        SelectionControl.getCollection().clear();
-        DataObject currentFocus = FocusControl.getCurrentFocus();
+    public void clearDataObjects() {
+        getCollection().clear();
+        DataObject currentFocus = Control.getFocusControl().getCurrentFocus();
         for (Object dataObject : DataControl.getCollection()) {
             if (!dataObject.equals(currentFocus)) {
                 ((DataObject) dataObject).getGalleryTile().setEffect(null);
@@ -57,23 +55,23 @@ public abstract class SelectionControl {
                 ((DataObject) dataObject).getGalleryTile().generateEffect();
             }
         }
-        ReloadControl.reload(GUINode.RIGHTPANE);
+        Control.getReloadControl().reload(GUINode.RIGHTPANE);
     }
-    public static void setRandomValidDataObject() {
-        ArrayList<DataObject> dataObjectsFiltered = FilterControl.getCollection();
+    public void setRandomValidDataObject() {
+        ArrayList<DataObject> dataObjectsFiltered = Control.getFilterControl().getCollection();
         int databaseItemsFilteredSize = dataObjectsFiltered.size();
         int randomIndex = new Random().nextInt(databaseItemsFilteredSize);
-        SelectionControl.setDataObject(dataObjectsFiltered.get(randomIndex));
+        setDataObject(dataObjectsFiltered.get(randomIndex));
         GalleryPane.adjustViewportToCurrentFocus();
     }
-    public static void swapSelectionStateOf(DataObject dataObject) {
+    public void swapSelectionStateOf(DataObject dataObject) {
         if (!dataObjects.contains(dataObject)) {
             addDataObject(dataObject);
         } else {
             removeDataObject(dataObject);
         }
     }
-    public static TagCollection getIntersectingTags() {
+    public TagCollection getIntersectingTags() {
         if (isSelectionEmpty()) return new TagCollection();
 
         TagCollection sharedTags = new TagCollection();
@@ -92,7 +90,7 @@ public abstract class SelectionControl {
         return sharedTags;
     }
 
-    public static void addTagObject(TagObject tagObject) {
+    public void addTagObject(TagObject tagObject) {
         if (!tagObject.isEmpty()) {
             if (!TagControl.getCollection().contains(tagObject)) {
                 TagControl.add(tagObject);
@@ -107,7 +105,7 @@ public abstract class SelectionControl {
             }
         }
     }
-    public static void removeTagObjectSelection() {
+    public void removeTagObjectSelection() {
         TagCollection tagObjectsToRemove = new TagCollection();
         ObservableList<String> tagObjectSelection = RightPane.getListView().getSelectionModel().getSelectedItems();
         for (String tagObject : tagObjectSelection) {
@@ -128,25 +126,23 @@ public abstract class SelectionControl {
                 }
             }
             if (!tagExists) {
-                FilterControl.unlistTagObject(tagObject);
+                Control.getFilterControl().unlistTagObject(tagObject);
                 TagControl.remove(tagObject);
-                ReloadControl.reload(GUINode.LEFTPANE);
+                Control.getReloadControl().reload(GUINode.LEFTPANE);
             }
         }
 
-        ReloadControl.reload(GUINode.RIGHTPANE);
+        Control.getReloadControl().reload(GUINode.RIGHTPANE);
     }
 
-    /* boolean */
-    public static boolean isSelectionEmpty() {
+    public boolean isSelectionEmpty() {
         return dataObjects.isEmpty();
     }
-    public static boolean isSelectionSingleObject() {
+    public boolean isSelectionSingleObject() {
         return dataObjects.size() == 1;
     }
 
-    /* get */
-    public static DataCollection getCollection() {
+    public DataCollection getCollection() {
         return dataObjects;
     }
 }

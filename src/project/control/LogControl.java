@@ -1,12 +1,17 @@
 package project.control;
 
-public abstract class Log {
-    public static void out(Class source, String message) {
+public class LogControl {
+    private final int VALUE_LENGTH;
+
+    public LogControl() {
+        VALUE_LENGTH = 16;
+    }
+
+    public void out(Class source, String message) {
         System.out.println(formatSource(source) + ": " + message);
     }
 
-    private static String formatSource(Class source) {
-        int VALUE_LENGTH = 16;
+    private String formatSource(Class source) {
         StringBuilder value;
         value = new StringBuilder(source.getSimpleName());
         value.toString().trim();

@@ -4,9 +4,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
-import project.control.FocusControl;
-import project.control.ReloadControl;
-import project.control.SelectionControl;
+import project.control.Control;
 import project.database.control.TagControl;
 import project.database.object.TagObject;
 import project.gui.component.GUINode;
@@ -41,7 +39,7 @@ public abstract class RightPaneEvent {
         });
         btnAdd.setOnAction(event -> {
             RightPane.addTagToSelection();
-            ReloadControl.reload(true, GUINode.RIGHTPANE);
+            Control.getReloadControl().reload(true, GUINode.RIGHTPANE);
         });
 
         RightPane.getBtnNew().setOnAction(event -> {
@@ -54,7 +52,7 @@ public abstract class RightPaneEvent {
                 String group = value.toString();
                 cbName.getItems().setAll(TagControl.getNames(group));
                 cbName.getSelectionModel().select(newTagObject.getName());
-                ReloadControl.reload(true, GUINode.LEFTPANE);
+                Control.getReloadControl().reload(true, GUINode.LEFTPANE);
             }
         });
     }
@@ -78,7 +76,7 @@ public abstract class RightPaneEvent {
         RightPane.getContextMenu().hide();
     }
     private static void onRightClick(MouseEvent event) {
-        SelectionControl.addDataObject(FocusControl.getCurrentFocus());
+        Control.getSelectionControl().addDataObject(Control.getFocusControl().getCurrentFocus());
         RightPane.getContextMenu().show(RightPane.getInstance(), event.getScreenX(), event.getScreenY());
     }
 
@@ -102,9 +100,9 @@ public abstract class RightPaneEvent {
         });
 
         RightPane.getContextMenu().getMenuRemove().setOnAction(event -> {
-            SelectionControl.removeTagObjectSelection();
+            Control.getSelectionControl().removeTagObjectSelection();
             TagControl.remove(TagControl.getTagObject(RightPane.getListView().getSelectionModel().getSelectedItem()));
-            ReloadControl.reload(true, GUINode.RIGHTPANE);
+            Control.getReloadControl().reload(true, GUINode.RIGHTPANE);
         });
     }
 

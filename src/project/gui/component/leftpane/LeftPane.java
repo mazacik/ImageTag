@@ -9,7 +9,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
-import project.control.FilterControl;
+import project.control.Control;
 import project.database.control.TagControl;
 import project.gui.custom.specific.LeftPaneContextMenu;
 import project.gui.event.leftpane.ColoredTextEvent;
@@ -17,11 +17,9 @@ import project.gui.event.leftpane.ColoredTextEvent;
 import java.util.ArrayList;
 
 public abstract class LeftPane {
-    /* components */
     private static final BorderPane _this = new BorderPane();
     private static final TreeView<ColoredText> treeView = new TreeView(new TreeItem());
 
-    /* initialize */
     public static void initialize() {
         treeView.setShowRoot(false);
         LeftPane.setCellFactory();
@@ -32,7 +30,6 @@ public abstract class LeftPane {
         _this.setCenter(treeView);
     }
 
-    /* public */
     public static void reload() {
         ObservableList<TreeItem<ColoredText>> treeViewItems = treeView.getRoot().getChildren();
         treeViewItems.clear();
@@ -40,18 +37,18 @@ public abstract class LeftPane {
         ArrayList<String> groupNames = TagControl.getGroups();
         for (String groupName : groupNames) {
             TreeItem groupTreeItem;
-            if (FilterControl.isGroupWhitelisted(groupName)) {
+            if (Control.getFilterControl().isGroupWhitelisted(groupName)) {
                 groupTreeItem = new TreeItem(new ColoredText(groupName, Color.GREEN));
-            } else if (FilterControl.isGroupBlacklisted(groupName)) {
+            } else if (Control.getFilterControl().isGroupBlacklisted(groupName)) {
                 groupTreeItem = new TreeItem(new ColoredText(groupName, Color.RED));
             } else {
                 groupTreeItem = new TreeItem(new ColoredText(groupName, Color.BLACK));
             }
 
             for (String tagName : TagControl.getNames(groupName)) {
-                if (FilterControl.isTagObjectWhitelisted(groupName, tagName)) {
+                if (Control.getFilterControl().isTagObjectWhitelisted(groupName, tagName)) {
                     groupTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.GREEN)));
-                } else if (FilterControl.isTagObjectBlacklisted(groupName, tagName)) {
+                } else if (Control.getFilterControl().isTagObjectBlacklisted(groupName, tagName)) {
                     groupTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.RED)));
                 } else {
                     groupTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.BLACK)));
@@ -65,7 +62,6 @@ public abstract class LeftPane {
         treeView.refresh();
     }
 
-    /* private */
     private static void setCellFactory() {
         treeView.setCellFactory(treeView -> new TreeCell<>() {
             @Override
@@ -91,7 +87,6 @@ public abstract class LeftPane {
         });
     }
 
-    /* get */
     public static Region getInstance() {
         return _this;
     }

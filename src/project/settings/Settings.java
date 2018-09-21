@@ -4,7 +4,6 @@ import java.io.*;
 import java.util.Properties;
 
 public abstract class Settings {
-    /* vars */
     private static String path_source;
     private static String path_cache;
     private static String path_data;
@@ -15,7 +14,6 @@ public abstract class Settings {
 
     private static String settingsFilePath = "JavaExplorer.ini";
 
-    /* public */
     public static boolean readFromFile(Class main) {
         Properties properties = new Properties();
         InputStream fileInputStream;
@@ -53,7 +51,6 @@ public abstract class Settings {
         }
     }
 
-    /* get */
     public static int getGalleryIconSizeMax() {
         return galleryIconSizeMax;
     }
@@ -73,7 +70,6 @@ public abstract class Settings {
         return path_data;
     }
 
-    /* set */
     public static void setGalleryIconSizeMax(int galleryIconSizeMax) {
         Settings.galleryIconSizeMax = galleryIconSizeMax;
     }

@@ -7,75 +7,82 @@ import project.database.object.TagObject;
 import project.gui.component.GUINode;
 import project.gui.component.toppane.TopPane;
 
-public abstract class FilterControl {
-    /* vars */
-    private static final DataCollection dataCollectionFiltered = new DataCollection();
+public class FilterControl {
+    private final DataCollection dataCollectionFiltered;
+    private final TagCollection whitelist;
+    private final TagCollection blacklist;
 
-    private static final TagCollection whitelist = new TagCollection();
-    private static final TagCollection blacklist = new TagCollection();
+    private FilterMode whitelistMode;
+    private FilterMode blacklistMode;
+    private Filter currentFilter;
 
-    private static FilterMode whitelistMode = FilterMode.All;
-    private static FilterMode blacklistMode = FilterMode.Any;
+    public FilterControl() {
+        dataCollectionFiltered = new DataCollection();
 
-    private static Filter currentFilter = Filter.SHOW_EVERYTHING;
+        whitelist = new TagCollection();
+        blacklist = new TagCollection();
 
-    /* public */
-    public static void doWork() {
-        currentFilter.apply();
-        ReloadControl.reload(GUINode.GALLERYPANE);
+        whitelistMode = FilterMode.All;
+        blacklistMode = FilterMode.Any;
+
+        currentFilter = Filter.SHOW_EVERYTHING;
     }
 
-    public static void whitelistTagObject(TagObject tagObject) {
-        if (!FilterControl.isTagObjectWhitelisted(tagObject)) {
+    public void doWork() {
+        currentFilter.apply();
+        Control.getReloadControl().reload(GUINode.GALLERYPANE);
+    }
+
+    public void whitelistTagObject(TagObject tagObject) {
+        if (!isTagObjectWhitelisted(tagObject)) {
             whitelist.add(tagObject);
             blacklist.remove(tagObject);
             currentFilter = Filter.CUSTOM;
         }
     }
-    public static void blacklistTagObject(TagObject tagObject) {
-        if (!FilterControl.isTagObjectBlacklisted(tagObject)) {
+    public void blacklistTagObject(TagObject tagObject) {
+        if (!isTagObjectBlacklisted(tagObject)) {
             whitelist.remove(tagObject);
             blacklist.add(tagObject);
             currentFilter = Filter.CUSTOM;
         }
     }
-    public static void unlistTagObject(TagObject tagObject) {
+    public void unlistTagObject(TagObject tagObject) {
         whitelist.remove(tagObject);
         blacklist.remove(tagObject);
         currentFilter = Filter.CUSTOM;
     }
 
-    public static void whitelistGroup(String group) {
+    public void whitelistGroup(String group) {
         for (String name : TagControl.getNames(group)) {
-            FilterControl.whitelistTagObject(TagControl.getTagObject(group, name));
+            whitelistTagObject(TagControl.getTagObject(group, name));
         }
     }
-    public static void blacklistGroup(String group) {
+    public void blacklistGroup(String group) {
         for (String name : TagControl.getNames(group)) {
-            FilterControl.blacklistTagObject(TagControl.getTagObject(group, name));
+            blacklistTagObject(TagControl.getTagObject(group, name));
         }
     }
-    public static void unlistGroup(String group) {
+    public void unlistGroup(String group) {
         for (String name : TagControl.getNames(group)) {
-            FilterControl.unlistTagObject(TagControl.getTagObject(group, name));
+            unlistTagObject(TagControl.getTagObject(group, name));
         }
     }
 
-    /* boolean */
-    public static boolean isGroupWhitelisted(String group) {
+    public boolean isGroupWhitelisted(String group) {
         boolean value = true;
         for (String name : TagControl.getNames(group)) {
-            if (!FilterControl.isTagObjectWhitelisted(group, name)) {
+            if (!isTagObjectWhitelisted(group, name)) {
                 value = false;
                 break;
             }
         }
         return value;
     }
-    public static boolean isGroupBlacklisted(String group) {
+    public boolean isGroupBlacklisted(String group) {
         boolean value = true;
         for (String name : TagControl.getNames(group)) {
-            if (!FilterControl.isTagObjectBlacklisted(group, name)) {
+            if (!isTagObjectBlacklisted(group, name)) {
                 value = false;
                 break;
             }
@@ -83,40 +90,38 @@ public abstract class FilterControl {
         return value;
     }
 
-    public static boolean isTagObjectWhitelisted(TagObject tagObject) {
+    public boolean isTagObjectWhitelisted(TagObject tagObject) {
         return whitelist.contains(tagObject);
     }
-    public static boolean isTagObjectWhitelisted(String group, String name) {
+    public boolean isTagObjectWhitelisted(String group, String name) {
         return whitelist.contains(TagControl.getTagObject(group, name));
     }
-    public static boolean isTagObjectBlacklisted(TagObject tagObject) {
+    public boolean isTagObjectBlacklisted(TagObject tagObject) {
         return blacklist.contains(tagObject);
     }
-    public static boolean isTagObjectBlacklisted(String group, String name) {
+    public boolean isTagObjectBlacklisted(String group, String name) {
         return blacklist.contains(TagControl.getTagObject(group, name));
     }
 
-    /* get */
-    public static DataCollection getCollection() {
+    public DataCollection getCollection() {
         return dataCollectionFiltered;
     }
 
-    public static TagCollection getWhitelist() {
+    public TagCollection getWhitelist() {
         return whitelist;
     }
-    public static TagCollection getBlacklist() {
+    public TagCollection getBlacklist() {
         return blacklist;
     }
 
-    public static FilterMode getWhitelistMode() {
+    public FilterMode getWhitelistMode() {
         return whitelistMode;
     }
-    public static FilterMode getBlacklistMode() {
+    public FilterMode getBlacklistMode() {
         return blacklistMode;
     }
 
-    /* set */
-    public static void setFilter(Filter filter) {
+    public void setFilter(Filter filter) {
         currentFilter = filter;
         doWork();
 
@@ -142,10 +147,15 @@ public abstract class FilterControl {
         }
     }
 
-    public static void setWhitelistMode(FilterMode whitelistMode) {
-        FilterControl.whitelistMode = whitelistMode;
+    public void setWhitelistMode(FilterMode whitelistMode) {
+        this.whitelistMode = whitelistMode;
     }
-    public static void setBlacklistMode(FilterMode blacklistMode) {
-        FilterControl.blacklistMode = blacklistMode;
+    public void setBlacklistMode(FilterMode blacklistMode) {
+        this.blacklistMode = blacklistMode;
+    }
+
+    public enum FilterMode {
+        Any,
+        All
     }
 }

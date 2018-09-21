@@ -5,7 +5,6 @@ import org.apache.commons.text.WordUtils;
 import java.util.Comparator;
 
 public class TagObject {
-    /* vars */
     private String group;
     private String name;
 
