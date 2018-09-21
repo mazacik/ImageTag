@@ -4,8 +4,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
-import project.control.Control;
-import project.database.control.TagControl;
+import project.control.MainControl;
+import project.control.TagControl;
 import project.database.object.TagObject;
 import project.gui.component.GUINode;
 import project.gui.component.rightpane.RightPane;
@@ -39,7 +39,7 @@ public abstract class RightPaneEvent {
         });
         btnAdd.setOnAction(event -> {
             RightPane.addTagToSelection();
-            Control.getReloadControl().reload(true, GUINode.RIGHTPANE);
+            MainControl.getReloadControl().reload(true, GUINode.RIGHTPANE);
         });
 
         RightPane.getBtnNew().setOnAction(event -> {
@@ -52,7 +52,7 @@ public abstract class RightPaneEvent {
                 String group = value.toString();
                 cbName.getItems().setAll(TagControl.getNames(group));
                 cbName.getSelectionModel().select(newTagObject.getName());
-                Control.getReloadControl().reload(true, GUINode.LEFTPANE);
+                MainControl.getReloadControl().reload(true, GUINode.LEFTPANE);
             }
         });
     }
@@ -76,7 +76,7 @@ public abstract class RightPaneEvent {
         RightPane.getContextMenu().hide();
     }
     private static void onRightClick(MouseEvent event) {
-        Control.getSelectionControl().addDataObject(Control.getFocusControl().getCurrentFocus());
+        MainControl.getSelectionControl().addDataObject(MainControl.getFocusControl().getCurrentFocus());
         RightPane.getContextMenu().show(RightPane.getInstance(), event.getScreenX(), event.getScreenY());
     }
 
@@ -100,9 +100,9 @@ public abstract class RightPaneEvent {
         });
 
         RightPane.getContextMenu().getMenuRemove().setOnAction(event -> {
-            Control.getSelectionControl().removeTagObjectSelection();
+            MainControl.getSelectionControl().removeTagObjectSelection();
             TagControl.remove(TagControl.getTagObject(RightPane.getListView().getSelectionModel().getSelectedItem()));
-            Control.getReloadControl().reload(true, GUINode.RIGHTPANE);
+            MainControl.getReloadControl().reload(true, GUINode.RIGHTPANE);
         });
     }
 

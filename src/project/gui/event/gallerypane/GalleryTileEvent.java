@@ -1,7 +1,7 @@
 package project.gui.event.gallerypane;
 
 import javafx.scene.input.MouseEvent;
-import project.control.Control;
+import project.control.MainControl;
 import project.database.object.DataObject;
 import project.gui.GUIInstance;
 import project.gui.component.gallerypane.GalleryTile;
@@ -27,14 +27,14 @@ public abstract class GalleryTileEvent {
     }
     private static void onLeftClick(GalleryTile sender) {
         DataObject dataObject = sender.getParentDataObject();
-        Control.getFocusControl().setFocus(dataObject);
-        Control.getSelectionControl().swapSelectionStateOf(dataObject);
+        MainControl.getFocusControl().setFocus(dataObject);
+        MainControl.getSelectionControl().swapSelectionStateOf(dataObject);
         GUIInstance.getDataObjectContextMenu().hide();
     }
     private static void onRightClick(GalleryTile sender, MouseEvent event) {
         DataObject dataObject = sender.getParentDataObject();
-        Control.getFocusControl().setFocus(dataObject);
-        Control.getSelectionControl().addDataObject(dataObject);
+        MainControl.getFocusControl().setFocus(dataObject);
+        MainControl.getSelectionControl().addDataObject(dataObject);
         GUIInstance.getDataObjectContextMenu().show(sender, event);
     }
 }

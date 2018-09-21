@@ -9,8 +9,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
-import project.control.Control;
-import project.database.control.TagControl;
+import project.control.MainControl;
+import project.control.TagControl;
 import project.gui.custom.specific.LeftPaneContextMenu;
 import project.gui.event.leftpane.ColoredTextEvent;
 
@@ -37,18 +37,18 @@ public abstract class LeftPane {
         ArrayList<String> groupNames = TagControl.getGroups();
         for (String groupName : groupNames) {
             TreeItem groupTreeItem;
-            if (Control.getFilterControl().isGroupWhitelisted(groupName)) {
+            if (MainControl.getFilterControl().isGroupWhitelisted(groupName)) {
                 groupTreeItem = new TreeItem(new ColoredText(groupName, Color.GREEN));
-            } else if (Control.getFilterControl().isGroupBlacklisted(groupName)) {
+            } else if (MainControl.getFilterControl().isGroupBlacklisted(groupName)) {
                 groupTreeItem = new TreeItem(new ColoredText(groupName, Color.RED));
             } else {
                 groupTreeItem = new TreeItem(new ColoredText(groupName, Color.BLACK));
             }
 
             for (String tagName : TagControl.getNames(groupName)) {
-                if (Control.getFilterControl().isTagObjectWhitelisted(groupName, tagName)) {
+                if (MainControl.getFilterControl().isTagObjectWhitelisted(groupName, tagName)) {
                     groupTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.GREEN)));
-                } else if (Control.getFilterControl().isTagObjectBlacklisted(groupName, tagName)) {
+                } else if (MainControl.getFilterControl().isTagObjectBlacklisted(groupName, tagName)) {
                     groupTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.RED)));
                 } else {
                     groupTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.BLACK)));

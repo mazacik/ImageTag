@@ -5,9 +5,9 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import org.apache.commons.io.FilenameUtils;
 import project.Main;
-import project.control.Control;
-import project.database.control.DataControl;
-import project.database.control.TagControl;
+import project.control.DataControl;
+import project.control.MainControl;
+import project.control.TagControl;
 import project.database.object.DataCollection;
 import project.database.object.DataObject;
 import project.database.object.TagCollection;
@@ -93,7 +93,7 @@ public class DataLoader extends Thread {
             Main.setStage(GUIInstance.getInstance());
 
             TagControl.initialize();
-            Control.getReloadControl().reloadAll(true);
+            MainControl.getReloadControl().reloadAll(true);
             GUIInstance.getInstance().show();
         });
     }

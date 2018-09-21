@@ -1,7 +1,5 @@
 package project.control;
 
-import project.database.control.DataControl;
-import project.database.control.TagControl;
 import project.database.object.DataCollection;
 import project.database.object.DataObject;
 import project.database.object.TagCollection;
@@ -10,20 +8,20 @@ import project.database.object.TagObject;
 public enum Filter {
     SHOW_EVERYTHING {
         public void apply() {
-            FilterControl filterControl = Control.getFilterControl();
+            FilterControl filterControl = MainControl.getFilterControl();
             filterControl.getWhitelist().clear();
             filterControl.getBlacklist().clear();
-            filterControl.getCollection().setAll(DataControl.getCollection());
+            filterControl.getCollection().setAll(MainControl.getDataControl().getCollection());
         }
     },
     SHOW_UNTAGGED {
         public void apply() {
-            FilterControl filterControl = Control.getFilterControl();
+            FilterControl filterControl = MainControl.getFilterControl();
             filterControl.getWhitelist().clear();
-            filterControl.getBlacklist().setAll(TagControl.getCollection());
+            filterControl.getBlacklist().setAll(MainControl.getTagControl().getCollection());
             DataCollection dataCollectionFiltered = filterControl.getCollection();
             dataCollectionFiltered.clear();
-            for (DataObject dataObject : DataControl.getCollection()) {
+            for (DataObject dataObject : MainControl.getDataControl().getCollection()) {
                 if (dataObject.getTagCollection().size() == 0)
                     dataCollectionFiltered.add(dataObject);
             }
@@ -31,12 +29,12 @@ public enum Filter {
     },
     SHOW_MAX_X_TAGS {
         public void apply() {
-            FilterControl filterControl = Control.getFilterControl();
+            FilterControl filterControl = MainControl.getFilterControl();
             filterControl.getWhitelist().clear();
             filterControl.getBlacklist().clear();
             DataCollection dataCollectionFiltered = filterControl.getCollection();
             dataCollectionFiltered.clear();
-            for (DataObject dataObject : DataControl.getCollection()) {
+            for (DataObject dataObject : MainControl.getDataControl().getCollection()) {
                 if (dataObject.getTagCollection().size() <= maxTagsValue) {
                     dataCollectionFiltered.add(dataObject);
                 }
@@ -45,10 +43,10 @@ public enum Filter {
     },
     CUSTOM {
         public void apply() {
-            FilterControl filterControl = Control.getFilterControl();
+            FilterControl filterControl = MainControl.getFilterControl();
             TagCollection whitelist = filterControl.getWhitelist();
             TagCollection blacklist = filterControl.getBlacklist();
-            DataCollection dataCollection = DataControl.getCollection();
+            DataCollection dataCollection = MainControl.getDataControl().getCollection();
             DataCollection dataCollectionFiltered = filterControl.getCollection();
 
             if (whitelist.isEmpty() && blacklist.isEmpty()) {
@@ -74,7 +72,7 @@ public enum Filter {
     }
 
     private static boolean isWhitelistOk(TagCollection whitelist, TagCollection tagCollection) {
-        FilterControl.FilterMode whitelistMode = Control.getFilterControl().getWhitelistMode();
+        FilterControl.FilterMode whitelistMode = MainControl.getFilterControl().getWhitelistMode();
         if (whitelist.isEmpty()) {
             return true;
         } else if (whitelistMode.equals(FilterControl.FilterMode.All) && tagCollection.containsAll(whitelist)) {
@@ -90,7 +88,7 @@ public enum Filter {
         return false;
     }
     private static boolean isBlacklistOk(TagCollection blacklist, TagCollection tagCollection) {
-        FilterControl.FilterMode blacklistMode = Control.getFilterControl().getBlacklistMode();
+        FilterControl.FilterMode blacklistMode = MainControl.getFilterControl().getBlacklistMode();
         if (blacklist.isEmpty()) {
             return true;
         } else if (blacklistMode.equals(FilterControl.FilterMode.All) && tagCollection.containsAll(blacklist)) {

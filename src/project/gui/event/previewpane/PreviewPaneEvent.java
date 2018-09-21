@@ -3,7 +3,7 @@ package project.gui.event.previewpane;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Region;
-import project.control.Control;
+import project.control.MainControl;
 import project.gui.GUIInstance;
 import project.gui.component.GUINode;
 import project.gui.component.previewpane.PreviewPane;
@@ -26,7 +26,7 @@ public abstract class PreviewPaneEvent {
                     contextMenu.hide();
                     break;
                 case SECONDARY:
-                    Control.getSelectionControl().addDataObject(Control.getFocusControl().getCurrentFocus());
+                    MainControl.getSelectionControl().addDataObject(MainControl.getFocusControl().getCurrentFocus());
                     contextMenu.show(previewPane, event.getScreenX(), event.getScreenY());
                     break;
                 default:
@@ -37,7 +37,7 @@ public abstract class PreviewPaneEvent {
     private static void onResize() {
         final Canvas canvas = PreviewPane.getCanvas();
         ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) ->
-                Control.getReloadControl().reload(true, GUINode.PREVIEWPANE);
+                MainControl.getReloadControl().reload(true, GUINode.PREVIEWPANE);
         canvas.widthProperty().addListener(previewPaneSizeListener);
         canvas.heightProperty().addListener(previewPaneSizeListener);
     }

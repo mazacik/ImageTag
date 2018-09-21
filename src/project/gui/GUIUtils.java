@@ -1,32 +1,6 @@
 package project.gui;
 
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
-import javafx.scene.control.SplitPane;
-import javafx.scene.layout.Region;
-import project.control.Control;
-import project.gui.component.GUINode;
-import project.gui.component.gallerypane.GalleryPane;
-import project.gui.component.previewpane.PreviewPane;
-
 public abstract class GUIUtils {
-    private static final Region galleryPane = GalleryPane.getInstance();
-    private static final Region previewPane = PreviewPane.getInstance();
-    private static final SplitPane splitPane = GUIInstance.getSplitPane();
-    private static final ObservableList<Node> splitPaneItems = splitPane.getItems();
 
-    public static void swapDisplayMode() {
-        double[] dividerPositions = splitPane.getDividerPositions();
-        if (splitPaneItems.contains(galleryPane)) {
-            splitPaneItems.set(splitPaneItems.indexOf(galleryPane), previewPane);
-            Control.getReloadControl().reload(GUINode.PREVIEWPANE);
-        } else {
-            splitPaneItems.set(splitPaneItems.indexOf(previewPane), galleryPane);
-            Control.getReloadControl().reload(GUINode.PREVIEWPANE);
-        }
-        splitPane.setDividerPositions(dividerPositions);
-    }
-    public static boolean isPreviewFullscreen() {
-        return splitPaneItems.contains(previewPane);
-    }
+
 }

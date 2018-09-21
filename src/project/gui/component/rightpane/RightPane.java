@@ -7,8 +7,8 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import project.control.Control;
-import project.database.control.TagControl;
+import project.control.MainControl;
+import project.control.TagControl;
 import project.database.object.DataObject;
 import project.database.object.TagObject;
 import project.gui.component.GUINode;
@@ -70,28 +70,28 @@ public abstract class RightPane {
 
         if (!group.isEmpty() && !name.isEmpty()) {
             TagObject tagObject = TagControl.getTagObject(group, name);
-            if (Control.getSelectionControl().isSelectionEmpty()) {
-                DataObject currentFocusedItem = Control.getFocusControl().getCurrentFocus();
+            if (MainControl.getSelectionControl().isSelectionEmpty()) {
+                DataObject currentFocusedItem = MainControl.getFocusControl().getCurrentFocus();
                 if (currentFocusedItem != null) {
                     currentFocusedItem.getTagCollection().add(tagObject);
                 }
             } else {
-                Control.getSelectionControl().addTagObject(tagObject);
+                MainControl.getSelectionControl().addTagObject(tagObject);
             }
-            Control.getReloadControl().reload(GUINode.RIGHTPANE);
+            MainControl.getReloadControl().reload(GUINode.RIGHTPANE);
         }
     }
     public static void reload() {
         ArrayList<String> sharedTags = new ArrayList<>();
-        if (Control.getSelectionControl().isSelectionEmpty() || Control.getSelectionControl().isSelectionSingleObject()) {
-            DataObject currentFocusedItem = Control.getFocusControl().getCurrentFocus();
+        if (MainControl.getSelectionControl().isSelectionEmpty() || MainControl.getSelectionControl().isSelectionSingleObject()) {
+            DataObject currentFocusedItem = MainControl.getFocusControl().getCurrentFocus();
             if (currentFocusedItem != null) {
                 for (TagObject tagObject : currentFocusedItem.getTagCollection()) {
                     sharedTags.add(tagObject.getGroupAndName());
                 }
             }
         } else {
-            for (TagObject tagObject : Control.getSelectionControl().getIntersectingTags()) {
+            for (TagObject tagObject : MainControl.getSelectionControl().getIntersectingTags()) {
                 sharedTags.add(tagObject.getGroupAndName());
             }
         }

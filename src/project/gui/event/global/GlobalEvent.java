@@ -1,8 +1,7 @@
 package project.gui.event.global;
 
-import project.control.Control;
+import project.control.MainControl;
 import project.gui.GUIInstance;
-import project.gui.GUIUtils;
 
 public abstract class GlobalEvent {
     public static void initialize() {
@@ -13,24 +12,24 @@ public abstract class GlobalEvent {
         GUIInstance.getInstance().getScene().setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case Q:
-                    Control.getSelectionControl().swapSelectionStateOf(Control.getFocusControl().getCurrentFocus());
+                    MainControl.getSelectionControl().swapSelectionStateOf(MainControl.getFocusControl().getCurrentFocus());
                     break;
                 case R:
-                    Control.getSelectionControl().setRandomValidDataObject();
+                    MainControl.getSelectionControl().setRandomValidDataObject();
                     break;
                 case F12:
-                    GUIUtils.swapDisplayMode();
+                    GUIInstance.swapDisplayMode();
                     break;
                 case W:
                 case A:
                 case S:
                 case D:
-                    Control.getFocusControl().moveFocusByKeyCode(event.getCode());
+                    MainControl.getFocusControl().moveFocusByKeyCode(event.getCode());
                     break;
                 default:
                     break;
             }
-            Control.getReloadControl().doReload();
+            MainControl.getReloadControl().doReload();
         });
     }
 }

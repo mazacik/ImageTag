@@ -1,7 +1,6 @@
-package project.database.control;
+package project.control;
 
 import javafx.scene.control.TreeCell;
-import project.control.Control;
 import project.database.object.DataCollection;
 import project.database.object.DataObject;
 import project.database.object.TagCollection;
@@ -13,54 +12,58 @@ import project.gui.custom.specific.TagEditor;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public abstract class TagControl {
-    private static final TagCollection collection = new TagCollection();
+public class TagControl {
+    private final TagCollection collection;
 
-    public static void initialize() {
-        DataCollection dataCollection = DataControl.getCollection();
+    TagControl() {
+        collection = new TagCollection();
+    }
+
+    public void initialize() {
+        DataCollection dataCollection = MainControl.getDataControl().getCollection();
         for (DataObject dataIterator : dataCollection) {
             TagCollection tagCollection = dataIterator.getTagCollection();
             for (TagObject tagIterator : tagCollection) {
                 if (!collection.contains(tagIterator)) {
                     collection.add(tagIterator);
                 } else {
-                    tagCollection.set(tagCollection.indexOf(tagIterator), TagControl.getTagObject(tagIterator));
+                    tagCollection.set(tagCollection.indexOf(tagIterator), getTagObject(tagIterator));
                 }
             }
         }
-        Control.getFilterControl().getCollection().setAll(dataCollection);
+        MainControl.getFilterControl().getCollection().setAll(dataCollection);
     }
 
-    public static boolean add(TagObject tagObject) {
+    public boolean add(TagObject tagObject) {
         if (collection.add(tagObject)) {
-            //does this not need FilterControl.doWork() ?
-            Control.getReloadControl().reload(GUINode.LEFTPANE, GUINode.RIGHTPANE);
+            //does this not need FilterControl.applyFilter() ?
+            MainControl.getReloadControl().reload(GUINode.LEFTPANE, GUINode.RIGHTPANE);
             return true;
         }
         return false;
     }
-    public static boolean remove(TagObject tagObject) {
+    public boolean remove(TagObject tagObject) {
         if (collection.remove(tagObject)) {
-            Control.getFilterControl().unlistTagObject(tagObject);
-            Control.getFilterControl().doWork();
-            Control.getReloadControl().reload(GUINode.LEFTPANE, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
+            MainControl.getFilterControl().unlistTagObject(tagObject);
+            MainControl.getFilterControl().applyFilter();
+            MainControl.getReloadControl().reload(GUINode.LEFTPANE, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
             return true;
         }
         return false;
     }
-    public static boolean edit(TagObject tagObject) {
+    public boolean edit(TagObject tagObject) {
         TagObject newTagObject = new TagEditor(tagObject).getResult();
         if (newTagObject != null) {
-            TagControl.getTagObject(tagObject).setValue(newTagObject.getGroup(), newTagObject.getName());
+            getTagObject(tagObject).setValue(newTagObject.getGroup(), newTagObject.getName());
             // ^ this relies on the value to change everywhere
             collection.sort();
-            Control.getReloadControl().reload(GUINode.LEFTPANE, GUINode.RIGHTPANE);
+            MainControl.getReloadControl().reload(GUINode.LEFTPANE, GUINode.RIGHTPANE);
             return true;
         }
         return false;
     }
 
-    public static TagObject getTagObject(String group, String name) {
+    public TagObject getTagObject(String group, String name) {
         for (TagObject iterator : collection) {
             String iteratorGroup = iterator.getGroup();
             String iteratorName = iterator.getName();
@@ -70,18 +73,18 @@ public abstract class TagControl {
         }
         return null;
     }
-    public static TagObject getTagObject(TagObject tagObject) {
+    public TagObject getTagObject(TagObject tagObject) {
         String tagObjectGroup = tagObject.getGroup();
         String tagObjectName = tagObject.getName();
-        return TagControl.getTagObject(tagObjectGroup, tagObjectName);
+        return getTagObject(tagObjectGroup, tagObjectName);
     }
-    public static TagObject getTagObject(String groupAndName) {
+    public TagObject getTagObject(String groupAndName) {
         String[] split = groupAndName.split("-");
         String tagObjectGroup = split[0].trim();
         String tagObjectName = split[1].trim();
-        return TagControl.getTagObject(tagObjectGroup, tagObjectName);
+        return getTagObject(tagObjectGroup, tagObjectName);
     }
-    public static TagObject getTagObject(TreeCell<ColoredText> treeCell) {
+    public TagObject getTagObject(TreeCell<ColoredText> treeCell) {
         if (treeCell == null) return null;
         String tagObjectGroup;
         try {
@@ -90,10 +93,10 @@ public abstract class TagControl {
             return null;
         }
         String tagObjectName = treeCell.getText();
-        return TagControl.getTagObject(tagObjectGroup, tagObjectName);
+        return getTagObject(tagObjectGroup, tagObjectName);
     }
 
-    public static ArrayList<String> getGroups() {
+    public ArrayList<String> getGroups() {
         ArrayList<String> groups = new ArrayList<>();
         for (TagObject iterator : collection) {
             if (!groups.contains(iterator.getGroup())) {
@@ -103,7 +106,7 @@ public abstract class TagControl {
         groups.sort(Comparator.naturalOrder());
         return groups;
     }
-    public static ArrayList<String> getNames(String group) {
+    public ArrayList<String> getNames(String group) {
         ArrayList<String> names = new ArrayList<>();
         for (TagObject iterator : collection) {
             String iteratorGroup = iterator.getGroup();
@@ -115,7 +118,7 @@ public abstract class TagControl {
         return names;
     }
 
-    public static TagCollection getCollection() {
+    public TagCollection getCollection() {
         return collection;
     }
 }

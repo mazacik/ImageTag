@@ -9,7 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import project.Main;
-import project.control.Control;
+import project.control.MainControl;
 import project.gui.custom.generic.DirectoryChooserWindow;
 import project.settings.Settings;
 
@@ -62,7 +62,7 @@ public class IntroWindow extends Stage {
         setScene(sceneIntro);
         setResizable(false);
         centerOnScreen();
-        Control.getLogControl().out(this.getClass(), "waiting for directory input");
+        MainControl.getLogControl().out(this.getClass(), "waiting for directory input");
         show();
     }
     private void addComponentsToGrid() {

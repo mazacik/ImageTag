@@ -1,8 +1,6 @@
 package project.control;
 
 import javafx.collections.ObservableList;
-import project.database.control.DataControl;
-import project.database.control.TagControl;
 import project.database.object.DataCollection;
 import project.database.object.DataObject;
 import project.database.object.TagCollection;
@@ -15,13 +13,17 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class SelectionControl {
-    private final DataCollection dataObjects = new DataCollection();
+    private final DataCollection dataObjects;
+
+    SelectionControl() {
+        dataObjects = new DataCollection();
+    }
 
     public void addDataObject(DataObject dataObject) {
         if (!dataObjects.contains(dataObject)) {
             dataObjects.add(dataObject);
             dataObject.getGalleryTile().generateEffect();
-            Control.getReloadControl().reload(GUINode.RIGHTPANE);
+            MainControl.getReloadControl().reload(GUINode.RIGHTPANE);
         }
     }
     public void addDataObject(DataCollection dataObjectsToAdd) {
@@ -31,34 +33,34 @@ public class SelectionControl {
                 dataObject.getGalleryTile().generateEffect();
             }
         }
-        Control.getReloadControl().reload(GUINode.RIGHTPANE);
+        MainControl.getReloadControl().reload(GUINode.RIGHTPANE);
     }
     public void removeDataObject(DataObject dataObject) {
         if (dataObjects.contains(dataObject)) {
             dataObjects.remove(dataObject);
             dataObject.getGalleryTile().generateEffect();
-            Control.getReloadControl().reload(GUINode.RIGHTPANE);
+            MainControl.getReloadControl().reload(GUINode.RIGHTPANE);
         }
     }
     public void setDataObject(DataObject dataObject) {
         dataObjects.clear();
         addDataObject(dataObject);
-        Control.getFocusControl().setFocus(dataObject);
+        MainControl.getFocusControl().setFocus(dataObject);
     }
     public void clearDataObjects() {
         getCollection().clear();
-        DataObject currentFocus = Control.getFocusControl().getCurrentFocus();
-        for (Object dataObject : DataControl.getCollection()) {
+        DataObject currentFocus = MainControl.getFocusControl().getCurrentFocus();
+        for (Object dataObject : dataControl.getCollection()) {
             if (!dataObject.equals(currentFocus)) {
                 ((DataObject) dataObject).getGalleryTile().setEffect(null);
             } else {
                 ((DataObject) dataObject).getGalleryTile().generateEffect();
             }
         }
-        Control.getReloadControl().reload(GUINode.RIGHTPANE);
+        MainControl.getReloadControl().reload(GUINode.RIGHTPANE);
     }
     public void setRandomValidDataObject() {
-        ArrayList<DataObject> dataObjectsFiltered = Control.getFilterControl().getCollection();
+        ArrayList<DataObject> dataObjectsFiltered = MainControl.getFilterControl().getCollection();
         int databaseItemsFilteredSize = dataObjectsFiltered.size();
         int randomIndex = new Random().nextInt(databaseItemsFilteredSize);
         setDataObject(dataObjectsFiltered.get(randomIndex));
@@ -126,13 +128,13 @@ public class SelectionControl {
                 }
             }
             if (!tagExists) {
-                Control.getFilterControl().unlistTagObject(tagObject);
+                MainControl.getFilterControl().unlistTagObject(tagObject);
                 TagControl.remove(tagObject);
-                Control.getReloadControl().reload(GUINode.LEFTPANE);
+                MainControl.getReloadControl().reload(GUINode.LEFTPANE);
             }
         }
 
-        Control.getReloadControl().reload(GUINode.RIGHTPANE);
+        MainControl.getReloadControl().reload(GUINode.RIGHTPANE);
     }
 
     public boolean isSelectionEmpty() {

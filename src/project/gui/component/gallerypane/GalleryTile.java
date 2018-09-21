@@ -6,7 +6,7 @@ import javafx.scene.effect.ColorInput;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import project.control.Control;
+import project.control.MainControl;
 import project.database.object.DataObject;
 import project.gui.event.gallerypane.GalleryTileEvent;
 import project.settings.Settings;
@@ -29,10 +29,10 @@ public class GalleryTile extends ImageView {
     public void generateEffect() {
         boolean booleanSelection = false;
         if (parentDataObject != null) {
-            booleanSelection = Control.getSelectionControl().getCollection().contains(parentDataObject);
+            booleanSelection = MainControl.getSelectionControl().getCollection().contains(parentDataObject);
         }
 
-        DataObject currentFocus = Control.getFocusControl().getCurrentFocus();
+        DataObject currentFocus = MainControl.getFocusControl().getCurrentFocus();
         boolean booleanFocus = false;
         if (currentFocus != null) {
             booleanFocus = currentFocus.equals(parentDataObject);

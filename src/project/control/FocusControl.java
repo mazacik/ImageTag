@@ -10,7 +10,7 @@ public class FocusControl {
     private DataObject currentFocus;
     private DataObject previousFocus;
 
-    public FocusControl() {
+    FocusControl() {
         currentFocus = null;
         previousFocus = null;
     }
@@ -28,10 +28,10 @@ public class FocusControl {
             previousFocus.getGalleryTile().generateEffect();
         }
 
-        Control.getReloadControl().reload(GUINode.PREVIEWPANE);
+        MainControl.getReloadControl().reload(GUINode.PREVIEWPANE);
     }
     public void moveFocusByKeyCode(KeyCode keyCode) {
-        DataCollection dataCollectionFiltered = Control.getFilterControl().getCollection();
+        DataCollection dataCollectionFiltered = MainControl.getFilterControl().getCollection();
         DataObject currentFocus = getCurrentFocus();
         if (currentFocus == null) {
             currentFocus = dataCollectionFiltered.get(0);

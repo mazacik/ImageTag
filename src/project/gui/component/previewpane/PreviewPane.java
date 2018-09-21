@@ -5,9 +5,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
-import project.control.Control;
+import project.control.MainControl;
 import project.database.object.DataObject;
-import project.gui.GUIUtils;
+import project.gui.GUIInstance;
 import project.gui.event.previewpane.PreviewPaneEvent;
 import project.settings.Settings;
 
@@ -34,9 +34,9 @@ public abstract class PreviewPane {
     }
 
     public static void reload() {
-        if (!GUIUtils.isPreviewFullscreen()) return;
+        if (!GUIInstance.isPreviewFullscreen()) return;
 
-        DataObject currentFocus = Control.getFocusControl().getCurrentFocus();
+        DataObject currentFocus = MainControl.getFocusControl().getCurrentFocus();
         if (currentFocus == null) return;
         if (currentDataObject == null || !currentDataObject.equals(currentFocus)) {
             loadImageOfCurrentFocus();
@@ -68,7 +68,7 @@ public abstract class PreviewPane {
     }
 
     private static void loadImageOfCurrentFocus() {
-        String url = "file:" + Settings.getPath_source() + "\\" + Control.getFocusControl().getCurrentFocus().getName();
+        String url = "file:" + Settings.getPath_source() + "\\" + MainControl.getFocusControl().getCurrentFocus().getName();
         currentPreviewImage = new Image(url);
     }
 

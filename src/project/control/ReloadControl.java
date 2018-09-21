@@ -1,7 +1,5 @@
 package project.control;
 
-import project.database.control.DataControl;
-import project.database.control.TagControl;
 import project.gui.component.GUINode;
 import project.gui.component.gallerypane.GalleryPane;
 import project.gui.component.leftpane.LeftPane;
@@ -10,11 +8,19 @@ import project.gui.component.rightpane.RightPane;
 import project.gui.component.toppane.TopPane;
 
 public class ReloadControl {
-    private boolean topPane = false;
-    private boolean leftPane = false;
-    private boolean galleryPane = false;
-    private boolean previewPane = false;
-    private boolean rightPane = false;
+    private boolean topPane;
+    private boolean leftPane;
+    private boolean galleryPane;
+    private boolean previewPane;
+    private boolean rightPane;
+
+    ReloadControl() {
+        topPane = false;
+        leftPane = false;
+        galleryPane = false;
+        previewPane = false;
+        rightPane = false;
+    }
 
     public void reload(boolean instant, GUINode... nodes) {
         for (GUINode node : nodes) {
@@ -45,13 +51,13 @@ public class ReloadControl {
     }
     public void reloadAll(boolean sort) {
         if (sort) {
-            DataControl.getCollection().sort();
-            Control.getFilterControl().getCollection().sort();
-            Control.getSelectionControl().getCollection().sort();
+            MainControl.getDataControl().getCollection().sort();
+            MainControl.getFilterControl().getCollection().sort();
+            MainControl.getSelectionControl().getCollection().sort();
 
-            TagControl.getCollection().sort();
-            Control.getFilterControl().getWhitelist().sort();
-            Control.getFilterControl().getBlacklist().sort();
+            MainControl.getTagControl().getCollection().sort();
+            MainControl.getFilterControl().getWhitelist().sort();
+            MainControl.getFilterControl().getBlacklist().sort();
         }
         TopPane.reload();
         LeftPane.reload();

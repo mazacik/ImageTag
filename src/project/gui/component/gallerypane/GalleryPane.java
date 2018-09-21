@@ -6,9 +6,9 @@ import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.TilePane;
-import project.control.Control;
+import project.control.MainControl;
 import project.database.object.DataObject;
-import project.gui.GUIUtils;
+import project.gui.GUIInstance;
 import project.gui.event.gallerypane.GalleryPaneEvent;
 import project.settings.Settings;
 
@@ -38,11 +38,11 @@ public abstract class GalleryPane {
     }
 
     public static void reload() {
-        if (GUIUtils.isPreviewFullscreen()) return;
+        if (GUIInstance.isPreviewFullscreen()) return;
         double scrollbarValue = _this.getVvalue();
         ObservableList<Node> tilePaneItems = tilePane.getChildren();
         tilePaneItems.clear();
-        for (DataObject dataObject : Control.getFilterControl().getCollection()) {
+        for (DataObject dataObject : MainControl.getFilterControl().getCollection()) {
             tilePaneItems.add(dataObject.getGalleryTile());
         }
         _this.setVvalue(scrollbarValue);
@@ -65,10 +65,10 @@ public abstract class GalleryPane {
         tilePane.setHgap(hgap);
     }
     public static void adjustViewportToCurrentFocus() {
-        DataObject currentFocusedItem = Control.getFocusControl().getCurrentFocus();
+        DataObject currentFocusedItem = MainControl.getFocusControl().getCurrentFocus();
         if (currentFocusedItem == null) return;
-        if (GUIUtils.isPreviewFullscreen()) return;
-        int focusIndex = Control.getFilterControl().getCollection().indexOf(currentFocusedItem);
+        if (GUIInstance.isPreviewFullscreen()) return;
+        int focusIndex = MainControl.getFilterControl().getCollection().indexOf(currentFocusedItem);
         if (focusIndex < 0) return;
 
         ObservableList<Node> tilePaneItems = tilePane.getChildren();

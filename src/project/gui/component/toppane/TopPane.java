@@ -3,7 +3,7 @@ package project.gui.component.toppane;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
-import project.control.Control;
+import project.control.MainControl;
 import project.database.object.DataObject;
 import project.gui.event.toppane.TopPaneEvent;
 
@@ -58,7 +58,7 @@ public abstract class TopPane {
     }
 
     public static void reload() {
-        DataObject currentFocusedItem = Control.getFocusControl().getCurrentFocus();
+        DataObject currentFocusedItem = MainControl.getFocusControl().getCurrentFocus();
         if (currentFocusedItem != null) {
             infoLabelMenu.setText(currentFocusedItem.getName());
         }

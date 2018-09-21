@@ -1,14 +1,13 @@
 package project.gui.event.global;
 
-import project.control.Control;
-import project.control.Utils;
-import project.database.control.DataControl;
+import project.control.DataControl;
+import project.control.MainControl;
 import project.database.object.DataCollection;
 import project.database.object.DataObject;
 import project.gui.GUIInstance;
-import project.gui.GUIUtils;
 import project.gui.component.GUINode;
 import project.settings.Settings;
+import project.utils.ClipboardUtil;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,23 +24,23 @@ public abstract class ContextMenuEvent {
         GUIInstance.getDataObjectContextMenu().getMenuCopy().setOnAction(event -> {
             DataObject dataObject;
 
-            if (!GUIUtils.isPreviewFullscreen()) {
-                dataObject = Control.getSelectionControl().getCollection().get(0);
+            if (!GUIInstance.isPreviewFullscreen()) {
+                dataObject = MainControl.getSelectionControl().getCollection().get(0);
             } else {
-                dataObject = Control.getFocusControl().getCurrentFocus();
+                dataObject = MainControl.getFocusControl().getCurrentFocus();
             }
 
-            Utils.setClipboardContent(dataObject.getName());
+            ClipboardUtil.setClipboardContent(dataObject.getName());
         });
     }
     private static void onAction_menuDelete() {
         GUIInstance.getDataObjectContextMenu().getMenuDelete().setOnAction(event -> {
-            DataCollection dataObjectsValid = Control.getFilterControl().getCollection();
+            DataCollection dataObjectsValid = MainControl.getFilterControl().getCollection();
 
-            if (!GUIUtils.isPreviewFullscreen()) {
-                deleteDataObject(GUINode.GALLERYPANE, Control.getSelectionControl().getCollection(), dataObjectsValid);
+            if (!GUIInstance.isPreviewFullscreen()) {
+                deleteDataObject(GUINode.GALLERYPANE, MainControl.getSelectionControl().getCollection(), dataObjectsValid);
             } else {
-                deleteDataObject(GUINode.PREVIEWPANE, Control.getFocusControl().getCurrentFocus(), dataObjectsValid);
+                deleteDataObject(GUINode.PREVIEWPANE, MainControl.getFocusControl().getCurrentFocus(), dataObjectsValid);
             }
         });
     }
@@ -57,7 +56,7 @@ public abstract class ContextMenuEvent {
 
             dataObjectsValid.remove(dataObject);
             DataControl.remove(dataObject);
-            Control.getSelectionControl().getCollection().remove(dataObject);
+            MainControl.getSelectionControl().getCollection().remove(dataObject);
 
             if (dataObjectsValid.get(index - 1) != null) {
                 index--;
@@ -65,8 +64,8 @@ public abstract class ContextMenuEvent {
                 index++;
             }
 
-            Control.getFocusControl().setFocus(dataObjectsValid.get(index));
-            Control.getReloadControl().reload(true, sender);
+            MainControl.getFocusControl().setFocus(dataObjectsValid.get(index));
+            MainControl.getReloadControl().reload(true, sender);
         } catch (IOException e) {
             System.out.println("IOException: Trying to delete non-existent file; Path: " + pathString);
             e.printStackTrace();
