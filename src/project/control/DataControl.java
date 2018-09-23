@@ -1,12 +1,13 @@
 package project.control;
 
+import project.MainUtils;
 import project.database.object.DataCollection;
 import project.database.object.DataObject;
 
-public class DataControl extends ControlCollection {
+public class DataControl implements MainUtils {
     private final DataCollection collection;
 
-    DataControl() {
+    public DataControl() {
         collection = new DataCollection();
     }
 

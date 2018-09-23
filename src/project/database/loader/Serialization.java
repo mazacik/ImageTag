@@ -3,7 +3,7 @@ package project.database.loader;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import project.control.DataControl;
+import project.MainUtils;
 import project.database.object.DataCollection;
 import project.database.object.DataObject;
 import project.settings.Settings;
@@ -17,7 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 
-public abstract class Serialization {
+public abstract class Serialization implements MainUtils {
     public static void writeToDisk() {
         String path_data = Settings.getPath_data() + "\\data.json";
         GsonBuilder GSONBuilder = new GsonBuilder();
@@ -25,7 +25,7 @@ public abstract class Serialization {
         Gson GSON = GSONBuilder.create();
 
         Type databaseItemListType = new TypeToken<Collection<DataObject>>() {}.getType();
-        String JSON = GSON.toJson(DataControl.getCollection(), databaseItemListType);
+        String JSON = GSON.toJson(dataControl.getCollection(), databaseItemListType);
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(path_data, false));
             writer.write(JSON);

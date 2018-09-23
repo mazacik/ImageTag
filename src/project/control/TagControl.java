@@ -1,6 +1,7 @@
 package project.control;
 
 import javafx.scene.control.TreeCell;
+import project.MainUtils;
 import project.database.object.DataCollection;
 import project.database.object.DataObject;
 import project.database.object.TagCollection;
@@ -12,15 +13,15 @@ import project.gui.custom.specific.TagEditor;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class TagControl {
+public class TagControl implements MainUtils {
     private final TagCollection collection;
 
-    TagControl() {
+    public TagControl() {
         collection = new TagCollection();
     }
 
     public void initialize() {
-        DataCollection dataCollection = MainControl.getDataControl().getCollection();
+        DataCollection dataCollection = dataControl.getCollection();
         for (DataObject dataIterator : dataCollection) {
             TagCollection tagCollection = dataIterator.getTagCollection();
             for (TagObject tagIterator : tagCollection) {
@@ -31,22 +32,22 @@ public class TagControl {
                 }
             }
         }
-        MainControl.getFilterControl().getCollection().setAll(dataCollection);
+        filterControl.getCollection().setAll(dataCollection);
     }
 
     public boolean add(TagObject tagObject) {
         if (collection.add(tagObject)) {
             //does this not need FilterControl.applyFilter() ?
-            MainControl.getReloadControl().reload(GUINode.LEFTPANE, GUINode.RIGHTPANE);
+            reloadControl.reload(GUINode.LEFTPANE, GUINode.RIGHTPANE);
             return true;
         }
         return false;
     }
     public boolean remove(TagObject tagObject) {
         if (collection.remove(tagObject)) {
-            MainControl.getFilterControl().unlistTagObject(tagObject);
-            MainControl.getFilterControl().applyFilter();
-            MainControl.getReloadControl().reload(GUINode.LEFTPANE, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
+            filterControl.unlistTagObject(tagObject);
+            filterControl.applyFilter();
+            reloadControl.reload(GUINode.LEFTPANE, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
             return true;
         }
         return false;
@@ -57,7 +58,7 @@ public class TagControl {
             getTagObject(tagObject).setValue(newTagObject.getGroup(), newTagObject.getName());
             // ^ this relies on the value to change everywhere
             collection.sort();
-            MainControl.getReloadControl().reload(GUINode.LEFTPANE, GUINode.RIGHTPANE);
+            reloadControl.reload(GUINode.LEFTPANE, GUINode.RIGHTPANE);
             return true;
         }
         return false;

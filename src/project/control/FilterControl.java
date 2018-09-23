@@ -1,15 +1,12 @@
 package project.control;
 
+import project.MainUtils;
 import project.database.object.DataCollection;
 import project.database.object.TagCollection;
 import project.database.object.TagObject;
 import project.gui.component.GUINode;
-import project.gui.component.toppane.TopPane;
 
-public class FilterControl extends ControlCollection {
-    private final ReloadControl reloadControl;
-    private final TagControl tagControl;
-
+public class FilterControl implements MainUtils {
     private final DataCollection collection;
     private final TagCollection whitelist;
     private final TagCollection blacklist;
@@ -18,10 +15,7 @@ public class FilterControl extends ControlCollection {
     private FilterMode blacklistMode;
     private Filter currentFilter;
 
-    FilterControl() {
-        reloadControl = MainControl.getReloadControl();
-        tagControl = MainControl.getTagControl();
-
+    public FilterControl() {
         collection = new DataCollection();
         whitelist = new TagCollection();
         blacklist = new TagCollection();
@@ -129,20 +123,20 @@ public class FilterControl extends ControlCollection {
 
         switch (currentFilter) {
             case CUSTOM:
-                TopPane.getMenuUntaggedOnly().setSelected(false);
-                TopPane.getMenuMaxXTags().setSelected(false);
+                topPane.getMenuUntaggedOnly().setSelected(false);
+                topPane.getMenuMaxXTags().setSelected(false);
                 break;
             case SHOW_EVERYTHING:
-                TopPane.getMenuUntaggedOnly().setSelected(false);
-                TopPane.getMenuMaxXTags().setSelected(false);
+                topPane.getMenuUntaggedOnly().setSelected(false);
+                topPane.getMenuMaxXTags().setSelected(false);
                 break;
             case SHOW_UNTAGGED:
-                TopPane.getMenuUntaggedOnly().setSelected(true);
-                TopPane.getMenuMaxXTags().setSelected(false);
+                topPane.getMenuUntaggedOnly().setSelected(true);
+                topPane.getMenuMaxXTags().setSelected(false);
                 break;
             case SHOW_MAX_X_TAGS:
-                TopPane.getMenuUntaggedOnly().setSelected(false);
-                TopPane.getMenuMaxXTags().setSelected(true);
+                topPane.getMenuUntaggedOnly().setSelected(false);
+                topPane.getMenuMaxXTags().setSelected(true);
                 break;
             default:
                 break;

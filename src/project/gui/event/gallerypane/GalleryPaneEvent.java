@@ -1,13 +1,13 @@
 package project.gui.event.gallerypane;
 
-import project.gui.component.gallerypane.GalleryPane;
+import project.MainUtils;
 
-public abstract class GalleryPaneEvent {
-    public static void initialize() {
+public class GalleryPaneEvent implements MainUtils {
+    public GalleryPaneEvent() {
         onWidthChange();
     }
 
-    private static void onWidthChange() {
-        GalleryPane.getTilePane().widthProperty().addListener((observable, oldValue, newValue) -> GalleryPane.calculateTilePaneHGap());
+    private void onWidthChange() {
+        galleryPane.getTilePane().widthProperty().addListener((observable, oldValue, newValue) -> galleryPane.calculateTilePaneHGap());
     }
 }

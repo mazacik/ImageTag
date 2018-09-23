@@ -1,17 +1,16 @@
 package project.gui.event.gallerypane;
 
 import javafx.scene.input.MouseEvent;
-import project.control.MainControl;
+import project.MainUtils;
 import project.database.object.DataObject;
-import project.gui.GUIInstance;
 import project.gui.component.gallerypane.GalleryTile;
 
-public abstract class GalleryTileEvent {
-    public static void initialize(GalleryTile gallerytile) {
+public class GalleryTileEvent implements MainUtils {
+    public GalleryTileEvent(GalleryTile gallerytile) {
         onMouseClick(gallerytile);
     }
 
-    private static void onMouseClick(GalleryTile galleryTile) {
+    private void onMouseClick(GalleryTile galleryTile) {
         galleryTile.setOnMouseClicked(event -> {
             switch (event.getButton()) {
                 case PRIMARY:
@@ -25,16 +24,16 @@ public abstract class GalleryTileEvent {
             }
         });
     }
-    private static void onLeftClick(GalleryTile sender) {
+    private void onLeftClick(GalleryTile sender) {
         DataObject dataObject = sender.getParentDataObject();
-        MainControl.getFocusControl().setFocus(dataObject);
-        MainControl.getSelectionControl().swapSelectionStateOf(dataObject);
-        GUIInstance.getDataObjectContextMenu().hide();
+        focusControl.setFocus(dataObject);
+        selectionControl.swapSelectionStateOf(dataObject);
+        customStage.getDataObjectContextMenu().hide();
     }
-    private static void onRightClick(GalleryTile sender, MouseEvent event) {
+    private void onRightClick(GalleryTile sender, MouseEvent event) {
         DataObject dataObject = sender.getParentDataObject();
-        MainControl.getFocusControl().setFocus(dataObject);
-        MainControl.getSelectionControl().addDataObject(dataObject);
-        GUIInstance.getDataObjectContextMenu().show(sender, event);
+        focusControl.setFocus(dataObject);
+        selectionControl.addDataObject(dataObject);
+        customStage.getDataObjectContextMenu().show(sender, event);
     }
 }

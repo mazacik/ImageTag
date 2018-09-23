@@ -3,7 +3,7 @@ package project.control;
 public class LogControl {
     private final int VALUE_LENGTH;
 
-    LogControl() {
+    public LogControl() {
         VALUE_LENGTH = 16;
     }
 

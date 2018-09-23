@@ -1,27 +1,26 @@
 package project.control;
 
+import project.MainUtils;
 import project.database.object.DataCollection;
 import project.database.object.DataObject;
 import project.database.object.TagCollection;
 import project.database.object.TagObject;
 
-public enum Filter {
+public enum Filter implements MainUtils {
     SHOW_EVERYTHING {
         public void apply() {
-            FilterControl filterControl = MainControl.getFilterControl();
             filterControl.getWhitelist().clear();
             filterControl.getBlacklist().clear();
-            filterControl.getCollection().setAll(MainControl.getDataControl().getCollection());
+            filterControl.getCollection().setAll(dataControl.getCollection());
         }
     },
     SHOW_UNTAGGED {
         public void apply() {
-            FilterControl filterControl = MainControl.getFilterControl();
             filterControl.getWhitelist().clear();
-            filterControl.getBlacklist().setAll(MainControl.getTagControl().getCollection());
+            filterControl.getBlacklist().setAll(tagControl.getCollection());
             DataCollection dataCollectionFiltered = filterControl.getCollection();
             dataCollectionFiltered.clear();
-            for (DataObject dataObject : MainControl.getDataControl().getCollection()) {
+            for (DataObject dataObject : dataControl.getCollection()) {
                 if (dataObject.getTagCollection().size() == 0)
                     dataCollectionFiltered.add(dataObject);
             }
@@ -29,12 +28,11 @@ public enum Filter {
     },
     SHOW_MAX_X_TAGS {
         public void apply() {
-            FilterControl filterControl = MainControl.getFilterControl();
             filterControl.getWhitelist().clear();
             filterControl.getBlacklist().clear();
             DataCollection dataCollectionFiltered = filterControl.getCollection();
             dataCollectionFiltered.clear();
-            for (DataObject dataObject : MainControl.getDataControl().getCollection()) {
+            for (DataObject dataObject : dataControl.getCollection()) {
                 if (dataObject.getTagCollection().size() <= maxTagsValue) {
                     dataCollectionFiltered.add(dataObject);
                 }
@@ -43,10 +41,9 @@ public enum Filter {
     },
     CUSTOM {
         public void apply() {
-            FilterControl filterControl = MainControl.getFilterControl();
             TagCollection whitelist = filterControl.getWhitelist();
             TagCollection blacklist = filterControl.getBlacklist();
-            DataCollection dataCollection = MainControl.getDataControl().getCollection();
+            DataCollection dataCollection = dataControl.getCollection();
             DataCollection dataCollectionFiltered = filterControl.getCollection();
 
             if (whitelist.isEmpty() && blacklist.isEmpty()) {
@@ -72,7 +69,7 @@ public enum Filter {
     }
 
     private static boolean isWhitelistOk(TagCollection whitelist, TagCollection tagCollection) {
-        FilterControl.FilterMode whitelistMode = MainControl.getFilterControl().getWhitelistMode();
+        FilterControl.FilterMode whitelistMode = filterControl.getWhitelistMode();
         if (whitelist.isEmpty()) {
             return true;
         } else if (whitelistMode.equals(FilterControl.FilterMode.All) && tagCollection.containsAll(whitelist)) {
@@ -88,7 +85,7 @@ public enum Filter {
         return false;
     }
     private static boolean isBlacklistOk(TagCollection blacklist, TagCollection tagCollection) {
-        FilterControl.FilterMode blacklistMode = MainControl.getFilterControl().getBlacklistMode();
+        FilterControl.FilterMode blacklistMode = filterControl.getBlacklistMode();
         if (blacklist.isEmpty()) {
             return true;
         } else if (blacklistMode.equals(FilterControl.FilterMode.All) && tagCollection.containsAll(blacklist)) {

@@ -1,44 +1,40 @@
 package project.control;
 
+import project.MainUtils;
 import project.gui.component.GUINode;
-import project.gui.component.gallerypane.GalleryPane;
-import project.gui.component.leftpane.LeftPane;
-import project.gui.component.previewpane.PreviewPane;
-import project.gui.component.rightpane.RightPane;
-import project.gui.component.toppane.TopPane;
 
-public class ReloadControl {
-    private boolean topPane;
-    private boolean leftPane;
-    private boolean galleryPane;
-    private boolean previewPane;
-    private boolean rightPane;
+public class ReloadControl implements MainUtils {
+    private boolean _topPane;
+    private boolean _leftPane;
+    private boolean _galleryPane;
+    private boolean _previewPane;
+    private boolean _rightPane;
 
-    ReloadControl() {
-        topPane = false;
-        leftPane = false;
-        galleryPane = false;
-        previewPane = false;
-        rightPane = false;
+    public ReloadControl() {
+        _topPane = false;
+        _leftPane = false;
+        _galleryPane = false;
+        _previewPane = false;
+        _rightPane = false;
     }
 
     public void reload(boolean instant, GUINode... nodes) {
         for (GUINode node : nodes) {
             switch (node) {
                 case TOPPANE:
-                    topPane = true;
+                    _topPane = true;
                     break;
                 case LEFTPANE:
-                    leftPane = true;
+                    _leftPane = true;
                     break;
                 case GALLERYPANE:
-                    galleryPane = true;
+                    _galleryPane = true;
                     break;
                 case PREVIEWPANE:
-                    previewPane = true;
+                    _previewPane = true;
                     break;
                 case RIGHTPANE:
-                    rightPane = true;
+                    _rightPane = true;
                     break;
                 default:
                     break;
@@ -51,40 +47,40 @@ public class ReloadControl {
     }
     public void reloadAll(boolean sort) {
         if (sort) {
-            MainControl.getDataControl().getCollection().sort();
-            MainControl.getFilterControl().getCollection().sort();
-            MainControl.getSelectionControl().getCollection().sort();
+            dataControl.getCollection().sort();
+            filterControl.getCollection().sort();
+            selectionControl.getCollection().sort();
 
-            MainControl.getTagControl().getCollection().sort();
-            MainControl.getFilterControl().getWhitelist().sort();
-            MainControl.getFilterControl().getBlacklist().sort();
+            tagControl.getCollection().sort();
+            filterControl.getWhitelist().sort();
+            filterControl.getBlacklist().sort();
         }
-        TopPane.reload();
-        LeftPane.reload();
-        GalleryPane.reload();
-        PreviewPane.reload();
-        RightPane.reload();
+        topPane.reload();
+        leftPane.reload();
+        galleryPane.reload();
+        previewPane.reload();
+        rightPane.reload();
     }
     public void doReload() {
-        if (topPane) {
-            TopPane.reload();
-            topPane = false;
+        if (_topPane) {
+            topPane.reload();
+            _topPane = false;
         }
-        if (leftPane) {
-            LeftPane.reload();
-            leftPane = false;
+        if (_leftPane) {
+            leftPane.reload();
+            _leftPane = false;
         }
-        if (galleryPane) {
-            GalleryPane.reload();
-            galleryPane = false;
+        if (_galleryPane) {
+            galleryPane.reload();
+            _galleryPane = false;
         }
-        if (previewPane) {
-            PreviewPane.reload();
-            previewPane = false;
+        if (_previewPane) {
+            previewPane.reload();
+            _previewPane = false;
         }
-        if (rightPane) {
-            RightPane.reload();
-            rightPane = false;
+        if (_rightPane) {
+            rightPane.reload();
+            _rightPane = false;
         }
     }
 }

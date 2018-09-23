@@ -4,39 +4,31 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
-import project.control.MainControl;
+import project.MainUtils;
 import project.database.object.DataObject;
-import project.gui.GUIInstance;
-import project.gui.event.previewpane.PreviewPaneEvent;
 import project.settings.Settings;
 
-public abstract class PreviewPane {
-    private static final Pane _this = new Pane();
-    private static final Canvas canvas = new Canvas();
+public class PreviewPane extends Pane implements MainUtils {
+    private final Canvas canvas;
 
-    private static DataObject currentDataObject = null;
-    private static Image currentPreviewImage = null;
+    private DataObject currentDataObject;
+    private Image currentPreviewImage;
 
-    public static void initialize() {
-        initializeComponents();
-        initializeInstance();
-        PreviewPaneEvent.initialize();
-    }
-    private static void initializeComponents() {
+    public PreviewPane() {
+        currentDataObject = null;
+        currentPreviewImage = null;
 
-    }
-    private static void initializeInstance() {
-        canvas.widthProperty().bind(_this.widthProperty());
-        canvas.heightProperty().bind(_this.heightProperty());
+        canvas = new Canvas();
+        canvas.widthProperty().bind(this.widthProperty());
+        canvas.heightProperty().bind(this.heightProperty());
 
-        _this.getChildren().add(canvas);
+        this.getChildren().add(canvas);
     }
 
-    public static void reload() {
-        if (!GUIInstance.isPreviewFullscreen()) return;
+    public void reload() {
+        if (!isPreviewFullscreen()) return;
 
-        DataObject currentFocus = MainControl.getFocusControl().getCurrentFocus();
+        DataObject currentFocus = focusControl.getCurrentFocus();
         if (currentFocus == null) return;
         if (currentDataObject == null || !currentDataObject.equals(currentFocus)) {
             loadImageOfCurrentFocus();
@@ -63,19 +55,16 @@ public abstract class PreviewPane {
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        gc.clearRect(0, 0, _this.getWidth(), _this.getHeight());
+        gc.clearRect(0, 0, this.getWidth(), this.getHeight());
         gc.drawImage(currentPreviewImage, resultX, resultY, resultWidth, resultHeight);
     }
 
-    private static void loadImageOfCurrentFocus() {
-        String url = "file:" + Settings.getPath_source() + "\\" + MainControl.getFocusControl().getCurrentFocus().getName();
+    private void loadImageOfCurrentFocus() {
+        String url = "file:" + Settings.getPath_source() + "\\" + focusControl.getCurrentFocus().getName();
         currentPreviewImage = new Image(url);
     }
 
-    public static Canvas getCanvas() {
+    public Canvas getCanvas() {
         return canvas;
-    }
-    public static Region getInstance() {
-        return _this;
     }
 }

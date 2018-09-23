@@ -4,52 +4,42 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.TilePane;
-import project.control.MainControl;
+import project.MainUtils;
 import project.database.object.DataObject;
-import project.gui.GUIInstance;
-import project.gui.event.gallerypane.GalleryPaneEvent;
 import project.settings.Settings;
 
-public abstract class GalleryPane {
-    private static final int GALLERY_ICON_SIZE_PREF = Settings.getGalleryIconSizePref();
+public class GalleryPane extends ScrollPane implements MainUtils {
+    private final TilePane tilePane;
 
-    private static final ScrollPane _this = new ScrollPane();
-    private static final TilePane tilePane = new TilePane();
+    public GalleryPane() {
+        final int GALLERY_ICON_SIZE_PREF = Settings.getGalleryIconSizePref();
 
-    public static void initialize() {
-        initializeComponents();
-        initializeInstance();
-        GalleryPaneEvent.initialize();
-    }
-    private static void initializeComponents() {
+        tilePane = new TilePane();
         tilePane.setVgap(3);
         tilePane.setPrefTileWidth(GALLERY_ICON_SIZE_PREF);
         tilePane.setPrefTileHeight(GALLERY_ICON_SIZE_PREF);
-    }
-    private static void initializeInstance() {
-        _this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        _this.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        _this.setMinViewportWidth(GALLERY_ICON_SIZE_PREF);
-        _this.setFitToWidth(true);
 
-        _this.setContent(tilePane);
+        this.setMinViewportWidth(GALLERY_ICON_SIZE_PREF);
+        this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        this.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        this.setFitToWidth(true);
+        this.setContent(tilePane);
     }
 
-    public static void reload() {
-        if (GUIInstance.isPreviewFullscreen()) return;
-        double scrollbarValue = _this.getVvalue();
+    public void reload() {
+        if (isPreviewFullscreen()) return;
+        double scrollbarValue = this.getVvalue();
         ObservableList<Node> tilePaneItems = tilePane.getChildren();
         tilePaneItems.clear();
-        for (DataObject dataObject : MainControl.getFilterControl().getCollection()) {
+        for (DataObject dataObject : filterControl.getCollection()) {
             tilePaneItems.add(dataObject.getGalleryTile());
         }
-        _this.setVvalue(scrollbarValue);
+        this.setVvalue(scrollbarValue);
         calculateTilePaneHGap();
         adjustViewportToCurrentFocus();
     }
-    public static void calculateTilePaneHGap() {
+    public void calculateTilePaneHGap() {
         //todo fix poslednych par pixelov
         int minGap = (int) tilePane.getVgap();
         int hgap = minGap;
@@ -64,18 +54,18 @@ public abstract class GalleryPane {
 
         tilePane.setHgap(hgap);
     }
-    public static void adjustViewportToCurrentFocus() {
-        DataObject currentFocusedItem = MainControl.getFocusControl().getCurrentFocus();
+    public void adjustViewportToCurrentFocus() {
+        DataObject currentFocusedItem = focusControl.getCurrentFocus();
         if (currentFocusedItem == null) return;
-        if (GUIInstance.isPreviewFullscreen()) return;
-        int focusIndex = MainControl.getFilterControl().getCollection().indexOf(currentFocusedItem);
+        if (isPreviewFullscreen()) return;
+        int focusIndex = filterControl.getCollection().indexOf(currentFocusedItem);
         if (focusIndex < 0) return;
 
         ObservableList<Node> tilePaneItems = tilePane.getChildren();
-        int columnCount = GalleryPane.getColumnCount();
+        int columnCount = galleryPane.getColumnCount();
         int focusRow = focusIndex / columnCount;
 
-        Bounds viewportBounds = tilePane.localToScene(_this.getViewportBounds());
+        Bounds viewportBounds = tilePane.localToScene(this.getViewportBounds());
         Bounds currentFocusTileBounds = tilePaneItems.get(focusIndex).getBoundsInParent();
 
         double viewportHeight = viewportBounds.getHeight();
@@ -91,21 +81,18 @@ public abstract class GalleryPane {
         double tileBottom = currentFocusTileBounds.getMaxY();
 
         if (tileTop > viewportBottom - rowHeight) {
-            _this.setVvalue((focusRow + 1) * rowToContentRatio - viewportToContentRatio);
+            this.setVvalue((focusRow + 1) * rowToContentRatio - viewportToContentRatio);
         } else if (tileBottom - rowHeight < viewportTop) {
-            _this.setVvalue(focusRow * rowToContentRatio);
+            this.setVvalue(focusRow * rowToContentRatio);
         }
     }
 
-    public static int getColumnCount() {
+    public int getColumnCount() {
         int tilePaneWidth = (int) tilePane.getWidth() + (int) tilePane.getVgap();
         int prefTileWidth = (int) tilePane.getPrefTileWidth();
         return tilePaneWidth / prefTileWidth;
     }
-    public static TilePane getTilePane() {
+    public TilePane getTilePane() {
         return tilePane;
-    }
-    public static Region getInstance() {
-        return _this;
     }
 }

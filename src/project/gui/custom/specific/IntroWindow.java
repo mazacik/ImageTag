@@ -8,12 +8,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import project.Main;
-import project.control.MainControl;
+import project.MainUtils;
 import project.gui.custom.generic.DirectoryChooserWindow;
 import project.settings.Settings;
 
-public class IntroWindow extends Stage {
+public class IntroWindow extends Stage implements MainUtils {
     private final GridPane introPane = new GridPane();
     private final Scene sceneIntro = new Scene(introPane);
 
@@ -29,13 +28,13 @@ public class IntroWindow extends Stage {
     private final Button btnOk = new Button("OK");
 
     public IntroWindow() {
-        initializeComponents();
-        initializeInstance();
+        setDefaultValuesChildren();
+        setDefaultValues();
     }
 
-    private void initializeComponents() {
+    private void setDefaultValuesChildren() {
         setListeners();
-        addComponentsToGrid();
+        addChildrenToGrid();
 
         introPane.setPadding(new Insets(10));
         introPane.setHgap(5);
@@ -57,15 +56,15 @@ public class IntroWindow extends Stage {
             btnSource.requestFocus();
         }
     }
-    private void initializeInstance() {
+    private void setDefaultValues() {
         setTitle("JavaExplorer");
         setScene(sceneIntro);
         setResizable(false);
         centerOnScreen();
-        MainControl.getLogControl().out(this.getClass(), "waiting for directory input");
+        logControl.out(this.getClass(), "waiting for directory input");
         show();
     }
-    private void addComponentsToGrid() {
+    private void addChildrenToGrid() {
         introPane.add(lblSource, 0, 0);
         introPane.add(lblCache, 0, 1);
         introPane.add(lblData, 0, 2);
@@ -105,8 +104,8 @@ public class IntroWindow extends Stage {
             Settings.setPath_cache(tfCache.getText());
             Settings.setPath_data(tfData.getText());
             Settings.writeToFile();
-            Main.getStage().close();
-            Main.setStage(new LoadingWindow());
+            new LoadingWindow();
+            this.close();
         });
 
         ChangeListener textFieldChangeListener = (observable, oldValue, newValue) -> {

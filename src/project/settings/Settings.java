@@ -12,6 +12,9 @@ public abstract class Settings {
     private static int galleryIconSizeMin = 100;
     private static int galleryIconSizePref = 150;
 
+    private static int guiMinWidth = 800;
+    private static int guiMinHeight = 600;
+
     private static String settingsFilePath = "JavaExplorer.ini";
 
     public static boolean readFromFile(Class main) {
@@ -60,6 +63,14 @@ public abstract class Settings {
     public static int getGalleryIconSizePref() {
         return galleryIconSizePref;
     }
+
+    public static int getGuiMinWidth() {
+        return guiMinWidth;
+    }
+    public static int getGuiMinHeight() {
+        return guiMinHeight;
+    }
+
     public static String getPath_source() {
         return path_source;
     }
@@ -79,6 +90,7 @@ public abstract class Settings {
     public static void setGalleryIconSizePref(int galleryIconSizePref) {
         Settings.galleryIconSizePref = galleryIconSizePref;
     }
+
     public static void setPath_source(String path_source) {
         Settings.path_source = path_source;
     }

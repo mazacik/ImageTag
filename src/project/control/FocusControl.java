@@ -1,16 +1,16 @@
 package project.control;
 
 import javafx.scene.input.KeyCode;
+import project.MainUtils;
 import project.database.object.DataCollection;
 import project.database.object.DataObject;
 import project.gui.component.GUINode;
-import project.gui.component.gallerypane.GalleryPane;
 
-public class FocusControl {
+public class FocusControl implements MainUtils {
     private DataObject currentFocus;
     private DataObject previousFocus;
 
-    FocusControl() {
+    public FocusControl() {
         currentFocus = null;
         previousFocus = null;
     }
@@ -28,10 +28,10 @@ public class FocusControl {
             previousFocus.getGalleryTile().generateEffect();
         }
 
-        MainControl.getReloadControl().reload(GUINode.PREVIEWPANE);
+        reloadControl.reload(GUINode.PREVIEWPANE);
     }
     public void moveFocusByKeyCode(KeyCode keyCode) {
-        DataCollection dataCollectionFiltered = MainControl.getFilterControl().getCollection();
+        DataCollection dataCollectionFiltered = filterControl.getCollection();
         DataObject currentFocus = getCurrentFocus();
         if (currentFocus == null) {
             currentFocus = dataCollectionFiltered.get(0);
@@ -40,18 +40,18 @@ public class FocusControl {
 
         int newFocusPosition = dataCollectionFiltered.indexOf(currentFocus);
         if (keyCode.equals(KeyCode.W)) {
-            newFocusPosition -= GalleryPane.getColumnCount();
+            newFocusPosition -= galleryPane.getColumnCount();
         } else if (keyCode.equals(KeyCode.A)) {
             newFocusPosition -= 1;
         } else if (keyCode.equals(KeyCode.S)) {
-            newFocusPosition += GalleryPane.getColumnCount();
+            newFocusPosition += galleryPane.getColumnCount();
         } else if (keyCode.equals(KeyCode.D)) {
             newFocusPosition += 1;
         }
 
         if (newFocusPosition >= 0 && newFocusPosition < dataCollectionFiltered.size()) {
             setFocus(dataCollectionFiltered.get(newFocusPosition));
-            GalleryPane.adjustViewportToCurrentFocus();
+            galleryPane.adjustViewportToCurrentFocus();
         }
     }
 

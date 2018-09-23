@@ -1,35 +1,34 @@
 package project.gui.event.global;
 
-import project.control.MainControl;
-import project.gui.GUIInstance;
+import project.MainUtils;
 
-public abstract class GlobalEvent {
-    public static void initialize() {
+public class GlobalEvent implements MainUtils {
+    public GlobalEvent() {
         onKeyPressed();
     }
 
-    private static void onKeyPressed() {
-        GUIInstance.getInstance().getScene().setOnKeyPressed(event -> {
+    private void onKeyPressed() {
+        customStage.getScene().setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case Q:
-                    MainControl.getSelectionControl().swapSelectionStateOf(MainControl.getFocusControl().getCurrentFocus());
+                    selectionControl.swapSelectionStateOf(focusControl.getCurrentFocus());
                     break;
                 case R:
-                    MainControl.getSelectionControl().setRandomValidDataObject();
+                    selectionControl.setRandomValidDataObject();
                     break;
                 case F12:
-                    GUIInstance.swapDisplayMode();
+                    swapDisplayMode();
                     break;
                 case W:
                 case A:
                 case S:
                 case D:
-                    MainControl.getFocusControl().moveFocusByKeyCode(event.getCode());
+                    focusControl.moveFocusByKeyCode(event.getCode());
                     break;
                 default:
                     break;
             }
-            MainControl.getReloadControl().doReload();
+            reloadControl.doReload();
         });
     }
 }

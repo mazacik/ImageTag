@@ -4,14 +4,10 @@ import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import org.apache.commons.io.FilenameUtils;
-import project.Main;
-import project.control.DataControl;
-import project.control.MainControl;
-import project.control.TagControl;
+import project.MainUtils;
 import project.database.object.DataCollection;
 import project.database.object.DataObject;
 import project.database.object.TagCollection;
-import project.gui.GUIInstance;
 import project.gui.component.gallerypane.GalleryTile;
 import project.gui.custom.specific.LoadingWindow;
 import project.settings.Settings;
@@ -26,18 +22,25 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 
-public class DataLoader extends Thread {
+public class DataLoader extends Thread implements MainUtils {
     private final double GALLERY_ICON_MAX_SIZE = Settings.getGalleryIconSizeMax();
 
     private final String PATH_SOURCE = Settings.getPath_source();
     private final String PATH_CACHE = Settings.getPath_cache();
     private final String PATH_DATA = Settings.getPath_data();
 
-    private final DataCollection dataCollection = DataControl.getCollection();
+    private LoadingWindow loadingWindow;
+
+    private final DataCollection dataCollection = dataControl.getCollection();
 
     private int fileCount = 0;
     private int currentObjectIndex = 0;
     private ArrayList<File> validFiles;
+
+    public synchronized void start(LoadingWindow loadingWindow) {
+        this.loadingWindow = loadingWindow;
+        super.start();
+    }
 
     @Override
     public void run() {
@@ -58,7 +61,7 @@ public class DataLoader extends Thread {
         File path_data = new File(PATH_DATA);
         if (!path_data.exists()) path_data.mkdir();
 
-        if (!DataControl.addAll(Serialization.readFromDisk())) {
+        if (!dataControl.addAll(Serialization.readFromDisk())) {
             createDatabase();
         }
     }
@@ -88,20 +91,18 @@ public class DataLoader extends Thread {
         }
 
         Platform.runLater(() -> {
-            Main.getStage().close();
-            //Main.getLoadingWindow().close();
-            Main.setStage(GUIInstance.getInstance());
+            loadingWindow.close();
 
-            TagControl.initialize();
-            MainControl.getReloadControl().reloadAll(true);
-            GUIInstance.getInstance().show();
+            tagControl.initialize();
+            reloadControl.reloadAll(true);
+            customStage.show();
         });
     }
 
     private void createDatabase() {
         for (File file : validFiles) {
             DataObject dataObject = createDataObjectFromFile(file);
-            DataControl.add(dataObject);
+            dataControl.add(dataObject);
         }
 
         Serialization.writeToDisk();
@@ -151,8 +152,7 @@ public class DataLoader extends Thread {
         }
 
         /* update loading window label */
-        Platform.runLater(() -> ((LoadingWindow) Main.getStage()).getProgressLabel().setText("Loading item " + currentObjectIndex + " of " + fileCount + ", " + currentObjectIndex * 100 / fileCount + "% done"));
-        //Platform.runLater(() -> Main.getLoadingWindow().getProgressLabel().setText("Loading item " + currentObjectIndex + " of " + fileCount + ", " + currentObjectIndex * 100 / fileCount + "% done"));
+        Platform.runLater(() -> loadingWindow.getProgressLabel().setText("Loading item " + currentObjectIndex + " of " + fileCount + ", " + currentObjectIndex * 100 / fileCount + "% done"));
         return Objects.requireNonNullElseGet(currentObjectImage, () -> new Image("file:" + currentObjectCachePath, GALLERY_ICON_MAX_SIZE, GALLERY_ICON_MAX_SIZE, false, true));
     }
     private DataObject createDataObjectFromFile(File file) {

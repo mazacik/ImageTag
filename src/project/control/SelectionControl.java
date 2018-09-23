@@ -1,21 +1,20 @@
 package project.control;
 
 import javafx.collections.ObservableList;
+import project.MainUtils;
 import project.database.object.DataCollection;
 import project.database.object.DataObject;
 import project.database.object.TagCollection;
 import project.database.object.TagObject;
 import project.gui.component.GUINode;
-import project.gui.component.gallerypane.GalleryPane;
-import project.gui.component.rightpane.RightPane;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-public class SelectionControl {
+public class SelectionControl implements MainUtils {
     private final DataCollection dataObjects;
 
-    SelectionControl() {
+    public SelectionControl() {
         dataObjects = new DataCollection();
     }
 
@@ -23,7 +22,7 @@ public class SelectionControl {
         if (!dataObjects.contains(dataObject)) {
             dataObjects.add(dataObject);
             dataObject.getGalleryTile().generateEffect();
-            MainControl.getReloadControl().reload(GUINode.RIGHTPANE);
+            reloadControl.reload(GUINode.RIGHTPANE);
         }
     }
     public void addDataObject(DataCollection dataObjectsToAdd) {
@@ -33,23 +32,23 @@ public class SelectionControl {
                 dataObject.getGalleryTile().generateEffect();
             }
         }
-        MainControl.getReloadControl().reload(GUINode.RIGHTPANE);
+        reloadControl.reload(GUINode.RIGHTPANE);
     }
     public void removeDataObject(DataObject dataObject) {
         if (dataObjects.contains(dataObject)) {
             dataObjects.remove(dataObject);
             dataObject.getGalleryTile().generateEffect();
-            MainControl.getReloadControl().reload(GUINode.RIGHTPANE);
+            reloadControl.reload(GUINode.RIGHTPANE);
         }
     }
     public void setDataObject(DataObject dataObject) {
         dataObjects.clear();
         addDataObject(dataObject);
-        MainControl.getFocusControl().setFocus(dataObject);
+        focusControl.setFocus(dataObject);
     }
     public void clearDataObjects() {
         getCollection().clear();
-        DataObject currentFocus = MainControl.getFocusControl().getCurrentFocus();
+        DataObject currentFocus = focusControl.getCurrentFocus();
         for (Object dataObject : dataControl.getCollection()) {
             if (!dataObject.equals(currentFocus)) {
                 ((DataObject) dataObject).getGalleryTile().setEffect(null);
@@ -57,14 +56,14 @@ public class SelectionControl {
                 ((DataObject) dataObject).getGalleryTile().generateEffect();
             }
         }
-        MainControl.getReloadControl().reload(GUINode.RIGHTPANE);
+        reloadControl.reload(GUINode.RIGHTPANE);
     }
     public void setRandomValidDataObject() {
-        ArrayList<DataObject> dataObjectsFiltered = MainControl.getFilterControl().getCollection();
+        ArrayList<DataObject> dataObjectsFiltered = filterControl.getCollection();
         int databaseItemsFilteredSize = dataObjectsFiltered.size();
         int randomIndex = new Random().nextInt(databaseItemsFilteredSize);
         setDataObject(dataObjectsFiltered.get(randomIndex));
-        GalleryPane.adjustViewportToCurrentFocus();
+        galleryPane.adjustViewportToCurrentFocus();
     }
     public void swapSelectionStateOf(DataObject dataObject) {
         if (!dataObjects.contains(dataObject)) {
@@ -94,8 +93,8 @@ public class SelectionControl {
 
     public void addTagObject(TagObject tagObject) {
         if (!tagObject.isEmpty()) {
-            if (!TagControl.getCollection().contains(tagObject)) {
-                TagControl.add(tagObject);
+            if (!tagControl.getCollection().contains(tagObject)) {
+                tagControl.add(tagObject);
             }
 
             TagCollection tagCollection;
@@ -109,9 +108,9 @@ public class SelectionControl {
     }
     public void removeTagObjectSelection() {
         TagCollection tagObjectsToRemove = new TagCollection();
-        ObservableList<String> tagObjectSelection = RightPane.getListView().getSelectionModel().getSelectedItems();
+        ObservableList<String> tagObjectSelection = rightPane.getListView().getSelectionModel().getSelectedItems();
         for (String tagObject : tagObjectSelection) {
-            tagObjectsToRemove.add(TagControl.getTagObject(tagObject));
+            tagObjectsToRemove.add(tagControl.getTagObject(tagObject));
         }
 
         for (TagObject tagObject : tagObjectsToRemove) {
@@ -120,7 +119,7 @@ public class SelectionControl {
             }
 
             boolean tagExists = false;
-            DataCollection dataObjects = DataControl.getCollection();
+            DataCollection dataObjects = dataControl.getCollection();
             for (DataObject dataObject : dataObjects) {
                 if (dataObject.getTagCollection().contains(tagObject)) {
                     tagExists = true;
@@ -128,13 +127,13 @@ public class SelectionControl {
                 }
             }
             if (!tagExists) {
-                MainControl.getFilterControl().unlistTagObject(tagObject);
-                TagControl.remove(tagObject);
-                MainControl.getReloadControl().reload(GUINode.LEFTPANE);
+                filterControl.unlistTagObject(tagObject);
+                tagControl.remove(tagObject);
+                reloadControl.reload(GUINode.LEFTPANE);
             }
         }
 
-        MainControl.getReloadControl().reload(GUINode.RIGHTPANE);
+        reloadControl.reload(GUINode.RIGHTPANE);
     }
 
     public boolean isSelectionEmpty() {

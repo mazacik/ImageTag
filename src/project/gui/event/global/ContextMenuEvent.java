@@ -1,10 +1,8 @@
 package project.gui.event.global;
 
-import project.control.DataControl;
-import project.control.MainControl;
+import project.MainUtils;
 import project.database.object.DataCollection;
 import project.database.object.DataObject;
-import project.gui.GUIInstance;
 import project.gui.component.GUINode;
 import project.settings.Settings;
 import project.utils.ClipboardUtil;
@@ -14,38 +12,38 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public abstract class ContextMenuEvent {
-    public static void initialize() {
+public class ContextMenuEvent implements MainUtils {
+    public ContextMenuEvent() {
         onAction_menuCopy();
         onAction_menuDelete();
     }
 
-    private static void onAction_menuCopy() {
-        GUIInstance.getDataObjectContextMenu().getMenuCopy().setOnAction(event -> {
+    private void onAction_menuCopy() {
+        customStage.getDataObjectContextMenu().getMenuCopy().setOnAction(event -> {
             DataObject dataObject;
 
-            if (!GUIInstance.isPreviewFullscreen()) {
-                dataObject = MainControl.getSelectionControl().getCollection().get(0);
+            if (!isPreviewFullscreen()) {
+                dataObject = selectionControl.getCollection().get(0);
             } else {
-                dataObject = MainControl.getFocusControl().getCurrentFocus();
+                dataObject = focusControl.getCurrentFocus();
             }
 
             ClipboardUtil.setClipboardContent(dataObject.getName());
         });
     }
-    private static void onAction_menuDelete() {
-        GUIInstance.getDataObjectContextMenu().getMenuDelete().setOnAction(event -> {
-            DataCollection dataObjectsValid = MainControl.getFilterControl().getCollection();
+    private void onAction_menuDelete() {
+        customStage.getDataObjectContextMenu().getMenuDelete().setOnAction(event -> {
+            DataCollection dataObjectsValid = filterControl.getCollection();
 
-            if (!GUIInstance.isPreviewFullscreen()) {
-                deleteDataObject(GUINode.GALLERYPANE, MainControl.getSelectionControl().getCollection(), dataObjectsValid);
+            if (!isPreviewFullscreen()) {
+                deleteDataObject(GUINode.GALLERYPANE, selectionControl.getCollection(), dataObjectsValid);
             } else {
-                deleteDataObject(GUINode.PREVIEWPANE, MainControl.getFocusControl().getCurrentFocus(), dataObjectsValid);
+                deleteDataObject(GUINode.PREVIEWPANE, focusControl.getCurrentFocus(), dataObjectsValid);
             }
         });
     }
 
-    private static void deleteDataObject(GUINode sender, DataObject dataObject, DataCollection dataObjectsValid) {
+    private void deleteDataObject(GUINode sender, DataObject dataObject, DataCollection dataObjectsValid) {
         int index = dataObjectsValid.indexOf(dataObject);
 
         String pathString = Settings.getPath_source() + "\\" + dataObject.getName();
@@ -55,8 +53,8 @@ public abstract class ContextMenuEvent {
             Files.delete(path);
 
             dataObjectsValid.remove(dataObject);
-            DataControl.remove(dataObject);
-            MainControl.getSelectionControl().getCollection().remove(dataObject);
+            dataControl.remove(dataObject);
+            selectionControl.getCollection().remove(dataObject);
 
             if (dataObjectsValid.get(index - 1) != null) {
                 index--;
@@ -64,14 +62,14 @@ public abstract class ContextMenuEvent {
                 index++;
             }
 
-            MainControl.getFocusControl().setFocus(dataObjectsValid.get(index));
-            MainControl.getReloadControl().reload(true, sender);
+            focusControl.setFocus(dataObjectsValid.get(index));
+            reloadControl.reload(true, sender);
         } catch (IOException e) {
             System.out.println("IOException: Trying to delete non-existent file; Path: " + pathString);
             e.printStackTrace();
         }
     }
-    private static void deleteDataObject(GUINode sender, DataCollection dataObjects, DataCollection dataObjectsValid) {
+    private void deleteDataObject(GUINode sender, DataCollection dataObjects, DataCollection dataObjectsValid) {
         for (DataObject dataObject : dataObjects) {
             if (dataObjectsValid.contains(dataObject)) {
                 deleteDataObject(sender, dataObject, dataObjectsValid);

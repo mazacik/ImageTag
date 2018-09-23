@@ -2,44 +2,35 @@ package project.gui.component.toppane;
 
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Region;
-import project.control.MainControl;
+import project.MainUtils;
 import project.database.object.DataObject;
-import project.gui.event.toppane.TopPaneEvent;
 
-public abstract class TopPane {
-    private static final BorderPane _this = new BorderPane();
+public class TopPane extends BorderPane implements MainUtils {
+    private final MenuBar infoLabelMenuBar = new MenuBar();
+    private final Menu infoLabelMenu = new Menu();
 
-    private static final MenuBar infoLabelMenuBar = new MenuBar();
-    private static final Menu infoLabelMenu = new Menu();
+    private final Menu menuFile = new Menu("File");
+    private final MenuItem menuSave = new MenuItem("Save");
+    private final MenuItem menuExit = new MenuItem("Exit");
 
-    private static final Menu menuFile = new Menu("File");
-    private static final MenuItem menuSave = new MenuItem("Save");
-    private static final MenuItem menuExit = new MenuItem("Exit");
+    private final Menu menuSelection = new Menu("Selection");
+    private final MenuItem menuSelectAll = new MenuItem("Select All");
+    private final MenuItem menuClearSelection = new MenuItem("Clear Selection");
 
-    private static final Menu menuSelection = new Menu("Selection");
-    private static final MenuItem menuSelectAll = new MenuItem("Select All");
-    private static final MenuItem menuClearSelection = new MenuItem("Clear Selection");
+    private final Menu menuFilter = new Menu("Filter");
+    private final CheckMenuItem menuUntaggedOnly = new CheckMenuItem("Untagged");
+    private final CheckMenuItem menuMaxXTags = new CheckMenuItem("Max X Tags");
+    private final Menu menuMode = new Menu("Mode");
+    private final Menu menuModeWhitelist = new Menu("Whitelist");
+    private final CheckMenuItem menuModeWhitelistAll = new CheckMenuItem("All");
+    private final CheckMenuItem menuModeWhitelistAny = new CheckMenuItem("Any");
+    private final Menu menuModeBlacklist = new Menu("Blacklist");
+    private final CheckMenuItem menuModeBlacklistAll = new CheckMenuItem("All");
+    private final CheckMenuItem menuModeBlacklistAny = new CheckMenuItem("Any");
+    private final MenuItem menuRefresh = new MenuItem("Refresh");
+    private final MenuItem menuReset = new MenuItem("Reset");
 
-    private static final Menu menuFilter = new Menu("Filter");
-    private static final CheckMenuItem menuUntaggedOnly = new CheckMenuItem("Untagged");
-    private static final CheckMenuItem menuMaxXTags = new CheckMenuItem("Max X Tags");
-    private static final Menu menuMode = new Menu("Mode");
-    private static final Menu menuModeWhitelist = new Menu("Whitelist");
-    private static final CheckMenuItem menuModeWhitelistAll = new CheckMenuItem("All");
-    private static final CheckMenuItem menuModeWhitelistAny = new CheckMenuItem("Any");
-    private static final Menu menuModeBlacklist = new Menu("Blacklist");
-    private static final CheckMenuItem menuModeBlacklistAll = new CheckMenuItem("All");
-    private static final CheckMenuItem menuModeBlacklistAny = new CheckMenuItem("Any");
-    private static final MenuItem menuRefresh = new MenuItem("Refresh");
-    private static final MenuItem menuReset = new MenuItem("Reset");
-
-    public static void initialize() {
-        initializeComponents();
-        initializeInstance();
-        TopPaneEvent.initialize();
-    }
-    private static void initializeComponents() {
+    public TopPane() {
         menuFile.getItems().addAll(menuSave, new SeparatorMenuItem(), menuExit);
         menuSelection.getItems().addAll(menuSelectAll, menuClearSelection);
 
@@ -51,58 +42,54 @@ public abstract class TopPane {
         menuFilter.getItems().addAll(menuUntaggedOnly, menuMaxXTags, new SeparatorMenuItem(), menuMode, menuRefresh, menuReset);
 
         infoLabelMenuBar.getMenus().add(infoLabelMenu);
-    }
-    private static void initializeInstance() {
-        _this.setCenter(new MenuBar(menuFile, menuSelection, menuFilter));
-        _this.setRight(infoLabelMenuBar);
+
+        this.setCenter(new MenuBar(menuFile, menuSelection, menuFilter));
+        this.setRight(infoLabelMenuBar);
     }
 
-    public static void reload() {
-        DataObject currentFocusedItem = MainControl.getFocusControl().getCurrentFocus();
+    public void reload() {
+        DataObject currentFocusedItem = focusControl.getCurrentFocus();
         if (currentFocusedItem != null) {
             infoLabelMenu.setText(currentFocusedItem.getName());
         }
     }
 
-    public static MenuItem getMenuSave() {
+    public MenuItem getMenuSave() {
         return menuSave;
     }
-    public static MenuItem getMenuExit() {
+    public MenuItem getMenuExit() {
         return menuExit;
     }
 
-    public static MenuItem getMenuSelectAll() {
+    public MenuItem getMenuSelectAll() {
         return menuSelectAll;
     }
-    public static MenuItem getMenuClearSelection() {
+    public MenuItem getMenuClearSelection() {
         return menuClearSelection;
     }
 
-    public static CheckMenuItem getMenuUntaggedOnly() {
+    public CheckMenuItem getMenuUntaggedOnly() {
         return menuUntaggedOnly;
     }
-    public static CheckMenuItem getMenuMaxXTags() {
+    public CheckMenuItem getMenuMaxXTags() {
         return menuMaxXTags;
     }
-    public static CheckMenuItem getMenuModeWhitelistAll() {
+    public CheckMenuItem getMenuModeWhitelistAll() {
         return menuModeWhitelistAll;
     }
-    public static CheckMenuItem getMenuModeWhitelistAny() {
+    public CheckMenuItem getMenuModeWhitelistAny() {
         return menuModeWhitelistAny;
     }
-    public static CheckMenuItem getMenuModeBlacklistAll() {
+    public CheckMenuItem getMenuModeBlacklistAll() {
         return menuModeBlacklistAll;
     }
-    public static CheckMenuItem getMenuModeBlacklistAny() {
+    public CheckMenuItem getMenuModeBlacklistAny() {
         return menuModeBlacklistAny;
     }
-    public static MenuItem getMenuRefresh() {
+    public MenuItem getMenuRefresh() {
         return menuRefresh;
     }
-    public static MenuItem getMenuReset() {
+    public MenuItem getMenuReset() {
         return menuReset;
-    }
-    public static Region getInstance() {
-        return _this;
     }
 }
