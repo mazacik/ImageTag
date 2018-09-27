@@ -8,9 +8,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import project.MainUtil;
 import project.gui.custom.generic.DirectoryChooserWindow;
 import project.settings.Settings;
+import project.utils.MainUtil;
 
 public class IntroWindow extends Stage implements MainUtil {
     private final GridPane introPane = new GridPane();

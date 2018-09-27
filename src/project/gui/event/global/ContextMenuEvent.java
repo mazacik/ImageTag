@@ -1,10 +1,10 @@
 package project.gui.event.global;
 
-import project.MainUtil;
 import project.database.object.DataObject;
 import project.gui.component.GUINode;
 import project.settings.Settings;
 import project.utils.ClipboardUtil;
+import project.utils.MainUtil;
 
 import java.io.IOException;
 import java.nio.file.Files;

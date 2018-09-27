@@ -3,8 +3,8 @@ package project.gui.custom.specific;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeCell;
-import project.MainUtil;
 import project.gui.component.leftpane.ColoredText;
+import project.utils.MainUtil;
 
 public class LeftPaneContextMenu extends ContextMenu implements MainUtil {
     private final MenuItem menuEdit = new MenuItem("Edit Tag");

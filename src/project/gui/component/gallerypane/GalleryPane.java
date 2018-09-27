@@ -5,9 +5,9 @@ import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.TilePane;
-import project.MainUtil;
 import project.database.object.DataObject;
 import project.settings.Settings;
+import project.utils.MainUtil;
 
 public class GalleryPane extends ScrollPane implements MainUtil {
     private final TilePane tilePane;

@@ -1,7 +1,6 @@
 package project.control.maintags;
 
 import javafx.scene.control.TreeCell;
-import project.MainUtil;
 import project.database.object.DataCollection;
 import project.database.object.DataObject;
 import project.database.object.TagCollection;
@@ -9,11 +8,12 @@ import project.database.object.TagObject;
 import project.gui.component.GUINode;
 import project.gui.component.leftpane.ColoredText;
 import project.gui.custom.specific.TagEditor;
+import project.utils.MainUtil;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class MainTags extends TagCollection implements MainUtil {
+public class TagCollectionMain extends TagCollection implements MainUtil {
     public void initialize() {
         DataCollection dataCollection = mainData;
         for (DataObject dataIterator : dataCollection) {

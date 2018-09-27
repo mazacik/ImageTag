@@ -3,10 +3,10 @@ package project.gui.event.leftpane;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.paint.Color;
-import project.MainUtil;
 import project.database.object.TagObject;
 import project.gui.component.GUINode;
 import project.gui.component.leftpane.ColoredText;
+import project.utils.MainUtil;
 
 public class ColoredTextEvent implements MainUtil {
     public static void onMouseClick(TreeCell<ColoredText> source) {

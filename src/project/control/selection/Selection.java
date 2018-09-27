@@ -1,12 +1,12 @@
 package project.control.selection;
 
 import javafx.collections.ObservableList;
-import project.MainUtil;
 import project.database.object.DataCollection;
 import project.database.object.DataObject;
 import project.database.object.TagCollection;
 import project.database.object.TagObject;
 import project.gui.component.GUINode;
+import project.utils.MainUtil;
 
 public class Selection extends DataCollection implements MainUtil {
     public boolean add(DataObject dataObject) {

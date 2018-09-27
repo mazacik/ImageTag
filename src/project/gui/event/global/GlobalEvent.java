@@ -1,6 +1,6 @@
 package project.gui.event.global;
 
-import project.MainUtil;
+import project.utils.MainUtil;
 
 public class GlobalEvent implements MainUtil {
     public GlobalEvent() {

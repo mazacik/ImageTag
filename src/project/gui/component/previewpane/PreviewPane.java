@@ -4,9 +4,9 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
-import project.MainUtil;
 import project.database.object.DataObject;
 import project.settings.Settings;
+import project.utils.MainUtil;
 
 public class PreviewPane extends Pane implements MainUtil {
     private final Canvas canvas;

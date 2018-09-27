@@ -8,9 +8,9 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
-import project.MainUtil;
 import project.gui.custom.specific.LeftPaneContextMenu;
 import project.gui.event.leftpane.ColoredTextEvent;
+import project.utils.MainUtil;
 
 import java.util.ArrayList;
 

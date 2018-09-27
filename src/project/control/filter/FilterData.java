@@ -1,9 +1,9 @@
 package project.control.filter;
 
-import project.MainUtil;
 import project.database.object.DataObject;
 import project.database.object.TagCollection;
 import project.database.object.TagObject;
+import project.utils.MainUtil;
 
 public enum FilterData implements MainUtil {
     SHOW_EVERYTHING {

@@ -1,9 +1,9 @@
-package project;
+package project.utils;
 
 import project.control.filter.Filter;
 import project.control.focus.Focus;
 import project.control.logger.Logger;
-import project.control.maintags.MainTags;
+import project.control.maintags.TagCollectionMain;
 import project.control.reload.Reload;
 import project.control.selection.Selection;
 import project.database.object.DataCollection;
@@ -17,7 +17,7 @@ import project.gui.component.toppane.TopPane;
 
 public interface MainUtil {
     DataCollection mainData = new DataCollection();
-    MainTags mainTags = new MainTags();
+    TagCollectionMain mainTags = new TagCollectionMain();
 
     Filter filter = new Filter();
     Focus focus = new Focus();

@@ -1,11 +1,11 @@
 package project.control.filter;
 
-import project.MainUtil;
 import project.database.object.DataCollection;
 import project.database.object.DataObject;
 import project.database.object.TagCollection;
 import project.database.object.TagObject;
 import project.gui.component.GUINode;
+import project.utils.MainUtil;
 
 import java.util.Random;
 

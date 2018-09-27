@@ -1,12 +1,12 @@
 package project.gui.event.toppane;
 
 import javafx.stage.WindowEvent;
-import project.MainUtil;
 import project.control.filter.Filter;
 import project.control.filter.FilterData;
 import project.database.loader.Serialization;
 import project.gui.component.GUINode;
 import project.gui.custom.generic.NumberInputWindow;
+import project.utils.MainUtil;
 
 public abstract class TopPaneEvent implements MainUtil {
     public TopPaneEvent() {

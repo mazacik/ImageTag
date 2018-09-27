@@ -6,11 +6,11 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import project.MainUtil;
 import project.database.object.DataObject;
 import project.database.object.TagObject;
 import project.gui.component.GUINode;
 import project.gui.custom.specific.RightPaneContextMenu;
+import project.utils.MainUtil;
 
 import java.util.ArrayList;
 

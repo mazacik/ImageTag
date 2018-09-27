@@ -1,9 +1,9 @@
 package project.gui.event.gallerypane;
 
 import javafx.scene.input.MouseEvent;
-import project.MainUtil;
 import project.database.object.DataObject;
 import project.gui.component.gallerypane.GalleryTile;
+import project.utils.MainUtil;
 
 public class GalleryTileEvent implements MainUtil {
     public GalleryTileEvent(GalleryTile gallerytile) {

@@ -4,10 +4,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
-import project.MainUtil;
 import project.database.object.TagObject;
 import project.gui.component.GUINode;
 import project.gui.custom.specific.TagEditor;
+import project.utils.MainUtil;
 
 public class RightPaneEvent implements MainUtil {
     private String cbNameText;

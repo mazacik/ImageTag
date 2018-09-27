@@ -6,12 +6,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import project.MainUtil;
-import project.Namespace;
 import project.database.loader.Serialization;
 import project.gui.component.GUINode;
 import project.gui.custom.generic.DataObjectContextMenu;
 import project.settings.Settings;
+import project.utils.MainUtil;
 
 public class CustomStage extends Stage implements MainUtil {
     private final SplitPane splitPane = new SplitPane(leftPane, galleryPane, rightPane);
@@ -25,7 +24,7 @@ public class CustomStage extends Stage implements MainUtil {
     }
 
     public void init() {
-        this.setTitle(Namespace.APPLICATION_NAME.getValue());
+        this.setTitle("JavaExplorer");
         this.setMinWidth(Settings.getGuiMinWidth());
         this.setMinHeight(Settings.getGuiMinHeight());
         this.setMaximized(true);

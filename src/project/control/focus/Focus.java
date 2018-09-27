@@ -1,9 +1,9 @@
 package project.control.focus;
 
 import javafx.scene.input.KeyCode;
-import project.MainUtil;
 import project.database.object.DataObject;
 import project.gui.component.GUINode;
+import project.utils.MainUtil;
 
 public class Focus implements MainUtil {
     private DataObject currentFocus;

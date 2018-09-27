@@ -4,12 +4,12 @@ import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import org.apache.commons.io.FilenameUtils;
-import project.MainUtil;
 import project.database.object.DataCollection;
 import project.database.object.DataObject;
 import project.gui.component.gallerypane.GalleryTile;
 import project.gui.custom.specific.LoadingWindow;
 import project.settings.Settings;
+import project.utils.MainUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

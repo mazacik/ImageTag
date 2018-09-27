@@ -2,8 +2,8 @@ package project.gui.component.toppane;
 
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import project.MainUtil;
 import project.database.object.DataObject;
+import project.utils.MainUtil;
 
 public class TopPane extends BorderPane implements MainUtil {
     private final MenuBar infoLabelMenuBar = new MenuBar();
@@ -13,11 +13,11 @@ public class TopPane extends BorderPane implements MainUtil {
     private final MenuItem menuSave = new MenuItem("Save");
     private final MenuItem menuExit = new MenuItem("Exit");
 
-    private final Menu menuSelection = new Menu("selection");
-    private final MenuItem menuSelectAll = new MenuItem("selection All");
-    private final MenuItem menuClearSelection = new MenuItem("Clear selection");
+    private final Menu menuSelection = new Menu("Selection");
+    private final MenuItem menuSelectAll = new MenuItem("Selection All");
+    private final MenuItem menuClearSelection = new MenuItem("Clear Selection");
 
-    private final Menu menuFilter = new Menu("FilterData");
+    private final Menu menuFilter = new Menu("Filter");
     private final CheckMenuItem menuUntaggedOnly = new CheckMenuItem("Untagged");
     private final CheckMenuItem menuMaxXTags = new CheckMenuItem("Max X Tags");
     private final Menu menuMode = new Menu("Mode");

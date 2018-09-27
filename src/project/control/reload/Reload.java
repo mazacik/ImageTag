@@ -1,7 +1,7 @@
 package project.control.reload;
 
-import project.MainUtil;
 import project.gui.component.GUINode;
+import project.utils.MainUtil;
 
 public class Reload implements MainUtil {
     private boolean _topPane;

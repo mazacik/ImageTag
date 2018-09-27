@@ -5,8 +5,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import project.MainUtil;
 import project.database.loader.DataLoader;
+import project.utils.MainUtil;
 
 public class LoadingWindow extends Stage implements MainUtil {
     private final BorderPane loadingPane = new BorderPane();

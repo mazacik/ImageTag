@@ -3,6 +3,7 @@ package project;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import project.gui.custom.specific.IntroWindow;
+import project.utils.MainUtil;
 
 public class Main extends Application implements MainUtil {
     public static void main(String[] args) {

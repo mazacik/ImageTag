@@ -1,6 +1,6 @@
 package project.gui.event.gallerypane;
 
-import project.MainUtil;
+import project.utils.MainUtil;
 
 public class GalleryPaneEvent implements MainUtil {
     public GalleryPaneEvent() {

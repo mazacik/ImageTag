@@ -6,10 +6,10 @@ import javafx.scene.effect.ColorInput;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import project.MainUtil;
 import project.database.object.DataObject;
 import project.gui.event.gallerypane.GalleryTileEvent;
 import project.settings.Settings;
+import project.utils.MainUtil;
 
 public class GalleryTile extends ImageView implements MainUtil {
     private static final InnerShadow EFFECT_SELECTIONBORDER = buildSelectionBorderEffect();

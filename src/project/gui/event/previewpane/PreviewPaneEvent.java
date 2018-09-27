@@ -2,9 +2,9 @@ package project.gui.event.previewpane;
 
 import javafx.beans.value.ChangeListener;
 import javafx.scene.canvas.Canvas;
-import project.MainUtil;
 import project.gui.component.GUINode;
 import project.gui.custom.generic.DataObjectContextMenu;
+import project.utils.MainUtil;
 
 public abstract class PreviewPaneEvent implements MainUtil {
     public PreviewPaneEvent() {
