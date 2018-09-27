@@ -6,14 +6,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import project.MainUtils;
-import project.StringBank;
+import project.MainUtil;
+import project.Namespace;
 import project.database.loader.Serialization;
 import project.gui.component.GUINode;
 import project.gui.custom.generic.DataObjectContextMenu;
 import project.settings.Settings;
 
-public class CustomStage extends Stage implements MainUtils {
+public class CustomStage extends Stage implements MainUtil {
     private final SplitPane splitPane = new SplitPane(leftPane, galleryPane, rightPane);
     private final BorderPane mainPane = new BorderPane(splitPane, topPane, null, null, null);
     private final Scene mainScene = new Scene(mainPane);
@@ -25,7 +25,7 @@ public class CustomStage extends Stage implements MainUtils {
     }
 
     public void init() {
-        this.setTitle(StringBank.APPLICATION_NAME.getValue());
+        this.setTitle(Namespace.APPLICATION_NAME.getValue());
         this.setMinWidth(Settings.getGuiMinWidth());
         this.setMinHeight(Settings.getGuiMinHeight());
         this.setMaximized(true);
@@ -40,10 +40,10 @@ public class CustomStage extends Stage implements MainUtils {
         double[] dividerPositions = splitPane.getDividerPositions();
         if (splitPaneItems.contains(galleryPane)) {
             splitPaneItems.set(splitPaneItems.indexOf(galleryPane), previewPane);
-            reloadControl.reload(GUINode.PREVIEWPANE);
+            reload.queue(GUINode.PREVIEWPANE);
         } else {
             splitPaneItems.set(splitPaneItems.indexOf(previewPane), galleryPane);
-            reloadControl.reload(GUINode.PREVIEWPANE);
+            reload.queue(GUINode.PREVIEWPANE);
         }
         splitPane.setDividerPositions(dividerPositions);
     }

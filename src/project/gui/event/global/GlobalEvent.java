@@ -1,8 +1,8 @@
 package project.gui.event.global;
 
-import project.MainUtils;
+import project.MainUtil;
 
-public class GlobalEvent implements MainUtils {
+public class GlobalEvent implements MainUtil {
     public GlobalEvent() {
         onKeyPressed();
     }
@@ -11,10 +11,11 @@ public class GlobalEvent implements MainUtils {
         customStage.getScene().setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case Q:
-                    selectionControl.swapSelectionStateOf(focusControl.getCurrentFocus());
+                    selection.swapState(focus.getCurrentFocus());
                     break;
                 case R:
-                    selectionControl.setRandomValidDataObject();
+                    selection.set(filter.getRandomObject());
+                    galleryPane.adjustViewportToCurrentFocus();
                     break;
                 case F12:
                     swapDisplayMode();
@@ -23,12 +24,12 @@ public class GlobalEvent implements MainUtils {
                 case A:
                 case S:
                 case D:
-                    focusControl.moveFocusByKeyCode(event.getCode());
+                    focus.moveFocusByKeyCode(event.getCode());
                     break;
                 default:
                     break;
             }
-            reloadControl.doReload();
+            reload.doReload();
         });
     }
 }

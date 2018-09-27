@@ -5,10 +5,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import project.MainUtils;
+import project.MainUtil;
 import project.database.loader.DataLoader;
 
-public class LoadingWindow extends Stage implements MainUtils {
+public class LoadingWindow extends Stage implements MainUtil {
     private final BorderPane loadingPane = new BorderPane();
     private final Scene loadingScene = new Scene(loadingPane);
     private final Label progressLabel = new Label();

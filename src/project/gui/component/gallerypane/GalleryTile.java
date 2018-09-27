@@ -6,12 +6,12 @@ import javafx.scene.effect.ColorInput;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import project.MainUtils;
+import project.MainUtil;
 import project.database.object.DataObject;
 import project.gui.event.gallerypane.GalleryTileEvent;
 import project.settings.Settings;
 
-public class GalleryTile extends ImageView implements MainUtils {
+public class GalleryTile extends ImageView implements MainUtil {
     private static final InnerShadow EFFECT_SELECTIONBORDER = buildSelectionBorderEffect();
     private static final ColorInput EFFECT_FOCUSMARK = buildSelectionFocusMarkEffect();
     private static final int GALLERY_ICON_SIZE_PREF = Settings.getGalleryIconSizePref();
@@ -29,10 +29,10 @@ public class GalleryTile extends ImageView implements MainUtils {
     public void generateEffect() {
         boolean booleanSelection = false;
         if (parentDataObject != null) {
-            booleanSelection = selectionControl.getCollection().contains(parentDataObject);
+            booleanSelection = selection.contains(parentDataObject);
         }
 
-        DataObject currentFocus = focusControl.getCurrentFocus();
+        DataObject currentFocus = focus.getCurrentFocus();
         boolean booleanFocus = false;
         if (currentFocus != null) {
             booleanFocus = currentFocus.equals(parentDataObject);

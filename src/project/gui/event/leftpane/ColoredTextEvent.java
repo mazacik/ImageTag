@@ -3,12 +3,12 @@ package project.gui.event.leftpane;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.paint.Color;
-import project.MainUtils;
+import project.MainUtil;
 import project.database.object.TagObject;
 import project.gui.component.GUINode;
 import project.gui.component.leftpane.ColoredText;
 
-public class ColoredTextEvent implements MainUtils {
+public class ColoredTextEvent implements MainUtil {
     public static void onMouseClick(TreeCell<ColoredText> source) {
         source.setOnMouseClicked(event -> {
             switch (event.getButton()) {
@@ -22,7 +22,7 @@ public class ColoredTextEvent implements MainUtils {
     }
 
     private static void onLeftClick(TreeCell<ColoredText> sourceCell) {
-        TagObject tagObject = tagControl.getTagObject(sourceCell);
+        TagObject tagObject = mainTags.getTagObject(sourceCell);
         ColoredText coloredText;
         try {
             coloredText = sourceCell.getTreeItem().getValue();
@@ -33,39 +33,39 @@ public class ColoredTextEvent implements MainUtils {
         // if sourceCell is group level
         if (tagObject == null) {
             String groupName = coloredText.getText();
-            if (filterControl.isGroupWhitelisted(groupName)) {
-                filterControl.blacklistGroup(groupName);
+            if (filter.isGroupWhitelisted(groupName)) {
+                filter.blacklistGroup(groupName);
                 coloredText.setColor(Color.RED);
                 for (TreeItem<ColoredText> children : sourceCell.getTreeItem().getChildren()) {
                     children.getValue().setColor(Color.RED);
                 }
-            } else if (filterControl.isGroupBlacklisted(groupName)) {
-                filterControl.unlistGroup(groupName);
+            } else if (filter.isGroupBlacklisted(groupName)) {
+                filter.unlistGroup(groupName);
                 coloredText.setColor(Color.BLACK);
                 for (TreeItem<ColoredText> children : sourceCell.getTreeItem().getChildren()) {
                     children.getValue().setColor(Color.BLACK);
                 }
             } else {
-                filterControl.whitelistGroup(groupName);
+                filter.whitelistGroup(groupName);
                 coloredText.setColor(Color.GREEN);
                 for (TreeItem<ColoredText> children : sourceCell.getTreeItem().getChildren()) {
                     children.getValue().setColor(Color.GREEN);
                 }
             }
         } else {
-            if (filterControl.isTagObjectWhitelisted(tagObject)) {
-                filterControl.blacklistTagObject(tagObject);
+            if (filter.isTagObjectWhitelisted(tagObject)) {
+                filter.blacklistTagObject(tagObject);
                 coloredText.setColor(Color.RED);
-            } else if (filterControl.isTagObjectBlacklisted(tagObject)) {
-                filterControl.unlistTagObject(tagObject);
+            } else if (filter.isTagObjectBlacklisted(tagObject)) {
+                filter.unlistTagObject(tagObject);
                 coloredText.setColor(Color.BLACK);
             } else {
-                filterControl.whitelistTagObject(tagObject);
+                filter.whitelistTagObject(tagObject);
                 coloredText.setColor(Color.GREEN);
             }
         }
-        filterControl.applyFilter();
-        reloadControl.reload(true, GUINode.GALLERYPANE);
+        filter.apply();
+        reload.queue(true, GUINode.GALLERYPANE);
         leftPane.refreshTreeView();
     }
 }

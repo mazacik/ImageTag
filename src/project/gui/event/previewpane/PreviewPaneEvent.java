@@ -2,11 +2,11 @@ package project.gui.event.previewpane;
 
 import javafx.beans.value.ChangeListener;
 import javafx.scene.canvas.Canvas;
-import project.MainUtils;
+import project.MainUtil;
 import project.gui.component.GUINode;
 import project.gui.custom.generic.DataObjectContextMenu;
 
-public abstract class PreviewPaneEvent implements MainUtils {
+public abstract class PreviewPaneEvent implements MainUtil {
     public PreviewPaneEvent() {
         onMouseClick();
         onResize();
@@ -22,7 +22,7 @@ public abstract class PreviewPaneEvent implements MainUtils {
                     contextMenu.hide();
                     break;
                 case SECONDARY:
-                    selectionControl.addDataObject(focusControl.getCurrentFocus());
+                    selection.add(focus.getCurrentFocus());
                     contextMenu.show(previewPane, event.getScreenX(), event.getScreenY());
                     break;
                 default:
@@ -32,7 +32,7 @@ public abstract class PreviewPaneEvent implements MainUtils {
     }
     private static void onResize() {
         ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) ->
-                reloadControl.reload(true, GUINode.PREVIEWPANE);
+                reload.queue(true, GUINode.PREVIEWPANE);
         final Canvas canvas = previewPane.getCanvas();
         canvas.widthProperty().addListener(previewPaneSizeListener);
         canvas.heightProperty().addListener(previewPaneSizeListener);

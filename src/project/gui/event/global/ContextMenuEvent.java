@@ -1,7 +1,6 @@
 package project.gui.event.global;
 
-import project.MainUtils;
-import project.database.object.DataCollection;
+import project.MainUtil;
 import project.database.object.DataObject;
 import project.gui.component.GUINode;
 import project.settings.Settings;
@@ -12,7 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class ContextMenuEvent implements MainUtils {
+public class ContextMenuEvent implements MainUtil {
     public ContextMenuEvent() {
         onAction_menuCopy();
         onAction_menuDelete();
@@ -23,9 +22,10 @@ public class ContextMenuEvent implements MainUtils {
             DataObject dataObject;
 
             if (!isPreviewFullscreen()) {
-                dataObject = selectionControl.getCollection().get(0);
+                //todo fixme
+                dataObject = selection.get(0);
             } else {
-                dataObject = focusControl.getCurrentFocus();
+                dataObject = focus.getCurrentFocus();
             }
 
             ClipboardUtil.setClipboardContent(dataObject.getName());
@@ -33,18 +33,16 @@ public class ContextMenuEvent implements MainUtils {
     }
     private void onAction_menuDelete() {
         customStage.getDataObjectContextMenu().getMenuDelete().setOnAction(event -> {
-            DataCollection dataObjectsValid = filterControl.getCollection();
-
             if (!isPreviewFullscreen()) {
-                deleteDataObject(GUINode.GALLERYPANE, selectionControl.getCollection(), dataObjectsValid);
+                this.deleteDataObject(GUINode.GALLERYPANE);
             } else {
-                deleteDataObject(GUINode.PREVIEWPANE, focusControl.getCurrentFocus(), dataObjectsValid);
+                this.deleteCurrentFocus(GUINode.PREVIEWPANE);
             }
         });
     }
 
-    private void deleteDataObject(GUINode sender, DataObject dataObject, DataCollection dataObjectsValid) {
-        int index = dataObjectsValid.indexOf(dataObject);
+    private void deleteDataObject(GUINode sender, DataObject dataObject) {
+        int index = filter.indexOf(dataObject);
 
         String pathString = Settings.getPath_source() + "\\" + dataObject.getName();
         Path path = Paths.get(pathString);
@@ -52,28 +50,31 @@ public class ContextMenuEvent implements MainUtils {
         try {
             Files.delete(path);
 
-            dataObjectsValid.remove(dataObject);
-            dataControl.remove(dataObject);
-            selectionControl.getCollection().remove(dataObject);
+            filter.remove(dataObject);
+            mainData.remove(dataObject);
+            selection.remove(dataObject);
 
-            if (dataObjectsValid.get(index - 1) != null) {
+            if (filter.get(index - 1) != null) {
                 index--;
-            } else if (dataObjectsValid.get(index + 1) != null) {
+            } else if (filter.get(index + 1) != null) {
                 index++;
             }
 
-            focusControl.setFocus(dataObjectsValid.get(index));
-            reloadControl.reload(true, sender);
+            focus.set(filter.get(index));
+            reload.queue(true, sender);
         } catch (IOException e) {
             System.out.println("IOException: Trying to delete non-existent file; Path: " + pathString);
             e.printStackTrace();
         }
     }
-    private void deleteDataObject(GUINode sender, DataCollection dataObjects, DataCollection dataObjectsValid) {
-        for (DataObject dataObject : dataObjects) {
-            if (dataObjectsValid.contains(dataObject)) {
-                deleteDataObject(sender, dataObject, dataObjectsValid);
+    private void deleteDataObject(GUINode sender) {
+        selection.forEach(dataObject -> {
+            if (filter.contains(dataObject)) {
+                this.deleteDataObject(sender, dataObject);
             }
-        }
+        });
+    }
+    private void deleteCurrentFocus(GUINode sender) {
+        this.deleteDataObject(sender, focus.getCurrentFocus());
     }
 }

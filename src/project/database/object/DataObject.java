@@ -3,6 +3,7 @@ package project.database.object;
 import javafx.scene.image.Image;
 import project.gui.component.gallerypane.GalleryTile;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.Comparator;
 
@@ -16,6 +17,13 @@ public class DataObject implements Serializable {
     public DataObject(String name, TagCollection tagObjects) {
         this.name = name;
         this.tagCollection = tagObjects;
+    }
+    public DataObject(File file) {
+        this(file.getName(), new TagCollection());
+    }
+
+    public void generateTileEffect() {
+        galleryTile.generateEffect();
     }
 
     public String getName() {

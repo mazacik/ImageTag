@@ -4,12 +4,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
-import project.MainUtils;
+import project.MainUtil;
 import project.database.object.TagObject;
 import project.gui.component.GUINode;
 import project.gui.custom.specific.TagEditor;
 
-public class RightPaneEvent implements MainUtils {
+public class RightPaneEvent implements MainUtil {
     private String cbNameText;
     private String cbGroupText;
 
@@ -36,20 +36,20 @@ public class RightPaneEvent implements MainUtils {
         });
         btnAdd.setOnAction(event -> {
             rightPane.addTagToSelection();
-            reloadControl.reload(true, GUINode.RIGHTPANE);
+            reload.queue(true, GUINode.RIGHTPANE);
         });
 
         rightPane.getBtnNew().setOnAction(event -> {
             TagObject newTagObject = TagEditor.createTag();
             if (newTagObject != null) {
-                tagControl.add(newTagObject);
-                cbGroup.getItems().setAll(tagControl.getGroups());
+                mainTags.add(newTagObject);
+                cbGroup.getItems().setAll(mainTags.getGroups());
                 cbGroup.getSelectionModel().select(newTagObject.getGroup());
                 Object value = cbGroup.getValue();
                 String group = value.toString();
-                cbName.getItems().setAll(tagControl.getNames(group));
+                cbName.getItems().setAll(mainTags.getNames(group));
                 cbName.getSelectionModel().select(newTagObject.getName());
-                reloadControl.reload(true, GUINode.LEFTPANE);
+                reload.queue(true, GUINode.LEFTPANE);
             }
         });
     }
@@ -73,7 +73,7 @@ public class RightPaneEvent implements MainUtils {
         rightPane.getContextMenu().hide();
     }
     private void onRightClick(MouseEvent event) {
-        selectionControl.addDataObject(focusControl.getCurrentFocus());
+        selection.add(focus.getCurrentFocus());
         rightPane.getContextMenu().show(rightPane, event.getScreenX(), event.getScreenY());
     }
 
@@ -93,13 +93,13 @@ public class RightPaneEvent implements MainUtils {
     }
     private void onAction_contextMenu() {
         rightPane.getContextMenu().getMenuEdit().setOnAction(event -> {
-            tagControl.edit(tagControl.getTagObject(rightPane.getListView().getSelectionModel().getSelectedItem()));
+            mainTags.edit(mainTags.getTagObject(rightPane.getListView().getSelectionModel().getSelectedItem()));
         });
 
         rightPane.getContextMenu().getMenuRemove().setOnAction(event -> {
-            selectionControl.removeTagObjectSelection();
-            tagControl.remove(tagControl.getTagObject(rightPane.getListView().getSelectionModel().getSelectedItem()));
-            reloadControl.reload(true, GUINode.RIGHTPANE);
+            selection.removeTagObject();
+            mainTags.remove(mainTags.getTagObject(rightPane.getListView().getSelectionModel().getSelectedItem()));
+            reload.queue(true, GUINode.RIGHTPANE);
         });
     }
 
@@ -110,7 +110,7 @@ public class RightPaneEvent implements MainUtils {
                 cbGroupText = cbGroupValue.toString();
             }
 
-            cbGroup.getItems().setAll(tagControl.getGroups());
+            cbGroup.getItems().setAll(mainTags.getGroups());
         });
     }
     private void onHidden_cbGroup(ChoiceBox cbGroup) {
@@ -139,7 +139,7 @@ public class RightPaneEvent implements MainUtils {
 
             String groupText = cbGroupText;
             if (groupText != null) {
-                cbName.getItems().setAll(tagControl.getNames(groupText));
+                cbName.getItems().setAll(mainTags.getNames(groupText));
             }
         });
     }

@@ -1,21 +1,20 @@
-package project.control;
+package project.control.focus;
 
 import javafx.scene.input.KeyCode;
-import project.MainUtils;
-import project.database.object.DataCollection;
+import project.MainUtil;
 import project.database.object.DataObject;
 import project.gui.component.GUINode;
 
-public class FocusControl implements MainUtils {
+public class Focus implements MainUtil {
     private DataObject currentFocus;
     private DataObject previousFocus;
 
-    public FocusControl() {
+    public Focus() {
         currentFocus = null;
         previousFocus = null;
     }
 
-    public void setFocus(DataObject dataObject) {
+    public void set(DataObject dataObject) {
         /* store old focus position */
         previousFocus = currentFocus;
 
@@ -28,17 +27,16 @@ public class FocusControl implements MainUtils {
             previousFocus.getGalleryTile().generateEffect();
         }
 
-        reloadControl.reload(GUINode.PREVIEWPANE);
+        reload.queue(GUINode.PREVIEWPANE);
     }
     public void moveFocusByKeyCode(KeyCode keyCode) {
-        DataCollection dataCollectionFiltered = filterControl.getCollection();
         DataObject currentFocus = getCurrentFocus();
         if (currentFocus == null) {
-            currentFocus = dataCollectionFiltered.get(0);
-            setFocus(currentFocus);
+            currentFocus = filter.get(0);
+            set(currentFocus);
         }
 
-        int newFocusPosition = dataCollectionFiltered.indexOf(currentFocus);
+        int newFocusPosition = filter.indexOf(currentFocus);
         if (keyCode.equals(KeyCode.W)) {
             newFocusPosition -= galleryPane.getColumnCount();
         } else if (keyCode.equals(KeyCode.A)) {
@@ -49,8 +47,8 @@ public class FocusControl implements MainUtils {
             newFocusPosition += 1;
         }
 
-        if (newFocusPosition >= 0 && newFocusPosition < dataCollectionFiltered.size()) {
-            setFocus(dataCollectionFiltered.get(newFocusPosition));
+        if (newFocusPosition >= 0 && newFocusPosition < filter.size()) {
+            set(filter.get(newFocusPosition));
             galleryPane.adjustViewportToCurrentFocus();
         }
     }

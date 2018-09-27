@@ -1,8 +1,8 @@
 package project.gui.event.gallerypane;
 
-import project.MainUtils;
+import project.MainUtil;
 
-public class GalleryPaneEvent implements MainUtils {
+public class GalleryPaneEvent implements MainUtil {
     public GalleryPaneEvent() {
         onWidthChange();
     }

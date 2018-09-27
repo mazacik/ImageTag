@@ -1,12 +1,12 @@
 package project;
 
-public enum StringBank {
+public enum Namespace {
     APPLICATION_NAME("JavaExplorer"),
     ;
 
     private String string;
 
-    StringBank(String string) {
+    Namespace(String string) {
         this.string = string;
     }
 

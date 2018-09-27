@@ -1,7 +1,7 @@
-package project.control;
+package project.control.maintags;
 
 import javafx.scene.control.TreeCell;
-import project.MainUtils;
+import project.MainUtil;
 import project.database.object.DataCollection;
 import project.database.object.DataObject;
 import project.database.object.TagCollection;
@@ -13,41 +13,34 @@ import project.gui.custom.specific.TagEditor;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class TagControl implements MainUtils {
-    private final TagCollection collection;
-
-    public TagControl() {
-        collection = new TagCollection();
-    }
-
+public class MainTags extends TagCollection implements MainUtil {
     public void initialize() {
-        DataCollection dataCollection = dataControl.getCollection();
+        DataCollection dataCollection = mainData;
         for (DataObject dataIterator : dataCollection) {
             TagCollection tagCollection = dataIterator.getTagCollection();
             for (TagObject tagIterator : tagCollection) {
-                if (!collection.contains(tagIterator)) {
-                    collection.add(tagIterator);
+                if (!this.contains(tagIterator)) {
+                    this.add(tagIterator);
                 } else {
                     tagCollection.set(tagCollection.indexOf(tagIterator), getTagObject(tagIterator));
                 }
             }
         }
-        filterControl.getCollection().setAll(dataCollection);
+        filter.setAll(dataCollection);
     }
 
     public boolean add(TagObject tagObject) {
-        if (collection.add(tagObject)) {
-            //does this not need FilterControl.applyFilter() ?
-            reloadControl.reload(GUINode.LEFTPANE, GUINode.RIGHTPANE);
+        if (super.add(tagObject)) {
+            reload.queue(GUINode.LEFTPANE, GUINode.RIGHTPANE);
             return true;
         }
         return false;
     }
     public boolean remove(TagObject tagObject) {
-        if (collection.remove(tagObject)) {
-            filterControl.unlistTagObject(tagObject);
-            filterControl.applyFilter();
-            reloadControl.reload(GUINode.LEFTPANE, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
+        if (super.remove(tagObject)) {
+            filter.unlistTagObject(tagObject);
+            filter.apply();
+            reload.queue(GUINode.LEFTPANE, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
             return true;
         }
         return false;
@@ -56,16 +49,18 @@ public class TagControl implements MainUtils {
         TagObject newTagObject = new TagEditor(tagObject).getResult();
         if (newTagObject != null) {
             getTagObject(tagObject).setValue(newTagObject.getGroup(), newTagObject.getName());
-            // ^ this relies on the value to change everywhere
-            collection.sort();
-            reloadControl.reload(GUINode.LEFTPANE, GUINode.RIGHTPANE);
+            super.sort();
+            reload.queue(GUINode.LEFTPANE, GUINode.RIGHTPANE);
             return true;
         }
         return false;
     }
+    public boolean contains(TagObject tagObject) {
+        return super.contains(tagObject);
+    }
 
     public TagObject getTagObject(String group, String name) {
-        for (TagObject iterator : collection) {
+        for (TagObject iterator : this) {
             String iteratorGroup = iterator.getGroup();
             String iteratorName = iterator.getName();
             if (group.equals(iteratorGroup) && name.equals(iteratorName)) {
@@ -99,7 +94,7 @@ public class TagControl implements MainUtils {
 
     public ArrayList<String> getGroups() {
         ArrayList<String> groups = new ArrayList<>();
-        for (TagObject iterator : collection) {
+        for (TagObject iterator : this) {
             if (!groups.contains(iterator.getGroup())) {
                 groups.add(iterator.getGroup());
             }
@@ -109,7 +104,7 @@ public class TagControl implements MainUtils {
     }
     public ArrayList<String> getNames(String group) {
         ArrayList<String> names = new ArrayList<>();
-        for (TagObject iterator : collection) {
+        for (TagObject iterator : this) {
             String iteratorGroup = iterator.getGroup();
             String iteratorName = iterator.getName();
             if (iteratorGroup.equals(group) && !names.contains(iteratorName)) {
@@ -117,9 +112,5 @@ public class TagControl implements MainUtils {
             }
         }
         return names;
-    }
-
-    public TagCollection getCollection() {
-        return collection;
     }
 }

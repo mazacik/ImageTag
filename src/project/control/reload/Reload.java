@@ -1,16 +1,16 @@
-package project.control;
+package project.control.reload;
 
-import project.MainUtils;
+import project.MainUtil;
 import project.gui.component.GUINode;
 
-public class ReloadControl implements MainUtils {
+public class Reload implements MainUtil {
     private boolean _topPane;
     private boolean _leftPane;
     private boolean _galleryPane;
     private boolean _previewPane;
     private boolean _rightPane;
 
-    public ReloadControl() {
+    public Reload() {
         _topPane = false;
         _leftPane = false;
         _galleryPane = false;
@@ -18,7 +18,7 @@ public class ReloadControl implements MainUtils {
         _rightPane = false;
     }
 
-    public void reload(boolean instant, GUINode... nodes) {
+    public void queue(boolean instant, GUINode... nodes) {
         for (GUINode node : nodes) {
             switch (node) {
                 case TOPPANE:
@@ -42,18 +42,18 @@ public class ReloadControl implements MainUtils {
         }
         if (instant) doReload();
     }
-    public void reload(GUINode... items) {
-        reload(false, items);
+    public void queue(GUINode... items) {
+        queue(false, items);
     }
-    public void reloadAll(boolean sort) {
+    public void all(boolean sort) {
         if (sort) {
-            dataControl.getCollection().sort();
-            filterControl.getCollection().sort();
-            selectionControl.getCollection().sort();
+            mainData.sort();
+            filter.sort();
+            selection.sort();
 
-            tagControl.getCollection().sort();
-            filterControl.getWhitelist().sort();
-            filterControl.getBlacklist().sort();
+            mainTags.sort();
+            whitelist.sort();
+            blacklist.sort();
         }
         topPane.reload();
         leftPane.reload();

@@ -2,10 +2,10 @@ package project.gui.component.toppane;
 
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import project.MainUtils;
+import project.MainUtil;
 import project.database.object.DataObject;
 
-public class TopPane extends BorderPane implements MainUtils {
+public class TopPane extends BorderPane implements MainUtil {
     private final MenuBar infoLabelMenuBar = new MenuBar();
     private final Menu infoLabelMenu = new Menu();
 
@@ -13,11 +13,11 @@ public class TopPane extends BorderPane implements MainUtils {
     private final MenuItem menuSave = new MenuItem("Save");
     private final MenuItem menuExit = new MenuItem("Exit");
 
-    private final Menu menuSelection = new Menu("Selection");
-    private final MenuItem menuSelectAll = new MenuItem("Select All");
-    private final MenuItem menuClearSelection = new MenuItem("Clear Selection");
+    private final Menu menuSelection = new Menu("selection");
+    private final MenuItem menuSelectAll = new MenuItem("selection All");
+    private final MenuItem menuClearSelection = new MenuItem("Clear selection");
 
-    private final Menu menuFilter = new Menu("Filter");
+    private final Menu menuFilter = new Menu("FilterData");
     private final CheckMenuItem menuUntaggedOnly = new CheckMenuItem("Untagged");
     private final CheckMenuItem menuMaxXTags = new CheckMenuItem("Max X Tags");
     private final Menu menuMode = new Menu("Mode");
@@ -48,7 +48,7 @@ public class TopPane extends BorderPane implements MainUtils {
     }
 
     public void reload() {
-        DataObject currentFocusedItem = focusControl.getCurrentFocus();
+        DataObject currentFocusedItem = focus.getCurrentFocus();
         if (currentFocusedItem != null) {
             infoLabelMenu.setText(currentFocusedItem.getName());
         }

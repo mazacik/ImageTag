@@ -1,14 +1,14 @@
 package project.gui.event.toppane;
 
 import javafx.stage.WindowEvent;
-import project.MainUtils;
-import project.control.Filter;
-import project.control.FilterControl;
+import project.MainUtil;
+import project.control.filter.Filter;
+import project.control.filter.FilterData;
 import project.database.loader.Serialization;
 import project.gui.component.GUINode;
 import project.gui.custom.generic.NumberInputWindow;
 
-public abstract class TopPaneEvent implements MainUtils {
+public abstract class TopPaneEvent implements MainUtil {
     public TopPaneEvent() {
         onAction_menuSave();
         onAction_menuExit();
@@ -35,73 +35,73 @@ public abstract class TopPaneEvent implements MainUtils {
 
     private static void onAction_menuSelectAll() {
         topPane.getMenuSelectAll().setOnAction(event -> {
-            selectionControl.addDataObject(filterControl.getCollection());
-            reloadControl.reload(true, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
+            selection.addAll(filter);
+            reload.queue(true, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
         });
     }
     private static void onAction_menuClearSelection() {
         topPane.getMenuClearSelection().setOnAction(event -> {
-            selectionControl.clearDataObjects();
-            reloadControl.reload(true, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
+            selection.clear();
+            reload.queue(true, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
         });
     }
 
     private static void onAction_menuUntaggedOnly() {
         topPane.getMenuUntaggedOnly().setOnAction(event -> {
-            filterControl.setFilter(Filter.SHOW_UNTAGGED);
-            reloadControl.reload(true, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
+            filter.setFilter(FilterData.SHOW_UNTAGGED);
+            reload.queue(true, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
         });
     }
     private static void onAction_menuMaxXTags() {
         topPane.getMenuMaxXTags().setOnAction(event -> {
-            int maxTags = new NumberInputWindow("Filter Settings", "Maximum number of tags:").getResultValue();
-            Filter.setMaxTagsValue(maxTags);
+            int maxTags = new NumberInputWindow("FilterData Settings", "Maximum number of tags:").getResultValue();
+            FilterData.setMaxTagsValue(maxTags);
 
-            filterControl.setFilter(Filter.SHOW_MAX_X_TAGS);
-            reloadControl.reload(true, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
+            filter.setFilter(FilterData.SHOW_MAX_X_TAGS);
+            reload.queue(true, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
         });
     }
     private static void onAction_menuModeWhitelistAll() {
         topPane.getMenuModeWhitelistAll().setOnAction(event -> {
             topPane.getMenuModeWhitelistAll().setSelected(true);
             topPane.getMenuModeWhitelistAny().setSelected(false);
-            filterControl.setWhitelistMode(FilterControl.FilterMode.All);
-            filterControl.applyFilter();
+            filter.setWhitelistMode(Filter.FilterMode.All);
+            filter.apply();
         });
     }
     private static void onAction_menuModeWhitelistAny() {
         topPane.getMenuModeWhitelistAny().setOnAction(event -> {
             topPane.getMenuModeWhitelistAll().setSelected(false);
             topPane.getMenuModeWhitelistAny().setSelected(true);
-            filterControl.setWhitelistMode(FilterControl.FilterMode.Any);
-            filterControl.applyFilter();
+            filter.setWhitelistMode(Filter.FilterMode.Any);
+            filter.apply();
         });
     }
     private static void onAction_menuModeBlacklistAll() {
         topPane.getMenuModeBlacklistAll().setOnAction(event -> {
             topPane.getMenuModeBlacklistAll().setSelected(true);
             topPane.getMenuModeBlacklistAny().setSelected(false);
-            filterControl.setBlacklistMode(FilterControl.FilterMode.All);
-            filterControl.applyFilter();
+            filter.setBlacklistMode(Filter.FilterMode.All);
+            filter.apply();
         });
     }
     private static void onAction_menuModeBlacklistAny() {
         topPane.getMenuModeBlacklistAny().setOnAction(event -> {
             topPane.getMenuModeBlacklistAll().setSelected(false);
             topPane.getMenuModeBlacklistAny().setSelected(true);
-            filterControl.setBlacklistMode(FilterControl.FilterMode.Any);
-            filterControl.applyFilter();
+            filter.setBlacklistMode(Filter.FilterMode.Any);
+            filter.apply();
         });
     }
     private static void onAction_menuRefresh() {
         topPane.getMenuRefresh().setOnAction(event -> {
-            reloadControl.reload(true, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
+            reload.queue(true, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
         });
     }
     private static void onAction_menuReset() {
         topPane.getMenuReset().setOnAction(event -> {
-            filterControl.setFilter(Filter.SHOW_EVERYTHING);
-            reloadControl.reload(true, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
+            filter.setFilter(FilterData.SHOW_EVERYTHING);
+            reload.queue(true, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
         });
     }
 }

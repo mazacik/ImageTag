@@ -4,10 +4,9 @@ import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import org.apache.commons.io.FilenameUtils;
-import project.MainUtils;
+import project.MainUtil;
 import project.database.object.DataCollection;
 import project.database.object.DataObject;
-import project.database.object.TagCollection;
 import project.gui.component.gallerypane.GalleryTile;
 import project.gui.custom.specific.LoadingWindow;
 import project.settings.Settings;
@@ -15,122 +14,127 @@ import project.settings.Settings;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 
-public class DataLoader extends Thread implements MainUtils {
-    private final double GALLERY_ICON_MAX_SIZE = Settings.getGalleryIconSizeMax();
-
+public class DataLoader extends Thread implements MainUtil {
     private final String PATH_SOURCE = Settings.getPath_source();
     private final String PATH_CACHE = Settings.getPath_cache();
     private final String PATH_DATA = Settings.getPath_data();
 
     private LoadingWindow loadingWindow;
 
-    private final DataCollection dataCollection = dataControl.getCollection();
-
-    private int fileCount = 0;
-    private int currentObjectIndex = 0;
-    private ArrayList<File> validFiles;
-
-    public synchronized void start(LoadingWindow loadingWindow) {
+    public void start(LoadingWindow loadingWindow) {
+        log.out("spawning loader thread", this.getClass());
         this.loadingWindow = loadingWindow;
         super.start();
     }
-
-    @Override
     public void run() {
-        initialization();
-        validation();
-        finalization();
-    }
+        log.out("starting loader thread", this.getClass());
+        checkDirectoryPaths();
+        ArrayList<File> fileList = new ArrayList<>(Arrays.asList(new File(PATH_SOURCE).listFiles((dir, name) -> name.endsWith(".jpg") || name.endsWith(".JPG") || name.endsWith(".png") || name.endsWith(".PNG") || name.endsWith(".jpeg") || name.endsWith(".JPEG"))));
+        if (!getExistingDatabase()) createDatabase(fileList);
 
-    private void initialization() {
-        FilenameFilter filenameFilter = (dir, name) -> name.endsWith(".jpg") || name.endsWith(".JPG") || name.endsWith(".png") || name.endsWith(".PNG") || name.endsWith(".jpeg") || name.endsWith(".JPEG");
-        File[] validFilesArray = new File(PATH_SOURCE).listFiles(filenameFilter);
-        validFiles = (validFilesArray != null) ? new ArrayList<>(Arrays.asList(validFilesArray)) : new ArrayList<>();
-        fileCount = validFiles.size();
+        validateDatabaseCache(fileList);
 
-        File path_cache = new File(PATH_CACHE);
-        if (!path_cache.exists()) path_cache.mkdir();
-
-        File path_data = new File(PATH_DATA);
-        if (!path_data.exists()) path_data.mkdir();
-
-        if (!dataControl.addAll(Serialization.readFromDisk())) {
-            createDatabase();
-        }
-    }
-    private void validation() {
-        ArrayList<String> dataObjectsNames = new ArrayList<>();
-        ArrayList<String> validFilesNames = new ArrayList<>();
-
-        for (DataObject dataObject : dataCollection) {
-            dataObjectsNames.add(dataObject.getName());
-        }
-        for (File file : validFiles) {
-            validFilesNames.add(file.getName());
-        }
-
-        dataObjectsNames.sort(Comparator.naturalOrder());
-        validFilesNames.sort(Comparator.naturalOrder());
-
-        if (!dataObjectsNames.equals(validFilesNames)) {
-            validateDatabaseCache(dataObjectsNames, validFilesNames);
-        }
-    }
-    private void finalization() {
-        //room for optimization here, we already foreach dataCollection in validation() method
-        for (DataObject dataObject : dataCollection) {
-            dataObject.setImage(getImageFromDataObject(dataObject));
+        log.out("loading cache", this.getClass());
+        int currentObjectIndex = 1;
+        for (DataObject dataObject : mainData) {
+            updateLoadingLabel(fileList.size(), currentObjectIndex++);
+            dataObject.setImage(getImageFromDataObject(dataObject, Settings.getGalleryIconSizeMax()));
             dataObject.setGalleryTile(new GalleryTile(dataObject));
         }
 
+        mainTags.initialize();
+        reload.all(true);
         Platform.runLater(() -> {
             loadingWindow.close();
-
-            tagControl.initialize();
-            reloadControl.reloadAll(true);
             customStage.show();
         });
     }
 
-    private void createDatabase() {
-        for (File file : validFiles) {
-            DataObject dataObject = createDataObjectFromFile(file);
-            dataControl.add(dataObject);
+    private void checkDirectoryPaths() {
+        File path_data = new File(PATH_DATA);
+        if (!path_data.exists()) {
+            log.out("creating data directory", this.getClass());
+            path_data.mkdir();
+        }
+
+        File path_cache = new File(PATH_CACHE);
+        if (!path_cache.exists()) {
+            log.out("creating cache directory", this.getClass());
+            path_cache.mkdir();
+        }
+    }
+    private void createDatabase(ArrayList<File> fileList) {
+        log.out("creating database", this.getClass());
+        for (File file : fileList) {
+            mainData.add(new DataObject(file));
         }
 
         Serialization.writeToDisk();
     }
-    private void validateDatabaseCache(ArrayList<String> dataObjectsItemNames, ArrayList<String> validFilesItemNames) {
-        /* add unrecognized items */
-        for (File file : validFiles) {
-            if (!dataObjectsItemNames.contains(file.getName())) {
-                dataCollection.add(createDataObjectFromFile(file));
+    private void validateDatabaseCache(ArrayList<File> fileList) {
+        log.out("validating database", this.getClass(), true);
+        ArrayList<String> dataObjectNames = new ArrayList<>();
+        ArrayList<String> fileListNames = new ArrayList<>();
+
+        mainData.forEach(dataObject -> dataObjectNames.add(dataObject.getName()));
+        fileList.forEach(file -> fileListNames.add(file.getName()));
+
+        dataObjectNames.sort(Comparator.naturalOrder());
+        fileListNames.sort(Comparator.naturalOrder());
+
+        if (dataObjectNames.equals(fileListNames)) {
+            log.out("... ok");
+            return;
+        } else {
+            log.out("\n");
+        }
+
+        /* addAll unrecognized items */
+        int added = 0;
+        log.out("adding new data objects", this.getClass());
+        for (File file : fileList) {
+            if (!dataObjectNames.contains(file.getName())) {
+                log.out("adding " + file.getName(), this.getClass());
+                mainData.add(new DataObject(file));
+                added++;
             }
         }
+        log.out("added " + added + " files", this.getClass());
 
         /* discard missing items */
-        DataCollection temporaryList = new DataCollection(dataCollection);
-        for (DataObject dataObject : dataCollection) {
-            if (!validFilesItemNames.contains(dataObject.getName())) {
+        int removed = 0;
+        log.out("discarding orphan data objects", this.getClass());
+        DataCollection temporaryList = new DataCollection(mainData);
+        for (DataObject dataObject : mainData) {
+            String objectName = dataObject.getName();
+            if (!fileListNames.contains(objectName)) {
+                log.out("discarding " + objectName, this.getClass());
                 temporaryList.remove(dataObject);
+                removed++;
             }
         }
+        log.out("discarded " + removed + " files", this.getClass());
 
-        dataCollection.clear();
-        dataCollection.addAll(temporaryList);
+        mainData.clear();
+        mainData.addAll(temporaryList);
         Serialization.writeToDisk();
     }
+    private void updateLoadingLabel(int fileCount, int currentObjectIndex) {
+        Platform.runLater(() -> loadingWindow.getProgressLabel().setText("Loading item " + currentObjectIndex + " of " + fileCount + ", " + currentObjectIndex * 100 / fileCount + "% done"));
+    }
+    private boolean getExistingDatabase() {
+        return mainData.addAll(Serialization.readFromDisk());
+    }
 
-    private Image getImageFromDataObject(DataObject dataObject) {
+    private Image getImageFromDataObject(DataObject dataObject, double galleryIconMaxSize) {
+        log.out("loading image of file " + dataObject.getName(), this.getClass());
         Image currentObjectImage = null;
-        currentObjectIndex++;
 
         String currentObjectName = dataObject.getName();
         String currentObjectCachePath = PATH_CACHE + "/" + currentObjectName;
@@ -141,7 +145,7 @@ public class DataLoader extends Thread implements MainUtils {
             try {
                 currentObjectCacheFile.createNewFile();
                 String currentObjectFilePath = "file:" + PATH_SOURCE + "/" + currentObjectName;
-                currentObjectImage = new Image(currentObjectFilePath, GALLERY_ICON_MAX_SIZE, GALLERY_ICON_MAX_SIZE, false, true);
+                currentObjectImage = new Image(currentObjectFilePath, galleryIconMaxSize, galleryIconMaxSize, false, true);
                 String currentObjectExtension = FilenameUtils.getExtension(currentObjectName);
                 BufferedImage currentObjectBufferedImage = SwingFXUtils.fromFXImage(currentObjectImage, null);
                 ImageIO.write(currentObjectBufferedImage, currentObjectExtension, currentObjectCacheFile);
@@ -152,10 +156,6 @@ public class DataLoader extends Thread implements MainUtils {
         }
 
         /* update loading window label */
-        Platform.runLater(() -> loadingWindow.getProgressLabel().setText("Loading item " + currentObjectIndex + " of " + fileCount + ", " + currentObjectIndex * 100 / fileCount + "% done"));
-        return Objects.requireNonNullElseGet(currentObjectImage, () -> new Image("file:" + currentObjectCachePath, GALLERY_ICON_MAX_SIZE, GALLERY_ICON_MAX_SIZE, false, true));
-    }
-    private DataObject createDataObjectFromFile(File file) {
-        return new DataObject(file.getName(), new TagCollection());
+        return Objects.requireNonNullElseGet(currentObjectImage, () -> new Image("file:" + currentObjectCachePath, galleryIconMaxSize, galleryIconMaxSize, false, true));
     }
 }

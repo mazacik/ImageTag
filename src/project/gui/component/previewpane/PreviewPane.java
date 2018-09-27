@@ -4,11 +4,11 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
-import project.MainUtils;
+import project.MainUtil;
 import project.database.object.DataObject;
 import project.settings.Settings;
 
-public class PreviewPane extends Pane implements MainUtils {
+public class PreviewPane extends Pane implements MainUtil {
     private final Canvas canvas;
 
     private DataObject currentDataObject;
@@ -28,7 +28,7 @@ public class PreviewPane extends Pane implements MainUtils {
     public void reload() {
         if (!isPreviewFullscreen()) return;
 
-        DataObject currentFocus = focusControl.getCurrentFocus();
+        DataObject currentFocus = focus.getCurrentFocus();
         if (currentFocus == null) return;
         if (currentDataObject == null || !currentDataObject.equals(currentFocus)) {
             loadImageOfCurrentFocus();
@@ -60,7 +60,7 @@ public class PreviewPane extends Pane implements MainUtils {
     }
 
     private void loadImageOfCurrentFocus() {
-        String url = "file:" + Settings.getPath_source() + "\\" + focusControl.getCurrentFocus().getName();
+        String url = "file:" + Settings.getPath_source() + "\\" + focus.getCurrentFocus().getName();
         currentPreviewImage = new Image(url);
     }
 

@@ -8,13 +8,13 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
-import project.MainUtils;
+import project.MainUtil;
 import project.gui.custom.specific.LeftPaneContextMenu;
 import project.gui.event.leftpane.ColoredTextEvent;
 
 import java.util.ArrayList;
 
-public class LeftPane extends BorderPane implements MainUtils {
+public class LeftPane extends BorderPane implements MainUtil {
     private final TreeView<ColoredText> treeView;
 
     public LeftPane() {
@@ -32,21 +32,21 @@ public class LeftPane extends BorderPane implements MainUtils {
         ObservableList<TreeItem<ColoredText>> treeViewItems = treeView.getRoot().getChildren();
         treeViewItems.clear();
 
-        ArrayList<String> groupNames = tagControl.getGroups();
+        ArrayList<String> groupNames = mainTags.getGroups();
         for (String groupName : groupNames) {
             TreeItem groupTreeItem;
-            if (filterControl.isGroupWhitelisted(groupName)) {
+            if (filter.isGroupWhitelisted(groupName)) {
                 groupTreeItem = new TreeItem(new ColoredText(groupName, Color.GREEN));
-            } else if (filterControl.isGroupBlacklisted(groupName)) {
+            } else if (filter.isGroupBlacklisted(groupName)) {
                 groupTreeItem = new TreeItem(new ColoredText(groupName, Color.RED));
             } else {
                 groupTreeItem = new TreeItem(new ColoredText(groupName, Color.BLACK));
             }
 
-            for (String tagName : tagControl.getNames(groupName)) {
-                if (filterControl.isTagObjectWhitelisted(groupName, tagName)) {
+            for (String tagName : mainTags.getNames(groupName)) {
+                if (filter.isTagObjectWhitelisted(groupName, tagName)) {
                     groupTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.GREEN)));
-                } else if (filterControl.isTagObjectBlacklisted(groupName, tagName)) {
+                } else if (filter.isTagObjectBlacklisted(groupName, tagName)) {
                     groupTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.RED)));
                 } else {
                     groupTreeItem.getChildren().add(new TreeItem(new ColoredText(tagName, Color.BLACK)));

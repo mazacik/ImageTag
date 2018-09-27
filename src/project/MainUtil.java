@@ -1,6 +1,13 @@
 package project;
 
-import project.control.*;
+import project.control.filter.Filter;
+import project.control.focus.Focus;
+import project.control.logger.Logger;
+import project.control.maintags.MainTags;
+import project.control.reload.Reload;
+import project.control.selection.Selection;
+import project.database.object.DataCollection;
+import project.database.object.TagCollection;
 import project.gui.CustomStage;
 import project.gui.component.gallerypane.GalleryPane;
 import project.gui.component.leftpane.LeftPane;
@@ -8,15 +15,18 @@ import project.gui.component.previewpane.PreviewPane;
 import project.gui.component.rightpane.RightPane;
 import project.gui.component.toppane.TopPane;
 
-public interface MainUtils {
-    DataControl dataControl = new DataControl();
-    TagControl tagControl = new TagControl();
+public interface MainUtil {
+    DataCollection mainData = new DataCollection();
+    MainTags mainTags = new MainTags();
 
-    FilterControl filterControl = new FilterControl();
-    FocusControl focusControl = new FocusControl();
-    LogControl logControl = new LogControl();
-    ReloadControl reloadControl = new ReloadControl();
-    SelectionControl selectionControl = new SelectionControl();
+    Filter filter = new Filter();
+    Focus focus = new Focus();
+    Logger log = new Logger();
+    Reload reload = new Reload();
+    Selection selection = new Selection();
+
+    TagCollection whitelist = filter.getWhitelist();
+    TagCollection blacklist = filter.getBlacklist();
 
     TopPane topPane = new TopPane();
     LeftPane leftPane = new LeftPane();
