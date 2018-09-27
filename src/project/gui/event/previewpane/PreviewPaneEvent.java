@@ -6,13 +6,13 @@ import project.gui.component.GUINode;
 import project.gui.custom.generic.DataObjectContextMenu;
 import project.utils.MainUtil;
 
-public abstract class PreviewPaneEvent implements MainUtil {
+public class PreviewPaneEvent implements MainUtil {
     public PreviewPaneEvent() {
         onMouseClick();
         onResize();
     }
 
-    private static void onMouseClick() {
+    private void onMouseClick() {
         final DataObjectContextMenu contextMenu = customStage.getDataObjectContextMenu();
 
         previewPane.getCanvas().setOnMouseClicked(event -> {
@@ -30,7 +30,7 @@ public abstract class PreviewPaneEvent implements MainUtil {
             }
         });
     }
-    private static void onResize() {
+    private void onResize() {
         ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) ->
                 reload.queue(true, GUINode.PREVIEWPANE);
         final Canvas canvas = previewPane.getCanvas();
