@@ -49,7 +49,9 @@ public class RightPaneEvent implements MainUtil {
                 String group = value.toString();
                 cbName.getItems().setAll(mainTags.getNames(group));
                 cbName.getSelectionModel().select(newTagObject.getName());
-                reload.queue(true, GUINode.LEFTPANE);
+                cbName.setDisable(false);
+                btnAdd.fire();
+                //reload.queue(true, GUINode.LEFTPANE);
             }
         });
     }

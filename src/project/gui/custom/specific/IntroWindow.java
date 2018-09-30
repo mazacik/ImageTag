@@ -17,6 +17,7 @@ public class IntroWindow extends Stage implements MainUtil {
     private final Scene sceneIntro = new Scene(introPane);
 
     private final Label lblSource = new Label("Source:");
+    private final Button btnMore = new Button("More options..");
     private final Label lblCache = new Label("Cache:");
     private final Label lblData = new Label("Database:");
     private final TextField tfSource = new TextField();
@@ -66,15 +67,23 @@ public class IntroWindow extends Stage implements MainUtil {
     }
     private void addChildrenToGrid() {
         introPane.add(lblSource, 0, 0);
+        introPane.add(tfSource, 1, 0);
+        introPane.add(btnSource, 2, 0);
+        introPane.add(btnMore, 0, 2);
+        introPane.add(btnOk, 2, 2);
+    }
+    private void addAdvancedChildrenToGrid() {
         introPane.add(lblCache, 0, 1);
         introPane.add(lblData, 0, 2);
-        introPane.add(tfSource, 1, 0);
         introPane.add(tfCache, 1, 1);
         introPane.add(tfData, 1, 2);
-        introPane.add(btnSource, 2, 0);
         introPane.add(btnCache, 2, 1);
         introPane.add(btnData, 2, 2);
+        introPane.getChildren().remove(btnMore);
+        introPane.getChildren().remove(btnOk);
         introPane.add(btnOk, 2, 4);
+        this.setWidth(433);
+        this.setHeight(171);
     }
     private void setListeners() {
         btnSource.setOnAction(event -> {
@@ -85,17 +94,21 @@ public class IntroWindow extends Stage implements MainUtil {
                     sourcePath += "\\";
                 }
                 tfSource.setText(sourcePath);
-                tfCache.setText(sourcePath + "cache");
-                tfData.setText(sourcePath + "database");
+                tfCache.setText(sourcePath + "cache\\");
+                tfData.setText(sourcePath + "database\\");
             }
         });
         btnCache.setOnAction(event -> {
             String cachePath = new DirectoryChooserWindow(this, "Choose Image Cache Directory Path", "C:\\").getResultValue();
-            tfCache.setText(cachePath);
+            if (!cachePath.isEmpty()) {
+                tfCache.setText(cachePath);
+            }
         });
         btnData.setOnAction(event -> {
             String dataPath = new DirectoryChooserWindow(this, "Choose Database Directory Path", "C:\\").getResultValue();
-            tfData.setText(dataPath);
+            if (!dataPath.isEmpty()) {
+                tfData.setText(dataPath);
+            }
         });
 
         btnOk.setOnAction(event -> {
@@ -119,6 +132,7 @@ public class IntroWindow extends Stage implements MainUtil {
                     else
                         btnOk.setDisable(true);
         };
+        btnMore.setOnAction(event -> this.addAdvancedChildrenToGrid());
 
         tfSource.textProperty().addListener(textFieldChangeListener);
         tfCache.textProperty().addListener(textFieldChangeListener);

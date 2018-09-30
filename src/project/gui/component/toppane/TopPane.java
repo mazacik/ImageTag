@@ -14,7 +14,7 @@ public class TopPane extends BorderPane implements MainUtil {
     private final MenuItem menuExit = new MenuItem("Exit");
 
     private final Menu menuSelection = new Menu("Selection");
-    private final MenuItem menuSelectAll = new MenuItem("Selection All");
+    private final MenuItem menuSelectAll = new MenuItem("Select All");
     private final MenuItem menuClearSelection = new MenuItem("Clear Selection");
 
     private final Menu menuFilter = new Menu("Filter");

@@ -133,7 +133,7 @@ public class DataLoader extends Thread implements MainUtil {
     }
 
     private Image getImageFromDataObject(DataObject dataObject, double galleryIconMaxSize) {
-        log.out("loading image of file " + dataObject.getName(), this.getClass());
+        log.out("loading cached image of file " + dataObject.getName(), this.getClass());
         Image currentObjectImage = null;
 
         String currentObjectName = dataObject.getName();
@@ -143,6 +143,7 @@ public class DataLoader extends Thread implements MainUtil {
         /* write image cache to disk if not present */
         if (!currentObjectCacheFile.exists()) {
             try {
+                log.out("cached image of file " + dataObject.getName() + " not found, generating", this.getClass());
                 currentObjectCacheFile.createNewFile();
                 String currentObjectFilePath = "file:" + PATH_SOURCE + "/" + currentObjectName;
                 currentObjectImage = new Image(currentObjectFilePath, galleryIconMaxSize, galleryIconMaxSize, false, true);
