@@ -36,7 +36,10 @@ public class CustomStage extends Stage implements MainUtil {
         this.setMinHeight(Settings.getGuiMinHeight());
         this.setMaximized(true);
         this.setScene(mainScene);
-        this.setOnCloseRequest(event -> Serialization.writeToDisk());
+        this.setOnCloseRequest(event -> {
+            Serialization.writeToDisk();
+            log.out("application exit", this.getClass());
+        });
 
         splitPane.setDividerPositions(0.0, 1.0);
 

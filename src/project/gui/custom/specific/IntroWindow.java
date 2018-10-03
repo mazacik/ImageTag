@@ -64,6 +64,7 @@ public class IntroWindow extends Stage implements MainUtil {
         setScene(sceneIntro);
         setResizable(false);
         centerOnScreen();
+        this.setOnCloseRequest(event -> log.out("application exit", this.getClass()));
         show();
     }
     private void addChildrenToGrid() {
