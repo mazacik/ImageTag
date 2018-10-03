@@ -94,10 +94,7 @@ public class RightPaneEvent implements MainUtil {
         });
     }
     private void onAction_contextMenu() {
-        rightPane.getContextMenu().getMenuEdit().setOnAction(event -> {
-            mainTags.edit(mainTags.getTagObject(rightPane.getListView().getSelectionModel().getSelectedItem()));
-        });
-
+        rightPane.getContextMenu().getMenuEdit().setOnAction(event -> mainTags.edit(mainTags.getTagObject(rightPane.getListView().getSelectionModel().getSelectedItem())));
         rightPane.getContextMenu().getMenuRemove().setOnAction(event -> {
             selection.removeTagObject();
             mainTags.remove(mainTags.getTagObject(rightPane.getListView().getSelectionModel().getSelectedItem()));
@@ -107,6 +104,7 @@ public class RightPaneEvent implements MainUtil {
 
     private void onShowing_cbGroup(ChoiceBox cbGroup) {
         cbGroup.setOnShowing(event -> {
+            rightPane.requestFocus();
             Object cbGroupValue = cbGroup.getValue();
             if (cbGroupValue != null) {
                 cbGroupText = cbGroupValue.toString();
@@ -117,6 +115,7 @@ public class RightPaneEvent implements MainUtil {
     }
     private void onHidden_cbGroup(ChoiceBox cbGroup) {
         cbGroup.setOnHidden(event -> {
+            cbGroup.requestFocus();
             Object cbGroupValue = cbGroup.getValue();
             String cbGroupValueString;
             String cbGroupStringOld = cbGroupText;
@@ -134,6 +133,7 @@ public class RightPaneEvent implements MainUtil {
 
     private void onShowing_cbName(ChoiceBox cbName) {
         cbName.setOnShowing(event -> {
+            rightPane.requestFocus();
             Object cbNameValue = cbName.getValue();
             if (cbNameValue != null) {
                 cbNameText = cbNameValue.toString();
@@ -147,6 +147,7 @@ public class RightPaneEvent implements MainUtil {
     }
     private void onHidden_cbName(ChoiceBox cbName) {
         cbName.setOnHidden(event -> {
+            cbName.requestFocus();
             Object cbNameValue = cbName.getValue();
             if (cbNameValue != null && !cbNameValue.toString().isEmpty()) {
                 cbNameText = cbNameValue.toString();

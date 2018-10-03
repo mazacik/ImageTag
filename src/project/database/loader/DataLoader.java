@@ -14,7 +14,6 @@ import project.utils.MainUtil;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -28,12 +27,11 @@ public class DataLoader extends Thread implements MainUtil {
     private LoadingWindow loadingWindow;
 
     public void start(LoadingWindow loadingWindow) {
-        log.out("spawning loader thread", this.getClass());
         this.loadingWindow = loadingWindow;
         super.start();
     }
     public void run() {
-        log.out("starting loader thread", this.getClass());
+        log.out("loader thread start", this.getClass());
         checkDirectoryPaths();
         ArrayList<File> fileList = new ArrayList<>(Arrays.asList(new File(PATH_SOURCE).listFiles((dir, name) -> name.endsWith(".jpg") || name.endsWith(".JPG") || name.endsWith(".png") || name.endsWith(".PNG") || name.endsWith(".jpeg") || name.endsWith(".JPEG"))));
         if (!getExistingDatabase()) createDatabase(fileList);
@@ -51,6 +49,7 @@ public class DataLoader extends Thread implements MainUtil {
         mainTags.initialize();
         reload.all(true);
         Platform.runLater(() -> {
+            log.out("loader thread done", this.getClass());
             loadingWindow.close();
             customStage.show();
         });
@@ -133,7 +132,7 @@ public class DataLoader extends Thread implements MainUtil {
     }
 
     private Image getImageFromDataObject(DataObject dataObject, double galleryIconMaxSize) {
-        log.out("loading cached image of file " + dataObject.getName(), this.getClass());
+        //log.out("loading cached image of file " + dataObject.getName(), this.getClass());
         Image currentObjectImage = null;
 
         String currentObjectName = dataObject.getName();
@@ -150,7 +149,7 @@ public class DataLoader extends Thread implements MainUtil {
                 String currentObjectExtension = FilenameUtils.getExtension(currentObjectName);
                 BufferedImage currentObjectBufferedImage = SwingFXUtils.fromFXImage(currentObjectImage, null);
                 ImageIO.write(currentObjectBufferedImage, currentObjectExtension, currentObjectCacheFile);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }

@@ -19,7 +19,6 @@ import java.util.Collection;
 
 public abstract class Serialization implements MainUtil {
     public static void writeToDisk() {
-        log.out("writing database to disk", Serialization.class, true);
         String path_data = Settings.getPath_data() + "\\data.json";
         GsonBuilder GSONBuilder = new GsonBuilder();
         GSONBuilder.setPrettyPrinting().serializeNulls();
@@ -31,14 +30,13 @@ public abstract class Serialization implements MainUtil {
             BufferedWriter writer = new BufferedWriter(new FileWriter(path_data, false));
             writer.write(JSON);
             writer.close();
-            log.out("... success");
+            log.out("writing database to disk ... ok", Serialization.class);
         } catch (IOException e) {
-            log.out("... failed");
+            log.out("writing database to disk ... fail", Serialization.class);
             e.printStackTrace();
         }
     }
     public static DataCollection readFromDisk() {
-        log.out("reading database from disk", Serialization.class, true);
         Path path_data = Paths.get(Settings.getPath_data() + "\\data.json");
         GsonBuilder GSONBuilder = new GsonBuilder();
         GSONBuilder.setPrettyPrinting().serializeNulls();
@@ -47,10 +45,10 @@ public abstract class Serialization implements MainUtil {
         Type databaseItemListType = new TypeToken<DataCollection>() {}.getType();
         try {
             String JSON = new String(Files.readAllBytes(path_data));
-            log.out("... success");
+            log.out("reading database from disk ... ok", Serialization.class);
             return GSON.fromJson(JSON, databaseItemListType);
         } catch (Exception e) {
-            log.out("... failed");
+            log.out("reading database from disk ... fail", Serialization.class);
             return new DataCollection();
         }
     }

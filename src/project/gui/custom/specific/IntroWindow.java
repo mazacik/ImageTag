@@ -17,7 +17,6 @@ public class IntroWindow extends Stage implements MainUtil {
     private final Scene sceneIntro = new Scene(introPane);
 
     private final Label lblSource = new Label("Source:");
-    private final Button btnMore = new Button("More options..");
     private final Label lblCache = new Label("Cache:");
     private final Label lblData = new Label("Database:");
     private final TextField tfSource = new TextField();
@@ -26,11 +25,14 @@ public class IntroWindow extends Stage implements MainUtil {
     private final Button btnSource = new Button("...");
     private final Button btnCache = new Button("...");
     private final Button btnData = new Button("...");
+
     private final Button btnOk = new Button("OK");
+    private final Button btnMore = new Button("More options..");
 
     public IntroWindow() {
         setDefaultValuesChildren();
         setDefaultValues();
+        log.out("waiting for directory input", this.getClass());
     }
 
     private void setDefaultValuesChildren() {
@@ -62,17 +64,16 @@ public class IntroWindow extends Stage implements MainUtil {
         setScene(sceneIntro);
         setResizable(false);
         centerOnScreen();
-        log.out("waiting for directory input", this.getClass());
         show();
     }
     private void addChildrenToGrid() {
         introPane.add(lblSource, 0, 0);
         introPane.add(tfSource, 1, 0);
         introPane.add(btnSource, 2, 0);
-        introPane.add(btnMore, 0, 2);
+        introPane.add(btnMore, 0, 2, 2, 1);
         introPane.add(btnOk, 2, 2);
     }
-    private void addAdvancedChildrenToGrid() {
+    private void addMoreChildrenToGrid() {
         introPane.add(lblCache, 0, 1);
         introPane.add(lblData, 0, 2);
         introPane.add(tfCache, 1, 1);
@@ -82,6 +83,13 @@ public class IntroWindow extends Stage implements MainUtil {
         introPane.getChildren().remove(btnMore);
         introPane.getChildren().remove(btnOk);
         introPane.add(btnOk, 2, 4);
+
+        if (!btnOk.isDisabled()) {
+            btnOk.requestFocus();
+        } else {
+            btnSource.requestFocus();
+        }
+
         this.setWidth(433);
         this.setHeight(171);
     }
@@ -132,7 +140,7 @@ public class IntroWindow extends Stage implements MainUtil {
                     else
                         btnOk.setDisable(true);
         };
-        btnMore.setOnAction(event -> this.addAdvancedChildrenToGrid());
+        btnMore.setOnAction(event -> this.addMoreChildrenToGrid());
 
         tfSource.textProperty().addListener(textFieldChangeListener);
         tfCache.textProperty().addListener(textFieldChangeListener);

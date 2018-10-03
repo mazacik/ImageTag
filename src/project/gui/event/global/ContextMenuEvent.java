@@ -6,10 +6,8 @@ import project.settings.Settings;
 import project.utils.ClipboardUtil;
 import project.utils.MainUtil;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.awt.*;
+import java.io.File;
 
 public class ContextMenuEvent implements MainUtil {
     public ContextMenuEvent() {
@@ -22,7 +20,7 @@ public class ContextMenuEvent implements MainUtil {
             DataObject dataObject;
 
             if (!isPreviewFullscreen()) {
-                //todo fixme
+                //todo
                 dataObject = selection.get(0);
             } else {
                 dataObject = focus.getCurrentFocus();
@@ -45,27 +43,20 @@ public class ContextMenuEvent implements MainUtil {
         int index = filter.indexOf(dataObject);
 
         String pathString = Settings.getPath_source() + "\\" + dataObject.getName();
-        Path path = Paths.get(pathString);
+        Desktop.getDesktop().moveToTrash(new File(pathString));
 
-        try {
-            Files.delete(path);
+        filter.remove(dataObject);
+        mainData.remove(dataObject);
+        selection.remove(dataObject);
 
-            filter.remove(dataObject);
-            mainData.remove(dataObject);
-            selection.remove(dataObject);
-
-            if (filter.get(index - 1) != null) {
-                index--;
-            } else if (filter.get(index + 1) != null) {
-                index++;
-            }
-
-            focus.set(filter.get(index));
-            reload.queue(true, sender);
-        } catch (IOException e) {
-            System.out.println("IOException: Trying to delete non-existent file; Path: " + pathString);
-            e.printStackTrace();
+        if (filter.get(index - 1) != null) {
+            index--;
+        } else if (filter.get(index + 1) != null) {
+            index++;
         }
+
+        focus.set(filter.get(index));
+        reload.queue(true, sender);
     }
     private void deleteDataObject(GUINode sender) {
         selection.forEach(dataObject -> {
