@@ -60,7 +60,7 @@ public class IntroWindow extends Stage implements MainUtil {
         }
     }
     private void setDefaultValues() {
-        setTitle("JavaExplorer");
+        setTitle("ImageTag");
         setScene(sceneIntro);
         setResizable(false);
         centerOnScreen();

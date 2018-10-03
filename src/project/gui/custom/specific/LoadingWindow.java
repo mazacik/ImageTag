@@ -24,7 +24,7 @@ public class LoadingWindow extends Stage implements MainUtil {
         loadingPane.setPrefWidth(300);
     }
     private void setDefaultValues() {
-        setTitle("JavaExplorer Loading");
+        setTitle("ImageTag Loading");
         setScene(loadingScene);
         setResizable(false);
         centerOnScreen();

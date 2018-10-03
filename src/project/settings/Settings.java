@@ -15,7 +15,7 @@ public abstract class Settings {
     private static int guiMinWidth = 800;
     private static int guiMinHeight = 600;
 
-    private static String settingsFilePath = "JavaExplorer.ini";
+    private static String settingsFilePath = "ImageTag.ini";
 
     public static boolean readFromFile(Class main) {
         Properties properties = new Properties();

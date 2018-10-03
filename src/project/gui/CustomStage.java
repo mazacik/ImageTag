@@ -31,7 +31,7 @@ public class CustomStage extends Stage implements MainUtil {
 
     public void init() {
         log.out("gui init start", this.getClass());
-        this.setTitle("JavaExplorer");
+        this.setTitle("ImageTag");
         this.setMinWidth(Settings.getGuiMinWidth());
         this.setMinHeight(Settings.getGuiMinHeight());
         this.setMaximized(true);
