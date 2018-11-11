@@ -50,6 +50,7 @@ public class Selection extends DataCollection implements MainUtil {
         } else {
             this.remove(dataObject);
         }
+        reload.queue(true, GUINode.RIGHTPANE);
     }
     public TagCollection getIntersectingTags() {
         if (this.size() < 1) return new TagCollection();

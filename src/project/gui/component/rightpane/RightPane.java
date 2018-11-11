@@ -85,7 +85,7 @@ public class RightPane extends BorderPane implements MainUtil {
     }
     public void reload() {
         ArrayList<String> sharedTags = new ArrayList<>();
-        if (selection.size() <= 1) {
+        if (selection.size() == 1) {
             DataObject currentFocusedItem = focus.getCurrentFocus();
             if (currentFocusedItem != null) {
                 for (TagObject tagObject : currentFocusedItem.getTagCollection()) {
