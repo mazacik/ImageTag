@@ -101,8 +101,7 @@ public class Filter extends DataCollection implements MainUtil {
     }
 
     public DataObject getRandomObject() {
-        int randomIndex = new Random().nextInt(this.size());
-        return this.get(randomIndex);
+        return this.get(new Random().nextInt(this.size()));
     }
 
     public TagCollection getWhitelist() {
@@ -120,10 +119,10 @@ public class Filter extends DataCollection implements MainUtil {
     }
 
     public void setFilter(FilterData filterData) {
-        currentFilterData = filterData;
-        apply();
+        this.currentFilterData = filterData;
+        this.apply();
 
-        switch (currentFilterData) {
+        switch (this.currentFilterData) {
             case CUSTOM:
                 topPane.getMenuUntaggedOnly().setSelected(false);
                 topPane.getMenuMaxXTags().setSelected(false);

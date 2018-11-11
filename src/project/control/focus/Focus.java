@@ -26,8 +26,20 @@ public class Focus implements MainUtil {
         if (previousFocus != null) {
             previousFocus.getGalleryTile().generateEffect();
         }
+    }
+    public void refresh() {
+        int index = filter.indexOf(this.currentFocus);
+        if (filter.get(index) == null) {
+            if (filter.get(index - 1) != null) {
+                index--;
+            } else if (filter.get(index + 1) != null) {
+                index++;
+            } else {
+                index = 0;
+            }
+        }
 
-        reload.queue(GUINode.PREVIEWPANE);
+        this.set(filter.get(index));
     }
     public void moveFocusByKeyCode(KeyCode keyCode) {
         DataObject currentFocus = getCurrentFocus();
@@ -50,6 +62,7 @@ public class Focus implements MainUtil {
         if (newFocusPosition >= 0 && newFocusPosition < filter.size()) {
             set(filter.get(newFocusPosition));
             galleryPane.adjustViewportToCurrentFocus();
+            reload.queue(GUINode.PREVIEWPANE);
         }
     }
 

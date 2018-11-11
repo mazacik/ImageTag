@@ -2,6 +2,7 @@ package project.gui.event.global;
 
 import project.database.object.DataObject;
 import project.gui.component.GUINode;
+import project.gui.custom.generic.ConfirmationWindow;
 import project.settings.Settings;
 import project.utils.ClipboardUtil;
 import project.utils.MainUtil;
@@ -20,52 +21,61 @@ public class ContextMenuEvent implements MainUtil {
             DataObject dataObject;
 
             if (!isPreviewFullscreen()) {
-                //todo
+                //todo copy multiple files -- array?
                 dataObject = selection.get(0);
             } else {
                 dataObject = focus.getCurrentFocus();
             }
 
-            ClipboardUtil.setClipboardContent(dataObject.getName());
+            ClipboardUtil.setClipboardContent(Settings.getPath_source() + dataObject.getName());
         });
     }
     private void onAction_menuDelete() {
         customStage.getDataObjectContextMenu().getMenuDelete().setOnAction(event -> {
             if (!isPreviewFullscreen()) {
-                this.deleteDataObject(GUINode.GALLERYPANE);
+                this.deleteSelection();
             } else {
-                this.deleteCurrentFocus(GUINode.PREVIEWPANE);
+                this.deleteCurrentFocus();
             }
+            focus.refresh();
         });
     }
 
-    private void deleteDataObject(GUINode sender, DataObject dataObject) {
-        int index = filter.indexOf(dataObject);
+    private void deleteDataObject(DataObject dataObject) {
+        if (filter.contains(dataObject)) {
+            String fullPath = Settings.getPath_source() + "\\" + dataObject.getName();
+            Desktop.getDesktop().moveToTrash(new File(fullPath));
 
-        String pathString = Settings.getPath_source() + "\\" + dataObject.getName();
-        Desktop.getDesktop().moveToTrash(new File(pathString));
-
-        filter.remove(dataObject);
-        mainData.remove(dataObject);
-        selection.remove(dataObject);
-
-        if (filter.get(index - 1) != null) {
-            index--;
-        } else if (filter.get(index + 1) != null) {
-            index++;
+            filter.remove(dataObject);
+            mainData.remove(dataObject);
+            selection.remove(dataObject);
         }
+    }
+    private void deleteSelection() {
+        if (selection.isEmpty()) return;
 
-        focus.set(filter.get(index));
-        reload.queue(true, sender);
+        ConfirmationWindow confirmationWindow = new ConfirmationWindow();
+        confirmationWindow.setTitle("Confirmation");
+        confirmationWindow.setHeaderText("Delete " + selection.size() + " file(s)");
+        confirmationWindow.setContentText("Are you sure?");
+
+        if (confirmationWindow.getResult()) {
+            selection.forEach(this::deleteDataObject);
+            reload.queue(true, GUINode.GALLERYPANE);
+        }
     }
-    private void deleteDataObject(GUINode sender) {
-        selection.forEach(dataObject -> {
-            if (filter.contains(dataObject)) {
-                this.deleteDataObject(sender, dataObject);
-            }
-        });
-    }
-    private void deleteCurrentFocus(GUINode sender) {
-        this.deleteDataObject(sender, focus.getCurrentFocus());
+    private void deleteCurrentFocus() {
+        DataObject currentFocus = focus.getCurrentFocus();
+        String fullPath = Settings.getPath_source() + "\\" + currentFocus.getName();
+
+        ConfirmationWindow confirmationWindow = new ConfirmationWindow();
+        confirmationWindow.setTitle("Confirmation");
+        confirmationWindow.setHeaderText("Delete file: " + fullPath);
+        confirmationWindow.setContentText("Are you sure?");
+
+        if (confirmationWindow.getResult()) {
+            this.deleteDataObject(currentFocus);
+            reload.queue(true, GUINode.PREVIEWPANE);
+        }
     }
 }
