@@ -4,7 +4,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import project.database.object.DataObject;
 import project.database.object.TagObject;
@@ -14,23 +15,30 @@ import project.utils.MainUtil;
 
 import java.util.ArrayList;
 
-public class RightPane extends BorderPane implements MainUtil {
+public class RightPane extends VBox implements MainUtil {
+    private final Button btnCommon; // == 0
+    private final Button btnRecent; // == 1
+    private final ListView<String> suggestionListView;
+    private ArrayList<String> recentTags = new ArrayList<>();
+    private SuggestMode suggestMode = SuggestMode.COMMON;
+
     private final ChoiceBox cbGroup;
     private final ChoiceBox cbName;
     private final Button btnAdd;
     private final Button btnNew;
-
     private final RightPaneContextMenu contextMenu;
-    private final ListView<String> listView;
+    private final ListView<String> intersectionListView;
 
     public RightPane() {
+        btnCommon = new Button("Common");
+        btnRecent = new Button("Recent");
+        suggestionListView = new ListView<>();
         cbGroup = new ChoiceBox();
         cbName = new ChoiceBox();
         btnAdd = new Button("Add");
         btnNew = new Button("New");
-
         contextMenu = new RightPaneContextMenu();
-        listView = new ListView<>();
+        intersectionListView = new ListView<>();
 
         this.setDefaultValuesChildren();
         this.setDefaultValues();
@@ -45,18 +53,35 @@ public class RightPane extends BorderPane implements MainUtil {
         btnNew.prefWidthProperty().bind(this.prefWidthProperty());
         btnNew.maxWidthProperty().bind(this.maxWidthProperty());
 
+        btnCommon.setMaxWidth(Double.MAX_VALUE);
+        btnRecent.setMaxWidth(Double.MAX_VALUE);
+
+        suggestionListView.setMaxHeight(Double.MAX_VALUE);
+        suggestionListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        suggestionListView.setMaxHeight(5 * 24);
+        intersectionListView.setMaxHeight(Double.MAX_VALUE);
+
+
+        //btnAdd.setDisable(true);
         cbName.setDisable(true);
 
-        listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        listView.setContextMenu(contextMenu);
+        intersectionListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        intersectionListView.setContextMenu(contextMenu);
     }
     private void setDefaultValues() {
         this.setMinWidth(200);
         this.setPrefWidth(250);
         this.setMaxWidth(300);
+        this.setSpacing(2);
 
-        this.setTop(new VBox(2, cbGroup, cbName, btnAdd, btnNew));
-        this.setCenter(listView);
+        VBox.setVgrow(suggestionListView, Priority.ALWAYS);
+        VBox.setVgrow(intersectionListView, Priority.ALWAYS);
+
+        HBox hbox1 = new HBox(btnCommon, btnRecent);
+        HBox.setHgrow(btnCommon, Priority.ALWAYS);
+        HBox.setHgrow(btnRecent, Priority.ALWAYS);
+
+        this.getChildren().addAll(hbox1, suggestionListView, cbGroup, cbName, btnAdd, btnNew, intersectionListView);
     }
 
     public void addTagToSelection() {
@@ -80,12 +105,28 @@ public class RightPane extends BorderPane implements MainUtil {
             } else {
                 selection.addTagObject(tagObject);
             }
+
+            ArrayList<String> oldRecentTags = this.recentTags;
+            ArrayList<String> newRecentTags = new ArrayList<>();
+            String tagGroupAndName = tagObject.getGroupAndName();
+            newRecentTags.add(tagGroupAndName);
+
+            if (oldRecentTags.size() != 0) {
+                oldRecentTags.remove(tagGroupAndName);
+                newRecentTags.addAll(oldRecentTags);
+            }
+
+            this.recentTags = newRecentTags;
             reload.queue(GUINode.RIGHTPANE);
         }
     }
     public void reload() {
+        this.reloadIntersecting();
+        this.reloadSuggested();
+    }
+    private void reloadIntersecting() {
         ArrayList<String> sharedTags = new ArrayList<>();
-        if (selection.size() == 1) {
+        if (selection.size() == 0) {
             DataObject currentFocusedItem = focus.getCurrentFocus();
             if (currentFocusedItem != null) {
                 for (TagObject tagObject : currentFocusedItem.getTagCollection()) {
@@ -97,7 +138,29 @@ public class RightPane extends BorderPane implements MainUtil {
                 sharedTags.add(tagObject.getGroupAndName());
             }
         }
-        listView.getItems().setAll(sharedTags);
+        intersectionListView.getItems().setAll(sharedTags);
+    }
+    private void reloadSuggested() {
+        switch (suggestMode) {
+            case COMMON:
+                ArrayList<String> topTenTags = new ArrayList<>();
+                for (TagObject tagObject : mainTags) {
+
+                }
+                break;
+            case RECENT:
+                suggestionListView.getItems().setAll(recentTags);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public Button getBtnCommon() {
+        return btnCommon;
+    }
+    public Button getBtnRecent() {
+        return btnRecent;
     }
 
     public ChoiceBox getCbGroup() {
@@ -113,11 +176,17 @@ public class RightPane extends BorderPane implements MainUtil {
         return btnNew;
     }
 
-    public ListView<String> getListView() {
-        return listView;
-    }
-
     public RightPaneContextMenu getContextMenu() {
         return contextMenu;
+    }
+    public ListView<String> getSuggestionListView() {
+        return suggestionListView;
+    }
+    public ListView<String> getIntersectionListView() {
+        return intersectionListView;
+    }
+
+    public void setSuggestMode(SuggestMode suggestMode) {
+        this.suggestMode = suggestMode;
     }
 }

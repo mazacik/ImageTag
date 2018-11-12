@@ -29,6 +29,7 @@ public class GalleryTileEvent implements MainUtil {
         focus.set(dataObject);
         selection.swapState(dataObject);
         customStage.getDataObjectContextMenu().hide();
+        reload.doReload();
     }
     private void onRightClick(GalleryTile sender, MouseEvent event) {
         DataObject dataObject = sender.getParentDataObject();

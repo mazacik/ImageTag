@@ -1,5 +1,6 @@
 package project.gui.event.global;
 
+import project.database.object.DataObject;
 import project.utils.MainUtil;
 
 public class GlobalEvent implements MainUtil {
@@ -14,8 +15,9 @@ public class GlobalEvent implements MainUtil {
                     selection.swapState(focus.getCurrentFocus());
                     break;
                 case R:
-                    selection.set(filter.getRandomObject());
-                    galleryPane.adjustViewportToCurrentFocus();
+                    DataObject dataObject = filter.getRandomObject();
+                    selection.set(dataObject);
+                    focus.set(dataObject);
                     break;
                 case F12:
                     swapDisplayMode();

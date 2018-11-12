@@ -2,7 +2,6 @@ package project.gui.component.toppane;
 
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import project.database.object.DataObject;
 import project.utils.MainUtil;
 
 public class TopPane extends BorderPane implements MainUtil {
@@ -48,10 +47,8 @@ public class TopPane extends BorderPane implements MainUtil {
     }
 
     public void reload() {
-        DataObject currentFocusedItem = focus.getCurrentFocus();
-        if (currentFocusedItem != null) {
-            infoLabelMenu.setText(currentFocusedItem.getName());
-        }
+        String text = String.valueOf(selection.size()) + " items selected";
+        infoLabelMenu.setText(text);
     }
 
     public MenuItem getMenuSave() {

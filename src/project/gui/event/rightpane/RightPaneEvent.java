@@ -6,28 +6,65 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import project.database.object.TagObject;
 import project.gui.component.GUINode;
+import project.gui.component.rightpane.SuggestMode;
 import project.gui.custom.specific.TagEditor;
 import project.utils.MainUtil;
 
 public class RightPaneEvent implements MainUtil {
+    private final ChoiceBox cbGroup;
+    private final ChoiceBox cbName;
+
     private String cbNameText;
     private String cbGroupText;
 
     public RightPaneEvent() {
-        onMouseClick();
+        cbGroup = rightPane.getCbGroup();
+        cbName = rightPane.getCbName();
+
+        this.initBtnCommon();
+        this.initBtnRecent();
+        this.initBtnAdd();
+        this.initBtnNew();
+
+        suggestionListView_onLeftClick();
+        intersectionListView_onMouseClick();
         onKeyPress();
 
         onAction_contextMenu();
 
-        ChoiceBox cbGroup = rightPane.getCbGroup();
-        ChoiceBox cbName = rightPane.getCbName();
 
         onShowing_cbGroup(cbGroup);
         onHidden_cbGroup(cbGroup);
 
         onShowing_cbName(cbName);
         onHidden_cbName(cbName);
+    }
 
+    private void initBtnCommon() {
+        Button btnCommon = rightPane.getBtnCommon();
+        btnCommon.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                btnCommon.fire();
+            }
+        });
+        btnCommon.setOnAction(event -> {
+            rightPane.setSuggestMode(SuggestMode.COMMON);
+            reload.queue(true, GUINode.RIGHTPANE);
+        });
+    }
+    private void initBtnRecent() {
+        Button btnRecent = rightPane.getBtnRecent();
+        btnRecent.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                btnRecent.fire();
+            }
+        });
+        btnRecent.setOnAction(event -> {
+            rightPane.setSuggestMode(SuggestMode.RECENT);
+            reload.queue(true, GUINode.RIGHTPANE);
+        });
+    }
+    private void initBtnAdd() {
         Button btnAdd = rightPane.getBtnAdd();
         btnAdd.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
@@ -38,8 +75,15 @@ public class RightPaneEvent implements MainUtil {
             rightPane.addTagToSelection();
             reload.queue(true, GUINode.RIGHTPANE);
         });
-
-        rightPane.getBtnNew().setOnAction(event -> {
+    }
+    private void initBtnNew() {
+        Button btnNew = rightPane.getBtnNew();
+        btnNew.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                btnNew.fire();
+            }
+        });
+        btnNew.setOnAction(event -> {
             TagObject newTagObject = TagEditor.createTag();
             if (newTagObject != null) {
                 mainTags.add(newTagObject);
@@ -50,32 +94,41 @@ public class RightPaneEvent implements MainUtil {
                 cbName.getItems().setAll(mainTags.getNames(group));
                 cbName.getSelectionModel().select(newTagObject.getName());
                 cbName.setDisable(false);
-                btnAdd.fire();
-                //reload.queue(true, GUINode.LEFTPANE);
+                //btnAdd.fire();
             }
         });
     }
 
-    private void onMouseClick() {
-        rightPane.getListView().setOnMouseClicked(event -> {
+    private void suggestionListView_onLeftClick() {
+        rightPane.getSuggestionListView().setOnMouseClicked(event -> {
+            if (event.getClickCount() % 2 == 0) {
+                String groupAndName = rightPane.getSuggestionListView().getSelectionModel().getSelectedItem();
+                if (!groupAndName.isEmpty()) {
+                    selection.addTagObject(mainTags.getTagObject(groupAndName));
+                    reload.queue(true, GUINode.RIGHTPANE);
+                }
+            }
+        });
+    }
+
+    private void intersectionListView_onMouseClick() {
+        rightPane.getIntersectionListView().setOnMouseClicked(event -> {
             switch (event.getButton()) {
                 case PRIMARY:
-                    onLeftClick();
+                    intersectionListView_onLeftClick();
                     break;
                 case SECONDARY:
-                    onRightClick(event);
+                    intersectionListView_onRightClick(event);
                     break;
                 default:
                     break;
             }
         });
     }
-    private void onLeftClick() {
-        rightPane.requestFocus();
+    private void intersectionListView_onLeftClick() {
         rightPane.getContextMenu().hide();
     }
-    private void onRightClick(MouseEvent event) {
-        selection.add(focus.getCurrentFocus());
+    private void intersectionListView_onRightClick(MouseEvent event) {
         rightPane.getContextMenu().show(rightPane, event.getScreenX(), event.getScreenY());
     }
 
@@ -94,10 +147,12 @@ public class RightPaneEvent implements MainUtil {
         });
     }
     private void onAction_contextMenu() {
-        rightPane.getContextMenu().getMenuEdit().setOnAction(event -> mainTags.edit(mainTags.getTagObject(rightPane.getListView().getSelectionModel().getSelectedItem())));
+        rightPane.getContextMenu().getMenuEdit().setOnAction(event -> mainTags.edit(mainTags.getTagObject(rightPane.getIntersectionListView().getSelectionModel().getSelectedItem())));
         rightPane.getContextMenu().getMenuRemove().setOnAction(event -> {
+            //todo update common tags list
             selection.removeTagObject();
-            mainTags.remove(mainTags.getTagObject(rightPane.getListView().getSelectionModel().getSelectedItem()));
+            //todo multiple tags at once vvv
+            mainTags.remove(mainTags.getTagObject(rightPane.getIntersectionListView().getSelectionModel().getSelectedItem()));
             reload.queue(true, GUINode.RIGHTPANE);
         });
     }

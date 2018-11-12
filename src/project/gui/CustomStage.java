@@ -1,6 +1,7 @@
 package project.gui;
 
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
@@ -41,13 +42,14 @@ public class CustomStage extends Stage implements MainUtil {
             log.out("application exit", this.getClass());
         });
 
+        mainPane.setPadding(new Insets(2));
+        splitPane.setPadding(new Insets(2));
         splitPane.setDividerPositions(0.0, 1.0);
 
         this.dataObjectContextMenu = new DataObjectContextMenu();
         this.initEvents();
         log.out("gui init done", this.getClass());
     }
-
     private void initEvents() {
         new ContextMenuEvent();
         new GlobalEvent();
@@ -61,11 +63,12 @@ public class CustomStage extends Stage implements MainUtil {
     public void swapDisplayMode() {
         final ObservableList<Node> splitPaneItems = splitPane.getItems();
         double[] dividerPositions = splitPane.getDividerPositions();
-        if (splitPaneItems.contains(galleryPane)) {
-            splitPaneItems.set(splitPaneItems.indexOf(galleryPane), previewPane);
-            reload.queue(GUINode.PREVIEWPANE);
-        } else {
+        if (this.isPreviewFullscreen()) {
             splitPaneItems.set(splitPaneItems.indexOf(previewPane), galleryPane);
+            galleryPane.adjustViewportToCurrentFocus();
+            //reload.queue(GUINode.GALLERYPANE);
+        } else {
+            splitPaneItems.set(splitPaneItems.indexOf(galleryPane), previewPane);
             reload.queue(GUINode.PREVIEWPANE);
         }
         splitPane.setDividerPositions(dividerPositions);

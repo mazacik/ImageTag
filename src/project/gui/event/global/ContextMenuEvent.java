@@ -1,5 +1,6 @@
 package project.gui.event.global;
 
+import project.control.selection.Selection;
 import project.database.object.DataObject;
 import project.gui.component.GUINode;
 import project.gui.custom.generic.ConfirmationWindow;
@@ -60,7 +61,7 @@ public class ContextMenuEvent implements MainUtil {
         confirmationWindow.setContentText("Are you sure?");
 
         if (confirmationWindow.getResult()) {
-            selection.forEach(this::deleteDataObject);
+            ((Selection) selection.clone()).forEach(this::deleteDataObject);
             reload.queue(true, GUINode.GALLERYPANE);
         }
     }
@@ -74,8 +75,27 @@ public class ContextMenuEvent implements MainUtil {
         confirmationWindow.setContentText("Are you sure?");
 
         if (confirmationWindow.getResult()) {
+            //todo move most of this to focus
+            int index = filter.indexOf(focus.getCurrentFocus());
             this.deleteDataObject(currentFocus);
-            reload.queue(true, GUINode.PREVIEWPANE);
+
+            if (index < 0) {
+                index = 0;
+            }
+
+            if (filter.get(index) == null) {
+                if (index != filter.size() && filter.get(index + 1) != null) {
+                    index++;
+                } else if (index != 0 && filter.get(index - 1) != null) {
+                    index--;
+                } else {
+                    index = 0;
+                }
+            }
+
+            focus.set(filter.get(index));
+
+            reload.queue(true, GUINode.GALLERYPANE, GUINode.PREVIEWPANE);
         }
     }
 }

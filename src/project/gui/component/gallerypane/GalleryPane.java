@@ -34,8 +34,8 @@ public class GalleryPane extends ScrollPane implements MainUtil {
         tilePaneItems.clear();
         filter.forEach(dataObject -> tilePaneItems.add(dataObject.getGalleryTile()));
         this.setVvalue(scrollbarValue);
+        //adjustViewportToCurrentFocus();
         calculateTilePaneHGap();
-        adjustViewportToCurrentFocus();
     }
     public void calculateTilePaneHGap() {
         //todo fix poslednych par pixelov
@@ -54,8 +54,7 @@ public class GalleryPane extends ScrollPane implements MainUtil {
     }
     public void adjustViewportToCurrentFocus() {
         DataObject currentFocusedItem = focus.getCurrentFocus();
-        if (currentFocusedItem == null) return;
-        if (isPreviewFullscreen()) return;
+        if (isPreviewFullscreen() || currentFocusedItem == null) return;
         int focusIndex = filter.indexOf(currentFocusedItem);
         if (focusIndex < 0) return;
 

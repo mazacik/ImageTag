@@ -26,14 +26,21 @@ public class Focus implements MainUtil {
         if (previousFocus != null) {
             previousFocus.getGalleryTile().generateEffect();
         }
+
+        galleryPane.adjustViewportToCurrentFocus();
+        reload.queue(GUINode.PREVIEWPANE, GUINode.RIGHTPANE);
     }
     public void refresh() {
         int index = filter.indexOf(this.currentFocus);
+        if (index < 0) {
+            index = 0;
+        }
+
         if (filter.get(index) == null) {
-            if (filter.get(index - 1) != null) {
-                index--;
-            } else if (filter.get(index + 1) != null) {
+            if (index != filter.size() && filter.get(index + 1) != null) {
                 index++;
+            } else if (index != 0 && filter.get(index - 1) != null) {
+                index--;
             } else {
                 index = 0;
             }
@@ -42,13 +49,11 @@ public class Focus implements MainUtil {
         this.set(filter.get(index));
     }
     public void moveFocusByKeyCode(KeyCode keyCode) {
-        DataObject currentFocus = getCurrentFocus();
-        if (currentFocus == null) {
-            currentFocus = filter.get(0);
-            set(currentFocus);
+        int newFocusPosition = 0;
+        if (currentFocus != null) {
+            newFocusPosition = filter.indexOf(currentFocus);
         }
 
-        int newFocusPosition = filter.indexOf(currentFocus);
         if (keyCode.equals(KeyCode.W)) {
             newFocusPosition -= galleryPane.getColumnCount();
         } else if (keyCode.equals(KeyCode.A)) {
@@ -60,9 +65,7 @@ public class Focus implements MainUtil {
         }
 
         if (newFocusPosition >= 0 && newFocusPosition < filter.size()) {
-            set(filter.get(newFocusPosition));
-            galleryPane.adjustViewportToCurrentFocus();
-            reload.queue(GUINode.PREVIEWPANE);
+            this.set(filter.get(newFocusPosition));
         }
     }
 

@@ -144,7 +144,7 @@ public class DataLoader extends Thread implements MainUtil {
             try {
                 log.out("cached image of file " + dataObject.getName() + " not found, generating", this.getClass());
                 currentObjectCacheFile.createNewFile();
-                String currentObjectFilePath = "file:" + PATH_SOURCE + "/" + currentObjectName;
+                String currentObjectFilePath = "file:" + PATH_SOURCE + currentObjectName;
                 currentObjectImage = new Image(currentObjectFilePath, galleryIconMaxSize, galleryIconMaxSize, false, true);
                 String currentObjectExtension = FilenameUtils.getExtension(currentObjectName);
                 BufferedImage currentObjectBufferedImage = SwingFXUtils.fromFXImage(currentObjectImage, null);

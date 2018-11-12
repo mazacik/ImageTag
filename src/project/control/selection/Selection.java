@@ -11,8 +11,8 @@ import project.utils.MainUtil;
 public class Selection extends DataCollection implements MainUtil {
     public boolean add(DataObject dataObject) {
         if (super.add(dataObject)) {
-            dataObject.getGalleryTile().generateEffect();
-            reload.queue(GUINode.RIGHTPANE);
+            dataObject.generateTileEffect();
+            reload.queue(GUINode.RIGHTPANE, GUINode.TOPPANE);
             return true;
         }
         return false;
@@ -20,7 +20,7 @@ public class Selection extends DataCollection implements MainUtil {
     public boolean addAll(DataCollection dataCollection) {
         if (super.addAll(dataCollection)) {
             dataCollection.forEach(DataObject::generateTileEffect);
-            reload.queue(GUINode.RIGHTPANE);
+            reload.queue(GUINode.RIGHTPANE, GUINode.TOPPANE);
             return true;
         }
         return false;
@@ -28,7 +28,7 @@ public class Selection extends DataCollection implements MainUtil {
     public boolean remove(DataObject dataObject) {
         if (super.remove(dataObject)) {
             dataObject.generateTileEffect();
-            reload.queue(GUINode.RIGHTPANE);
+            reload.queue(GUINode.RIGHTPANE, GUINode.TOPPANE);
             return true;
         }
         return false;
@@ -36,7 +36,6 @@ public class Selection extends DataCollection implements MainUtil {
     public void set(DataObject dataObject) {
         this.clear();
         this.add(dataObject);
-        focus.set(dataObject);
     }
     public void clear() {
         DataCollection helper = new DataCollection(this);
@@ -50,7 +49,6 @@ public class Selection extends DataCollection implements MainUtil {
         } else {
             this.remove(dataObject);
         }
-        reload.queue(true, GUINode.RIGHTPANE);
     }
     public TagCollection getIntersectingTags() {
         if (this.size() < 1) return new TagCollection();
@@ -86,7 +84,7 @@ public class Selection extends DataCollection implements MainUtil {
     }
     public void removeTagObject() {
         TagCollection tagObjectsToRemove = new TagCollection();
-        ObservableList<String> tagObjectSelection = rightPane.getListView().getSelectionModel().getSelectedItems();
+        ObservableList<String> tagObjectSelection = rightPane.getIntersectionListView().getSelectionModel().getSelectedItems();
         for (String tagObject : tagObjectSelection) {
             tagObjectsToRemove.add(mainTags.getTagObject(tagObject));
         }
@@ -109,7 +107,6 @@ public class Selection extends DataCollection implements MainUtil {
                 reload.queue(GUINode.LEFTPANE);
             }
         }
-
         reload.queue(GUINode.RIGHTPANE);
     }
 }
