@@ -1,9 +1,0 @@
-todo
-recent tags
-frequent tags
-reload directory
-file: Open
-settings window
-javadoc
-logger
-optimalization (disable some features like resize -> less ram usage)
