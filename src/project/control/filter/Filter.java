@@ -15,7 +15,7 @@ public class Filter extends DataCollection implements MainUtil {
 
     private FilterMode whitelistMode;
     private FilterMode blacklistMode;
-    private FilterData currentFilterData;
+    private FilterTemplate currentFilterTemplate;
 
     public Filter() {
         whitelist = new TagCollection();
@@ -23,10 +23,10 @@ public class Filter extends DataCollection implements MainUtil {
 
         whitelistMode = FilterMode.All;
         blacklistMode = FilterMode.Any;
-        currentFilterData = FilterData.SHOW_EVERYTHING;
+        currentFilterTemplate = FilterTemplate.SHOW_EVERYTHING;
     }
     public void apply() {
-        currentFilterData.apply();
+        currentFilterTemplate.apply();
         reload.queue(GUINode.GALLERYPANE);
     }
 
@@ -34,20 +34,20 @@ public class Filter extends DataCollection implements MainUtil {
         if (!isTagObjectWhitelisted(tagObject)) {
             whitelist.add(tagObject);
             blacklist.remove(tagObject);
-            currentFilterData = FilterData.CUSTOM;
+            currentFilterTemplate = FilterTemplate.CUSTOM;
         }
     }
     public void blacklistTagObject(TagObject tagObject) {
         if (!isTagObjectBlacklisted(tagObject)) {
             whitelist.remove(tagObject);
             blacklist.add(tagObject);
-            currentFilterData = FilterData.CUSTOM;
+            currentFilterTemplate = FilterTemplate.CUSTOM;
         }
     }
     public void unlistTagObject(TagObject tagObject) {
         whitelist.remove(tagObject);
         blacklist.remove(tagObject);
-        currentFilterData = FilterData.CUSTOM;
+        currentFilterTemplate = FilterTemplate.CUSTOM;
     }
 
     public void whitelistGroup(String group) {
@@ -118,11 +118,11 @@ public class Filter extends DataCollection implements MainUtil {
         return blacklistMode;
     }
 
-    public void setFilter(FilterData filterData) {
-        this.currentFilterData = filterData;
+    public void setFilter(FilterTemplate filterTemplate) {
+        this.currentFilterTemplate = filterTemplate;
         this.apply();
 
-        switch (this.currentFilterData) {
+        switch (this.currentFilterTemplate) {
             case CUSTOM:
                 topPane.getMenuUntaggedOnly().setSelected(false);
                 topPane.getMenuMaxXTags().setSelected(false);

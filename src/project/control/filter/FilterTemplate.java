@@ -5,7 +5,7 @@ import project.database.object.TagCollection;
 import project.database.object.TagObject;
 import project.utils.MainUtil;
 
-public enum FilterData implements MainUtil {
+public enum FilterTemplate implements MainUtil {
     SHOW_EVERYTHING {
         public void apply() {
             whitelist.clear();

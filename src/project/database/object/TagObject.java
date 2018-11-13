@@ -8,18 +8,15 @@ public class TagObject {
     private String group;
     private String name;
 
-    /* constructors */
     public TagObject(String group, String name) {
         setGroup(group);
         setName(name);
     }
 
-    /* boolean */
     public boolean isEmpty() {
         return group.isEmpty() || name.isEmpty();
     }
 
-    /* get */
     public String getGroup() {
         return group;
     }
@@ -34,7 +31,6 @@ public class TagObject {
         return Comparator.comparing(TagObject::getGroupAndName);
     }
 
-    /* set */
     public void setValue(String group, String name) {
         this.setGroup(group);
         this.setName(name);

@@ -2,7 +2,7 @@ package project.gui.event.toppane;
 
 import javafx.stage.WindowEvent;
 import project.control.filter.Filter;
-import project.control.filter.FilterData;
+import project.control.filter.FilterTemplate;
 import project.database.loader.Serialization;
 import project.gui.component.GUINode;
 import project.gui.custom.generic.NumberInputWindow;
@@ -36,29 +36,33 @@ public class TopPaneEvent implements MainUtil {
     private void onAction_menuSelectAll() {
         topPane.getMenuSelectAll().setOnAction(event -> {
             selection.addAll(filter);
-            reload.queue(true, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
+            reload.queue(GUINode.GALLERYPANE, GUINode.RIGHTPANE);
+            reload.doReload();
         });
     }
     private void onAction_menuClearSelection() {
         topPane.getMenuClearSelection().setOnAction(event -> {
             selection.clear();
-            reload.queue(true, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
+            reload.queue(GUINode.GALLERYPANE, GUINode.RIGHTPANE);
+            reload.doReload();
         });
     }
 
     private void onAction_menuUntaggedOnly() {
         topPane.getMenuUntaggedOnly().setOnAction(event -> {
-            filter.setFilter(FilterData.SHOW_UNTAGGED);
-            reload.queue(true, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
+            filter.setFilter(FilterTemplate.SHOW_UNTAGGED);
+            reload.queue(GUINode.GALLERYPANE, GUINode.RIGHTPANE);
+            reload.doReload();
         });
     }
     private void onAction_menuMaxXTags() {
         topPane.getMenuMaxXTags().setOnAction(event -> {
-            int maxTags = new NumberInputWindow("FilterData Settings", "Maximum number of tags:").getResultValue();
-            FilterData.setMaxTagsValue(maxTags);
+            int maxTags = new NumberInputWindow("FilterTemplate Settings", "Maximum number of tags:").getResultValue();
+            FilterTemplate.setMaxTagsValue(maxTags);
 
-            filter.setFilter(FilterData.SHOW_MAX_X_TAGS);
-            reload.queue(true, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
+            filter.setFilter(FilterTemplate.SHOW_MAX_X_TAGS);
+            reload.queue(GUINode.GALLERYPANE, GUINode.RIGHTPANE);
+            reload.doReload();
         });
     }
     private void onAction_menuModeWhitelistAll() {
@@ -95,13 +99,15 @@ public class TopPaneEvent implements MainUtil {
     }
     private void onAction_menuRefresh() {
         topPane.getMenuRefresh().setOnAction(event -> {
-            reload.queue(true, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
+            reload.queue(GUINode.GALLERYPANE, GUINode.RIGHTPANE);
+            reload.doReload();
         });
     }
     private void onAction_menuReset() {
         topPane.getMenuReset().setOnAction(event -> {
-            filter.setFilter(FilterData.SHOW_EVERYTHING);
-            reload.queue(true, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
+            filter.setFilter(FilterTemplate.SHOW_EVERYTHING);
+            reload.queue(GUINode.GALLERYPANE, GUINode.RIGHTPANE);
+            reload.doReload();
         });
     }
 }

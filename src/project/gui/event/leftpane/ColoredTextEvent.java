@@ -20,7 +20,6 @@ public class ColoredTextEvent implements MainUtil {
             }
         });
     }
-
     private static void onLeftClick(TreeCell<ColoredText> sourceCell) {
         TagObject tagObject = mainTags.getTagObject(sourceCell);
         ColoredText coloredText;
@@ -65,7 +64,8 @@ public class ColoredTextEvent implements MainUtil {
             }
         }
         filter.apply();
-        reload.queue(true, GUINode.GALLERYPANE);
         leftPane.refreshTreeView();
+        reload.queue(GUINode.GALLERYPANE);
+        reload.doReload();
     }
 }

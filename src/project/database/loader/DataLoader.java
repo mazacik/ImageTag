@@ -24,47 +24,46 @@ public class DataLoader extends Thread implements MainUtil {
     private final String PATH_CACHE = Settings.getPath_cache();
     private final String PATH_DATA = Settings.getPath_data();
 
-    private LoadingWindow loadingWindow;
-
-    public void start(LoadingWindow loadingWindow) {
-        this.loadingWindow = loadingWindow;
-        super.start();
-    }
     public void run() {
         log.out("loader thread start", this.getClass());
+        final LoadingWindow[] loadingWindow = new LoadingWindow[1];
+        Platform.runLater(() -> loadingWindow[0] = new LoadingWindow());
+
         checkDirectoryPaths();
-        ArrayList<File> fileList = new ArrayList<>(Arrays.asList(new File(PATH_SOURCE).listFiles((dir, name) -> name.endsWith(".jpg") || name.endsWith(".JPG") || name.endsWith(".png") || name.endsWith(".PNG") || name.endsWith(".jpeg") || name.endsWith(".JPEG"))));
-        if (!getExistingDatabase()) createDatabase(fileList);
-
+        ArrayList<File> fileList = getValidFiles();
+        if (!loadExistingDatabase()) createDatabase(fileList);
         validateDatabaseCache(fileList);
+        loadImageCache(loadingWindow[0], fileList.size());
 
-        log.out("loading cache", this.getClass());
-        int currentObjectIndex = 1;
-        for (DataObject dataObject : mainData) {
-            updateLoadingLabel(fileList.size(), currentObjectIndex++);
-            dataObject.setImage(getImageFromDataObject(dataObject, Settings.getGalleryIconSizeMax()));
-            dataObject.setGalleryTile(new GalleryTile(dataObject));
-        }
-
+        mainData.sort();
         mainTags.initialize();
-        reload.all(true);
+        filter.addAll(mainData);
+        filter.sort();
+
+        reload.queueAll();
+        reload.doReload();
+
         Platform.runLater(() -> {
-            log.out("loader thread done", this.getClass());
-            loadingWindow.close();
+            loadingWindow[0].close();
             customStage.show();
         });
+        log.out("loader thread end", this.getClass());
     }
 
+    private ArrayList<File> getValidFiles() {
+        return new ArrayList<>(Arrays.asList(new File(PATH_SOURCE).listFiles((dir, name) -> name.endsWith(".jpg") || name.endsWith(".JPG") || name.endsWith(".png") || name.endsWith(".PNG") || name.endsWith(".jpeg") || name.endsWith(".JPEG"))));
+    }
     private void checkDirectoryPaths() {
+        log.out("checking directories", this.getClass());
         File path_data = new File(PATH_DATA);
         if (!path_data.exists()) {
-            log.out("creating data directory", this.getClass());
+            log.out("creating data directory: " + PATH_DATA, this.getClass());
             path_data.mkdir();
         }
 
         File path_cache = new File(PATH_CACHE);
         if (!path_cache.exists()) {
-            log.out("creating cache directory", this.getClass());
+            log.out("creating cache directory: " + PATH_CACHE, this.getClass());
             path_cache.mkdir();
         }
     }
@@ -124,15 +123,28 @@ public class DataLoader extends Thread implements MainUtil {
         mainData.addAll(temporaryList);
         Serialization.writeToDisk();
     }
-    private void updateLoadingLabel(int fileCount, int currentObjectIndex) {
-        Platform.runLater(() -> loadingWindow.getProgressLabel().setText("Loading item " + currentObjectIndex + " of " + fileCount + ", " + currentObjectIndex * 100 / fileCount + "% done"));
+    private void loadImageCache(LoadingWindow loadingWindow, int fileListSize) {
+        log.out("loading image cache", this.getClass());
+        final int galleryIconSizeMax = Settings.getGalleryIconSizeMax();
+        int currentObjectIndex = 1;
+        Image thumbnail;
+
+        for (DataObject dataObject : mainData) {
+            updateLoadingLabel(loadingWindow, fileListSize, currentObjectIndex++);
+            thumbnail = getImageFromDataObject(dataObject, galleryIconSizeMax);
+            dataObject.setGalleryTile(new GalleryTile(dataObject, thumbnail));
+        }
     }
-    private boolean getExistingDatabase() {
+    private void updateLoadingLabel(LoadingWindow loadingWindow, int fileCount, int currentObjectIndex) {
+        if (loadingWindow != null) {
+            Platform.runLater(() -> loadingWindow.getProgressLabel().setText("Loading item " + currentObjectIndex + " of " + fileCount + ", " + currentObjectIndex * 100 / fileCount + "% done"));
+        }
+    }
+    private boolean loadExistingDatabase() {
         return mainData.addAll(Serialization.readFromDisk());
     }
 
     private Image getImageFromDataObject(DataObject dataObject, double galleryIconMaxSize) {
-        //log.out("loading cached image of file " + dataObject.getName(), this.getClass());
         Image currentObjectImage = null;
 
         String currentObjectName = dataObject.getName();
@@ -155,7 +167,6 @@ public class DataLoader extends Thread implements MainUtil {
             }
         }
 
-        /* update loading window label */
         return Objects.requireNonNullElseGet(currentObjectImage, () -> new Image("file:" + currentObjectCachePath, galleryIconMaxSize, galleryIconMaxSize, false, true));
     }
 }

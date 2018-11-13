@@ -30,25 +30,7 @@ public class Focus implements MainUtil {
         galleryPane.adjustViewportToCurrentFocus();
         reload.queue(GUINode.PREVIEWPANE, GUINode.RIGHTPANE);
     }
-    public void refresh() {
-        int index = filter.indexOf(this.currentFocus);
-        if (index < 0) {
-            index = 0;
-        }
-
-        if (filter.get(index) == null) {
-            if (index != filter.size() && filter.get(index + 1) != null) {
-                index++;
-            } else if (index != 0 && filter.get(index - 1) != null) {
-                index--;
-            } else {
-                index = 0;
-            }
-        }
-
-        this.set(filter.get(index));
-    }
-    public void moveFocusByKeyCode(KeyCode keyCode) {
+    public void move(KeyCode keyCode) {
         int newFocusPosition = 0;
         if (currentFocus != null) {
             newFocusPosition = filter.indexOf(currentFocus);
@@ -65,7 +47,19 @@ public class Focus implements MainUtil {
         }
 
         if (newFocusPosition >= 0 && newFocusPosition < filter.size()) {
-            this.set(filter.get(newFocusPosition));
+            set(filter.get(newFocusPosition));
+        }
+    }
+
+    private int storePos = -1;
+    public void storePosition() {
+        this.storePos = filter.indexOf(currentFocus);
+    }
+    public void restorePosition() {
+        if (storePos >= 0 && storePos < filter.size()) {
+            set(filter.get(storePos));
+        } else {
+            set(null);
         }
     }
 

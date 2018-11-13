@@ -18,7 +18,7 @@ public class Reload implements MainUtil {
         _rightPane = false;
     }
 
-    public void queue(boolean instant, GUINode... nodes) {
+    public void queue(GUINode... nodes) {
         for (GUINode node : nodes) {
             switch (node) {
                 case TOPPANE:
@@ -40,26 +40,13 @@ public class Reload implements MainUtil {
                     break;
             }
         }
-        if (instant) doReload();
     }
-    public void queue(GUINode... items) {
-        queue(false, items);
-    }
-    public void all(boolean sort) {
-        if (sort) {
-            mainData.sort();
-            filter.sort();
-            selection.sort();
-
-            mainTags.sort();
-            whitelist.sort();
-            blacklist.sort();
-        }
-        topPane.reload();
-        leftPane.reload();
-        galleryPane.reload();
-        previewPane.reload();
-        rightPane.reload();
+    public void queueAll() {
+        _topPane = true;
+        _leftPane = true;
+        _galleryPane = true;
+        _previewPane = true;
+        _rightPane = true;
     }
     public void doReload() {
         if (_topPane) {

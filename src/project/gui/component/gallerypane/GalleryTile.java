@@ -4,6 +4,7 @@ import javafx.scene.effect.Blend;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.effect.ColorInput;
 import javafx.scene.effect.InnerShadow;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import project.database.object.DataObject;
@@ -18,8 +19,8 @@ public class GalleryTile extends ImageView implements MainUtil {
 
     private final DataObject parentDataObject;
 
-    public GalleryTile(DataObject dataObject) {
-        super(dataObject.getImage());
+    public GalleryTile(DataObject dataObject, Image thumbnail) {
+        super(thumbnail);
         parentDataObject = dataObject;
         setFitWidth(GALLERY_ICON_SIZE_PREF);
         setFitHeight(GALLERY_ICON_SIZE_PREF);

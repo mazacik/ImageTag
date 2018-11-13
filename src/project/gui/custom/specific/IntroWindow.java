@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import project.database.loader.DataLoader;
 import project.gui.custom.generic.DirectoryChooserWindow;
 import project.settings.Settings;
 import project.utils.MainUtil;
@@ -126,7 +127,7 @@ public class IntroWindow extends Stage implements MainUtil {
             Settings.setPath_cache(tfCache.getText());
             Settings.setPath_data(tfData.getText());
             Settings.writeToFile();
-            new LoadingWindow();
+            new DataLoader().start();
             this.close();
         });
 

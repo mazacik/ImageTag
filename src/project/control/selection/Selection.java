@@ -10,25 +10,28 @@ import project.utils.MainUtil;
 
 public class Selection extends DataCollection implements MainUtil {
     public boolean add(DataObject dataObject) {
+        if (dataObject == null) return false;
         if (super.add(dataObject)) {
             dataObject.generateTileEffect();
-            reload.queue(GUINode.RIGHTPANE, GUINode.TOPPANE);
+            reload.queue(GUINode.TOPPANE, GUINode.RIGHTPANE);
             return true;
         }
         return false;
     }
     public boolean addAll(DataCollection dataCollection) {
+        if (dataCollection == null) return false;
         if (super.addAll(dataCollection)) {
             dataCollection.forEach(DataObject::generateTileEffect);
-            reload.queue(GUINode.RIGHTPANE, GUINode.TOPPANE);
+            reload.queue(GUINode.TOPPANE, GUINode.RIGHTPANE);
             return true;
         }
         return false;
     }
     public boolean remove(DataObject dataObject) {
+        if (dataObject == null) return false;
         if (super.remove(dataObject)) {
             dataObject.generateTileEffect();
-            reload.queue(GUINode.RIGHTPANE, GUINode.TOPPANE);
+            reload.queue(GUINode.TOPPANE, GUINode.RIGHTPANE);
             return true;
         }
         return false;
@@ -41,30 +44,14 @@ public class Selection extends DataCollection implements MainUtil {
         DataCollection helper = new DataCollection(this);
         super.clear();
         helper.forEach(DataObject::generateTileEffect);
-        reload.queue(GUINode.RIGHTPANE);
+        reload.queue(GUINode.TOPPANE, GUINode.RIGHTPANE);
     }
     public void swapState(DataObject dataObject) {
-        if (!super.contains(dataObject)) {
-            this.add(dataObject);
-        } else {
+        if (super.contains(dataObject)) {
             this.remove(dataObject);
+        } else {
+            this.add(dataObject);
         }
-    }
-    public TagCollection getIntersectingTags() {
-        if (this.size() < 1) return new TagCollection();
-
-        TagCollection sharedTags = new TagCollection();
-        DataObject lastObject = this.get(this.size() - 1);
-        for (TagObject tagObject : this.get(0).getTagCollection()) {
-            for (DataObject dataObject : this) {
-                if (dataObject.getTagCollection().contains(tagObject)) {
-                    if (dataObject.equals(lastObject)) {
-                        sharedTags.add(tagObject);
-                    }
-                } else break;
-            }
-        }
-        return sharedTags;
     }
 
     public void addTagObject(TagObject tagObject) {
@@ -74,8 +61,8 @@ public class Selection extends DataCollection implements MainUtil {
             }
 
             TagCollection tagCollection;
-            for (DataObject dataObject : this) {
-                tagCollection = dataObject.getTagCollection();
+            for (DataObject dataIterator : this) {
+                tagCollection = dataIterator.getTagCollection();
                 if (!tagCollection.contains(tagObject)) {
                     tagCollection.add(tagObject);
                 }
@@ -107,6 +94,25 @@ public class Selection extends DataCollection implements MainUtil {
                 reload.queue(GUINode.LEFTPANE);
             }
         }
-        reload.queue(GUINode.RIGHTPANE);
+        if (tagObjectsToRemove.size() > 0) {
+            reload.queue(GUINode.RIGHTPANE);
+        }
+    }
+
+    public TagCollection getIntersectingTags() {
+        if (this.size() < 1) return new TagCollection();
+
+        TagCollection sharedTags = new TagCollection();
+        DataObject lastObject = this.get(this.size() - 1);
+        for (TagObject tagObject : this.get(0).getTagCollection()) {
+            for (DataObject dataObject : this) {
+                if (dataObject.getTagCollection().contains(tagObject)) {
+                    if (dataObject.equals(lastObject)) {
+                        sharedTags.add(tagObject);
+                    }
+                } else break;
+            }
+        }
+        return sharedTags;
     }
 }

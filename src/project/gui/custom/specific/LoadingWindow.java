@@ -5,7 +5,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import project.database.loader.DataLoader;
 import project.utils.MainUtil;
 
 public class LoadingWindow extends Stage implements MainUtil {
@@ -29,7 +28,6 @@ public class LoadingWindow extends Stage implements MainUtil {
         setResizable(false);
         centerOnScreen();
         show();
-        new DataLoader().start(this);
         customStage.init();
     }
 

@@ -14,7 +14,6 @@ public class PreviewPaneEvent implements MainUtil {
 
     private void onMouseClick() {
         final DataObjectContextMenu contextMenu = customStage.getDataObjectContextMenu();
-
         previewPane.getCanvas().setOnMouseClicked(event -> {
             switch (event.getButton()) {
                 case PRIMARY:
@@ -31,8 +30,11 @@ public class PreviewPaneEvent implements MainUtil {
         });
     }
     private void onResize() {
-        ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) ->
-                reload.queue(true, GUINode.PREVIEWPANE);
+        ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) -> {
+            reload.queue(GUINode.PREVIEWPANE);
+            reload.doReload();
+        };
+
         final Canvas canvas = previewPane.getCanvas();
         canvas.widthProperty().addListener(previewPaneSizeListener);
         canvas.heightProperty().addListener(previewPaneSizeListener);

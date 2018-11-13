@@ -45,6 +45,7 @@ public class Collection<T> extends ArrayList<T> {
         Collection<T> returnValue = new Collection<>(collection);
         for (Object iterator : collection) {
             if (!this.contains(iterator)) {
+                //noinspection SuspiciousMethodCalls
                 returnValue.remove(iterator);
             }
         }

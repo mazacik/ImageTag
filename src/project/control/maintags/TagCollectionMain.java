@@ -1,7 +1,6 @@
 package project.control.maintags;
 
 import javafx.scene.control.TreeCell;
-import project.database.object.DataCollection;
 import project.database.object.DataObject;
 import project.database.object.TagCollection;
 import project.database.object.TagObject;
@@ -15,40 +14,42 @@ import java.util.Comparator;
 
 public class TagCollectionMain extends TagCollection implements MainUtil {
     public void initialize() {
-        DataCollection dataCollection = mainData;
-        for (DataObject dataIterator : dataCollection) {
+        for (DataObject dataIterator : mainData) {
             TagCollection tagCollection = dataIterator.getTagCollection();
             for (TagObject tagIterator : tagCollection) {
-                if (!this.contains(tagIterator)) {
-                    this.add(tagIterator);
-                } else {
+                if (this.contains(tagIterator)) {
                     tagCollection.set(tagCollection.indexOf(tagIterator), getTagObject(tagIterator));
+                } else {
+                    this.add(tagIterator);
                 }
             }
         }
-        filter.setAll(dataCollection);
+        super.sort();
     }
 
     public boolean add(TagObject tagObject) {
+        if (tagObject == null) return false;
         if (super.add(tagObject)) {
-            reload.queue(GUINode.LEFTPANE, GUINode.RIGHTPANE);
+            reload.queue(GUINode.LEFTPANE);
             return true;
         }
         return false;
     }
     public boolean remove(TagObject tagObject) {
+        if (tagObject == null) return false;
         if (super.remove(tagObject)) {
             filter.unlistTagObject(tagObject);
             filter.apply();
-            reload.queue(GUINode.LEFTPANE, GUINode.GALLERYPANE, GUINode.RIGHTPANE);
+            reload.queue(GUINode.LEFTPANE, GUINode.GALLERYPANE);
             return true;
         }
         return false;
     }
     public boolean edit(TagObject tagObject) {
+        if (tagObject == null) return false;
         TagObject newTagObject = new TagEditor(tagObject).getResult();
         if (newTagObject != null) {
-            getTagObject(tagObject).setValue(newTagObject.getGroup(), newTagObject.getName());
+            tagObject.setValue(newTagObject.getGroup(), newTagObject.getName());
             super.sort();
             reload.queue(GUINode.LEFTPANE, GUINode.RIGHTPANE);
             return true;

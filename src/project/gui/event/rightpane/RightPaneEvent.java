@@ -49,7 +49,8 @@ public class RightPaneEvent implements MainUtil {
         });
         btnCommon.setOnAction(event -> {
             rightPane.setSuggestMode(SuggestMode.COMMON);
-            reload.queue(true, GUINode.RIGHTPANE);
+            reload.queue(GUINode.RIGHTPANE);
+            reload.doReload();
         });
     }
     private void initBtnRecent() {
@@ -61,7 +62,8 @@ public class RightPaneEvent implements MainUtil {
         });
         btnRecent.setOnAction(event -> {
             rightPane.setSuggestMode(SuggestMode.RECENT);
-            reload.queue(true, GUINode.RIGHTPANE);
+            reload.queue(GUINode.RIGHTPANE);
+            reload.doReload();
         });
     }
     private void initBtnAdd() {
@@ -73,7 +75,8 @@ public class RightPaneEvent implements MainUtil {
         });
         btnAdd.setOnAction(event -> {
             rightPane.addTagToSelection();
-            reload.queue(true, GUINode.RIGHTPANE);
+            reload.queue(GUINode.RIGHTPANE);
+            reload.doReload();
         });
     }
     private void initBtnNew() {
@@ -94,7 +97,6 @@ public class RightPaneEvent implements MainUtil {
                 cbName.getItems().setAll(mainTags.getNames(group));
                 cbName.getSelectionModel().select(newTagObject.getName());
                 cbName.setDisable(false);
-                //btnAdd.fire();
             }
         });
     }
@@ -105,7 +107,8 @@ public class RightPaneEvent implements MainUtil {
                 String groupAndName = rightPane.getSuggestionListView().getSelectionModel().getSelectedItem();
                 if (!groupAndName.isEmpty()) {
                     selection.addTagObject(mainTags.getTagObject(groupAndName));
-                    reload.queue(true, GUINode.RIGHTPANE);
+                    reload.queue(GUINode.RIGHTPANE);
+                    reload.doReload();
                 }
             }
         });
@@ -153,7 +156,8 @@ public class RightPaneEvent implements MainUtil {
             selection.removeTagObject();
             //todo multiple tags at once vvv
             mainTags.remove(mainTags.getTagObject(rightPane.getIntersectionListView().getSelectionModel().getSelectedItem()));
-            reload.queue(true, GUINode.RIGHTPANE);
+            reload.queue(GUINode.RIGHTPANE);
+            reload.doReload();
         });
     }
 

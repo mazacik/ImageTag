@@ -33,12 +33,15 @@ public class ContextMenuEvent implements MainUtil {
     }
     private void onAction_menuDelete() {
         customStage.getDataObjectContextMenu().getMenuDelete().setOnAction(event -> {
-            if (!isPreviewFullscreen()) {
-                this.deleteSelection();
-            } else {
+            focus.storePosition();
+
+            if (isPreviewFullscreen()) {
                 this.deleteCurrentFocus();
+            } else {
+                this.deleteSelection();
             }
-            focus.refresh();
+
+            focus.restorePosition();
         });
     }
 
@@ -62,7 +65,8 @@ public class ContextMenuEvent implements MainUtil {
 
         if (confirmationWindow.getResult()) {
             ((Selection) selection.clone()).forEach(this::deleteDataObject);
-            reload.queue(true, GUINode.GALLERYPANE);
+            reload.queue(GUINode.GALLERYPANE);
+            reload.doReload();
         }
     }
     private void deleteCurrentFocus() {
@@ -95,7 +99,8 @@ public class ContextMenuEvent implements MainUtil {
 
             focus.set(filter.get(index));
 
-            reload.queue(true, GUINode.GALLERYPANE, GUINode.PREVIEWPANE);
+            reload.queue(GUINode.GALLERYPANE, GUINode.PREVIEWPANE);
+            reload.doReload();
         }
     }
 }

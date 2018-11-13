@@ -26,7 +26,7 @@ public class GlobalEvent implements MainUtil {
                 case A:
                 case S:
                 case D:
-                    focus.moveFocusByKeyCode(event.getCode());
+                    focus.move(event.getCode());
                     break;
                 default:
                     break;
