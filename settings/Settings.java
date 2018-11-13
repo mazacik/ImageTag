@@ -57,45 +57,41 @@ public abstract class Settings {
     public static int getGalleryIconSizeMax() {
         return galleryIconSizeMax;
     }
+    public static void setGalleryIconSizeMax(int galleryIconSizeMax) {
+        Settings.galleryIconSizeMax = galleryIconSizeMax;
+    }
     public static int getGalleryIconSizeMin() {
         return galleryIconSizeMin;
+    }
+    public static void setGalleryIconSizeMin(int galleryIconSizeMin) {
+        Settings.galleryIconSizeMin = galleryIconSizeMin;
     }
     public static int getGalleryIconSizePref() {
         return galleryIconSizePref;
     }
-
+    public static void setGalleryIconSizePref(int galleryIconSizePref) {
+        Settings.galleryIconSizePref = galleryIconSizePref;
+    }
     public static int getGuiMinWidth() {
         return guiMinWidth;
     }
     public static int getGuiMinHeight() {
         return guiMinHeight;
     }
-
     public static String getPath_source() {
         return path_source;
+    }
+    public static void setPath_source(String path_source) {
+        Settings.path_source = path_source;
     }
     public static String getPath_cache() {
         return path_cache;
     }
-    public static String getPath_data() {
-        return path_data;
-    }
-
-    public static void setGalleryIconSizeMax(int galleryIconSizeMax) {
-        Settings.galleryIconSizeMax = galleryIconSizeMax;
-    }
-    public static void setGalleryIconSizeMin(int galleryIconSizeMin) {
-        Settings.galleryIconSizeMin = galleryIconSizeMin;
-    }
-    public static void setGalleryIconSizePref(int galleryIconSizePref) {
-        Settings.galleryIconSizePref = galleryIconSizePref;
-    }
-
-    public static void setPath_source(String path_source) {
-        Settings.path_source = path_source;
-    }
     public static void setPath_cache(String path_cache) {
         Settings.path_cache = path_cache;
+    }
+    public static String getPath_data() {
+        return path_data;
     }
     public static void setPath_data(String path_data) {
         Settings.path_data = path_data;

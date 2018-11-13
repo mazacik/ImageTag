@@ -17,15 +17,6 @@ public class NumberInputWindow extends TextInputDialog {
             }
         });
     }
-
-    public Integer getResultValue() {
-        Optional<String> resultValue = showAndWait();
-        if (!resultValue.isPresent()) return 0;
-        String resultString = resultValue.get();
-        if (!isNumberPositive(resultString)) return 0;
-        return Integer.valueOf(resultString);
-    }
-
     public static boolean isNumber(String str) {
         if (str == null) {
             return false;
@@ -52,5 +43,12 @@ public class NumberInputWindow extends TextInputDialog {
     public static boolean isNumberPositive(String str) {
         if (!isNumber(str)) return false;
         return !(str.charAt(0) == '-');
+    }
+    public Integer getResultValue() {
+        Optional<String> resultValue = showAndWait();
+        if (!resultValue.isPresent()) return 0;
+        String resultString = resultValue.get();
+        if (!isNumberPositive(resultString)) return 0;
+        return Integer.valueOf(resultString);
     }
 }

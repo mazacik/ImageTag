@@ -114,10 +114,15 @@ public class Filter extends DataCollection implements MainUtil {
     public FilterMode getWhitelistMode() {
         return whitelistMode;
     }
+    public void setWhitelistMode(FilterMode whitelistMode) {
+        this.whitelistMode = whitelistMode;
+    }
     public FilterMode getBlacklistMode() {
         return blacklistMode;
     }
-
+    public void setBlacklistMode(FilterMode blacklistMode) {
+        this.blacklistMode = blacklistMode;
+    }
     public void setFilter(FilterTemplate filterTemplate) {
         this.currentFilterTemplate = filterTemplate;
         this.apply();
@@ -142,13 +147,6 @@ public class Filter extends DataCollection implements MainUtil {
             default:
                 break;
         }
-    }
-
-    public void setWhitelistMode(FilterMode whitelistMode) {
-        this.whitelistMode = whitelistMode;
-    }
-    public void setBlacklistMode(FilterMode blacklistMode) {
-        this.blacklistMode = blacklistMode;
     }
 
     public enum FilterMode {

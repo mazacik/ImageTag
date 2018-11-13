@@ -19,15 +19,14 @@ public class RightPane extends VBox implements MainUtil {
     private final Button btnCommon; // == 0
     private final Button btnRecent; // == 1
     private final ListView<String> suggestionListView;
-    private ArrayList<String> recentTags = new ArrayList<>();
-    private SuggestMode suggestMode = SuggestMode.COMMON;
-
     private final ChoiceBox cbGroup;
     private final ChoiceBox cbName;
     private final Button btnAdd;
     private final Button btnNew;
     private final RightPaneContextMenu contextMenu;
     private final ListView<String> intersectionListView;
+    private ArrayList<String> recentTags = new ArrayList<>();
+    private SuggestMode suggestMode = SuggestMode.COMMON;
 
     public RightPane() {
         btnCommon = new Button("Common");

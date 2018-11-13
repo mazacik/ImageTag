@@ -26,7 +26,22 @@ public class GalleryTile extends ImageView implements MainUtil {
         setFitHeight(GALLERY_ICON_SIZE_PREF);
         new GalleryTileEvent(this);
     }
-
+    private static InnerShadow buildSelectionBorderEffect() {
+        InnerShadow innerShadow = new InnerShadow();
+        innerShadow.setColor(Color.RED);
+        innerShadow.setOffsetX(0);
+        innerShadow.setOffsetY(0);
+        innerShadow.setWidth(5);
+        innerShadow.setHeight(5);
+        innerShadow.setChoke(1);
+        return innerShadow;
+    }
+    private static ColorInput buildSelectionFocusMarkEffect() {
+        int markSize = 6;
+        int markPositionInTile = (Settings.getGalleryIconSizePref() - markSize) / 2;
+        Color markColor = Color.RED;
+        return new ColorInput(markPositionInTile, markPositionInTile, markSize, markSize, markColor);
+    }
     public void generateEffect() {
         boolean booleanSelection = false;
         if (parentDataObject != null) {
@@ -55,24 +70,6 @@ public class GalleryTile extends ImageView implements MainUtil {
             setEffect(effect);
         }
     }
-
-    private static InnerShadow buildSelectionBorderEffect() {
-        InnerShadow innerShadow = new InnerShadow();
-        innerShadow.setColor(Color.RED);
-        innerShadow.setOffsetX(0);
-        innerShadow.setOffsetY(0);
-        innerShadow.setWidth(5);
-        innerShadow.setHeight(5);
-        innerShadow.setChoke(1);
-        return innerShadow;
-    }
-    private static ColorInput buildSelectionFocusMarkEffect() {
-        int markSize = 6;
-        int markPositionInTile = (Settings.getGalleryIconSizePref() - markSize) / 2;
-        Color markColor = Color.RED;
-        return new ColorInput(markPositionInTile, markPositionInTile, markSize, markSize, markColor);
-    }
-
     public DataObject getParentDataObject() {
         return parentDataObject;
     }

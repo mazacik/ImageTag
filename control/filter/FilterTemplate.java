@@ -53,11 +53,6 @@ public enum FilterTemplate implements MainUtil {
     };
 
     private static int maxTagsValue = 0;
-
-    public void apply() {
-        throw new RuntimeException();
-    }
-
     private static boolean isWhitelistOk(TagCollection tagCollection) {
         Filter.FilterMode whitelistMode = filter.getWhitelistMode();
         if (whitelist.isEmpty()) {
@@ -90,8 +85,10 @@ public enum FilterTemplate implements MainUtil {
 
         return true;
     }
-
     public static void setMaxTagsValue(int value) {
         maxTagsValue = value;
+    }
+    public void apply() {
+        throw new RuntimeException();
     }
 }

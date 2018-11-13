@@ -8,12 +8,12 @@ import utils.MainUtil;
 public class Focus implements MainUtil {
     private DataObject currentFocus;
     private DataObject previousFocus;
+    private int storePos = -1;
 
     public Focus() {
         currentFocus = null;
         previousFocus = null;
     }
-
     public void set(DataObject dataObject) {
         /* store old focus position */
         previousFocus = currentFocus;
@@ -50,8 +50,6 @@ public class Focus implements MainUtil {
             set(filter.get(newFocusPosition));
         }
     }
-
-    private int storePos = -1;
     public void storePosition() {
         this.storePos = filter.indexOf(currentFocus);
     }

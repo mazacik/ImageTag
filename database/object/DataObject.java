@@ -18,7 +18,9 @@ public class DataObject implements Serializable {
     public DataObject(File file) {
         this(file.getName(), new TagCollection());
     }
-
+    public static Comparator getComparator() {
+        return Comparator.comparing(DataObject::getName);
+    }
     public void generateTileEffect() {
         galleryTile.generateEffect();
     }
@@ -31,10 +33,6 @@ public class DataObject implements Serializable {
     public GalleryTile getGalleryTile() {
         return galleryTile;
     }
-    public static Comparator getComparator() {
-        return Comparator.comparing(DataObject::getName);
-    }
-
     public void setGalleryTile(GalleryTile galleryTile) {
         this.galleryTile = (galleryTile != null) ? galleryTile : new GalleryTile(this, null);
     }
