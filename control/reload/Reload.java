@@ -1,6 +1,6 @@
 package control.reload;
 
-import gui.component.GUINode;
+import gui.component.NodeEnum;
 import utils.MainUtil;
 
 public class Reload implements MainUtil {
@@ -18,8 +18,8 @@ public class Reload implements MainUtil {
         _rightPane = false;
     }
 
-    public void queue(GUINode... nodes) {
-        for (GUINode node : nodes) {
+    public void queue(NodeEnum... nodes) {
+        for (NodeEnum node : nodes) {
             switch (node) {
                 case TOPPANE:
                     _topPane = true;

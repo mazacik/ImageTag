@@ -1,4 +1,4 @@
-package gui.custom.generic;
+package gui.template.generic;
 
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Window;

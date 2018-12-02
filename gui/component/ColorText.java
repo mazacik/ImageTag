@@ -1,19 +1,16 @@
-package gui.component.leftpane;
+package gui.component;
 
 import javafx.scene.paint.Color;
 
-public class ColoredText {
-    /* vars */
+public class ColorText {
     private String text;
     private Color color;
 
-    /* constructors */
-    public ColoredText(String text, Color color) {
+    public ColorText(String text, Color color) {
         this.text = text;
         this.color = color;
     }
 
-    /* get */
     public String getText() {
         return text;
     }
@@ -21,7 +18,9 @@ public class ColoredText {
         return color;
     }
 
-    /* set */
+    public void setText(String text) {
+        this.text = text;
+    }
     public void setColor(Color color) {
         this.color = color;
     }

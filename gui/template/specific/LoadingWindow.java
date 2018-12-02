@@ -1,4 +1,4 @@
-package gui.custom.specific;
+package gui.template.specific;
 
 import javafx.geometry.Insets;
 import javafx.scene.Scene;

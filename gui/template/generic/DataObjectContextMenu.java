@@ -1,4 +1,4 @@
-package gui.custom.generic;
+package gui.template.generic;
 
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;

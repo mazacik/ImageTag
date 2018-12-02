@@ -3,7 +3,7 @@ package database.loader;
 import database.object.DataCollection;
 import database.object.DataObject;
 import gui.component.gallerypane.GalleryTile;
-import gui.custom.specific.LoadingWindow;
+import gui.template.specific.LoadingWindow;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;

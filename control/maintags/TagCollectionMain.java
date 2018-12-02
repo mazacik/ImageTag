@@ -3,14 +3,11 @@ package control.maintags;
 import database.object.DataObject;
 import database.object.TagCollection;
 import database.object.TagObject;
-import gui.component.GUINode;
-import gui.component.leftpane.ColoredText;
-import gui.custom.specific.TagEditor;
+import gui.component.ColorText;
+import gui.component.NodeEnum;
+import gui.template.specific.TagEditor;
 import javafx.scene.control.TreeCell;
 import utils.MainUtil;
-
-import java.util.ArrayList;
-import java.util.Comparator;
 
 public class TagCollectionMain extends TagCollection implements MainUtil {
     public void initialize() {
@@ -30,7 +27,7 @@ public class TagCollectionMain extends TagCollection implements MainUtil {
     public boolean add(TagObject tagObject) {
         if (tagObject == null) return false;
         if (super.add(tagObject)) {
-            reload.queue(GUINode.LEFTPANE);
+            reload.queue(NodeEnum.LEFTPANE);
             return true;
         }
         return false;
@@ -40,7 +37,7 @@ public class TagCollectionMain extends TagCollection implements MainUtil {
         if (super.remove(tagObject)) {
             filter.unlistTagObject(tagObject);
             filter.apply();
-            reload.queue(GUINode.LEFTPANE, GUINode.GALLERYPANE);
+            reload.queue(NodeEnum.LEFTPANE, NodeEnum.GALLERYPANE);
             return true;
         }
         return false;
@@ -51,13 +48,10 @@ public class TagCollectionMain extends TagCollection implements MainUtil {
         if (newTagObject != null) {
             tagObject.setValue(newTagObject.getGroup(), newTagObject.getName());
             super.sort();
-            reload.queue(GUINode.LEFTPANE, GUINode.RIGHTPANE);
+            reload.queue(NodeEnum.LEFTPANE);
             return true;
         }
         return false;
-    }
-    public boolean contains(TagObject tagObject) {
-        return super.contains(tagObject);
     }
 
     public TagObject getTagObject(String group, String name) {
@@ -81,7 +75,7 @@ public class TagCollectionMain extends TagCollection implements MainUtil {
         String tagObjectName = split[1].trim();
         return getTagObject(tagObjectGroup, tagObjectName);
     }
-    public TagObject getTagObject(TreeCell<ColoredText> treeCell) {
+    public TagObject getTagObject(TreeCell<ColorText> treeCell) {
         if (treeCell == null) return null;
         String tagObjectGroup;
         try {
@@ -91,27 +85,5 @@ public class TagCollectionMain extends TagCollection implements MainUtil {
         }
         String tagObjectName = treeCell.getText();
         return getTagObject(tagObjectGroup, tagObjectName);
-    }
-
-    public ArrayList<String> getGroups() {
-        ArrayList<String> groups = new ArrayList<>();
-        for (TagObject iterator : this) {
-            if (!groups.contains(iterator.getGroup())) {
-                groups.add(iterator.getGroup());
-            }
-        }
-        groups.sort(Comparator.naturalOrder());
-        return groups;
-    }
-    public ArrayList<String> getNames(String group) {
-        ArrayList<String> names = new ArrayList<>();
-        for (TagObject iterator : this) {
-            String iteratorGroup = iterator.getGroup();
-            String iteratorName = iterator.getName();
-            if (iteratorGroup.equals(group) && !names.contains(iteratorName)) {
-                names.add(iteratorName);
-            }
-        }
-        return names;
     }
 }

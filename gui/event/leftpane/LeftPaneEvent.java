@@ -1,11 +1,11 @@
-package gui.event.rightpane;
+package gui.event.leftpane;
 
 import gui.component.ColorText;
 import javafx.scene.control.TreeCell;
 import javafx.scene.input.MouseEvent;
 import utils.MainUtil;
 
-public class RightPaneEvent implements MainUtil {
+public class LeftPaneEvent implements MainUtil {
     public static void onMouseClick(TreeCell<ColorText> sourceCell) {
         sourceCell.setOnMouseClicked(event -> {
             switch (event.getButton()) {
@@ -22,9 +22,9 @@ public class RightPaneEvent implements MainUtil {
     }
 
     private static void onLeftClick(TreeCell<ColorText> sourceCell) {
-        rightPane.changeCellState(sourceCell);
+        leftPane.changeCellState(sourceCell);
     }
     private static void onRightClick(TreeCell<ColorText> sourceCell, MouseEvent event) {
-        sourceCell.getContextMenu().show(rightPane, event.getX(), event.getY());
+        sourceCell.getContextMenu().show(leftPane, event.getX(), event.getY());
     }
 }

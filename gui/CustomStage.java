@@ -1,14 +1,14 @@
 package gui;
 
 import database.loader.Serialization;
-import gui.component.GUINode;
-import gui.custom.generic.DataObjectContextMenu;
+import gui.component.NodeEnum;
 import gui.event.gallerypane.GalleryPaneEvent;
 import gui.event.global.ContextMenuEvent;
 import gui.event.global.GlobalEvent;
 import gui.event.previewpane.PreviewPaneEvent;
 import gui.event.rightpane.RightPaneEvent;
 import gui.event.toppane.TopPaneEvent;
+import gui.template.generic.DataObjectContextMenu;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -66,10 +66,10 @@ public class CustomStage extends Stage implements MainUtil {
         if (this.isPreviewFullscreen()) {
             splitPaneItems.set(splitPaneItems.indexOf(previewPane), galleryPane);
             galleryPane.adjustViewportToCurrentFocus();
-            //reload.queue(GUINode.GALLERYPANE);
+            //reload.queue(NodeEnum.GALLERYPANE);
         } else {
             splitPaneItems.set(splitPaneItems.indexOf(galleryPane), previewPane);
-            reload.queue(GUINode.PREVIEWPANE);
+            reload.queue(NodeEnum.PREVIEWPANE);
         }
         splitPane.setDividerPositions(dividerPositions);
     }

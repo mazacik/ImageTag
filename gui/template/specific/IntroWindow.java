@@ -1,7 +1,7 @@
-package gui.custom.specific;
+package gui.template.specific;
 
 import database.loader.DataLoader;
-import gui.custom.generic.DirectoryChooserWindow;
+import gui.template.generic.DirectoryChooserWindow;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;

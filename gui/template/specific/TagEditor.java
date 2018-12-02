@@ -1,4 +1,4 @@
-package gui.custom.specific;
+package gui.template.specific;
 
 import database.object.TagObject;
 import javafx.geometry.Insets;

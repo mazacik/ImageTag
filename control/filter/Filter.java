@@ -4,7 +4,7 @@ import database.object.DataCollection;
 import database.object.DataObject;
 import database.object.TagCollection;
 import database.object.TagObject;
-import gui.component.GUINode;
+import gui.component.NodeEnum;
 import utils.MainUtil;
 
 import java.util.Random;
@@ -27,7 +27,7 @@ public class Filter extends DataCollection implements MainUtil {
     }
     public void apply() {
         currentFilterTemplate.apply();
-        reload.queue(GUINode.GALLERYPANE);
+        reload.queue(NodeEnum.GALLERYPANE);
     }
 
     public void whitelistTagObject(TagObject tagObject) {

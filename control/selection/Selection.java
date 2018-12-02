@@ -4,8 +4,7 @@ import database.object.DataCollection;
 import database.object.DataObject;
 import database.object.TagCollection;
 import database.object.TagObject;
-import gui.component.GUINode;
-import javafx.collections.ObservableList;
+import gui.component.NodeEnum;
 import utils.MainUtil;
 
 public class Selection extends DataCollection implements MainUtil {
@@ -13,7 +12,7 @@ public class Selection extends DataCollection implements MainUtil {
         if (dataObject == null) return false;
         if (super.add(dataObject)) {
             dataObject.generateTileEffect();
-            reload.queue(GUINode.TOPPANE, GUINode.RIGHTPANE);
+            reload.queue(NodeEnum.TOPPANE);
             return true;
         }
         return false;
@@ -22,7 +21,7 @@ public class Selection extends DataCollection implements MainUtil {
         if (dataCollection == null) return false;
         if (super.addAll(dataCollection)) {
             dataCollection.forEach(DataObject::generateTileEffect);
-            reload.queue(GUINode.TOPPANE, GUINode.RIGHTPANE);
+            reload.queue(NodeEnum.TOPPANE);
             return true;
         }
         return false;
@@ -31,7 +30,7 @@ public class Selection extends DataCollection implements MainUtil {
         if (dataObject == null) return false;
         if (super.remove(dataObject)) {
             dataObject.generateTileEffect();
-            reload.queue(GUINode.TOPPANE, GUINode.RIGHTPANE);
+            reload.queue(NodeEnum.TOPPANE);
             return true;
         }
         return false;
@@ -44,7 +43,7 @@ public class Selection extends DataCollection implements MainUtil {
         DataCollection helper = new DataCollection(this);
         super.clear();
         helper.forEach(DataObject::generateTileEffect);
-        reload.queue(GUINode.TOPPANE, GUINode.RIGHTPANE);
+        reload.queue(NodeEnum.TOPPANE);
     }
     public void swapState(DataObject dataObject) {
         if (super.contains(dataObject)) {
@@ -69,48 +68,50 @@ public class Selection extends DataCollection implements MainUtil {
             }
         }
     }
-    public void removeTagObject() {
-        TagCollection tagObjectsToRemove = new TagCollection();
-        ObservableList<String> tagObjectSelection = rightPane.getIntersectionListView().getSelectionModel().getSelectedItems();
-        for (String tagObject : tagObjectSelection) {
-            tagObjectsToRemove.add(mainTags.getTagObject(tagObject));
+    public void removeTagObject(TagObject tagObject) {
+        for (DataObject dataObject : this) {
+            dataObject.getTagCollection().remove(tagObject);
         }
 
-        for (TagObject tagObject : tagObjectsToRemove) {
-            for (DataObject dataObject : this) {
-                dataObject.getTagCollection().remove(tagObject);
-            }
-
-            boolean tagExists = false;
-            for (DataObject dataObject : mainData) {
-                if (dataObject.getTagCollection().contains(tagObject)) {
-                    tagExists = true;
-                    break;
-                }
-            }
-            if (!tagExists) {
-                filter.unlistTagObject(tagObject);
-                mainTags.remove(tagObject);
-                reload.queue(GUINode.LEFTPANE);
+        boolean tagExists = false;
+        for (DataObject dataObject : mainData) {
+            if (dataObject.getTagCollection().contains(tagObject)) {
+                tagExists = true;
+                break;
             }
         }
-        if (tagObjectsToRemove.size() > 0) {
-            reload.queue(GUINode.RIGHTPANE);
+        if (!tagExists) {
+            filter.unlistTagObject(tagObject);
+            mainTags.remove(tagObject);
+            reload.queue(NodeEnum.LEFTPANE);
         }
     }
 
     public TagCollection getIntersectingTags() {
         if (this.size() < 1) return new TagCollection();
 
-        TagCollection sharedTags = new TagCollection();
+        TagCollection intersectingTags = new TagCollection();
         DataObject lastObject = this.get(this.size() - 1);
         for (TagObject tagObject : this.get(0).getTagCollection()) {
             for (DataObject dataObject : this) {
                 if (dataObject.getTagCollection().contains(tagObject)) {
                     if (dataObject.equals(lastObject)) {
-                        sharedTags.add(tagObject);
+                        intersectingTags.add(tagObject);
                     }
                 } else break;
+            }
+        }
+        return intersectingTags;
+    }
+    public TagCollection getSharedTags() {
+        if (this.size() < 1) return new TagCollection();
+
+        TagCollection sharedTags = new TagCollection();
+        for (DataObject dataObject : this) {
+            for (TagObject tagObject : dataObject.getTagCollection()) {
+                if (!sharedTags.contains(tagObject)) {
+                    sharedTags.add(tagObject);
+                }
             }
         }
         return sharedTags;

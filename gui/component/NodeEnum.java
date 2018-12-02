@@ -1,6 +1,6 @@
 package gui.component;
 
-public enum GUINode {
+public enum NodeEnum {
     TOPPANE,
     LEFTPANE,
     GALLERYPANE,

@@ -1,7 +1,7 @@
 package control.focus;
 
 import database.object.DataObject;
-import gui.component.GUINode;
+import gui.component.NodeEnum;
 import javafx.scene.input.KeyCode;
 import utils.MainUtil;
 
@@ -28,7 +28,7 @@ public class Focus implements MainUtil {
         }
 
         galleryPane.adjustViewportToCurrentFocus();
-        reload.queue(GUINode.PREVIEWPANE, GUINode.RIGHTPANE);
+        reload.queue(NodeEnum.PREVIEWPANE);
     }
     public void move(KeyCode keyCode) {
         int newFocusPosition = 0;

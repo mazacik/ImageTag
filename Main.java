@@ -1,4 +1,4 @@
-import gui.custom.specific.IntroWindow;
+import gui.template.specific.IntroWindow;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import utils.MainUtil;

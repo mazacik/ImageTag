@@ -2,190 +2,172 @@ package gui.component.rightpane;
 
 import database.object.DataObject;
 import database.object.TagObject;
-import gui.component.GUINode;
-import gui.custom.specific.RightPaneContextMenu;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.layout.HBox;
+import gui.component.ColorText;
+import gui.event.rightpane.RightPaneEvent;
+import javafx.collections.ObservableList;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.TreeCell;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import utils.MainUtil;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class RightPane extends VBox implements MainUtil {
-    private final Button btnCommon; // == 0
-    private final Button btnRecent; // == 1
-    private final ListView<String> suggestionListView;
-    private final ChoiceBox cbGroup;
-    private final ChoiceBox cbName;
-    private final Button btnAdd;
-    private final Button btnNew;
-    private final RightPaneContextMenu contextMenu;
-    private final ListView<String> intersectionListView;
-    private ArrayList<String> recentTags = new ArrayList<>();
-    private SuggestMode suggestMode = SuggestMode.COMMON;
+    private final TreeView<ColorText> treeView;
+    private final ContextMenu TEMP = new ContextMenu(); // todo fix me
 
     public RightPane() {
-        btnCommon = new Button("Common");
-        btnRecent = new Button("Recent");
-        suggestionListView = new ListView<>();
-        cbGroup = new ChoiceBox();
-        cbName = new ChoiceBox();
-        btnAdd = new Button("Add");
-        btnNew = new Button("New");
-        contextMenu = new RightPaneContextMenu();
-        intersectionListView = new ListView<>();
-
-        this.setDefaultValuesChildren();
-        this.setDefaultValues();
-    }
-    private void setDefaultValuesChildren() {
-        cbGroup.prefWidthProperty().bind(this.prefWidthProperty());
-        cbGroup.maxWidthProperty().bind(this.maxWidthProperty());
-        cbName.prefWidthProperty().bind(this.prefWidthProperty());
-        cbName.maxWidthProperty().bind(this.maxWidthProperty());
-        btnAdd.prefWidthProperty().bind(this.prefWidthProperty());
-        btnAdd.maxWidthProperty().bind(this.maxWidthProperty());
-        btnNew.prefWidthProperty().bind(this.prefWidthProperty());
-        btnNew.maxWidthProperty().bind(this.maxWidthProperty());
-
-        btnCommon.setMaxWidth(Double.MAX_VALUE);
-        btnRecent.setMaxWidth(Double.MAX_VALUE);
-
-        suggestionListView.setMaxHeight(Double.MAX_VALUE);
-        suggestionListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        suggestionListView.setMaxHeight(5 * 24);
-        intersectionListView.setMaxHeight(Double.MAX_VALUE);
-
-
-        //btnAdd.setDisable(true);
-        cbName.setDisable(true);
-
-        intersectionListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        intersectionListView.setContextMenu(contextMenu);
-    }
-    private void setDefaultValues() {
         this.setMinWidth(200);
         this.setPrefWidth(250);
         this.setMaxWidth(300);
-        this.setSpacing(2);
 
-        VBox.setVgrow(suggestionListView, Priority.ALWAYS);
-        VBox.setVgrow(intersectionListView, Priority.ALWAYS);
+        treeView = new TreeView(new TreeItem());
+        treeView.setMaxHeight(this.getMaxHeight());
+        treeView.setShowRoot(false);
 
-        HBox hbox1 = new HBox(btnCommon, btnRecent);
-        HBox.setHgrow(btnCommon, Priority.ALWAYS);
-        HBox.setHgrow(btnRecent, Priority.ALWAYS);
+        VBox.setVgrow(treeView, Priority.ALWAYS);
 
-        this.getChildren().addAll(hbox1, suggestionListView, cbGroup, cbName, btnAdd, btnNew, intersectionListView);
+        this.setCellFactory(TEMP);
+        this.getChildren().addAll(treeView);
     }
 
-    public void addTagToSelection() {
-        Object cbGroupValue = cbGroup.getValue();
-        Object cbNameValue = cbName.getValue();
-        String group = "";
-        String name = "";
-
+    public void changeCellState(TreeCell<ColorText> sourceCell) {
+        TagObject tagObject = mainTags.getTagObject(sourceCell);
+        ColorText colorText;
         try {
-            group = cbGroupValue.toString();
-            name = cbNameValue.toString();
-        } catch (NullPointerException ignored) {}
-
-        if (!group.isEmpty() && !name.isEmpty()) {
-            TagObject tagObject = mainTags.getTagObject(group, name);
-            if (selection.size() < 1) {
-                DataObject currentFocusedItem = focus.getCurrentFocus();
-                if (currentFocusedItem != null) {
-                    currentFocusedItem.getTagCollection().add(tagObject);
-                }
-            } else {
-                selection.addTagObject(tagObject);
-            }
-
-            ArrayList<String> oldRecentTags = this.recentTags;
-            ArrayList<String> newRecentTags = new ArrayList<>();
-            String tagGroupAndName = tagObject.getGroupAndName();
-            newRecentTags.add(tagGroupAndName);
-
-            if (oldRecentTags.size() != 0) {
-                oldRecentTags.remove(tagGroupAndName);
-                newRecentTags.addAll(oldRecentTags);
-            }
-
-            this.recentTags = newRecentTags;
-            reload.queue(GUINode.RIGHTPANE);
+            colorText = sourceCell.getTreeItem().getValue();
+        } catch (NullPointerException e) {
+            return;
         }
+
+        if (tagObject != null) {
+            if (colorText.getColor().equals(Color.GREEN) || colorText.getColor().equals(Color.BLUE)) {
+                colorText.setColor(Color.BLACK);
+                this.removeTagObjectFromSelection(tagObject);
+            } else {
+                colorText.setColor(Color.GREEN);
+                this.addTagObjectToSelection(tagObject);
+            }
+        }
+        rightPane.refreshTreeView();
     }
-    public void reload() {
-        this.reloadIntersecting();
-        this.reloadSuggested();
-    }
-    private void reloadIntersecting() {
-        ArrayList<String> sharedTags = new ArrayList<>();
-        if (selection.size() == 0) {
+    public void addTagObjectToSelection(TagObject tagObject) {
+        if (selection.size() < 1) {
             DataObject currentFocusedItem = focus.getCurrentFocus();
             if (currentFocusedItem != null) {
-                for (TagObject tagObject : currentFocusedItem.getTagCollection()) {
-                    sharedTags.add(tagObject.getGroupAndName());
-                }
+                currentFocusedItem.getTagCollection().add(tagObject);
             }
         } else {
-            for (TagObject tagObject : selection.getIntersectingTags()) {
-                sharedTags.add(tagObject.getGroupAndName());
+            selection.addTagObject(tagObject);
+        }
+    }
+    public void removeTagObjectFromSelection(TagObject tagObject) {
+        if (selection.size() < 1) {
+            DataObject currentFocusedItem = focus.getCurrentFocus();
+            if (currentFocusedItem != null) {
+                currentFocusedItem.getTagCollection().remove(tagObject);
             }
+        } else {
+            selection.removeTagObject(tagObject);
         }
-        intersectionListView.getItems().setAll(sharedTags);
     }
-    private void reloadSuggested() {
-        switch (suggestMode) {
-            case COMMON:
-                ArrayList<String> topTenTags = new ArrayList<>();
-                for (TagObject tagObject : mainTags) {
 
+    public void reload() {
+        ObservableList<TreeItem<ColorText>> treeViewItems = treeView.getRoot().getChildren();
+        treeViewItems.clear();
+
+        ArrayList<String> groupsInter = selection.getIntersectingTags().getGroups();
+        ArrayList<String> groupsShare = selection.getSharedTags().getGroups();
+        ArrayList<String> groupsAll = mainTags.getGroups();
+
+        for (String groupInter : groupsInter) {
+            groupsShare.remove(groupInter);
+            groupsAll.remove(groupInter);
+
+            TreeItem groupTreeItem = new TreeItem(new ColorText(groupInter, Color.GREEN));
+            ArrayList<String> namesInter = selection.getIntersectingTags().getNames(groupInter);
+            ArrayList<String> namesShare = selection.getSharedTags().getNames(groupInter);
+            ArrayList<String> namesAll = mainTags.getNames(groupInter);
+
+            for (String nameInter : namesInter) {
+                namesShare.remove(nameInter);
+                namesAll.remove(nameInter);
+
+                groupTreeItem.getChildren().add(new TreeItem(new ColorText(nameInter, Color.GREEN)));
+            }
+            for (String nameShare : namesShare) {
+                namesAll.remove(nameShare);
+
+                groupTreeItem.getChildren().add(new TreeItem(new ColorText(nameShare, Color.BLUE)));
+            }
+            for (String nameAll : namesAll) {
+                groupTreeItem.getChildren().add(new TreeItem(new ColorText(nameAll, Color.BLACK)));
+            }
+
+            treeViewItems.add(groupTreeItem);
+        }
+        for (String groupShare : groupsShare) {
+            groupsAll.remove(groupShare);
+
+            TreeItem groupTreeItem = new TreeItem(new ColorText(groupShare, Color.BLUE));
+            ArrayList<String> namesShare = selection.getSharedTags().getNames(groupShare);
+            ArrayList<String> namesAll = mainTags.getNames(groupShare);
+
+            for (String nameShare : namesShare) {
+                namesAll.remove(nameShare);
+
+                groupTreeItem.getChildren().add(new TreeItem(new ColorText(nameShare, Color.BLUE)));
+            }
+            for (String nameAll : namesAll) {
+                groupTreeItem.getChildren().add(new TreeItem(new ColorText(nameAll, Color.BLACK)));
+            }
+
+            treeViewItems.add(groupTreeItem);
+        }
+        for (String groupAll : groupsAll) {
+            TreeItem groupTreeItem = new TreeItem(new ColorText(groupAll, Color.BLACK));
+            ArrayList<String> namesAll = mainTags.getNames(groupAll);
+
+            for (String nameAll : namesAll) {
+                groupTreeItem.getChildren().add(new TreeItem(new ColorText(nameAll, Color.BLACK)));
+            }
+
+            treeViewItems.add(groupTreeItem);
+        }
+
+        treeViewItems.sort(Comparator.comparing(colorTextTreeItem -> colorTextTreeItem.getValue().getText()));
+    }
+    public void refreshTreeView() {
+        treeView.refresh();
+    }
+    private void setCellFactory(ContextMenu contextMenu) {
+        treeView.setCellFactory(treeView -> new TreeCell<>() {
+            @Override
+            protected void updateItem(ColorText colorText, boolean empty) {
+                super.updateItem(colorText, empty);
+                if (colorText == null) {
+                    setText(null);
+                    setTextFill(null);
+                } else {
+                    setText(colorText.getText());
+                    setTextFill(colorText.getColor());
                 }
-                break;
-            case RECENT:
-                suggestionListView.getItems().setAll(recentTags);
-                break;
-            default:
-                break;
-        }
-    }
 
-    public Button getBtnCommon() {
-        return btnCommon;
-    }
-    public Button getBtnRecent() {
-        return btnRecent;
-    }
-
-    public ChoiceBox getCbGroup() {
-        return cbGroup;
-    }
-    public ChoiceBox getCbName() {
-        return cbName;
-    }
-    public Button getBtnAdd() {
-        return btnAdd;
-    }
-    public Button getBtnNew() {
-        return btnNew;
-    }
-
-    public RightPaneContextMenu getContextMenu() {
-        return contextMenu;
-    }
-    public ListView<String> getSuggestionListView() {
-        return suggestionListView;
-    }
-    public ListView<String> getIntersectionListView() {
-        return intersectionListView;
-    }
-
-    public void setSuggestMode(SuggestMode suggestMode) {
-        this.suggestMode = suggestMode;
+                this.setContextMenu(contextMenu);
+                this.addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
+                    if (e.getClickCount() % 2 == 0 && e.getButton().equals(MouseButton.PRIMARY)) {
+                        e.consume();
+                    }
+                });
+                RightPaneEvent.onMouseClick(this);
+            }
+        });
     }
 }

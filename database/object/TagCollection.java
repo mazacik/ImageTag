@@ -1,5 +1,8 @@
 package database.object;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+
 public class TagCollection extends Collection<TagObject> {
     public TagCollection() {
         super();
@@ -23,5 +26,27 @@ public class TagCollection extends Collection<TagObject> {
     }
     public void sort() {
         super.sort(TagObject.getComparator());
+    }
+
+    public ArrayList<String> getGroups() {
+        ArrayList<String> groups = new ArrayList<>();
+        for (TagObject iterator : this) {
+            if (!groups.contains(iterator.getGroup())) {
+                groups.add(iterator.getGroup());
+            }
+        }
+        groups.sort(Comparator.naturalOrder());
+        return groups;
+    }
+    public ArrayList<String> getNames(String group) {
+        ArrayList<String> names = new ArrayList<>();
+        for (TagObject iterator : this) {
+            String iteratorGroup = iterator.getGroup();
+            String iteratorName = iterator.getName();
+            if (iteratorGroup.equals(group) && !names.contains(iteratorName)) {
+                names.add(iteratorName);
+            }
+        }
+        return names;
     }
 }
