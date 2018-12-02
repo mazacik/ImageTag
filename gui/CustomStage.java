@@ -1,7 +1,6 @@
 package gui;
 
 import database.loader.Serialization;
-import gui.component.NodeEnum;
 import gui.event.gallerypane.GalleryPaneEvent;
 import gui.event.global.ContextMenuEvent;
 import gui.event.global.GlobalEvent;
@@ -66,10 +65,8 @@ public class CustomStage extends Stage implements MainUtil {
         if (this.isPreviewFullscreen()) {
             splitPaneItems.set(splitPaneItems.indexOf(previewPane), galleryPane);
             galleryPane.adjustViewportToCurrentFocus();
-            //reload.queue(NodeEnum.GALLERYPANE);
         } else {
             splitPaneItems.set(splitPaneItems.indexOf(galleryPane), previewPane);
-            reload.queue(NodeEnum.PREVIEWPANE);
         }
         splitPane.setDividerPositions(dividerPositions);
     }

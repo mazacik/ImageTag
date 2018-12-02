@@ -1,6 +1,6 @@
 package gui.template.specific;
 
-import gui.component.ColorText;
+import gui.node.ColorText;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeCell;

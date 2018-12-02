@@ -1,4 +1,4 @@
-package gui.component.gallerypane;
+package gui.node.gallerypane;
 
 import database.object.DataObject;
 import gui.event.gallerypane.GalleryTileEvent;

@@ -3,7 +3,6 @@ package gui.event.toppane;
 import control.filter.Filter;
 import control.filter.FilterTemplate;
 import database.loader.Serialization;
-import gui.component.NodeEnum;
 import gui.template.generic.NumberInputWindow;
 import javafx.stage.WindowEvent;
 import utils.MainUtil;
@@ -22,7 +21,6 @@ public class TopPaneEvent implements MainUtil {
         onAction_menuModeWhitelistAny();
         onAction_menuModeBlacklistAll();
         onAction_menuModeBlacklistAny();
-        onAction_menuRefresh();
         onAction_menuReset();
     }
 
@@ -36,14 +34,12 @@ public class TopPaneEvent implements MainUtil {
     private void onAction_menuSelectAll() {
         topPane.getMenuSelectAll().setOnAction(event -> {
             selection.addAll(filter);
-            reload.queue(NodeEnum.GALLERYPANE);
             reload.doReload();
         });
     }
     private void onAction_menuClearSelection() {
         topPane.getMenuClearSelection().setOnAction(event -> {
             selection.clear();
-            reload.queue(NodeEnum.GALLERYPANE);
             reload.doReload();
         });
     }
@@ -51,7 +47,6 @@ public class TopPaneEvent implements MainUtil {
     private void onAction_menuUntaggedOnly() {
         topPane.getMenuUntaggedOnly().setOnAction(event -> {
             filter.setFilter(FilterTemplate.SHOW_UNTAGGED);
-            reload.queue(NodeEnum.GALLERYPANE);
             reload.doReload();
         });
     }
@@ -61,7 +56,6 @@ public class TopPaneEvent implements MainUtil {
             FilterTemplate.setMaxTagsValue(maxTags);
 
             filter.setFilter(FilterTemplate.SHOW_MAX_X_TAGS);
-            reload.queue(NodeEnum.GALLERYPANE);
             reload.doReload();
         });
     }
@@ -97,16 +91,9 @@ public class TopPaneEvent implements MainUtil {
             filter.apply();
         });
     }
-    private void onAction_menuRefresh() {
-        topPane.getMenuRefresh().setOnAction(event -> {
-            reload.queue(NodeEnum.GALLERYPANE);
-            reload.doReload();
-        });
-    }
     private void onAction_menuReset() {
         topPane.getMenuReset().setOnAction(event -> {
             filter.setFilter(FilterTemplate.SHOW_EVERYTHING);
-            reload.queue(NodeEnum.GALLERYPANE);
             reload.doReload();
         });
     }

@@ -1,9 +1,10 @@
-package gui.component.leftpane;
+package gui.node.leftpane;
 
+import control.reload.Reload;
 import database.object.TagObject;
-import gui.component.ColorText;
-import gui.component.NodeEnum;
 import gui.event.leftpane.LeftPaneEvent;
+import gui.node.BaseNode;
+import gui.node.ColorText;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TreeCell;
@@ -18,7 +19,7 @@ import utils.MainUtil;
 
 import java.util.ArrayList;
 
-public class LeftPane extends VBox implements MainUtil {
+public class LeftPane extends VBox implements MainUtil, BaseNode {
     private final TreeView<ColorText> treeView;
     private final ContextMenu TEMP = new ContextMenu(); // todo fix me
 
@@ -30,8 +31,9 @@ public class LeftPane extends VBox implements MainUtil {
         treeView = new TreeView(new TreeItem());
         treeView.setMaxHeight(this.getMaxHeight());
         treeView.setShowRoot(false);
-
         VBox.setVgrow(treeView, Priority.ALWAYS);
+
+        reload.subscribe(this, Reload.Control.TAGS);
 
         this.setCellFactory(TEMP);
         this.getChildren().addAll(treeView);
@@ -81,8 +83,7 @@ public class LeftPane extends VBox implements MainUtil {
             }
         }
         filter.apply();
-        leftPane.refreshTreeView();
-        reload.queue(NodeEnum.GALLERYPANE);
+        treeView.refresh();
         reload.doReload();
     }
 
@@ -113,9 +114,6 @@ public class LeftPane extends VBox implements MainUtil {
 
             treeViewItems.add(groupTreeItem);
         }
-    }
-    public void refreshTreeView() {
-        treeView.refresh();
     }
     private void setCellFactory(ContextMenu contextMenu) {
         treeView.setCellFactory(treeView -> new TreeCell<>() {

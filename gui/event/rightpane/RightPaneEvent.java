@@ -1,6 +1,6 @@
 package gui.event.rightpane;
 
-import gui.component.ColorText;
+import gui.node.ColorText;
 import javafx.scene.control.TreeCell;
 import javafx.scene.input.MouseEvent;
 import utils.MainUtil;

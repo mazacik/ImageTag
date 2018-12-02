@@ -1,73 +1,51 @@
 package control.reload;
 
-import gui.component.NodeEnum;
+import gui.node.BaseNode;
 import utils.MainUtil;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class Reload implements MainUtil {
-    private boolean _topPane;
-    private boolean _leftPane;
-    private boolean _galleryPane;
-    private boolean _previewPane;
-    private boolean _rightPane;
+    private ArrayList<BaseNode> queue;
 
     public Reload() {
-        _topPane = false;
-        _leftPane = false;
-        _galleryPane = false;
-        _previewPane = false;
-        _rightPane = false;
+        queue = new ArrayList<>();
     }
 
-    public void queue(NodeEnum... nodes) {
-        for (NodeEnum node : nodes) {
-            switch (node) {
-                case TOPPANE:
-                    _topPane = true;
-                    break;
-                case LEFTPANE:
-                    _leftPane = true;
-                    break;
-                case GALLERYPANE:
-                    _galleryPane = true;
-                    break;
-                case PREVIEWPANE:
-                    _previewPane = true;
-                    break;
-                case RIGHTPANE:
-                    _rightPane = true;
-                    break;
-                default:
-                    break;
-            }
-        }
+    public void subscribe(BaseNode node, Control... controls) {
+        Arrays.asList(controls).forEach(control -> control.getSubscribers().add(node));
     }
-    public void queueAll() {
-        _topPane = true;
-        _leftPane = true;
-        _galleryPane = true;
-        _previewPane = true;
-        _rightPane = true;
+    public void notifyChangeIn(Control... controls) {
+        Arrays.asList(controls).forEach(control -> this.queue(control.getSubscribers()));
+    }
+
+    private void queue(ArrayList<BaseNode> nodes) {
+        nodes.forEach(node -> {
+            if (!queue.contains(node)) {
+                queue.add(node);
+            }
+        });
     }
     public void doReload() {
-        if (_topPane) {
-            topPane.reload();
-            _topPane = false;
+        queue.forEach(BaseNode::reload);
+        queue.clear();
+    }
+
+    public enum Control {
+        DATA,
+        TAGS,
+        FILTER,
+        FOCUS,
+        SELECTION,
+        ;
+
+        private ArrayList<BaseNode> subscribers;
+        Control() {
+            this.subscribers = new ArrayList<>();
         }
-        if (_leftPane) {
-            leftPane.reload();
-            _leftPane = false;
-        }
-        if (_galleryPane) {
-            galleryPane.reload();
-            _galleryPane = false;
-        }
-        if (_previewPane) {
-            previewPane.reload();
-            _previewPane = false;
-        }
-        if (_rightPane) {
-            rightPane.reload();
-            _rightPane = false;
+        public ArrayList<BaseNode> getSubscribers() {
+            return this.subscribers;
         }
     }
 }

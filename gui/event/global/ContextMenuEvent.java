@@ -2,7 +2,6 @@ package gui.event.global;
 
 import control.selection.Selection;
 import database.object.DataObject;
-import gui.component.NodeEnum;
 import gui.template.generic.ConfirmationWindow;
 import settings.Settings;
 import utils.ClipboardUtil;
@@ -65,7 +64,6 @@ public class ContextMenuEvent implements MainUtil {
 
         if (confirmationWindow.getResult()) {
             ((Selection) selection.clone()).forEach(this::deleteDataObject);
-            reload.queue(NodeEnum.GALLERYPANE);
             reload.doReload();
         }
     }
@@ -98,8 +96,6 @@ public class ContextMenuEvent implements MainUtil {
             }
 
             focus.set(filter.get(index));
-
-            reload.queue(NodeEnum.GALLERYPANE, NodeEnum.PREVIEWPANE);
             reload.doReload();
         }
     }

@@ -1,8 +1,9 @@
 package database.loader;
 
+import control.reload.Reload;
 import database.object.DataCollection;
 import database.object.DataObject;
-import gui.component.gallerypane.GalleryTile;
+import gui.node.gallerypane.GalleryTile;
 import gui.template.specific.LoadingWindow;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
@@ -40,7 +41,7 @@ public class DataLoader extends Thread implements MainUtil {
         filter.addAll(mainData);
         filter.sort();
 
-        reload.queueAll();
+        reload.notifyChangeIn(Reload.Control.values());
         reload.doReload();
 
         Platform.runLater(() -> {

@@ -1,6 +1,8 @@
-package gui.component.previewpane;
+package gui.node.previewpane;
 
+import control.reload.Reload;
 import database.object.DataObject;
+import gui.node.BaseNode;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -8,7 +10,7 @@ import javafx.scene.layout.Pane;
 import settings.Settings;
 import utils.MainUtil;
 
-public class PreviewPane extends Pane implements MainUtil {
+public class PreviewPane extends Pane implements MainUtil, BaseNode {
     private final Canvas canvas;
 
     private DataObject currentDataObject;
@@ -21,6 +23,8 @@ public class PreviewPane extends Pane implements MainUtil {
         canvas = new Canvas();
         canvas.widthProperty().bind(this.widthProperty());
         canvas.heightProperty().bind(this.heightProperty());
+
+        reload.subscribe(this, Reload.Control.FOCUS);
 
         this.getChildren().add(canvas);
     }

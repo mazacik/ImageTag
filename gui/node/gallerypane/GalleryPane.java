@@ -1,6 +1,8 @@
-package gui.component.gallerypane;
+package gui.node.gallerypane;
 
+import control.reload.Reload;
 import database.object.DataObject;
+import gui.node.BaseNode;
 import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
@@ -9,7 +11,7 @@ import javafx.scene.layout.TilePane;
 import settings.Settings;
 import utils.MainUtil;
 
-public class GalleryPane extends ScrollPane implements MainUtil {
+public class GalleryPane extends ScrollPane implements MainUtil, BaseNode {
     private final TilePane tilePane;
 
     public GalleryPane() {
@@ -19,6 +21,8 @@ public class GalleryPane extends ScrollPane implements MainUtil {
         tilePane.setVgap(3);
         tilePane.setPrefTileWidth(GALLERY_ICON_SIZE_PREF);
         tilePane.setPrefTileHeight(GALLERY_ICON_SIZE_PREF);
+
+        reload.subscribe(this, Reload.Control.DATA, Reload.Control.FILTER);
 
         this.setMinViewportWidth(GALLERY_ICON_SIZE_PREF);
         this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -34,7 +38,6 @@ public class GalleryPane extends ScrollPane implements MainUtil {
         tilePaneItems.clear();
         filter.forEach(dataObject -> tilePaneItems.add(dataObject.getGalleryTile()));
         this.setVvalue(scrollbarValue);
-        //adjustViewportToCurrentFocus();
         calculateTilePaneHGap();
     }
     public void calculateTilePaneHGap() {

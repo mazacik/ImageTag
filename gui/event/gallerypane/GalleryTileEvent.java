@@ -1,7 +1,7 @@
 package gui.event.gallerypane;
 
 import database.object.DataObject;
-import gui.component.gallerypane.GalleryTile;
+import gui.node.gallerypane.GalleryTile;
 import javafx.scene.input.MouseEvent;
 import utils.MainUtil;
 

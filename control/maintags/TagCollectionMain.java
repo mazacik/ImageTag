@@ -1,10 +1,10 @@
 package control.maintags;
 
+import control.reload.Reload;
 import database.object.DataObject;
 import database.object.TagCollection;
 import database.object.TagObject;
-import gui.component.ColorText;
-import gui.component.NodeEnum;
+import gui.node.ColorText;
 import gui.template.specific.TagEditor;
 import javafx.scene.control.TreeCell;
 import utils.MainUtil;
@@ -26,18 +26,15 @@ public class TagCollectionMain extends TagCollection implements MainUtil {
 
     public boolean add(TagObject tagObject) {
         if (tagObject == null) return false;
-        if (super.add(tagObject)) {
-            reload.queue(NodeEnum.LEFTPANE);
-            return true;
-        }
-        return false;
+        reload.notifyChangeIn(Reload.Control.TAGS);
+        return super.add(tagObject);
     }
     public boolean remove(TagObject tagObject) {
         if (tagObject == null) return false;
         if (super.remove(tagObject)) {
             filter.unlistTagObject(tagObject);
             filter.apply();
-            reload.queue(NodeEnum.LEFTPANE, NodeEnum.GALLERYPANE);
+            reload.notifyChangeIn(Reload.Control.TAGS);
             return true;
         }
         return false;
@@ -48,7 +45,7 @@ public class TagCollectionMain extends TagCollection implements MainUtil {
         if (newTagObject != null) {
             tagObject.setValue(newTagObject.getGroup(), newTagObject.getName());
             super.sort();
-            reload.queue(NodeEnum.LEFTPANE);
+            reload.notifyChangeIn(Reload.Control.TAGS);
             return true;
         }
         return false;

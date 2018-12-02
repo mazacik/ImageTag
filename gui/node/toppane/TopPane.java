@@ -1,10 +1,12 @@
-package gui.component.toppane;
+package gui.node.toppane;
 
+import control.reload.Reload;
+import gui.node.BaseNode;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import utils.MainUtil;
 
-public class TopPane extends BorderPane implements MainUtil {
+public class TopPane extends BorderPane implements MainUtil, BaseNode {
     private final MenuBar infoLabelMenuBar = new MenuBar();
     private final Menu infoLabelMenu = new Menu();
 
@@ -42,12 +44,14 @@ public class TopPane extends BorderPane implements MainUtil {
 
         infoLabelMenuBar.getMenus().add(infoLabelMenu);
 
+        reload.subscribe(this, Reload.Control.SELECTION);
+
         this.setCenter(new MenuBar(menuFile, menuSelection, menuFilter));
         this.setRight(infoLabelMenuBar);
     }
 
     public void reload() {
-        String text = String.valueOf(selection.size()) + " items selected";
+        String text = selection.size() + " items selected";
         infoLabelMenu.setText(text);
     }
 

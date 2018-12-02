@@ -1,6 +1,5 @@
 package gui.event.previewpane;
 
-import gui.component.NodeEnum;
 import gui.template.generic.DataObjectContextMenu;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.canvas.Canvas;
@@ -30,10 +29,7 @@ public class PreviewPaneEvent implements MainUtil {
         });
     }
     private void onResize() {
-        ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) -> {
-            reload.queue(NodeEnum.PREVIEWPANE);
-            reload.doReload();
-        };
+        ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) -> previewPane.reload();
 
         final Canvas canvas = previewPane.getCanvas();
         canvas.widthProperty().addListener(previewPaneSizeListener);

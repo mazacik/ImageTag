@@ -9,11 +9,11 @@ import control.selection.Selection;
 import database.object.DataCollection;
 import database.object.TagCollection;
 import gui.CustomStage;
-import gui.component.gallerypane.GalleryPane;
-import gui.component.leftpane.LeftPane;
-import gui.component.previewpane.PreviewPane;
-import gui.component.rightpane.RightPane;
-import gui.component.toppane.TopPane;
+import gui.node.gallerypane.GalleryPane;
+import gui.node.leftpane.LeftPane;
+import gui.node.previewpane.PreviewPane;
+import gui.node.rightpane.RightPane;
+import gui.node.toppane.TopPane;
 
 public interface MainUtil {
     DataCollection mainData = new DataCollection();

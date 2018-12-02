@@ -1,10 +1,10 @@
 package control.filter;
 
+import control.reload.Reload;
 import database.object.DataCollection;
 import database.object.DataObject;
 import database.object.TagCollection;
 import database.object.TagObject;
-import gui.component.NodeEnum;
 import utils.MainUtil;
 
 import java.util.Random;
@@ -27,7 +27,7 @@ public class Filter extends DataCollection implements MainUtil {
     }
     public void apply() {
         currentFilterTemplate.apply();
-        reload.queue(NodeEnum.GALLERYPANE);
+        reload.notifyChangeIn(Reload.Control.FILTER);
     }
 
     public void whitelistTagObject(TagObject tagObject) {

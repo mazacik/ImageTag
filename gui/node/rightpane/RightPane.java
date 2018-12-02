@@ -1,9 +1,11 @@
-package gui.component.rightpane;
+package gui.node.rightpane;
 
+import control.reload.Reload;
 import database.object.DataObject;
 import database.object.TagObject;
-import gui.component.ColorText;
 import gui.event.rightpane.RightPaneEvent;
+import gui.node.BaseNode;
+import gui.node.ColorText;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TreeCell;
@@ -19,7 +21,7 @@ import utils.MainUtil;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class RightPane extends VBox implements MainUtil {
+public class RightPane extends VBox implements MainUtil, BaseNode {
     private final TreeView<ColorText> treeView;
     private final ContextMenu TEMP = new ContextMenu(); // todo fix me
 
@@ -31,8 +33,9 @@ public class RightPane extends VBox implements MainUtil {
         treeView = new TreeView(new TreeItem());
         treeView.setMaxHeight(this.getMaxHeight());
         treeView.setShowRoot(false);
-
         VBox.setVgrow(treeView, Priority.ALWAYS);
+
+        reload.subscribe(this, Reload.Control.TAGS, Reload.Control.SELECTION, Reload.Control.FOCUS);
 
         this.setCellFactory(TEMP);
         this.getChildren().addAll(treeView);
@@ -56,7 +59,7 @@ public class RightPane extends VBox implements MainUtil {
                 this.addTagObjectToSelection(tagObject);
             }
         }
-        rightPane.refreshTreeView();
+        treeView.refresh();
     }
     public void addTagObjectToSelection(TagObject tagObject) {
         if (selection.size() < 1) {
@@ -80,7 +83,17 @@ public class RightPane extends VBox implements MainUtil {
     }
 
     public void reload() {
+        //todo split
         ObservableList<TreeItem<ColorText>> treeViewItems = treeView.getRoot().getChildren();
+
+        int treeViewItemsCountBefore = treeViewItems.size();
+        ArrayList<Integer> expandedItemIndices = new ArrayList<>();
+        for (TreeItem<ColorText> treeItem : treeViewItems) {
+            if (treeItem.isExpanded()) {
+                expandedItemIndices.add(treeViewItems.indexOf(treeItem));
+            }
+        }
+
         treeViewItems.clear();
 
         ArrayList<String> groupsInter = selection.getIntersectingTags().getGroups();
@@ -143,8 +156,15 @@ public class RightPane extends VBox implements MainUtil {
         }
 
         treeViewItems.sort(Comparator.comparing(colorTextTreeItem -> colorTextTreeItem.getValue().getText()));
-    }
-    public void refreshTreeView() {
+
+        if (treeViewItemsCountBefore == treeViewItems.size()) {
+            for (TreeItem<ColorText> treeItem : treeViewItems) {
+                if (expandedItemIndices.contains(treeViewItems.indexOf(treeItem))) {
+                    treeItem.setExpanded(true);
+                }
+            }
+        }
+
         treeView.refresh();
     }
     private void setCellFactory(ContextMenu contextMenu) {

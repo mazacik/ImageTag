@@ -1,10 +1,10 @@
 package control.selection;
 
+import control.reload.Reload;
 import database.object.DataCollection;
 import database.object.DataObject;
 import database.object.TagCollection;
 import database.object.TagObject;
-import gui.component.NodeEnum;
 import utils.MainUtil;
 
 public class Selection extends DataCollection implements MainUtil {
@@ -12,7 +12,7 @@ public class Selection extends DataCollection implements MainUtil {
         if (dataObject == null) return false;
         if (super.add(dataObject)) {
             dataObject.generateTileEffect();
-            reload.queue(NodeEnum.TOPPANE);
+            reload.notifyChangeIn(Reload.Control.SELECTION);
             return true;
         }
         return false;
@@ -21,7 +21,7 @@ public class Selection extends DataCollection implements MainUtil {
         if (dataCollection == null) return false;
         if (super.addAll(dataCollection)) {
             dataCollection.forEach(DataObject::generateTileEffect);
-            reload.queue(NodeEnum.TOPPANE);
+            reload.notifyChangeIn(Reload.Control.SELECTION);
             return true;
         }
         return false;
@@ -30,7 +30,7 @@ public class Selection extends DataCollection implements MainUtil {
         if (dataObject == null) return false;
         if (super.remove(dataObject)) {
             dataObject.generateTileEffect();
-            reload.queue(NodeEnum.TOPPANE);
+            reload.notifyChangeIn(Reload.Control.SELECTION);
             return true;
         }
         return false;
@@ -43,7 +43,7 @@ public class Selection extends DataCollection implements MainUtil {
         DataCollection helper = new DataCollection(this);
         super.clear();
         helper.forEach(DataObject::generateTileEffect);
-        reload.queue(NodeEnum.TOPPANE);
+        reload.notifyChangeIn(Reload.Control.SELECTION);
     }
     public void swapState(DataObject dataObject) {
         if (super.contains(dataObject)) {
@@ -83,7 +83,6 @@ public class Selection extends DataCollection implements MainUtil {
         if (!tagExists) {
             filter.unlistTagObject(tagObject);
             mainTags.remove(tagObject);
-            reload.queue(NodeEnum.LEFTPANE);
         }
     }
 

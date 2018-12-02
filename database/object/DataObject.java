@@ -1,6 +1,6 @@
 package database.object;
 
-import gui.component.gallerypane.GalleryTile;
+import gui.node.gallerypane.GalleryTile;
 
 import java.io.File;
 import java.io.Serializable;
