@@ -1,9 +1,9 @@
 package database.loader;
 
 import control.reload.Reload;
-import database.object.DataCollection;
+import database.list.DataListMain;
 import database.object.DataObject;
-import gui.node.gallerypane.GalleryTile;
+import gui.singleton.center.BaseTile;
 import gui.template.specific.LoadingWindow;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
@@ -26,7 +26,7 @@ public class DataLoader extends Thread implements MainUtil {
     private final String PATH_DATA = Settings.getPath_data();
 
     public void run() {
-        log.out("loader thread start", this.getClass());
+        logger.out("loader thread start", this.getClass());
         final LoadingWindow[] loadingWindow = new LoadingWindow[1];
         Platform.runLater(() -> loadingWindow[0] = new LoadingWindow());
 
@@ -36,9 +36,9 @@ public class DataLoader extends Thread implements MainUtil {
         validateDatabaseCache(fileList);
         loadImageCache(loadingWindow[0], fileList.size());
 
-        mainData.sort();
-        mainTags.initialize();
-        filter.addAll(mainData);
+        dataListMain.sort();
+        infoListMain.initialize();
+        filter.addAll(dataListMain);
         filter.sort();
 
         reload.notifyChangeIn(Reload.Control.values());
@@ -46,94 +46,94 @@ public class DataLoader extends Thread implements MainUtil {
 
         Platform.runLater(() -> {
             loadingWindow[0].close();
-            customStage.show();
+            mainStage.show();
         });
-        log.out("loader thread end", this.getClass());
+        logger.out("loader thread end", this.getClass());
     }
 
     private ArrayList<File> getValidFiles() {
         return new ArrayList<>(Arrays.asList(new File(PATH_SOURCE).listFiles((dir, name) -> name.endsWith(".jpg") || name.endsWith(".JPG") || name.endsWith(".png") || name.endsWith(".PNG") || name.endsWith(".jpeg") || name.endsWith(".JPEG"))));
     }
     private void checkDirectoryPaths() {
-        log.out("checking directories", this.getClass());
+        logger.out("checking directories", this.getClass());
         File path_data = new File(PATH_DATA);
         if (!path_data.exists()) {
-            log.out("creating data directory: " + PATH_DATA, this.getClass());
+            logger.out("creating data directory: " + PATH_DATA, this.getClass());
             path_data.mkdir();
         }
 
         File path_cache = new File(PATH_CACHE);
         if (!path_cache.exists()) {
-            log.out("creating cache directory: " + PATH_CACHE, this.getClass());
+            logger.out("creating cache directory: " + PATH_CACHE, this.getClass());
             path_cache.mkdir();
         }
     }
     private void createDatabase(ArrayList<File> fileList) {
-        log.out("creating database", this.getClass());
+        logger.out("creating database", this.getClass());
         for (File file : fileList) {
-            mainData.add(new DataObject(file));
+            dataListMain.add(new DataObject(file));
         }
 
         Serialization.writeToDisk();
     }
     private void validateDatabaseCache(ArrayList<File> fileList) {
-        log.out("validating database", this.getClass(), true);
+        logger.out("validating database", this.getClass(), true);
         ArrayList<String> dataObjectNames = new ArrayList<>();
         ArrayList<String> fileListNames = new ArrayList<>();
 
-        mainData.forEach(dataObject -> dataObjectNames.add(dataObject.getName()));
+        dataListMain.forEach(dataObject -> dataObjectNames.add(dataObject.getName()));
         fileList.forEach(file -> fileListNames.add(file.getName()));
 
         dataObjectNames.sort(Comparator.naturalOrder());
         fileListNames.sort(Comparator.naturalOrder());
 
         if (dataObjectNames.equals(fileListNames)) {
-            log.out("... ok");
+            logger.out("... ok");
             return;
         } else {
-            log.out("\n");
+            logger.out("\n");
         }
 
         /* addAll unrecognized items */
         int added = 0;
-        log.out("adding new data objects", this.getClass());
+        logger.out("adding new data objects", this.getClass());
         for (File file : fileList) {
             if (!dataObjectNames.contains(file.getName())) {
-                log.out("adding " + file.getName(), this.getClass());
-                mainData.add(new DataObject(file));
+                logger.out("adding " + file.getName(), this.getClass());
+                dataListMain.add(new DataObject(file));
                 added++;
             }
         }
-        log.out("added " + added + " files", this.getClass());
+        logger.out("added " + added + " files", this.getClass());
 
         /* discard missing items */
         int removed = 0;
-        log.out("discarding orphan data objects", this.getClass());
-        DataCollection temporaryList = new DataCollection(mainData);
-        for (DataObject dataObject : mainData) {
+        logger.out("discarding orphan data objects", this.getClass());
+        DataListMain temporaryList = new DataListMain(dataListMain);
+        for (DataObject dataObject : dataListMain) {
             String objectName = dataObject.getName();
             if (!fileListNames.contains(objectName)) {
-                log.out("discarding " + objectName, this.getClass());
+                logger.out("discarding " + objectName, this.getClass());
                 temporaryList.remove(dataObject);
                 removed++;
             }
         }
-        log.out("discarded " + removed + " files", this.getClass());
+        logger.out("discarded " + removed + " files", this.getClass());
 
-        mainData.clear();
-        mainData.addAll(temporaryList);
+        dataListMain.clear();
+        dataListMain.addAll(temporaryList);
         Serialization.writeToDisk();
     }
     private void loadImageCache(LoadingWindow loadingWindow, int fileListSize) {
-        log.out("loading image cache", this.getClass());
+        logger.out("loading image cache", this.getClass());
         final int galleryIconSizeMax = Settings.getGalleryIconSizeMax();
         int currentObjectIndex = 1;
         Image thumbnail;
 
-        for (DataObject dataObject : mainData) {
+        for (DataObject dataObject : dataListMain) {
             updateLoadingLabel(loadingWindow, fileListSize, currentObjectIndex++);
             thumbnail = getImageFromDataObject(dataObject, galleryIconSizeMax);
-            dataObject.setGalleryTile(new GalleryTile(dataObject, thumbnail));
+            dataObject.setBaseTile(new BaseTile(dataObject, thumbnail));
         }
     }
     private void updateLoadingLabel(LoadingWindow loadingWindow, int fileCount, int currentObjectIndex) {
@@ -142,7 +142,7 @@ public class DataLoader extends Thread implements MainUtil {
         }
     }
     private boolean loadExistingDatabase() {
-        return mainData.addAll(Serialization.readFromDisk());
+        return dataListMain.addAll(Serialization.readFromDisk());
     }
 
     private Image getImageFromDataObject(DataObject dataObject, double galleryIconMaxSize) {
@@ -155,7 +155,7 @@ public class DataLoader extends Thread implements MainUtil {
         /* write image cache to disk if not present */
         if (!currentObjectCacheFile.exists()) {
             try {
-                log.out("cached image of file " + dataObject.getName() + " not found, generating", this.getClass());
+                logger.out("cached image of file " + dataObject.getName() + " not found, generating", this.getClass());
                 currentObjectCacheFile.createNewFile();
                 String currentObjectFilePath = "file:" + PATH_SOURCE + currentObjectName;
                 currentObjectImage = new Image(currentObjectFilePath, galleryIconMaxSize, galleryIconMaxSize, false, true);

@@ -1,44 +1,47 @@
 package utils;
 
 import control.filter.Filter;
-import control.focus.Focus;
+import control.target.Target;
 import control.logger.Logger;
-import control.maintags.TagCollectionMain;
+import database.list.InfoListMain;
 import control.reload.Reload;
-import control.selection.Selection;
-import database.object.DataCollection;
-import database.object.TagCollection;
-import gui.CustomStage;
-import gui.node.gallerypane.GalleryPane;
-import gui.node.leftpane.LeftPane;
-import gui.node.previewpane.PreviewPane;
-import gui.node.rightpane.RightPane;
-import gui.node.toppane.TopPane;
+import control.select.Select;
+import database.list.DataListMain;
+import database.list.InfoList;
+import gui.MainStage;
+import gui.singleton.center.TileView;
+import gui.singleton.side.InfoListL;
+import gui.singleton.center.FullView;
+import gui.singleton.side.InfoListR;
+import gui.singleton.toolbar.Toolbar;
 
 public interface MainUtil {
-    DataCollection mainData = new DataCollection();
-    TagCollectionMain mainTags = new TagCollectionMain();
-
+    /* controls */
     Filter filter = new Filter();
-    Focus focus = new Focus();
-    Logger log = new Logger();
+    Target target = new Target();
+    Select select = new Select();
     Reload reload = new Reload();
-    Selection selection = new Selection();
+    Logger logger = new Logger();
 
-    TagCollection whitelist = filter.getWhitelist();
-    TagCollection blacklist = filter.getBlacklist();
+    /* arraylists */
+    DataListMain dataListMain = new DataListMain();
+    InfoListMain infoListMain = new InfoListMain();
 
-    TopPane topPane = new TopPane();
-    LeftPane leftPane = new LeftPane();
-    GalleryPane galleryPane = new GalleryPane();
-    PreviewPane previewPane = new PreviewPane();
-    RightPane rightPane = new RightPane();
-    CustomStage customStage = new CustomStage();
+    InfoList infoListWhite = new InfoList();
+    InfoList infoListBlack = new InfoList();
+
+    /* gui nodes */
+    Toolbar toolbar = new Toolbar();
+    TileView tileView = new TileView();
+    FullView fullView = new FullView();
+    InfoListL infoListL = new InfoListL();
+    InfoListR infoListR = new InfoListR();
+    MainStage mainStage = new MainStage();
 
     default void swapDisplayMode() {
-        customStage.swapDisplayMode();
+        mainStage.swapDisplayMode();
     }
-    default boolean isPreviewFullscreen() {
-        return customStage.isPreviewFullscreen();
+    default boolean isFullView() {
+        return mainStage.isFullView();
     }
 }

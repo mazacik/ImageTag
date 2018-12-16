@@ -1,6 +1,6 @@
 package gui.template.specific;
 
-import database.object.TagObject;
+import database.object.InfoObject;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -20,10 +20,10 @@ public class TagEditor extends Stage {
     private final Label lblName = new Label("Name");
     private final Button btnOK = new Button("OK");
 
-    TagObject tagObject;
+    InfoObject infoObject;
 
-    public TagEditor(TagObject tagObject) {
-        this.tagObject = tagObject;
+    public TagEditor(InfoObject infoObject) {
+        this.infoObject = infoObject;
         initializeComponents();
         initializeInstance();
     }
@@ -32,21 +32,21 @@ public class TagEditor extends Stage {
         this(null);
     }
 
-    public static TagObject createTag() {
-        TagObject newTagObject = new TagEditor().getResult();
-        if (newTagObject == null || newTagObject.isEmpty()) return null;
-        return newTagObject;
+    public static InfoObject createTag() {
+        InfoObject newInfoObject = new TagEditor().getResult();
+        if (newInfoObject == null || newInfoObject.isEmpty()) return null;
+        return newInfoObject;
     }
 
-    public TagObject getResult() {
-        return tagObject;
+    public InfoObject getResult() {
+        return infoObject;
     }
 
     private void getValue() {
         String group = tfGroup.getText();
         String name = tfName.getText();
         if (!group.isEmpty() && !name.isEmpty()) {
-            tagObject = new TagObject(group, name);
+            infoObject = new InfoObject(group, name);
         }
     }
 
@@ -73,9 +73,9 @@ public class TagEditor extends Stage {
         });
 
         tfGroup.requestFocus();
-        if (tagObject != null) {
-            tfGroup.setText(tagObject.getGroup());
-            tfName.setText(tagObject.getName());
+        if (infoObject != null) {
+            tfGroup.setText(infoObject.getGroup());
+            tfName.setText(infoObject.getName());
         }
 
         tfGroup.prefWidthProperty().bind(widthProperty());

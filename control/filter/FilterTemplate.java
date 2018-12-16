@@ -1,36 +1,36 @@
 package control.filter;
 
 import database.object.DataObject;
-import database.object.TagCollection;
-import database.object.TagObject;
+import database.list.InfoList;
+import database.object.InfoObject;
 import utils.MainUtil;
 
 public enum FilterTemplate implements MainUtil {
     SHOW_EVERYTHING {
         public void apply() {
-            whitelist.clear();
-            blacklist.clear();
-            filter.setAll(mainData);
+            infoListWhite.clear();
+            infoListBlack.clear();
+            filter.setAll(dataListMain);
         }
     },
     SHOW_UNTAGGED {
         public void apply() {
-            whitelist.clear();
-            blacklist.setAll(mainTags);
+            infoListWhite.clear();
+            infoListBlack.setAll(infoListMain);
             filter.clear();
-            for (DataObject dataObject : mainData) {
-                if (dataObject.getTagCollection().size() == 0)
+            for (DataObject dataObject : dataListMain) {
+                if (dataObject.getInfoList().size() == 0)
                     filter.add(dataObject);
             }
         }
     },
     SHOW_MAX_X_TAGS {
         public void apply() {
-            whitelist.clear();
-            blacklist.clear();
+            infoListWhite.clear();
+            infoListBlack.clear();
             filter.clear();
-            for (DataObject dataObject : mainData) {
-                if (dataObject.getTagCollection().size() <= maxTagsValue) {
+            for (DataObject dataObject : dataListMain) {
+                if (dataObject.getInfoList().size() <= maxTagsValue) {
                     filter.add(dataObject);
                 }
             }
@@ -38,13 +38,13 @@ public enum FilterTemplate implements MainUtil {
     },
     CUSTOM {
         public void apply() {
-            if (whitelist.isEmpty() && blacklist.isEmpty()) {
-                filter.setAll(mainData);
+            if (infoListWhite.isEmpty() && infoListBlack.isEmpty()) {
+                filter.setAll(dataListMain);
             } else {
                 filter.clear();
-                for (DataObject dataObject : mainData) {
-                    TagCollection dataObjectTagCollection = dataObject.getTagCollection();
-                    if (isWhitelistOk(dataObjectTagCollection) && isBlacklistOk(dataObjectTagCollection)) {
+                for (DataObject dataObject : dataListMain) {
+                    InfoList dataObjectInfoList = dataObject.getInfoList();
+                    if (isWhitelistOk(dataObjectInfoList) && isBlacklistOk(dataObjectInfoList)) {
                         filter.add(dataObject);
                     }
                 }
@@ -53,15 +53,15 @@ public enum FilterTemplate implements MainUtil {
     };
 
     private static int maxTagsValue = 0;
-    private static boolean isWhitelistOk(TagCollection tagCollection) {
+    private static boolean isWhitelistOk(InfoList infoList) {
         Filter.FilterMode whitelistMode = filter.getWhitelistMode();
-        if (whitelist.isEmpty()) {
+        if (infoListWhite.isEmpty()) {
             return true;
-        } else if (whitelistMode.equals(Filter.FilterMode.All) && tagCollection.containsAll(whitelist)) {
+        } else if (whitelistMode.equals(Filter.FilterMode.All) && infoList.containsAll(infoListWhite)) {
             return true;
         } else if (whitelistMode.equals(Filter.FilterMode.Any)) {
-            for (TagObject tagObject : whitelist) {
-                if (tagCollection.contains(tagObject)) {
+            for (InfoObject infoObject : infoListWhite) {
+                if (infoList.contains(infoObject)) {
                     return true;
                 }
             }
@@ -69,15 +69,15 @@ public enum FilterTemplate implements MainUtil {
 
         return false;
     }
-    private static boolean isBlacklistOk(TagCollection tagCollection) {
+    private static boolean isBlacklistOk(InfoList infoList) {
         Filter.FilterMode blacklistMode = filter.getBlacklistMode();
-        if (blacklist.isEmpty()) {
+        if (infoListBlack.isEmpty()) {
             return true;
-        } else if (blacklistMode.equals(Filter.FilterMode.All) && tagCollection.containsAll(blacklist)) {
+        } else if (blacklistMode.equals(Filter.FilterMode.All) && infoList.containsAll(infoListBlack)) {
             return false;
         } else if (blacklistMode.equals(Filter.FilterMode.Any)) {
-            for (TagObject tagObject : blacklist) {
-                if (tagCollection.contains(tagObject)) {
+            for (InfoObject infoObject : infoListBlack) {
+                if (infoList.contains(infoObject)) {
                     return false;
                 }
             }

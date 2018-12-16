@@ -1,39 +1,37 @@
 package database.object;
 
-import gui.node.gallerypane.GalleryTile;
+import database.list.InfoList;
+import gui.singleton.center.BaseTile;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.Comparator;
 
 public class DataObject implements Serializable {
     private String name;
-    private TagCollection tagCollection;
-    private transient GalleryTile galleryTile;
+    private InfoList infoList;
+    private transient BaseTile baseTile;
 
-    public DataObject(String name, TagCollection tagObjects) {
+    public DataObject(String name, InfoList tagObjects) {
         this.name = name;
-        this.tagCollection = tagObjects;
+        this.infoList = tagObjects;
     }
     public DataObject(File file) {
-        this(file.getName(), new TagCollection());
+        this(file.getName(), new InfoList());
     }
-    public static Comparator getComparator() {
-        return Comparator.comparing(DataObject::getName);
-    }
+
     public void generateTileEffect() {
-        galleryTile.generateEffect();
+        baseTile.generateEffect();
     }
     public String getName() {
         return name;
     }
-    public TagCollection getTagCollection() {
-        return tagCollection;
+    public InfoList getInfoList() {
+        return infoList;
     }
-    public GalleryTile getGalleryTile() {
-        return galleryTile;
+    public BaseTile getBaseTile() {
+        return baseTile;
     }
-    public void setGalleryTile(GalleryTile galleryTile) {
-        this.galleryTile = (galleryTile != null) ? galleryTile : new GalleryTile(this, null);
+    public void setBaseTile(BaseTile baseTile) {
+        this.baseTile = (baseTile != null) ? baseTile : new BaseTile(this, null);
     }
 }

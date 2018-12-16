@@ -1,26 +1,19 @@
 package control.filter;
 
 import control.reload.Reload;
-import database.object.DataCollection;
+import database.list.DataListMain;
 import database.object.DataObject;
-import database.object.TagCollection;
-import database.object.TagObject;
+import database.object.InfoObject;
 import utils.MainUtil;
 
 import java.util.Random;
 
-public class Filter extends DataCollection implements MainUtil {
-    private final TagCollection whitelist;
-    private final TagCollection blacklist;
-
+public class Filter extends DataListMain implements MainUtil {
     private FilterMode whitelistMode;
     private FilterMode blacklistMode;
     private FilterTemplate currentFilterTemplate;
 
     public Filter() {
-        whitelist = new TagCollection();
-        blacklist = new TagCollection();
-
         whitelistMode = FilterMode.All;
         blacklistMode = FilterMode.Any;
         currentFilterTemplate = FilterTemplate.SHOW_EVERYTHING;
@@ -30,45 +23,45 @@ public class Filter extends DataCollection implements MainUtil {
         reload.notifyChangeIn(Reload.Control.FILTER);
     }
 
-    public void whitelistTagObject(TagObject tagObject) {
-        if (!isTagObjectWhitelisted(tagObject)) {
-            whitelist.add(tagObject);
-            blacklist.remove(tagObject);
+    public void whitelistTagObject(InfoObject infoObject) {
+        if (!isTagObjectWhitelisted(infoObject)) {
+            infoListWhite.add(infoObject);
+            infoListBlack.remove(infoObject);
             currentFilterTemplate = FilterTemplate.CUSTOM;
         }
     }
-    public void blacklistTagObject(TagObject tagObject) {
-        if (!isTagObjectBlacklisted(tagObject)) {
-            whitelist.remove(tagObject);
-            blacklist.add(tagObject);
+    public void blacklistTagObject(InfoObject infoObject) {
+        if (!isTagObjectBlacklisted(infoObject)) {
+            infoListWhite.remove(infoObject);
+            infoListBlack.add(infoObject);
             currentFilterTemplate = FilterTemplate.CUSTOM;
         }
     }
-    public void unlistTagObject(TagObject tagObject) {
-        whitelist.remove(tagObject);
-        blacklist.remove(tagObject);
+    public void unlistTagObject(InfoObject infoObject) {
+        infoListWhite.remove(infoObject);
+        infoListBlack.remove(infoObject);
         currentFilterTemplate = FilterTemplate.CUSTOM;
     }
 
     public void whitelistGroup(String group) {
-        for (String name : mainTags.getNames(group)) {
-            whitelistTagObject(mainTags.getTagObject(group, name));
+        for (String name : infoListMain.getNames(group)) {
+            whitelistTagObject(infoListMain.getTagObject(group, name));
         }
     }
     public void blacklistGroup(String group) {
-        for (String name : mainTags.getNames(group)) {
-            blacklistTagObject(mainTags.getTagObject(group, name));
+        for (String name : infoListMain.getNames(group)) {
+            blacklistTagObject(infoListMain.getTagObject(group, name));
         }
     }
     public void unlistGroup(String group) {
-        for (String name : mainTags.getNames(group)) {
-            unlistTagObject(mainTags.getTagObject(group, name));
+        for (String name : infoListMain.getNames(group)) {
+            unlistTagObject(infoListMain.getTagObject(group, name));
         }
     }
 
     public boolean isGroupWhitelisted(String group) {
         boolean value = true;
-        for (String name : mainTags.getNames(group)) {
+        for (String name : infoListMain.getNames(group)) {
             if (!isTagObjectWhitelisted(group, name)) {
                 value = false;
                 break;
@@ -78,7 +71,7 @@ public class Filter extends DataCollection implements MainUtil {
     }
     public boolean isGroupBlacklisted(String group) {
         boolean value = true;
-        for (String name : mainTags.getNames(group)) {
+        for (String name : infoListMain.getNames(group)) {
             if (!isTagObjectBlacklisted(group, name)) {
                 value = false;
                 break;
@@ -87,38 +80,31 @@ public class Filter extends DataCollection implements MainUtil {
         return value;
     }
 
-    public boolean isTagObjectWhitelisted(TagObject tagObject) {
-        return whitelist.contains(tagObject);
+    public boolean isTagObjectWhitelisted(InfoObject infoObject) {
+        return infoListWhite.contains(infoObject);
     }
     public boolean isTagObjectWhitelisted(String group, String name) {
-        return whitelist.contains(mainTags.getTagObject(group, name));
+        return infoListWhite.contains(infoListMain.getTagObject(group, name));
     }
-    public boolean isTagObjectBlacklisted(TagObject tagObject) {
-        return blacklist.contains(tagObject);
+    public boolean isTagObjectBlacklisted(InfoObject infoObject) {
+        return infoListBlack.contains(infoObject);
     }
     public boolean isTagObjectBlacklisted(String group, String name) {
-        return blacklist.contains(mainTags.getTagObject(group, name));
+        return infoListBlack.contains(infoListMain.getTagObject(group, name));
     }
 
     public DataObject getRandomObject() {
         return this.get(new Random().nextInt(this.size()));
     }
 
-    public TagCollection getWhitelist() {
-        return whitelist;
-    }
-    public TagCollection getBlacklist() {
-        return blacklist;
-    }
-
     public FilterMode getWhitelistMode() {
         return whitelistMode;
     }
-    public void setWhitelistMode(FilterMode whitelistMode) {
-        this.whitelistMode = whitelistMode;
-    }
     public FilterMode getBlacklistMode() {
         return blacklistMode;
+    }
+    public void setWhitelistMode(FilterMode whitelistMode) {
+        this.whitelistMode = whitelistMode;
     }
     public void setBlacklistMode(FilterMode blacklistMode) {
         this.blacklistMode = blacklistMode;
@@ -129,20 +115,20 @@ public class Filter extends DataCollection implements MainUtil {
 
         switch (this.currentFilterTemplate) {
             case CUSTOM:
-                topPane.getMenuUntaggedOnly().setSelected(false);
-                topPane.getMenuMaxXTags().setSelected(false);
+                toolbar.getMenuUntaggedOnly().setSelected(false);
+                toolbar.getMenuMaxXTags().setSelected(false);
                 break;
             case SHOW_EVERYTHING:
-                topPane.getMenuUntaggedOnly().setSelected(false);
-                topPane.getMenuMaxXTags().setSelected(false);
+                toolbar.getMenuUntaggedOnly().setSelected(false);
+                toolbar.getMenuMaxXTags().setSelected(false);
                 break;
             case SHOW_UNTAGGED:
-                topPane.getMenuUntaggedOnly().setSelected(true);
-                topPane.getMenuMaxXTags().setSelected(false);
+                toolbar.getMenuUntaggedOnly().setSelected(true);
+                toolbar.getMenuMaxXTags().setSelected(false);
                 break;
             case SHOW_MAX_X_TAGS:
-                topPane.getMenuUntaggedOnly().setSelected(false);
-                topPane.getMenuMaxXTags().setSelected(true);
+                toolbar.getMenuUntaggedOnly().setSelected(false);
+                toolbar.getMenuMaxXTags().setSelected(true);
                 break;
             default:
                 break;

@@ -33,7 +33,7 @@ public class IntroWindow extends Stage implements MainUtil {
     public IntroWindow() {
         setDefaultValuesChildren();
         setDefaultValues();
-        log.out("waiting for directory input", this.getClass());
+        logger.out("waiting for directory input", this.getClass());
     }
 
     private void setDefaultValuesChildren() {
@@ -65,7 +65,7 @@ public class IntroWindow extends Stage implements MainUtil {
         setScene(sceneIntro);
         setResizable(false);
         centerOnScreen();
-        this.setOnCloseRequest(event -> log.out("application exit", this.getClass()));
+        this.setOnCloseRequest(event -> logger.out("application exit", this.getClass()));
         show();
     }
     private void addChildrenToGrid() {

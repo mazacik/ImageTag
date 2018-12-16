@@ -28,7 +28,7 @@ public class LoadingWindow extends Stage implements MainUtil {
         setResizable(false);
         centerOnScreen();
         show();
-        customStage.init();
+        mainStage.init();
     }
 
     public Label getProgressLabel() {

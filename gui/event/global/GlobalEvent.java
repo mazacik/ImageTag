@@ -9,15 +9,15 @@ public class GlobalEvent implements MainUtil {
     }
 
     private void onKeyPressed() {
-        customStage.getScene().setOnKeyPressed(event -> {
+        mainStage.getScene().setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case Q:
-                    selection.swapState(focus.getCurrentFocus());
+                    select.swapState(target.getCurrentFocus());
                     break;
                 case R:
                     DataObject dataObject = filter.getRandomObject();
-                    selection.set(dataObject);
-                    focus.set(dataObject);
+                    select.set(dataObject);
+                    target.set(dataObject);
                     break;
                 case F12:
                     swapDisplayMode();
@@ -26,7 +26,7 @@ public class GlobalEvent implements MainUtil {
                 case A:
                 case S:
                 case D:
-                    focus.move(event.getCode());
+                    target.move(event.getCode());
                     break;
                 default:
                     break;
