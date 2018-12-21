@@ -7,7 +7,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
-import settings.Settings;
 import utils.MainUtil;
 
 public class FullView extends Pane implements MainUtil, BaseNode {
@@ -64,7 +63,7 @@ public class FullView extends Pane implements MainUtil, BaseNode {
     }
 
     private void loadImageOfCurrentFocus() {
-        String url = "file:" + Settings.getPath_source() + "\\" + target.getCurrentFocus().getName();
+        String url = "file:" + settings.getCurrentDirectory() + "\\" + target.getCurrentFocus().getName();
         currentPreviewImage = new Image(url);
     }
 

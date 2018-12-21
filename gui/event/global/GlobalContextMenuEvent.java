@@ -3,9 +3,8 @@ package gui.event.global;
 import control.select.Select;
 import database.object.DataObject;
 import gui.template.generic.ConfirmationWindow;
-import settings.Settings;
-import utils.ClipboardUtil;
 import utils.MainUtil;
+import utils.system.ClipboardUtil;
 
 import java.awt.*;
 import java.io.File;
@@ -27,7 +26,7 @@ public class GlobalContextMenuEvent implements MainUtil {
                 dataObject = target.getCurrentFocus();
             }
 
-            ClipboardUtil.setClipboardContent(Settings.getPath_source() + dataObject.getName());
+            ClipboardUtil.setClipboardContent(settings.getCurrentDirectory() + dataObject.getName());
         });
     }
     private void onAction_menuDelete() {
@@ -46,11 +45,11 @@ public class GlobalContextMenuEvent implements MainUtil {
 
     private void deleteDataObject(DataObject dataObject) {
         if (filter.contains(dataObject)) {
-            String fullPath = Settings.getPath_source() + "\\" + dataObject.getName();
+            String fullPath = settings.getCurrentDirectory() + "\\" + dataObject.getName();
             Desktop.getDesktop().moveToTrash(new File(fullPath));
 
             filter.remove(dataObject);
-            dataListMain.remove(dataObject);
+            MAIN_LIST_DATA.remove(dataObject);
             select.remove(dataObject);
         }
     }
@@ -69,7 +68,7 @@ public class GlobalContextMenuEvent implements MainUtil {
     }
     private void deleteCurrentFocus() {
         DataObject currentFocus = target.getCurrentFocus();
-        String fullPath = Settings.getPath_source() + "\\" + currentFocus.getName();
+        String fullPath = settings.getCurrentDirectory() + "\\" + currentFocus.getName();
 
         ConfirmationWindow confirmationWindow = new ConfirmationWindow();
         confirmationWindow.setTitle("Confirmation");

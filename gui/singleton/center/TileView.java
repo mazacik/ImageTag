@@ -8,23 +8,23 @@ import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.TilePane;
-import settings.Settings;
+import settings.SettingsEnum;
 import utils.MainUtil;
 
 public class TileView extends ScrollPane implements MainUtil, BaseNode {
     private final TilePane tilePane;
 
     public TileView() {
-        final int GALLERY_ICON_SIZE_PREF = Settings.getGalleryIconSizePref();
+        final int galleryIconSize = settings.getValueOf(SettingsEnum.TILEVIEW_ICONSIZE);
 
         tilePane = new TilePane();
         tilePane.setVgap(3);
-        tilePane.setPrefTileWidth(GALLERY_ICON_SIZE_PREF);
-        tilePane.setPrefTileHeight(GALLERY_ICON_SIZE_PREF);
+        tilePane.setPrefTileWidth(galleryIconSize);
+        tilePane.setPrefTileHeight(galleryIconSize);
 
         reload.subscribe(this, Reload.Control.DATA, Reload.Control.FILTER);
 
-        this.setMinViewportWidth(GALLERY_ICON_SIZE_PREF);
+        this.setMinViewportWidth(galleryIconSize);
         this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         this.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         this.setFitToWidth(true);

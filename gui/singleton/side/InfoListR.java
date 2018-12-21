@@ -64,7 +64,7 @@ public class InfoListR extends VBox implements MainUtil, BaseNode {
         if (select.size() < 1) {
             DataObject currentFocusedItem = target.getCurrentFocus();
             if (currentFocusedItem != null) {
-                currentFocusedItem.getInfoList().add(infoObject);
+                currentFocusedItem.getBaseListInfo().add(infoObject);
             }
         } else {
             select.addTagObject(infoObject);
@@ -74,7 +74,7 @@ public class InfoListR extends VBox implements MainUtil, BaseNode {
         if (select.size() < 1) {
             DataObject currentFocusedItem = target.getCurrentFocus();
             if (currentFocusedItem != null) {
-                currentFocusedItem.getInfoList().remove(infoObject);
+                currentFocusedItem.getBaseListInfo().remove(infoObject);
             }
         } else {
             select.removeTagObject(infoObject);

@@ -8,13 +8,13 @@ import gui.template.specific.TagEditor;
 import javafx.scene.control.TreeCell;
 import utils.MainUtil;
 
-public class InfoListMain extends InfoList implements MainUtil {
+public class MainListInfo extends BaseListInfo implements MainUtil {
     public void initialize() {
-        for (DataObject dataIterator : dataListMain) {
-            InfoList infoList = dataIterator.getInfoList();
-            for (InfoObject tagIterator : infoList) {
+        for (DataObject dataIterator : MAIN_LIST_DATA) {
+            BaseListInfo baseListInfo = dataIterator.getBaseListInfo();
+            for (InfoObject tagIterator : baseListInfo) {
                 if (this.contains(tagIterator)) {
-                    infoList.set(infoList.indexOf(tagIterator), getTagObject(tagIterator));
+                    baseListInfo.set(baseListInfo.indexOf(tagIterator), getTagObject(tagIterator));
                 } else {
                     this.add(tagIterator);
                 }

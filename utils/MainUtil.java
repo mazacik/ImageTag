@@ -1,19 +1,20 @@
 package utils;
 
 import control.filter.Filter;
-import control.target.Target;
 import control.logger.Logger;
-import database.list.InfoListMain;
 import control.reload.Reload;
 import control.select.Select;
-import database.list.DataListMain;
-import database.list.InfoList;
+import control.target.Target;
+import database.list.BaseListInfo;
+import database.list.MainListData;
+import database.list.MainListInfo;
 import gui.MainStage;
+import gui.singleton.center.FullView;
 import gui.singleton.center.TileView;
 import gui.singleton.side.InfoListL;
-import gui.singleton.center.FullView;
 import gui.singleton.side.InfoListR;
 import gui.singleton.toolbar.Toolbar;
+import settings.Settings;
 
 public interface MainUtil {
     /* controls */
@@ -23,12 +24,14 @@ public interface MainUtil {
     Reload reload = new Reload();
     Logger logger = new Logger();
 
-    /* arraylists */
-    DataListMain dataListMain = new DataListMain();
-    InfoListMain infoListMain = new InfoListMain();
+    Settings settings = new Settings().readFromDisk();
 
-    InfoList infoListWhite = new InfoList();
-    InfoList infoListBlack = new InfoList();
+    /* arraylists */
+    MainListData MAIN_LIST_DATA = new MainListData();
+    MainListInfo infoListMain = new MainListInfo();
+
+    BaseListInfo infoListWhite = new BaseListInfo();
+    BaseListInfo infoListBlack = new BaseListInfo();
 
     /* gui nodes */
     Toolbar toolbar = new Toolbar();

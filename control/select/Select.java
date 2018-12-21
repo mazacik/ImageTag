@@ -1,13 +1,13 @@
 package control.select;
 
 import control.reload.Reload;
-import database.list.DataListMain;
+import database.list.BaseListInfo;
+import database.list.MainListData;
 import database.object.DataObject;
-import database.list.InfoList;
 import database.object.InfoObject;
 import utils.MainUtil;
 
-public class Select extends DataListMain implements MainUtil {
+public class Select extends MainListData implements MainUtil {
     public boolean add(DataObject dataObject) {
         if (dataObject == null) return false;
         if (super.add(dataObject)) {
@@ -17,10 +17,10 @@ public class Select extends DataListMain implements MainUtil {
         }
         return false;
     }
-    public boolean addAll(DataListMain dataListMain) {
-        if (dataListMain == null) return false;
-        if (super.addAll(dataListMain)) {
-            dataListMain.forEach(DataObject::generateTileEffect);
+    public boolean addAll(MainListData mainListData) {
+        if (mainListData == null) return false;
+        if (super.addAll(mainListData)) {
+            mainListData.forEach(DataObject::generateTileEffect);
             reload.notifyChangeIn(Reload.Control.SELECTION);
             return true;
         }
@@ -40,7 +40,7 @@ public class Select extends DataListMain implements MainUtil {
         this.add(dataObject);
     }
     public void clear() {
-        DataListMain helper = new DataListMain();
+        MainListData helper = new MainListData();
         helper.addAll(this);
         super.clear();
         helper.forEach(DataObject::generateTileEffect);
@@ -60,23 +60,23 @@ public class Select extends DataListMain implements MainUtil {
                 infoListMain.add(infoObject);
             }
 
-            InfoList infoList;
+            BaseListInfo baseListInfo;
             for (DataObject dataIterator : this) {
-                infoList = dataIterator.getInfoList();
-                if (!infoList.contains(infoObject)) {
-                    infoList.add(infoObject);
+                baseListInfo = dataIterator.getBaseListInfo();
+                if (!baseListInfo.contains(infoObject)) {
+                    baseListInfo.add(infoObject);
                 }
             }
         }
     }
     public void removeTagObject(InfoObject infoObject) {
         for (DataObject dataObject : this) {
-            dataObject.getInfoList().remove(infoObject);
+            dataObject.getBaseListInfo().remove(infoObject);
         }
 
         boolean tagExists = false;
-        for (DataObject dataObject : dataListMain) {
-            if (dataObject.getInfoList().contains(infoObject)) {
+        for (DataObject dataObject : MAIN_LIST_DATA) {
+            if (dataObject.getBaseListInfo().contains(infoObject)) {
                 tagExists = true;
                 break;
             }
@@ -87,14 +87,14 @@ public class Select extends DataListMain implements MainUtil {
         }
     }
 
-    public InfoList getIntersectingTags() {
-        if (this.size() < 1) return new InfoList();
+    public BaseListInfo getIntersectingTags() {
+        if (this.size() < 1) return new BaseListInfo();
 
-        InfoList intersectingTags = new InfoList();
+        BaseListInfo intersectingTags = new BaseListInfo();
         DataObject lastObject = this.get(this.size() - 1);
-        for (InfoObject infoObject : this.get(0).getInfoList()) {
+        for (InfoObject infoObject : this.get(0).getBaseListInfo()) {
             for (DataObject dataObject : this) {
-                if (dataObject.getInfoList().contains(infoObject)) {
+                if (dataObject.getBaseListInfo().contains(infoObject)) {
                     if (dataObject.equals(lastObject)) {
                         intersectingTags.add(infoObject);
                     }
@@ -103,12 +103,12 @@ public class Select extends DataListMain implements MainUtil {
         }
         return intersectingTags;
     }
-    public InfoList getSharedTags() {
-        if (this.size() < 1) return new InfoList();
+    public BaseListInfo getSharedTags() {
+        if (this.size() < 1) return new BaseListInfo();
 
-        InfoList sharedTags = new InfoList();
+        BaseListInfo sharedTags = new BaseListInfo();
         for (DataObject dataObject : this) {
-            for (InfoObject infoObject : dataObject.getInfoList()) {
+            for (InfoObject infoObject : dataObject.getBaseListInfo()) {
                 if (!sharedTags.contains(infoObject)) {
                     sharedTags.add(infoObject);
                 }

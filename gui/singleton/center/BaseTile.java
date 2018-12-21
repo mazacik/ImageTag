@@ -9,24 +9,24 @@ import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import settings.Settings;
+import settings.SettingsEnum;
 import utils.MainUtil;
 
 public class BaseTile extends ImageView implements MainUtil {
-    private static final InnerShadow EFFECT_SELECTIONBORDER = buildSelectionBorderEffect();
-    private static final ColorInput EFFECT_FOCUSMARK = buildSelectionFocusMarkEffect();
-    private static final int GALLERY_ICON_SIZE_PREF = Settings.getGalleryIconSizePref();
+    private static final InnerShadow effectSelect = buildSelectEffect();
+    private static final int tileViewIconSize = settings.getValueOf(SettingsEnum.TILEVIEW_ICONSIZE);
+    private static final ColorInput effectTarget = buildTargetEffect();
 
     private final DataObject parentDataObject;
 
     public BaseTile(DataObject dataObject, Image thumbnail) {
         super(thumbnail);
         parentDataObject = dataObject;
-        setFitWidth(GALLERY_ICON_SIZE_PREF);
-        setFitHeight(GALLERY_ICON_SIZE_PREF);
+        setFitWidth(tileViewIconSize);
+        setFitHeight(tileViewIconSize);
         new BaseTileEvent(this);
     }
-    private static InnerShadow buildSelectionBorderEffect() {
+    private static InnerShadow buildSelectEffect() {
         InnerShadow innerShadow = new InnerShadow();
         innerShadow.setColor(Color.RED);
         innerShadow.setOffsetX(0);
@@ -36,9 +36,9 @@ public class BaseTile extends ImageView implements MainUtil {
         innerShadow.setChoke(1);
         return innerShadow;
     }
-    private static ColorInput buildSelectionFocusMarkEffect() {
+    private static ColorInput buildTargetEffect() {
         int markSize = 6;
-        int markPositionInTile = (Settings.getGalleryIconSizePref() - markSize) / 2;
+        int markPositionInTile = (tileViewIconSize - markSize) / 2;
         Color markColor = Color.RED;
         return new ColorInput(markPositionInTile, markPositionInTile, markSize, markSize, markColor);
     }
@@ -58,14 +58,14 @@ public class BaseTile extends ImageView implements MainUtil {
             setEffect(null);
         } else if (!booleanSelection && booleanFocus) {
             Blend blend = new Blend();
-            blend.setTopInput(EFFECT_FOCUSMARK);
+            blend.setTopInput(effectTarget);
             setEffect(blend);
         } else if (booleanSelection && !booleanFocus) {
-            setEffect(EFFECT_SELECTIONBORDER);
+            setEffect(effectSelect);
         } else if (booleanSelection && booleanFocus) {
             Blend effect = new Blend();
-            effect.setTopInput(EFFECT_SELECTIONBORDER);
-            effect.setBottomInput(EFFECT_FOCUSMARK);
+            effect.setTopInput(effectSelect);
+            effect.setBottomInput(effectTarget);
             effect.setMode(BlendMode.OVERLAY);
             setEffect(effect);
         }

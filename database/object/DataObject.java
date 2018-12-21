@@ -1,6 +1,6 @@
 package database.object;
 
-import database.list.InfoList;
+import database.list.BaseListInfo;
 import gui.singleton.center.BaseTile;
 
 import java.io.File;
@@ -8,15 +8,15 @@ import java.io.Serializable;
 
 public class DataObject implements Serializable {
     private String name;
-    private InfoList infoList;
+    private BaseListInfo baseListInfo;
     private transient BaseTile baseTile;
 
-    public DataObject(String name, InfoList tagObjects) {
+    public DataObject(String name, BaseListInfo tagObjects) {
         this.name = name;
-        this.infoList = tagObjects;
+        this.baseListInfo = tagObjects;
     }
     public DataObject(File file) {
-        this(file.getName(), new InfoList());
+        this(file.getName(), new BaseListInfo());
     }
 
     public void generateTileEffect() {
@@ -25,8 +25,8 @@ public class DataObject implements Serializable {
     public String getName() {
         return name;
     }
-    public InfoList getInfoList() {
-        return infoList;
+    public BaseListInfo getBaseListInfo() {
+        return baseListInfo;
     }
     public BaseTile getBaseTile() {
         return baseTile;

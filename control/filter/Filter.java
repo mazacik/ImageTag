@@ -1,14 +1,14 @@
 package control.filter;
 
 import control.reload.Reload;
-import database.list.DataListMain;
+import database.list.MainListData;
 import database.object.DataObject;
 import database.object.InfoObject;
 import utils.MainUtil;
 
 import java.util.Random;
 
-public class Filter extends DataListMain implements MainUtil {
+public class Filter extends MainListData implements MainUtil {
     private FilterMode whitelistMode;
     private FilterMode blacklistMode;
     private FilterTemplate currentFilterTemplate;

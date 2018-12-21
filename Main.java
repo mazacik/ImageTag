@@ -8,7 +8,7 @@ public class Main extends Application implements MainUtil {
         launch(args);
     }
     public void start(Stage stage) {
-        logger.out("starting application", this.getClass());
+        logger.debug(this, "starting application");
         new IntroWindow();
     }
 }

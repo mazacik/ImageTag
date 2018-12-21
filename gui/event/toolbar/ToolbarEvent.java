@@ -2,7 +2,6 @@ package gui.event.toolbar;
 
 import control.filter.Filter;
 import control.filter.FilterTemplate;
-import database.loader.Serialization;
 import gui.template.generic.NumberInputWindow;
 import javafx.stage.WindowEvent;
 import utils.MainUtil;
@@ -25,7 +24,7 @@ public class ToolbarEvent implements MainUtil {
     }
 
     private void onAction_menuSave() {
-        toolbar.getMenuSave().setOnAction(event -> Serialization.writeToDisk());
+        toolbar.getMenuSave().setOnAction(event -> MAIN_LIST_DATA.writeToDisk());
     }
     private void onAction_menuExit() {
         toolbar.getMenuExit().setOnAction(event -> toolbar.fireEvent(new WindowEvent(mainStage, WindowEvent.WINDOW_CLOSE_REQUEST)));

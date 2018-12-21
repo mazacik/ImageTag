@@ -1,7 +1,7 @@
 package control.filter;
 
+import database.list.BaseListInfo;
 import database.object.DataObject;
-import database.list.InfoList;
 import database.object.InfoObject;
 import utils.MainUtil;
 
@@ -10,7 +10,7 @@ public enum FilterTemplate implements MainUtil {
         public void apply() {
             infoListWhite.clear();
             infoListBlack.clear();
-            filter.setAll(dataListMain);
+            filter.setAll(MAIN_LIST_DATA);
         }
     },
     SHOW_UNTAGGED {
@@ -18,8 +18,8 @@ public enum FilterTemplate implements MainUtil {
             infoListWhite.clear();
             infoListBlack.setAll(infoListMain);
             filter.clear();
-            for (DataObject dataObject : dataListMain) {
-                if (dataObject.getInfoList().size() == 0)
+            for (DataObject dataObject : MAIN_LIST_DATA) {
+                if (dataObject.getBaseListInfo().size() == 0)
                     filter.add(dataObject);
             }
         }
@@ -29,8 +29,8 @@ public enum FilterTemplate implements MainUtil {
             infoListWhite.clear();
             infoListBlack.clear();
             filter.clear();
-            for (DataObject dataObject : dataListMain) {
-                if (dataObject.getInfoList().size() <= maxTagsValue) {
+            for (DataObject dataObject : MAIN_LIST_DATA) {
+                if (dataObject.getBaseListInfo().size() <= maxTagsValue) {
                     filter.add(dataObject);
                 }
             }
@@ -39,11 +39,11 @@ public enum FilterTemplate implements MainUtil {
     CUSTOM {
         public void apply() {
             if (infoListWhite.isEmpty() && infoListBlack.isEmpty()) {
-                filter.setAll(dataListMain);
+                filter.setAll(MAIN_LIST_DATA);
             } else {
                 filter.clear();
-                for (DataObject dataObject : dataListMain) {
-                    InfoList dataObjectInfoList = dataObject.getInfoList();
+                for (DataObject dataObject : MAIN_LIST_DATA) {
+                    BaseListInfo dataObjectInfoList = dataObject.getBaseListInfo();
                     if (isWhitelistOk(dataObjectInfoList) && isBlacklistOk(dataObjectInfoList)) {
                         filter.add(dataObject);
                     }
@@ -53,15 +53,15 @@ public enum FilterTemplate implements MainUtil {
     };
 
     private static int maxTagsValue = 0;
-    private static boolean isWhitelistOk(InfoList infoList) {
+    private static boolean isWhitelistOk(BaseListInfo baseListInfo) {
         Filter.FilterMode whitelistMode = filter.getWhitelistMode();
         if (infoListWhite.isEmpty()) {
             return true;
-        } else if (whitelistMode.equals(Filter.FilterMode.All) && infoList.containsAll(infoListWhite)) {
+        } else if (whitelistMode.equals(Filter.FilterMode.All) && baseListInfo.containsAll(infoListWhite)) {
             return true;
         } else if (whitelistMode.equals(Filter.FilterMode.Any)) {
             for (InfoObject infoObject : infoListWhite) {
-                if (infoList.contains(infoObject)) {
+                if (baseListInfo.contains(infoObject)) {
                     return true;
                 }
             }
@@ -69,15 +69,15 @@ public enum FilterTemplate implements MainUtil {
 
         return false;
     }
-    private static boolean isBlacklistOk(InfoList infoList) {
+    private static boolean isBlacklistOk(BaseListInfo baseListInfo) {
         Filter.FilterMode blacklistMode = filter.getBlacklistMode();
         if (infoListBlack.isEmpty()) {
             return true;
-        } else if (blacklistMode.equals(Filter.FilterMode.All) && infoList.containsAll(infoListBlack)) {
+        } else if (blacklistMode.equals(Filter.FilterMode.All) && baseListInfo.containsAll(infoListBlack)) {
             return false;
         } else if (blacklistMode.equals(Filter.FilterMode.Any)) {
             for (InfoObject infoObject : infoListBlack) {
-                if (infoList.contains(infoObject)) {
+                if (baseListInfo.contains(infoObject)) {
                     return false;
                 }
             }
