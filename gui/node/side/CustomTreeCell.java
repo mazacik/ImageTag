@@ -1,4 +1,4 @@
-package gui.singleton.side;
+package gui.node.side;
 
 import javafx.scene.paint.Color;
 

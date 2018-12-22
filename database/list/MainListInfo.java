@@ -3,14 +3,14 @@ package database.list;
 import control.reload.Reload;
 import database.object.DataObject;
 import database.object.InfoObject;
-import gui.singleton.side.CustomTreeCell;
+import gui.node.side.CustomTreeCell;
 import gui.template.specific.TagEditor;
 import javafx.scene.control.TreeCell;
 import utils.MainUtil;
 
 public class MainListInfo extends BaseListInfo implements MainUtil {
     public void initialize() {
-        for (DataObject dataIterator : MAIN_LIST_DATA) {
+        for (DataObject dataIterator : mainListData) {
             BaseListInfo baseListInfo = dataIterator.getBaseListInfo();
             for (InfoObject tagIterator : baseListInfo) {
                 if (this.contains(tagIterator)) {

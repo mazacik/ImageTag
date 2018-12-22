@@ -24,7 +24,8 @@ public class ToolbarEvent implements MainUtil {
     }
 
     private void onAction_menuSave() {
-        toolbar.getMenuSave().setOnAction(event -> MAIN_LIST_DATA.writeToDisk());
+        toolbar.getMenuSave().setOnAction(event ->
+                mainListData.writeToDisk());
     }
     private void onAction_menuExit() {
         toolbar.getMenuExit().setOnAction(event -> toolbar.fireEvent(new WindowEvent(mainStage, WindowEvent.WINDOW_CLOSE_REQUEST)));

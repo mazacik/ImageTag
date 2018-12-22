@@ -9,11 +9,11 @@ import database.list.BaseListInfo;
 import database.list.MainListData;
 import database.list.MainListInfo;
 import gui.MainStage;
-import gui.singleton.center.FullView;
-import gui.singleton.center.TileView;
-import gui.singleton.side.InfoListL;
-import gui.singleton.side.InfoListR;
-import gui.singleton.toolbar.Toolbar;
+import gui.node.center.FullView;
+import gui.node.center.TileView;
+import gui.node.side.InfoListL;
+import gui.node.side.InfoListR;
+import gui.node.toolbar.Toolbar;
 import settings.Settings;
 
 public interface MainUtil {
@@ -27,8 +27,8 @@ public interface MainUtil {
     Settings settings = new Settings().readFromDisk();
 
     /* arraylists */
-    MainListData MAIN_LIST_DATA = new MainListData();
-    MainListInfo infoListMain = new MainListInfo();
+    MainListData mainListData = new MainListData();
+    MainListInfo mainListInfo = new MainListInfo();
 
     BaseListInfo infoListWhite = new BaseListInfo();
     BaseListInfo infoListBlack = new BaseListInfo();

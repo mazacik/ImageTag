@@ -9,27 +9,30 @@ public class Logger {
 
     public void error(Object source, String message) {
         //todo use proper exceptions?
-        System.out.println(formatSource(source.getClass()) + ": ERROR: " + message.trim());
+        System.out.println("ERROR: " + formatSource(source) + ": " + message.trim());
     }
     public void debug(Object source, String message) {
-        System.out.println(formatSource(source.getClass()) + ": DEBUG: " + message.trim());
+        System.out.println("DEBUG: " + formatSource(source) + ": " + message.trim());
     }
 
-    private String formatSource(Class source) {
-        StringBuilder value;
-        value = new StringBuilder(source.getSimpleName());
-        value.toString().trim();
+    private String formatSource(Object source) {
+        String value;
+        if (source instanceof Class)
+            value = ((Class) source).getSimpleName().trim();
+        else
+            value = source.getClass().getSimpleName().trim();
+
         int length = value.length();
 
         if (length >= maxClassNameLength) {
-            value = new StringBuilder(value.substring(0, maxClassNameLength - 1));
-            value.append("~");
+            value = value.substring(0, maxClassNameLength - 1);
+            value += "~";
         }
 
         while (length < maxClassNameLength) {
-            value.append(" ");
+            value += " ";
             length++;
         }
-        return value.toString();
+        return value;
     }
 }

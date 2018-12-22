@@ -1,11 +1,12 @@
-package gui.singleton.side;
+package gui.node.side;
 
 import control.reload.Reload;
 import database.object.DataObject;
 import database.object.InfoObject;
 import gui.event.side.InfoListRightEvent;
-import gui.singleton.BaseNode;
+import gui.node.BaseNode;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
@@ -15,12 +16,14 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import settings.SettingsNamespace;
 import utils.MainUtil;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 
 public class InfoListR extends VBox implements MainUtil, BaseNode {
+    //todo holy please rework me
     private final TreeView<CustomTreeCell> treeView;
     private final ContextMenu TEMP = new ContextMenu(); // todo fix me
 
@@ -28,6 +31,8 @@ public class InfoListR extends VBox implements MainUtil, BaseNode {
         this.setMinWidth(200);
         this.setPrefWidth(250);
         this.setMaxWidth(300);
+        this.setSpacing(settings.valueOf(SettingsNamespace.GLOBAL_SPACING));
+        this.setPadding(new Insets(settings.valueOf(SettingsNamespace.GLOBAL_SPACING)));
 
         treeView = new TreeView(new TreeItem());
         treeView.setMaxHeight(this.getMaxHeight());
@@ -41,7 +46,7 @@ public class InfoListR extends VBox implements MainUtil, BaseNode {
     }
 
     public void changeCellState(TreeCell<CustomTreeCell> sourceCell) {
-        InfoObject infoObject = infoListMain.getTagObject(sourceCell);
+        InfoObject infoObject = mainListInfo.getTagObject(sourceCell);
         CustomTreeCell customTreeCell;
         try {
             customTreeCell = sourceCell.getTreeItem().getValue();
@@ -50,10 +55,17 @@ public class InfoListR extends VBox implements MainUtil, BaseNode {
         }
 
         if (infoObject != null) {
+            CustomTreeCell parentTreeCell = null;
+            try {
+                parentTreeCell = sourceCell.getTreeItem().getParent().getValue();
+            } catch (NullPointerException ignored) {}
+
             if (customTreeCell.getColor().equals(Color.GREEN) || customTreeCell.getColor().equals(Color.BLUE)) {
+                if (parentTreeCell != null) parentTreeCell.setColor(Color.BLACK);
                 customTreeCell.setColor(Color.BLACK);
                 this.removeTagObjectFromSelection(infoObject);
             } else {
+                if (parentTreeCell != null) parentTreeCell.setColor(Color.GREEN);
                 customTreeCell.setColor(Color.GREEN);
                 this.addTagObjectToSelection(infoObject);
             }
@@ -97,7 +109,7 @@ public class InfoListR extends VBox implements MainUtil, BaseNode {
 
         ArrayList<String> groupsInter = select.getIntersectingTags().getGroups();
         ArrayList<String> groupsShare = select.getSharedTags().getGroups();
-        ArrayList<String> groupsAll = infoListMain.getGroups();
+        ArrayList<String> groupsAll = mainListInfo.getGroups();
 
         for (String groupInter : groupsInter) {
             groupsShare.remove(groupInter);
@@ -106,7 +118,7 @@ public class InfoListR extends VBox implements MainUtil, BaseNode {
             TreeItem groupTreeItem = new TreeItem(new CustomTreeCell(groupInter, Color.GREEN));
             ArrayList<String> namesInter = select.getIntersectingTags().getNames(groupInter);
             ArrayList<String> namesShare = select.getSharedTags().getNames(groupInter);
-            ArrayList<String> namesAll = infoListMain.getNames(groupInter);
+            ArrayList<String> namesAll = mainListInfo.getNames(groupInter);
 
             for (String nameInter : namesInter) {
                 namesShare.remove(nameInter);
@@ -130,7 +142,7 @@ public class InfoListR extends VBox implements MainUtil, BaseNode {
 
             TreeItem groupTreeItem = new TreeItem(new CustomTreeCell(groupShare, Color.BLUE));
             ArrayList<String> namesShare = select.getSharedTags().getNames(groupShare);
-            ArrayList<String> namesAll = infoListMain.getNames(groupShare);
+            ArrayList<String> namesAll = mainListInfo.getNames(groupShare);
 
             for (String nameShare : namesShare) {
                 namesAll.remove(nameShare);
@@ -145,7 +157,7 @@ public class InfoListR extends VBox implements MainUtil, BaseNode {
         }
         for (String groupAll : groupsAll) {
             TreeItem groupTreeItem = new TreeItem(new CustomTreeCell(groupAll, Color.BLACK));
-            ArrayList<String> namesAll = infoListMain.getNames(groupAll);
+            ArrayList<String> namesAll = mainListInfo.getNames(groupAll);
 
             for (String nameAll : namesAll) {
                 groupTreeItem.getChildren().add(new TreeItem(new CustomTreeCell(nameAll, Color.BLACK)));

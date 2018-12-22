@@ -1,9 +1,11 @@
-package gui.singleton.toolbar;
+package gui.node.toolbar;
 
 import control.reload.Reload;
-import gui.singleton.BaseNode;
+import gui.node.BaseNode;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import settings.SettingsNamespace;
 import utils.MainUtil;
 
 public class Toolbar extends BorderPane implements MainUtil, BaseNode {
@@ -48,6 +50,7 @@ public class Toolbar extends BorderPane implements MainUtil, BaseNode {
 
         this.setCenter(new MenuBar(menuFile, menuSelection, menuFilter));
         this.setRight(infoLabelMenuBar);
+        this.setPadding(new Insets(settings.valueOf(SettingsNamespace.GLOBAL_SPACING)));
     }
 
     public void reload() {

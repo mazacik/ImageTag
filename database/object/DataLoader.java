@@ -2,13 +2,13 @@ package database.object;
 
 import control.reload.Reload;
 import database.list.MainListData;
-import gui.singleton.center.BaseTile;
+import gui.node.center.BaseTile;
 import gui.template.specific.LoadingWindow;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import org.apache.commons.io.FilenameUtils;
-import settings.SettingsEnum;
+import settings.SettingsNamespace;
 import utils.MainUtil;
 
 import javax.imageio.ImageIO;
@@ -35,10 +35,10 @@ public class DataLoader extends Thread implements MainUtil {
         validateDatabaseCache(fileList);
         loadImageCache(loadingWindow[0], fileList.size());
 
-        MAIN_LIST_DATA.sort();
-        MAIN_LIST_DATA.writeToDisk();
-        infoListMain.initialize();
-        filter.addAll(MAIN_LIST_DATA);
+        mainListData.sort();
+        mainListData.writeToDisk();
+        mainListInfo.initialize();
+        filter.addAll(mainListData);
         filter.sort();
 
         reload.notifyChangeIn(Reload.Control.values());
@@ -71,7 +71,7 @@ public class DataLoader extends Thread implements MainUtil {
     private void createDatabase(ArrayList<File> fileList) {
         logger.debug(this, "creating database");
         for (File file : fileList) {
-            MAIN_LIST_DATA.add(new DataObject(file));
+            mainListData.add(new DataObject(file));
         }
     }
     private void validateDatabaseCache(ArrayList<File> fileList) {
@@ -79,7 +79,7 @@ public class DataLoader extends Thread implements MainUtil {
         ArrayList<String> dataObjectNames = new ArrayList<>();
         ArrayList<String> fileListNames = new ArrayList<>();
 
-        MAIN_LIST_DATA.forEach(dataObject -> dataObjectNames.add(dataObject.getName()));
+        mainListData.forEach(dataObject -> dataObjectNames.add(dataObject.getName()));
         fileList.forEach(file -> fileListNames.add(file.getName()));
 
         dataObjectNames.sort(Comparator.naturalOrder());
@@ -87,11 +87,11 @@ public class DataLoader extends Thread implements MainUtil {
 
         /* addAll unrecognized items */
         int added = 0;
-        logger.debug(this, "adding new data objects");
+        logger.debug(this, "looking for new data objects");
         for (File file : fileList) {
             if (!dataObjectNames.contains(file.getName())) {
                 logger.debug(this, "adding " + file.getName());
-                MAIN_LIST_DATA.add(new DataObject(file));
+                mainListData.add(new DataObject(file));
                 added++;
             }
         }
@@ -99,10 +99,10 @@ public class DataLoader extends Thread implements MainUtil {
 
         /* discard missing items */
         int removed = 0;
-        logger.debug(this, "discarding orphan data objects");
+        logger.debug(this, "looking for orphan data objects");
         MainListData temporaryList = new MainListData();
-        temporaryList.addAll(MAIN_LIST_DATA);
-        for (DataObject dataObject : MAIN_LIST_DATA) {
+        temporaryList.addAll(mainListData);
+        for (DataObject dataObject : mainListData) {
             String objectName = dataObject.getName();
             if (!fileListNames.contains(objectName)) {
                 logger.debug(this, "discarding " + objectName);
@@ -112,16 +112,16 @@ public class DataLoader extends Thread implements MainUtil {
         }
         logger.debug(this, "discarded " + removed + " files");
 
-        MAIN_LIST_DATA.clear();
-        MAIN_LIST_DATA.addAll(temporaryList);
+        mainListData.clear();
+        mainListData.addAll(temporaryList);
     }
     private void loadImageCache(LoadingWindow loadingWindow, int fileListSize) {
         logger.debug(this, "loading image cache");
-        final int galleryIconSizeMax = settings.getValueOf(SettingsEnum.TILEVIEW_ICONSIZE);
+        final int galleryIconSizeMax = settings.valueOf(SettingsNamespace.TILEVIEW_ICONSIZE);
         int currentObjectIndex = 1;
         Image thumbnail;
 
-        for (DataObject dataObject : MAIN_LIST_DATA) {
+        for (DataObject dataObject : mainListData) {
             updateLoadingLabel(loadingWindow, fileListSize, currentObjectIndex++);
             thumbnail = getImageFromDataObject(dataObject, galleryIconSizeMax);
             dataObject.setBaseTile(new BaseTile(dataObject, thumbnail));
@@ -133,7 +133,7 @@ public class DataLoader extends Thread implements MainUtil {
         }
     }
     private boolean loadExistingDatabase() {
-        return MAIN_LIST_DATA.addAll(MAIN_LIST_DATA.readFromDisk());
+        return mainListData.addAll(mainListData.readFromDisk());
     }
 
     private Image getImageFromDataObject(DataObject dataObject, double galleryIconMaxSize) {

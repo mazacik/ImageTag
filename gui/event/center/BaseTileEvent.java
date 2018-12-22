@@ -1,7 +1,7 @@
 package gui.event.center;
 
 import database.object.DataObject;
-import gui.singleton.center.BaseTile;
+import gui.node.center.BaseTile;
 import javafx.scene.input.MouseEvent;
 import utils.MainUtil;
 
@@ -28,13 +28,13 @@ public class BaseTileEvent implements MainUtil {
         DataObject dataObject = sender.getParentDataObject();
         target.set(dataObject);
         select.swapState(dataObject);
-        mainStage.getDataObjectContextMenu().hide();
+        //mainStage.getDataObjectContextMenu().hide();
         reload.doReload();
     }
     private void onRightClick(BaseTile sender, MouseEvent event) {
         DataObject dataObject = sender.getParentDataObject();
         target.set(dataObject);
         select.add(dataObject);
-        mainStage.getDataObjectContextMenu().show(sender, event);
+        //mainStage.getDataObjectContextMenu().show(sender, event);
     }
 }

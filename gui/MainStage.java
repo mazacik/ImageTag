@@ -8,43 +8,40 @@ import gui.event.side.InfoListRightEvent;
 import gui.event.toolbar.ToolbarEvent;
 import gui.template.generic.DataObjectContextMenu;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import settings.SettingsEnum;
+import settings.SettingsNamespace;
 import utils.MainUtil;
 
 public class MainStage extends Stage implements MainUtil {
     private final SplitPane splitPane = new SplitPane(infoListL, tileView, infoListR);
-    private final VBox mainPane = new VBox(toolbar, splitPane);
-    private final Scene mainScene = new Scene(mainPane);
+    private final DataObjectContextMenu dataObjectContextMenu = new DataObjectContextMenu();
 
-    private DataObjectContextMenu dataObjectContextMenu;
-
-    public void init() {
-        logger.debug(this, "gui init start");
+    public void initialize() {
+        logger.debug(this, "gui initialize start");
+        setDefaultValues();
+        setDefaultValuesChildren();
+        initializeEvents();
+        logger.debug(this, "gui initialize done");
+    }
+    private void setDefaultValues() {
         this.setTitle("ImageTag");
-        this.setMinWidth(settings.getValueOf(SettingsEnum.MAINSCENEW));
-        this.setMinHeight(settings.getValueOf(SettingsEnum.MAINSCENEH));
+        this.setMinWidth(settings.valueOf(SettingsNamespace.MAINSCENE_WIDTH));
+        this.setMinHeight(settings.valueOf(SettingsNamespace.MAINSCENE_HEIGHT));
+        this.setScene(new Scene(new VBox(toolbar, splitPane)));
         this.setMaximized(true);
-        this.setScene(mainScene);
         this.setOnCloseRequest(event -> {
-            MAIN_LIST_DATA.writeToDisk();
+            mainListData.writeToDisk();
             logger.debug(this, "application exit");
         });
-
-        mainPane.setSpacing(2);
-        splitPane.setPadding(new Insets(2));
-        splitPane.setDividerPositions(0.0, 1.0);
-
-        this.dataObjectContextMenu = new DataObjectContextMenu();
-        this.initEvents();
-        logger.debug(this, "gui init done");
     }
-    private void initEvents() {
+    private void setDefaultValuesChildren() {
+        splitPane.setDividerPositions(0.0, 1.0);
+    }
+    private void initializeEvents() {
         new GlobalContextMenuEvent();
         new GlobalEvent();
 
@@ -62,6 +59,7 @@ public class MainStage extends Stage implements MainUtil {
             tileView.adjustViewportToCurrentFocus();
         } else {
             splitPaneItems.set(splitPaneItems.indexOf(tileView), fullView);
+            fullView.reload();
         }
         splitPane.setDividerPositions(dividerPositions);
     }

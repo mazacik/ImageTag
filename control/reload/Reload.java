@@ -1,6 +1,6 @@
 package control.reload;
 
-import gui.singleton.BaseNode;
+import gui.node.BaseNode;
 import utils.MainUtil;
 
 import java.util.ArrayList;

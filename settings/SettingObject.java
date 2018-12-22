@@ -17,7 +17,9 @@ public class SettingObject {
     public SettingObject(String id, Integer minValue, Integer maxValue) {
         this(id, minValue, maxValue, minValue);
     }
-
+    public SettingObject(String id, Integer value) {
+        this(id, value, value, value);
+    }
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof SettingObject)) return false;

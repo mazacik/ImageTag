@@ -1,4 +1,4 @@
-package gui.singleton.center;
+package gui.node.center;
 
 import database.object.DataObject;
 import gui.event.center.BaseTileEvent;
@@ -9,12 +9,12 @@ import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import settings.SettingsEnum;
+import settings.SettingsNamespace;
 import utils.MainUtil;
 
 public class BaseTile extends ImageView implements MainUtil {
     private static final InnerShadow effectSelect = buildSelectEffect();
-    private static final int tileViewIconSize = settings.getValueOf(SettingsEnum.TILEVIEW_ICONSIZE);
+    private static final int tileViewIconSize = settings.valueOf(SettingsNamespace.TILEVIEW_ICONSIZE);
     private static final ColorInput effectTarget = buildTargetEffect();
 
     private final DataObject parentDataObject;

@@ -1,6 +1,6 @@
 package gui.event.side;
 
-import gui.singleton.side.CustomTreeCell;
+import gui.node.side.CustomTreeCell;
 import javafx.scene.control.TreeCell;
 import javafx.scene.input.MouseEvent;
 import utils.MainUtil;

@@ -44,7 +44,7 @@ public class Settings implements MainUtil, Serializable {
         }
     }
 
-    public Integer getValueOf(SettingsEnum settingsEnum) {
+    public Integer valueOf(SettingsNamespace settingsEnum) {
         return settingsList.valueOf(settingsEnum.getValue());
     }
     public String getCurrentDirectory() {
@@ -86,9 +86,10 @@ public class Settings implements MainUtil, Serializable {
     }
     private void setDefaults() {
         settingsList = new SettingsList();
-        settingsList.add(new SettingObject(SettingsEnum.MAINSCENEW.getValue(), 0, SystemUtil.getScreenWidth(), 800));
-        settingsList.add(new SettingObject(SettingsEnum.MAINSCENEH.getValue(), 0, SystemUtil.getScreenHeight(), 600));
-        settingsList.add(new SettingObject(SettingsEnum.TILEVIEW_ICONSIZE.getValue(), 100, 200, 150));
+        settingsList.add(new SettingObject(SettingsNamespace.MAINSCENE_WIDTH.getValue(), 0, SystemUtil.getScreenWidth(), SystemUtil.getScreenWidth()));
+        settingsList.add(new SettingObject(SettingsNamespace.MAINSCENE_HEIGHT.getValue(), 0, SystemUtil.getScreenHeight(), SystemUtil.getScreenHeight()));
+        settingsList.add(new SettingObject(SettingsNamespace.TILEVIEW_ICONSIZE.getValue(), 100, 200, 150));
+        settingsList.add(new SettingObject(SettingsNamespace.GLOBAL_SPACING.getValue(), 2));
 
         recentDirectoriesList = new ArrayList<>();
     }

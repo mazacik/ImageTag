@@ -1,12 +1,14 @@
-package gui.singleton.center;
+package gui.node.center;
 
 import control.reload.Reload;
 import database.object.DataObject;
-import gui.singleton.BaseNode;
+import gui.node.BaseNode;
+import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+import settings.SettingsNamespace;
 import utils.MainUtil;
 
 public class FullView extends Pane implements MainUtil, BaseNode {
@@ -16,15 +18,18 @@ public class FullView extends Pane implements MainUtil, BaseNode {
     private Image currentPreviewImage;
 
     public FullView() {
-        currentDataObject = null;
-        currentPreviewImage = null;
-
         canvas = new Canvas();
         canvas.widthProperty().bind(this.widthProperty());
         canvas.heightProperty().bind(this.heightProperty());
 
+        currentDataObject = null;
+        currentPreviewImage = null;
+
         reload.subscribe(this, Reload.Control.FOCUS);
 
+        this.setWidth(settings.valueOf(SettingsNamespace.MAINSCENE_WIDTH));
+        this.setHeight(settings.valueOf(SettingsNamespace.MAINSCENE_HEIGHT));
+        this.setPadding(new Insets(settings.valueOf(SettingsNamespace.GLOBAL_SPACING)));
         this.getChildren().add(canvas);
     }
 
@@ -53,8 +58,8 @@ public class FullView extends Pane implements MainUtil, BaseNode {
             resultWidth = imageWidth * maxHeight / imageHeight;
         }
 
-        double resultX = canvas.getWidth() / 2 - resultWidth / 2;
-        double resultY = canvas.getHeight() / 2 - resultHeight / 2;
+        double resultX = maxWidth / 2 - resultWidth / 2;
+        double resultY = maxHeight / 2 - resultHeight / 2;
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
 

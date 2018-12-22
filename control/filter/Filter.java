@@ -44,24 +44,24 @@ public class Filter extends MainListData implements MainUtil {
     }
 
     public void whitelistGroup(String group) {
-        for (String name : infoListMain.getNames(group)) {
-            whitelistTagObject(infoListMain.getTagObject(group, name));
+        for (String name : mainListInfo.getNames(group)) {
+            whitelistTagObject(mainListInfo.getTagObject(group, name));
         }
     }
     public void blacklistGroup(String group) {
-        for (String name : infoListMain.getNames(group)) {
-            blacklistTagObject(infoListMain.getTagObject(group, name));
+        for (String name : mainListInfo.getNames(group)) {
+            blacklistTagObject(mainListInfo.getTagObject(group, name));
         }
     }
     public void unlistGroup(String group) {
-        for (String name : infoListMain.getNames(group)) {
-            unlistTagObject(infoListMain.getTagObject(group, name));
+        for (String name : mainListInfo.getNames(group)) {
+            unlistTagObject(mainListInfo.getTagObject(group, name));
         }
     }
 
     public boolean isGroupWhitelisted(String group) {
         boolean value = true;
-        for (String name : infoListMain.getNames(group)) {
+        for (String name : mainListInfo.getNames(group)) {
             if (!isTagObjectWhitelisted(group, name)) {
                 value = false;
                 break;
@@ -71,7 +71,7 @@ public class Filter extends MainListData implements MainUtil {
     }
     public boolean isGroupBlacklisted(String group) {
         boolean value = true;
-        for (String name : infoListMain.getNames(group)) {
+        for (String name : mainListInfo.getNames(group)) {
             if (!isTagObjectBlacklisted(group, name)) {
                 value = false;
                 break;
@@ -84,13 +84,13 @@ public class Filter extends MainListData implements MainUtil {
         return infoListWhite.contains(infoObject);
     }
     public boolean isTagObjectWhitelisted(String group, String name) {
-        return infoListWhite.contains(infoListMain.getTagObject(group, name));
+        return infoListWhite.contains(mainListInfo.getTagObject(group, name));
     }
     public boolean isTagObjectBlacklisted(InfoObject infoObject) {
         return infoListBlack.contains(infoObject);
     }
     public boolean isTagObjectBlacklisted(String group, String name) {
-        return infoListBlack.contains(infoListMain.getTagObject(group, name));
+        return infoListBlack.contains(mainListInfo.getTagObject(group, name));
     }
 
     public DataObject getRandomObject() {

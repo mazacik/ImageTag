@@ -1,19 +1,18 @@
-package gui.singleton.side;
+package gui.node.side;
 
 import control.reload.Reload;
 import database.object.InfoObject;
 import gui.event.side.InfoListLeftEvent;
-import gui.singleton.BaseNode;
+import gui.node.BaseNode;
 import javafx.collections.ObservableList;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.TreeCell;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.geometry.Insets;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import settings.SettingsNamespace;
 import utils.MainUtil;
 
 import java.util.ArrayList;
@@ -21,6 +20,7 @@ import java.util.ArrayList;
 public class InfoListL extends VBox implements MainUtil, BaseNode {
     private final TreeView<CustomTreeCell> treeView;
     private final ContextMenu TEMP = new ContextMenu(); // todo fix me
+    private final Button btnNew = new Button("New");
 
     public InfoListL() {
         this.setMinWidth(200);
@@ -31,15 +31,19 @@ public class InfoListL extends VBox implements MainUtil, BaseNode {
         treeView.setMaxHeight(this.getMaxHeight());
         treeView.setShowRoot(false);
         VBox.setVgrow(treeView, Priority.ALWAYS);
+        this.setSpacing(settings.valueOf(SettingsNamespace.GLOBAL_SPACING));
+        this.setPadding(new Insets(settings.valueOf(SettingsNamespace.GLOBAL_SPACING)));
+
+        btnNew.setPrefWidth(this.getMaxWidth());
 
         reload.subscribe(this, Reload.Control.TAGS);
 
         this.setCellFactory(TEMP);
-        this.getChildren().addAll(treeView);
+        this.getChildren().addAll(treeView, btnNew);
     }
 
     public void changeCellState(TreeCell<CustomTreeCell> sourceCell) {
-        InfoObject infoObject = infoListMain.getTagObject(sourceCell);
+        InfoObject infoObject = mainListInfo.getTagObject(sourceCell);
         CustomTreeCell customTreeCell;
         try {
             customTreeCell = sourceCell.getTreeItem().getValue();
@@ -90,7 +94,7 @@ public class InfoListL extends VBox implements MainUtil, BaseNode {
         ObservableList<TreeItem<CustomTreeCell>> treeViewItems = treeView.getRoot().getChildren();
         treeViewItems.clear();
 
-        ArrayList<String> groupNames = infoListMain.getGroups();
+        ArrayList<String> groupNames = mainListInfo.getGroups();
         for (String groupName : groupNames) {
             TreeItem groupTreeItem;
             if (filter.isGroupWhitelisted(groupName)) {
@@ -101,7 +105,7 @@ public class InfoListL extends VBox implements MainUtil, BaseNode {
                 groupTreeItem = new TreeItem(new CustomTreeCell(groupName, Color.BLACK));
             }
 
-            for (String tagName : infoListMain.getNames(groupName)) {
+            for (String tagName : mainListInfo.getNames(groupName)) {
                 if (filter.isTagObjectWhitelisted(groupName, tagName)) {
                     groupTreeItem.getChildren().add(new TreeItem(new CustomTreeCell(tagName, Color.GREEN)));
                 } else if (filter.isTagObjectBlacklisted(groupName, tagName)) {

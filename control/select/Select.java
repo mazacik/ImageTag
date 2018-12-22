@@ -56,8 +56,8 @@ public class Select extends MainListData implements MainUtil {
 
     public void addTagObject(InfoObject infoObject) {
         if (!infoObject.isEmpty()) {
-            if (!infoListMain.contains(infoObject)) {
-                infoListMain.add(infoObject);
+            if (!mainListInfo.contains(infoObject)) {
+                mainListInfo.add(infoObject);
             }
 
             BaseListInfo baseListInfo;
@@ -75,7 +75,7 @@ public class Select extends MainListData implements MainUtil {
         }
 
         boolean tagExists = false;
-        for (DataObject dataObject : MAIN_LIST_DATA) {
+        for (DataObject dataObject : mainListData) {
             if (dataObject.getBaseListInfo().contains(infoObject)) {
                 tagExists = true;
                 break;
@@ -83,7 +83,7 @@ public class Select extends MainListData implements MainUtil {
         }
         if (!tagExists) {
             filter.unlistTagObject(infoObject);
-            infoListMain.remove(infoObject);
+            mainListInfo.remove(infoObject);
         }
     }
 

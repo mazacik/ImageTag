@@ -1,21 +1,22 @@
-package gui.singleton.center;
+package gui.node.center;
 
 import control.reload.Reload;
 import database.object.DataObject;
-import gui.singleton.BaseNode;
+import gui.node.BaseNode;
 import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.TilePane;
-import settings.SettingsEnum;
+import settings.SettingsNamespace;
 import utils.MainUtil;
 
 public class TileView extends ScrollPane implements MainUtil, BaseNode {
     private final TilePane tilePane;
 
     public TileView() {
-        final int galleryIconSize = settings.getValueOf(SettingsEnum.TILEVIEW_ICONSIZE);
+        final int galleryIconSize = settings.valueOf(SettingsNamespace.TILEVIEW_ICONSIZE);
 
         tilePane = new TilePane();
         tilePane.setVgap(3);
@@ -28,7 +29,9 @@ public class TileView extends ScrollPane implements MainUtil, BaseNode {
         this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         this.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         this.setFitToWidth(true);
+        this.setFitToHeight(true);
         this.setContent(tilePane);
+        this.setPadding(new Insets(settings.valueOf(SettingsNamespace.GLOBAL_SPACING)));
     }
 
     public void reload() {
@@ -91,6 +94,11 @@ public class TileView extends ScrollPane implements MainUtil, BaseNode {
         int tilePaneWidth = (int) tilePane.getWidth() + (int) tilePane.getVgap();
         int prefTileWidth = (int) tilePane.getPrefTileWidth();
         return tilePaneWidth / prefTileWidth;
+    }
+    public int getRowCount() {
+        double itemCountFilter = filter.size();
+        double columnCount = this.getColumnCount();
+        return (int) Math.ceil(itemCountFilter / columnCount);
     }
     public TilePane getTilePane() {
         return tilePane;

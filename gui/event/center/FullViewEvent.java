@@ -16,11 +16,9 @@ public class FullViewEvent implements MainUtil {
         fullView.getCanvas().setOnMouseClicked(event -> {
             switch (event.getButton()) {
                 case PRIMARY:
-                    fullView.requestFocus();
                     contextMenu.hide();
                     break;
                 case SECONDARY:
-                    select.add(target.getCurrentFocus());
                     contextMenu.show(fullView, event.getScreenX(), event.getScreenY());
                     break;
                 default:

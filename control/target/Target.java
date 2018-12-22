@@ -31,24 +31,34 @@ public class Target implements MainUtil {
         reload.notifyChangeIn(Reload.Control.FOCUS);
     }
     public void move(KeyCode keyCode) {
+        int columnCount = tileView.getColumnCount();
+        int dataCountFilter = filter.size();
+        int currentFocusPosition = filter.indexOf(currentFocus);
+
         int newFocusPosition = 0;
-        if (currentFocus != null) {
-            newFocusPosition = filter.indexOf(currentFocus);
+        if (currentFocus != null) newFocusPosition = filter.indexOf(currentFocus);
+
+        switch (keyCode) {
+            case W:
+                if (currentFocusPosition >= columnCount) newFocusPosition -= columnCount;
+                break;
+            case A:
+                if (newFocusPosition > 0) newFocusPosition -= 1;
+                break;
+            case S:
+                if (currentFocusPosition < dataCountFilter - (columnCount - (tileView.getRowCount() * columnCount - dataCountFilter))) {
+                    newFocusPosition += columnCount;
+                    if (newFocusPosition > dataCountFilter - 1) {
+                        newFocusPosition = dataCountFilter - 1;
+                    }
+                }
+                break;
+            case D:
+                if (newFocusPosition < dataCountFilter - 1) newFocusPosition += 1;
+                break;
         }
 
-        if (keyCode.equals(KeyCode.W)) {
-            newFocusPosition -= tileView.getColumnCount();
-        } else if (keyCode.equals(KeyCode.A)) {
-            newFocusPosition -= 1;
-        } else if (keyCode.equals(KeyCode.S)) {
-            newFocusPosition += tileView.getColumnCount();
-        } else if (keyCode.equals(KeyCode.D)) {
-            newFocusPosition += 1;
-        }
-
-        if (newFocusPosition >= 0 && newFocusPosition < filter.size()) {
-            this.set(filter.get(newFocusPosition));
-        }
+        this.set(filter.get(newFocusPosition));
     }
     public void storePosition() {
         this.storePos = filter.indexOf(currentFocus);

@@ -16,6 +16,7 @@ public abstract class SerializationUtil implements MainUtil {
         GsonBuilder GSONBuilder = new GsonBuilder();
         GSONBuilder.setPrettyPrinting().serializeNulls();
         String JSON = GSONBuilder.create().toJson(object, type);
+
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(path, false));
             writer.write(JSON);

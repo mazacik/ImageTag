@@ -49,7 +49,7 @@ public class GlobalContextMenuEvent implements MainUtil {
             Desktop.getDesktop().moveToTrash(new File(fullPath));
 
             filter.remove(dataObject);
-            MAIN_LIST_DATA.remove(dataObject);
+            mainListData.remove(dataObject);
             select.remove(dataObject);
         }
     }

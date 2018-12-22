@@ -1,6 +1,6 @@
 package gui.template.specific;
 
-import gui.singleton.side.CustomTreeCell;
+import gui.node.side.CustomTreeCell;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeCell;
@@ -13,7 +13,7 @@ public class LeftPaneContextMenu extends ContextMenu implements MainUtil {
     public LeftPaneContextMenu(TreeCell<CustomTreeCell> source) {
         getItems().addAll(menuEdit, menuRemove);
 
-        menuEdit.setOnAction(event -> infoListMain.edit(infoListMain.getTagObject(source)));
-        menuRemove.setOnAction(event -> infoListMain.remove(infoListMain.getTagObject(source)));
+        menuEdit.setOnAction(event -> mainListInfo.edit(mainListInfo.getTagObject(source)));
+        menuRemove.setOnAction(event -> mainListInfo.remove(mainListInfo.getTagObject(source)));
     }
 }

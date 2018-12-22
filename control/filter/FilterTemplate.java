@@ -10,15 +10,15 @@ public enum FilterTemplate implements MainUtil {
         public void apply() {
             infoListWhite.clear();
             infoListBlack.clear();
-            filter.setAll(MAIN_LIST_DATA);
+            filter.setAll(mainListData);
         }
     },
     SHOW_UNTAGGED {
         public void apply() {
             infoListWhite.clear();
-            infoListBlack.setAll(infoListMain);
+            infoListBlack.setAll(mainListInfo);
             filter.clear();
-            for (DataObject dataObject : MAIN_LIST_DATA) {
+            for (DataObject dataObject : mainListData) {
                 if (dataObject.getBaseListInfo().size() == 0)
                     filter.add(dataObject);
             }
@@ -29,7 +29,7 @@ public enum FilterTemplate implements MainUtil {
             infoListWhite.clear();
             infoListBlack.clear();
             filter.clear();
-            for (DataObject dataObject : MAIN_LIST_DATA) {
+            for (DataObject dataObject : mainListData) {
                 if (dataObject.getBaseListInfo().size() <= maxTagsValue) {
                     filter.add(dataObject);
                 }
@@ -39,10 +39,10 @@ public enum FilterTemplate implements MainUtil {
     CUSTOM {
         public void apply() {
             if (infoListWhite.isEmpty() && infoListBlack.isEmpty()) {
-                filter.setAll(MAIN_LIST_DATA);
+                filter.setAll(mainListData);
             } else {
                 filter.clear();
-                for (DataObject dataObject : MAIN_LIST_DATA) {
+                for (DataObject dataObject : mainListData) {
                     BaseListInfo dataObjectInfoList = dataObject.getBaseListInfo();
                     if (isWhitelistOk(dataObjectInfoList) && isBlacklistOk(dataObjectInfoList)) {
                         filter.add(dataObject);

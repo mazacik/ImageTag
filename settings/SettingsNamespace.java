@@ -1,14 +1,15 @@
 package settings;
 
-public enum SettingsEnum {
-    MAINSCENEW("mainSceneWidth"),
-    MAINSCENEH("mainSceneHeight"),
+public enum SettingsNamespace {
+    MAINSCENE_WIDTH("mainSceneWidth"),
+    MAINSCENE_HEIGHT("mainSceneHeight"),
     TILEVIEW_ICONSIZE("tileViewIconSize"),
+    GLOBAL_SPACING("globalSpacing"),
     ;
 
     private String value;
 
-    SettingsEnum(String value) {
+    SettingsNamespace(String value) {
         this.value = value;
     }
 
