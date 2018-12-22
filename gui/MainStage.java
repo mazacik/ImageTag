@@ -2,7 +2,6 @@ package gui;
 
 import gui.event.center.FullViewEvent;
 import gui.event.center.TileViewEvent;
-import gui.event.global.GlobalContextMenuEvent;
 import gui.event.global.GlobalEvent;
 import gui.event.side.InfoListLeftEvent;
 import gui.event.side.InfoListRightEvent;
@@ -45,7 +44,6 @@ public class MainStage extends Stage implements MainUtil {
         splitPane.setDividerPositions(0.0, 1.0);
     }
     private void initializeEvents() {
-        new GlobalContextMenuEvent();
         new GlobalEvent();
 
         new ToolbarEvent();
