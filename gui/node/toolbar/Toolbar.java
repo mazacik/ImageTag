@@ -46,7 +46,7 @@ public class Toolbar extends BorderPane implements MainUtil, BaseNode {
 
         infoLabelMenuBar.getMenus().add(infoLabelMenu);
 
-        reload.subscribe(this, Reload.Control.SELECTION);
+        reload.subscribe(this, Reload.Control.SELECT);
 
         this.setCenter(new MenuBar(menuFile, menuSelection, menuFilter));
         this.setRight(infoLabelMenuBar);

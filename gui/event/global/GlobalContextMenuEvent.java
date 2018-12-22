@@ -16,7 +16,7 @@ public class GlobalContextMenuEvent implements MainUtil {
     }
 
     private void onAction_menuCopy() {
-        mainStage.getDataObjectContextMenu().getMenuCopy().setOnAction(event -> {
+        mainStage.getDataContextMenu().getMenuCopy().setOnAction(event -> {
             DataObject dataObject;
 
             if (!isFullView()) {
@@ -30,7 +30,7 @@ public class GlobalContextMenuEvent implements MainUtil {
         });
     }
     private void onAction_menuDelete() {
-        mainStage.getDataObjectContextMenu().getMenuDelete().setOnAction(event -> {
+        mainStage.getDataContextMenu().getMenuDelete().setOnAction(event -> {
             target.storePosition();
 
             if (isFullView()) {

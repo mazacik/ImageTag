@@ -10,7 +10,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-public class TagEditor extends Stage {
+public class InfoObjectEditor extends Stage {
     private final GridPane editorPane = new GridPane();
     private final Scene editorScene = new Scene(editorPane);
 
@@ -22,26 +22,18 @@ public class TagEditor extends Stage {
 
     InfoObject infoObject;
 
-    public TagEditor(InfoObject infoObject) {
+    public InfoObjectEditor(InfoObject infoObject) {
         this.infoObject = infoObject;
         initializeComponents();
         initializeInstance();
     }
-
-    public TagEditor() {
+    public InfoObjectEditor() {
         this(null);
-    }
-
-    public static InfoObject createTag() {
-        InfoObject newInfoObject = new TagEditor().getResult();
-        if (newInfoObject == null || newInfoObject.isEmpty()) return null;
-        return newInfoObject;
     }
 
     public InfoObject getResult() {
         return infoObject;
     }
-
     private void getValue() {
         String group = tfGroup.getText();
         String name = tfName.getText();
@@ -88,7 +80,7 @@ public class TagEditor extends Stage {
         });
     }
     private void initializeInstance() {
-        setTitle("Tag Editor");
+        setTitle("Editor");
         setAlwaysOnTop(true);
         setResizable(false);
         setScene(editorScene);

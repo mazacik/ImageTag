@@ -28,7 +28,7 @@ public class Target implements MainUtil {
         }
 
         tileView.adjustViewportToCurrentFocus();
-        reload.notifyChangeIn(Reload.Control.FOCUS);
+        reload.notifyChangeIn(Reload.Control.TARGET);
     }
     public void move(KeyCode keyCode) {
         int columnCount = tileView.getColumnCount();

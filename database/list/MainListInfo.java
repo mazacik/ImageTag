@@ -4,7 +4,7 @@ import control.reload.Reload;
 import database.object.DataObject;
 import database.object.InfoObject;
 import gui.node.side.CustomTreeCell;
-import gui.template.specific.TagEditor;
+import gui.template.specific.InfoObjectEditor;
 import javafx.scene.control.TreeCell;
 import utils.MainUtil;
 
@@ -14,7 +14,7 @@ public class MainListInfo extends BaseListInfo implements MainUtil {
             BaseListInfo baseListInfo = dataIterator.getBaseListInfo();
             for (InfoObject tagIterator : baseListInfo) {
                 if (this.contains(tagIterator)) {
-                    baseListInfo.set(baseListInfo.indexOf(tagIterator), getTagObject(tagIterator));
+                    baseListInfo.set(baseListInfo.indexOf(tagIterator), getInfoObject(tagIterator));
                 } else {
                     this.add(tagIterator);
                 }
@@ -25,7 +25,7 @@ public class MainListInfo extends BaseListInfo implements MainUtil {
 
     public boolean add(InfoObject infoObject) {
         if (infoObject == null) return false;
-        reload.notifyChangeIn(Reload.Control.TAGS);
+        reload.notifyChangeIn(Reload.Control.INFO);
         return super.add(infoObject);
     }
     public boolean remove(InfoObject infoObject) {
@@ -33,24 +33,24 @@ public class MainListInfo extends BaseListInfo implements MainUtil {
         if (super.remove(infoObject)) {
             filter.unlistTagObject(infoObject);
             filter.apply();
-            reload.notifyChangeIn(Reload.Control.TAGS);
+            reload.notifyChangeIn(Reload.Control.INFO);
             return true;
         }
         return false;
     }
     public boolean edit(InfoObject infoObject) {
         if (infoObject == null) return false;
-        InfoObject newInfoObject = new TagEditor(infoObject).getResult();
+        InfoObject newInfoObject = new InfoObjectEditor(infoObject).getResult();
         if (newInfoObject != null) {
             infoObject.setValue(newInfoObject.getGroup(), newInfoObject.getName());
             super.sort();
-            reload.notifyChangeIn(Reload.Control.TAGS);
+            reload.notifyChangeIn(Reload.Control.INFO);
             return true;
         }
         return false;
     }
 
-    public InfoObject getTagObject(String group, String name) {
+    public InfoObject getInfoObject(String group, String name) {
         for (InfoObject iterator : this) {
             String iteratorGroup = iterator.getGroup();
             String iteratorName = iterator.getName();
@@ -60,18 +60,18 @@ public class MainListInfo extends BaseListInfo implements MainUtil {
         }
         return null;
     }
-    public InfoObject getTagObject(InfoObject infoObject) {
+    public InfoObject getInfoObject(InfoObject infoObject) {
         String tagObjectGroup = infoObject.getGroup();
         String tagObjectName = infoObject.getName();
-        return getTagObject(tagObjectGroup, tagObjectName);
+        return getInfoObject(tagObjectGroup, tagObjectName);
     }
-    public InfoObject getTagObject(String groupAndName) {
+    public InfoObject getInfoObject(String groupAndName) {
         String[] split = groupAndName.split("-");
         String tagObjectGroup = split[0].trim();
         String tagObjectName = split[1].trim();
-        return getTagObject(tagObjectGroup, tagObjectName);
+        return getInfoObject(tagObjectGroup, tagObjectName);
     }
-    public InfoObject getTagObject(TreeCell<CustomTreeCell> treeCell) {
+    public InfoObject getInfoObject(TreeCell<CustomTreeCell> treeCell) {
         if (treeCell == null) return null;
         String tagObjectGroup;
         try {
@@ -80,6 +80,6 @@ public class MainListInfo extends BaseListInfo implements MainUtil {
             return null;
         }
         String tagObjectName = treeCell.getText();
-        return getTagObject(tagObjectGroup, tagObjectName);
+        return getInfoObject(tagObjectGroup, tagObjectName);
     }
 }

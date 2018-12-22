@@ -45,17 +45,17 @@ public class Filter extends MainListData implements MainUtil {
 
     public void whitelistGroup(String group) {
         for (String name : mainListInfo.getNames(group)) {
-            whitelistTagObject(mainListInfo.getTagObject(group, name));
+            whitelistTagObject(mainListInfo.getInfoObject(group, name));
         }
     }
     public void blacklistGroup(String group) {
         for (String name : mainListInfo.getNames(group)) {
-            blacklistTagObject(mainListInfo.getTagObject(group, name));
+            blacklistTagObject(mainListInfo.getInfoObject(group, name));
         }
     }
     public void unlistGroup(String group) {
         for (String name : mainListInfo.getNames(group)) {
-            unlistTagObject(mainListInfo.getTagObject(group, name));
+            unlistTagObject(mainListInfo.getInfoObject(group, name));
         }
     }
 
@@ -84,13 +84,13 @@ public class Filter extends MainListData implements MainUtil {
         return infoListWhite.contains(infoObject);
     }
     public boolean isTagObjectWhitelisted(String group, String name) {
-        return infoListWhite.contains(mainListInfo.getTagObject(group, name));
+        return infoListWhite.contains(mainListInfo.getInfoObject(group, name));
     }
     public boolean isTagObjectBlacklisted(InfoObject infoObject) {
         return infoListBlack.contains(infoObject);
     }
     public boolean isTagObjectBlacklisted(String group, String name) {
-        return infoListBlack.contains(mainListInfo.getTagObject(group, name));
+        return infoListBlack.contains(mainListInfo.getInfoObject(group, name));
     }
 
     public DataObject getRandomObject() {

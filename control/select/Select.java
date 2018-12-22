@@ -12,7 +12,7 @@ public class Select extends MainListData implements MainUtil {
         if (dataObject == null) return false;
         if (super.add(dataObject)) {
             dataObject.generateTileEffect();
-            reload.notifyChangeIn(Reload.Control.SELECTION);
+            reload.notifyChangeIn(Reload.Control.SELECT);
             return true;
         }
         return false;
@@ -21,7 +21,7 @@ public class Select extends MainListData implements MainUtil {
         if (mainListData == null) return false;
         if (super.addAll(mainListData)) {
             mainListData.forEach(DataObject::generateTileEffect);
-            reload.notifyChangeIn(Reload.Control.SELECTION);
+            reload.notifyChangeIn(Reload.Control.SELECT);
             return true;
         }
         return false;
@@ -30,7 +30,7 @@ public class Select extends MainListData implements MainUtil {
         if (dataObject == null) return false;
         if (super.remove(dataObject)) {
             dataObject.generateTileEffect();
-            reload.notifyChangeIn(Reload.Control.SELECTION);
+            reload.notifyChangeIn(Reload.Control.SELECT);
             return true;
         }
         return false;
@@ -44,7 +44,7 @@ public class Select extends MainListData implements MainUtil {
         helper.addAll(this);
         super.clear();
         helper.forEach(DataObject::generateTileEffect);
-        reload.notifyChangeIn(Reload.Control.SELECTION);
+        reload.notifyChangeIn(Reload.Control.SELECT);
     }
     public void swapState(DataObject dataObject) {
         if (super.contains(dataObject)) {

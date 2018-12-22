@@ -11,8 +11,8 @@ import database.list.MainListInfo;
 import gui.MainStage;
 import gui.node.center.FullView;
 import gui.node.center.TileView;
-import gui.node.side.InfoListL;
-import gui.node.side.InfoListR;
+import gui.node.side.InfoListViewL;
+import gui.node.side.InfoListViewR;
 import gui.node.toolbar.Toolbar;
 import settings.Settings;
 
@@ -37,8 +37,8 @@ public interface MainUtil {
     Toolbar toolbar = new Toolbar();
     TileView tileView = new TileView();
     FullView fullView = new FullView();
-    InfoListL infoListL = new InfoListL();
-    InfoListR infoListR = new InfoListR();
+    InfoListViewL infoListViewL = new InfoListViewL();
+    InfoListViewR infoListViewR = new InfoListViewR();
     MainStage mainStage = new MainStage();
 
     default void swapDisplayMode() {

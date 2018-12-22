@@ -28,13 +28,13 @@ public class BaseTileEvent implements MainUtil {
         DataObject dataObject = sender.getParentDataObject();
         target.set(dataObject);
         select.swapState(dataObject);
-        //mainStage.getDataObjectContextMenu().hide();
+        mainStage.getDataContextMenu().hide();
         reload.doReload();
     }
     private void onRightClick(BaseTile sender, MouseEvent event) {
         DataObject dataObject = sender.getParentDataObject();
         target.set(dataObject);
         select.add(dataObject);
-        //mainStage.getDataObjectContextMenu().show(sender, event);
+        mainStage.getDataContextMenu().show(sender, event);
     }
 }

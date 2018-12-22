@@ -13,9 +13,7 @@ import settings.SettingsNamespace;
 import utils.MainUtil;
 
 public class BaseTile extends ImageView implements MainUtil {
-    private static final InnerShadow effectSelect = buildSelectEffect();
-    private static final int tileViewIconSize = settings.valueOf(SettingsNamespace.TILEVIEW_ICONSIZE);
-    private static final ColorInput effectTarget = buildTargetEffect();
+    private static final InnerShadow effectSelect = createEffectSelect();
 
     private final DataObject parentDataObject;
 
@@ -26,7 +24,9 @@ public class BaseTile extends ImageView implements MainUtil {
         setFitHeight(tileViewIconSize);
         new BaseTileEvent(this);
     }
-    private static InnerShadow buildSelectEffect() {
+    private static int tileViewIconSize = settings.valueOf(SettingsNamespace.TILEVIEW_ICONSIZE);
+    private static final ColorInput effectTarget = createEffectTarget();
+    private static InnerShadow createEffectSelect() {
         InnerShadow innerShadow = new InnerShadow();
         innerShadow.setColor(Color.RED);
         innerShadow.setOffsetX(0);
@@ -36,40 +36,41 @@ public class BaseTile extends ImageView implements MainUtil {
         innerShadow.setChoke(1);
         return innerShadow;
     }
-    private static ColorInput buildTargetEffect() {
+    private static ColorInput createEffectTarget() {
         int markSize = 6;
         int markPositionInTile = (tileViewIconSize - markSize) / 2;
         Color markColor = Color.RED;
         return new ColorInput(markPositionInTile, markPositionInTile, markSize, markSize, markColor);
     }
     public void generateEffect() {
-        boolean booleanSelection = false;
+        boolean booleanSelect = false;
         if (parentDataObject != null) {
-            booleanSelection = select.contains(parentDataObject);
+            booleanSelect = select.contains(parentDataObject);
         }
 
         DataObject currentFocus = target.getCurrentFocus();
-        boolean booleanFocus = false;
+        boolean booleanTarget = false;
         if (currentFocus != null) {
-            booleanFocus = currentFocus.equals(parentDataObject);
+            booleanTarget = currentFocus.equals(parentDataObject);
         }
 
-        if (!booleanSelection && !booleanFocus) {
-            setEffect(null);
-        } else if (!booleanSelection && booleanFocus) {
+        if (!booleanSelect && !booleanTarget) {
+            this.setEffect(null);
+        } else if (!booleanSelect && booleanTarget) {
             Blend blend = new Blend();
             blend.setTopInput(effectTarget);
-            setEffect(blend);
-        } else if (booleanSelection && !booleanFocus) {
-            setEffect(effectSelect);
-        } else if (booleanSelection && booleanFocus) {
+            this.setEffect(blend);
+        } else if (booleanSelect && !booleanTarget) {
+            this.setEffect(effectSelect);
+        } else if (booleanSelect && booleanTarget) {
             Blend effect = new Blend();
             effect.setTopInput(effectSelect);
             effect.setBottomInput(effectTarget);
             effect.setMode(BlendMode.OVERLAY);
-            setEffect(effect);
+            this.setEffect(effect);
         }
     }
+
     public DataObject getParentDataObject() {
         return parentDataObject;
     }

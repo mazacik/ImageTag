@@ -6,7 +6,10 @@ import gui.event.side.InfoListLeftEvent;
 import gui.node.BaseNode;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TreeCell;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Priority;
@@ -17,12 +20,11 @@ import utils.MainUtil;
 
 import java.util.ArrayList;
 
-public class InfoListL extends VBox implements MainUtil, BaseNode {
+public class InfoListViewL extends VBox implements MainUtil, BaseNode {
     private final TreeView<CustomTreeCell> treeView;
-    private final ContextMenu TEMP = new ContextMenu(); // todo fix me
     private final Button btnNew = new Button("New");
 
-    public InfoListL() {
+    public InfoListViewL() {
         this.setMinWidth(200);
         this.setPrefWidth(250);
         this.setMaxWidth(300);
@@ -36,14 +38,14 @@ public class InfoListL extends VBox implements MainUtil, BaseNode {
 
         btnNew.setPrefWidth(this.getMaxWidth());
 
-        reload.subscribe(this, Reload.Control.TAGS);
+        reload.subscribe(this, Reload.Control.INFO);
 
-        this.setCellFactory(TEMP);
+        this.setCellFactory();
         this.getChildren().addAll(treeView, btnNew);
     }
 
     public void changeCellState(TreeCell<CustomTreeCell> sourceCell) {
-        InfoObject infoObject = mainListInfo.getTagObject(sourceCell);
+        InfoObject infoObject = mainListInfo.getInfoObject(sourceCell);
         CustomTreeCell customTreeCell;
         try {
             customTreeCell = sourceCell.getTreeItem().getValue();
@@ -118,7 +120,7 @@ public class InfoListL extends VBox implements MainUtil, BaseNode {
             treeViewItems.add(groupTreeItem);
         }
     }
-    private void setCellFactory(ContextMenu contextMenu) {
+    private void setCellFactory() {
         treeView.setCellFactory(treeView -> new TreeCell<>() {
             @Override
             protected void updateItem(CustomTreeCell customTreeCell, boolean empty) {
@@ -131,7 +133,6 @@ public class InfoListL extends VBox implements MainUtil, BaseNode {
                     setTextFill(customTreeCell.getColor());
                 }
 
-                this.setContextMenu(contextMenu);
                 this.addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
                     if (e.getClickCount() % 2 == 0 && e.getButton().equals(MouseButton.PRIMARY)) {
                         e.consume();
@@ -140,5 +141,9 @@ public class InfoListL extends VBox implements MainUtil, BaseNode {
                 InfoListLeftEvent.onMouseClick(this);
             }
         });
+    }
+
+    public Button getBtnNew() {
+        return btnNew;
     }
 }

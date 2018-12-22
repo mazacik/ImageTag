@@ -65,7 +65,7 @@ public class TileView extends ScrollPane implements MainUtil, BaseNode {
         if (focusIndex < 0) return;
 
         ObservableList<Node> tilePaneItems = tilePane.getChildren();
-        int columnCount = tileView.getColumnCount();
+        int columnCount = this.getColumnCount();
         int focusRow = focusIndex / columnCount;
 
         Bounds viewportBounds = tilePane.localToScene(this.getViewportBounds());
@@ -100,6 +100,7 @@ public class TileView extends ScrollPane implements MainUtil, BaseNode {
         double columnCount = this.getColumnCount();
         return (int) Math.ceil(itemCountFilter / columnCount);
     }
+
     public TilePane getTilePane() {
         return tilePane;
     }

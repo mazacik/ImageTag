@@ -1,6 +1,6 @@
 package gui.event.center;
 
-import gui.template.generic.DataObjectContextMenu;
+import gui.template.specific.DataContextMenu;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.canvas.Canvas;
 import utils.MainUtil;
@@ -12,7 +12,7 @@ public class FullViewEvent implements MainUtil {
     }
 
     private void onMouseClick() {
-        final DataObjectContextMenu contextMenu = mainStage.getDataObjectContextMenu();
+        final DataContextMenu contextMenu = mainStage.getDataContextMenu();
         fullView.getCanvas().setOnMouseClicked(event -> {
             switch (event.getButton()) {
                 case PRIMARY:

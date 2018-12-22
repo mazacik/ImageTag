@@ -34,10 +34,10 @@ public class Reload implements MainUtil {
 
     public enum Control {
         DATA,
-        TAGS,
+        INFO,
         FILTER,
-        FOCUS,
-        SELECTION,
+        TARGET,
+        SELECT,
         ;
 
         private ArrayList<BaseNode> subscribers;

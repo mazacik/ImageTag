@@ -7,7 +7,6 @@ import gui.event.side.InfoListRightEvent;
 import gui.node.BaseNode;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -22,12 +21,10 @@ import utils.MainUtil;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class InfoListR extends VBox implements MainUtil, BaseNode {
-    //todo holy please rework me
+public class InfoListViewR extends VBox implements MainUtil, BaseNode {
     private final TreeView<CustomTreeCell> treeView;
-    private final ContextMenu TEMP = new ContextMenu(); // todo fix me
 
-    public InfoListR() {
+    public InfoListViewR() {
         this.setMinWidth(200);
         this.setPrefWidth(250);
         this.setMaxWidth(300);
@@ -39,14 +36,14 @@ public class InfoListR extends VBox implements MainUtil, BaseNode {
         treeView.setShowRoot(false);
         VBox.setVgrow(treeView, Priority.ALWAYS);
 
-        reload.subscribe(this, Reload.Control.TAGS, Reload.Control.SELECTION, Reload.Control.FOCUS);
+        reload.subscribe(this, Reload.Control.INFO, Reload.Control.SELECT, Reload.Control.TARGET);
 
-        this.setCellFactory(TEMP);
+        this.setCellFactory();
         this.getChildren().addAll(treeView);
     }
 
     public void changeCellState(TreeCell<CustomTreeCell> sourceCell) {
-        InfoObject infoObject = mainListInfo.getTagObject(sourceCell);
+        InfoObject infoObject = mainListInfo.getInfoObject(sourceCell);
         CustomTreeCell customTreeCell;
         try {
             customTreeCell = sourceCell.getTreeItem().getValue();
@@ -94,7 +91,6 @@ public class InfoListR extends VBox implements MainUtil, BaseNode {
     }
 
     public void reload() {
-        //todo split
         ObservableList<TreeItem<CustomTreeCell>> treeViewItems = treeView.getRoot().getChildren();
 
         int treeViewItemsCountBefore = treeViewItems.size();
@@ -106,7 +102,6 @@ public class InfoListR extends VBox implements MainUtil, BaseNode {
         }
 
         treeViewItems.clear();
-
         ArrayList<String> groupsInter = select.getIntersectingTags().getGroups();
         ArrayList<String> groupsShare = select.getSharedTags().getGroups();
         ArrayList<String> groupsAll = mainListInfo.getGroups();
@@ -178,7 +173,7 @@ public class InfoListR extends VBox implements MainUtil, BaseNode {
 
         treeView.refresh();
     }
-    private void setCellFactory(ContextMenu contextMenu) {
+    private void setCellFactory() {
         treeView.setCellFactory(treeView -> new TreeCell<>() {
             @Override
             protected void updateItem(CustomTreeCell customTreeCell, boolean empty) {
@@ -191,7 +186,6 @@ public class InfoListR extends VBox implements MainUtil, BaseNode {
                     setTextFill(customTreeCell.getColor());
                 }
 
-                this.setContextMenu(contextMenu);
                 this.addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
                     if (e.getClickCount() % 2 == 0 && e.getButton().equals(MouseButton.PRIMARY)) {
                         e.consume();

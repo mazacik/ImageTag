@@ -12,20 +12,16 @@ import settings.SettingsNamespace;
 import utils.MainUtil;
 
 public class FullView extends Pane implements MainUtil, BaseNode {
-    private final Canvas canvas;
+    private final Canvas canvas = new Canvas();
 
-    private DataObject currentDataObject;
-    private Image currentPreviewImage;
+    private DataObject currentDataObject = null;
+    private Image currentPreviewImage = null;
 
     public FullView() {
-        canvas = new Canvas();
         canvas.widthProperty().bind(this.widthProperty());
         canvas.heightProperty().bind(this.heightProperty());
 
-        currentDataObject = null;
-        currentPreviewImage = null;
-
-        reload.subscribe(this, Reload.Control.FOCUS);
+        reload.subscribe(this, Reload.Control.TARGET);
 
         this.setWidth(settings.valueOf(SettingsNamespace.MAINSCENE_WIDTH));
         this.setHeight(settings.valueOf(SettingsNamespace.MAINSCENE_HEIGHT));
@@ -39,7 +35,8 @@ public class FullView extends Pane implements MainUtil, BaseNode {
         DataObject currentFocus = target.getCurrentFocus();
         if (currentFocus == null) return;
         if (currentDataObject == null || !currentDataObject.equals(currentFocus)) {
-            loadImageOfCurrentFocus();
+            String url = "file:" + settings.getCurrentDirectory() + "\\" + target.getCurrentFocus().getName();
+            currentPreviewImage = new Image(url);
             currentDataObject = currentFocus;
         }
 
@@ -65,11 +62,6 @@ public class FullView extends Pane implements MainUtil, BaseNode {
 
         gc.clearRect(0, 0, this.getWidth(), this.getHeight());
         gc.drawImage(currentPreviewImage, resultX, resultY, resultWidth, resultHeight);
-    }
-
-    private void loadImageOfCurrentFocus() {
-        String url = "file:" + settings.getCurrentDirectory() + "\\" + target.getCurrentFocus().getName();
-        currentPreviewImage = new Image(url);
     }
 
     public Canvas getCanvas() {

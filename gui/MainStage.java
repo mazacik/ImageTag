@@ -4,9 +4,11 @@ import gui.event.center.FullViewEvent;
 import gui.event.center.TileViewEvent;
 import gui.event.global.GlobalContextMenuEvent;
 import gui.event.global.GlobalEvent;
+import gui.event.side.InfoListLeftEvent;
 import gui.event.side.InfoListRightEvent;
 import gui.event.toolbar.ToolbarEvent;
-import gui.template.generic.DataObjectContextMenu;
+import gui.template.specific.DataContextMenu;
+import gui.template.specific.InfoContextMenu;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -17,8 +19,9 @@ import settings.SettingsNamespace;
 import utils.MainUtil;
 
 public class MainStage extends Stage implements MainUtil {
-    private final SplitPane splitPane = new SplitPane(infoListL, tileView, infoListR);
-    private final DataObjectContextMenu dataObjectContextMenu = new DataObjectContextMenu();
+    private final SplitPane splitPane = new SplitPane(infoListViewL, tileView, infoListViewR);
+    private final DataContextMenu dataContextMenu = new DataContextMenu();
+    private final InfoContextMenu infoContextMenu = new InfoContextMenu();
 
     public void initialize() {
         logger.debug(this, "gui initialize start");
@@ -48,6 +51,7 @@ public class MainStage extends Stage implements MainUtil {
         new ToolbarEvent();
         new TileViewEvent();
         new FullViewEvent();
+        new InfoListLeftEvent();
         new InfoListRightEvent();
     }
 
@@ -67,7 +71,10 @@ public class MainStage extends Stage implements MainUtil {
         return splitPane.getItems().contains(fullView);
     }
 
-    public DataObjectContextMenu getDataObjectContextMenu() {
-        return dataObjectContextMenu;
+    public DataContextMenu getDataContextMenu() {
+        return dataContextMenu;
+    }
+    public InfoContextMenu getInfoContextMenu() {
+        return infoContextMenu;
     }
 }

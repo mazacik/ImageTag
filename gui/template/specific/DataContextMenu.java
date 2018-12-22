@@ -1,15 +1,15 @@
-package gui.template.generic;
+package gui.template.specific;
 
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
 
-public class DataObjectContextMenu extends ContextMenu {
+public class DataContextMenu extends ContextMenu {
     private final MenuItem menuCopy = new MenuItem("Copy Filename");
     private final MenuItem menuDelete = new MenuItem("Delete File");
 
-    public DataObjectContextMenu() {
+    public DataContextMenu() {
         this.getItems().addAll(menuCopy, menuDelete);
     }
 

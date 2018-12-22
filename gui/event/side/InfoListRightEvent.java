@@ -1,6 +1,7 @@
 package gui.event.side;
 
 import gui.node.side.CustomTreeCell;
+import gui.template.specific.InfoContextMenu;
 import javafx.scene.control.TreeCell;
 import javafx.scene.input.MouseEvent;
 import utils.MainUtil;
@@ -22,9 +23,12 @@ public class InfoListRightEvent implements MainUtil {
     }
 
     private static void onLeftClick(TreeCell<CustomTreeCell> sourceCell) {
-        infoListR.changeCellState(sourceCell);
+        mainStage.getInfoContextMenu().hide();
+        infoListViewR.changeCellState(sourceCell);
     }
     private static void onRightClick(TreeCell<CustomTreeCell> sourceCell, MouseEvent event) {
-        sourceCell.getContextMenu().show(infoListR, event.getX(), event.getY());
+        InfoContextMenu infoContextMenu = mainStage.getInfoContextMenu();
+        infoContextMenu.setInfoObject(mainListInfo.getInfoObject(sourceCell));
+        infoContextMenu.show(infoListViewR, event.getX(), event.getY());
     }
 }
