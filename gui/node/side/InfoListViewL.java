@@ -12,6 +12,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -22,6 +23,8 @@ import java.util.ArrayList;
 
 public class InfoListViewL extends VBox implements MainUtil, BaseNode {
     private final TreeView<CustomTreeCell> treeView;
+    private final Button btnExpand = new Button("Expand All");
+    private final Button btnCollapse = new Button("Collapse All");
     private final Button btnNew = new Button("New");
 
     public InfoListViewL() {
@@ -41,7 +44,13 @@ public class InfoListViewL extends VBox implements MainUtil, BaseNode {
         reload.subscribe(this, Reload.Control.INFO);
 
         this.setCellFactory();
-        this.getChildren().addAll(treeView, btnNew);
+
+        btnExpand.setPrefWidth(this.getPrefWidth());
+        btnCollapse.setPrefWidth(this.getPrefWidth());
+        HBox hbox = new HBox(btnExpand, btnCollapse);
+        hbox.setSpacing(settings.valueOf(SettingsNamespace.GLOBAL_SPACING));
+
+        this.getChildren().addAll(hbox, treeView, btnNew);
     }
 
     public void changeCellState(TreeCell<CustomTreeCell> sourceCell) {
@@ -143,6 +152,15 @@ public class InfoListViewL extends VBox implements MainUtil, BaseNode {
         });
     }
 
+    public TreeView<CustomTreeCell> getTreeView() {
+        return treeView;
+    }
+    public Button getBtnExpand() {
+        return btnExpand;
+    }
+    public Button getBtnCollapse() {
+        return btnCollapse;
+    }
     public Button getBtnNew() {
         return btnNew;
     }

@@ -7,6 +7,11 @@ import javafx.scene.input.MouseEvent;
 import utils.MainUtil;
 
 public class InfoListRightEvent implements MainUtil {
+    public InfoListRightEvent() {
+        onAction_btnExpand();
+        onAction_btnCollapse();
+    }
+
     public static void onMouseClick(TreeCell<CustomTreeCell> sourceCell) {
         sourceCell.setOnMouseClicked(event -> {
             switch (event.getButton()) {
@@ -30,5 +35,12 @@ public class InfoListRightEvent implements MainUtil {
         InfoContextMenu infoContextMenu = mainStage.getInfoContextMenu();
         infoContextMenu.setInfoObject(mainListInfo.getInfoObject(sourceCell));
         infoContextMenu.show(infoListViewR, event.getX(), event.getY());
+    }
+
+    private void onAction_btnExpand() {
+        infoListViewR.getBtnExpand().setOnAction(event -> infoListViewR.getTreeView().getRoot().getChildren().forEach(node -> node.setExpanded(true)));
+    }
+    private void onAction_btnCollapse() {
+        infoListViewR.getBtnCollapse().setOnAction(event -> infoListViewR.getTreeView().getRoot().getChildren().forEach(node -> node.setExpanded(false)));
     }
 }

@@ -100,11 +100,11 @@ public class Filter extends MainListData implements MainUtil {
     public FilterMode getWhitelistMode() {
         return whitelistMode;
     }
-    public FilterMode getBlacklistMode() {
-        return blacklistMode;
-    }
     public void setWhitelistMode(FilterMode whitelistMode) {
         this.whitelistMode = whitelistMode;
+    }
+    public FilterMode getBlacklistMode() {
+        return blacklistMode;
     }
     public void setBlacklistMode(FilterMode blacklistMode) {
         this.blacklistMode = blacklistMode;

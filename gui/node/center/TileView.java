@@ -28,6 +28,8 @@ public class TileView extends ScrollPane implements MainUtil, BaseNode {
         this.setMinViewportWidth(galleryIconSize);
         this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         this.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        tilePane.setPrefWidth(settings.valueOf(SettingsNamespace.MAINSCENE_WIDTH));
+        tilePane.setPrefHeight(settings.valueOf(SettingsNamespace.MAINSCENE_HEIGHT));
         this.setFitToWidth(true);
         this.setFitToHeight(true);
         this.setContent(tilePane);

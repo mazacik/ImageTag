@@ -11,6 +11,8 @@ import utils.MainUtil;
 
 public class InfoListLeftEvent implements MainUtil {
     public InfoListLeftEvent() {
+        onAction_btnExpand();
+        onAction_btnCollapse();
         onAction_btnNew();
     }
     private static void onLeftClick(TreeCell<CustomTreeCell> sourceCell) {
@@ -36,6 +38,13 @@ public class InfoListLeftEvent implements MainUtil {
         InfoContextMenu infoContextMenu = mainStage.getInfoContextMenu();
         infoContextMenu.setInfoObject(mainListInfo.getInfoObject(sourceCell));
         infoContextMenu.show(infoListViewL, event.getX(), event.getY());
+    }
+
+    private void onAction_btnExpand() {
+        infoListViewL.getBtnExpand().setOnAction(event -> infoListViewL.getTreeView().getRoot().getChildren().forEach(node -> node.setExpanded(true)));
+    }
+    private void onAction_btnCollapse() {
+        infoListViewL.getBtnCollapse().setOnAction(event -> infoListViewL.getTreeView().getRoot().getChildren().forEach(node -> node.setExpanded(false)));
     }
     private void onAction_btnNew() {
         infoListViewL.getBtnNew().setOnAction(event -> {

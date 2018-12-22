@@ -14,9 +14,9 @@ import utils.MainUtil;
 
 public class BaseTile extends ImageView implements MainUtil {
     private static final InnerShadow effectSelect = createEffectSelect();
-
+    private static int tileViewIconSize = settings.valueOf(SettingsNamespace.TILEVIEW_ICONSIZE);
+    private static final ColorInput effectTarget = createEffectTarget();
     private final DataObject parentDataObject;
-
     public BaseTile(DataObject dataObject, Image thumbnail) {
         super(thumbnail);
         parentDataObject = dataObject;
@@ -24,8 +24,6 @@ public class BaseTile extends ImageView implements MainUtil {
         setFitHeight(tileViewIconSize);
         new BaseTileEvent(this);
     }
-    private static int tileViewIconSize = settings.valueOf(SettingsNamespace.TILEVIEW_ICONSIZE);
-    private static final ColorInput effectTarget = createEffectTarget();
     private static InnerShadow createEffectSelect() {
         InnerShadow innerShadow = new InnerShadow();
         innerShadow.setColor(Color.RED);
