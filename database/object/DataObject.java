@@ -1,7 +1,7 @@
 package database.object;
 
 import database.list.BaseListInfo;
-import gui.node.center.BaseTile;
+import userinterface.node.center.BaseTile;
 
 import java.io.File;
 import java.io.Serializable;

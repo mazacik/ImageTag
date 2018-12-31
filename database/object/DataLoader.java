@@ -2,13 +2,13 @@ package database.object;
 
 import control.reload.Reload;
 import database.list.MainListData;
-import gui.node.center.BaseTile;
-import gui.template.specific.LoadingWindow;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import org.apache.commons.io.FilenameUtils;
 import settings.SettingsNamespace;
+import userinterface.node.center.BaseTile;
+import userinterface.template.specific.LoadingWindow;
 import utils.MainUtil;
 
 import javax.imageio.ImageIO;

@@ -3,9 +3,9 @@ package database.list;
 import control.reload.Reload;
 import database.object.DataObject;
 import database.object.InfoObject;
-import gui.node.side.CustomTreeCell;
-import gui.template.specific.InfoObjectEditor;
 import javafx.scene.control.TreeCell;
+import userinterface.node.side.CustomTreeCell;
+import userinterface.template.specific.InfoObjectEditor;
 import utils.MainUtil;
 
 public class MainListInfo extends BaseListInfo implements MainUtil {

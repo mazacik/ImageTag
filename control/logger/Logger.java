@@ -1,20 +1,15 @@
 package control.logger;
 
-public class Logger {
-    private final int maxClassNameLength;
-
-    public Logger() {
-        maxClassNameLength = 16;
+public final class Logger {
+    private final int maxClassNameLength = 16;
+    private Logger() {
+        if (LoggerLoader.instance != null) {
+            throw new IllegalStateException(this.getClass().getSimpleName() + " already instantiated");
+        }
     }
-
-    public void error(Object source, String message) {
-        //todo use proper exceptions?
-        System.out.println("ERROR: " + formatSource(source) + ": " + message.trim());
+    public static Logger getInstance() {
+        return LoggerLoader.instance;
     }
-    public void debug(Object source, String message) {
-        System.out.println("DEBUG: " + formatSource(source) + ": " + message.trim());
-    }
-
     private String formatSource(Object source) {
         String value;
         if (source instanceof Class)
@@ -33,6 +28,18 @@ public class Logger {
             value += " ";
             length++;
         }
+
         return value;
+    }
+
+    public void error(Object source, String message) {
+        System.out.println("ERROR: " + formatSource(source) + ": " + message.trim());
+    }
+    public void debug(Object source, String message) {
+        System.out.println("DEBUG: " + formatSource(source) + ": " + message.trim());
+    }
+
+    private static class LoggerLoader {
+        private static final Logger instance = new Logger();
     }
 }

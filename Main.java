@@ -1,6 +1,6 @@
-import gui.template.specific.IntroWindow;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import userinterface.template.specific.IntroWindow;
 import utils.MainUtil;
 
 public class Main extends Application implements MainUtil {

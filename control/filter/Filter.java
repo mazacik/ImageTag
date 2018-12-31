@@ -115,20 +115,20 @@ public class Filter extends MainListData implements MainUtil {
 
         switch (this.currentFilterTemplate) {
             case CUSTOM:
-                toolbar.getMenuUntaggedOnly().setSelected(false);
-                toolbar.getMenuMaxXTags().setSelected(false);
+                topMenu.getMenuUntaggedOnly().setSelected(false);
+                topMenu.getMenuMaxXTags().setSelected(false);
                 break;
             case SHOW_EVERYTHING:
-                toolbar.getMenuUntaggedOnly().setSelected(false);
-                toolbar.getMenuMaxXTags().setSelected(false);
+                topMenu.getMenuUntaggedOnly().setSelected(false);
+                topMenu.getMenuMaxXTags().setSelected(false);
                 break;
             case SHOW_UNTAGGED:
-                toolbar.getMenuUntaggedOnly().setSelected(true);
-                toolbar.getMenuMaxXTags().setSelected(false);
+                topMenu.getMenuUntaggedOnly().setSelected(true);
+                topMenu.getMenuMaxXTags().setSelected(false);
                 break;
             case SHOW_MAX_X_TAGS:
-                toolbar.getMenuUntaggedOnly().setSelected(false);
-                toolbar.getMenuMaxXTags().setSelected(true);
+                topMenu.getMenuUntaggedOnly().setSelected(false);
+                topMenu.getMenuMaxXTags().setSelected(true);
                 break;
             default:
                 break;
