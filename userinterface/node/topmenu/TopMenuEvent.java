@@ -2,6 +2,7 @@ package userinterface.node.topmenu;
 
 import control.filter.Filter;
 import control.filter.FilterTemplate;
+import database.object.DataObject;
 import javafx.stage.WindowEvent;
 import userinterface.template.generic.NumberInputWindow;
 import utils.MainUtil;
@@ -21,6 +22,9 @@ public class TopMenuEvent implements MainUtil {
         onAction_menuModeBlacklistAll();
         onAction_menuModeBlacklistAny();
         onAction_menuReset();
+
+        onAction_btnRandom();
+        onAction_btnFullView();
     }
 
     private void onAction_menuSave() {
@@ -96,5 +100,18 @@ public class TopMenuEvent implements MainUtil {
             filter.setFilter(FilterTemplate.SHOW_EVERYTHING);
             reload.doReload();
         });
+    }
+
+    private void onAction_btnRandom() {
+        topMenu.getBtnRandom().setOnAction(event -> {
+            //todo shared with global keybind. move
+            DataObject dataObject = filter.getRandomObject();
+            select.set(dataObject);
+            target.set(dataObject);
+            reload.doReload();
+        });
+    }
+    private void onAction_btnFullView() {
+        topMenu.getBtnFullView().setOnAction(event -> swapDisplayMode());
     }
 }

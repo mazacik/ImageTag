@@ -24,6 +24,5 @@ public class MainListData extends BaseList<DataObject> implements MainUtil {
 
     public void sort() {
         super.sort(Comparator.comparing(DataObject::getName));
-        //todo other sorts?
     }
 }

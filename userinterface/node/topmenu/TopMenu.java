@@ -102,4 +102,11 @@ public class TopMenu extends BorderPane implements MainUtil, BaseNode {
     public MenuItem getMenuReset() {
         return menuReset;
     }
+
+    public Button getBtnRandom() {
+        return btnRandom;
+    }
+    public Button getBtnFullView() {
+        return btnFullView;
+    }
 }
