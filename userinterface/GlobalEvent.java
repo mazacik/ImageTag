@@ -1,6 +1,5 @@
-package userinterface.node;
+package userinterface;
 
-import database.object.DataObject;
 import utils.MainUtil;
 
 public class GlobalEvent implements MainUtil {
@@ -15,9 +14,7 @@ public class GlobalEvent implements MainUtil {
                     select.swapState(target.getCurrentFocus());
                     break;
                 case R:
-                    DataObject dataObject = filter.getRandomObject();
-                    select.set(dataObject);
-                    target.set(dataObject);
+                    select.setRandom();
                     break;
                 case F12:
                     swapDisplayMode();

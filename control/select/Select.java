@@ -39,6 +39,11 @@ public class Select extends MainListData implements MainUtil {
         this.clear();
         this.add(dataObject);
     }
+    public void setRandom() {
+        DataObject dataObject = filter.getRandomObject();
+        select.set(dataObject);
+        target.set(dataObject);
+    }
     public void clear() {
         MainListData helper = new MainListData();
         helper.addAll(this);

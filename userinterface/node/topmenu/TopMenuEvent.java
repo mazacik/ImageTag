@@ -2,7 +2,6 @@ package userinterface.node.topmenu;
 
 import control.filter.Filter;
 import control.filter.FilterTemplate;
-import database.object.DataObject;
 import javafx.stage.WindowEvent;
 import userinterface.template.generic.NumberInputWindow;
 import utils.MainUtil;
@@ -104,10 +103,7 @@ public class TopMenuEvent implements MainUtil {
 
     private void onAction_menuRandom() {
         topMenu.getMenuRandom()._setOnAction(event -> {
-            //todo shared with global keybind. move
-            DataObject dataObject = filter.getRandomObject();
-            select.set(dataObject);
-            target.set(dataObject);
+            select.setRandom();
             reload.doReload();
         });
     }

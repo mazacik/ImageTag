@@ -7,7 +7,6 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import settings.SettingsNamespace;
-import userinterface.node.GlobalEvent;
 import userinterface.node.center.FullViewEvent;
 import userinterface.node.center.TileViewEvent;
 import userinterface.node.side.InfoListViewLEvent;
