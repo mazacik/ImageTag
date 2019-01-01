@@ -23,8 +23,8 @@ public class TopMenuEvent implements MainUtil {
         onAction_menuModeBlacklistAny();
         onAction_menuReset();
 
-        onAction_btnRandom();
-        onAction_btnFullView();
+        onAction_menuRandom();
+        onAction_menuFullView();
     }
 
     private void onAction_menuSave() {
@@ -102,8 +102,8 @@ public class TopMenuEvent implements MainUtil {
         });
     }
 
-    private void onAction_btnRandom() {
-        topMenu.getBtnRandom().setOnAction(event -> {
+    private void onAction_menuRandom() {
+        topMenu.getMenuRandom()._setOnAction(event -> {
             //todo shared with global keybind. move
             DataObject dataObject = filter.getRandomObject();
             select.set(dataObject);
@@ -111,7 +111,7 @@ public class TopMenuEvent implements MainUtil {
             reload.doReload();
         });
     }
-    private void onAction_btnFullView() {
-        topMenu.getBtnFullView().setOnAction(event -> swapDisplayMode());
+    private void onAction_menuFullView() {
+        topMenu.getMenuFullView()._setOnAction(event -> swapDisplayMode());
     }
 }
