@@ -2,90 +2,88 @@ package userinterface.template.specific;
 
 import database.object.DataLoader;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import settings.SettingsNamespace;
+import userinterface.BackgroundEnum;
 import userinterface.template.generic.DirectoryChooserWindow;
 import utils.MainUtil;
 
 public class IntroWindow extends Stage implements MainUtil {
-    private final GridPane introPane = new GridPane();
-    private final Scene sceneIntro = new Scene(introPane);
-
-    private final Label label = new Label("Source:");
-    private final ComboBox<String> comboBox = new ComboBox<>();
-    private final Button btnDots = new Button("...");
-    private final Button btnOk = new Button("OK");
+    private final VBox vboxL = new VBox();
+    private final VBox vBoxR = new VBox();
+    private final Button btnChoose = new Button("Choose a Directory");
 
     public IntroWindow() {
         setDefaultValuesChildren();
         setDefaultValues();
-        logger.debug(this, "waiting for input");
+        logger.debug(this, "waiting for directory");
     }
 
     private void setDefaultValuesChildren() {
-        introPane.add(label, 0, 0);
-        introPane.add(comboBox, 1, 0);
-        introPane.add(btnDots, 2, 0);
-        introPane.add(btnOk, 2, 2);
+        settings.getRecentDirectoriesList().forEach(item -> vboxL.getChildren().add(new IntroWindowListCell(item)));
+        vboxL.getChildren().forEach(node -> {
+            if (node instanceof IntroWindowListCell) {
+                node.setOnMouseClicked(event -> {
+                    if (event.getPickResult().getIntersectedNode().getParent().equals(((IntroWindowListCell) node).getRemoveLabel())) {
+                        settings.getRecentDirectoriesList().remove(((IntroWindowListCell) node).getPath());
+                        vboxL.getChildren().remove(node);
+                    } else {
+                        settings.setCurrentDirectory(((IntroWindowListCell) node).getPath());
+                        new DataLoader().start();
+                        this.close();
+                    }
+                });
+            }
+        });
+        vboxL.setPadding(new Insets(5));
+        vboxL.setPrefWidth(200);
+        vboxL.setBackground(BackgroundEnum.NIGHT_2.getValue());
 
-        introPane.setPadding(new Insets(10));
-        introPane.setHgap(5);
-        introPane.setVgap(3);
+        vBoxR.getChildren().add(btnChoose);
+        vBoxR.setSpacing(10);
+        vBoxR.setPrefWidth(500);
+        vBoxR.setAlignment(Pos.CENTER);
+        vBoxR.setBackground(BackgroundEnum.NIGHT_1.getValue());
 
-        comboBox.setPrefWidth(300);
-        btnDots.setPrefWidth(35);
-        btnOk.setPrefWidth(35);
+        btnChoose.setBackground(BackgroundEnum.NIGHT_1.getValue());
+        btnChoose.setFont(new Font(14));
+        btnChoose.setTextFill(Color.LIGHTGRAY);
+        btnChoose.setOnMouseEntered(event -> btnChoose.setTextFill(Color.ORANGE));
+        btnChoose.setOnMouseExited(event -> btnChoose.setTextFill(Color.LIGHTGRAY));
+        btnChoose.requestFocus();
 
-        if (!settings.getRecentDirectoriesList().isEmpty()) {
-            this.refreshComboBoxItems();
-            btnOk.requestFocus();
-        } else {
-            btnOk.setDisable(true);
-            btnDots.requestFocus();
-        }
-
-        setBtnDotsListener();
-        setBtnOkListener();
+        this.setBtnChooseListener();
     }
     private void setDefaultValues() {
-        setTitle("ImageTag");
-        setScene(sceneIntro);
-        setResizable(false);
-        centerOnScreen();
+        this.setTitle("Welcome to " + SettingsNamespace.APPNAME.getValue());
+
+        this.setHeight(649); //todo dynamic calculation?
+        this.setScene(new Scene(new HBox(vboxL, vBoxR)));
+        this.setResizable(false);
+        this.centerOnScreen();
         this.setOnCloseRequest(event -> logger.debug(this, "application exit"));
-        show();
+        this.show();
     }
 
-    private void setBtnDotsListener() {
-        btnDots.setOnAction(event -> {
+    private void setBtnChooseListener() {
+        btnChoose.setOnAction(event -> {
             String sourcePath = new DirectoryChooserWindow(this, "Choose Source Directory Path", "C:\\").getResultValue();
             if (!sourcePath.isEmpty()) {
-                int length = sourcePath.length() - 1;
-                if (sourcePath.length() > 4 && (sourcePath.charAt(length) != '\\' || sourcePath.charAt(length) != '/')) {
+                char lastchar = sourcePath.charAt(sourcePath.length() - 1);
+                if (sourcePath.length() > 3 && (lastchar != '\\' || lastchar != '/')) {
                     sourcePath += "\\";
                 }
                 settings.setCurrentDirectory(sourcePath);
-                this.refreshComboBoxItems();
-                btnOk.setDisable(false);
-                btnOk.requestFocus();
+                new DataLoader().start();
+                this.close();
             }
         });
-    }
-    private void setBtnOkListener() {
-        btnOk.setOnAction(event -> {
-            settings.setCurrentDirectory(comboBox.getValue());
-            btnOk.setDisable(true);
-            new DataLoader().start();
-            this.close();
-        });
-    }
-
-    private void refreshComboBoxItems() {
-        comboBox.getItems().setAll(settings.getRecentDirectoriesList());
-        comboBox.getSelectionModel().selectFirst();
     }
 }

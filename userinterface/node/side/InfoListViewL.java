@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import namespace.Namespace;
 import settings.SettingsNamespace;
+import userinterface.BackgroundEnum;
 import userinterface.node.BaseNode;
 import utils.MainUtil;
 
@@ -32,7 +33,6 @@ public class InfoListViewL extends VBox implements MainUtil, BaseNode {
         this.setPadding(new Insets(settings.valueOf(SettingsNamespace.GLOBAL_SPACING)));
 
         treeView = new TreeView(new TreeItem());
-        //treeView.setMaxHeight(this.getMaxHeight());
         treeView.setShowRoot(false);
         VBox.setVgrow(treeView, Priority.ALWAYS);
 
@@ -128,6 +128,8 @@ public class InfoListViewL extends VBox implements MainUtil, BaseNode {
                     setText(customTreeCell.getText());
                     setTextFill(customTreeCell.getColor());
                 }
+
+                this.setBackground(BackgroundEnum.NIGHT_1.getValue());
 
                 InfoListViewLEvent.onMouseClick(this);
                 this.addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {

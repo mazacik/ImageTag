@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.TilePane;
 import settings.SettingsNamespace;
+import userinterface.BackgroundEnum;
 import userinterface.node.BaseNode;
 import utils.MainUtil;
 
@@ -21,6 +22,7 @@ public class TileView extends ScrollPane implements MainUtil, BaseNode {
         tilePane.setVgap(3);
         tilePane.setPrefTileWidth(galleryIconSize);
         tilePane.setPrefTileHeight(galleryIconSize);
+        tilePane.setBackground(BackgroundEnum.NIGHT_1.getValue());
 
         this.setMinViewportWidth(galleryIconSize);
         this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -43,17 +45,17 @@ public class TileView extends ScrollPane implements MainUtil, BaseNode {
         this.calculateTilePaneHGap();
     }
     public void calculateTilePaneHGap() {
-        //todo fix poslednych par pixelov
-        int minGap = (int) tilePane.getVgap();
-        int hgap = minGap;
+        int currentGap = (int) tilePane.getVgap();
+        int hgap = currentGap;
 
-        int tilePaneWidth = (int) tilePane.getWidth() + minGap;
+        int tilePaneWidth = (int) tilePane.getWidth() + currentGap;
         int prefTileWidth = (int) tilePane.getPrefTileWidth();
         int columnCount = tilePaneWidth / prefTileWidth - 1;
 
         if (columnCount > 0) {
-            hgap = (tilePaneWidth + minGap * columnCount) % (prefTileWidth + minGap) / columnCount;
+            hgap = (tilePaneWidth + currentGap * columnCount) % (prefTileWidth + currentGap) / columnCount;
         }
+        if (hgap < 3) hgap = currentGap;
 
         tilePane.setHgap(hgap);
     }

@@ -6,7 +6,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import settings.SettingsNamespace;
 import userinterface.node.center.FullViewEvent;
 import userinterface.node.center.TileViewEvent;
 import userinterface.node.side.InfoListViewLEvent;
@@ -30,8 +29,6 @@ public class MainStage extends Stage implements MainUtil {
     }
     private void setDefaultValues() {
         this.setTitle("ImageTag");
-        this.setMinWidth(settings.valueOf(SettingsNamespace.MAINSCENE_WIDTH));
-        this.setMinHeight(settings.valueOf(SettingsNamespace.MAINSCENE_HEIGHT));
         this.setScene(new Scene(new VBox(topMenu, splitPane)));
         this.setMaximized(true);
         this.setOnCloseRequest(event -> {

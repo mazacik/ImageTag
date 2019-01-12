@@ -17,10 +17,6 @@ public class Settings implements MainUtil, Serializable {
             throw new IllegalStateException(this.getClass().getSimpleName() + " already instantiated");
         }
     }
-    public static Settings getInstance() {
-        return SettingsLoader.instance;
-    }
-    /* serialization */
     private static Settings readFromDisk() {
         Settings settings = (Settings) SerializationUtil.readJSON(typeToken, System.getenv("APPDATA") + "\\ImageTag\\settings.json");
 
@@ -31,6 +27,18 @@ public class Settings implements MainUtil, Serializable {
             settings.checkValues();
         }
         return settings;
+    }
+    public static Settings getInstance() {
+        return SettingsLoader.instance;
+    }
+    private void setDefaults() {
+        settingsList = new SettingsList();
+        settingsList.add(new SettingsBase(SettingsNamespace.MAINSCENE_WIDTH.getValue(), 0, SystemUtil.getScreenWidth(), SystemUtil.getScreenWidth()));
+        settingsList.add(new SettingsBase(SettingsNamespace.MAINSCENE_HEIGHT.getValue(), 0, SystemUtil.getScreenHeight(), SystemUtil.getScreenHeight()));
+        settingsList.add(new SettingsBase(SettingsNamespace.TILEVIEW_ICONSIZE.getValue(), 100, 200, 150));
+        settingsList.add(new SettingsBase(SettingsNamespace.GLOBAL_SPACING.getValue(), 2));
+
+        recentDirectoriesList = new ArrayList<>();
     }
 
     private transient static Type typeToken = TypeTokenEnum.SETTINGS.getValue();
@@ -70,14 +78,10 @@ public class Settings implements MainUtil, Serializable {
             }
         });
     }
-    private void setDefaults() {
-        settingsList = new SettingsList();
-        settingsList.add(new SettingObject(SettingsNamespace.MAINSCENE_WIDTH.getValue(), 0, SystemUtil.getScreenWidth(), SystemUtil.getScreenWidth()));
-        settingsList.add(new SettingObject(SettingsNamespace.MAINSCENE_HEIGHT.getValue(), 0, SystemUtil.getScreenHeight(), SystemUtil.getScreenHeight()));
-        settingsList.add(new SettingObject(SettingsNamespace.TILEVIEW_ICONSIZE.getValue(), 100, 200, 150));
-        settingsList.add(new SettingObject(SettingsNamespace.GLOBAL_SPACING.getValue(), 2));
 
-        recentDirectoriesList = new ArrayList<>();
+    //todo split to core and user
+    private static class SettingsLoader {
+        private static final Settings instance = Settings.readFromDisk();
     }
     private void writeToDisk() {
         String dir = System.getenv("APPDATA") + "\\ImageTag";
@@ -85,9 +89,5 @@ public class Settings implements MainUtil, Serializable {
 
         new File(dir).mkdir();
         SerializationUtil.writeJSON(SettingsLoader.instance, typeToken, path);
-    }
-
-    private static class SettingsLoader {
-        private static final Settings instance = Settings.readFromDisk();
     }
 }

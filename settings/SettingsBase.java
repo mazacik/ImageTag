@@ -1,31 +1,31 @@
 package settings;
 
-public class SettingObject {
+public class SettingsBase {
     private final String id;
     private final Integer minValue;
     private final Integer maxValue;
     private final Integer defValue;
     private Integer value;
 
-    public SettingObject(String id, Integer minValue, Integer maxValue, Integer defValue) {
+    public SettingsBase(String id, Integer minValue, Integer maxValue, Integer defValue) {
         this.id = id;
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.defValue = defValue;
         this.value = defValue;
     }
-    public SettingObject(String id, Integer minValue, Integer maxValue) {
+    public SettingsBase(String id, Integer minValue, Integer maxValue) {
         this(id, minValue, maxValue, minValue);
     }
-    public SettingObject(String id, Integer value) {
+    public SettingsBase(String id, Integer value) {
         this(id, value, value, value);
     }
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof SettingObject)) return false;
-        SettingObject settingObject = (SettingObject) o;
-        return this.id.equals(settingObject.getId()) &&
-                this.value.equals(settingObject.getValue());
+        if (!(o instanceof SettingsBase)) return false;
+        SettingsBase settingsBase = (SettingsBase) o;
+        return this.id.equals(settingsBase.getId()) &&
+                this.value.equals(settingsBase.getValue());
     }
 
     public String getId() {

@@ -15,6 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import namespace.Namespace;
 import settings.SettingsNamespace;
+import userinterface.BackgroundEnum;
 import userinterface.node.BaseNode;
 import utils.MainUtil;
 
@@ -184,6 +185,8 @@ public class InfoListViewR extends VBox implements MainUtil, BaseNode {
                     setText(customTreeCell.getText());
                     setTextFill(customTreeCell.getColor());
                 }
+
+                setBackground(BackgroundEnum.NIGHT_1.getValue());
 
                 InfoListViewREvent.onMouseClick(this);
                 this.addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {

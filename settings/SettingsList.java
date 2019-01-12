@@ -2,9 +2,9 @@ package settings;
 
 import java.util.ArrayList;
 
-public class SettingsList extends ArrayList<SettingObject> {
-    public SettingObject getObject(String id) {
-        for (SettingObject object : this) {
+public class SettingsList extends ArrayList<SettingsBase> {
+    public SettingsBase getObject(String id) {
+        for (SettingsBase object : this) {
             if (object.getId().equals(id)) {
                 return object;
             }
@@ -12,7 +12,7 @@ public class SettingsList extends ArrayList<SettingObject> {
         return null;
     }
     public Integer valueOf(String id) {
-        for (SettingObject object : this) {
+        for (SettingsBase object : this) {
             if (object.getId().equals(id)) {
                 return object.getValue();
             }
