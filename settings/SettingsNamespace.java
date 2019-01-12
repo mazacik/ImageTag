@@ -6,7 +6,7 @@ public enum SettingsNamespace {
     MAINSCENE_WIDTH("mainSceneWidth"),
     MAINSCENE_HEIGHT("mainSceneHeight"),
     TILEVIEW_ICONSIZE("tileViewIconSize"),
-    GLOBAL_SPACING("globalSpacing"),
+    GLOBAL_PADDING("globalSpacing"),
     ;
 
     private String value;

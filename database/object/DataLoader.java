@@ -27,7 +27,10 @@ public class DataLoader extends Thread implements MainUtil {
     public void run() {
         logger.debug(this, "loader thread start");
         final LoadingWindow[] loadingWindow = new LoadingWindow[1];
-        Platform.runLater(() -> loadingWindow[0] = new LoadingWindow());
+        Platform.runLater(() -> {
+            loadingWindow[0] = new LoadingWindow();
+            mainStage.initialize();
+        });
 
         checkDirectoryPaths();
         ArrayList<File> fileList = getValidFiles();

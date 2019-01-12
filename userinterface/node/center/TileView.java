@@ -32,7 +32,7 @@ public class TileView extends ScrollPane implements MainUtil, BaseNode {
         this.setFitToWidth(true);
         this.setFitToHeight(true);
         this.setContent(tilePane);
-        this.setPadding(new Insets(settings.valueOf(SettingsNamespace.GLOBAL_SPACING)));
+        this.setPadding(new Insets(settings.valueOf(SettingsNamespace.GLOBAL_PADDING)));
     }
 
     public void reload() {

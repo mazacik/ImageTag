@@ -29,8 +29,8 @@ public class InfoListViewL extends VBox implements MainUtil, BaseNode {
         this.setMinWidth(200);
         this.setPrefWidth(250);
         this.setMaxWidth(300);
-        this.setSpacing(settings.valueOf(SettingsNamespace.GLOBAL_SPACING));
-        this.setPadding(new Insets(settings.valueOf(SettingsNamespace.GLOBAL_SPACING)));
+        this.setSpacing(settings.valueOf(SettingsNamespace.GLOBAL_PADDING));
+        this.setPadding(new Insets(settings.valueOf(SettingsNamespace.GLOBAL_PADDING)));
 
         treeView = new TreeView(new TreeItem());
         treeView.setShowRoot(false);

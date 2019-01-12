@@ -22,7 +22,7 @@ public class FullView extends Pane implements MainUtil, BaseNode {
 
         this.setWidth(settings.valueOf(SettingsNamespace.MAINSCENE_WIDTH));
         this.setHeight(settings.valueOf(SettingsNamespace.MAINSCENE_HEIGHT));
-        this.setPadding(new Insets(settings.valueOf(SettingsNamespace.GLOBAL_SPACING)));
+        this.setPadding(new Insets(settings.valueOf(SettingsNamespace.GLOBAL_PADDING)));
         this.getChildren().add(canvas);
     }
 

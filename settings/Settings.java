@@ -36,7 +36,7 @@ public class Settings implements MainUtil, Serializable {
         settingsList.add(new SettingsBase(SettingsNamespace.MAINSCENE_WIDTH.getValue(), 0, SystemUtil.getScreenWidth(), SystemUtil.getScreenWidth()));
         settingsList.add(new SettingsBase(SettingsNamespace.MAINSCENE_HEIGHT.getValue(), 0, SystemUtil.getScreenHeight(), SystemUtil.getScreenHeight()));
         settingsList.add(new SettingsBase(SettingsNamespace.TILEVIEW_ICONSIZE.getValue(), 100, 200, 150));
-        settingsList.add(new SettingsBase(SettingsNamespace.GLOBAL_SPACING.getValue(), 2));
+        settingsList.add(new SettingsBase(SettingsNamespace.GLOBAL_PADDING.getValue(), 2));
 
         recentDirectoriesList = new ArrayList<>();
     }

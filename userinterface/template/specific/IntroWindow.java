@@ -3,6 +3,7 @@ package userinterface.template.specific;
 import database.object.DataLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
@@ -55,8 +56,14 @@ public class IntroWindow extends Stage implements MainUtil {
         btnChoose.setBackground(BackgroundEnum.NIGHT_1.getValue());
         btnChoose.setFont(new Font(14));
         btnChoose.setTextFill(Color.LIGHTGRAY);
-        btnChoose.setOnMouseEntered(event -> btnChoose.setTextFill(Color.ORANGE));
-        btnChoose.setOnMouseExited(event -> btnChoose.setTextFill(Color.LIGHTGRAY));
+        btnChoose.setOnMouseEntered(event -> {
+            btnChoose.setCursor(Cursor.HAND);
+            btnChoose.setTextFill(Color.ORANGE);
+        });
+        btnChoose.setOnMouseExited(event -> {
+            btnChoose.setCursor(Cursor.DEFAULT);
+            btnChoose.setTextFill(Color.LIGHTGRAY);
+        });
         btnChoose.requestFocus();
 
         this.setBtnChooseListener();

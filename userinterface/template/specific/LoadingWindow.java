@@ -4,12 +4,13 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import userinterface.BackgroundEnum;
 import utils.MainUtil;
 
 public class LoadingWindow extends Stage implements MainUtil {
-    private final BorderPane loadingPane = new BorderPane();
-    private final Scene loadingScene = new Scene(loadingPane);
+    private final BorderPane borderPane = new BorderPane();
     private final Label progressLabel = new Label();
 
     public LoadingWindow() {
@@ -18,17 +19,19 @@ public class LoadingWindow extends Stage implements MainUtil {
     }
 
     private void setDefaultValuesChildren() {
-        loadingPane.setPadding(new Insets(10));
-        loadingPane.setCenter(progressLabel);
-        loadingPane.setPrefWidth(300);
+        progressLabel.setTextFill(Color.LIGHTGRAY);
+
+        borderPane.setPadding(new Insets(10));
+        borderPane.setCenter(progressLabel);
+        borderPane.setBackground(BackgroundEnum.NIGHT_1.getValue());
+        borderPane.setPrefWidth(300);
     }
     private void setDefaultValues() {
-        setTitle("ImageTag Loading");
-        setScene(loadingScene);
-        setResizable(false);
-        centerOnScreen();
-        show();
-        mainStage.initialize();
+        this.setTitle("PLACEHOLDER");
+        this.setScene(new Scene(borderPane));
+        this.setResizable(false);
+        this.centerOnScreen();
+        this.show();
     }
 
     public Label getProgressLabel() {
