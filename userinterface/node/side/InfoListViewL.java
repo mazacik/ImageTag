@@ -2,10 +2,7 @@ package userinterface.node.side;
 
 import database.object.InfoObject;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Button;
-import javafx.scene.control.TreeCell;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -19,32 +16,44 @@ import utils.InstanceRepo;
 import java.util.ArrayList;
 
 public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
+    private final Label filterLabel = new Label("Filter");
     private final TreeView<CustomTreeCell> treeView = new TreeView(new TreeItem());
     private final CustomButton btnExpCol = new CustomButton("Expand");
     private final CustomButton btnNew = new CustomButton("New");
 
     public InfoListViewL() {
-        this.setMinWidth(200);
-        this.setPrefWidth(250);
-        this.setMaxWidth(300);
-
         VBox.setVgrow(treeView, Priority.ALWAYS);
         treeView.setShowRoot(false);
         treeView.setBackground(CommonUtil.getBackgroundDefault());
+        treeView.expandedItemCountProperty().addListener((observable, oldValue, newValue) -> {
+            treeView.lookupAll(".scroll-bar").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
+            treeView.lookupAll(".increment-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
+            treeView.lookupAll(".decrement-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
+            treeView.lookupAll(".thumb").forEach(sb -> sb.setStyle("-fx-background-color: gray; -fx-background-insets: 0 4 0 4;"));
+        });
 
-        btnExpCol.setPrefWidth(this.getPrefWidth());
+        BorderPane bp = new BorderPane();
+        bp.setCenter(filterLabel);
+        bp.setRight(btnExpCol);
+        bp.setBorder(new Border(new BorderStroke(CommonUtil.getNodeBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 1, 0))));
+
+        filterLabel.setTextFill(CommonUtil.getTextColorDefault());
+        filterLabel.setFont(CommonUtil.getFont());
+
         btnExpCol.setTextFill(CommonUtil.getTextColorDefault());
         btnExpCol.setFont(CommonUtil.getFont());
-        btnExpCol.setBorder(new Border(new BorderStroke(CommonUtil.getNodeBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 1, 0))));
+        btnExpCol.setBorder(new Border(new BorderStroke(CommonUtil.getNodeBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 0, 1))));
+        btnExpCol.setPrefWidth(75);
 
-        btnNew.setPrefWidth(this.getPrefWidth());
+        btnNew.setPrefWidth(999);
         btnNew.setTextFill(CommonUtil.getTextColorDefault());
         btnNew.setFont(CommonUtil.getFont());
         btnNew.setBorder(new Border(new BorderStroke(CommonUtil.getNodeBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1, 0, 0, 0))));
 
+        this.setPrefWidth(999);
         this.setCellFactory();
         this.setSpacing(settings.valueOf(SettingsNamespace.GLOBAL_PADDING));
-        this.getChildren().addAll(btnExpCol, treeView, btnNew);
+        this.getChildren().addAll(bp, treeView, btnNew);
     }
 
     public void changeCellState(TreeCell<CustomTreeCell> sourceCell) {
@@ -113,7 +122,6 @@ public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
                     groupTreeItem.getChildren().add(new TreeItem(new CustomTreeCell(tagName, textColorDefault)));
                 }
             }
-
             treeViewItems.add(groupTreeItem);
         }
     }
@@ -126,12 +134,12 @@ public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
                     setText(null);
                     setTextFill(null);
                 } else {
-                    setFont(CommonUtil.getFont());
                     setText(customTreeCell.getText());
                     setTextFill(customTreeCell.getColor());
                 }
 
-                this.setBackground(CommonUtil.getBackgroundDefault());
+                setFont(CommonUtil.getFont());
+                setBackground(CommonUtil.getBackgroundDefault());
 
                 InfoListViewLEvent.onMouseClick(this);
                 this.addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {

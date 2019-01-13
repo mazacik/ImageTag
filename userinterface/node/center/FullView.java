@@ -19,8 +19,8 @@ public class FullView extends Pane implements BaseNode, InstanceRepo {
         canvas.widthProperty().bind(this.widthProperty());
         canvas.heightProperty().bind(this.heightProperty());
 
-        this.setWidth(settings.valueOf(SettingsNamespace.MAINSCENE_WIDTH));
-        this.setHeight(settings.valueOf(SettingsNamespace.MAINSCENE_HEIGHT));
+        this.minWidthProperty().bind(tileView.widthProperty());
+        this.setPrefHeight(settings.valueOf(SettingsNamespace.MAINSCENE_HEIGHT));
         this.setBorder(new Border(new BorderStroke(CommonUtil.getNodeBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 1, 0, 1))));
         this.getChildren().add(canvas);
     }

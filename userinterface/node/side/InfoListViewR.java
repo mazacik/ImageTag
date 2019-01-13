@@ -3,10 +3,7 @@ package userinterface.node.side;
 import database.object.DataObject;
 import database.object.InfoObject;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Button;
-import javafx.scene.control.TreeCell;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -21,26 +18,38 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
+    private final Label selectLabel = new Label("Selection");
     private final TreeView<CustomTreeCell> treeView = new TreeView(new TreeItem());
     private final CustomButton btnExpCol = new CustomButton("Expand");
 
     public InfoListViewR() {
-        this.setMinWidth(200);
-        this.setPrefWidth(250);
-        this.setMaxWidth(300);
-
         VBox.setVgrow(treeView, Priority.ALWAYS);
         treeView.setShowRoot(false);
         treeView.setBackground(CommonUtil.getBackgroundDefault());
+        treeView.expandedItemCountProperty().addListener((observable, oldValue, newValue) -> {
+            treeView.lookupAll(".scroll-bar").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
+            treeView.lookupAll(".increment-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
+            treeView.lookupAll(".decrement-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
+            treeView.lookupAll(".thumb").forEach(sb -> sb.setStyle("-fx-background-color: gray; -fx-background-insets: 0 4 0 4;"));
+        });
 
-        btnExpCol.setPrefWidth(this.getPrefWidth());
+        BorderPane bp = new BorderPane();
+        bp.setCenter(selectLabel);
+        bp.setRight(btnExpCol);
+        bp.setBorder(new Border(new BorderStroke(CommonUtil.getNodeBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 1, 0))));
+
+        selectLabel.setTextFill(CommonUtil.getTextColorDefault());
+        selectLabel.setFont(CommonUtil.getFont());
+
         btnExpCol.setTextFill(CommonUtil.getTextColorDefault());
         btnExpCol.setFont(CommonUtil.getFont());
-        btnExpCol.setBorder(new Border(new BorderStroke(CommonUtil.getNodeBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 1, 0))));
+        btnExpCol.setBorder(new Border(new BorderStroke(CommonUtil.getNodeBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 0, 1))));
+        btnExpCol.setPrefWidth(75);
 
+        this.setPrefWidth(999);
         this.setCellFactory();
         this.setSpacing(settings.valueOf(SettingsNamespace.GLOBAL_PADDING));
-        this.getChildren().addAll(btnExpCol, treeView);
+        this.getChildren().addAll(bp, treeView);
     }
 
     public void changeCellState(TreeCell<CustomTreeCell> sourceCell) {
@@ -186,9 +195,9 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
                 } else {
                     setText(customTreeCell.getText());
                     setTextFill(customTreeCell.getColor());
-                    setFont(CommonUtil.getFont());
                 }
 
+                setFont(CommonUtil.getFont());
                 setBackground(CommonUtil.getBackgroundDefault());
 
                 InfoListViewREvent.onMouseClick(this);

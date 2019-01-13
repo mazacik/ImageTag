@@ -1,9 +1,8 @@
 package userinterface;
 
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.SplitPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import userinterface.node.center.FullViewEvent;
@@ -17,24 +16,24 @@ import utils.CommonUtil;
 import utils.InstanceRepo;
 
 public class MainStage extends Stage implements InstanceRepo {
-    private final SplitPane splitPane = new SplitPane(infoListViewL, tileView, infoListViewR);
+    private final HBox hBox = new HBox(infoListViewL, tileView, infoListViewR);
     private final DataContextMenu dataContextMenu = new DataContextMenu();
     private final InfoContextMenu infoContextMenu = new InfoContextMenu();
 
     public void initialize() {
         logger.debug(this, "userinterface initialize start");
         setDefaultValues();
-        setDefaultValuesChildren();
         initializeEvents();
         logger.debug(this, "userinterface initialize done");
     }
     private void setDefaultValues() {
         this.setTitle("ImageTag");
-        this.setScene(new Scene(new VBox(topMenu, splitPane)));
-        splitPane.setBackground(CommonUtil.getBackgroundDefault());
+        this.setScene(new Scene(new VBox(topMenu, hBox)));
+        hBox.setBackground(CommonUtil.getBackgroundDefault());
+        HBox.setHgrow(infoListViewL, Priority.ALWAYS);
+        HBox.setHgrow(infoListViewR, Priority.ALWAYS);
         this.setMaximized(true);
         this.setOnShown(event -> {
-            splitPane.lookupAll(".split-pane-divider").forEach(div -> div.setStyle("-fx-padding: 0; -fx-background-color: transparent;"));
             tileView.lookupAll(".scroll-bar").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
             tileView.lookupAll(".increment-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
             tileView.lookupAll(".decrement-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
@@ -44,9 +43,6 @@ public class MainStage extends Stage implements InstanceRepo {
             mainListData.writeToDisk();
             logger.debug(this, "application exit");
         });
-    }
-    private void setDefaultValuesChildren() {
-        splitPane.setDividerPositions(0.0, 1.0);
     }
     private void initializeEvents() {
         new GlobalEvent();
@@ -59,20 +55,16 @@ public class MainStage extends Stage implements InstanceRepo {
     }
 
     public void swapDisplayMode() {
-        final ObservableList<Node> splitPaneItems = splitPane.getItems();
-        double[] dividerPositions = splitPane.getDividerPositions();
         if (this.isFullView()) {
-            splitPaneItems.set(splitPaneItems.indexOf(fullView), tileView);
+            hBox.getChildren().set(hBox.getChildren().indexOf(fullView), tileView);
             tileView.adjustViewportToCurrentTarget();
         } else {
-            splitPaneItems.set(splitPaneItems.indexOf(tileView), fullView);
+            hBox.getChildren().set(hBox.getChildren().indexOf(tileView), fullView);
             fullView.reload();
         }
-        splitPane.setDividerPositions(dividerPositions);
-        splitPane.lookupAll(".split-pane-divider").forEach(div -> div.setStyle("-fx-padding: 0; -fx-background-color: transparent;"));
     }
     public boolean isFullView() {
-        return splitPane.getItems().contains(fullView);
+        return hBox.getChildren().contains(fullView);
     }
 
     public DataContextMenu getDataContextMenu() {
