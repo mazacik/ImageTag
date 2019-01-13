@@ -45,9 +45,10 @@ public class InfoListViewLEvent implements InstanceRepo {
     private void onAction_btnExpCol() {
         infoListViewL.getBtnExpCol().setOnAction(event -> {
             isExpanded = !isExpanded;
-            if (isExpanded) infoListViewL.getBtnExpCol().setText("Expand");
-            else infoListViewL.getBtnExpCol().setText("Collapse");
+            if (isExpanded) infoListViewL.getBtnExpCol().setText("Collapse");
+            else infoListViewL.getBtnExpCol().setText("Expand");
             infoListViewL.getTreeView().getRoot().getChildren().forEach(node -> node.setExpanded(isExpanded));
+            System.out.println(infoListViewL.getBtnExpCol().getWidth());
         });
     }
     private void onAction_btnNew() {

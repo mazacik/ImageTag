@@ -3,7 +3,6 @@ package userinterface.node.center;
 import database.object.DataObject;
 import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
@@ -13,21 +12,20 @@ import utils.CommonUtil;
 import utils.InstanceRepo;
 
 public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
-    private final TilePane tilePane = new TilePane(3, 3);
+    private final TilePane tilePane = new TilePane(1, 1);
 
     public TileView() {
         final int galleryIconSize = settings.valueOf(SettingsNamespace.TILEVIEW_ICONSIZE);
 
         tilePane.setPrefTileWidth(galleryIconSize);
         tilePane.setPrefTileHeight(galleryIconSize);
-        tilePane.setPrefWidth(settings.valueOf(SettingsNamespace.MAINSCENE_WIDTH));
         tilePane.setPrefHeight(settings.valueOf(SettingsNamespace.MAINSCENE_HEIGHT));
         tilePane.setBackground(CommonUtil.getBackgroundDefault());
-        tilePane.setPadding(new Insets(0, 0, 0, 1));
+        tilePane.setPrefColumns(10);
 
         this.setContent(tilePane);
         this.setFitToWidth(true);
-        this.setMinViewportWidth(galleryIconSize);
+        this.setMinViewportWidth(tilePane.getPrefColumns() * tilePane.getPrefTileWidth() + (tilePane.getPrefColumns() - 1) * tilePane.getHgap());
         this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         this.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         this.setBackground(CommonUtil.getBackgroundDefault());
@@ -41,18 +39,6 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
         tilePaneItems.clear();
         filter.forEach(dataObject -> tilePaneItems.add(dataObject.getBaseTile()));
         this.setVvalue(scrollbarValue);
-        this.calculateTilePaneHGap();
-    }
-    public void calculateTilePaneHGap() {
-        double Hgap = tilePane.getVgap();
-
-        double tilePaneWidth = tilePane.getWidth() - 1; // left + right insets
-        double prefTileWidth = tilePane.getPrefTileWidth();
-        double columnCount = tilePaneWidth / prefTileWidth;
-
-        if (columnCount > 0) Hgap = tilePaneWidth % prefTileWidth / columnCount;
-
-        tilePane.setHgap(Hgap);
     }
     public void adjustViewportToCurrentTarget() {
         DataObject currentTargetedItem = target.getCurrentTarget();
@@ -93,9 +79,5 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
         double itemCountFilter = filter.size();
         double columnCount = this.getColumnCount();
         return (int) Math.ceil(itemCountFilter / columnCount);
-    }
-
-    public TilePane getTilePane() {
-        return tilePane;
     }
 }
