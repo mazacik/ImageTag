@@ -65,11 +65,7 @@ public class DataContextMenu extends ContextMenu implements InstanceRepo {
     private void deleteSelection() {
         if (select.isEmpty()) return;
 
-        ConfirmationWindow confirmationWindow = new ConfirmationWindow();
-        confirmationWindow.setTitle("Confirmation");
-        confirmationWindow.setHeaderText("Delete " + select.size() + " file(s)");
-        confirmationWindow.setContentText("Are you sure?");
-
+        ConfirmationWindow confirmationWindow = new ConfirmationWindow("Confirmation", "Delete " + select.size() + " file(s)", "Are you sure?");
         if (confirmationWindow.getResult()) {
             ((Select) select.clone()).forEach(this::deleteDataObject);
             reload.doReload();
@@ -77,13 +73,9 @@ public class DataContextMenu extends ContextMenu implements InstanceRepo {
     }
     private void deleteCurrentTarget() {
         DataObject currentTarget = target.getCurrentTarget();
-        String fullPath = settings.getCurrentDirectory() + "\\" + currentTarget.getName();
+        String fullPath = settings.getCurrentDirectory() + currentTarget.getName();
 
-        ConfirmationWindow confirmationWindow = new ConfirmationWindow();
-        confirmationWindow.setTitle("Confirmation");
-        confirmationWindow.setHeaderText("Delete file: " + fullPath);
-        confirmationWindow.setContentText("Are you sure?");
-
+        ConfirmationWindow confirmationWindow = new ConfirmationWindow("Confirmation", "Delete file: " + fullPath, "Are you sure?");
         if (confirmationWindow.getResult()) {
             //todo move most of this to target
             int index = filter.indexOf(target.getCurrentTarget());

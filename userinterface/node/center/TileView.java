@@ -73,7 +73,7 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
     }
 
     public int getColumnCount() {
-        return (int) tilePane.getWidth() / (int) tilePane.getPrefTileWidth();
+        return (int) this.getViewportBounds().getWidth() / (int) tilePane.getPrefTileWidth();
     }
     public int getRowCount() {
         double itemCountFilter = filter.size();
