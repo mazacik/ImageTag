@@ -3,9 +3,9 @@ package control.filter;
 import database.list.BaseListInfo;
 import database.object.DataObject;
 import database.object.InfoObject;
-import utils.MainUtil;
+import utils.InstanceRepo;
 
-public enum FilterTemplate implements MainUtil {
+public enum FilterTemplate implements InstanceRepo {
     SHOW_EVERYTHING {
         public void apply() {
             infoListWhite.clear();

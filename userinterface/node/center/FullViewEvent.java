@@ -3,9 +3,9 @@ package userinterface.node.center;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.canvas.Canvas;
 import userinterface.template.specific.DataContextMenu;
-import utils.MainUtil;
+import utils.InstanceRepo;
 
-public class FullViewEvent implements MainUtil {
+public class FullViewEvent implements InstanceRepo {
     public FullViewEvent() {
         onMouseClick();
         onResize();

@@ -9,9 +9,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import settings.SettingsNamespace;
-import utils.MainUtil;
+import utils.InstanceRepo;
 
-public class BaseTile extends ImageView implements MainUtil {
+public class BaseTile extends ImageView implements InstanceRepo {
     private static final InnerShadow effectSelect = createEffectSelect();
     private static final ColorInput effectTarget = createEffectTarget();
     private final DataObject parentDataObject;
@@ -48,10 +48,10 @@ public class BaseTile extends ImageView implements MainUtil {
             bSelect = select.contains(parentDataObject);
         }
 
-        DataObject currentFocus = target.getCurrentTarget();
+        DataObject currentTarget = target.getCurrentTarget();
         boolean bTarget = false;
-        if (currentFocus != null) {
-            bTarget = currentFocus.equals(parentDataObject);
+        if (currentTarget != null) {
+            bTarget = currentTarget.equals(parentDataObject);
         }
 
         if (!bSelect && !bTarget) {

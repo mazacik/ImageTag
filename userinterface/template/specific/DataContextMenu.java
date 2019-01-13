@@ -7,13 +7,14 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
 import userinterface.template.generic.ConfirmationWindow;
-import utils.MainUtil;
+import utils.CommonUtil;
+import utils.InstanceRepo;
 import utils.system.ClipboardUtil;
 
 import java.awt.*;
 import java.io.File;
 
-public class DataContextMenu extends ContextMenu implements MainUtil {
+public class DataContextMenu extends ContextMenu implements InstanceRepo {
     private final MenuItem menuCopy = new MenuItem("Copy Filename");
     private final MenuItem menuDelete = new MenuItem("Delete File");
 
@@ -22,7 +23,7 @@ public class DataContextMenu extends ContextMenu implements MainUtil {
         menuCopy.setOnAction(event -> {
             DataObject dataObject;
 
-            if (!isFullView()) {
+            if (!CommonUtil.isFullView()) {
                 //todo copy multiple files -- array?
                 dataObject = select.get(0);
             } else {
@@ -34,8 +35,8 @@ public class DataContextMenu extends ContextMenu implements MainUtil {
         menuDelete.setOnAction(event -> {
             target.storePosition();
 
-            if (isFullView()) {
-                this.deleteCurrentFocus();
+            if (CommonUtil.isFullView()) {
+                this.deleteCurrentTarget();
             } else {
                 this.deleteSelection();
             }
@@ -74,9 +75,9 @@ public class DataContextMenu extends ContextMenu implements MainUtil {
             reload.doReload();
         }
     }
-    private void deleteCurrentFocus() {
-        DataObject currentFocus = target.getCurrentTarget();
-        String fullPath = settings.getCurrentDirectory() + "\\" + currentFocus.getName();
+    private void deleteCurrentTarget() {
+        DataObject currentTarget = target.getCurrentTarget();
+        String fullPath = settings.getCurrentDirectory() + "\\" + currentTarget.getName();
 
         ConfirmationWindow confirmationWindow = new ConfirmationWindow();
         confirmationWindow.setTitle("Confirmation");
@@ -86,7 +87,7 @@ public class DataContextMenu extends ContextMenu implements MainUtil {
         if (confirmationWindow.getResult()) {
             //todo move most of this to target
             int index = filter.indexOf(target.getCurrentTarget());
-            this.deleteDataObject(currentFocus);
+            this.deleteDataObject(currentTarget);
 
             if (index < 0) {
                 index = 0;

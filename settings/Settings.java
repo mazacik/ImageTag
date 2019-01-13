@@ -1,6 +1,6 @@
 package settings;
 
-import utils.MainUtil;
+import utils.InstanceRepo;
 import utils.serialization.SerializationUtil;
 import utils.serialization.TypeTokenEnum;
 import utils.system.SystemUtil;
@@ -11,7 +11,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Settings implements MainUtil, Serializable {
+public class Settings implements InstanceRepo, Serializable {
     private Settings() {
         if (SettingsLoader.instance != null) {
             throw new IllegalStateException(this.getClass().getSimpleName() + " already instantiated");

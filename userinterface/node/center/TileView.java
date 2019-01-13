@@ -7,39 +7,35 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import settings.SettingsNamespace;
-import userinterface.BackgroundEnum;
 import userinterface.node.BaseNode;
-import utils.MainUtil;
+import utils.CommonUtil;
+import utils.InstanceRepo;
 
-public class TileView extends ScrollPane implements BaseNode, MainUtil {
-    private final TilePane tilePane;
+public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
+    private final TilePane tilePane = new TilePane(3, 3);
 
     public TileView() {
         final int galleryIconSize = settings.valueOf(SettingsNamespace.TILEVIEW_ICONSIZE);
 
-        tilePane = new TilePane();
-        tilePane.setVgap(3);
         tilePane.setPrefTileWidth(galleryIconSize);
         tilePane.setPrefTileHeight(galleryIconSize);
-        tilePane.setBackground(BackgroundEnum.NIGHT_1.getValue());
+        tilePane.setPrefWidth(settings.valueOf(SettingsNamespace.MAINSCENE_WIDTH));
+        tilePane.setPrefHeight(settings.valueOf(SettingsNamespace.MAINSCENE_HEIGHT));
+        tilePane.setBackground(CommonUtil.getBackgroundDefault());
+        tilePane.setPadding(new Insets(0, 0, 0, 1));
 
+        this.setContent(tilePane);
+        this.setFitToWidth(true);
         this.setMinViewportWidth(galleryIconSize);
         this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         this.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        tilePane.setPrefWidth(settings.valueOf(SettingsNamespace.MAINSCENE_WIDTH));
-        tilePane.setPrefHeight(settings.valueOf(SettingsNamespace.MAINSCENE_HEIGHT));
-        this.setFitToWidth(true);
-        this.setFitToHeight(true);
-        this.setContent(tilePane);
-        this.setBackground(BackgroundEnum.NIGHT_1.getValue());
-        this.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 1, 0, 1))));
-        tilePane.setPadding(new Insets(0, 0, 0, 1));
+        this.setBackground(CommonUtil.getBackgroundDefault());
+        this.setBorder(new Border(new BorderStroke(CommonUtil.getNodeBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 1, 0, 1))));
     }
 
     public void reload() {
-        if (isFullView()) return;
+        if (CommonUtil.isFullView()) return;
         double scrollbarValue = this.getVvalue();
         ObservableList<Node> tilePaneItems = tilePane.getChildren();
         tilePaneItems.clear();
@@ -48,32 +44,28 @@ public class TileView extends ScrollPane implements BaseNode, MainUtil {
         this.calculateTilePaneHGap();
     }
     public void calculateTilePaneHGap() {
-        int currentGap = (int) tilePane.getVgap();
-        int hgap = currentGap;
+        double Hgap = tilePane.getVgap();
 
-        int tilePaneWidth = (int) tilePane.getWidth() + currentGap;
-        int prefTileWidth = (int) tilePane.getPrefTileWidth();
-        int columnCount = tilePaneWidth / prefTileWidth - 1;
+        double tilePaneWidth = tilePane.getWidth() - 1; // left + right insets
+        double prefTileWidth = tilePane.getPrefTileWidth();
+        double columnCount = tilePaneWidth / prefTileWidth;
 
-        if (columnCount > 0) {
-            hgap = (tilePaneWidth + currentGap * columnCount) % (prefTileWidth + currentGap) / columnCount;
-        }
-        if (hgap < 3) hgap = currentGap;
+        if (columnCount > 0) Hgap = tilePaneWidth % prefTileWidth / columnCount;
 
-        tilePane.setHgap(hgap);
+        tilePane.setHgap(Hgap);
     }
-    public void adjustViewportToCurrentFocus() {
-        DataObject currentFocusedItem = target.getCurrentTarget();
-        if (isFullView() || currentFocusedItem == null) return;
-        int focusIndex = filter.indexOf(currentFocusedItem);
-        if (focusIndex < 0) return;
+    public void adjustViewportToCurrentTarget() {
+        DataObject currentTargetedItem = target.getCurrentTarget();
+        if (CommonUtil.isFullView() || currentTargetedItem == null) return;
+        int targetIndex = filter.indexOf(currentTargetedItem);
+        if (targetIndex < 0) return;
 
         ObservableList<Node> tilePaneItems = tilePane.getChildren();
         int columnCount = this.getColumnCount();
-        int focusRow = focusIndex / columnCount;
+        int targetRow = targetIndex / columnCount;
 
         Bounds viewportBounds = tilePane.localToScene(this.getViewportBounds());
-        Bounds currentFocusTileBounds = tilePaneItems.get(focusIndex).getBoundsInParent();
+        Bounds currentTargetTileBounds = tilePaneItems.get(targetIndex).getBoundsInParent();
 
         double viewportHeight = viewportBounds.getHeight();
         double contentHeight = tilePane.getHeight() - viewportHeight;
@@ -84,20 +76,18 @@ public class TileView extends ScrollPane implements BaseNode, MainUtil {
 
         double viewportTop = viewportBounds.getMaxY() * -1 + viewportBounds.getHeight();
         double viewportBottom = viewportBounds.getMinY() * -1 + viewportBounds.getHeight();
-        double tileTop = currentFocusTileBounds.getMinY();
-        double tileBottom = currentFocusTileBounds.getMaxY();
+        double tileTop = currentTargetTileBounds.getMinY();
+        double tileBottom = currentTargetTileBounds.getMaxY();
 
         if (tileTop > viewportBottom - rowHeight) {
-            this.setVvalue((focusRow + 1) * rowToContentRatio - viewportToContentRatio);
+            this.setVvalue((targetRow + 1) * rowToContentRatio - viewportToContentRatio);
         } else if (tileBottom - rowHeight < viewportTop) {
-            this.setVvalue(focusRow * rowToContentRatio);
+            this.setVvalue(targetRow * rowToContentRatio);
         }
     }
 
     public int getColumnCount() {
-        int tilePaneWidth = (int) tilePane.getWidth() + (int) tilePane.getVgap();
-        int prefTileWidth = (int) tilePane.getPrefTileWidth();
-        return tilePaneWidth / prefTileWidth;
+        return (int) tilePane.getWidth() / (int) tilePane.getPrefTileWidth();
     }
     public int getRowCount() {
         double itemCountFilter = filter.size();

@@ -1,128 +1,110 @@
 package userinterface.node.topmenu;
 
+import javafx.collections.ObservableList;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
-import javafx.geometry.NodeOrientation;
-import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.control.Label;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import settings.SettingsNamespace;
-import userinterface.BackgroundEnum;
 import userinterface.node.BaseNode;
-import utils.MainUtil;
+import utils.CommonUtil;
 
-public class TopMenu extends BorderPane implements BaseNode, MainUtil {
-    private final Menu menuFile = new Menu("File");
-    private final MenuItem menuSave = new MenuItem("Save");
-    private final MenuItem menuExit = new MenuItem("Exit");
-    private final Menu menuModeWhitelist = new Menu("Whitelist Mode");
-    private final Menu menuModeBlacklist = new Menu("Blacklist Mode");
+public class TopMenu extends BorderPane implements BaseNode {
+    Insets nodePadding = new Insets(5, 10, 5, 10);
 
-    private final Menu menuSelection = new Menu("Select");
+    Label nodeSave = createNode("Save");
+    Label nodeExit = createNode("Exit");
+
+    Label nodeSelectAll = createNode("Select All");
+    Label nodeSelectNone = createNode("Select None");
+
+    Label nodeCustom = createNode("Custom");
+    Label nodeReset = createNode("Reset");
+
+    Label nodeRandom = createNode("Random");
+    Label nodeFullview = createNode("FullView");
+
     public TopMenu() {
-        setDefaultValuesChildren();
-        setDefaultValues();
-    }
-    private final MenuItem menuSelectAll = new MenuItem("Select All");
-    private final MenuItem menuClearSelection = new MenuItem("Clear Select");
-    private final ClickableMenu menuRandom = new ClickableMenu("Random");
-    private final ClickableMenu menuFullView = new ClickableMenu("FullView");
+        HBox hBox = new HBox();
+        ObservableList hboxChildren = hBox.getChildren();
+        hboxChildren.add(createRoot("File", nodeSave, nodeExit));
+        hboxChildren.add(createRoot("Select", nodeSelectAll, nodeSelectNone));
+        hboxChildren.add(createRoot("Filter", nodeCustom, nodeReset));
 
-    private final Menu menuFilter = new Menu("Filter");
-    private final CheckMenuItem menuUntaggedOnly = new CheckMenuItem("Untagged");
-    private final CheckMenuItem menuMaxXTags = new CheckMenuItem("Max X Tags");
-    public Menu getMenuSelection() {
-        return menuSelection;
-    }
-    private void setDefaultValuesChildren() {
-        menuFile.getItems().addAll(menuSave, new SeparatorMenuItem(), menuExit);
-        menuSelection.getItems().addAll(menuSelectAll, menuClearSelection);
+        HBox tools = new HBox(nodeRandom, nodeFullview);
+        tools.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 1, 0, 1))));
+        hboxChildren.add(tools);
 
-        menuModeWhitelist.getItems().addAll(menuModeWhitelistAll, menuModeWhitelistAny);
-        menuModeBlacklist.getItems().addAll(menuModeBlacklistAll, menuModeBlacklistAny);
-        menuModeWhitelistAll.setSelected(true);
-        menuModeBlacklistAny.setSelected(true);
-        menuFilter.getItems().addAll(menuUntaggedOnly, menuMaxXTags, new SeparatorMenuItem(), menuModeWhitelist, menuModeBlacklist, new SeparatorMenuItem(), menuReset);
-    }
-    private void setDefaultValues() {
-        this.setPadding(new Insets(settings.valueOf(SettingsNamespace.GLOBAL_PADDING)));
+        this.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 1, 0))));
 
-        MenuBar menuBarL = new MenuBar(menuFile, menuSelection, menuFilter);
-        MenuBar centerBar = new MenuBar(menuRandom, menuFullView);
-        MenuBar menuBarR = new MenuBar(infoLabelMenu);
-
-        menuBarL.setPrefWidth(200);
-        menuBarR.setPrefWidth(200);
-        menuBarR.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-
-        menuBarL.minHeightProperty().bind(centerBar.heightProperty());
-        menuBarR.minHeightProperty().bind(centerBar.heightProperty());
-
-        menuBarL.setBackground(BackgroundEnum.NIGHT_1.getValue());
-        centerBar.setBackground(BackgroundEnum.NIGHT_1.getValue());
-        menuBarR.setBackground(BackgroundEnum.NIGHT_1.getValue());
-
-        this.setLeft(menuBarL);
-        this.setCenter(centerBar);
-        this.setRight(menuBarR);
-    }
-
-    private void createGraphic(MenuItem source) {
-        //source.setStyle("-fx-background-color: red; -fx-text-fill: white;");
-        Label label = new Label(source.getText());
-        label.setTextFill(Color.LIGHTGRAY);
-        source.setText("");
-        source.setGraphic(label);
-    }
-
-    public MenuItem getMenuSave() {
-        return menuSave;
-    }
-    public MenuItem getMenuExit() {
-        return menuExit;
-    }
-    private final CheckMenuItem menuModeWhitelistAll = new CheckMenuItem("All");
-    private final CheckMenuItem menuModeWhitelistAny = new CheckMenuItem("Any");
-    public MenuItem getMenuSelectAll() {
-        return menuSelectAll;
-    }
-    public MenuItem getMenuClearSelection() {
-        return menuClearSelection;
-    }
-    public CheckMenuItem getMenuUntaggedOnly() {
-        return menuUntaggedOnly;
-    }
-    private final CheckMenuItem menuModeBlacklistAll = new CheckMenuItem("All");
-    private final CheckMenuItem menuModeBlacklistAny = new CheckMenuItem("Any");
-    public CheckMenuItem getMenuMaxXTags() {
-        return menuMaxXTags;
-    }
-    public CheckMenuItem getMenuModeWhitelistAll() {
-        return menuModeWhitelistAll;
-    }
-    private final MenuItem menuReset = new MenuItem("Reset");
-    public CheckMenuItem getMenuModeWhitelistAny() {
-        return menuModeWhitelistAny;
-    }
-    public CheckMenuItem getMenuModeBlacklistAll() {
-        return menuModeBlacklistAll;
-    }
-    public CheckMenuItem getMenuModeBlacklistAny() {
-        return menuModeBlacklistAny;
-    }
-    public MenuItem getMenuReset() {
-        return menuReset;
-    }
-    public ClickableMenu getMenuRandom() {
-        return menuRandom;
-    }
-
-    private final Menu infoLabelMenu = new Menu();
-    public ClickableMenu getMenuFullView() {
-        return menuFullView;
+        this.setBackground(CommonUtil.getBackgroundDefault());
+        this.setCenter(hBox);
     }
 
     public void reload() {
-        String text = select.size() + " items selected";
-        infoLabelMenu.setText(text);
+        //String text = select.size() + " items selected";
+        //infoLabelMenu.setText(text);
+    }
+
+    private Label createNode(String text) {
+        Label node = new Label(text);
+        node.setFont(CommonUtil.getFont());
+        node.setTextFill(Color.LIGHTGRAY);
+        node.setOnMouseEntered(event -> node.setBackground(CommonUtil.getButtonBackgroundHover()));
+        node.setOnMouseExited(event -> node.setBackground(CommonUtil.getButtonBackgroundDefault()));
+        node.setPadding(nodePadding);
+        return node;
+    }
+    private Label createRoot(String text, Label... children) {
+        CustomCM customCM = new CustomCM(children);
+
+        Label root = new Label(text);
+        root.setFont(CommonUtil.getFont());
+        root.setTextFill(Color.LIGHTGRAY);
+        root.setOnMouseEntered(event -> root.setBackground(CommonUtil.getButtonBackgroundHover()));
+        root.setOnMouseExited(event -> root.setBackground(CommonUtil.getButtonBackgroundDefault()));
+        root.setOnMouseClicked(event -> {
+            Bounds boundsInScene = root.localToScene(root.getBoundsInLocal());
+            customCM.show(root, boundsInScene.getMinX(), boundsInScene.getMaxY() + root.getHeight() - root.getPadding().getTop());
+            setLabelGroupWidth(children);
+        });
+        root.setPadding(nodePadding);
+        return root;
+    }
+
+    private void setLabelGroupWidth(Label... labels) {
+        double width = 0;
+        for (Label label : labels) {
+            System.out.println(label.getPrefWidth());
+            if (width < label.getWidth()) width = label.getWidth();
+        }
+        for (Label label : labels) {
+            label.setPrefWidth(width);
+        }
+    }
+
+    public Label getNodeSave() {
+        return nodeSave;
+    }
+    public Label getNodeExit() {
+        return nodeExit;
+    }
+    public Label getNodeSelectAll() {
+        return nodeSelectAll;
+    }
+    public Label getNodeSelectNone() {
+        return nodeSelectNone;
+    }
+    public Label getNodeCustom() {
+        return nodeCustom;
+    }
+    public Label getNodeReset() {
+        return nodeReset;
+    }
+    public Label getNodeRandom() {
+        return nodeRandom;
+    }
+    public Label getNodeFullview() {
+        return nodeFullview;
     }
 }

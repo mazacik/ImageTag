@@ -5,9 +5,9 @@ import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
-import utils.MainUtil;
+import utils.InstanceRepo;
 
-public class InfoContextMenu extends ContextMenu implements MainUtil {
+public class InfoContextMenu extends ContextMenu implements InstanceRepo {
     private final MenuItem menuEdit = new MenuItem("Edit Tag");
     private final MenuItem menuRemove = new MenuItem("Remove Tag");
 

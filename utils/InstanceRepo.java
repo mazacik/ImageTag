@@ -14,13 +14,13 @@ import userinterface.node.center.FullView;
 import userinterface.node.center.TileView;
 import userinterface.node.side.InfoListViewL;
 import userinterface.node.side.InfoListViewR;
-import userinterface.node.topmenu.TopMenu2;
+import userinterface.node.topmenu.TopMenu;
 
-public interface MainUtil {
+public interface InstanceRepo {
     Logger logger = Logger.getInstance();
     Settings settings = Settings.getInstance();
 
-    TopMenu2 topMenu = new TopMenu2();
+    TopMenu topMenu = new TopMenu();
     TileView tileView = new TileView();
     FullView fullView = new FullView();
     InfoListViewL infoListViewL = new InfoListViewL();
@@ -37,11 +37,4 @@ public interface MainUtil {
 
     BaseListInfo infoListWhite = new BaseListInfo();
     BaseListInfo infoListBlack = new BaseListInfo();
-
-    default void swapDisplayMode() {
-        mainStage.swapDisplayMode();
-    }
-    default boolean isFullView() {
-        return mainStage.isFullView();
-    }
 }

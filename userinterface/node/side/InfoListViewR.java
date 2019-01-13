@@ -9,38 +9,37 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import namespace.Namespace;
 import settings.SettingsNamespace;
-import userinterface.BackgroundEnum;
 import userinterface.node.BaseNode;
-import utils.MainUtil;
+import userinterface.node.CustomButton;
+import utils.CommonUtil;
+import utils.InstanceRepo;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class InfoListViewR extends VBox implements BaseNode, MainUtil {
-    private final TreeView<CustomTreeCell> treeView;
-    private final Button btnExpCol = new Button(Namespace.GUI_SIDE_BTN_EXPCOL_STATE_FALSE.getValue());
+public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
+    private final TreeView<CustomTreeCell> treeView = new TreeView(new TreeItem());
+    private final CustomButton btnExpCol = new CustomButton("Expand");
 
     public InfoListViewR() {
         this.setMinWidth(200);
         this.setPrefWidth(250);
         this.setMaxWidth(300);
-        this.setSpacing(settings.valueOf(SettingsNamespace.GLOBAL_PADDING));
-        this.setBackground(BackgroundEnum.NIGHT_1.getValue());
 
-        treeView = new TreeView(new TreeItem());
-        treeView.setMaxHeight(this.getMaxHeight());
-        treeView.setShowRoot(false);
         VBox.setVgrow(treeView, Priority.ALWAYS);
-        treeView.setBackground(BackgroundEnum.NIGHT_1.getValue());
-        this.setCellFactory();
+        treeView.setShowRoot(false);
+        treeView.setBackground(CommonUtil.getBackgroundDefault());
 
         btnExpCol.setPrefWidth(this.getPrefWidth());
+        btnExpCol.setTextFill(CommonUtil.getTextColorDefault());
+        btnExpCol.setFont(CommonUtil.getFont());
+        btnExpCol.setBorder(new Border(new BorderStroke(CommonUtil.getNodeBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 1, 0))));
 
+        this.setCellFactory();
+        this.setSpacing(settings.valueOf(SettingsNamespace.GLOBAL_PADDING));
         this.getChildren().addAll(btnExpCol, treeView);
     }
 
@@ -56,13 +55,13 @@ public class InfoListViewR extends VBox implements BaseNode, MainUtil {
                 parentTreeCell = sourceCell.getTreeItem().getParent().getValue();
             } catch (NullPointerException ignored) {}
 
-            if (customTreeCell.getColor().equals(Color.GREEN) || customTreeCell.getColor().equals(Color.BLUE)) {
-                if (parentTreeCell != null) parentTreeCell.setColor(Color.BLACK);
-                customTreeCell.setColor(Color.BLACK);
+            if (customTreeCell.getColor().equals(CommonUtil.getTextColorPositive()) || customTreeCell.getColor().equals(CommonUtil.getTextColorIntersect())) {
+                if (parentTreeCell != null) parentTreeCell.setColor(CommonUtil.getTextColorDefault());
+                customTreeCell.setColor(CommonUtil.getTextColorDefault());
                 this.removeTagObjectFromSelection(infoObject);
             } else {
-                if (parentTreeCell != null) parentTreeCell.setColor(Color.GREEN);
-                customTreeCell.setColor(Color.GREEN);
+                if (parentTreeCell != null) parentTreeCell.setColor(CommonUtil.getTextColorPositive());
+                customTreeCell.setColor(CommonUtil.getTextColorPositive());
                 this.addTagObjectToSelection(infoObject);
             }
         }
@@ -70,9 +69,9 @@ public class InfoListViewR extends VBox implements BaseNode, MainUtil {
     }
     public void addTagObjectToSelection(InfoObject infoObject) {
         if (select.size() < 1) {
-            DataObject currentFocusedItem = target.getCurrentTarget();
-            if (currentFocusedItem != null) {
-                currentFocusedItem.getBaseListInfo().add(infoObject);
+            DataObject currentTargetedItem = target.getCurrentTarget();
+            if (currentTargetedItem != null) {
+                currentTargetedItem.getBaseListInfo().add(infoObject);
             }
         } else {
             select.addTagObject(infoObject);
@@ -80,9 +79,9 @@ public class InfoListViewR extends VBox implements BaseNode, MainUtil {
     }
     public void removeTagObjectFromSelection(InfoObject infoObject) {
         if (select.size() < 1) {
-            DataObject currentFocusedItem = target.getCurrentTarget();
-            if (currentFocusedItem != null) {
-                currentFocusedItem.getBaseListInfo().remove(infoObject);
+            DataObject currentTargetedItem = target.getCurrentTarget();
+            if (currentTargetedItem != null) {
+                currentTargetedItem.getBaseListInfo().remove(infoObject);
             }
         } else {
             select.removeTagObject(infoObject);
@@ -105,11 +104,15 @@ public class InfoListViewR extends VBox implements BaseNode, MainUtil {
         ArrayList<String> groupsShare = select.getSharedTags().getGroups();
         ArrayList<String> groupsAll = mainListInfo.getGroups();
 
+        Color textColorDefault = CommonUtil.getTextColorDefault();
+        Color textColorPositive = CommonUtil.getTextColorPositive();
+        Color textColorIntersect = CommonUtil.getTextColorIntersect();
+
         for (String groupInter : groupsInter) {
             groupsShare.remove(groupInter);
             groupsAll.remove(groupInter);
 
-            TreeItem groupTreeItem = new TreeItem(new CustomTreeCell(groupInter, Color.GREEN));
+            TreeItem groupTreeItem = new TreeItem(new CustomTreeCell(groupInter, textColorPositive));
             ArrayList<String> namesInter = select.getIntersectingTags().getNames(groupInter);
             ArrayList<String> namesShare = select.getSharedTags().getNames(groupInter);
             ArrayList<String> namesAll = mainListInfo.getNames(groupInter);
@@ -118,15 +121,15 @@ public class InfoListViewR extends VBox implements BaseNode, MainUtil {
                 namesShare.remove(nameInter);
                 namesAll.remove(nameInter);
 
-                groupTreeItem.getChildren().add(new TreeItem(new CustomTreeCell(nameInter, Color.GREEN)));
+                groupTreeItem.getChildren().add(new TreeItem(new CustomTreeCell(nameInter, textColorPositive)));
             }
             for (String nameShare : namesShare) {
                 namesAll.remove(nameShare);
 
-                groupTreeItem.getChildren().add(new TreeItem(new CustomTreeCell(nameShare, Color.BLUE)));
+                groupTreeItem.getChildren().add(new TreeItem(new CustomTreeCell(nameShare, textColorIntersect)));
             }
             for (String nameAll : namesAll) {
-                groupTreeItem.getChildren().add(new TreeItem(new CustomTreeCell(nameAll, Color.BLACK)));
+                groupTreeItem.getChildren().add(new TreeItem(new CustomTreeCell(nameAll, textColorDefault)));
             }
 
             treeViewItems.add(groupTreeItem);
@@ -134,27 +137,27 @@ public class InfoListViewR extends VBox implements BaseNode, MainUtil {
         for (String groupShare : groupsShare) {
             groupsAll.remove(groupShare);
 
-            TreeItem groupTreeItem = new TreeItem(new CustomTreeCell(groupShare, Color.BLUE));
+            TreeItem groupTreeItem = new TreeItem(new CustomTreeCell(groupShare, textColorIntersect));
             ArrayList<String> namesShare = select.getSharedTags().getNames(groupShare);
             ArrayList<String> namesAll = mainListInfo.getNames(groupShare);
 
             for (String nameShare : namesShare) {
                 namesAll.remove(nameShare);
 
-                groupTreeItem.getChildren().add(new TreeItem(new CustomTreeCell(nameShare, Color.BLUE)));
+                groupTreeItem.getChildren().add(new TreeItem(new CustomTreeCell(nameShare, textColorIntersect)));
             }
             for (String nameAll : namesAll) {
-                groupTreeItem.getChildren().add(new TreeItem(new CustomTreeCell(nameAll, Color.BLACK)));
+                groupTreeItem.getChildren().add(new TreeItem(new CustomTreeCell(nameAll, textColorDefault)));
             }
 
             treeViewItems.add(groupTreeItem);
         }
         for (String groupAll : groupsAll) {
-            TreeItem groupTreeItem = new TreeItem(new CustomTreeCell(groupAll, Color.BLACK));
+            TreeItem groupTreeItem = new TreeItem(new CustomTreeCell(groupAll, textColorDefault));
             ArrayList<String> namesAll = mainListInfo.getNames(groupAll);
 
             for (String nameAll : namesAll) {
-                groupTreeItem.getChildren().add(new TreeItem(new CustomTreeCell(nameAll, Color.BLACK)));
+                groupTreeItem.getChildren().add(new TreeItem(new CustomTreeCell(nameAll, textColorDefault)));
             }
 
             treeViewItems.add(groupTreeItem);
@@ -183,9 +186,10 @@ public class InfoListViewR extends VBox implements BaseNode, MainUtil {
                 } else {
                     setText(customTreeCell.getText());
                     setTextFill(customTreeCell.getColor());
+                    setFont(CommonUtil.getFont());
                 }
 
-                setBackground(BackgroundEnum.NIGHT_1.getValue());
+                setBackground(CommonUtil.getBackgroundDefault());
 
                 InfoListViewREvent.onMouseClick(this);
                 this.addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {

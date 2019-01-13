@@ -2,11 +2,10 @@ package userinterface.node.side;
 
 import javafx.scene.control.TreeCell;
 import javafx.scene.input.MouseEvent;
-import namespace.Namespace;
 import userinterface.template.specific.InfoContextMenu;
-import utils.MainUtil;
+import utils.InstanceRepo;
 
-public class InfoListViewREvent implements MainUtil {
+public class InfoListViewREvent implements InstanceRepo {
     private boolean isExpanded = false;
 
     public InfoListViewREvent() {
@@ -42,8 +41,8 @@ public class InfoListViewREvent implements MainUtil {
     private void onAction_btnExpCol() {
         infoListViewR.getBtnExpCol().setOnAction(event -> {
             isExpanded = !isExpanded;
-            if (isExpanded) infoListViewR.getBtnExpCol().setText(Namespace.GUI_SIDE_BTN_EXPCOL_STATE_TRUE.getValue());
-            else infoListViewR.getBtnExpCol().setText(Namespace.GUI_SIDE_BTN_EXPCOL_STATE_FALSE.getValue());
+            if (isExpanded) infoListViewR.getBtnExpCol().setText("Expand");
+            else infoListViewR.getBtnExpCol().setText("Collapse");
             infoListViewR.getTreeView().getRoot().getChildren().forEach(node -> node.setExpanded(isExpanded));
         });
     }

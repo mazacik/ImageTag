@@ -1,12 +1,12 @@
 package control.reload;
 
 import userinterface.node.BaseNode;
-import utils.MainUtil;
+import utils.InstanceRepo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Reload implements MainUtil {
+public class Reload implements InstanceRepo {
     private ArrayList<BaseNode> queue;
 
     public Reload() {

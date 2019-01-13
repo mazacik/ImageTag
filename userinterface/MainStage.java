@@ -13,9 +13,10 @@ import userinterface.node.side.InfoListViewREvent;
 import userinterface.node.topmenu.TopMenuEvent;
 import userinterface.template.specific.DataContextMenu;
 import userinterface.template.specific.InfoContextMenu;
-import utils.MainUtil;
+import utils.CommonUtil;
+import utils.InstanceRepo;
 
-public class MainStage extends Stage implements MainUtil {
+public class MainStage extends Stage implements InstanceRepo {
     private final SplitPane splitPane = new SplitPane(infoListViewL, tileView, infoListViewR);
     private final DataContextMenu dataContextMenu = new DataContextMenu();
     private final InfoContextMenu infoContextMenu = new InfoContextMenu();
@@ -30,7 +31,7 @@ public class MainStage extends Stage implements MainUtil {
     private void setDefaultValues() {
         this.setTitle("ImageTag");
         this.setScene(new Scene(new VBox(topMenu, splitPane)));
-        splitPane.setBackground(BackgroundEnum.NIGHT_1.getValue());
+        splitPane.setBackground(CommonUtil.getBackgroundDefault());
         this.setMaximized(true);
         this.setOnShown(event -> {
             splitPane.lookupAll(".split-pane-divider").forEach(div -> div.setStyle("-fx-padding: 0; -fx-background-color: transparent;"));
@@ -62,12 +63,13 @@ public class MainStage extends Stage implements MainUtil {
         double[] dividerPositions = splitPane.getDividerPositions();
         if (this.isFullView()) {
             splitPaneItems.set(splitPaneItems.indexOf(fullView), tileView);
-            tileView.adjustViewportToCurrentFocus();
+            tileView.adjustViewportToCurrentTarget();
         } else {
             splitPaneItems.set(splitPaneItems.indexOf(tileView), fullView);
             fullView.reload();
         }
         splitPane.setDividerPositions(dividerPositions);
+        splitPane.lookupAll(".split-pane-divider").forEach(div -> div.setStyle("-fx-padding: 0; -fx-background-color: transparent;"));
     }
     public boolean isFullView() {
         return splitPane.getItems().contains(fullView);

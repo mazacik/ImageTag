@@ -1,14 +1,14 @@
 package database.list;
 
 import database.object.DataObject;
-import utils.MainUtil;
+import utils.InstanceRepo;
 import utils.serialization.SerializationUtil;
 import utils.serialization.TypeTokenEnum;
 
 import java.lang.reflect.Type;
 import java.util.Comparator;
 
-public class MainListData extends BaseList<DataObject> implements MainUtil {
+public class MainListData extends BaseList<DataObject> implements InstanceRepo {
     private static final String dataFile = "data\\data.json";
 
     public void writeToDisk() {

@@ -2,7 +2,7 @@ package utils.serialization;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import utils.MainUtil;
+import utils.InstanceRepo;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -11,7 +11,7 @@ import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public abstract class SerializationUtil implements MainUtil {
+public abstract class SerializationUtil implements InstanceRepo {
     public static void writeJSON(Object object, Type type, String path) {
         GsonBuilder GSONBuilder = new GsonBuilder();
         GSONBuilder.setPrettyPrinting().serializeNulls();

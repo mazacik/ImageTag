@@ -1,8 +1,9 @@
 package userinterface;
 
-import utils.MainUtil;
+import utils.CommonUtil;
+import utils.InstanceRepo;
 
-public class GlobalEvent implements MainUtil {
+public class GlobalEvent implements InstanceRepo {
     public GlobalEvent() {
         onKeyPressed();
     }
@@ -17,7 +18,7 @@ public class GlobalEvent implements MainUtil {
                     select.setRandom();
                     break;
                 case F12:
-                    swapDisplayMode();
+                    CommonUtil.swapDisplayMode();
                     break;
                 case W:
                 case A:

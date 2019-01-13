@@ -6,9 +6,9 @@ import database.object.InfoObject;
 import javafx.scene.control.TreeCell;
 import userinterface.node.side.CustomTreeCell;
 import userinterface.template.specific.InfoObjectEditor;
-import utils.MainUtil;
+import utils.InstanceRepo;
 
-public class MainListInfo extends BaseListInfo implements MainUtil {
+public class MainListInfo extends BaseListInfo implements InstanceRepo {
     public void initialize() {
         for (DataObject dataIterator : mainListData) {
             BaseListInfo baseListInfo = dataIterator.getBaseListInfo();

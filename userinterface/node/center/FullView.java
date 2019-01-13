@@ -1,18 +1,17 @@
 package userinterface.node.center;
 
 import database.object.DataObject;
-import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import settings.SettingsNamespace;
 import userinterface.node.BaseNode;
-import utils.MainUtil;
+import utils.CommonUtil;
+import utils.InstanceRepo;
 
-public class FullView extends Pane implements BaseNode, MainUtil {
+public class FullView extends Pane implements BaseNode, InstanceRepo {
     private final Canvas canvas = new Canvas();
-
     private DataObject currentDataObject = null;
     private Image currentPreviewImage = null;
 
@@ -22,24 +21,26 @@ public class FullView extends Pane implements BaseNode, MainUtil {
 
         this.setWidth(settings.valueOf(SettingsNamespace.MAINSCENE_WIDTH));
         this.setHeight(settings.valueOf(SettingsNamespace.MAINSCENE_HEIGHT));
-        this.setPadding(new Insets(settings.valueOf(SettingsNamespace.GLOBAL_PADDING)));
+        this.setBorder(new Border(new BorderStroke(CommonUtil.getNodeBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 1, 0, 1))));
         this.getChildren().add(canvas);
     }
-
+    public Canvas getCanvas() {
+        return canvas;
+    }
     public void reload() {
-        if (!isFullView()) return;
+        if (!CommonUtil.isFullView()) return;
 
-        DataObject currentFocus = target.getCurrentTarget();
-        if (currentFocus == null) return;
-        if (currentDataObject == null || !currentDataObject.equals(currentFocus)) {
+        DataObject currentTarget = target.getCurrentTarget();
+        if (currentTarget == null) return;
+        if (currentDataObject == null || !currentDataObject.equals(currentTarget)) {
             String url = "file:" + settings.getCurrentDirectory() + "\\" + target.getCurrentTarget().getName();
             currentPreviewImage = new Image(url);
-            currentDataObject = currentFocus;
+            currentDataObject = currentTarget;
         }
 
         double imageWidth = currentPreviewImage.getWidth();
         double imageHeight = currentPreviewImage.getHeight();
-        double maxWidth = canvas.getWidth();
+        double maxWidth = canvas.getWidth() - 4;
         double maxHeight = canvas.getHeight();
 
         // scale image to fit width
@@ -52,16 +53,12 @@ public class FullView extends Pane implements BaseNode, MainUtil {
             resultWidth = imageWidth * maxHeight / imageHeight;
         }
 
-        double resultX = maxWidth / 2 - resultWidth / 2;
+        double resultX = maxWidth / 2 - resultWidth / 2 + 2;
         double resultY = maxHeight / 2 - resultHeight / 2;
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
         gc.clearRect(0, 0, this.getWidth(), this.getHeight());
         gc.drawImage(currentPreviewImage, resultX, resultY, resultWidth, resultHeight);
-    }
-
-    public Canvas getCanvas() {
-        return canvas;
     }
 }

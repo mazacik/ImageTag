@@ -6,10 +6,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import userinterface.BackgroundEnum;
-import utils.MainUtil;
+import utils.CommonUtil;
+import utils.InstanceRepo;
 
-public class LoadingWindow extends Stage implements MainUtil {
+public class LoadingWindow extends Stage implements InstanceRepo {
     private final BorderPane borderPane = new BorderPane();
     private final Label progressLabel = new Label();
 
@@ -23,7 +23,7 @@ public class LoadingWindow extends Stage implements MainUtil {
 
         borderPane.setPadding(new Insets(10));
         borderPane.setCenter(progressLabel);
-        borderPane.setBackground(BackgroundEnum.NIGHT_1.getValue());
+        borderPane.setBackground(CommonUtil.getBackgroundDefault());
         borderPane.setPrefWidth(300);
     }
     private void setDefaultValues() {

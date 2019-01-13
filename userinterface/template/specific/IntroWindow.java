@@ -12,11 +12,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import settings.SettingsNamespace;
-import userinterface.BackgroundEnum;
 import userinterface.template.generic.DirectoryChooserWindow;
-import utils.MainUtil;
+import utils.CommonUtil;
+import utils.InstanceRepo;
 
-public class IntroWindow extends Stage implements MainUtil {
+public class IntroWindow extends Stage implements InstanceRepo {
     private final VBox vboxL = new VBox();
     private final VBox vBoxR = new VBox();
     private final Button btnChoose = new Button("Choose a Directory");
@@ -45,15 +45,15 @@ public class IntroWindow extends Stage implements MainUtil {
         });
         vboxL.setPadding(new Insets(5));
         vboxL.setPrefWidth(200);
-        vboxL.setBackground(BackgroundEnum.NIGHT_2.getValue());
+        vboxL.setBackground(CommonUtil.getBackgroundAlternative());
 
         vBoxR.getChildren().add(btnChoose);
         vBoxR.setSpacing(10);
         vBoxR.setPrefWidth(500);
         vBoxR.setAlignment(Pos.CENTER);
-        vBoxR.setBackground(BackgroundEnum.NIGHT_1.getValue());
+        vBoxR.setBackground(CommonUtil.getBackgroundDefault());
 
-        btnChoose.setBackground(BackgroundEnum.NIGHT_1.getValue());
+        btnChoose.setBackground(CommonUtil.getButtonBackgroundDefault());
         btnChoose.setFont(new Font(14));
         btnChoose.setTextFill(Color.LIGHTGRAY);
         btnChoose.setOnMouseEntered(event -> {

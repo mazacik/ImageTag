@@ -9,7 +9,7 @@ import org.apache.commons.io.FilenameUtils;
 import settings.SettingsNamespace;
 import userinterface.node.center.BaseTile;
 import userinterface.template.specific.LoadingWindow;
-import utils.MainUtil;
+import utils.InstanceRepo;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 
-public class DataLoader extends Thread implements MainUtil {
+public class DataLoader extends Thread implements InstanceRepo {
     private final String PATH_SOURCE = settings.getCurrentDirectory();
     private final String PATH_CACHE = PATH_SOURCE + "cache\\";
     private final String PATH_DATA = PATH_SOURCE + "data\\";

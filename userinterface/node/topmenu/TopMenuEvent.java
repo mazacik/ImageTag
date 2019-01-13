@@ -1,9 +1,11 @@
 package userinterface.node.topmenu;
 
-import utils.MainUtil;
+import control.filter.FilterTemplate;
+import javafx.stage.WindowEvent;
+import utils.CommonUtil;
+import utils.InstanceRepo;
 
-public class TopMenuEvent implements MainUtil {
-    /*
+public class TopMenuEvent implements InstanceRepo {
     public TopMenuEvent() {
         onAction_menuSave();
         onAction_menuExit();
@@ -11,12 +13,7 @@ public class TopMenuEvent implements MainUtil {
         onAction_menuSelectAll();
         onAction_menuClearSelection();
 
-        onAction_menuUntaggedOnly();
-        onAction_menuMaxXTags();
-        onAction_menuModeWhitelistAll();
-        onAction_menuModeWhitelistAny();
-        onAction_menuModeBlacklistAll();
-        onAction_menuModeBlacklistAny();
+        onAction_menuCustom();
         onAction_menuReset();
 
         onAction_menuRandom();
@@ -24,41 +21,49 @@ public class TopMenuEvent implements MainUtil {
     }
 
     private void onAction_menuSave() {
-        topMenu.getMenuSave().setOnAction(event ->
+        topMenu.getNodeSave().setOnMouseClicked(event ->
                 mainListData.writeToDisk());
     }
     private void onAction_menuExit() {
-        topMenu.getMenuExit().setOnAction(event -> topMenu.fireEvent(new WindowEvent(mainStage, WindowEvent.WINDOW_CLOSE_REQUEST)));
+        topMenu.getNodeExit().setOnMouseClicked(event -> topMenu.fireEvent(new WindowEvent(mainStage, WindowEvent.WINDOW_CLOSE_REQUEST)));
     }
 
     private void onAction_menuSelectAll() {
-        topMenu.getMenuSelectAll().setOnAction(event -> {
+        topMenu.getNodeSelectAll().setOnMouseClicked(event -> {
             select.addAll(filter);
             reload.doReload();
         });
     }
     private void onAction_menuClearSelection() {
-        topMenu.getMenuClearSelection().setOnAction(event -> {
+        topMenu.getNodeSelectNone().setOnMouseClicked(event -> {
             select.clear();
             reload.doReload();
         });
     }
 
-    private void onAction_menuUntaggedOnly() {
-        topMenu.getMenuUntaggedOnly().setOnAction(event -> {
-            filter.setFilter(FilterTemplate.SHOW_UNTAGGED);
-            reload.doReload();
-        });
-    }
-    private void onAction_menuMaxXTags() {
-        topMenu.getMenuMaxXTags().setOnAction(event -> {
-            int maxTags = new NumberInputWindow("FilterTemplate Settings", "Maximum number of tags:").getResultValue();
-            FilterTemplate.setMaxTagsValue(maxTags);
+    private void onAction_menuCustom() {
+        topMenu.getNodeCustom().setOnMouseClicked(event -> {
+            //todo custom window
 
-            filter.setFilter(FilterTemplate.SHOW_MAX_X_TAGS);
+            /*
+            topMenu.getMenuMaxXTags().setOnAction(event -> {
+                int maxTags = new NumberInputWindow("FilterTemplate Settings", "Maximum number of tags:").getResultValue();
+                FilterTemplate.setMaxTagsValue(maxTags);
+
+                filter.setFilter(FilterTemplate.SHOW_MAX_X_TAGS);
+                reload.doReload();
+            });
+            */
+        });
+    }
+    private void onAction_menuReset() {
+        topMenu.getNodeReset().setOnMouseClicked(event -> {
+            filter.setFilter(FilterTemplate.SHOW_EVERYTHING);
             reload.doReload();
         });
     }
+
+    /* todo implement "settings"
     private void onAction_menuModeWhitelistAll() {
         topMenu.getMenuModeWhitelistAll().setOnAction(event -> {
             topMenu.getMenuModeWhitelistAll().setSelected(true);
@@ -91,21 +96,15 @@ public class TopMenuEvent implements MainUtil {
             filter.apply();
         });
     }
-    private void onAction_menuReset() {
-        topMenu.getMenuReset().setOnAction(event -> {
-            filter.setFilter(FilterTemplate.SHOW_EVERYTHING);
-            reload.doReload();
-        });
-    }
+    */
 
     private void onAction_menuRandom() {
-        topMenu.getMenuRandom()._setOnAction(event -> {
+        topMenu.getNodeRandom().setOnMouseClicked(event -> {
             select.setRandom();
             reload.doReload();
         });
     }
     private void onAction_menuFullView() {
-        topMenu.getMenuFullView()._setOnAction(event -> swapDisplayMode());
+        topMenu.getNodeFullview().setOnMouseClicked(event -> CommonUtil.swapDisplayMode());
     }
-    */
 }

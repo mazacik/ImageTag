@@ -1,8 +1,8 @@
 package userinterface.node.center;
 
-import utils.MainUtil;
+import utils.InstanceRepo;
 
-public class TileViewEvent implements MainUtil {
+public class TileViewEvent implements InstanceRepo {
     public TileViewEvent() {
         onWidthChange();
     }

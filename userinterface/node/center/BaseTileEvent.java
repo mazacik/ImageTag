@@ -2,9 +2,9 @@ package userinterface.node.center;
 
 import database.object.DataObject;
 import javafx.scene.input.MouseEvent;
-import utils.MainUtil;
+import utils.InstanceRepo;
 
-public class BaseTileEvent implements MainUtil {
+public class BaseTileEvent implements InstanceRepo {
     public BaseTileEvent(BaseTile gallerytile) {
         onMouseClick(gallerytile);
     }

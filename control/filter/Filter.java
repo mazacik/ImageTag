@@ -4,11 +4,11 @@ import control.reload.Reload;
 import database.list.MainListData;
 import database.object.DataObject;
 import database.object.InfoObject;
-import utils.MainUtil;
+import utils.InstanceRepo;
 
 import java.util.Random;
 
-public class Filter extends MainListData implements MainUtil {
+public class Filter extends MainListData implements InstanceRepo {
     private FilterMode whitelistMode;
     private FilterMode blacklistMode;
     private FilterTemplate currentFilterTemplate;

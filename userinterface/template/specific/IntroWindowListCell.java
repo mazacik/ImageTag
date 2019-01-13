@@ -8,7 +8,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import userinterface.BackgroundEnum;
+import utils.CommonUtil;
 
 public class IntroWindowListCell extends BorderPane {
     private Label nameLabel = new Label();
@@ -38,14 +38,14 @@ public class IntroWindowListCell extends BorderPane {
         nameLabel.setTextFill(Color.LIGHTGRAY);
         pathLabel.setTextFill(Color.LIGHTGRAY);
 
-        this.setBackground(BackgroundEnum.NIGHT_2.getValue());
+        this.setBackground(CommonUtil.getButtonBackgroundHover());
         this.setOnMouseEntered(event -> {
-            this.setBackground(BackgroundEnum.NIGHT_1.getValue());
+            this.setBackground(CommonUtil.getButtonBackgroundDefault());
             this.setCursor(Cursor.HAND);
             removeLabel.setVisible(true);
         });
         this.setOnMouseExited(event -> {
-            this.setBackground(BackgroundEnum.NIGHT_2.getValue());
+            this.setBackground(CommonUtil.getButtonBackgroundHover());
             this.setCursor(Cursor.DEFAULT);
             removeLabel.setVisible(false);
         });

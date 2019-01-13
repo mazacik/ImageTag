@@ -5,9 +5,9 @@ import database.list.BaseListInfo;
 import database.list.MainListData;
 import database.object.DataObject;
 import database.object.InfoObject;
-import utils.MainUtil;
+import utils.InstanceRepo;
 
-public class Select extends MainListData implements MainUtil {
+public class Select extends MainListData implements InstanceRepo {
     public boolean add(DataObject dataObject) {
         if (dataObject == null) return false;
         if (super.add(dataObject)) {

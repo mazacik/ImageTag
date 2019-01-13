@@ -1,9 +1,9 @@
 import javafx.application.Application;
 import javafx.stage.Stage;
 import userinterface.template.specific.IntroWindow;
-import utils.MainUtil;
+import utils.InstanceRepo;
 
-public class Main extends Application implements MainUtil {
+public class Main extends Application implements InstanceRepo {
     public static void main(String[] args) {
         launch(args);
     }

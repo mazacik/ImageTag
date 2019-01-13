@@ -3,9 +3,9 @@ package control.target;
 import control.reload.Reload;
 import database.object.DataObject;
 import javafx.scene.input.KeyCode;
-import utils.MainUtil;
+import utils.InstanceRepo;
 
-public class Target implements MainUtil {
+public class Target implements InstanceRepo {
     private DataObject currentTarget;
     private DataObject previousTarget;
     private int storePos = -1;
@@ -27,38 +27,38 @@ public class Target implements MainUtil {
             previousTarget.getBaseTile().generateEffect();
         }
 
-        tileView.adjustViewportToCurrentFocus();
+        tileView.adjustViewportToCurrentTarget();
         reload.notifyChangeIn(Reload.Control.TARGET);
     }
     public void move(KeyCode keyCode) {
         int columnCount = tileView.getColumnCount();
         int dataCountFilter = filter.size();
-        int currentFocusPosition = filter.indexOf(currentTarget);
+        int currentTargetPosition = filter.indexOf(currentTarget);
 
-        int newFocusPosition = 0;
-        if (currentTarget != null) newFocusPosition = filter.indexOf(currentTarget);
+        int newTargetPosition = 0;
+        if (currentTarget != null) newTargetPosition = filter.indexOf(currentTarget);
 
         switch (keyCode) {
             case W:
-                if (currentFocusPosition >= columnCount) newFocusPosition -= columnCount;
+                if (currentTargetPosition >= columnCount) newTargetPosition -= columnCount;
                 break;
             case A:
-                if (newFocusPosition > 0) newFocusPosition -= 1;
+                if (newTargetPosition > 0) newTargetPosition -= 1;
                 break;
             case S:
-                if (currentFocusPosition < dataCountFilter - (columnCount - (tileView.getRowCount() * columnCount - dataCountFilter))) {
-                    newFocusPosition += columnCount;
-                    if (newFocusPosition > dataCountFilter - 1) {
-                        newFocusPosition = dataCountFilter - 1;
+                if (currentTargetPosition < dataCountFilter - (columnCount - (tileView.getRowCount() * columnCount - dataCountFilter))) {
+                    newTargetPosition += columnCount;
+                    if (newTargetPosition > dataCountFilter - 1) {
+                        newTargetPosition = dataCountFilter - 1;
                     }
                 }
                 break;
             case D:
-                if (newFocusPosition < dataCountFilter - 1) newFocusPosition += 1;
+                if (newTargetPosition < dataCountFilter - 1) newTargetPosition += 1;
                 break;
         }
 
-        this.set(filter.get(newFocusPosition));
+        this.set(filter.get(newTargetPosition));
     }
     public void storePosition() {
         this.storePos = filter.indexOf(currentTarget);
