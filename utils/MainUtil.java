@@ -14,13 +14,13 @@ import userinterface.node.center.FullView;
 import userinterface.node.center.TileView;
 import userinterface.node.side.InfoListViewL;
 import userinterface.node.side.InfoListViewR;
-import userinterface.node.topmenu.TopMenu;
+import userinterface.node.topmenu.TopMenu2;
 
 public interface MainUtil {
     Logger logger = Logger.getInstance();
     Settings settings = Settings.getInstance();
 
-    TopMenu topMenu = new TopMenu();
+    TopMenu2 topMenu = new TopMenu2();
     TileView tileView = new TileView();
     FullView fullView = new FullView();
     InfoListViewL infoListViewL = new InfoListViewL();

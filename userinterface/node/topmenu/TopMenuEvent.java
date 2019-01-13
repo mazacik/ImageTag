@@ -1,12 +1,9 @@
 package userinterface.node.topmenu;
 
-import control.filter.Filter;
-import control.filter.FilterTemplate;
-import javafx.stage.WindowEvent;
-import userinterface.template.generic.NumberInputWindow;
 import utils.MainUtil;
 
 public class TopMenuEvent implements MainUtil {
+    /*
     public TopMenuEvent() {
         onAction_menuSave();
         onAction_menuExit();
@@ -110,4 +107,5 @@ public class TopMenuEvent implements MainUtil {
     private void onAction_menuFullView() {
         topMenu.getMenuFullView()._setOnAction(event -> swapDisplayMode());
     }
+    */
 }

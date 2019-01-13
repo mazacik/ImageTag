@@ -6,25 +6,25 @@ import javafx.scene.input.KeyCode;
 import utils.MainUtil;
 
 public class Target implements MainUtil {
-    private DataObject currentFocus;
-    private DataObject previousFocus;
+    private DataObject currentTarget;
+    private DataObject previousTarget;
     private int storePos = -1;
 
     public Target() {
-        currentFocus = null;
-        previousFocus = null;
+        currentTarget = null;
+        previousTarget = null;
     }
     public void set(DataObject dataObject) {
         /* store old target position */
-        previousFocus = currentFocus;
+        previousTarget = currentTarget;
 
         /* apply new target effect */
-        currentFocus = dataObject;
-        currentFocus.getBaseTile().generateEffect();
+        currentTarget = dataObject;
+        currentTarget.getBaseTile().generateEffect();
 
         /* remove old target effect */
-        if (previousFocus != null) {
-            previousFocus.getBaseTile().generateEffect();
+        if (previousTarget != null) {
+            previousTarget.getBaseTile().generateEffect();
         }
 
         tileView.adjustViewportToCurrentFocus();
@@ -33,10 +33,10 @@ public class Target implements MainUtil {
     public void move(KeyCode keyCode) {
         int columnCount = tileView.getColumnCount();
         int dataCountFilter = filter.size();
-        int currentFocusPosition = filter.indexOf(currentFocus);
+        int currentFocusPosition = filter.indexOf(currentTarget);
 
         int newFocusPosition = 0;
-        if (currentFocus != null) newFocusPosition = filter.indexOf(currentFocus);
+        if (currentTarget != null) newFocusPosition = filter.indexOf(currentTarget);
 
         switch (keyCode) {
             case W:
@@ -61,7 +61,7 @@ public class Target implements MainUtil {
         this.set(filter.get(newFocusPosition));
     }
     public void storePosition() {
-        this.storePos = filter.indexOf(currentFocus);
+        this.storePos = filter.indexOf(currentTarget);
     }
     public void restorePosition() {
         if (storePos >= 0 && storePos < filter.size()) {
@@ -71,7 +71,7 @@ public class Target implements MainUtil {
         }
     }
 
-    public DataObject getCurrentFocus() {
-        return currentFocus;
+    public DataObject getCurrentTarget() {
+        return currentTarget;
     }
 }

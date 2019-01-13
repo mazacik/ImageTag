@@ -6,13 +6,14 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.TilePane;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import settings.SettingsNamespace;
 import userinterface.BackgroundEnum;
 import userinterface.node.BaseNode;
 import utils.MainUtil;
 
-public class TileView extends ScrollPane implements MainUtil, BaseNode {
+public class TileView extends ScrollPane implements BaseNode, MainUtil {
     private final TilePane tilePane;
 
     public TileView() {
@@ -32,7 +33,9 @@ public class TileView extends ScrollPane implements MainUtil, BaseNode {
         this.setFitToWidth(true);
         this.setFitToHeight(true);
         this.setContent(tilePane);
-        this.setPadding(new Insets(settings.valueOf(SettingsNamespace.GLOBAL_PADDING)));
+        this.setBackground(BackgroundEnum.NIGHT_1.getValue());
+        this.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 1, 0, 1))));
+        tilePane.setPadding(new Insets(0, 0, 0, 1));
     }
 
     public void reload() {
@@ -60,7 +63,7 @@ public class TileView extends ScrollPane implements MainUtil, BaseNode {
         tilePane.setHgap(hgap);
     }
     public void adjustViewportToCurrentFocus() {
-        DataObject currentFocusedItem = target.getCurrentFocus();
+        DataObject currentFocusedItem = target.getCurrentTarget();
         if (isFullView() || currentFocusedItem == null) return;
         int focusIndex = filter.indexOf(currentFocusedItem);
         if (focusIndex < 0) return;

@@ -112,7 +112,7 @@ public class Filter extends MainListData implements MainUtil {
     public void setFilter(FilterTemplate filterTemplate) {
         this.currentFilterTemplate = filterTemplate;
         this.apply();
-
+        /*
         switch (this.currentFilterTemplate) {
             case CUSTOM:
                 topMenu.getMenuUntaggedOnly().setSelected(false);
@@ -133,6 +133,7 @@ public class Filter extends MainListData implements MainUtil {
             default:
                 break;
         }
+        */
     }
 
     public enum FilterMode {

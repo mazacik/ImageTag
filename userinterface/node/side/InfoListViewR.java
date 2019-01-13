@@ -3,7 +3,6 @@ package userinterface.node.side;
 import database.object.DataObject;
 import database.object.InfoObject;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
@@ -22,7 +21,7 @@ import utils.MainUtil;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class InfoListViewR extends VBox implements MainUtil, BaseNode {
+public class InfoListViewR extends VBox implements BaseNode, MainUtil {
     private final TreeView<CustomTreeCell> treeView;
     private final Button btnExpCol = new Button(Namespace.GUI_SIDE_BTN_EXPCOL_STATE_FALSE.getValue());
 
@@ -31,13 +30,13 @@ public class InfoListViewR extends VBox implements MainUtil, BaseNode {
         this.setPrefWidth(250);
         this.setMaxWidth(300);
         this.setSpacing(settings.valueOf(SettingsNamespace.GLOBAL_PADDING));
-        this.setPadding(new Insets(settings.valueOf(SettingsNamespace.GLOBAL_PADDING)));
+        this.setBackground(BackgroundEnum.NIGHT_1.getValue());
 
         treeView = new TreeView(new TreeItem());
         treeView.setMaxHeight(this.getMaxHeight());
         treeView.setShowRoot(false);
         VBox.setVgrow(treeView, Priority.ALWAYS);
-
+        treeView.setBackground(BackgroundEnum.NIGHT_1.getValue());
         this.setCellFactory();
 
         btnExpCol.setPrefWidth(this.getPrefWidth());
@@ -71,7 +70,7 @@ public class InfoListViewR extends VBox implements MainUtil, BaseNode {
     }
     public void addTagObjectToSelection(InfoObject infoObject) {
         if (select.size() < 1) {
-            DataObject currentFocusedItem = target.getCurrentFocus();
+            DataObject currentFocusedItem = target.getCurrentTarget();
             if (currentFocusedItem != null) {
                 currentFocusedItem.getBaseListInfo().add(infoObject);
             }
@@ -81,7 +80,7 @@ public class InfoListViewR extends VBox implements MainUtil, BaseNode {
     }
     public void removeTagObjectFromSelection(InfoObject infoObject) {
         if (select.size() < 1) {
-            DataObject currentFocusedItem = target.getCurrentFocus();
+            DataObject currentFocusedItem = target.getCurrentTarget();
             if (currentFocusedItem != null) {
                 currentFocusedItem.getBaseListInfo().remove(infoObject);
             }

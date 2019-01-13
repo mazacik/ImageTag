@@ -10,7 +10,7 @@ import settings.SettingsNamespace;
 import userinterface.node.BaseNode;
 import utils.MainUtil;
 
-public class FullView extends Pane implements MainUtil, BaseNode {
+public class FullView extends Pane implements BaseNode, MainUtil {
     private final Canvas canvas = new Canvas();
 
     private DataObject currentDataObject = null;
@@ -29,10 +29,10 @@ public class FullView extends Pane implements MainUtil, BaseNode {
     public void reload() {
         if (!isFullView()) return;
 
-        DataObject currentFocus = target.getCurrentFocus();
+        DataObject currentFocus = target.getCurrentTarget();
         if (currentFocus == null) return;
         if (currentDataObject == null || !currentDataObject.equals(currentFocus)) {
-            String url = "file:" + settings.getCurrentDirectory() + "\\" + target.getCurrentFocus().getName();
+            String url = "file:" + settings.getCurrentDirectory() + "\\" + target.getCurrentTarget().getName();
             currentPreviewImage = new Image(url);
             currentDataObject = currentFocus;
         }

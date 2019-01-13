@@ -26,7 +26,7 @@ public class DataContextMenu extends ContextMenu implements MainUtil {
                 //todo copy multiple files -- array?
                 dataObject = select.get(0);
             } else {
-                dataObject = target.getCurrentFocus();
+                dataObject = target.getCurrentTarget();
             }
 
             ClipboardUtil.setClipboardContent(settings.getCurrentDirectory() + dataObject.getName());
@@ -75,7 +75,7 @@ public class DataContextMenu extends ContextMenu implements MainUtil {
         }
     }
     private void deleteCurrentFocus() {
-        DataObject currentFocus = target.getCurrentFocus();
+        DataObject currentFocus = target.getCurrentTarget();
         String fullPath = settings.getCurrentDirectory() + "\\" + currentFocus.getName();
 
         ConfirmationWindow confirmationWindow = new ConfirmationWindow();
@@ -85,7 +85,7 @@ public class DataContextMenu extends ContextMenu implements MainUtil {
 
         if (confirmationWindow.getResult()) {
             //todo move most of this to target
-            int index = filter.indexOf(target.getCurrentFocus());
+            int index = filter.indexOf(target.getCurrentTarget());
             this.deleteDataObject(currentFocus);
 
             if (index < 0) {

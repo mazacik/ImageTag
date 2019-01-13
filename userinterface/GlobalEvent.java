@@ -11,7 +11,7 @@ public class GlobalEvent implements MainUtil {
         mainStage.getScene().setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case Q:
-                    select.swapState(target.getCurrentFocus());
+                    select.swapState(target.getCurrentTarget());
                     break;
                 case R:
                     select.setRandom();

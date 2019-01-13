@@ -30,7 +30,15 @@ public class MainStage extends Stage implements MainUtil {
     private void setDefaultValues() {
         this.setTitle("ImageTag");
         this.setScene(new Scene(new VBox(topMenu, splitPane)));
+        splitPane.setBackground(BackgroundEnum.NIGHT_1.getValue());
         this.setMaximized(true);
+        this.setOnShown(event -> {
+            splitPane.lookupAll(".split-pane-divider").forEach(div -> div.setStyle("-fx-padding: 0; -fx-background-color: transparent;"));
+            tileView.lookupAll(".scroll-bar").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
+            tileView.lookupAll(".increment-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
+            tileView.lookupAll(".decrement-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
+            tileView.lookupAll(".thumb").forEach(sb -> sb.setStyle("-fx-background-color: gray; -fx-background-insets: 0 4 0 4;"));
+        });
         this.setOnCloseRequest(event -> {
             mainListData.writeToDisk();
             logger.debug(this, "application exit");

@@ -48,7 +48,7 @@ public class BaseTile extends ImageView implements MainUtil {
             bSelect = select.contains(parentDataObject);
         }
 
-        DataObject currentFocus = target.getCurrentFocus();
+        DataObject currentFocus = target.getCurrentTarget();
         boolean bTarget = false;
         if (currentFocus != null) {
             bTarget = currentFocus.equals(parentDataObject);

@@ -2,25 +2,24 @@ package userinterface.node.side;
 
 import database.object.InfoObject;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import namespace.Namespace;
 import settings.SettingsNamespace;
 import userinterface.BackgroundEnum;
 import userinterface.node.BaseNode;
+import utils.CommonUtil;
 import utils.MainUtil;
 
 import java.util.ArrayList;
 
-public class InfoListViewL extends VBox implements MainUtil, BaseNode {
+public class InfoListViewL extends VBox implements BaseNode, MainUtil {
     private final TreeView<CustomTreeCell> treeView;
     private final Button btnExpCol = new Button(Namespace.GUI_SIDE_BTN_EXPCOL_STATE_FALSE.getValue());
     private final Button btnNew = new Button("New");
@@ -30,7 +29,7 @@ public class InfoListViewL extends VBox implements MainUtil, BaseNode {
         this.setPrefWidth(250);
         this.setMaxWidth(300);
         this.setSpacing(settings.valueOf(SettingsNamespace.GLOBAL_PADDING));
-        this.setPadding(new Insets(settings.valueOf(SettingsNamespace.GLOBAL_PADDING)));
+        //this.setPadding(new Insets(settings.valueOf(SettingsNamespace.GLOBAL_PADDING)));
 
         treeView = new TreeView(new TreeItem());
         treeView.setShowRoot(false);
@@ -38,8 +37,22 @@ public class InfoListViewL extends VBox implements MainUtil, BaseNode {
 
         this.setCellFactory();
 
+        btnExpCol.setBackground(BackgroundEnum.NIGHT_1.getValue());
+        btnNew.setBackground(BackgroundEnum.NIGHT_1.getValue());
+        treeView.setBackground(BackgroundEnum.NIGHT_1.getValue());
+
         btnExpCol.setPrefWidth(this.getPrefWidth());
         btnNew.setPrefWidth(this.getPrefWidth());
+        btnExpCol.setMaxWidth(this.getMaxWidth());
+        btnNew.setMaxWidth(this.getMaxWidth());
+
+        btnExpCol.setTextFill(Color.LIGHTGRAY);
+        btnExpCol.setFont(CommonUtil.getFont());
+        btnNew.setTextFill(Color.LIGHTGRAY);
+        btnNew.setFont(CommonUtil.getFont());
+
+        btnExpCol.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 1, 0))));
+        btnNew.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1, 0, 0, 0))));
 
         this.getChildren().addAll(btnExpCol, treeView, btnNew);
     }

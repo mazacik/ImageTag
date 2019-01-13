@@ -10,7 +10,7 @@ import userinterface.BackgroundEnum;
 import userinterface.node.BaseNode;
 import utils.MainUtil;
 
-public class TopMenu extends BorderPane implements MainUtil, BaseNode {
+public class TopMenu extends BorderPane implements BaseNode, MainUtil {
     private final Menu menuFile = new Menu("File");
     private final MenuItem menuSave = new MenuItem("Save");
     private final MenuItem menuExit = new MenuItem("Exit");
