@@ -10,8 +10,8 @@ import userinterface.node.center.TileViewEvent;
 import userinterface.node.side.InfoListViewLEvent;
 import userinterface.node.side.InfoListViewREvent;
 import userinterface.node.topmenu.TopMenuEvent;
-import userinterface.template.specific.DataContextMenu;
-import userinterface.template.specific.InfoContextMenu;
+import userinterface.template.DataContextMenu;
+import userinterface.template.InfoContextMenu;
 import utils.CommonUtil;
 import utils.InstanceRepo;
 

@@ -2,7 +2,7 @@ package userinterface.node.side;
 
 import javafx.scene.control.TreeCell;
 import javafx.scene.input.MouseEvent;
-import userinterface.template.specific.InfoContextMenu;
+import userinterface.template.InfoContextMenu;
 import utils.InstanceRepo;
 
 public class InfoListViewREvent implements InstanceRepo {

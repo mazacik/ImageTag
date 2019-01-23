@@ -1,4 +1,4 @@
-package userinterface.template.specific;
+package userinterface.template.intro;
 
 import database.object.DataLoader;
 import javafx.geometry.Insets;

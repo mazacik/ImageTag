@@ -4,8 +4,8 @@ import control.reload.Reload;
 import database.object.InfoObject;
 import javafx.scene.control.TreeCell;
 import javafx.scene.input.MouseEvent;
-import userinterface.template.specific.InfoContextMenu;
-import userinterface.template.specific.InfoObjectEditor;
+import userinterface.template.InfoContextMenu;
+import userinterface.template.InfoObjectEditor;
 import utils.InstanceRepo;
 
 public class InfoListViewLEvent implements InstanceRepo {
@@ -48,7 +48,6 @@ public class InfoListViewLEvent implements InstanceRepo {
             if (isExpanded) infoListViewL.getBtnExpCol().setText("Collapse");
             else infoListViewL.getBtnExpCol().setText("Expand");
             infoListViewL.getTreeView().getRoot().getChildren().forEach(node -> node.setExpanded(isExpanded));
-            System.out.println(infoListViewL.getBtnExpCol().getWidth());
         });
     }
     private void onAction_btnNew() {

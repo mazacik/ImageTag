@@ -8,8 +8,9 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import userinterface.node.BaseNode;
 import utils.CommonUtil;
+import utils.InstanceRepo;
 
-public class TopMenu extends BorderPane implements BaseNode {
+public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
     Insets nodePadding = new Insets(5, 10, 5, 10);
 
     Label nodeSave = createNode("Save");
@@ -23,6 +24,8 @@ public class TopMenu extends BorderPane implements BaseNode {
 
     Label nodeRandom = createNode("Random");
     Label nodeFullview = createNode("FullView");
+
+    Label nodeInfo = createNode("Info");
 
     public TopMenu() {
         HBox hBox = new HBox();
@@ -39,11 +42,12 @@ public class TopMenu extends BorderPane implements BaseNode {
 
         this.setBackground(CommonUtil.getBackgroundDefault());
         this.setCenter(hBox);
+        this.setRight(nodeInfo);
     }
 
     public void reload() {
-        //String text = select.size() + " items selected";
-        //infoLabelMenu.setText(text);
+        String text = "Item(s) selected: " + select.size();
+        nodeInfo.setText(text);
     }
 
     private Label createNode(String text) {
@@ -75,7 +79,6 @@ public class TopMenu extends BorderPane implements BaseNode {
     private void setLabelGroupWidth(Label... labels) {
         double width = 0;
         for (Label label : labels) {
-            System.out.println(label.getPrefWidth());
             if (width < label.getWidth()) width = label.getWidth();
         }
         for (Label label : labels) {
@@ -106,5 +109,8 @@ public class TopMenu extends BorderPane implements BaseNode {
     }
     public Label getNodeFullview() {
         return nodeFullview;
+    }
+    public Label getNodeInfo() {
+        return nodeInfo;
     }
 }

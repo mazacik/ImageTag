@@ -16,10 +16,14 @@ public class Filter extends MainListData implements InstanceRepo {
     public Filter() {
         whitelistMode = FilterMode.All;
         blacklistMode = FilterMode.Any;
-        currentFilterTemplate = FilterTemplate.SHOW_EVERYTHING;
+        currentFilterTemplate = FilterTemplate.NONE;
     }
     public void apply() {
         currentFilterTemplate.apply();
+        reload.notifyChangeIn(Reload.Control.FILTER);
+    }
+    public void resolveObject(DataObject dataObject) {
+        currentFilterTemplate.resolveObject(dataObject);
         reload.notifyChangeIn(Reload.Control.FILTER);
     }
 
@@ -112,28 +116,6 @@ public class Filter extends MainListData implements InstanceRepo {
     public void setFilter(FilterTemplate filterTemplate) {
         this.currentFilterTemplate = filterTemplate;
         this.apply();
-        /*
-        switch (this.currentFilterTemplate) {
-            case CUSTOM:
-                topMenu.getMenuUntaggedOnly().setSelected(false);
-                topMenu.getMenuMaxXTags().setSelected(false);
-                break;
-            case SHOW_EVERYTHING:
-                topMenu.getMenuUntaggedOnly().setSelected(false);
-                topMenu.getMenuMaxXTags().setSelected(false);
-                break;
-            case SHOW_UNTAGGED:
-                topMenu.getMenuUntaggedOnly().setSelected(true);
-                topMenu.getMenuMaxXTags().setSelected(false);
-                break;
-            case SHOW_MAX_X_TAGS:
-                topMenu.getMenuUntaggedOnly().setSelected(false);
-                topMenu.getMenuMaxXTags().setSelected(true);
-                break;
-            default:
-                break;
-        }
-        */
     }
 
     public enum FilterMode {

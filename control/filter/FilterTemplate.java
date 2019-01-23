@@ -6,22 +6,15 @@ import database.object.InfoObject;
 import utils.InstanceRepo;
 
 public enum FilterTemplate implements InstanceRepo {
+    NONE {
+        public void apply() {
+        }
+    },
     SHOW_EVERYTHING {
         public void apply() {
             infoListWhite.clear();
             infoListBlack.clear();
             filter.setAll(mainListData);
-        }
-    },
-    SHOW_UNTAGGED {
-        public void apply() {
-            infoListWhite.clear();
-            infoListBlack.setAll(mainListInfo);
-            filter.clear();
-            for (DataObject dataObject : mainListData) {
-                if (dataObject.getBaseListInfo().size() == 0)
-                    filter.add(dataObject);
-            }
         }
     },
     SHOW_MAX_X_TAGS {
@@ -33,6 +26,12 @@ public enum FilterTemplate implements InstanceRepo {
                 if (dataObject.getBaseListInfo().size() <= maxTagsValue) {
                     filter.add(dataObject);
                 }
+            }
+        }
+        public void resolveObject(DataObject dataObject) {
+            if (dataObject.getBaseListInfo().size() > maxTagsValue) {
+                select.remove(dataObject);
+                filter.remove(dataObject);
             }
         }
     },
@@ -48,6 +47,13 @@ public enum FilterTemplate implements InstanceRepo {
                         filter.add(dataObject);
                     }
                 }
+            }
+        }
+        public void resolveObject(DataObject dataObject) {
+            BaseListInfo dataObjectInfoList = dataObject.getBaseListInfo();
+            if (!isWhitelistOk(dataObjectInfoList) || !isBlacklistOk(dataObjectInfoList)) {
+                select.remove(dataObject);
+                filter.remove(dataObject);
             }
         }
     };
@@ -89,6 +95,9 @@ public enum FilterTemplate implements InstanceRepo {
         maxTagsValue = value;
     }
     public void apply() {
-        throw new RuntimeException();
+        logger.error(this, "default apply() reached");
+    }
+    public void resolveObject(DataObject dataObject) {
+        logger.debug(this, "default resolveObject() reached");
     }
 }

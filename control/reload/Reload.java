@@ -10,11 +10,11 @@ public class Reload implements InstanceRepo {
     private ArrayList<BaseNode> queue;
 
     public Reload() {
-        this.subscribe(fullView, Reload.Control.TARGET);
-        this.subscribe(infoListViewL, Reload.Control.INFO);
-        this.subscribe(infoListViewR, Reload.Control.INFO, Reload.Control.SELECT, Reload.Control.TARGET);
-        this.subscribe(tileView, Reload.Control.DATA, Reload.Control.FILTER);
-        this.subscribe(topMenu, Reload.Control.SELECT);
+        this.subscribe(fullView, Control.TARGET);
+        this.subscribe(infoListViewL, Control.INFO);
+        this.subscribe(infoListViewR, Control.INFO, Control.SELECT, Control.TARGET);
+        this.subscribe(tileView, Control.DATA, Control.FILTER);
+        this.subscribe(topMenu, Control.SELECT);
 
         queue = new ArrayList<>();
     }

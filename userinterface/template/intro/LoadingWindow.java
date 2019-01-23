@@ -1,4 +1,4 @@
-package userinterface.template.specific;
+package userinterface.template.intro;
 
 import javafx.geometry.Insets;
 import javafx.scene.Scene;

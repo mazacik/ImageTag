@@ -1,4 +1,4 @@
-package userinterface.template.specific;
+package userinterface.template;
 
 import database.object.InfoObject;
 import javafx.scene.Node;

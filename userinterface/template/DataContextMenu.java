@@ -1,4 +1,4 @@
-package userinterface.template.specific;
+package userinterface.template;
 
 import control.select.Select;
 import database.object.DataObject;

@@ -20,7 +20,7 @@ public class BaseList<T> extends ArrayList<T> {
     }
     public boolean addAll(BaseList<T> baseList) {
         if (baseList == null) return false;
-        baseList.removeAll(this.getIntersection(baseList));
+        //baseList.removeAll(this.getIntersection(baseList));
         if (super.addAll(baseList)) {
             this.sort();
             return true;

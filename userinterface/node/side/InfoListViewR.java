@@ -74,6 +74,7 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
                 this.addTagObjectToSelection(infoObject);
             }
         }
+        reload.doReload();
         treeView.refresh();
     }
     public void addTagObjectToSelection(InfoObject infoObject) {

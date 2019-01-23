@@ -1,5 +1,6 @@
 package database.object;
 
+import control.filter.FilterTemplate;
 import control.reload.Reload;
 import database.list.MainListData;
 import javafx.application.Platform;
@@ -8,7 +9,7 @@ import javafx.scene.image.Image;
 import org.apache.commons.io.FilenameUtils;
 import settings.SettingsNamespace;
 import userinterface.node.center.BaseTile;
-import userinterface.template.specific.LoadingWindow;
+import userinterface.template.intro.LoadingWindow;
 import utils.InstanceRepo;
 
 import javax.imageio.ImageIO;
@@ -34,7 +35,8 @@ public class DataLoader extends Thread implements InstanceRepo {
 
         checkDirectoryPaths();
         ArrayList<File> fileList = getValidFiles();
-        if (!loadExistingDatabase()) createDatabase(fileList);
+        if (!loadExistingDatabase())
+            createDatabase(fileList);
         validateDatabaseCache(fileList);
         loadImageCache(loadingWindow[0], fileList.size());
 
@@ -42,8 +44,8 @@ public class DataLoader extends Thread implements InstanceRepo {
         mainListData.writeToDisk();
         mainListInfo.initialize();
         filter.addAll(mainListData);
-        filter.sort();
 
+        filter.setFilter(FilterTemplate.SHOW_EVERYTHING);
         reload.notifyChangeIn(Reload.Control.values());
         reload.doReload();
 

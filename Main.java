@@ -1,6 +1,6 @@
 import javafx.application.Application;
 import javafx.stage.Stage;
-import userinterface.template.specific.IntroWindow;
+import userinterface.template.intro.IntroWindow;
 import utils.InstanceRepo;
 
 public class Main extends Application implements InstanceRepo {

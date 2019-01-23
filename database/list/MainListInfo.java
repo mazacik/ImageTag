@@ -5,7 +5,7 @@ import database.object.DataObject;
 import database.object.InfoObject;
 import javafx.scene.control.TreeCell;
 import userinterface.node.side.CustomTreeCell;
-import userinterface.template.specific.InfoObjectEditor;
+import userinterface.template.InfoObjectEditor;
 import utils.InstanceRepo;
 
 public class MainListInfo extends BaseListInfo implements InstanceRepo {
@@ -25,13 +25,16 @@ public class MainListInfo extends BaseListInfo implements InstanceRepo {
 
     public boolean add(InfoObject infoObject) {
         if (infoObject == null) return false;
-        reload.notifyChangeIn(Reload.Control.INFO);
-        return super.add(infoObject);
+        if (super.add(infoObject)) {
+            filter.apply();
+            reload.notifyChangeIn(Reload.Control.INFO);
+            return true;
+        }
+        return false;
     }
     public boolean remove(InfoObject infoObject) {
         if (infoObject == null) return false;
         if (super.remove(infoObject)) {
-            filter.unlistTagObject(infoObject);
             filter.apply();
             reload.notifyChangeIn(Reload.Control.INFO);
             return true;

@@ -27,6 +27,7 @@ public class BaseTileEvent implements InstanceRepo {
         DataObject dataObject = sender.getParentDataObject();
         target.set(dataObject);
         select.swapState(dataObject);
+        reload.doReload();
         mainStage.getDataContextMenu().hide();
     }
     private void onRightClick(BaseTile sender, MouseEvent event) {
