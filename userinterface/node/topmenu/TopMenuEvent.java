@@ -2,7 +2,7 @@ package userinterface.node.topmenu;
 
 import control.filter.FilterTemplate;
 import javafx.stage.WindowEvent;
-import userinterface.template.generic.NumberInputWindow;
+import userinterface.template.generic.WindowNumberInput;
 import utils.CommonUtil;
 import utils.InstanceRepo;
 
@@ -44,7 +44,7 @@ public class TopMenuEvent implements InstanceRepo {
 
     private void onAction_menuCustom() {
         topMenu.getNodeCustom().setOnMouseClicked(event -> {
-            int maxTags = new NumberInputWindow("Custom Filter Settings", "Maximum number of tags:").getResultValue();
+            int maxTags = new WindowNumberInput("Custom Filter UserSettings", "Maximum number of tags:").getResultValue();
             FilterTemplate.setMaxTagsValue(maxTags);
 
             filter.setFilter(FilterTemplate.SHOW_MAX_X_TAGS);
@@ -58,7 +58,7 @@ public class TopMenuEvent implements InstanceRepo {
         });
     }
 
-    /* todo implement "settings"
+    /* todo implement "userSettings"
     private void onAction_menuModeWhitelistAll() {
         topMenu.getMenuModeWhitelistAll().setOnAction(event -> {
             topMenu.getMenuModeWhitelistAll().setSelected(true);

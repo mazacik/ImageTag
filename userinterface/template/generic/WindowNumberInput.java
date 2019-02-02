@@ -4,8 +4,9 @@ import javafx.scene.control.TextInputDialog;
 
 import java.util.Optional;
 
-public class NumberInputWindow extends TextInputDialog {
-    public NumberInputWindow(String title, String contentText) {
+public class WindowNumberInput extends TextInputDialog {
+    //todo rework same as windowokcancel
+    public WindowNumberInput(String title, String contentText) {
         setTitle(title);
         setHeaderText(null);
         setGraphic(null);
@@ -34,7 +35,7 @@ public class NumberInputWindow extends TextInputDialog {
         }
         for (; i < length; i++) {
             char c = str.charAt(i);
-            if (c == '.' || c < '0' || c > '9') {
+            if (c < '0' || c > '9') {
                 return false;
             }
         }

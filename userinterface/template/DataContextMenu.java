@@ -6,7 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
-import userinterface.template.generic.ConfirmationWindow;
+import userinterface.template.generic.WindowOkCancel;
 import utils.CommonUtil;
 import utils.InstanceRepo;
 import utils.system.ClipboardUtil;
@@ -30,7 +30,7 @@ public class DataContextMenu extends ContextMenu implements InstanceRepo {
                 dataObject = target.getCurrentTarget();
             }
 
-            ClipboardUtil.setClipboardContent(settings.getCurrentDirectory() + dataObject.getName());
+            ClipboardUtil.setClipboardContent(coreSettings.getCurrentDirectory() + dataObject.getName());
         });
         menuDelete.setOnAction(event -> {
             target.storePosition();
@@ -54,7 +54,7 @@ public class DataContextMenu extends ContextMenu implements InstanceRepo {
 
     private void deleteDataObject(DataObject dataObject) {
         if (filter.contains(dataObject)) {
-            String fullPath = settings.getCurrentDirectory() + "\\" + dataObject.getName();
+            String fullPath = coreSettings.getCurrentDirectory() + "\\" + dataObject.getName();
             Desktop.getDesktop().moveToTrash(new File(fullPath));
 
             filter.remove(dataObject);
@@ -65,18 +65,18 @@ public class DataContextMenu extends ContextMenu implements InstanceRepo {
     private void deleteSelection() {
         if (select.isEmpty()) return;
 
-        ConfirmationWindow confirmationWindow = new ConfirmationWindow("Confirmation", "Delete " + select.size() + " file(s)", "Are you sure?");
-        if (confirmationWindow.getResult()) {
+        WindowOkCancel windowOkCancel = new WindowOkCancel("Delete " + select.size() + " file(s)?");
+        if (windowOkCancel.getResult()) {
             ((Select) select.clone()).forEach(this::deleteDataObject);
             reload.doReload();
         }
     }
     private void deleteCurrentTarget() {
         DataObject currentTarget = target.getCurrentTarget();
-        String fullPath = settings.getCurrentDirectory() + currentTarget.getName();
+        String fullPath = coreSettings.getCurrentDirectory() + currentTarget.getName();
 
-        ConfirmationWindow confirmationWindow = new ConfirmationWindow("Confirmation", "Delete file: " + fullPath, "Are you sure?");
-        if (confirmationWindow.getResult()) {
+        WindowOkCancel windowOkCancel = new WindowOkCancel("Delete file: " + fullPath + "?");
+        if (windowOkCancel.getResult()) {
             //todo move most of this to target
             int index = filter.indexOf(target.getCurrentTarget());
             this.deleteDataObject(currentTarget);

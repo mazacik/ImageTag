@@ -16,6 +16,7 @@ public class GlobalEvent implements InstanceRepo {
                     break;
                 case R:
                     select.setRandom();
+                    reload.doReload();
                     break;
                 case F12:
                     CommonUtil.swapDisplayMode();
@@ -29,7 +30,6 @@ public class GlobalEvent implements InstanceRepo {
                 default:
                     break;
             }
-            reload.doReload();
         });
     }
 }

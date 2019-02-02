@@ -4,8 +4,8 @@ import javafx.scene.control.TextInputDialog;
 
 import java.util.Optional;
 
-public class TextInputWindow extends TextInputDialog {
-    public TextInputWindow(String title, String contentText) {
+public class WindowTextInput extends TextInputDialog {
+    public WindowTextInput(String title, String contentText) {
         setTitle(title);
         setHeaderText(null);
         setGraphic(null);

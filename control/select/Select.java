@@ -65,20 +65,21 @@ public class Select extends MainListData implements InstanceRepo {
                 mainListInfo.add(infoObject);
             }
 
+            MainListData selectHelper = new MainListData();
+            selectHelper.addAll(select);
+
             BaseListInfo baseListInfo;
-            for (DataObject dataObject : this) {
+            for (DataObject dataObject : selectHelper) {
                 baseListInfo = dataObject.getBaseListInfo();
                 if (!baseListInfo.contains(infoObject)) {
                     baseListInfo.add(infoObject);
                 }
-                filter.resolveObject(dataObject);
             }
         }
     }
     public void removeTagObject(InfoObject infoObject) {
         for (DataObject dataObject : this) {
             dataObject.getBaseListInfo().remove(infoObject);
-            filter.resolveObject(dataObject);
         }
 
         boolean tagExists = false;

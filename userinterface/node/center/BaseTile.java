@@ -22,8 +22,6 @@ public class BaseTile extends ImageView implements InstanceRepo {
     public BaseTile(DataObject parentDataObject, Image image) {
         super(image);
         this.parentDataObject = parentDataObject;
-        //setFitWidth(settings.valueOf(SettingsNamespace.TILEVIEW_ICONSIZE));
-        //setFitHeight(settings.valueOf(SettingsNamespace.TILEVIEW_ICONSIZE));
         new BaseTileEvent(this);
     }
     private static InnerShadow createEffectSelect() {
@@ -38,7 +36,7 @@ public class BaseTile extends ImageView implements InstanceRepo {
     }
     private static ColorInput createEffectTarget() {
         int markSize = 6;
-        int markPositionInTile = (settings.valueOf(SettingsNamespace.TILEVIEW_ICONSIZE) - markSize) / 2;
+        int markPositionInTile = (userSettings.valueOf(SettingsNamespace.TILEVIEW_ICONSIZE) - markSize) / 2;
         Color markColor = Color.RED;
         return new ColorInput(markPositionInTile, markPositionInTile, markSize, markSize, markColor);
     }

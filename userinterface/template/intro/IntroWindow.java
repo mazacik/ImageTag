@@ -6,13 +6,14 @@ import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import settings.SettingsNamespace;
-import userinterface.template.generic.DirectoryChooserWindow;
+import userinterface.template.generic.WindowDirectoryChooser;
 import utils.CommonUtil;
 import utils.InstanceRepo;
 
@@ -28,17 +29,15 @@ public class IntroWindow extends Stage implements InstanceRepo {
     }
 
     private void setDefaultValuesChildren() {
-        settings.getRecentDirectoriesList().forEach(item -> vboxL.getChildren().add(new IntroWindowListCell(item)));
+        coreSettings.getRecentDirectoriesList().forEach(item -> vboxL.getChildren().add(new IntroWindowListCell(item)));
         vboxL.getChildren().forEach(node -> {
             if (node instanceof IntroWindowListCell) {
                 node.setOnMouseClicked(event -> {
                     if (event.getPickResult().getIntersectedNode().getParent().equals(((IntroWindowListCell) node).getRemoveLabel())) {
-                        settings.getRecentDirectoriesList().remove(((IntroWindowListCell) node).getPath());
+                        coreSettings.getRecentDirectoriesList().remove(((IntroWindowListCell) node).getPath());
                         vboxL.getChildren().remove(node);
                     } else {
-                        settings.setCurrentDirectory(((IntroWindowListCell) node).getPath());
-                        new DataLoader().start();
-                        this.close();
+                        startLoading((IntroWindowListCell) node);
                     }
                 });
             }
@@ -56,6 +55,7 @@ public class IntroWindow extends Stage implements InstanceRepo {
         btnChoose.setBackground(CommonUtil.getButtonBackgroundDefault());
         btnChoose.setFont(new Font(14));
         btnChoose.setTextFill(Color.LIGHTGRAY);
+        btnChoose.setFocusTraversable(false);
         btnChoose.setOnMouseEntered(event -> {
             btnChoose.setCursor(Cursor.HAND);
             btnChoose.setTextFill(Color.ORANGE);
@@ -64,7 +64,6 @@ public class IntroWindow extends Stage implements InstanceRepo {
             btnChoose.setCursor(Cursor.DEFAULT);
             btnChoose.setTextFill(Color.LIGHTGRAY);
         });
-        btnChoose.requestFocus();
 
         this.setBtnChooseListener();
     }
@@ -73,6 +72,15 @@ public class IntroWindow extends Stage implements InstanceRepo {
 
         this.setHeight(649); //todo dynamic calculation?
         this.setScene(new Scene(new HBox(vboxL, vBoxR)));
+        this.getScene().setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                if (!coreSettings.getRecentDirectoriesList().isEmpty()) {
+                    startLoading((IntroWindowListCell) vboxL.getChildren().get(0));
+                } else {
+                    btnChoose.fire();
+                }
+            }
+        });
         this.setResizable(false);
         this.centerOnScreen();
         this.setOnCloseRequest(event -> logger.debug(this, "application exit"));
@@ -81,16 +89,22 @@ public class IntroWindow extends Stage implements InstanceRepo {
 
     private void setBtnChooseListener() {
         btnChoose.setOnAction(event -> {
-            String sourcePath = new DirectoryChooserWindow(this, "Choose Source Directory Path", "C:\\").getResultValue();
+            String sourcePath = new WindowDirectoryChooser(this, "Choose a Directory", "C:\\").getResultValue();
             if (!sourcePath.isEmpty()) {
                 char lastchar = sourcePath.charAt(sourcePath.length() - 1);
                 if (sourcePath.length() > 3 && (lastchar != '\\' || lastchar != '/')) {
                     sourcePath += "\\";
                 }
-                settings.setCurrentDirectory(sourcePath);
+                coreSettings.setCurrentDirectory(sourcePath);
                 new DataLoader().start();
                 this.close();
             }
         });
+    }
+
+    private void startLoading(IntroWindowListCell introWindowListCell) {
+        coreSettings.setCurrentDirectory(introWindowListCell.getPath());
+        new DataLoader().start();
+        this.close();
     }
 }

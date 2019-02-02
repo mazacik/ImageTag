@@ -15,11 +15,11 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
     private final TilePane tilePane = new TilePane(1, 1);
 
     public TileView() {
-        final int galleryIconSize = settings.valueOf(SettingsNamespace.TILEVIEW_ICONSIZE);
+        final int galleryIconSize = userSettings.valueOf(SettingsNamespace.TILEVIEW_ICONSIZE);
 
         tilePane.setPrefTileWidth(galleryIconSize);
         tilePane.setPrefTileHeight(galleryIconSize);
-        tilePane.setPrefHeight(settings.valueOf(SettingsNamespace.MAINSCENE_HEIGHT));
+        tilePane.setPrefHeight(coreSettings.valueOf(SettingsNamespace.MAINSCENE_HEIGHT));
         tilePane.setBackground(CommonUtil.getBackgroundDefault());
         tilePane.setPrefColumns(10);
 

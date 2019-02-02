@@ -22,10 +22,6 @@ public class Filter extends MainListData implements InstanceRepo {
         currentFilterTemplate.apply();
         reload.notifyChangeIn(Reload.Control.FILTER);
     }
-    public void resolveObject(DataObject dataObject) {
-        currentFilterTemplate.resolveObject(dataObject);
-        reload.notifyChangeIn(Reload.Control.FILTER);
-    }
 
     public void whitelistTagObject(InfoObject infoObject) {
         if (!isTagObjectWhitelisted(infoObject)) {

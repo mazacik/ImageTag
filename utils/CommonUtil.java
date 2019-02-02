@@ -1,10 +1,15 @@
 package utils;
 
+import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
+import userinterface.node.topmenu.CustomCM;
 
 public class CommonUtil implements InstanceRepo {
     private static boolean nightMode = true;
@@ -23,6 +28,7 @@ public class CommonUtil implements InstanceRepo {
     private static Color textColorNightNegative = Color.ORANGERED;
     private static Color textColorNightIntersect = Color.BLUE;
     private static Color nodeBorderColorNight = Color.GRAY;
+
     /* Background */
     private static Background backgroundNight1 = new Background(new BackgroundFill(Paint.valueOf("#3C3F41"), null, null));
     private static Background backgroundNight2 = new Background(new BackgroundFill(Paint.valueOf("#313335"), null, null));
@@ -49,10 +55,7 @@ public class CommonUtil implements InstanceRepo {
         if (nightMode) return textColorNightIntersect;
         else return textColorDayIntersect;
     }
-    public static Color getNodeBorderColor() {
-        if (nightMode) return nodeBorderColorNight;
-        else return Color.PINK; //todo
-    }
+    private static Insets nodePadding = new Insets(5, 10, 5, 10);
     public static Background getBackgroundDefault() {
         return backgroundNight1;
     }
@@ -65,5 +68,46 @@ public class CommonUtil implements InstanceRepo {
     }
     public static Background getButtonBackgroundHover() {
         return backgroundNight2;
+    }
+    public static Color getNodeBorderColor() {
+        if (nightMode) return nodeBorderColorNight;
+        else return Color.PINK;
+    }
+    public static Label createNode(String text) {
+        Label node = new Label(text);
+        node.setFont(CommonUtil.getFont());
+        node.setTextFill(CommonUtil.getTextColorDefault());
+        node.setTextAlignment(TextAlignment.CENTER);
+        node.setOnMouseEntered(event -> node.setBackground(CommonUtil.getButtonBackgroundHover()));
+        node.setOnMouseExited(event -> node.setBackground(CommonUtil.getButtonBackgroundDefault()));
+        node.setPadding(nodePadding);
+
+        return node;
+    }
+    public static Label createRoot(String text, Label... children) {
+        CustomCM customCM = new CustomCM(children);
+
+        Label root = new Label(text);
+        root.setFont(CommonUtil.getFont());
+        root.setTextFill(CommonUtil.getTextColorDefault());
+        root.setTextAlignment(TextAlignment.CENTER);
+        root.setOnMouseEntered(event -> root.setBackground(CommonUtil.getButtonBackgroundHover()));
+        root.setOnMouseExited(event -> root.setBackground(CommonUtil.getButtonBackgroundDefault()));
+        root.setOnMouseClicked(event -> {
+            Bounds boundsInScene = root.localToScene(root.getBoundsInLocal());
+            customCM.show(root, boundsInScene.getMinX(), boundsInScene.getMaxY() + root.getHeight() - root.getPadding().getTop());
+            CommonUtil.setLabelGroupWidth(children);
+        });
+        root.setPadding(nodePadding);
+        return root;
+    }
+    private static void setLabelGroupWidth(Label... labels) {
+        double width = 0;
+        for (Label label : labels) {
+            if (width < label.getWidth()) width = label.getWidth();
+        }
+        for (Label label : labels) {
+            label.setPrefWidth(width);
+        }
     }
 }

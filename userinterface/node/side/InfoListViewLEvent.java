@@ -55,6 +55,7 @@ public class InfoListViewLEvent implements InstanceRepo {
             InfoObject newInfoObject = new InfoObjectEditor().getResult();
             mainListInfo.add(newInfoObject);
             reload.notifyChangeIn(Reload.Control.INFO);
+            reload.doReload();
         });
     }
 }

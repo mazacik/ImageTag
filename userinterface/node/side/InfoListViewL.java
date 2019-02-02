@@ -52,7 +52,7 @@ public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
 
         this.setPrefWidth(999);
         this.setCellFactory();
-        this.setSpacing(settings.valueOf(SettingsNamespace.GLOBAL_PADDING));
+        this.setSpacing(coreSettings.valueOf(SettingsNamespace.GLOBAL_PADDING));
         this.getChildren().addAll(bp, treeView, btnNew);
     }
 

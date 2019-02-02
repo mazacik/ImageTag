@@ -2,13 +2,15 @@ package utils.serialization;
 
 import com.google.gson.reflect.TypeToken;
 import database.list.MainListData;
-import settings.Settings;
+import settings.CoreSettings;
+import settings.UserSettings;
 
 import java.lang.reflect.Type;
 
 public enum TypeTokenEnum {
     DATALIST(new TypeToken<MainListData>() {}.getType()),
-    SETTINGS(new TypeToken<Settings>() {}.getType()),
+    USERSETTINGS(new TypeToken<UserSettings>() {}.getType()),
+    CORESETTINGS(new TypeToken<CoreSettings>() {}.getType()),
     ;
 
     private Type value;

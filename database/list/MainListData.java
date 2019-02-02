@@ -13,12 +13,12 @@ public class MainListData extends BaseList<DataObject> implements InstanceRepo {
 
     public void writeToDisk() {
         Type typeToken = TypeTokenEnum.DATALIST.getValue();
-        String path = settings.getCurrentDirectory() + dataFile;
+        String path = coreSettings.getCurrentDirectory() + dataFile;
         SerializationUtil.writeJSON(mainListData, typeToken, path);
     }
     public MainListData readFromDisk() {
         Type typeToken = TypeTokenEnum.DATALIST.getValue();
-        String path = settings.getCurrentDirectory() + dataFile;
+        String path = coreSettings.getCurrentDirectory() + dataFile;
         return (MainListData) SerializationUtil.readJSON(typeToken, path);
     }
 

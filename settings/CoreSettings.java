@@ -11,41 +11,39 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Settings implements InstanceRepo, Serializable {
-    private Settings() {
+public class CoreSettings implements InstanceRepo, Serializable {
+    private transient static Type typeToken = TypeTokenEnum.CORESETTINGS.getValue();
+    private transient String currentDirectory;
+    private SettingsList settingsList;
+    private List<String> recentDirectoriesList;
+
+    private CoreSettings() {
         if (SettingsLoader.instance != null) {
             throw new IllegalStateException(this.getClass().getSimpleName() + " already instantiated");
         }
     }
-    private static Settings readFromDisk() {
-        Settings settings = (Settings) SerializationUtil.readJSON(typeToken, System.getenv("APPDATA") + "\\ImageTag\\settings.json");
+    private static CoreSettings readFromDisk() {
+        CoreSettings coreSettings = (CoreSettings) SerializationUtil.readJSON(typeToken, System.getenv("APPDATA") + "\\ImageTag\\CoreSettings.json");
 
-        if (settings == null) {
-            settings = new Settings();
-            settings.setDefaults();
+        if (coreSettings == null) {
+            coreSettings = new CoreSettings();
+            coreSettings.setDefaults();
         } else {
-            settings.checkValues();
+            coreSettings.checkValues();
         }
-        return settings;
+        return coreSettings;
     }
-    public static Settings getInstance() {
+    public static CoreSettings getInstance() {
         return SettingsLoader.instance;
     }
     private void setDefaults() {
         settingsList = new SettingsList();
         settingsList.add(new SettingsBase(SettingsNamespace.MAINSCENE_WIDTH.getValue(), 0, SystemUtil.getScreenWidth(), SystemUtil.getScreenWidth()));
         settingsList.add(new SettingsBase(SettingsNamespace.MAINSCENE_HEIGHT.getValue(), 0, SystemUtil.getScreenHeight(), SystemUtil.getScreenHeight()));
-        settingsList.add(new SettingsBase(SettingsNamespace.TILEVIEW_ICONSIZE.getValue(), 100, 200, 150));
         settingsList.add(new SettingsBase(SettingsNamespace.GLOBAL_PADDING.getValue(), 2));
 
         recentDirectoriesList = new ArrayList<>();
     }
-
-    private transient static Type typeToken = TypeTokenEnum.SETTINGS.getValue();
-    private transient String currentDirectory;
-
-    private SettingsList settingsList;
-    private List<String> recentDirectoriesList;
     public Integer valueOf(SettingsNamespace sn) {
         return settingsList.valueOf(sn.getValue());
     }
@@ -78,16 +76,15 @@ public class Settings implements InstanceRepo, Serializable {
             }
         });
     }
-
-    //todo split to core and user
-    private static class SettingsLoader {
-        private static final Settings instance = Settings.readFromDisk();
-    }
     private void writeToDisk() {
         String dir = System.getenv("APPDATA") + "\\ImageTag";
-        String path = dir + "\\settings.json";
+        String path = dir + "\\CoreSettings.json";
 
         new File(dir).mkdir();
         SerializationUtil.writeJSON(SettingsLoader.instance, typeToken, path);
+    }
+
+    private static class SettingsLoader {
+        private static final CoreSettings instance = CoreSettings.readFromDisk();
     }
 }

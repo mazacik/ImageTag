@@ -48,7 +48,7 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
 
         this.setPrefWidth(999);
         this.setCellFactory();
-        this.setSpacing(settings.valueOf(SettingsNamespace.GLOBAL_PADDING));
+        this.setSpacing(coreSettings.valueOf(SettingsNamespace.GLOBAL_PADDING));
         this.getChildren().addAll(bp, treeView);
     }
 
@@ -74,7 +74,7 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
                 this.addTagObjectToSelection(infoObject);
             }
         }
-        reload.doReload();
+        //reload.doReload();
         treeView.refresh();
     }
     public void addTagObjectToSelection(InfoObject infoObject) {
