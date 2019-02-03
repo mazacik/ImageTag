@@ -13,6 +13,10 @@ import userinterface.node.topmenu.CustomCM;
 
 public class CommonUtil implements InstanceRepo {
     private static boolean nightMode = true;
+    public static boolean isNightMode() {
+        return nightMode;
+    }
+
     /* Color */
     private static Color textColorDayDefault = Color.BLACK;
     private static Color textColorDayPositive = Color.GREEN;

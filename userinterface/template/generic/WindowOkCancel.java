@@ -14,9 +14,9 @@ import utils.CommonUtil;
 public class WindowOkCancel extends Stage {
     private boolean result = false;
 
+    private Label labelContent = new Label();
     private Label buttonPositive = CommonUtil.createNode("OK");
     private Label buttonNegative = CommonUtil.createNode("Cancel");
-    private Label labelContent = new Label();
 
     public WindowOkCancel(String content) {
         buttonPositive.setOnMouseClicked(event -> {

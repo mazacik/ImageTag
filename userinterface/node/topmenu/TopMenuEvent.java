@@ -44,7 +44,8 @@ public class TopMenuEvent implements InstanceRepo {
 
     private void onAction_menuCustom() {
         topMenu.getNodeCustom().setOnMouseClicked(event -> {
-            int maxTags = new WindowNumberInput("Custom Filter UserSettings", "Maximum number of tags:").getResultValue();
+            int maxTags = new WindowNumberInput("Maximum number of tags:").getResult();
+            if (maxTags == -1) return;
             FilterTemplate.setMaxTagsValue(maxTags);
 
             filter.setFilter(FilterTemplate.SHOW_MAX_X_TAGS);
