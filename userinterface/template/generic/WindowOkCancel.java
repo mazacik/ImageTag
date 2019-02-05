@@ -31,15 +31,17 @@ public class WindowOkCancel extends Stage {
         labelContent.setText(content);
         labelContent.setFont(CommonUtil.getFont());
         labelContent.setTextFill(CommonUtil.getTextColorDefault());
+        int padding = CommonUtil.coreSettings.valueOf(SettingsNamespace.GLOBAL_PADDING);
+        labelContent.setPadding(new Insets(0, 1.5 * padding, 0, 1.5 * padding));
 
         HBox hBox = new HBox(buttonPositive, buttonNegative);
         hBox.setAlignment(Pos.CENTER);
         hBox.setSpacing(CommonUtil.coreSettings.valueOf(SettingsNamespace.GLOBAL_PADDING));
 
         VBox vBox = new VBox();
+        vBox.getChildren().add(new TitleBar(this));
         vBox.getChildren().add(labelContent);
         vBox.getChildren().add(hBox);
-        vBox.setPadding(new Insets(2 * CommonUtil.coreSettings.valueOf(SettingsNamespace.GLOBAL_PADDING)));
         vBox.setBackground(CommonUtil.getBackgroundDefault());
         vBox.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1, 1, 1, 1))));
 

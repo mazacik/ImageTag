@@ -15,55 +15,62 @@ import utils.CommonUtil;
 public class WindowNumberInput extends Stage {
     private int result = -1;
 
-    private Label labelContent = new Label();
-    private TextField textField = new TextField();
-    private Label buttonPositive = CommonUtil.createNode("OK");
-    private Label buttonNegative = CommonUtil.createNode("Cancel");
-
     public WindowNumberInput(String content) {
-        buttonPositive.setOnMouseClicked(event -> {
-            result = Integer.valueOf(textField.getText());
-            this.close();
-        });
-        buttonNegative.setOnMouseClicked(event -> this.close());
+        VBox vBoxMain = new VBox();
 
+        vBoxMain.getChildren().add(new TitleBar(this));
+
+        Label labelContent = new Label();
         labelContent.setText(content);
         labelContent.setFont(CommonUtil.getFont());
         labelContent.setTextFill(CommonUtil.getTextColorDefault());
+        int padding = CommonUtil.coreSettings.valueOf(SettingsNamespace.GLOBAL_PADDING);
+        labelContent.setPadding(new Insets(0, 1.5 * padding, 0, 1.5 * padding));
+        vBoxMain.getChildren().add(labelContent);
 
-        HBox hBox = new HBox(buttonPositive, buttonNegative);
-        hBox.setAlignment(Pos.CENTER);
-        hBox.setSpacing(CommonUtil.coreSettings.valueOf(SettingsNamespace.GLOBAL_PADDING));
-
-        VBox vBox = new VBox();
-        vBox.getChildren().add(labelContent);
-        vBox.getChildren().add(textField);
-        vBox.getChildren().add(hBox);
-        vBox.setAlignment(Pos.CENTER);
-        vBox.setSpacing(CommonUtil.coreSettings.valueOf(SettingsNamespace.GLOBAL_PADDING));
-        vBox.setPadding(new Insets(2 * CommonUtil.coreSettings.valueOf(SettingsNamespace.GLOBAL_PADDING)));
-        vBox.setBackground(CommonUtil.getBackgroundDefault());
-        vBox.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1, 1, 1, 1))));
-
+        TextField textField = new TextField();
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.equals("") && !isNumberPositive(newValue)) {
                 textField.setText(oldValue);
             }
         });
         textField.setBackground(CommonUtil.getBackgroundAlternative());
+        textField.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1, 1, 1, 1))));
+        textField.setOnAction(event -> {
+            result = Integer.valueOf(textField.getText());
+            this.close();
+        });
         if (CommonUtil.isNightMode()) {
             textField.setStyle("-fx-border-color: gray; -fx-font-size: 14; -fx-text-fill: lightgray;");
         } else {
             textField.setStyle("-fx-border-color: black; -fx-font-size: 14;");
         }
+        vBoxMain.getChildren().add(textField);
 
-        textField.setOnAction(event -> {
-            result = Integer.valueOf(textField.getText());
-            this.close();
+        Label buttonPositive = CommonUtil.createNode("OK");
+        Label buttonNegative = CommonUtil.createNode("Cancel");
+        buttonPositive.setOnMouseClicked(event -> {
+            String text = textField.getText();
+            if (!text.isEmpty()) {
+                result = Integer.valueOf(text);
+                this.close();
+            }
         });
+        buttonNegative.setOnMouseClicked(event -> this.close());
+
+        HBox hBox = new HBox(buttonPositive, buttonNegative);
+        hBox.setAlignment(Pos.CENTER);
+        hBox.setSpacing(CommonUtil.coreSettings.valueOf(SettingsNamespace.GLOBAL_PADDING));
+        vBoxMain.getChildren().add(hBox);
+
+        vBoxMain.setAlignment(Pos.CENTER);
+        vBoxMain.setSpacing(CommonUtil.coreSettings.valueOf(SettingsNamespace.GLOBAL_PADDING));
+        vBoxMain.setBackground(CommonUtil.getBackgroundDefault());
+        vBoxMain.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1, 1, 1, 1))));
 
         this.initStyle(StageStyle.UNDECORATED);
-        this.setScene(new Scene(vBox));
+        this.setScene(new Scene(vBoxMain));
+        this.getScene().widthProperty().addListener(event -> textField.setMaxWidth(this.getScene().getWidth() - 4 * padding));
         this.setAlwaysOnTop(true);
         this.centerOnScreen();
     }

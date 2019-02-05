@@ -18,16 +18,18 @@ public class CommonUtil implements InstanceRepo {
     }
 
     /* Color */
-    private static Color textColorDayDefault = Color.BLACK;
-    private static Color textColorDayPositive = Color.GREEN;
-
     private static Font font = new Font(14);
     public static Font getFont() {
         return font;
     }
+
+    private static Color textColorDayDefault = Color.BLACK;
+    private static Color textColorDayHighlight = Color.ORANGE; //todo
+    private static Color textColorDayPositive = Color.GREEN;
     private static Color textColorDayNegative = Color.RED;
     private static Color textColorDayIntersect = Color.BLUE;
     private static Color textColorNightDefault = Color.LIGHTGRAY;
+    private static Color textColorNightHighlight = Color.ORANGE;
     private static Color textColorNightPositive = Color.LIGHTGREEN;
     private static Color textColorNightNegative = Color.ORANGERED;
     private static Color textColorNightIntersect = Color.BLUE;
@@ -46,6 +48,10 @@ public class CommonUtil implements InstanceRepo {
     public static Color getTextColorDefault() {
         if (nightMode) return textColorNightDefault;
         else return textColorDayDefault;
+    }
+    public static Color getTextColorHighlight() {
+        if (nightMode) return textColorNightHighlight;
+        else return textColorDayHighlight;
     }
     public static Color getTextColorPositive() {
         if (nightMode) return textColorNightPositive;
