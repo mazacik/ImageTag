@@ -34,8 +34,6 @@ public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
         tools.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 1, 0, 1))));
         hboxChildren.add(tools);
 
-        this.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 1, 0))));
-
         this.setBackground(CommonUtil.getBackgroundDefault());
         this.setCenter(hBox);
         this.setRight(nodeInfo);

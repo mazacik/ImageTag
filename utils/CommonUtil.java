@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import settings.SettingsNamespace;
 import userinterface.node.topmenu.CustomCM;
 
 public class CommonUtil implements InstanceRepo {
@@ -17,14 +18,15 @@ public class CommonUtil implements InstanceRepo {
         return nightMode;
     }
 
-    /* Color */
-    private static Font font = new Font(14);
+    /* Font */
+    private static Font font = new Font(coreSettings.valueOf(SettingsNamespace.FONTSIZE));
     public static Font getFont() {
         return font;
     }
 
+    /* Color */
     private static Color textColorDayDefault = Color.BLACK;
-    private static Color textColorDayHighlight = Color.ORANGE; //todo
+    private static Color textColorDayHighlight = Color.RED;
     private static Color textColorDayPositive = Color.GREEN;
     private static Color textColorDayNegative = Color.RED;
     private static Color textColorDayIntersect = Color.BLUE;
@@ -33,18 +35,6 @@ public class CommonUtil implements InstanceRepo {
     private static Color textColorNightPositive = Color.LIGHTGREEN;
     private static Color textColorNightNegative = Color.ORANGERED;
     private static Color textColorNightIntersect = Color.BLUE;
-    private static Color nodeBorderColorNight = Color.GRAY;
-
-    /* Background */
-    private static Background backgroundNight1 = new Background(new BackgroundFill(Paint.valueOf("#3C3F41"), null, null));
-    private static Background backgroundNight2 = new Background(new BackgroundFill(Paint.valueOf("#313335"), null, null));
-    private static Background backgroundNight3 = new Background(new BackgroundFill(Paint.valueOf("#2B2B2B"), null, null));
-    public static void swapDisplayMode() {
-        mainStage.swapDisplayMode();
-    }
-    public static boolean isFullView() {
-        return mainStage.isFullView();
-    }
     public static Color getTextColorDefault() {
         if (nightMode) return textColorNightDefault;
         else return textColorDayDefault;
@@ -65,23 +55,40 @@ public class CommonUtil implements InstanceRepo {
         if (nightMode) return textColorNightIntersect;
         else return textColorDayIntersect;
     }
-    private static Insets nodePadding = new Insets(5, 10, 5, 10);
-    public static Background getBackgroundDefault() {
-        return backgroundNight1;
-    }
-    public static Background getBackgroundAlternative() {
-        return backgroundNight2;
-    }
 
-    public static Background getButtonBackgroundDefault() {
-        return backgroundNight1;
-    }
-    public static Background getButtonBackgroundHover() {
-        return backgroundNight2;
-    }
+    private static Color nodeBorderColorNight = Color.GRAY;
+    private static Color nodeBorderColorDay = Color.GRAY;
+    /* Background */
+    private static Background backgroundDay1 = new Background(new BackgroundFill(Paint.valueOf("#DDDEEE"), null, null));
+    private static Background backgroundDay2 = new Background(new BackgroundFill(Paint.valueOf("#CCCDDD"), null, null));
+    private static Background backgroundNight1 = new Background(new BackgroundFill(Paint.valueOf("#3C3F41"), null, null));
+    private static Background backgroundNight2 = new Background(new BackgroundFill(Paint.valueOf("#313335"), null, null));
+    private static Insets nodePadding = new Insets(5, 10, 5, 10);
     public static Color getNodeBorderColor() {
         if (nightMode) return nodeBorderColorNight;
-        else return Color.PINK;
+        else return nodeBorderColorDay;
+    }
+    public static Background getBackgroundDefault() {
+        if (nightMode) return backgroundNight1;
+        else return backgroundDay1;
+    }
+    public static Background getBackgroundAlternative() {
+        if (nightMode) return backgroundNight2;
+        else return backgroundDay2;
+    }
+    public static Background getButtonBackgroundDefault() {
+        if (nightMode) return backgroundNight1;
+        else return backgroundDay1;
+    }
+    public static Background getButtonBackgroundHover() {
+        if (nightMode) return backgroundNight2;
+        else return backgroundDay2;
+    }
+    public static void swapDisplayMode() {
+        mainStage.swapDisplayMode();
+    }
+    public static boolean isFullView() {
+        return mainStage.isFullView();
     }
     public static Label createNode(String text) {
         Label node = new Label(text);
@@ -104,8 +111,8 @@ public class CommonUtil implements InstanceRepo {
         root.setOnMouseEntered(event -> root.setBackground(CommonUtil.getButtonBackgroundHover()));
         root.setOnMouseExited(event -> root.setBackground(CommonUtil.getButtonBackgroundDefault()));
         root.setOnMouseClicked(event -> {
-            Bounds boundsInScene = root.localToScene(root.getBoundsInLocal());
-            customCM.show(root, boundsInScene.getMinX(), boundsInScene.getMaxY() + root.getHeight() - root.getPadding().getTop());
+            Bounds boundsInScene = root.getBoundsInParent();
+            customCM.show(root, boundsInScene.getMinX(), boundsInScene.getMaxY() + 1);
             CommonUtil.setLabelGroupWidth(children);
         });
         root.setPadding(nodePadding);

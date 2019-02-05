@@ -1,10 +1,12 @@
 package userinterface;
 
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import userinterface.node.center.FullViewEvent;
 import userinterface.node.center.TileViewEvent;
 import userinterface.node.side.InfoListViewLEvent;
@@ -12,6 +14,7 @@ import userinterface.node.side.InfoListViewREvent;
 import userinterface.node.topmenu.TopMenuEvent;
 import userinterface.template.DataContextMenu;
 import userinterface.template.InfoContextMenu;
+import userinterface.template.generic.TitleBar;
 import utils.CommonUtil;
 import utils.InstanceRepo;
 
@@ -27,8 +30,12 @@ public class MainStage extends Stage implements InstanceRepo {
         logger.debug(this, "userinterface initialize done");
     }
     private void setDefaultValues() {
-        this.setTitle("ImageTag");
-        this.setScene(new Scene(new VBox(topMenu, hBox)));
+        TitleBar titleBar = new TitleBar(this);
+        titleBar.setLeft(topMenu);
+        titleBar.setBackground(CommonUtil.getBackgroundDefault());
+        titleBar.setPadding(new Insets(0, 5, 0, 0));
+        this.setScene(new Scene(new VBox(titleBar, hBox)));
+        this.initStyle(StageStyle.UNDECORATED);
         hBox.setBackground(CommonUtil.getBackgroundDefault());
         HBox.setHgrow(infoListViewL, Priority.ALWAYS);
         HBox.setHgrow(infoListViewR, Priority.ALWAYS);

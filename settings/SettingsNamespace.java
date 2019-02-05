@@ -1,8 +1,6 @@
 package settings;
 
 public enum SettingsNamespace {
-    //todo split to core and user
-    APPNAME("APPNAME"),
     FONTSIZE("fontSize"),
     MAINSCENE_WIDTH("mainSceneWidth"),
     MAINSCENE_HEIGHT("mainSceneHeight"),

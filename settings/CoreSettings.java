@@ -41,6 +41,7 @@ public class CoreSettings implements InstanceRepo, Serializable {
         settingsList.add(new SettingsBase(SettingsNamespace.MAINSCENE_WIDTH.getValue(), 0, SystemUtil.getScreenWidth(), SystemUtil.getScreenWidth()));
         settingsList.add(new SettingsBase(SettingsNamespace.MAINSCENE_HEIGHT.getValue(), 0, SystemUtil.getScreenHeight(), SystemUtil.getScreenHeight()));
         settingsList.add(new SettingsBase(SettingsNamespace.GLOBAL_PADDING.getValue(), 2));
+        settingsList.add(new SettingsBase(SettingsNamespace.FONTSIZE.getValue(), 14));
 
         recentDirectoriesList = new ArrayList<>();
     }

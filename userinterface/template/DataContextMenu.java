@@ -20,18 +20,8 @@ public class DataContextMenu extends ContextMenu implements InstanceRepo {
 
     public DataContextMenu() {
         this.getItems().addAll(menuCopy, menuDelete);
-        menuCopy.setOnAction(event -> {
-            DataObject dataObject;
-
-            if (!CommonUtil.isFullView()) {
-                //todo copy multiple files -- array?
-                dataObject = select.get(0);
-            } else {
-                dataObject = target.getCurrentTarget();
-            }
-
-            ClipboardUtil.setClipboardContent(coreSettings.getCurrentDirectory() + dataObject.getName());
-        });
+        //todo add copy full path
+        menuCopy.setOnAction(event -> ClipboardUtil.setClipboardContent(coreSettings.getCurrentDirectory() + target.getCurrentTarget().getName()));
         menuDelete.setOnAction(event -> {
             target.storePosition();
 

@@ -10,10 +10,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import settings.SettingsNamespace;
 import userinterface.template.generic.TitleBar;
 import userinterface.template.generic.WindowDirectoryChooser;
 import utils.CommonUtil;
@@ -42,7 +40,7 @@ public class IntroWindow extends Stage implements InstanceRepo {
         Button btnChoose = new Button("Choose a Directory");
         btnChoose.setBackground(CommonUtil.getButtonBackgroundDefault());
         btnChoose.setFont(CommonUtil.getFont());
-        btnChoose.setTextFill(Color.LIGHTGRAY);
+        btnChoose.setTextFill(CommonUtil.getTextColorDefault());
         btnChoose.setFocusTraversable(false);
         btnChoose.setOnMouseEntered(event -> {
             btnChoose.setCursor(Cursor.HAND);
@@ -76,7 +74,7 @@ public class IntroWindow extends Stage implements InstanceRepo {
         VBox.setVgrow(hBox, Priority.ALWAYS);
 
         VBox vBoxMain = new VBox();
-        vBoxMain.getChildren().add(new TitleBar(this, "Welcome to " + SettingsNamespace.APPNAME.getValue()));
+        vBoxMain.getChildren().add(new TitleBar(this, "Welcome"));
         vBoxMain.getChildren().add(hBox);
         vBoxMain.setBackground(CommonUtil.getBackgroundDefault());
 

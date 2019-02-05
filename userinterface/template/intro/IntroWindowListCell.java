@@ -6,7 +6,6 @@ import javafx.scene.Cursor;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import utils.CommonUtil;
 
@@ -25,9 +24,9 @@ public class IntroWindowListCell extends BorderPane {
         setAlignment(removeLabel, Pos.CENTER);
 
         removeLabel.setFont(new Font(20));
-        removeLabel.setTextFill(Color.LIGHTGRAY);
-        removeLabel.setOnMouseEntered(event -> removeLabel.setTextFill(Color.ORANGE));
-        removeLabel.setOnMouseExited(event -> removeLabel.setTextFill(Color.LIGHTGRAY));
+        removeLabel.setTextFill(CommonUtil.getTextColorDefault());
+        removeLabel.setOnMouseEntered(event -> removeLabel.setTextFill(CommonUtil.getTextColorHighlight()));
+        removeLabel.setOnMouseExited(event -> removeLabel.setTextFill(CommonUtil.getTextColorDefault()));
         removeLabel.setVisible(false);
 
         nameLabel.setText(this.formatName(path));
@@ -35,8 +34,8 @@ public class IntroWindowListCell extends BorderPane {
         pathLabel.setText(path);
         pathLabel.setFont(new Font(14));
 
-        nameLabel.setTextFill(Color.LIGHTGRAY);
-        pathLabel.setTextFill(Color.LIGHTGRAY);
+        nameLabel.setTextFill(CommonUtil.getTextColorDefault());
+        pathLabel.setTextFill(CommonUtil.getTextColorDefault());
 
         this.setBackground(CommonUtil.getButtonBackgroundHover());
         this.setOnMouseEntered(event -> {
