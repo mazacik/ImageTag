@@ -35,8 +35,10 @@ public class DataLoader extends Thread implements InstanceRepo {
 
         checkDirectoryPaths();
         ArrayList<File> fileList = getValidFiles();
-        if (!loadExistingDatabase())
+        if (!loadExistingDatabase()) {
+            createBackup();
             createDatabase(fileList);
+        }
         validateDatabaseCache(fileList);
         loadImageCache(loadingWindow[0], fileList.size());
 
@@ -57,7 +59,10 @@ public class DataLoader extends Thread implements InstanceRepo {
     }
 
     private ArrayList<File> getValidFiles() {
-        return new ArrayList<>(Arrays.asList(new File(PATH_SOURCE).listFiles((dir, name) -> name.endsWith(".jpg") || name.endsWith(".JPG") || name.endsWith(".png") || name.endsWith(".PNG") || name.endsWith(".jpeg") || name.endsWith(".JPEG"))));
+        return new ArrayList<>(Arrays.asList(new File(PATH_SOURCE).listFiles((dir, name) -> {
+            String _name = name.toLowerCase();
+            return _name.endsWith(".jpg") || _name.endsWith(".jpeg") || _name.endsWith(".png");
+        })));
     }
     private void checkDirectoryPaths() {
         logger.debug(this, "checking directories");
@@ -71,6 +76,22 @@ public class DataLoader extends Thread implements InstanceRepo {
         if (!path_cache.exists()) {
             logger.debug(this, "creating cache directory: " + PATH_CACHE);
             path_cache.mkdir();
+        }
+    }
+    private void createBackup() {
+        File backupDir = new File(PATH_SOURCE + "backup\\");
+        File backupData = new File(backupDir + "data.json");
+        File currentData = new File(PATH_DATA + "data.json");
+
+        logger.debug(this, "backing up existing database");
+
+        if (currentData.exists()) {
+            if (!backupDir.exists()) {
+                backupDir.mkdir();
+            }
+            currentData.renameTo(backupData);
+        } else {
+            logger.debug(this, "cannot create database backup; no existing database found");
         }
     }
     private void createDatabase(ArrayList<File> fileList) {
