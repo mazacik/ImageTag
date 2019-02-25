@@ -4,12 +4,12 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import system.CommonUtil;
 import user_interface.node_factory.NodeFactory;
 import user_interface.node_factory.utils.ColorType;
+import user_interface.node_factory.utils.ColorUtil;
 
 public class TitleBar extends BorderPane {
     private final Label labelTitle;
@@ -34,7 +34,7 @@ public class TitleBar extends BorderPane {
 
         this.setCenter(labelTitle);
         this.setRight(btnExit);
-        this.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 1, 0))));
+        this.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 1, 0))));
         final double[] xOffset = {0};
         final double[] yOffset = {0};
         this.setOnMousePressed(event -> {

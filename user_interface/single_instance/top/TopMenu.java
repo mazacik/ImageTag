@@ -2,12 +2,12 @@ package user_interface.single_instance.top;
 
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import system.InstanceRepo;
 import user_interface.node_factory.NodeColorData;
 import user_interface.node_factory.NodeFactory;
 import user_interface.node_factory.template.generic.RCMenu;
 import user_interface.node_factory.utils.ColorType;
+import user_interface.node_factory.utils.ColorUtil;
 import user_interface.single_instance.BaseNode;
 
 public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
@@ -45,11 +45,11 @@ public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
         nodeRandom = NodeFactory.getLabel("Random", nodeColorData);
         nodeFullview = NodeFactory.getLabel("FullView", nodeColorData);
         HBox hBoxTools = NodeFactory.getHBox(ColorType.DEF, nodeRandom, nodeFullview);
-        hBoxTools.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 1, 0, 1))));
+        hBoxTools.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 1, 0, 1))));
         hBoxMain.getChildren().add(hBoxTools);
 
         this.setCenter(hBoxMain);
-        infoNode = NodeFactory.getLabel("Info", nodeColorData);
+        infoNode = NodeFactory.getLabel("Info", ColorType.DEF, ColorType.DEF);
         this.setRight(infoNode);
 
         NodeFactory.addNodeToBackgroundManager(hBoxMain, ColorType.DEF);

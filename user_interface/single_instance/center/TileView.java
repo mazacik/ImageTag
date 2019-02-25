@@ -32,6 +32,7 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
         this.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         this.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 1, 0, 1))));
         NodeFactory.addNodeToBackgroundManager(this, ColorType.DEF);
+        NodeFactory.addNodeToBackgroundManager(tilePane, ColorType.DEF);
     }
 
     public void reload() {

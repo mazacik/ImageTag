@@ -23,11 +23,11 @@ import java.util.Comparator;
 
 public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
     private final Label selectLabel = NodeFactory.getLabel("Selection", ColorType.DEF, ColorType.DEF);
-    private final TreeView<CustomTreeCell> treeView = new TreeView(new TreeItem());
     private final Label btnExpCol = NodeFactory.getLabel("Expand", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.NULL);
+    private final TreeView<CustomTreeCell> treeView = new TreeView(new TreeItem());
 
     private final TextField textField = new TextField();
-    private final ListView<String> listView = new ListView<>();
+    private String actualText = "";
 
     public InfoListViewR() {
         VBox.setVgrow(treeView, Priority.ALWAYS);
@@ -51,48 +51,38 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
         btnExpCol.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 0, 1))));
         btnExpCol.setPrefWidth(75);
 
-        listView.setFocusTraversable(false);
-        listView.setEditable(false);
+        textField.setOnKeyTyped(event -> {
+            if (event.getCode() == KeyCode.BACK_SPACE) {
+                actualText = actualText.substring(0, actualText.length() - 1);
+            } else {
+                actualText += event.getCharacter();
+            }
 
-        textField.setOnKeyPressed(event -> {
-            KeyCode eventKey = event.getCode();
-            if (eventKey.equals(KeyCode.DOWN) || eventKey.equals(KeyCode.UP)) {
-                textField.positionCaret(textField.getLength());
-                if (listView.getItems().size() > 0) {
-                    if (eventKey == KeyCode.DOWN && listView.getSelectionModel().getSelectedIndex() != listView.getItems().size() - 1) {
-                        listView.getSelectionModel().clearAndSelect(listView.getSelectionModel().getSelectedIndex() + 1);
-                    } else if (eventKey == KeyCode.UP && listView.getSelectionModel().getSelectedIndex() != 0) {
-                        listView.getSelectionModel().clearAndSelect(listView.getSelectionModel().getSelectedIndex() - 1);
-                    }
+            for (InfoObject infoObject : mainListInfo) {
+                if (infoObject.getGroupAndName().toLowerCase().contains(actualText.toLowerCase())) {
+                    String groupAndName = infoObject.getGroupAndName();
+                    textField.setText(groupAndName);
+                    int caretPos = groupAndName.toLowerCase().lastIndexOf(actualText.toLowerCase()) + actualText.length();
+                    textField.positionCaret(caretPos);
+                    break;
                 }
             }
         });
-        textField.setOnKeyTyped(event -> listView.getItems().setAll(this.getInfoObjectMatches(textField.getText())));
         textField.setOnAction(event -> {
-            this.addTagObjectToSelection(mainListInfo.getInfoObject(listView.getSelectionModel().getSelectedItem()));
-            textField.clear();
-            listView.getItems().clear();
-            reload.notifyChangeIn(Reload.Control.INFO);
-            reload.doReload();
+            InfoObject infoObject = mainListInfo.getInfoObject(textField.getText());
+            if (infoObject != null) {
+                this.addTagObjectToSelection(infoObject);
+                textField.clear();
+                reload.notifyChangeIn(Reload.Control.INFO);
+                reload.doReload();
+            }
         });
 
         this.setPrefWidth(999);
         this.setMinWidth(200);
         this.setCellFactory();
         this.setSpacing(coreSettings.valueOf(SettingsNamespace.GLOBAL_PADDING));
-        this.getChildren().addAll(bp, textField, listView, treeView);
-    }
-
-    private ArrayList<String> getInfoObjectMatches(String text) {
-        ArrayList<String> match = new ArrayList();
-
-        for (InfoObject infoObject : mainListInfo) {
-            if (infoObject.getGroupAndName().toLowerCase().contains(text.toLowerCase())) {
-                match.add(infoObject.getGroupAndName());
-            }
-        }
-
-        return match;
+        this.getChildren().addAll(bp, textField, treeView);
     }
 
     public void changeCellState(TreeCell<CustomTreeCell> sourceCell) {
