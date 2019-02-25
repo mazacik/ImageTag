@@ -1,9 +1,8 @@
 package settings;
 
-import utils.InstanceRepo;
-import utils.serialization.SerializationUtil;
-import utils.serialization.TypeTokenEnum;
-import utils.system.SystemUtil;
+import system.InstanceRepo;
+import system.SerializationUtil;
+import system.SystemUtil;
 
 import java.io.File;
 import java.io.Serializable;
@@ -12,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CoreSettings implements InstanceRepo, Serializable {
-    private transient static Type typeToken = TypeTokenEnum.CORESETTINGS.getValue();
+    private transient static Type typeToken = SerializationUtil.TypeTokenEnum.CORESETTINGS.getValue();
     private transient String currentDirectory;
     private SettingsList settingsList;
     private List<String> recentDirectoriesList;

@@ -3,7 +3,7 @@ package control.target;
 import control.reload.Reload;
 import database.object.DataObject;
 import javafx.scene.input.KeyCode;
-import utils.InstanceRepo;
+import system.InstanceRepo;
 
 public class Target implements InstanceRepo {
     private DataObject currentTarget;

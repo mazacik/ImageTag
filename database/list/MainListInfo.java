@@ -4,9 +4,9 @@ import control.reload.Reload;
 import database.object.DataObject;
 import database.object.InfoObject;
 import javafx.scene.control.TreeCell;
-import userinterface.node.side.CustomTreeCell;
-import userinterface.template.InfoObjectEditor;
-import utils.InstanceRepo;
+import system.InstanceRepo;
+import user_interface.node_factory.template.InfoObjectEditor;
+import user_interface.single_instance.side.CustomTreeCell;
 
 public class MainListInfo extends BaseListInfo implements InstanceRepo {
     public void initialize() {
@@ -26,7 +26,7 @@ public class MainListInfo extends BaseListInfo implements InstanceRepo {
     public boolean add(InfoObject infoObject) {
         if (infoObject == null) return false;
         if (super.add(infoObject)) {
-            filter.apply();
+            //filter.apply(); //todo this needs some work. rn filter gets updated but fx tileview doesnt refresh
             reload.notifyChangeIn(Reload.Control.INFO);
             return true;
         }
@@ -35,7 +35,7 @@ public class MainListInfo extends BaseListInfo implements InstanceRepo {
     public boolean remove(InfoObject infoObject) {
         if (infoObject == null) return false;
         if (super.remove(infoObject)) {
-            filter.apply();
+            //filter.apply();
             reload.notifyChangeIn(Reload.Control.INFO);
             return true;
         }

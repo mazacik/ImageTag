@@ -8,9 +8,9 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import org.apache.commons.io.FilenameUtils;
 import settings.SettingsNamespace;
-import userinterface.node.center.BaseTile;
-import userinterface.template.intro.LoadingWindow;
-import utils.InstanceRepo;
+import system.InstanceRepo;
+import user_interface.node_factory.template.intro.LoadingWindow;
+import user_interface.single_instance.center.BaseTile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

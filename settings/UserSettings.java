@@ -1,15 +1,14 @@
 package settings;
 
-import utils.InstanceRepo;
-import utils.serialization.SerializationUtil;
-import utils.serialization.TypeTokenEnum;
+import system.InstanceRepo;
+import system.SerializationUtil;
 
 import java.io.File;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 
 public class UserSettings implements InstanceRepo, Serializable {
-    private transient static Type typeToken = TypeTokenEnum.USERSETTINGS.getValue();
+    private transient static Type typeToken = SerializationUtil.TypeTokenEnum.USERSETTINGS.getValue();
     private UserSettings() {
         if (SettingsLoader.instance != null) {
             throw new IllegalStateException(this.getClass().getSimpleName() + " already instantiated");

@@ -3,7 +3,7 @@ package control.filter;
 import database.list.BaseListInfo;
 import database.object.DataObject;
 import database.object.InfoObject;
-import utils.InstanceRepo;
+import system.InstanceRepo;
 
 public enum FilterTemplate implements InstanceRepo {
     NONE {
@@ -28,12 +28,6 @@ public enum FilterTemplate implements InstanceRepo {
                 }
             }
         }
-        public void resolveObject(DataObject dataObject) {
-            if (dataObject.getBaseListInfo().size() > maxTagsValue) {
-                select.remove(dataObject);
-                filter.remove(dataObject);
-            }
-        }
     },
     CUSTOM {
         public void apply() {
@@ -47,13 +41,6 @@ public enum FilterTemplate implements InstanceRepo {
                         filter.add(dataObject);
                     }
                 }
-            }
-        }
-        public void resolveObject(DataObject dataObject) {
-            BaseListInfo dataObjectInfoList = dataObject.getBaseListInfo();
-            if (!isWhitelistOk(dataObjectInfoList) || !isBlacklistOk(dataObjectInfoList)) {
-                select.remove(dataObject);
-                filter.remove(dataObject);
             }
         }
     };
@@ -96,8 +83,5 @@ public enum FilterTemplate implements InstanceRepo {
     }
     public void apply() {
         logger.error(this, "default apply() reached");
-    }
-    public void resolveObject(DataObject dataObject) {
-        logger.debug(this, "default resolveObject() reached");
     }
 }
