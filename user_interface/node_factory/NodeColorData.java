@@ -1,6 +1,7 @@
 package user_interface.node_factory;
 
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
 import user_interface.node_factory.template.intro.IntroWindowCell;
 import user_interface.node_factory.utils.ColorType;
@@ -23,6 +24,8 @@ public class NodeColorData {
             nodeType = NodeType.LABEL;
         } else if (node instanceof IntroWindowCell) {
             nodeType = NodeType.INTROWINDOWCELL;
+        } else if (node instanceof TextField) {
+            nodeType = NodeType.TEXTFIELD;
         } else {
             nodeType = NodeType.GENERIC;
         }
@@ -57,6 +60,7 @@ public class NodeColorData {
         LABEL,
         GENERIC,
         INTROWINDOWCELL,
+        TEXTFIELD,
         ;
     }
 }

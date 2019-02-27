@@ -6,11 +6,11 @@ import database.object.InfoObject;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import settings.SettingsNamespace;
 import system.CommonUtil;
 import system.InstanceRepo;
 import user_interface.node_factory.NodeFactory;
@@ -51,21 +51,34 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
         btnExpCol.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 0, 1))));
         btnExpCol.setPrefWidth(75);
 
-        textField.setOnKeyTyped(event -> {
+        textField.setFont(CommonUtil.getFont());
+        textField.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 1, 0))));
+        textField.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.BACK_SPACE) {
                 actualText = actualText.substring(0, actualText.length() - 1);
             } else {
-                actualText += event.getCharacter();
+                actualText += event.getText();
             }
-
+        });
+        textField.setOnKeyTyped(event -> {
+            if (actualText.equals("")) {
+                textField.setText("");
+                return;
+            }
+            boolean match = false;
             for (InfoObject infoObject : mainListInfo) {
                 if (infoObject.getGroupAndName().toLowerCase().contains(actualText.toLowerCase())) {
                     String groupAndName = infoObject.getGroupAndName();
                     textField.setText(groupAndName);
                     int caretPos = groupAndName.toLowerCase().lastIndexOf(actualText.toLowerCase()) + actualText.length();
                     textField.positionCaret(caretPos);
+                    match = true;
                     break;
                 }
+            }
+            if (!match) {
+                textField.setText(actualText);
+                textField.positionCaret(textField.getLength());
             }
         });
         textField.setOnAction(event -> {
@@ -73,15 +86,15 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
             if (infoObject != null) {
                 this.addTagObjectToSelection(infoObject);
                 textField.clear();
+                actualText = "";
                 reload.notifyChangeIn(Reload.Control.INFO);
                 reload.doReload();
             }
         });
-
+        NodeFactory.addNodeToBackgroundManager(textField, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
         this.setPrefWidth(999);
         this.setMinWidth(200);
         this.setCellFactory();
-        this.setSpacing(coreSettings.valueOf(SettingsNamespace.GLOBAL_PADDING));
         this.getChildren().addAll(bp, textField, treeView);
     }
 

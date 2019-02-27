@@ -10,7 +10,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import settings.SettingsNamespace;
 import system.CommonUtil;
 import system.InstanceRepo;
 import user_interface.node_factory.NodeFactory;
@@ -50,13 +49,12 @@ public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
 
         btnNew.setPrefWidth(999);
         btnNew.setFont(CommonUtil.getFont());
-        btnNew.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1, 0, 0, 0))));
+        btnNew.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 1, 0))));
 
         this.setPrefWidth(999);
         this.setMinWidth(200);
         this.setCellFactory();
-        this.setSpacing(coreSettings.valueOf(SettingsNamespace.GLOBAL_PADDING));
-        this.getChildren().addAll(bp, treeView, btnNew);
+        this.getChildren().addAll(bp, btnNew, treeView);
     }
 
     public void changeCellState(TreeCell<CustomTreeCell> sourceCell) {

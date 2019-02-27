@@ -11,14 +11,17 @@ public class GlobalEvent implements InstanceRepo {
     private void onKeyPressed() {
         mainStage.getScene().setOnKeyPressed(event -> {
             switch (event.getCode()) {
+                case ESCAPE:
+                    mainStage.requestFocus();
+                    break;
                 case Q:
                     select.swapState(target.getCurrentTarget());
                     break;
-                case R:
+                case F2:
                     select.setRandom();
                     reload.doReload();
                     break;
-                case F12:
+                case F3:
                     CommonUtil.swapDisplayMode();
                     break;
                 case W:

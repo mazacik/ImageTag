@@ -2,6 +2,7 @@ package system;
 
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -94,6 +95,14 @@ public abstract class CommonUtil implements InstanceRepo {
                     introWindowCell.setCursor(Cursor.DEFAULT);
                     introWindowCell.getNodeRemove().setVisible(false);
                 });
+            } else if (nodeColorData.getNodeType() == NodeColorData.NodeType.TEXTFIELD) {
+                TextField textField = ((TextField) nodeColorData.getNode());
+                Color color = getTextColorDef(nodeColorData);
+                String colorString = String.format("#%02X%02X%02X",
+                        (int) (color.getRed() * 255),
+                        (int) (color.getGreen() * 255),
+                        (int) (color.getBlue() * 255));
+                textField.setStyle("-fx-text-fill: " + colorString + ";");
             }
         }
     }
