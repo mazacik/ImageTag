@@ -13,6 +13,7 @@ public class TopMenuEvent implements InstanceRepo {
 
         onAction_menuSelectAll();
         onAction_menuClearSelection();
+        onAction_menuMergeSelection();
 
         onAction_menuCustom();
         onAction_menuReset();
@@ -38,6 +39,12 @@ public class TopMenuEvent implements InstanceRepo {
     private void onAction_menuClearSelection() {
         topMenu.getNodeSelectNone().setOnMouseClicked(event -> {
             select.clear();
+            reload.doReload();
+        });
+    }
+    private void onAction_menuMergeSelection() {
+        topMenu.getNodeSelectMerge().setOnMouseClicked(event -> {
+            select.merge();
             reload.doReload();
         });
     }

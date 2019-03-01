@@ -1,6 +1,6 @@
 package control.filter;
 
-import database.list.BaseListInfo;
+import database.list.InfoList;
 import database.object.DataObject;
 import database.object.InfoObject;
 import system.InstanceRepo;
@@ -23,7 +23,7 @@ public enum FilterTemplate implements InstanceRepo {
             infoListBlack.clear();
             filter.clear();
             for (DataObject dataObject : mainListData) {
-                if (dataObject.getBaseListInfo().size() <= maxTagsValue) {
+                if (dataObject.getInfoList().size() <= maxTagsValue) {
                     filter.add(dataObject);
                 }
             }
@@ -36,7 +36,7 @@ public enum FilterTemplate implements InstanceRepo {
             } else {
                 filter.clear();
                 for (DataObject dataObject : mainListData) {
-                    BaseListInfo dataObjectInfoList = dataObject.getBaseListInfo();
+                    InfoList dataObjectInfoList = dataObject.getInfoList();
                     if (isWhitelistOk(dataObjectInfoList) && isBlacklistOk(dataObjectInfoList)) {
                         filter.add(dataObject);
                     }
@@ -46,15 +46,15 @@ public enum FilterTemplate implements InstanceRepo {
     };
 
     private static int maxTagsValue = 0;
-    private static boolean isWhitelistOk(BaseListInfo baseListInfo) {
+    private static boolean isWhitelistOk(InfoList infoList) {
         Filter.FilterMode whitelistMode = filter.getWhitelistMode();
         if (infoListWhite.isEmpty()) {
             return true;
-        } else if (whitelistMode.equals(Filter.FilterMode.All) && baseListInfo.containsAll(infoListWhite)) {
+        } else if (whitelistMode.equals(Filter.FilterMode.All) && infoList.containsAll(infoListWhite)) {
             return true;
         } else if (whitelistMode.equals(Filter.FilterMode.Any)) {
             for (InfoObject infoObject : infoListWhite) {
-                if (baseListInfo.contains(infoObject)) {
+                if (infoList.contains(infoObject)) {
                     return true;
                 }
             }
@@ -62,15 +62,15 @@ public enum FilterTemplate implements InstanceRepo {
 
         return false;
     }
-    private static boolean isBlacklistOk(BaseListInfo baseListInfo) {
+    private static boolean isBlacklistOk(InfoList infoList) {
         Filter.FilterMode blacklistMode = filter.getBlacklistMode();
         if (infoListBlack.isEmpty()) {
             return true;
-        } else if (blacklistMode.equals(Filter.FilterMode.All) && baseListInfo.containsAll(infoListBlack)) {
+        } else if (blacklistMode.equals(Filter.FilterMode.All) && infoList.containsAll(infoListBlack)) {
             return false;
         } else if (blacklistMode.equals(Filter.FilterMode.Any)) {
             for (InfoObject infoObject : infoListBlack) {
-                if (baseListInfo.contains(infoObject)) {
+                if (infoList.contains(infoObject)) {
                     return false;
                 }
             }

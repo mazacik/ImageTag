@@ -14,8 +14,11 @@ import user_interface.node_factory.utils.ColorType;
 import user_interface.node_factory.utils.ColorUtil;
 import user_interface.single_instance.BaseNode;
 
+import java.util.ArrayList;
+
 public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
     private final TilePane tilePane = new TilePane(1, 1);
+    private final ArrayList<Integer> expandedGroups = new ArrayList<>();
 
     public TileView() {
         final int galleryIconSize = userSettings.valueOf(SettingsNamespace.TILEVIEW_ICONSIZE);
@@ -40,13 +43,29 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
         double scrollbarValue = this.getVvalue();
         ObservableList<Node> tilePaneItems = tilePane.getChildren();
         tilePaneItems.clear();
-        filter.forEach(dataObject -> tilePaneItems.add(dataObject.getBaseTile()));
+        ArrayList<Integer> mergeIDs = new ArrayList<>();
+        for (DataObject dataObject : filter) {
+            if (dataObject.getMergeID() == 0) {
+                tilePaneItems.add(dataObject.getBaseTile());
+            } else if (!mergeIDs.contains(dataObject.getMergeID())) {
+                if (!expandedGroups.contains(dataObject.getMergeID())) {
+                    tilePaneItems.add(dataObject.getBaseTile());
+                    dataObject.generateTileEffect();
+                } else {
+                    dataObject.getMergeGroup().forEach(dataObject1 -> {
+                        tilePaneItems.add(dataObject1.getBaseTile());
+                        dataObject1.generateTileEffect();
+                    });
+                }
+                mergeIDs.add(dataObject.getMergeID());
+            }
+        }
         this.setVvalue(scrollbarValue);
     }
     public void adjustViewportToCurrentTarget() {
         DataObject currentTargetedItem = target.getCurrentTarget();
         if (CommonUtil.isFullView() || currentTargetedItem == null) return;
-        int targetIndex = filter.indexOf(currentTargetedItem);
+        int targetIndex = this.getDataObjects().indexOf(currentTargetedItem);
         if (targetIndex < 0) return;
 
         ObservableList<Node> tilePaneItems = tilePane.getChildren();
@@ -82,5 +101,20 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
         double itemCountFilter = filter.size();
         double columnCount = this.getColumnCount();
         return (int) Math.ceil(itemCountFilter / columnCount);
+    }
+
+    public ArrayList<BaseTile> getTiles() {
+        ArrayList<BaseTile> arrayList = new ArrayList<>();
+        tilePane.getChildren().forEach(tile -> arrayList.add((BaseTile) tile));
+        return arrayList;
+    }
+    public ArrayList<DataObject> getDataObjects() {
+        ArrayList<DataObject> dataObjects = new ArrayList<>();
+        tilePane.getChildren().forEach(tile -> dataObjects.add(((BaseTile) tile).getParentDataObject()));
+        return dataObjects;
+    }
+
+    public ArrayList<Integer> getExpandedGroups() {
+        return expandedGroups;
     }
 }

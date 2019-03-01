@@ -1,6 +1,5 @@
 package user_interface.node_factory.template;
 
-import control.select.Select;
 import database.object.DataObject;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
@@ -13,6 +12,7 @@ import user_interface.node_factory.template.generic.WindowOkCancel;
 
 import java.awt.*;
 import java.io.File;
+import java.util.ArrayList;
 
 public class DataContextMenu extends ContextMenu implements InstanceRepo {
     private final MenuItem menuCopy = new MenuItem("Copy Filename");
@@ -55,38 +55,38 @@ public class DataContextMenu extends ContextMenu implements InstanceRepo {
     private void deleteSelection() {
         if (select.isEmpty()) return;
 
-        WindowOkCancel windowOkCancel = new WindowOkCancel("Delete " + select.size() + " file(s)?");
+        ArrayList<DataObject> dataObjectsToDelete = new ArrayList<>();
+        select.forEach(dataObject -> {
+            if (dataObject.getMergeID() != 0 && !tileView.getExpandedGroups().contains(dataObject.getMergeID())) {
+                dataObjectsToDelete.addAll(dataObject.getMergeGroup());
+            } else {
+                dataObjectsToDelete.add(dataObject);
+            }
+        });
+
+        WindowOkCancel windowOkCancel = new WindowOkCancel("Delete " + dataObjectsToDelete.size() + " file(s)?");
         if (windowOkCancel.getResult()) {
-            ((Select) select.clone()).forEach(this::deleteDataObject);
+            dataObjectsToDelete.forEach(this::deleteDataObject);
             reload.doReload();
         }
     }
     private void deleteCurrentTarget() {
         DataObject currentTarget = target.getCurrentTarget();
-        String fullPath = coreSettings.getCurrentDirectory() + currentTarget.getName();
-
-        WindowOkCancel windowOkCancel = new WindowOkCancel("Delete file: " + fullPath + "?");
-        if (windowOkCancel.getResult()) {
-            //todo move most of this to target
-            int index = filter.indexOf(target.getCurrentTarget());
-            this.deleteDataObject(currentTarget);
-
-            if (index < 0) {
-                index = 0;
-            }
-
-            if (filter.get(index) == null) {
-                if (index != filter.size() && filter.get(index + 1) != null) {
-                    index++;
-                } else if (index != 0 && filter.get(index - 1) != null) {
-                    index--;
-                } else {
-                    index = 0;
+        if (currentTarget.getMergeID() != 0) {
+            if (!tileView.getExpandedGroups().contains(currentTarget.getMergeID())) {
+                WindowOkCancel windowOkCancel = new WindowOkCancel("Delete " + currentTarget.getMergeGroup().size() + " file(s)?");
+                if (windowOkCancel.getResult()) {
+                    currentTarget.getMergeGroup().forEach(this::deleteDataObject);
+                    reload.doReload();
                 }
             }
-
-            target.set(filter.get(index));
-            reload.doReload();
+        } else {
+            String fullPath = coreSettings.getCurrentDirectory() + currentTarget.getName();
+            WindowOkCancel windowOkCancel = new WindowOkCancel("Delete file: " + fullPath + "?");
+            if (windowOkCancel.getResult()) {
+                this.deleteDataObject(currentTarget);
+                reload.doReload();
+            }
         }
     }
 }

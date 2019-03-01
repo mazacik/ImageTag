@@ -5,8 +5,8 @@ import database.object.InfoObject;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class BaseListInfo extends BaseList<InfoObject> {
-    public BaseListInfo() {
+public class InfoList extends BaseList<InfoObject> {
+    public InfoList() {
         super();
     }
 

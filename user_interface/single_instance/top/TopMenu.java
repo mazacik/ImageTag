@@ -19,6 +19,7 @@ public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
 
     Label nodeSelectAll;
     Label nodeSelectNone;
+    Label nodeSelectMerge;
 
     Label nodeRandom;
     Label nodeFullview;
@@ -39,7 +40,8 @@ public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
         Label cbSelection = NodeFactory.getLabel("Selection", nodeColorData);
         nodeSelectAll = NodeFactory.getLabel("Select All", nodeColorData);
         nodeSelectNone = NodeFactory.getLabel("Select None", nodeColorData);
-        new RCMenu(cbSelection, nodeSelectAll, nodeSelectNone);
+        nodeSelectMerge = NodeFactory.getLabel("Merge Selection", nodeColorData);
+        new RCMenu(cbSelection, nodeSelectAll, nodeSelectNone, nodeSelectMerge);
         HBox hBoxMain = NodeFactory.getHBox(ColorType.DEF);
         hBoxMain.getChildren().addAll(cbFile, cbFilter, cbSelection);
         nodeRandom = NodeFactory.getLabel("Random", nodeColorData);
@@ -73,6 +75,9 @@ public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
     }
     public Label getNodeSelectNone() {
         return nodeSelectNone;
+    }
+    public Label getNodeSelectMerge() {
+        return nodeSelectMerge;
     }
     public Label getNodeCustom() {
         return nodeCustom;

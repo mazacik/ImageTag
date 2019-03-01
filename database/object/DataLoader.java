@@ -49,7 +49,6 @@ public class DataLoader extends Thread implements InstanceRepo {
 
         filter.setFilter(FilterTemplate.SHOW_EVERYTHING);
         reload.notifyChangeIn(Reload.Control.values());
-        reload.doReload();
 
         Platform.runLater(() -> {
             loadingWindow[0].close();

@@ -2,11 +2,8 @@ package control.filter;
 
 import control.reload.Reload;
 import database.list.MainListData;
-import database.object.DataObject;
 import database.object.InfoObject;
 import system.InstanceRepo;
-
-import java.util.Random;
 
 public class Filter extends MainListData implements InstanceRepo {
     private FilterMode whitelistMode;
@@ -91,10 +88,6 @@ public class Filter extends MainListData implements InstanceRepo {
     }
     public boolean isTagObjectBlacklisted(String group, String name) {
         return infoListBlack.contains(mainListInfo.getInfoObject(group, name));
-    }
-
-    public DataObject getRandomObject() {
-        return this.get(new Random().nextInt(this.size()));
     }
 
     public FilterMode getWhitelistMode() {

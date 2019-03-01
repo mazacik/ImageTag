@@ -5,9 +5,9 @@ import control.logger.Logger;
 import control.reload.Reload;
 import control.select.Select;
 import control.target.Target;
-import database.list.BaseListInfo;
+import database.list.InfoList;
+import database.list.MainInfoList;
 import database.list.MainListData;
-import database.list.MainListInfo;
 import settings.CoreSettings;
 import settings.UserSettings;
 import user_interface.MainStage;
@@ -35,8 +35,8 @@ public interface InstanceRepo {
     Reload reload = new Reload();
 
     MainListData mainListData = new MainListData();
-    MainListInfo mainListInfo = new MainListInfo();
+    MainInfoList mainListInfo = new MainInfoList();
 
-    BaseListInfo infoListWhite = new BaseListInfo();
-    BaseListInfo infoListBlack = new BaseListInfo();
+    InfoList infoListWhite = new InfoList();
+    InfoList infoListBlack = new InfoList();
 }

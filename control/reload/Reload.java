@@ -13,7 +13,7 @@ public class Reload implements InstanceRepo {
         this.subscribe(fullView, Control.TARGET);
         this.subscribe(infoListViewL, Control.INFO);
         this.subscribe(infoListViewR, Control.INFO, Control.SELECT, Control.TARGET);
-        this.subscribe(tileView, Control.DATA, Control.FILTER);
+        this.subscribe(tileView, Control.DATA, Control.FILTER, Control.SELECT);
         this.subscribe(topMenu, Control.SELECT);
 
         queue = new ArrayList<>();

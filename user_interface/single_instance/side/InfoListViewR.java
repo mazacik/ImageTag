@@ -127,7 +127,7 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
         if (select.size() < 1) {
             DataObject currentTargetedItem = target.getCurrentTarget();
             if (currentTargetedItem != null) {
-                currentTargetedItem.getBaseListInfo().add(infoObject);
+                currentTargetedItem.getInfoList().add(infoObject);
             }
         } else {
             select.addTagObject(infoObject);
@@ -137,7 +137,7 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
         if (select.size() < 1) {
             DataObject currentTargetedItem = target.getCurrentTarget();
             if (currentTargetedItem != null) {
-                currentTargetedItem.getBaseListInfo().remove(infoObject);
+                currentTargetedItem.getInfoList().remove(infoObject);
             }
         } else {
             select.removeTagObject(infoObject);

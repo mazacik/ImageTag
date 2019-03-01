@@ -1,17 +1,29 @@
 package system;
 
+import database.object.DataObject;
+import javafx.geometry.Insets;
 import javafx.scene.Cursor;
+import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import settings.SettingsNamespace;
 import user_interface.node_factory.NodeColorData;
 import user_interface.node_factory.NodeFactory;
 import user_interface.node_factory.template.intro.IntroWindowCell;
 import user_interface.node_factory.utils.ColorType;
 import user_interface.node_factory.utils.ColorUtil;
+import user_interface.single_instance.center.BaseTile;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 public abstract class CommonUtil implements InstanceRepo {
     private static boolean nightMode = false;
@@ -110,10 +122,50 @@ public abstract class CommonUtil implements InstanceRepo {
         return font;
     }
 
+    public static Image textToImage(String text) {
+        Label label = new Label(text);
+        label.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, null, null)));
+        label.setTextFill(Color.RED);
+        label.setWrapText(true);
+        label.setFont(CommonUtil.getFont());
+        label.setPadding(new Insets(0, 0, 0, 0));
+
+        Text theText = new Text(label.getText());
+        theText.setFont(label.getFont());
+        int width = (int) theText.getBoundsInLocal().getWidth();
+        int height = (int) theText.getBoundsInLocal().getHeight();
+
+        WritableImage img = new WritableImage(width, height);
+        Scene scene = new Scene(new Group(label));
+        scene.setFill(Color.TRANSPARENT);
+        scene.snapshot(img);
+        return img;
+    }
+
     public static void swapDisplayMode() {
         mainStage.swapDisplayMode();
     }
     public static boolean isFullView() {
         return mainStage.isFullView();
+    }
+    public static DataObject getRandomDataObject() {
+        ArrayList<BaseTile> tiles = tileView.getTiles();
+        int index = new Random().nextInt(tiles.size());
+        DataObject dataObject = tiles.get(index).getParentDataObject();
+
+        if (dataObject.getMergeID() == 0) {
+            return dataObject;
+        } else {
+            ArrayList<DataObject> dataObjectsSameMergeID = new ArrayList<>();
+            for (DataObject dataObjectSameMergeID : filter) {
+                if (dataObjectSameMergeID.getMergeID() == dataObject.getMergeID()) {
+                    dataObjectsSameMergeID.add(dataObjectSameMergeID);
+                }
+            }
+            return dataObjectsSameMergeID.get(new Random().nextInt(dataObjectsSameMergeID.size()));
+        }
+    }
+    public static int getHash() {
+        return new Random().nextInt();
     }
 }

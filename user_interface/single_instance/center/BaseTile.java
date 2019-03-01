@@ -1,23 +1,23 @@
 package user_interface.single_instance.center;
 
 import database.object.DataObject;
-import javafx.scene.effect.Blend;
-import javafx.scene.effect.BlendMode;
-import javafx.scene.effect.ColorInput;
-import javafx.scene.effect.InnerShadow;
+import javafx.scene.effect.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import settings.SettingsNamespace;
+import system.CommonUtil;
 import system.InstanceRepo;
 
+import java.util.ArrayList;
+
 public class BaseTile extends ImageView implements InstanceRepo {
+
     private static final InnerShadow effectSelect = createEffectSelect();
     private static final ColorInput effectTarget = createEffectTarget();
+    private static int effectGroupSize;
+
     private final DataObject parentDataObject;
-    public DataObject getParentDataObject() {
-        return parentDataObject;
-    }
 
     public BaseTile(DataObject parentDataObject, Image image) {
         super(image);
@@ -40,32 +40,48 @@ public class BaseTile extends ImageView implements InstanceRepo {
         Color markColor = Color.RED;
         return new ColorInput(markPositionInTile, markPositionInTile, markSize, markSize, markColor);
     }
+    public static int getEffectGroupSize() {
+        return effectGroupSize;
+    }
     public void generateEffect() {
-        boolean bSelect = false;
-        if (parentDataObject != null) {
-            bSelect = select.contains(parentDataObject);
+        if (parentDataObject == null) return;
+
+        ArrayList<Effect> effectList = new ArrayList<>();
+
+        if (select.contains(parentDataObject)) {
+            effectList.add(effectSelect);
+        }
+        if (target.getCurrentTarget() != null && target.getCurrentTarget().equals(parentDataObject)) {
+            effectList.add(effectTarget);
+        }
+        if (parentDataObject.getMergeID() != 0) {
+            String middle;
+            if (tileView.getExpandedGroups().contains(parentDataObject.getMergeID())) {
+                middle = "-";
+            } else {
+                middle = String.valueOf(parentDataObject.getMergeGroup().size());
+            }
+
+            String groupIconText;
+            if (mainListData.getAllGroups().indexOf(parentDataObject.getMergeID()) % 2 == 0) {
+                groupIconText = "(" + middle + ")";
+            } else {
+                groupIconText = "[" + middle + "]";
+            }
+            int tileSize = userSettings.valueOf(SettingsNamespace.TILEVIEW_ICONSIZE);
+            Image imageText = CommonUtil.textToImage(groupIconText);
+            effectList.add(new ImageInput(imageText, tileSize - imageText.getWidth() - 5, 1));
+            effectGroupSize = (int) imageText.getWidth() + 10;
         }
 
-        DataObject currentTarget = target.getCurrentTarget();
-        boolean bTarget = false;
-        if (currentTarget != null) {
-            bTarget = currentTarget.equals(parentDataObject);
+        Blend helperEffect = new Blend();
+        for (Effect effect : effectList) {
+            helperEffect = new Blend(BlendMode.SRC_ATOP, helperEffect, effect);
         }
 
-        if (!bSelect && !bTarget) {
-            this.setEffect(null);
-        } else if (!bSelect && bTarget) {
-            Blend blend = new Blend();
-            blend.setTopInput(effectTarget);
-            this.setEffect(blend);
-        } else if (bSelect && !bTarget) {
-            this.setEffect(effectSelect);
-        } else if (bSelect && bTarget) {
-            Blend effect = new Blend();
-            effect.setTopInput(effectSelect);
-            effect.setBottomInput(effectTarget);
-            effect.setMode(BlendMode.OVERLAY);
-            this.setEffect(effect);
-        }
+        this.setEffect(helperEffect);
+    }
+    public DataObject getParentDataObject() {
+        return parentDataObject;
     }
 }

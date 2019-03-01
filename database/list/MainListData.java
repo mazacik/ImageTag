@@ -5,6 +5,7 @@ import system.InstanceRepo;
 import system.SerializationUtil;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Comparator;
 
 public class MainListData extends BaseList<DataObject> implements InstanceRepo {
@@ -23,5 +24,15 @@ public class MainListData extends BaseList<DataObject> implements InstanceRepo {
 
     public void sort() {
         super.sort(Comparator.comparing(DataObject::getName));
+    }
+
+    public ArrayList<Integer> getAllGroups() {
+        ArrayList<Integer> groups = new ArrayList<>();
+        for (DataObject dataObject : this) {
+            if (dataObject.getMergeID() != 0 && !groups.contains(dataObject.getMergeID())) {
+                groups.add(dataObject.getMergeID());
+            }
+        }
+        return groups;
     }
 }

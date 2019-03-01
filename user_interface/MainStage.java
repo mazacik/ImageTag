@@ -40,9 +40,11 @@ public class MainStage extends Stage implements InstanceRepo {
         HBox.setHgrow(infoListViewL, Priority.ALWAYS);
         HBox.setHgrow(infoListViewR, Priority.ALWAYS);
 
+        this.setOnShowing(event -> reload.doReload());
         this.setOnShown(event -> {
             this.centerOnScreen();
             this.setMaximized(true);
+            target.set(mainListData.get(0));
             tileView.lookupAll(".scroll-bar").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
             tileView.lookupAll(".increment-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
             tileView.lookupAll(".decrement-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));

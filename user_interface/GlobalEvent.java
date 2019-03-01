@@ -2,6 +2,7 @@ package user_interface;
 
 import system.CommonUtil;
 import system.InstanceRepo;
+import user_interface.single_instance.center.BaseTileEvent;
 
 public class GlobalEvent implements InstanceRepo {
     public GlobalEvent() {
@@ -12,16 +13,21 @@ public class GlobalEvent implements InstanceRepo {
         mainStage.getScene().setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case ESCAPE:
-                    mainStage.requestFocus();
+                    topMenu.requestFocus();
                     break;
                 case Q:
                     select.swapState(target.getCurrentTarget());
+                    reload.doReload();
                     break;
-                case F2:
+                case E:
+                    BaseTileEvent.onGroupButtonClick(target.getCurrentTarget());
+                    reload.doReload();
+                    break;
+                case R:
                     select.setRandom();
                     reload.doReload();
                     break;
-                case F3:
+                case F:
                     CommonUtil.swapDisplayMode();
                     break;
                 case W:
