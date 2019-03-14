@@ -2,12 +2,12 @@ package database.object;
 
 import control.filter.FilterTemplate;
 import control.reload.Reload;
-import database.list.MainListData;
+import database.list.DataObjectList;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import org.apache.commons.io.FilenameUtils;
-import settings.SettingsNamespace;
+import settings.SettingsEnum;
 import system.InstanceRepo;
 import user_interface.node_factory.template.intro.LoadingWindow;
 import user_interface.single_instance.center.BaseTile;
@@ -35,17 +35,22 @@ public class DataLoader extends Thread implements InstanceRepo {
 
         checkDirectoryPaths();
         ArrayList<File> fileList = getValidFiles();
-        if (!loadExistingDatabase()) {
+
+        try {
+            mainDataList.addAll(mainDataList.readFromDisk());
+        } catch (NullPointerException e) {
+            logger.debug(this, "existing database does not exist or failed to load");
             createBackup();
             createDatabase(fileList);
         }
+
         validateDatabaseCache(fileList);
         loadImageCache(loadingWindow[0], fileList.size());
 
-        mainListData.sort();
-        mainListData.writeToDisk();
-        mainListInfo.initialize();
-        filter.addAll(mainListData);
+        mainDataList.sort();
+        mainDataList.writeToDisk();
+        mainInfoList.initialize();
+        filter.addAll(mainDataList);
 
         filter.setFilter(FilterTemplate.SHOW_EVERYTHING);
         reload.notifyChangeIn(Reload.Control.values());
@@ -82,21 +87,20 @@ public class DataLoader extends Thread implements InstanceRepo {
         File backupData = new File(backupDir + "data.json");
         File currentData = new File(PATH_DATA + "data.json");
 
-        logger.debug(this, "backing up existing database");
-
         if (currentData.exists()) {
             if (!backupDir.exists()) {
                 backupDir.mkdir();
             }
+            logger.debug(this, "database backup created");
             currentData.renameTo(backupData);
         } else {
-            logger.debug(this, "cannot create database backup; no existing database found");
+            logger.debug(this, "database backup not created - database does not exist");
         }
     }
     private void createDatabase(ArrayList<File> fileList) {
         logger.debug(this, "creating database");
         for (File file : fileList) {
-            mainListData.add(new DataObject(file));
+            mainDataList.add(new DataObject(file));
         }
     }
     private void validateDatabaseCache(ArrayList<File> fileList) {
@@ -104,7 +108,7 @@ public class DataLoader extends Thread implements InstanceRepo {
         ArrayList<String> dataObjectNames = new ArrayList<>();
         ArrayList<String> fileListNames = new ArrayList<>();
 
-        mainListData.forEach(dataObject -> dataObjectNames.add(dataObject.getName()));
+        mainDataList.forEach(dataObject -> dataObjectNames.add(dataObject.getName()));
         fileList.forEach(file -> fileListNames.add(file.getName()));
 
         dataObjectNames.sort(Comparator.naturalOrder());
@@ -116,7 +120,7 @@ public class DataLoader extends Thread implements InstanceRepo {
         for (File file : fileList) {
             if (!dataObjectNames.contains(file.getName())) {
                 logger.debug(this, "adding " + file.getName());
-                mainListData.add(new DataObject(file));
+                mainDataList.add(new DataObject(file));
                 added++;
             }
         }
@@ -125,9 +129,9 @@ public class DataLoader extends Thread implements InstanceRepo {
         /* discard missing items */
         int removed = 0;
         logger.debug(this, "looking for orphan data objects");
-        MainListData temporaryList = new MainListData();
-        temporaryList.addAll(mainListData);
-        for (DataObject dataObject : mainListData) {
+        DataObjectList temporaryList = new DataObjectList();
+        temporaryList.addAll(mainDataList);
+        for (DataObject dataObject : mainDataList) {
             String objectName = dataObject.getName();
             if (!fileListNames.contains(objectName)) {
                 logger.debug(this, "discarding " + objectName);
@@ -137,16 +141,16 @@ public class DataLoader extends Thread implements InstanceRepo {
         }
         logger.debug(this, "discarded " + removed + " files");
 
-        mainListData.clear();
-        mainListData.addAll(temporaryList);
+        mainDataList.clear();
+        mainDataList.addAll(temporaryList);
     }
     private void loadImageCache(LoadingWindow loadingWindow, int fileListSize) {
         logger.debug(this, "loading image cache");
-        final int galleryIconSizeMax = userSettings.valueOf(SettingsNamespace.TILEVIEW_ICONSIZE);
+        final int galleryIconSizeMax = coreSettings.valueOf(SettingsEnum.TILEVIEW_ICONSIZE);
         int currentObjectIndex = 1;
         Image thumbnail;
 
-        for (DataObject dataObject : mainListData) {
+        for (DataObject dataObject : mainDataList) {
             updateLoadingLabel(loadingWindow, fileListSize, currentObjectIndex++);
             thumbnail = getImageFromDataObject(dataObject, galleryIconSizeMax);
             dataObject.setBaseTile(new BaseTile(dataObject, thumbnail));
@@ -156,9 +160,6 @@ public class DataLoader extends Thread implements InstanceRepo {
         if (loadingWindow != null) {
             Platform.runLater(() -> loadingWindow.getProgressLabel().setText("Loading item " + currentObjectIndex + " of " + fileCount + ", " + currentObjectIndex * 100 / fileCount + "% done"));
         }
-    }
-    private boolean loadExistingDatabase() {
-        return mainListData.addAll(mainListData.readFromDisk());
     }
 
     private Image getImageFromDataObject(DataObject dataObject, double galleryIconMaxSize) {

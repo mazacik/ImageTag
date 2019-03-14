@@ -46,11 +46,4 @@ public class TitleBar extends BorderPane {
             owner.setY(event.getScreenY() + yOffset[0]);
         });
     }
-
-    public Label getLabelTitle() {
-        return labelTitle;
-    }
-    public Label getBtnExit() {
-        return btnExit;
-    }
 }

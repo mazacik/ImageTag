@@ -1,11 +1,11 @@
 package control.filter;
 
 import control.reload.Reload;
-import database.list.MainListData;
+import database.list.DataObjectList;
 import database.object.InfoObject;
 import system.InstanceRepo;
 
-public class Filter extends MainListData implements InstanceRepo {
+public class Filter extends DataObjectList implements InstanceRepo {
     private FilterMode whitelistMode;
     private FilterMode blacklistMode;
     private FilterTemplate currentFilterTemplate;
@@ -41,24 +41,24 @@ public class Filter extends MainListData implements InstanceRepo {
     }
 
     public void whitelistGroup(String group) {
-        for (String name : mainListInfo.getNames(group)) {
-            whitelistTagObject(mainListInfo.getInfoObject(group, name));
+        for (String name : mainInfoList.getNames(group)) {
+            whitelistTagObject(mainInfoList.getInfoObject(group, name));
         }
     }
     public void blacklistGroup(String group) {
-        for (String name : mainListInfo.getNames(group)) {
-            blacklistTagObject(mainListInfo.getInfoObject(group, name));
+        for (String name : mainInfoList.getNames(group)) {
+            blacklistTagObject(mainInfoList.getInfoObject(group, name));
         }
     }
     public void unlistGroup(String group) {
-        for (String name : mainListInfo.getNames(group)) {
-            unlistTagObject(mainListInfo.getInfoObject(group, name));
+        for (String name : mainInfoList.getNames(group)) {
+            unlistTagObject(mainInfoList.getInfoObject(group, name));
         }
     }
 
     public boolean isGroupWhitelisted(String group) {
         boolean value = true;
-        for (String name : mainListInfo.getNames(group)) {
+        for (String name : mainInfoList.getNames(group)) {
             if (!isTagObjectWhitelisted(group, name)) {
                 value = false;
                 break;
@@ -68,7 +68,7 @@ public class Filter extends MainListData implements InstanceRepo {
     }
     public boolean isGroupBlacklisted(String group) {
         boolean value = true;
-        for (String name : mainListInfo.getNames(group)) {
+        for (String name : mainInfoList.getNames(group)) {
             if (!isTagObjectBlacklisted(group, name)) {
                 value = false;
                 break;
@@ -81,13 +81,13 @@ public class Filter extends MainListData implements InstanceRepo {
         return infoListWhite.contains(infoObject);
     }
     public boolean isTagObjectWhitelisted(String group, String name) {
-        return infoListWhite.contains(mainListInfo.getInfoObject(group, name));
+        return infoListWhite.contains(mainInfoList.getInfoObject(group, name));
     }
     public boolean isTagObjectBlacklisted(InfoObject infoObject) {
         return infoListBlack.contains(infoObject);
     }
     public boolean isTagObjectBlacklisted(String group, String name) {
-        return infoListBlack.contains(mainListInfo.getInfoObject(group, name));
+        return infoListBlack.contains(mainInfoList.getInfoObject(group, name));
     }
 
     public FilterMode getWhitelistMode() {

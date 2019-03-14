@@ -1,6 +1,6 @@
 package database.object;
 
-import database.list.InfoList;
+import database.list.InfoObjectList;
 import system.CommonUtil;
 import user_interface.single_instance.center.BaseTile;
 
@@ -11,13 +11,13 @@ import java.util.ArrayList;
 public class DataObject implements Serializable {
     private String name;
     private int mergeID;
-    private InfoList infoList;
+    private InfoObjectList infoObjectList;
     private transient BaseTile baseTile;
 
     public DataObject(File file) {
         this.name = file.getName();
         this.mergeID = 0;
-        this.infoList = new InfoList();
+        this.infoObjectList = new InfoObjectList();
     }
 
     public void generateTileEffect() {
@@ -28,7 +28,7 @@ public class DataObject implements Serializable {
             return new ArrayList<>();
         } else {
             ArrayList<DataObject> mergedObjects = new ArrayList<>();
-            for (DataObject dataObject : CommonUtil.mainListData) {
+            for (DataObject dataObject : CommonUtil.mainDataList) {
                 if (dataObject.getMergeID() == mergeID) {
                     mergedObjects.add(dataObject);
                 }
@@ -49,13 +49,13 @@ public class DataObject implements Serializable {
     public BaseTile getBaseTile() {
         return baseTile;
     }
-    public InfoList getInfoList() {
-        return infoList;
+    public InfoObjectList getInfoObjectList() {
+        return infoObjectList;
     }
     public void setBaseTile(BaseTile baseTile) {
         this.baseTile = (baseTile != null) ? baseTile : new BaseTile(this, null);
     }
-    public void setInfoList(InfoList infoList) {
-        this.infoList = infoList;
+    public void setInfoObjectList(InfoObjectList infoObjectList) {
+        this.infoObjectList = infoObjectList;
     }
 }

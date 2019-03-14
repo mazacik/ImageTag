@@ -6,7 +6,7 @@ import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
-import settings.SettingsNamespace;
+import settings.SettingsEnum;
 import system.CommonUtil;
 import system.InstanceRepo;
 import user_interface.node_factory.NodeFactory;
@@ -19,13 +19,14 @@ import java.util.ArrayList;
 public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
     private final TilePane tilePane = new TilePane(1, 1);
     private final ArrayList<Integer> expandedGroups = new ArrayList<>();
+    private Bounds customBounds;
 
     public TileView() {
-        final int galleryIconSize = userSettings.valueOf(SettingsNamespace.TILEVIEW_ICONSIZE);
+        final int galleryIconSize = coreSettings.valueOf(SettingsEnum.TILEVIEW_ICONSIZE);
 
         tilePane.setPrefTileWidth(galleryIconSize);
         tilePane.setPrefTileHeight(galleryIconSize);
-        tilePane.setPrefHeight(coreSettings.valueOf(SettingsNamespace.MAINSCENE_HEIGHT));
+        tilePane.setPrefHeight(coreSettings.valueOf(SettingsEnum.MAINSCENE_HEIGHT));
         tilePane.setPrefColumns(10);
 
         this.setContent(tilePane);
@@ -40,6 +41,7 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
 
     public void reload() {
         if (CommonUtil.isFullView()) return;
+
         double scrollbarValue = this.getVvalue();
         ObservableList<Node> tilePaneItems = tilePane.getChildren();
         tilePaneItems.clear();
@@ -63,33 +65,33 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
         this.setVvalue(scrollbarValue);
     }
     public void adjustViewportToCurrentTarget() {
-        DataObject currentTargetedItem = target.getCurrentTarget();
-        if (CommonUtil.isFullView() || currentTargetedItem == null) return;
-        int targetIndex = this.getDataObjects().indexOf(currentTargetedItem);
+        DataObject currentTarget = target.getCurrentTarget();
+        if (CommonUtil.isFullView() || currentTarget == null) return;
+        int targetIndex = this.getDataObjects().indexOf(currentTarget);
         if (targetIndex < 0) return;
 
         ObservableList<Node> tilePaneItems = tilePane.getChildren();
         int columnCount = this.getColumnCount();
         int targetRow = targetIndex / columnCount;
 
-        Bounds viewportBounds = tilePane.localToScene(this.getViewportBounds());
+        Bounds viewportBoundsTransform = tilePane.localToScene(customBounds);
         Bounds currentTargetTileBounds = tilePaneItems.get(targetIndex).getBoundsInParent();
 
-        double viewportHeight = viewportBounds.getHeight();
+        double viewportHeight = viewportBoundsTransform.getHeight();
         double contentHeight = tilePane.getHeight() - viewportHeight;
         double rowHeight = tilePane.getPrefTileHeight() + tilePane.getVgap();
 
         double rowToContentRatio = rowHeight / contentHeight;
         double viewportToContentRatio = viewportHeight / contentHeight;
 
-        double viewportTop = viewportBounds.getMaxY() * -1 + viewportBounds.getHeight();
-        double viewportBottom = viewportBounds.getMinY() * -1 + viewportBounds.getHeight();
+        double viewportTop = viewportBoundsTransform.getMinY() * -1;
+        double viewportBottom = viewportBoundsTransform.getMinY() * -1 + viewportBoundsTransform.getHeight();
         double tileTop = currentTargetTileBounds.getMinY();
         double tileBottom = currentTargetTileBounds.getMaxY();
 
-        if (tileTop > viewportBottom - rowHeight) {
+        if (tileBottom > viewportBottom) {
             this.setVvalue((targetRow + 1) * rowToContentRatio - viewportToContentRatio);
-        } else if (tileBottom - rowHeight < viewportTop) {
+        } else if (tileTop < viewportTop) {
             this.setVvalue(targetRow * rowToContentRatio);
         }
     }
@@ -98,7 +100,7 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
         return (int) this.getViewportBounds().getWidth() / (int) tilePane.getPrefTileWidth();
     }
     public int getRowCount() {
-        double itemCountFilter = filter.size();
+        double itemCountFilter = tilePane.getChildren().size();
         double columnCount = this.getColumnCount();
         return (int) Math.ceil(itemCountFilter / columnCount);
     }
@@ -116,5 +118,9 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
 
     public ArrayList<Integer> getExpandedGroups() {
         return expandedGroups;
+    }
+
+    public void setCustomBounds(Bounds customBounds) {
+        this.customBounds = customBounds;
     }
 }

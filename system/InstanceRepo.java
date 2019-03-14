@@ -5,9 +5,9 @@ import control.logger.Logger;
 import control.reload.Reload;
 import control.select.Select;
 import control.target.Target;
-import database.list.InfoList;
-import database.list.MainInfoList;
-import database.list.MainListData;
+import database.list.DataObjectListMain;
+import database.list.InfoObjectList;
+import database.list.InfoObjectListMain;
 import settings.CoreSettings;
 import settings.UserSettings;
 import user_interface.MainStage;
@@ -19,8 +19,8 @@ import user_interface.single_instance.top.TopMenu;
 
 public interface InstanceRepo {
     Logger logger = Logger.getInstance();
-    CoreSettings coreSettings = CoreSettings.getInstance();
     UserSettings userSettings = UserSettings.getInstance();
+    CoreSettings coreSettings = CoreSettings.getInstance();
 
     TopMenu topMenu = new TopMenu();
     TileView tileView = new TileView();
@@ -34,9 +34,9 @@ public interface InstanceRepo {
     Select select = new Select();
     Reload reload = new Reload();
 
-    MainListData mainListData = new MainListData();
-    MainInfoList mainListInfo = new MainInfoList();
+    DataObjectListMain mainDataList = new DataObjectListMain();
+    InfoObjectListMain mainInfoList = new InfoObjectListMain();
 
-    InfoList infoListWhite = new InfoList();
-    InfoList infoListBlack = new InfoList();
+    InfoObjectList infoListWhite = new InfoObjectList();
+    InfoObjectList infoListBlack = new InfoObjectList();
 }

@@ -35,6 +35,7 @@ public class GlobalEvent implements InstanceRepo {
                 case S:
                 case D:
                     target.move(event.getCode());
+                    reload.doReload();
                     break;
                 default:
                     break;

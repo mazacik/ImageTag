@@ -24,7 +24,7 @@ public class TopMenuEvent implements InstanceRepo {
 
     private void onAction_menuSave() {
         topMenu.getNodeSave().setOnMouseClicked(event ->
-                mainListData.writeToDisk());
+                mainDataList.writeToDisk());
     }
     private void onAction_menuExit() {
         topMenu.getNodeExit().setOnMouseClicked(event -> topMenu.fireEvent(new WindowEvent(mainStage, WindowEvent.WINDOW_CLOSE_REQUEST)));

@@ -8,7 +8,6 @@ public class Main extends Application implements InstanceRepo {
         launch(args);
     }
     public void start(Stage stage) {
-        logger.debug(this, "starting application");
         new IntroWindow();
     }
 }

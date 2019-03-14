@@ -44,14 +44,15 @@ public class MainStage extends Stage implements InstanceRepo {
         this.setOnShown(event -> {
             this.centerOnScreen();
             this.setMaximized(true);
-            target.set(mainListData.get(0));
+            tileView.setCustomBounds(tileView.getViewportBounds());
             tileView.lookupAll(".scroll-bar").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
             tileView.lookupAll(".increment-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
             tileView.lookupAll(".decrement-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
             tileView.lookupAll(".thumb").forEach(sb -> sb.setStyle("-fx-background-color: gray; -fx-background-insets: 0 4 0 4;"));
+            target.set(mainDataList.get(0));
         });
         this.setOnCloseRequest(event -> {
-            mainListData.writeToDisk();
+            mainDataList.writeToDisk();
             logger.debug(this, "application exit");
         });
     }

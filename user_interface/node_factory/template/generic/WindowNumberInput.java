@@ -9,7 +9,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import settings.SettingsNamespace;
+import settings.SettingsEnum;
 import system.CommonUtil;
 import user_interface.node_factory.NodeColorData;
 import user_interface.node_factory.NodeFactory;
@@ -26,7 +26,7 @@ public class WindowNumberInput extends Stage {
 
         Label labelContent = NodeFactory.getLabel(content, ColorType.DEF, ColorType.DEF);
         labelContent.setFont(CommonUtil.getFont());
-        int padding = CommonUtil.coreSettings.valueOf(SettingsNamespace.GLOBAL_PADDING);
+        int padding = CommonUtil.coreSettings.valueOf(SettingsEnum.GLOBAL_PADDING);
         labelContent.setPadding(new Insets(0, 1.5 * padding, 0, 1.5 * padding));
         vBoxMain.getChildren().add(labelContent);
 
@@ -63,11 +63,11 @@ public class WindowNumberInput extends Stage {
 
         HBox hBox = new HBox(buttonPositive, buttonNegative);
         hBox.setAlignment(Pos.CENTER);
-        hBox.setSpacing(CommonUtil.coreSettings.valueOf(SettingsNamespace.GLOBAL_PADDING));
+        hBox.setSpacing(CommonUtil.coreSettings.valueOf(SettingsEnum.GLOBAL_PADDING));
         vBoxMain.getChildren().add(hBox);
 
         vBoxMain.setAlignment(Pos.CENTER);
-        vBoxMain.setSpacing(CommonUtil.coreSettings.valueOf(SettingsNamespace.GLOBAL_PADDING));
+        vBoxMain.setSpacing(CommonUtil.coreSettings.valueOf(SettingsEnum.GLOBAL_PADDING));
         vBoxMain.setBackground(ColorUtil.getBackgroundDef());
         vBoxMain.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1, 1, 1, 1))));
 

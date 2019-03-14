@@ -8,13 +8,13 @@ import system.InstanceRepo;
 import user_interface.node_factory.template.InfoObjectEditor;
 import user_interface.single_instance.side.CustomTreeCell;
 
-public class MainInfoList extends InfoList implements InstanceRepo {
+public class InfoObjectListMain extends InfoObjectList implements InstanceRepo {
     public void initialize() {
-        for (DataObject dataIterator : mainListData) {
-            InfoList infoList = dataIterator.getInfoList();
-            for (InfoObject tagIterator : infoList) {
+        for (DataObject dataIterator : mainDataList) {
+            InfoObjectList infoObjectList = dataIterator.getInfoObjectList();
+            for (InfoObject tagIterator : infoObjectList) {
                 if (this.contains(tagIterator)) {
-                    infoList.set(infoList.indexOf(tagIterator), getInfoObject(tagIterator));
+                    infoObjectList.set(infoObjectList.indexOf(tagIterator), getInfoObject(tagIterator));
                 } else {
                     this.add(tagIterator);
                 }

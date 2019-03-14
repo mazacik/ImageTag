@@ -1,5 +1,6 @@
 package user_interface.node_factory.template;
 
+import control.reload.Reload;
 import database.object.DataObject;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
@@ -23,15 +24,11 @@ public class DataContextMenu extends ContextMenu implements InstanceRepo {
         //todo add copy full path
         menuCopy.setOnAction(event -> ClipboardUtil.setClipboardContent(coreSettings.getCurrentDirectory() + target.getCurrentTarget().getName()));
         menuDelete.setOnAction(event -> {
-            target.storePosition();
-
             if (CommonUtil.isFullView()) {
                 this.deleteCurrentTarget();
             } else {
                 this.deleteSelection();
             }
-
-            target.restorePosition();
         });
     }
 
@@ -47,13 +44,16 @@ public class DataContextMenu extends ContextMenu implements InstanceRepo {
             String fullPath = coreSettings.getCurrentDirectory() + "\\" + dataObject.getName();
             Desktop.getDesktop().moveToTrash(new File(fullPath));
 
-            filter.remove(dataObject);
-            mainListData.remove(dataObject);
             select.remove(dataObject);
+            filter.remove(dataObject);
+            mainDataList.remove(dataObject);
         }
     }
     private void deleteSelection() {
-        if (select.isEmpty()) return;
+        if (select.isEmpty()) {
+            logger.debug(this, "deleteSelection() - empty selection");
+            return;
+        }
 
         ArrayList<DataObject> dataObjectsToDelete = new ArrayList<>();
         select.forEach(dataObject -> {
@@ -66,7 +66,11 @@ public class DataContextMenu extends ContextMenu implements InstanceRepo {
 
         WindowOkCancel windowOkCancel = new WindowOkCancel("Delete " + dataObjectsToDelete.size() + " file(s)?");
         if (windowOkCancel.getResult()) {
+            target.storePosition();
             dataObjectsToDelete.forEach(this::deleteDataObject);
+            target.restorePosition();
+
+            reload.notifyChangeIn(Reload.Control.FILTER, Reload.Control.TARGET);
             reload.doReload();
         }
     }
@@ -84,7 +88,11 @@ public class DataContextMenu extends ContextMenu implements InstanceRepo {
             String fullPath = coreSettings.getCurrentDirectory() + currentTarget.getName();
             WindowOkCancel windowOkCancel = new WindowOkCancel("Delete file: " + fullPath + "?");
             if (windowOkCancel.getResult()) {
+                target.storePosition();
                 this.deleteDataObject(currentTarget);
+                target.restorePosition();
+
+                reload.notifyChangeIn(Reload.Control.FILTER, Reload.Control.TARGET);
                 reload.doReload();
             }
         }

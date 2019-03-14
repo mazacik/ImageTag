@@ -6,6 +6,7 @@ import system.SerializationUtil;
 import java.io.File;
 import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 public class UserSettings implements InstanceRepo, Serializable {
     private transient static Type typeToken = SerializationUtil.TypeTokenEnum.USERSETTINGS.getValue();
@@ -14,44 +15,57 @@ public class UserSettings implements InstanceRepo, Serializable {
             throw new IllegalStateException(this.getClass().getSimpleName() + " already instantiated");
         }
     }
+    private ArrayList<SettingBase> settingsList;
     private static UserSettings readFromDisk() {
-        UserSettings userSettings = (UserSettings) SerializationUtil.readJSON(typeToken, System.getenv("APPDATA") + "\\ImageTag\\userSettings.json");
+        UserSettings userSettings = (UserSettings) SerializationUtil.readJSON(typeToken, System.getenv("APPDATA") + "\\ImageTag\\UserSettings.json");
 
         if (userSettings == null) {
             userSettings = new UserSettings();
             userSettings.setDefaults();
+            userSettings.writeToDisk();
         } else {
             userSettings.checkValues();
         }
         return userSettings;
     }
-    private void setDefaults() {
-        settingsList = new SettingsList();
-        settingsList.add(new SettingsBase(SettingsNamespace.TILEVIEW_ICONSIZE.getValue(), 100, 200, 150));
-    }
     public static UserSettings getInstance() {
         return SettingsLoader.instance;
     }
-    private transient String currentDirectory;
-
-    private SettingsList settingsList;
-    public Integer valueOf(SettingsNamespace sn) {
-        return settingsList.valueOf(sn.getValue());
+    private void setDefaults() {
+        settingsList = new ArrayList<>();
+        settingsList.add(new SettingBase(SettingsEnum.COLORMODE, 0));
+    }
+    public void setValueOf(SettingsEnum sn, boolean value) {
+        for (SettingBase object : settingsList) {
+            if (object.getId().equals(sn)) {
+                if (value) {
+                    object.setValue(1);
+                } else {
+                    object.setValue(0);
+                }
+            }
+        }
+        //logger.error(this, "setValueOf() -> " + sn + " not found");
+    }
+    public boolean valueOf(SettingsEnum sn) {
+        for (SettingBase object : settingsList) {
+            if (object.getId().equals(sn)) {
+                return object.getValue() != 0;
+            }
+        }
+        logger.error(this, "valueof() -> " + sn + " not found");
+        return false;
     }
     private void checkValues() {
         settingsList.forEach(setting -> {
-            if (setting.getMinValue() > setting.getMaxValue()) {
-                logger.error(this, setting.getId() + ": minValue (" + setting.getMinValue() + ") is bigger than maxValue(" + setting.getMaxValue() + ")");
-            } else if (setting.getValue() < setting.getMinValue()) {
-                setting.setValue(setting.getMinValue());
-            } else if (setting.getValue() > setting.getMaxValue()) {
-                setting.setValue(setting.getMaxValue());
+            if (setting.getValue() < 0 || setting.getValue() > 1) {
+                setting.setValue(0);
             }
         });
     }
-    private void writeToDisk() {
+    public void writeToDisk() {
         String dir = System.getenv("APPDATA") + "\\ImageTag";
-        String path = dir + "\\userSettings.json";
+        String path = dir + "\\UserSettings.json";
 
         new File(dir).mkdir();
         SerializationUtil.writeJSON(SettingsLoader.instance, typeToken, path);

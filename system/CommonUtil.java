@@ -14,7 +14,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import settings.SettingsNamespace;
+import settings.SettingsEnum;
 import user_interface.node_factory.NodeColorData;
 import user_interface.node_factory.NodeFactory;
 import user_interface.node_factory.template.intro.IntroWindowCell;
@@ -26,14 +26,15 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public abstract class CommonUtil implements InstanceRepo {
-    private static boolean nightMode = false;
+    private static boolean nightMode = userSettings.valueOf(SettingsEnum.COLORMODE);
     /* Font */
-    private static Font font = new Font(coreSettings.valueOf(SettingsNamespace.FONTSIZE));
+    private static Font font = new Font(coreSettings.valueOf(SettingsEnum.FONTSIZE));
     public static boolean isNightMode() {
         return nightMode;
     }
     public static void setNightMode(boolean value) {
         nightMode = value;
+        userSettings.setValueOf(SettingsEnum.COLORMODE, value);
         updateNodeProperties();
     }
     private static Background getBackgroundDef(NodeColorData nodeColorData) {
@@ -151,15 +152,15 @@ public abstract class CommonUtil implements InstanceRepo {
     public static DataObject getRandomDataObject() {
         ArrayList<BaseTile> tiles = tileView.getTiles();
         int index = new Random().nextInt(tiles.size());
-        DataObject dataObject = tiles.get(index).getParentDataObject();
+        DataObject chosenDataObject = tiles.get(index).getParentDataObject();
 
-        if (dataObject.getMergeID() == 0) {
-            return dataObject;
+        if (chosenDataObject.getMergeID() == 0) {
+            return chosenDataObject;
         } else {
             ArrayList<DataObject> dataObjectsSameMergeID = new ArrayList<>();
-            for (DataObject dataObjectSameMergeID : filter) {
-                if (dataObjectSameMergeID.getMergeID() == dataObject.getMergeID()) {
-                    dataObjectsSameMergeID.add(dataObjectSameMergeID);
+            for (DataObject dataObjectFromFilter : filter) {
+                if (dataObjectFromFilter.getMergeID() == chosenDataObject.getMergeID()) {
+                    dataObjectsSameMergeID.add(dataObjectFromFilter);
                 }
             }
             return dataObjectsSameMergeID.get(new Random().nextInt(dataObjectsSameMergeID.size()));

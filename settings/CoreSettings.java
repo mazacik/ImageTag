@@ -11,41 +11,56 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CoreSettings implements InstanceRepo, Serializable {
-    private transient static Type typeToken = SerializationUtil.TypeTokenEnum.CORESETTINGS.getValue();
+    private ArrayList<SettingBase> settingsList;
+    private ArrayList<String> recentDirectoriesList;
+
     private transient String currentDirectory;
-    private SettingsList settingsList;
-    private List<String> recentDirectoriesList;
 
     private CoreSettings() {
         if (SettingsLoader.instance != null) {
             throw new IllegalStateException(this.getClass().getSimpleName() + " already instantiated");
         }
     }
-    private static CoreSettings readFromDisk() {
-        CoreSettings coreSettings = (CoreSettings) SerializationUtil.readJSON(typeToken, System.getenv("APPDATA") + "\\ImageTag\\CoreSettings.json");
-
-        if (coreSettings == null) {
-            coreSettings = new CoreSettings();
-            coreSettings.setDefaults();
-        } else {
-            coreSettings.checkValues();
-        }
-        return coreSettings;
-    }
     public static CoreSettings getInstance() {
         return SettingsLoader.instance;
     }
     private void setDefaults() {
-        settingsList = new SettingsList();
-        settingsList.add(new SettingsBase(SettingsNamespace.MAINSCENE_WIDTH.getValue(), 0, SystemUtil.getScreenWidth(), SystemUtil.getScreenWidth()));
-        settingsList.add(new SettingsBase(SettingsNamespace.MAINSCENE_HEIGHT.getValue(), 0, SystemUtil.getScreenHeight(), SystemUtil.getScreenHeight()));
-        settingsList.add(new SettingsBase(SettingsNamespace.GLOBAL_PADDING.getValue(), 2));
-        settingsList.add(new SettingsBase(SettingsNamespace.FONTSIZE.getValue(), 14));
+        settingsList = new ArrayList<>();
+        settingsList.add(new SettingBase(SettingsEnum.MAINSCENE_WIDTH, 0, SystemUtil.getScreenWidth(), SystemUtil.getScreenWidth()));
+        settingsList.add(new SettingBase(SettingsEnum.MAINSCENE_HEIGHT, 0, SystemUtil.getScreenHeight(), SystemUtil.getScreenHeight()));
+        settingsList.add(new SettingBase(SettingsEnum.TILEVIEW_ICONSIZE, 100, 200, 150));
+        settingsList.add(new SettingBase(SettingsEnum.GLOBAL_PADDING, 2));
+        settingsList.add(new SettingBase(SettingsEnum.FONTSIZE, 14));
 
         recentDirectoriesList = new ArrayList<>();
     }
-    public Integer valueOf(SettingsNamespace sn) {
-        return settingsList.valueOf(sn.getValue());
+    private void checkValues() {
+        settingsList.forEach(setting -> {
+            if (setting.getMinValue() > setting.getMaxValue()) {
+                logger.error(this, setting.getId() + ": minValue (" + setting.getMinValue() + ") is bigger than maxValue(" + setting.getMaxValue() + ")");
+            } else if (setting.getValue() < setting.getMinValue()) {
+                setting.setValue(setting.getMinValue());
+            } else if (setting.getValue() > setting.getMaxValue()) {
+                setting.setValue(setting.getMaxValue());
+            }
+        });
+    }
+    public void writeToDisk() {
+        String dir = System.getenv("APPDATA") + "\\ImageTag";
+        String path = dir + "\\CoreSettings.json";
+
+        new File(dir).mkdir();
+        Type typeToken = SerializationUtil.TypeTokenEnum.CORESETTINGS.getValue();
+        SerializationUtil.writeJSON(SettingsLoader.instance, typeToken, path);
+    }
+    public Integer valueOf(SettingsEnum setting) {
+        for (SettingBase object : settingsList) {
+            if (object.getId().equals(setting)) {
+                return object.getValue();
+            }
+        }
+        logger.error(this, "valueof() -> " + setting + " not found");
+        return null;
     }
     public String getCurrentDirectory() {
         return currentDirectory;
@@ -61,30 +76,24 @@ public class CoreSettings implements InstanceRepo, Serializable {
 
         SettingsLoader.instance.writeToDisk();
     }
-
     public List<String> getRecentDirectoriesList() {
         return recentDirectoriesList;
     }
-    private void checkValues() {
-        settingsList.forEach(setting -> {
-            if (setting.getMinValue() > setting.getMaxValue()) {
-                logger.error(this, setting.getId() + ": minValue (" + setting.getMinValue() + ") is bigger than maxValue(" + setting.getMaxValue() + ")");
-            } else if (setting.getValue() < setting.getMinValue()) {
-                setting.setValue(setting.getMinValue());
-            } else if (setting.getValue() > setting.getMaxValue()) {
-                setting.setValue(setting.getMaxValue());
-            }
-        });
-    }
-    private void writeToDisk() {
-        String dir = System.getenv("APPDATA") + "\\ImageTag";
-        String path = dir + "\\CoreSettings.json";
-
-        new File(dir).mkdir();
-        SerializationUtil.writeJSON(SettingsLoader.instance, typeToken, path);
-    }
 
     private static class SettingsLoader {
-        private static final CoreSettings instance = CoreSettings.readFromDisk();
+        private static final CoreSettings instance = readFromDisk();
+        private static CoreSettings readFromDisk() {
+            Type typeToken = SerializationUtil.TypeTokenEnum.CORESETTINGS.getValue();
+            CoreSettings coreSettings = (CoreSettings) SerializationUtil.readJSON(typeToken, System.getenv("APPDATA") + "\\ImageTag\\CoreSettings.json");
+
+            if (coreSettings == null) {
+                coreSettings = new CoreSettings();
+                coreSettings.setDefaults();
+                coreSettings.writeToDisk();
+            } else {
+                coreSettings.checkValues();
+            }
+            return coreSettings;
+        }
     }
 }

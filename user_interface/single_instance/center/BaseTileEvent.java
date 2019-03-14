@@ -3,7 +3,7 @@ package user_interface.single_instance.center;
 import control.reload.Reload;
 import database.object.DataObject;
 import javafx.scene.input.MouseEvent;
-import settings.SettingsNamespace;
+import settings.SettingsEnum;
 import system.InstanceRepo;
 
 public class BaseTileEvent implements InstanceRepo {
@@ -40,7 +40,7 @@ public class BaseTileEvent implements InstanceRepo {
     private void onLeftClick(BaseTile baseTile, MouseEvent event) {
         DataObject dataObject = baseTile.getParentDataObject();
 
-        int tileSize = userSettings.valueOf(SettingsNamespace.TILEVIEW_ICONSIZE);
+        int tileSize = coreSettings.valueOf(SettingsEnum.TILEVIEW_ICONSIZE);
         if (event.getX() > tileSize - BaseTile.getEffectGroupSize() && event.getY() < BaseTile.getEffectGroupSize()) {
             onGroupButtonClick(dataObject);
         } else {

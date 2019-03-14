@@ -66,7 +66,7 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
                 return;
             }
             boolean match = false;
-            for (InfoObject infoObject : mainListInfo) {
+            for (InfoObject infoObject : mainInfoList) {
                 if (infoObject.getGroupAndName().toLowerCase().contains(actualText.toLowerCase())) {
                     String groupAndName = infoObject.getGroupAndName();
                     textField.setText(groupAndName);
@@ -82,7 +82,7 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
             }
         });
         textField.setOnAction(event -> {
-            InfoObject infoObject = mainListInfo.getInfoObject(textField.getText());
+            InfoObject infoObject = mainInfoList.getInfoObject(textField.getText());
             if (infoObject != null) {
                 this.addTagObjectToSelection(infoObject);
                 textField.clear();
@@ -102,7 +102,7 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
         CustomTreeCell customTreeCell;
         try { customTreeCell = sourceCell.getTreeItem().getValue(); } catch (NullPointerException e) { return; }
 
-        InfoObject infoObject = mainListInfo.getInfoObject(sourceCell);
+        InfoObject infoObject = mainInfoList.getInfoObject(sourceCell);
         // if sourceCell is group level
         if (infoObject != null) {
             CustomTreeCell parentTreeCell = null;
@@ -127,7 +127,7 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
         if (select.size() < 1) {
             DataObject currentTargetedItem = target.getCurrentTarget();
             if (currentTargetedItem != null) {
-                currentTargetedItem.getInfoList().add(infoObject);
+                currentTargetedItem.getInfoObjectList().add(infoObject);
             }
         } else {
             select.addTagObject(infoObject);
@@ -137,7 +137,7 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
         if (select.size() < 1) {
             DataObject currentTargetedItem = target.getCurrentTarget();
             if (currentTargetedItem != null) {
-                currentTargetedItem.getInfoList().remove(infoObject);
+                currentTargetedItem.getInfoObjectList().remove(infoObject);
             }
         } else {
             select.removeTagObject(infoObject);
@@ -158,7 +158,7 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
         treeViewItems.clear();
         ArrayList<String> groupsInter = select.getIntersectingTags().getGroups();
         ArrayList<String> groupsShare = select.getSharedTags().getGroups();
-        ArrayList<String> groupsAll = mainListInfo.getGroups();
+        ArrayList<String> groupsAll = mainInfoList.getGroups();
 
         Color textColorDefault = ColorUtil.getTextColorDef();
         Color textColorPositive = ColorUtil.getTextColorPos();
@@ -171,7 +171,7 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
             TreeItem groupTreeItem = new TreeItem(new CustomTreeCell(groupInter, textColorPositive));
             ArrayList<String> namesInter = select.getIntersectingTags().getNames(groupInter);
             ArrayList<String> namesShare = select.getSharedTags().getNames(groupInter);
-            ArrayList<String> namesAll = mainListInfo.getNames(groupInter);
+            ArrayList<String> namesAll = mainInfoList.getNames(groupInter);
 
             for (String nameInter : namesInter) {
                 namesShare.remove(nameInter);
@@ -195,7 +195,7 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
 
             TreeItem groupTreeItem = new TreeItem(new CustomTreeCell(groupShare, textColorIntersect));
             ArrayList<String> namesShare = select.getSharedTags().getNames(groupShare);
-            ArrayList<String> namesAll = mainListInfo.getNames(groupShare);
+            ArrayList<String> namesAll = mainInfoList.getNames(groupShare);
 
             for (String nameShare : namesShare) {
                 namesAll.remove(nameShare);
@@ -210,7 +210,7 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
         }
         for (String groupAll : groupsAll) {
             TreeItem groupTreeItem = new TreeItem(new CustomTreeCell(groupAll, textColorDefault));
-            ArrayList<String> namesAll = mainListInfo.getNames(groupAll);
+            ArrayList<String> namesAll = mainInfoList.getNames(groupAll);
 
             for (String nameAll : namesAll) {
                 groupTreeItem.getChildren().add(new TreeItem(new CustomTreeCell(nameAll, textColorDefault)));

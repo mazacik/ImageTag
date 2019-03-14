@@ -5,7 +5,7 @@ import javafx.scene.effect.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import settings.SettingsNamespace;
+import settings.SettingsEnum;
 import system.CommonUtil;
 import system.InstanceRepo;
 
@@ -36,7 +36,7 @@ public class BaseTile extends ImageView implements InstanceRepo {
     }
     private static ColorInput createEffectTarget() {
         int markSize = 6;
-        int markPositionInTile = (userSettings.valueOf(SettingsNamespace.TILEVIEW_ICONSIZE) - markSize) / 2;
+        int markPositionInTile = (coreSettings.valueOf(SettingsEnum.TILEVIEW_ICONSIZE) - markSize) / 2;
         Color markColor = Color.RED;
         return new ColorInput(markPositionInTile, markPositionInTile, markSize, markSize, markColor);
     }
@@ -63,12 +63,12 @@ public class BaseTile extends ImageView implements InstanceRepo {
             }
 
             String groupIconText;
-            if (mainListData.getAllGroups().indexOf(parentDataObject.getMergeID()) % 2 == 0) {
+            if (mainDataList.getAllGroups().indexOf(parentDataObject.getMergeID()) % 2 == 0) {
                 groupIconText = "(" + middle + ")";
             } else {
                 groupIconText = "[" + middle + "]";
             }
-            int tileSize = userSettings.valueOf(SettingsNamespace.TILEVIEW_ICONSIZE);
+            int tileSize = coreSettings.valueOf(SettingsEnum.TILEVIEW_ICONSIZE);
             Image imageText = CommonUtil.textToImage(groupIconText);
             effectList.add(new ImageInput(imageText, tileSize - imageText.getWidth() - 5, 1));
             effectGroupSize = (int) imageText.getWidth() + 10;

@@ -5,12 +5,10 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import settings.SettingsNamespace;
+import settings.SettingsEnum;
 import system.CommonUtil;
-import user_interface.node_factory.NodeColorData;
 import user_interface.node_factory.NodeFactory;
 import user_interface.node_factory.utils.ColorType;
 import user_interface.node_factory.utils.ColorUtil;
@@ -23,35 +21,33 @@ public class WindowOkCancel extends Stage {
     private Label buttonNegative;
 
     public WindowOkCancel(String content) {
-        NodeColorData nodeColorData = new NodeColorData(ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
-
-        buttonPositive = NodeFactory.getLabel("OK", nodeColorData);
+        buttonPositive = NodeFactory.getLabel("OK", ColorType.DEF, ColorType.DEF);
         buttonPositive.setOnMouseClicked(event -> {
             result = true;
             this.close();
         });
-        buttonNegative = NodeFactory.getLabel("Cancel", nodeColorData);
+        buttonNegative = NodeFactory.getLabel("Cancel", ColorType.DEF, ColorType.DEF);
         buttonNegative.setOnMouseClicked(event -> {
             result = false;
             this.close();
         });
 
-        labelContent = NodeFactory.getLabel("", nodeColorData);
+        labelContent = NodeFactory.getLabel("", ColorType.DEF, ColorType.DEF);
         labelContent.setText(content);
         labelContent.setFont(CommonUtil.getFont());
-        int padding = CommonUtil.coreSettings.valueOf(SettingsNamespace.GLOBAL_PADDING);
+        int padding = CommonUtil.coreSettings.valueOf(SettingsEnum.GLOBAL_PADDING);
         labelContent.setPadding(new Insets(0, 1.5 * padding, 0, 1.5 * padding));
 
-        HBox hBox = new HBox(buttonPositive, buttonNegative);
+        HBox hBox = NodeFactory.getHBox(ColorType.DEF, buttonPositive, buttonNegative);
         hBox.setAlignment(Pos.CENTER);
-        hBox.setSpacing(CommonUtil.coreSettings.valueOf(SettingsNamespace.GLOBAL_PADDING));
+        hBox.setSpacing(CommonUtil.coreSettings.valueOf(SettingsEnum.GLOBAL_PADDING));
 
-        VBox vBox = new VBox();
+        VBox vBox = NodeFactory.getVBox(ColorType.DEF);
         vBox.getChildren().add(new TitleBar(this));
         vBox.getChildren().add(labelContent);
         vBox.getChildren().add(hBox);
         vBox.setBackground(ColorUtil.getBackgroundDef());
-        vBox.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1, 1, 1, 1))));
+        vBox.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1, 1, 1, 1))));
 
         this.initStyle(StageStyle.UNDECORATED);
 

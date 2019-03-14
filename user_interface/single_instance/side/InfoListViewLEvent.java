@@ -38,7 +38,7 @@ public class InfoListViewLEvent implements InstanceRepo {
     }
     private static void onRightClick(TreeCell<CustomTreeCell> sourceCell, MouseEvent event) {
         InfoContextMenu infoContextMenu = mainStage.getInfoContextMenu();
-        infoContextMenu.setInfoObject(mainListInfo.getInfoObject(sourceCell));
+        infoContextMenu.setInfoObject(mainInfoList.getInfoObject(sourceCell));
         infoContextMenu.show(infoListViewL, event.getX(), event.getY());
     }
 
@@ -53,7 +53,7 @@ public class InfoListViewLEvent implements InstanceRepo {
     private void onAction_btnNew() {
         infoListViewL.getBtnNew().setOnMouseClicked(event -> {
             InfoObject newInfoObject = new InfoObjectEditor().getResult();
-            mainListInfo.add(newInfoObject);
+            mainInfoList.add(newInfoObject);
             reload.notifyChangeIn(Reload.Control.INFO);
             reload.doReload();
         });

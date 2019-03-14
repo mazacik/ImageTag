@@ -19,10 +19,22 @@ import user_interface.node_factory.template.generic.TitleBar;
 import user_interface.node_factory.template.generic.WindowDirectoryChooser;
 import user_interface.node_factory.utils.ColorType;
 
+import java.io.File;
+import java.util.ArrayList;
+
 public class IntroWindow extends Stage implements InstanceRepo {
     public IntroWindow() {
         VBox vBoxL = NodeFactory.getVBox(ColorType.ALT);
-        coreSettings.getRecentDirectoriesList().forEach(item -> vBoxL.getChildren().add(NodeFactory.getIntroWindowCell(item)));
+
+        ArrayList<String> recentDirectoriesListClone = new ArrayList<>(coreSettings.getRecentDirectoriesList());
+        recentDirectoriesListClone.forEach(item -> {
+            if (new File(item).exists()) {
+                vBoxL.getChildren().add(NodeFactory.getIntroWindowCell(item));
+            } else {
+                logger.debug(this, item + " does not exist, removing it from recent directory list");
+                coreSettings.getRecentDirectoriesList().remove(item);
+            }
+        });
         vBoxL.getChildren().forEach(node -> {
             if (node instanceof IntroWindowCell) {
                 node.setOnMouseClicked(event -> {
@@ -75,7 +87,10 @@ public class IntroWindow extends Stage implements InstanceRepo {
         this.initStyle(StageStyle.UNDECORATED);
         this.setResizable(false);
         this.centerOnScreen();
-        this.setOnCloseRequest(event -> logger.debug(this, "application exit"));
+        this.setOnCloseRequest(event -> {
+            userSettings.writeToDisk();
+            logger.debug(this, "application exit");
+        });
         this.show();
         logger.debug(this, "waiting for directory");
     }
@@ -95,6 +110,7 @@ public class IntroWindow extends Stage implements InstanceRepo {
 
     private void startLoading(IntroWindowCell introWindowCell) {
         coreSettings.setCurrentDirectory(introWindowCell.getPath());
+        userSettings.writeToDisk();
         new DataLoader().start();
         this.close();
     }

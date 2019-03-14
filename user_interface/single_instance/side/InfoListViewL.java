@@ -61,7 +61,7 @@ public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
         CustomTreeCell customTreeCell;
         try { customTreeCell = sourceCell.getTreeItem().getValue(); } catch (NullPointerException e) { return; }
 
-        InfoObject infoObject = mainListInfo.getInfoObject(sourceCell);
+        InfoObject infoObject = mainInfoList.getInfoObject(sourceCell);
         // if sourceCell is group level
         if (infoObject == null) {
             String groupName = customTreeCell.getText();
@@ -103,7 +103,7 @@ public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
         Color textColorPositive = ColorUtil.getTextColorPos();
         Color textColorNegative = ColorUtil.getTextColorNeg();
 
-        ArrayList<String> groupNames = mainListInfo.getGroups();
+        ArrayList<String> groupNames = mainInfoList.getGroups();
         for (String groupName : groupNames) {
             TreeItem groupTreeItem;
             if (filter.isGroupWhitelisted(groupName)) {
@@ -114,7 +114,7 @@ public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
                 groupTreeItem = new TreeItem(new CustomTreeCell(groupName, textColorDefault));
             }
 
-            for (String tagName : mainListInfo.getNames(groupName)) {
+            for (String tagName : mainInfoList.getNames(groupName)) {
                 if (filter.isTagObjectWhitelisted(groupName, tagName)) {
                     groupTreeItem.getChildren().add(new TreeItem(new CustomTreeCell(tagName, textColorPositive)));
                 } else if (filter.isTagObjectBlacklisted(groupName, tagName)) {

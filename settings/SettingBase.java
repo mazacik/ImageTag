@@ -1,35 +1,35 @@
 package settings;
 
-public class SettingsBase {
-    private final String id;
+public class SettingBase {
+    private final SettingsEnum sn;
     private final Integer minValue;
     private final Integer maxValue;
     private final Integer defValue;
     private Integer value;
 
-    public SettingsBase(String id, Integer minValue, Integer maxValue, Integer defValue) {
-        this.id = id;
+    public SettingBase(SettingsEnum sn, Integer minValue, Integer maxValue, Integer defValue) {
+        this.sn = sn;
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.defValue = defValue;
         this.value = defValue;
     }
-    public SettingsBase(String id, Integer minValue, Integer maxValue) {
-        this(id, minValue, maxValue, minValue);
+    public SettingBase(SettingsEnum sn, Integer minValue, Integer maxValue) {
+        this(sn, minValue, maxValue, minValue);
     }
-    public SettingsBase(String id, Integer value) {
-        this(id, value, value, value);
+    public SettingBase(SettingsEnum sn, Integer value) {
+        this(sn, value, value, value);
     }
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof SettingsBase)) return false;
-        SettingsBase settingsBase = (SettingsBase) o;
-        return this.id.equals(settingsBase.getId()) &&
-                this.value.equals(settingsBase.getValue());
+        if (!(o instanceof SettingBase)) return false;
+        SettingBase settingBase = (SettingBase) o;
+        return this.sn.equals(settingBase.getId()) &&
+                this.value.equals(settingBase.getValue());
     }
 
-    public String getId() {
-        return id;
+    public SettingsEnum getId() {
+        return sn;
     }
     public Integer getValue() {
         return value;

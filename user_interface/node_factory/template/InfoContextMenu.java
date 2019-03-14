@@ -15,8 +15,8 @@ public class InfoContextMenu extends ContextMenu implements InstanceRepo {
 
     public InfoContextMenu() {
         this.getItems().addAll(menuEdit, menuRemove);
-        menuEdit.setOnAction(event -> mainListInfo.edit(infoObject));
-        menuRemove.setOnAction(event -> mainListInfo.remove(infoObject));
+        menuEdit.setOnAction(event -> mainInfoList.edit(infoObject));
+        menuRemove.setOnAction(event -> mainInfoList.remove(infoObject));
     }
 
     public void show(Node anchor, double screenX, double screenY) {

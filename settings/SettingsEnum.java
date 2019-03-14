@@ -1,16 +1,20 @@
 package settings;
 
-public enum SettingsNamespace {
-    FONTSIZE("fontSize"),
+public enum SettingsEnum {
+    //System
     MAINSCENE_WIDTH("mainSceneWidth"),
     MAINSCENE_HEIGHT("mainSceneHeight"),
     TILEVIEW_ICONSIZE("tileViewIconSize"),
     GLOBAL_PADDING("globalSpacing"),
+    FONTSIZE("fontSize"),
+
+    //User
+    COLORMODE("colorMode"),
     ;
 
     private String value;
 
-    SettingsNamespace(String value) {
+    SettingsEnum(String value) {
         this.value = value;
     }
 

@@ -34,7 +34,7 @@ public class InfoListViewREvent implements InstanceRepo {
     }
     private static void onRightClick(TreeCell<CustomTreeCell> sourceCell, MouseEvent event) {
         InfoContextMenu infoContextMenu = mainStage.getInfoContextMenu();
-        infoContextMenu.setInfoObject(mainListInfo.getInfoObject(sourceCell));
+        infoContextMenu.setInfoObject(mainInfoList.getInfoObject(sourceCell));
         infoContextMenu.show(infoListViewR, event.getX(), event.getY());
     }
 
