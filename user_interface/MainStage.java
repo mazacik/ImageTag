@@ -8,21 +8,21 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import system.CommonUtil;
 import system.InstanceRepo;
-import user_interface.node_factory.NodeFactory;
-import user_interface.node_factory.template.DataContextMenu;
-import user_interface.node_factory.template.InfoContextMenu;
-import user_interface.node_factory.template.generic.TitleBar;
-import user_interface.node_factory.utils.ColorType;
-import user_interface.single_instance.center.FullViewEvent;
-import user_interface.single_instance.center.TileViewEvent;
-import user_interface.single_instance.side.InfoListViewLEvent;
-import user_interface.single_instance.side.InfoListViewREvent;
-import user_interface.single_instance.top.TopMenuEvent;
+import user_interface.factory.NodeFactory;
+import user_interface.factory.node.TitleBar;
+import user_interface.factory.node.popup.DataObjectRCM;
+import user_interface.factory.node.popup.InfoObjectRCM;
+import user_interface.factory.util.enums.ColorType;
+import user_interface.singleton.center.FullViewEvent;
+import user_interface.singleton.center.TileViewEvent;
+import user_interface.singleton.side.InfoListViewLEvent;
+import user_interface.singleton.side.InfoListViewREvent;
+import user_interface.singleton.top.TopMenuEvent;
 
 public class MainStage extends Stage implements InstanceRepo {
     private final HBox hBox = NodeFactory.getHBox(ColorType.DEF, infoListViewL, tileView, infoListViewR);
-    private final DataContextMenu dataContextMenu = new DataContextMenu();
-    private final InfoContextMenu infoContextMenu = new InfoContextMenu();
+    private final DataObjectRCM dataObjectRCM = new DataObjectRCM();
+    private final InfoObjectRCM infoObjectRCM = new InfoObjectRCM();
 
     public void initialize() {
         logger.debug(this, "user_interface initialize start");
@@ -32,7 +32,7 @@ public class MainStage extends Stage implements InstanceRepo {
         logger.debug(this, "user_interface initialize done");
     }
     private void setDefaultValues() {
-        TitleBar titleBar = new TitleBar(this);
+        TitleBar titleBar = new TitleBar(this, false);
         titleBar.setLeft(topMenu);
         titleBar.setPadding(new Insets(0, 5, 0, 0));
         this.setScene(new Scene(NodeFactory.getVBox(ColorType.DEF, titleBar, hBox)));
@@ -79,10 +79,10 @@ public class MainStage extends Stage implements InstanceRepo {
         return hBox.getChildren().contains(fullView);
     }
 
-    public DataContextMenu getDataContextMenu() {
-        return dataContextMenu;
+    public DataObjectRCM getDataObjectRCM() {
+        return dataObjectRCM;
     }
-    public InfoContextMenu getInfoContextMenu() {
-        return infoContextMenu;
+    public InfoObjectRCM getInfoObjectRCM() {
+        return infoObjectRCM;
     }
 }

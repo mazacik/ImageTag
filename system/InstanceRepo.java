@@ -11,11 +11,11 @@ import database.list.InfoObjectListMain;
 import settings.CoreSettings;
 import settings.UserSettings;
 import user_interface.MainStage;
-import user_interface.single_instance.center.FullView;
-import user_interface.single_instance.center.TileView;
-import user_interface.single_instance.side.InfoListViewL;
-import user_interface.single_instance.side.InfoListViewR;
-import user_interface.single_instance.top.TopMenu;
+import user_interface.singleton.center.FullView;
+import user_interface.singleton.center.TileView;
+import user_interface.singleton.side.InfoListViewL;
+import user_interface.singleton.side.InfoListViewR;
+import user_interface.singleton.top.TopMenu;
 
 public interface InstanceRepo {
     Logger logger = Logger.getInstance();

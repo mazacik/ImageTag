@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
 
 public class CoreSettings implements InstanceRepo, Serializable {
     private ArrayList<SettingBase> settingsList;
@@ -53,6 +52,7 @@ public class CoreSettings implements InstanceRepo, Serializable {
         Type typeToken = SerializationUtil.TypeTokenEnum.CORESETTINGS.getValue();
         SerializationUtil.writeJSON(SettingsLoader.instance, typeToken, path);
     }
+
     public Integer valueOf(SettingsEnum setting) {
         for (SettingBase object : settingsList) {
             if (object.getId().equals(setting)) {
@@ -62,6 +62,7 @@ public class CoreSettings implements InstanceRepo, Serializable {
         logger.error(this, "valueof() -> " + setting + " not found");
         return null;
     }
+
     public String getCurrentDirectory() {
         return currentDirectory;
     }
@@ -76,7 +77,7 @@ public class CoreSettings implements InstanceRepo, Serializable {
 
         SettingsLoader.instance.writeToDisk();
     }
-    public List<String> getRecentDirectoriesList() {
+    public ArrayList<String> getRecentDirectoriesList() {
         return recentDirectoriesList;
     }
 

@@ -2,7 +2,7 @@ package user_interface;
 
 import system.CommonUtil;
 import system.InstanceRepo;
-import user_interface.single_instance.center.BaseTileEvent;
+import user_interface.singleton.center.BaseTileEvent;
 
 public class GlobalEvent implements InstanceRepo {
     public GlobalEvent() {

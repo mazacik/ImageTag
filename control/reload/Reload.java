@@ -1,7 +1,7 @@
 package control.reload;
 
 import system.InstanceRepo;
-import user_interface.single_instance.BaseNode;
+import user_interface.singleton.BaseNode;
 
 import java.util.ArrayList;
 import java.util.Arrays;

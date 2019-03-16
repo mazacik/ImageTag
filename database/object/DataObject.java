@@ -2,7 +2,7 @@ package database.object;
 
 import database.list.InfoObjectList;
 import system.CommonUtil;
-import user_interface.single_instance.center.BaseTile;
+import user_interface.singleton.center.BaseTile;
 
 import java.io.File;
 import java.io.Serializable;
