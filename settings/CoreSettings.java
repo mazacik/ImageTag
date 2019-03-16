@@ -2,8 +2,8 @@ package settings;
 
 import system.InstanceRepo;
 import system.SerializationUtil;
-import system.SystemUtil;
 
+import java.awt.*;
 import java.io.File;
 import java.io.Serializable;
 import java.lang.reflect.Type;
@@ -25,8 +25,10 @@ public class CoreSettings implements InstanceRepo, Serializable {
     }
     private void setDefaults() {
         settingsList = new ArrayList<>();
-        settingsList.add(new SettingBase(SettingsEnum.MAINSCENE_WIDTH, 0, SystemUtil.getScreenWidth(), SystemUtil.getScreenWidth()));
-        settingsList.add(new SettingBase(SettingsEnum.MAINSCENE_HEIGHT, 0, SystemUtil.getScreenHeight(), SystemUtil.getScreenHeight()));
+        int width = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().width;
+        int height = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height;
+        settingsList.add(new SettingBase(SettingsEnum.MAINSCENE_WIDTH, 0, width, width));
+        settingsList.add(new SettingBase(SettingsEnum.MAINSCENE_HEIGHT, 0, height, height));
         settingsList.add(new SettingBase(SettingsEnum.TILEVIEW_ICONSIZE, 100, 200, 150));
         settingsList.add(new SettingBase(SettingsEnum.GLOBAL_PADDING, 2));
         settingsList.add(new SettingBase(SettingsEnum.FONTSIZE, 14));

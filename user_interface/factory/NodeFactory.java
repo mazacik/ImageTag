@@ -7,11 +7,13 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import system.CommonUtil;
 import user_interface.factory.node.IntroWindowCell;
 import user_interface.factory.util.ColorData;
 import user_interface.factory.util.enums.ColorType;
+import user_interface.singleton.side.GroupNode;
 
 import java.util.ArrayList;
 
@@ -21,8 +23,11 @@ public abstract class NodeFactory {
         return nodeList;
     }
 
+    public static Label getLabel(String text) {
+        return getLabel(text, ColorType.NULL, ColorType.NULL, ColorType.NULL, ColorType.NULL);
+    }
     public static Label getLabel(String text, ColorData colorData) {
-        return getLabel(text, colorData.getBackgroundDef(), colorData.getBackgroundHov(), colorData.getTextFillDef(), colorData.getTextFillHov());
+        return getLabel(text, colorData.getBackgroundDef(), colorData.getBackgroundAlt(), colorData.getTextFillDef(), colorData.getTextFillHov());
     }
     public static Label getLabel(String text, ColorType backgroundDef, ColorType textFillDef) {
         return getLabel(text, backgroundDef, ColorType.NULL, textFillDef, ColorType.NULL);
@@ -37,6 +42,15 @@ public abstract class NodeFactory {
         nodeList.add(new ColorData(label, backgroundDef, backgroundAlt, textFillDef, textFillAlt));
 
         return label;
+    }
+
+    public static GroupNode getGroupNode(String text, Color textFill) {
+        GroupNode groupNode = new GroupNode(text);
+        groupNode.setTextFill(textFill);
+        groupNode.setFont(CommonUtil.getFont());
+        nodeList.add(new ColorData(groupNode, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL));
+
+        return groupNode;
     }
     public static IntroWindowCell getIntroWindowCell(String path) {
         IntroWindowCell introWindowCell = new IntroWindowCell(path);

@@ -85,12 +85,21 @@ public class IntroStage extends Stage implements InstanceRepo {
         CommonUtil.updateNodeProperties();
 
         this.setScene(introScene);
-        this.setOnShown(event -> {
-            if (vBoxL.getChildren().size() > 0) {
-                double heightToAdd = ((6 - vBoxL.getChildren().size()) * ((IntroWindowCell) vBoxL.getChildren().get(0)).getHeight());
-                this.setHeight(this.getHeight() + heightToAdd);
-                this.centerOnScreen();
+        this.setOnShowing(event -> {
+            if (vBoxL.getChildren().isEmpty()) {
+                vBoxL.getChildren().add(NodeFactory.getIntroWindowCell("Stage Height Helper"));
             }
+        });
+        this.setOnShown(event -> {
+            double newHeight;
+            if (coreSettings.getRecentDirectoriesList().size() > 0) {
+                newHeight = this.getHeight() + ((6 - vBoxL.getChildren().size()) * ((IntroWindowCell) vBoxL.getChildren().get(0)).getHeight());
+            } else {
+                newHeight = 6 * ((IntroWindowCell) vBoxL.getChildren().get(0)).getHeight();
+                vBoxL.getChildren().clear();
+            }
+            this.setHeight(newHeight);
+            this.centerOnScreen();
         });
         this.initStyle(StageStyle.UNDECORATED);
         this.setResizable(false);

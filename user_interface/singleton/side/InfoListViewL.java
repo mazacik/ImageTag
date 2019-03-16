@@ -2,17 +2,17 @@ package user_interface.singleton.side;
 
 import database.object.InfoObject;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.TreeCell;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import system.CommonUtil;
 import system.InstanceRepo;
 import user_interface.factory.NodeFactory;
+import user_interface.factory.stage.InfoObjectEditStage;
 import user_interface.factory.util.ColorUtil;
 import user_interface.factory.util.enums.ColorType;
 import user_interface.singleton.BaseNode;
@@ -20,51 +20,33 @@ import user_interface.singleton.BaseNode;
 import java.util.ArrayList;
 
 public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
-    private final Label labelMain = NodeFactory.getLabel("Filter", ColorType.DEF, ColorType.DEF);
-    private final Label btnExpCol = NodeFactory.getLabel("Expand", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.NULL);
-    private final Label btnNew = NodeFactory.getLabel("New", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.NULL);
-    private final TreeView<InfoListCell> treeView = new TreeView(new TreeItem());
+    private final Label nodeText = NodeFactory.getLabel("Filter", ColorType.DEF, ColorType.DEF);
+    private final VBox infoObjectVBox = NodeFactory.getVBox(ColorType.DEF);
+    private final ArrayList<String> expandedGroupsList = new ArrayList<>();
 
     public InfoListViewL() {
-        VBox.setVgrow(treeView, Priority.ALWAYS);
-        treeView.setShowRoot(false);
-        treeView.expandedItemCountProperty().addListener((observable, oldValue, newValue) -> {
-            treeView.lookupAll(".scroll-bar").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
-            treeView.lookupAll(".increment-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
-            treeView.lookupAll(".decrement-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
-            treeView.lookupAll(".thumb").forEach(sb -> sb.setStyle("-fx-background-color: gray; -fx-background-insets: 0 4 0 4;"));
-        });
-        NodeFactory.addNodeToBackgroundManager(treeView, ColorType.DEF);
+        nodeText.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 1, 0))));
+        nodeText.setFont(CommonUtil.getFont());
+        nodeText.prefWidthProperty().bind(this.widthProperty());
 
-        BorderPane bp = new BorderPane();
-        bp.setCenter(labelMain);
-        bp.setRight(btnExpCol);
-        bp.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 1, 0))));
-
-        labelMain.setFont(CommonUtil.getFont());
-
-        btnExpCol.setFont(CommonUtil.getFont());
-        btnExpCol.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 0, 1))));
-        btnExpCol.setPrefWidth(75);
-
+        Label btnNew = NodeFactory.getLabel("New", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.NULL);
         btnNew.setPrefWidth(999);
         btnNew.setFont(CommonUtil.getFont());
         btnNew.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 1, 0))));
-
+        btnNew.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                mainInfoList.add(new InfoObjectEditStage().getResult());
+                reload.doReload();
+            }
+        });
         this.setPrefWidth(999);
         this.setMinWidth(200);
-        this.setCellFactory();
-        this.getChildren().addAll(bp, btnNew, treeView);
+        this.getChildren().addAll(nodeText, btnNew, infoObjectVBox);
     }
 
-    public void changeCellState(TreeCell<InfoListCell> sourceCell) {
-        InfoListCell infoListCell;
-        try { infoListCell = sourceCell.getTreeItem().getValue(); } catch (NullPointerException e) { return; }
-
-        InfoObject infoObject = mainInfoList.getInfoObject(sourceCell);
-        // if sourceCell is group level
-        if (infoObject == null) {
-            String groupName = infoListCell.getText();
+    public void changeNodeState(GroupNode groupNode, Label nameNode) {
+        if (nameNode == null) {
+            String groupName = groupNode.getText();
             Color textColor;
             if (filter.isGroupWhitelisted(groupName)) {
                 filter.blacklistGroup(groupName);
@@ -76,28 +58,39 @@ public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
                 filter.whitelistGroup(groupName);
                 textColor = ColorUtil.getTextColorPos();
             }
-            infoListCell.setColor(textColor);
-            sourceCell.getTreeItem().getChildren().forEach(cell -> cell.getValue().setColor(textColor));
+            groupNode.setTextFill(textColor);
+            groupNode.getNameNodes().forEach(node -> node.setTextFill(textColor));
         } else {
+            InfoObject infoObject = mainInfoList.getInfoObject(groupNode.getText(), nameNode.getText());
             if (filter.isTagObjectWhitelisted(infoObject)) {
                 filter.blacklistTagObject(infoObject);
-                infoListCell.setColor(ColorUtil.getTextColorNeg());
+                if (filter.isGroupBlacklisted(infoObject.getGroup())) {
+                    groupNode.setTextFill(ColorUtil.getTextColorNeg());
+                } else if (!filter.isGroupWhitelisted(infoObject.getGroup())) {
+                    groupNode.setTextFill(ColorUtil.getTextColorDef());
+                }
+                nameNode.setTextFill(ColorUtil.getTextColorNeg());
             } else if (filter.isTagObjectBlacklisted(infoObject)) {
                 filter.unlistTagObject(infoObject);
-                infoListCell.setColor(ColorUtil.getTextColorDef());
+                if (!filter.isGroupWhitelisted(infoObject.getGroup()) && !filter.isGroupBlacklisted(infoObject.getGroup())) {
+                    groupNode.setTextFill(ColorUtil.getTextColorDef());
+                }
+                nameNode.setTextFill(ColorUtil.getTextColorDef());
             } else {
                 filter.whitelistTagObject(infoObject);
-                infoListCell.setColor(ColorUtil.getTextColorPos());
+                if (filter.isGroupWhitelisted(infoObject.getGroup())) {
+                    groupNode.setTextFill(ColorUtil.getTextColorPos());
+                }
+                nameNode.setTextFill(ColorUtil.getTextColorPos());
             }
         }
         filter.apply();
         reload.doReload();
-        treeView.refresh();
     }
 
     public void reload() {
-        ObservableList<TreeItem<InfoListCell>> treeViewItems = treeView.getRoot().getChildren();
-        treeViewItems.clear();
+        ObservableList<Node> nodes = infoObjectVBox.getChildren();
+        nodes.clear();
 
         Color textColorDefault = ColorUtil.getTextColorDef();
         Color textColorPositive = ColorUtil.getTextColorPos();
@@ -105,62 +98,50 @@ public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
 
         ArrayList<String> groupNames = mainInfoList.getGroups();
         for (String groupName : groupNames) {
-            TreeItem groupTreeItem;
+            GroupNode groupNode;
             if (filter.isGroupWhitelisted(groupName)) {
-                groupTreeItem = new TreeItem(new InfoListCell(groupName, textColorPositive));
+                groupNode = NodeFactory.getGroupNode(groupName, textColorPositive);
             } else if (filter.isGroupBlacklisted(groupName)) {
-                groupTreeItem = new TreeItem(new InfoListCell(groupName, textColorNegative));
+                groupNode = NodeFactory.getGroupNode(groupName, textColorNegative);
             } else {
-                groupTreeItem = new TreeItem(new InfoListCell(groupName, textColorDefault));
+                groupNode = NodeFactory.getGroupNode(groupName, textColorDefault);
             }
+            groupNode.prefWidthProperty().bind(infoObjectVBox.widthProperty());
 
             for (String tagName : mainInfoList.getNames(groupName)) {
+                Label nameNode = NodeFactory.getLabel(tagName, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
+
                 if (filter.isTagObjectWhitelisted(groupName, tagName)) {
-                    groupTreeItem.getChildren().add(new TreeItem(new InfoListCell(tagName, textColorPositive)));
+                    nameNode.setTextFill(textColorPositive);
                 } else if (filter.isTagObjectBlacklisted(groupName, tagName)) {
-                    groupTreeItem.getChildren().add(new TreeItem(new InfoListCell(tagName, textColorNegative)));
+                    nameNode.setTextFill(textColorNegative);
                 } else {
-                    groupTreeItem.getChildren().add(new TreeItem(new InfoListCell(tagName, textColorDefault)));
+                    nameNode.setTextFill(textColorDefault);
                 }
+                nameNode.prefWidthProperty().bind(infoObjectVBox.widthProperty());
+                nameNode.setAlignment(Pos.CENTER_LEFT);
+                nameNode.setPadding(new Insets(0, 0, 0, 50));
+                nameNode.setOnMouseClicked(event -> changeNodeState(groupNode, nameNode));
+                groupNode.getNameNodes().add(nameNode);
+                groupNode.setPadding(new Insets(0));
             }
-            groupTreeItem.setGraphic(NodeFactory.getLabel("", ColorType.DEF, ColorType.DEF));
-            treeViewItems.add(groupTreeItem);
+            nodes.add(groupNode);
+            if (expandedGroupsList.contains(groupNode.getText())) {
+                nodes.addAll(groupNode.getNameNodes());
+            }
         }
     }
-    private void setCellFactory() {
-        treeView.setCellFactory(treeView -> new TreeCell<>() {
-            @Override
-            protected void updateItem(InfoListCell infoListCell, boolean empty) {
-                super.updateItem(infoListCell, empty);
-                if (infoListCell == null) {
-                    setText(null);
-                    setTextFill(null);
-                } else {
-                    setText(infoListCell.getText());
-                    setTextFill(infoListCell.getColor());
-                }
-
-                setFont(CommonUtil.getFont());
-                setBackground(ColorUtil.getBackgroundDef());
-
-                InfoListViewLEvent.onMouseClick(this);
-                this.addEventFilter(MouseEvent.MOUSE_PRESSED, (MouseEvent e) -> {
-                    if (e.getClickCount() % 2 == 0 && e.getButton().equals(MouseButton.PRIMARY)) {
-                        // disable double click expand
-                        e.consume();
-                    }
-                });
-            }
-        });
+    public void postInit() {
+        infoObjectVBox.lookupAll(".scroll-bar").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
+        infoObjectVBox.lookupAll(".increment-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
+        infoObjectVBox.lookupAll(".decrement-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
+        infoObjectVBox.lookupAll(".thumb").forEach(sb -> sb.setStyle("-fx-background-color: gray; -fx-background-insets: 0 4 0 4;"));
     }
 
-    public TreeView<InfoListCell> getTreeView() {
-        return treeView;
+    public VBox getInfoObjectVBox() {
+        return infoObjectVBox;
     }
-    public Label getBtnExpCol() {
-        return btnExpCol;
-    }
-    public Label getBtnNew() {
-        return btnNew;
+    public ArrayList<String> getExpandedGroupsList() {
+        return expandedGroupsList;
     }
 }

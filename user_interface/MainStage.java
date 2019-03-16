@@ -6,6 +6,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import settings.SettingsEnum;
 import system.CommonUtil;
 import system.InstanceRepo;
 import user_interface.factory.NodeFactory;
@@ -15,8 +16,6 @@ import user_interface.factory.node.popup.InfoObjectRCM;
 import user_interface.factory.util.enums.ColorType;
 import user_interface.singleton.center.FullViewEvent;
 import user_interface.singleton.center.TileViewEvent;
-import user_interface.singleton.side.InfoListViewLEvent;
-import user_interface.singleton.side.InfoListViewREvent;
 import user_interface.singleton.top.TopMenuEvent;
 
 public class MainStage extends Stage implements InstanceRepo {
@@ -28,7 +27,6 @@ public class MainStage extends Stage implements InstanceRepo {
         logger.debug(this, "user_interface initialize start");
         setDefaultValues();
         initializeEvents();
-        CommonUtil.updateNodeProperties();
         logger.debug(this, "user_interface initialize done");
     }
     private void setDefaultValues() {
@@ -42,14 +40,16 @@ public class MainStage extends Stage implements InstanceRepo {
 
         this.setOnShowing(event -> reload.doReload());
         this.setOnShown(event -> {
-            this.centerOnScreen();
-            this.setMaximized(true);
-            tileView.setCustomBounds(tileView.getViewportBounds());
-            tileView.lookupAll(".scroll-bar").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
-            tileView.lookupAll(".increment-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
-            tileView.lookupAll(".decrement-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
-            tileView.lookupAll(".thumb").forEach(sb -> sb.setStyle("-fx-background-color: gray; -fx-background-insets: 0 4 0 4;"));
+            infoListViewL.postInit();
+            infoListViewR.postInit();
+            tileView.postInit();
+
             target.set(mainDataList.get(0));
+
+            CommonUtil.updateNodeProperties();
+            this.setWidth(CommonUtil.coreSettings.valueOf(SettingsEnum.MAINSCENE_WIDTH));
+            this.setHeight(CommonUtil.coreSettings.valueOf(SettingsEnum.MAINSCENE_HEIGHT));
+            this.centerOnScreen();
         });
         this.setOnCloseRequest(event -> {
             mainDataList.writeToDisk();
@@ -62,8 +62,6 @@ public class MainStage extends Stage implements InstanceRepo {
         new TopMenuEvent();
         new TileViewEvent();
         new FullViewEvent();
-        new InfoListViewLEvent();
-        new InfoListViewREvent();
     }
 
     public void swapDisplayMode() {

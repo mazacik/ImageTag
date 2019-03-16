@@ -3,10 +3,8 @@ package database.list;
 import control.reload.Reload;
 import database.object.DataObject;
 import database.object.InfoObject;
-import javafx.scene.control.TreeCell;
 import system.InstanceRepo;
 import user_interface.factory.stage.InfoObjectEditStage;
-import user_interface.singleton.side.InfoListCell;
 
 public class InfoObjectListMain extends InfoObjectList implements InstanceRepo {
     public void initialize() {
@@ -71,17 +69,6 @@ public class InfoObjectListMain extends InfoObjectList implements InstanceRepo {
         String[] split = groupAndName.split("-");
         String tagObjectGroup = split[0].trim();
         String tagObjectName = split[1].trim();
-        return getInfoObject(tagObjectGroup, tagObjectName);
-    }
-    public InfoObject getInfoObject(TreeCell<InfoListCell> treeCell) {
-        if (treeCell == null) return null;
-        String tagObjectGroup;
-        try {
-            tagObjectGroup = treeCell.getTreeItem().getParent().getValue().getText();
-        } catch (NullPointerException e) {
-            return null;
-        }
-        String tagObjectName = treeCell.getText();
         return getInfoObject(tagObjectGroup, tagObjectName);
     }
 }

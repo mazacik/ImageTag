@@ -46,7 +46,7 @@ public class ColorData {
     public ColorType getBackgroundDef() {
         return backgroundDef;
     }
-    public ColorType getBackgroundHov() {
+    public ColorType getBackgroundAlt() {
         return backgroundAlt;
     }
     public ColorType getTextFillDef() {

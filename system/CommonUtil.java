@@ -27,7 +27,7 @@ import java.util.Random;
 
 public abstract class CommonUtil implements InstanceRepo {
     private static boolean nightMode = userSettings.valueOf(SettingsEnum.COLORMODE);
-    /* Font */
+
     private static Font font = new Font(coreSettings.valueOf(SettingsEnum.FONTSIZE));
     public static boolean isNightMode() {
         return nightMode;
@@ -46,10 +46,10 @@ public abstract class CommonUtil implements InstanceRepo {
             return null;
         }
     }
-    private static Background getBackgroundHov(ColorData colorData) {
-        if (colorData.getBackgroundHov() == ColorType.DEF) {
+    private static Background getBackgroundAlt(ColorData colorData) {
+        if (colorData.getBackgroundAlt() == ColorType.DEF) {
             return ColorUtil.getBackgroundDef();
-        } else if (colorData.getBackgroundHov() == ColorType.ALT) {
+        } else if (colorData.getBackgroundAlt() == ColorType.ALT) {
             return ColorUtil.getBackgroundAlt();
         } else {
             return null;
@@ -75,22 +75,29 @@ public abstract class CommonUtil implements InstanceRepo {
     }
     public static void updateNodeProperties() {
         for (ColorData colorData : NodeFactory.getNodeList()) {
+
+            if (colorData.getBackgroundAlt() != ColorType.NULL) {
+                colorData.getNode().setOnMouseEntered(event -> colorData.getNode().setBackground(getBackgroundAlt(colorData)));
+                colorData.getNode().setOnMouseExited(event -> colorData.getNode().setBackground(getBackgroundDef(colorData)));
+            }
             colorData.getNode().setBackground(getBackgroundDef(colorData));
             if (colorData.getNodeType() == ColorData.NodeType.LABEL) {
                 Label label = ((Label) colorData.getNode());
-                label.setTextFill(getTextColorDef(colorData));
-                if (colorData.getBackgroundHov() != ColorType.NULL && colorData.getTextFillHov() != ColorType.NULL) {
+                if (colorData.getTextFillDef() != ColorType.NULL) {
+                    label.setTextFill(getTextColorDef(colorData));
+                }
+                if (colorData.getBackgroundAlt() != ColorType.NULL && colorData.getTextFillHov() != ColorType.NULL) {
                     label.setOnMouseExited(event -> {
                         label.setBackground(getBackgroundDef(colorData));
                         label.setTextFill(getTextColorDef(colorData));
                     });
                     label.setOnMouseEntered(event -> {
-                        label.setBackground(getBackgroundHov(colorData));
+                        label.setBackground(getBackgroundAlt(colorData));
                         label.setTextFill(getTextColorHov(colorData));
                     });
-                } else if (colorData.getBackgroundHov() != ColorType.NULL) {
+                } else if (colorData.getBackgroundAlt() != ColorType.NULL) {
                     label.setOnMouseExited(event -> label.setBackground(getBackgroundDef(colorData)));
-                    label.setOnMouseEntered(event -> label.setBackground(getBackgroundHov(colorData)));
+                    label.setOnMouseEntered(event -> label.setBackground(getBackgroundAlt(colorData)));
                 } else if (colorData.getTextFillHov() != ColorType.NULL) {
                     label.setOnMouseExited(event -> label.setTextFill(getTextColorDef(colorData)));
                     label.setOnMouseEntered(event -> label.setTextFill(getTextColorHov(colorData)));
@@ -99,7 +106,7 @@ public abstract class CommonUtil implements InstanceRepo {
                 IntroWindowCell introWindowCell = ((IntroWindowCell) colorData.getNode());
                 introWindowCell.setBackground(getBackgroundDef(colorData));
                 introWindowCell.setOnMouseEntered(event -> {
-                    introWindowCell.setBackground(getBackgroundHov(colorData));
+                    introWindowCell.setBackground(getBackgroundAlt(colorData));
                     introWindowCell.setCursor(Cursor.HAND);
                     introWindowCell.getNodeRemove().setVisible(true);
                 });
@@ -121,23 +128,25 @@ public abstract class CommonUtil implements InstanceRepo {
     }
     public static void updateNodeProperties(Scene scene) {
         for (ColorData colorData : NodeFactory.getNodeList()) {
-            if (colorData.getNode().getScene().equals(scene)) {
+            if (colorData.getNode().getScene() != null && colorData.getNode().getScene().equals(scene)) {
                 colorData.getNode().setBackground(getBackgroundDef(colorData));
                 if (colorData.getNodeType() == ColorData.NodeType.LABEL) {
                     Label label = ((Label) colorData.getNode());
-                    label.setTextFill(getTextColorDef(colorData));
-                    if (colorData.getBackgroundHov() != ColorType.NULL && colorData.getTextFillHov() != ColorType.NULL) {
+                    if (colorData.getTextFillDef() != ColorType.NULL) {
+                        label.setTextFill(getTextColorDef(colorData));
+                    }
+                    if (colorData.getBackgroundAlt() != ColorType.NULL && colorData.getTextFillHov() != ColorType.NULL) {
                         label.setOnMouseExited(event -> {
                             label.setBackground(getBackgroundDef(colorData));
                             label.setTextFill(getTextColorDef(colorData));
                         });
                         label.setOnMouseEntered(event -> {
-                            label.setBackground(getBackgroundHov(colorData));
+                            label.setBackground(getBackgroundAlt(colorData));
                             label.setTextFill(getTextColorHov(colorData));
                         });
-                    } else if (colorData.getBackgroundHov() != ColorType.NULL) {
+                    } else if (colorData.getBackgroundAlt() != ColorType.NULL) {
                         label.setOnMouseExited(event -> label.setBackground(getBackgroundDef(colorData)));
-                        label.setOnMouseEntered(event -> label.setBackground(getBackgroundHov(colorData)));
+                        label.setOnMouseEntered(event -> label.setBackground(getBackgroundAlt(colorData)));
                     } else if (colorData.getTextFillHov() != ColorType.NULL) {
                         label.setOnMouseExited(event -> label.setTextFill(getTextColorDef(colorData)));
                         label.setOnMouseEntered(event -> label.setTextFill(getTextColorHov(colorData)));
@@ -146,7 +155,7 @@ public abstract class CommonUtil implements InstanceRepo {
                     IntroWindowCell introWindowCell = ((IntroWindowCell) colorData.getNode());
                     introWindowCell.setBackground(getBackgroundDef(colorData));
                     introWindowCell.setOnMouseEntered(event -> {
-                        introWindowCell.setBackground(getBackgroundHov(colorData));
+                        introWindowCell.setBackground(getBackgroundAlt(colorData));
                         introWindowCell.setCursor(Cursor.HAND);
                         introWindowCell.getNodeRemove().setVisible(true);
                     });

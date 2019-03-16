@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import system.CommonUtil;
 import system.InstanceRepo;
 import user_interface.factory.NodeFactory;
 import user_interface.factory.util.ColorUtil;
@@ -26,7 +27,10 @@ public class LoadingStage extends Stage implements InstanceRepo {
         this.setResizable(false);
         this.initStyle(StageStyle.UNDECORATED);
         this.setAlwaysOnTop(true);
-        this.setOnShown(event -> this.centerOnScreen());
+        this.setOnShown(event -> {
+            this.centerOnScreen();
+            CommonUtil.updateNodeProperties(this.getScene());
+        });
         this.show();
     }
 
