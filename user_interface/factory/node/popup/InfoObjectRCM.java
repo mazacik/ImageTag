@@ -21,11 +21,13 @@ public class InfoObjectRCM extends RightClickMenu implements InstanceRepo {
         nodeEdit.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 mainInfoList.edit(infoObject);
+                reload.doReload();
             }
         });
         nodeRemove.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 mainInfoList.remove(infoObject);
+                reload.doReload();
             }
         });
 

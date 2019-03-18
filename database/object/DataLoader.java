@@ -21,7 +21,7 @@ import java.util.Comparator;
 import java.util.Objects;
 
 public class DataLoader extends Thread implements InstanceRepo {
-    private final String PATH_SOURCE = coreSettings.getCurrentDirectory();
+    private final String PATH_SOURCE = settings.getCurrentDirectory();
     private final String PATH_CACHE = PATH_SOURCE + "cache\\";
     private final String PATH_DATA = PATH_SOURCE + "data\\";
 
@@ -146,7 +146,7 @@ public class DataLoader extends Thread implements InstanceRepo {
     }
     private void loadImageCache(LoadingStage loadingStage, int fileListSize) {
         logger.debug(this, "loading image cache");
-        final int galleryIconSizeMax = coreSettings.valueOf(SettingsEnum.TILEVIEW_ICONSIZE);
+        final int galleryIconSizeMax = settings.intValueOf(SettingsEnum.TILEVIEW_ICONSIZE);
         int currentObjectIndex = 1;
         Image thumbnail;
 

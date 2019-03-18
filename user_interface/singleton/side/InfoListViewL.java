@@ -20,7 +20,7 @@ import user_interface.singleton.BaseNode;
 import java.util.ArrayList;
 
 public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
-    private final Label nodeText = NodeFactory.getLabel("Filter", ColorType.DEF, ColorType.DEF);
+    private final Label nodeText = NodeFactory.getLabel("", ColorType.DEF, ColorType.DEF);
     private final VBox infoObjectVBox = NodeFactory.getVBox(ColorType.DEF);
     private final ArrayList<String> expandedGroupsList = new ArrayList<>();
 
@@ -85,10 +85,11 @@ public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
             }
         }
         filter.apply();
-        reload.doReload();
     }
 
     public void reload() {
+        nodeText.setText("Filter: " + filter.size());
+
         ObservableList<Node> nodes = infoObjectVBox.getChildren();
         nodes.clear();
 
@@ -121,12 +122,27 @@ public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
                 nameNode.prefWidthProperty().bind(infoObjectVBox.widthProperty());
                 nameNode.setAlignment(Pos.CENTER_LEFT);
                 nameNode.setPadding(new Insets(0, 0, 0, 50));
-                nameNode.setOnMouseClicked(event -> changeNodeState(groupNode, nameNode));
+                nameNode.setOnMouseClicked(event -> {
+                    switch (event.getButton()) {
+                        case PRIMARY:
+                            changeNodeState(groupNode, nameNode);
+                            reload.doReload();
+                            CommonUtil.updateNodeProperties();
+                            break;
+                        case SECONDARY:
+                            mainStage.getInfoObjectRCM().setInfoObject(mainInfoList.getInfoObject(groupNode.getText(), nameNode.getText()));
+                            mainStage.getInfoObjectRCM().show(nameNode, event);
+                            break;
+                        default:
+                            break;
+                    }
+                });
                 groupNode.getNameNodes().add(nameNode);
                 groupNode.setPadding(new Insets(0));
             }
             nodes.add(groupNode);
             if (expandedGroupsList.contains(groupNode.getText())) {
+                groupNode.setArrowExpanded(true);
                 nodes.addAll(groupNode.getNameNodes());
             }
         }

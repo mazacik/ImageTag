@@ -23,7 +23,7 @@ import user_interface.singleton.BaseNode;
 import java.util.ArrayList;
 
 public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
-    private final Label nodeText = NodeFactory.getLabel("Selection", ColorType.DEF, ColorType.DEF);
+    private final Label nodeText = NodeFactory.getLabel("", ColorType.DEF, ColorType.DEF);
     private final VBox infoObjectVBox = NodeFactory.getVBox(ColorType.DEF);
     private final ArrayList<String> expandedGroupsList = new ArrayList<>();
     private final TextField textField = new TextField();
@@ -136,6 +136,16 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
     }
 
     public void reload() {
+        int hidden = 0;
+        for (DataObject dataObject : select) {
+            if (!filter.contains(dataObject)) {
+                hidden++;
+            }
+        }
+
+        String text = "Selection: " + select.size() + ", " + hidden + " hidden";
+        nodeText.setText(text);
+
         ObservableList<Node> nodes = infoObjectVBox.getChildren();
         nodes.clear();
 

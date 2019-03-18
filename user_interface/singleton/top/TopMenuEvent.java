@@ -5,6 +5,7 @@ import javafx.scene.input.MouseButton;
 import javafx.stage.WindowEvent;
 import system.CommonUtil;
 import system.InstanceRepo;
+import user_interface.factory.node.popup.LeftClickMenu;
 import user_interface.factory.stage.NumberInputStage;
 
 public class TopMenuEvent implements InstanceRepo {
@@ -27,6 +28,7 @@ public class TopMenuEvent implements InstanceRepo {
         topMenu.getNodeSave().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 mainDataList.writeToDisk();
+                hideLeftClickMenus();
             }
         });
     }
@@ -34,6 +36,7 @@ public class TopMenuEvent implements InstanceRepo {
         topMenu.getNodeExit().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 topMenu.fireEvent(new WindowEvent(mainStage, WindowEvent.WINDOW_CLOSE_REQUEST));
+                hideLeftClickMenus();
             }
         });
     }
@@ -42,6 +45,7 @@ public class TopMenuEvent implements InstanceRepo {
             if (event.getButton() == MouseButton.PRIMARY) {
                 select.addAll(filter);
                 reload.doReload();
+                hideLeftClickMenus();
             }
         });
     }
@@ -50,6 +54,7 @@ public class TopMenuEvent implements InstanceRepo {
             if (event.getButton() == MouseButton.PRIMARY) {
                 select.clear();
                 reload.doReload();
+                hideLeftClickMenus();
             }
         });
     }
@@ -58,6 +63,7 @@ public class TopMenuEvent implements InstanceRepo {
             if (event.getButton() == MouseButton.PRIMARY) {
                 select.merge();
                 reload.doReload();
+                hideLeftClickMenus();
             }
         });
     }
@@ -71,6 +77,7 @@ public class TopMenuEvent implements InstanceRepo {
 
                 filter.setFilter(FilterTemplate.SHOW_MAX_X_TAGS);
                 reload.doReload();
+                hideLeftClickMenus();
             }
         });
     }
@@ -79,44 +86,18 @@ public class TopMenuEvent implements InstanceRepo {
             if (event.getButton() == MouseButton.PRIMARY) {
                 filter.setFilter(FilterTemplate.SHOW_EVERYTHING);
                 reload.doReload();
+                hideLeftClickMenus();
             }
         });
     }
 
-    /*
-    private void onAction_menuModeWhitelistAll() {
-        topMenu.getMenuModeWhitelistAll().setOnAction(event -> {
-            topMenu.getMenuModeWhitelistAll().setSelected(true);
-            topMenu.getMenuModeWhitelistAny().setSelected(false);
-            filter.setWhitelistMode(Filter.FilterMode.All);
-            filter.apply();
+    private void hideLeftClickMenus() {
+        LeftClickMenu.getInstanceList().forEach(leftClickMenu -> {
+            if (leftClickMenu.isShowing()) {
+                leftClickMenu.hide();
+            }
         });
     }
-    private void onAction_menuModeWhitelistAny() {
-        topMenu.getMenuModeWhitelistAny().setOnAction(event -> {
-            topMenu.getMenuModeWhitelistAll().setSelected(false);
-            topMenu.getMenuModeWhitelistAny().setSelected(true);
-            filter.setWhitelistMode(Filter.FilterMode.Any);
-            filter.apply();
-        });
-    }
-    private void onAction_menuModeBlacklistAll() {
-        topMenu.getMenuModeBlacklistAll().setOnAction(event -> {
-            topMenu.getMenuModeBlacklistAll().setSelected(true);
-            topMenu.getMenuModeBlacklistAny().setSelected(false);
-            filter.setBlacklistMode(Filter.FilterMode.All);
-            filter.apply();
-        });
-    }
-    private void onAction_menuModeBlacklistAny() {
-        topMenu.getMenuModeBlacklistAny().setOnAction(event -> {
-            topMenu.getMenuModeBlacklistAll().setSelected(false);
-            topMenu.getMenuModeBlacklistAny().setSelected(true);
-            filter.setBlacklistMode(Filter.FilterMode.Any);
-            filter.apply();
-        });
-    }
-    */
 
     private void onAction_menuRandom() {
         topMenu.getNodeRandom().setOnMouseClicked(event -> {

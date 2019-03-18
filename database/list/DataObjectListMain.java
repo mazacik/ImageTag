@@ -17,12 +17,12 @@ public class DataObjectListMain extends DataObjectList implements InstanceRepo {
 
     public void writeToDisk() {
         Type typeToken = SerializationUtil.TypeTokenEnum.MAINDATALIST.getValue();
-        String path = coreSettings.getCurrentDirectory() + dataFile;
+        String path = settings.getCurrentDirectory() + dataFile;
         SerializationUtil.writeJSON(mainDataList, typeToken, path);
     }
     public DataObjectListMain readFromDisk() {
         Type typeToken = SerializationUtil.TypeTokenEnum.MAINDATALIST.getValue();
-        String path = coreSettings.getCurrentDirectory() + dataFile;
+        String path = settings.getCurrentDirectory() + dataFile;
         return (DataObjectListMain) SerializationUtil.readJSON(typeToken, path);
     }
 

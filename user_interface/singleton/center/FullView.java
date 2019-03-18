@@ -21,7 +21,7 @@ public class FullView extends Pane implements BaseNode, InstanceRepo {
         canvas.heightProperty().bind(this.heightProperty());
 
         this.minWidthProperty().bind(tileView.widthProperty());
-        this.setPrefHeight(coreSettings.valueOf(SettingsEnum.MAINSCENE_HEIGHT));
+        this.setPrefHeight(settings.intValueOf(SettingsEnum.MAINSCENE_HEIGHT));
         this.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 1, 0, 1))));
         this.getChildren().add(canvas);
     }
@@ -34,7 +34,7 @@ public class FullView extends Pane implements BaseNode, InstanceRepo {
         DataObject currentTarget = target.getCurrentTarget();
         if (currentTarget == null) return;
         if (currentDataObject == null || !currentDataObject.equals(currentTarget)) {
-            String url = "file:" + coreSettings.getCurrentDirectory() + "\\" + target.getCurrentTarget().getName();
+            String url = "file:" + settings.getCurrentDirectory() + "\\" + target.getCurrentTarget().getName();
             currentPreviewImage = new Image(url);
             currentDataObject = currentTarget;
         }

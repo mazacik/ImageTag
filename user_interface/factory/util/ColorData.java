@@ -1,14 +1,9 @@
 package user_interface.factory.util;
 
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
-import user_interface.factory.node.IntroWindowCell;
 import user_interface.factory.util.enums.ColorType;
 
 public class ColorData {
-    private final NodeType nodeType;
-
     private final Region node;
 
     private ColorType backgroundDef;
@@ -20,16 +15,6 @@ public class ColorData {
         this(null, backgroundDef, backgroundAlt, textFillDef, textFillAlt);
     }
     public ColorData(Region node, ColorType backgroundDef, ColorType backgroundAlt, ColorType textFillDef, ColorType textFillAlt) {
-        if (node instanceof Label) {
-            nodeType = NodeType.LABEL;
-        } else if (node instanceof IntroWindowCell) {
-            nodeType = NodeType.INTROWINDOWCELL;
-        } else if (node instanceof TextField) {
-            nodeType = NodeType.TEXTFIELD;
-        } else {
-            nodeType = NodeType.GENERIC;
-        }
-
         this.node = node;
         this.backgroundDef = backgroundDef;
         this.backgroundAlt = backgroundAlt;
@@ -39,9 +24,6 @@ public class ColorData {
 
     public Region getNode() {
         return node;
-    }
-    public NodeType getNodeType() {
-        return nodeType;
     }
     public ColorType getBackgroundDef() {
         return backgroundDef;
@@ -54,13 +36,5 @@ public class ColorData {
     }
     public ColorType getTextFillHov() {
         return textFillAlt;
-    }
-
-    public enum NodeType {
-        LABEL,
-        GENERIC,
-        INTROWINDOWCELL,
-        TEXTFIELD,
-        ;
     }
 }

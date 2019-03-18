@@ -4,8 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import database.list.DataObjectListMain;
-import settings.CoreSettings;
-import settings.UserSettings;
+import settings.Settings;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -35,8 +34,9 @@ public abstract class SerializationUtil implements InstanceRepo {
         Gson GSON = GSONBuilder.create();
         try {
             String JSON = new String(Files.readAllBytes(Paths.get(path)));
+            Object fromJson = GSON.fromJson(JSON, type);
             logger.debug(SerializationUtil.class, "reading " + path + " ... ok");
-            return GSON.fromJson(JSON, type);
+            return fromJson;
         } catch (Exception e) {
             logger.debug(SerializationUtil.class, "reading " + path + " ... fail");
             return null;
@@ -45,8 +45,7 @@ public abstract class SerializationUtil implements InstanceRepo {
 
     public enum TypeTokenEnum {
         MAINDATALIST(new TypeToken<DataObjectListMain>() {}.getType()),
-        USERSETTINGS(new TypeToken<UserSettings>() {}.getType()),
-        CORESETTINGS(new TypeToken<CoreSettings>() {}.getType()),
+        SETTINGS(new TypeToken<Settings>() {}.getType()),
         ;
 
         private Type value;

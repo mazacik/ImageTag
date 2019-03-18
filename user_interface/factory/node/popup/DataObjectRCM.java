@@ -32,7 +32,7 @@ public class DataObjectRCM extends RightClickMenu implements InstanceRepo {
         });
         nodeCopyPath.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                ClipboardUtil.setClipboardContent(coreSettings.getCurrentDirectory() + target.getCurrentTarget().getName());
+                ClipboardUtil.setClipboardContent(settings.getCurrentDirectory() + target.getCurrentTarget().getName());
             }
         });
         nodeDelete.setOnMouseClicked(event -> {
@@ -66,7 +66,7 @@ public class DataObjectRCM extends RightClickMenu implements InstanceRepo {
 
     private void deleteDataObject(DataObject dataObject) {
         if (filter.contains(dataObject)) {
-            String fullPath = coreSettings.getCurrentDirectory() + "\\" + dataObject.getName();
+            String fullPath = settings.getCurrentDirectory() + "\\" + dataObject.getName();
             Desktop.getDesktop().moveToTrash(new File(fullPath));
 
             select.remove(dataObject);
@@ -110,7 +110,7 @@ public class DataObjectRCM extends RightClickMenu implements InstanceRepo {
                 }
             }
         } else {
-            String fullPath = coreSettings.getCurrentDirectory() + currentTarget.getName();
+            String fullPath = settings.getCurrentDirectory() + currentTarget.getName();
             OkCancelStage okCancelStage = new OkCancelStage("Delete file: " + fullPath + "?");
             if (okCancelStage.getResult()) {
                 target.storePosition();

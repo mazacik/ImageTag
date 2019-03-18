@@ -28,13 +28,13 @@ public class IntroStage extends Stage implements InstanceRepo {
         VBox vBoxL = NodeFactory.getVBox(ColorType.ALT);
         vBoxL.setPrefWidth(250);
         vBoxL.setPadding(new Insets(5));
-        new ArrayList<>(coreSettings.getRecentDirectoriesList()).forEach(item -> {
+        new ArrayList<>(settings.getRecentDirectoriesList()).forEach(item -> {
             if (new File(item).exists()) {
                 IntroWindowCell introWindowCell = NodeFactory.getIntroWindowCell(item);
                 introWindowCell.setOnMouseClicked(event -> {
                     if (event.getButton() == MouseButton.PRIMARY) {
                         if (event.getPickResult().getIntersectedNode().getParent().equals(introWindowCell.getNodeRemove())) {
-                            coreSettings.getRecentDirectoriesList().remove(introWindowCell.getPath());
+                            settings.getRecentDirectoriesList().remove(introWindowCell.getPath());
                             vBoxL.getChildren().remove(introWindowCell);
                         } else {
                             startLoading(introWindowCell);
@@ -44,7 +44,7 @@ public class IntroStage extends Stage implements InstanceRepo {
                 vBoxL.getChildren().add(introWindowCell);
             } else {
                 logger.debug(this, item + " not found, removing it from recent directory list");
-                coreSettings.getRecentDirectoriesList().remove(item);
+                settings.getRecentDirectoriesList().remove(item);
             }
         });
 
@@ -74,7 +74,7 @@ public class IntroStage extends Stage implements InstanceRepo {
         Scene introScene = new Scene(vBoxMain);
         introScene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
-                if (!coreSettings.getRecentDirectoriesList().isEmpty()) {
+                if (!settings.getRecentDirectoriesList().isEmpty()) {
                     this.startLoading((IntroWindowCell) vBoxL.getChildren().get(0));
                 } else {
                     this.directoryChooser();
@@ -92,7 +92,7 @@ public class IntroStage extends Stage implements InstanceRepo {
         });
         this.setOnShown(event -> {
             double newHeight;
-            if (coreSettings.getRecentDirectoriesList().size() > 0) {
+            if (settings.getRecentDirectoriesList().size() > 0) {
                 newHeight = this.getHeight() + ((6 - vBoxL.getChildren().size()) * ((IntroWindowCell) vBoxL.getChildren().get(0)).getHeight());
             } else {
                 newHeight = 6 * ((IntroWindowCell) vBoxL.getChildren().get(0)).getHeight();
@@ -104,7 +104,7 @@ public class IntroStage extends Stage implements InstanceRepo {
         this.initStyle(StageStyle.UNDECORATED);
         this.setResizable(false);
         this.setOnCloseRequest(event -> {
-            userSettings.writeToDisk();
+            settings.writeToDisk();
             logger.debug(this, "application exit");
         });
         this.show();
@@ -118,14 +118,14 @@ public class IntroStage extends Stage implements InstanceRepo {
             if (sourcePath.length() > 3 && (lastchar != '\\' || lastchar != '/')) {
                 sourcePath += "\\";
             }
-            coreSettings.setCurrentDirectory(sourcePath);
+            settings.setCurrentDirectory(sourcePath);
             new DataLoader().start();
             this.close();
         }
     }
     private void startLoading(IntroWindowCell introWindowCell) {
-        coreSettings.setCurrentDirectory(introWindowCell.getPath());
-        userSettings.writeToDisk();
+        settings.setCurrentDirectory(introWindowCell.getPath());
+        settings.writeToDisk();
         new DataLoader().start();
         this.close();
     }

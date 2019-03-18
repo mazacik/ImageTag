@@ -66,4 +66,7 @@ public class LeftClickMenu extends Popup {
     public ObservableList<Node> getChildren() {
         return vBox.getChildren();
     }
+    public static ArrayList<LeftClickMenu> getInstanceList() {
+        return instanceList;
+    }
 }

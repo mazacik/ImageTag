@@ -8,8 +8,7 @@ import control.target.Target;
 import database.list.DataObjectListMain;
 import database.list.InfoObjectList;
 import database.list.InfoObjectListMain;
-import settings.CoreSettings;
-import settings.UserSettings;
+import settings.Settings;
 import user_interface.MainStage;
 import user_interface.singleton.center.FullView;
 import user_interface.singleton.center.TileView;
@@ -19,8 +18,7 @@ import user_interface.singleton.top.TopMenu;
 
 public interface InstanceRepo {
     Logger logger = Logger.getInstance();
-    UserSettings userSettings = UserSettings.getInstance();
-    CoreSettings coreSettings = CoreSettings.getInstance();
+    Settings settings = Settings.getInstance();
 
     TopMenu topMenu = new TopMenu();
     TileView tileView = new TileView();

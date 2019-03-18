@@ -9,14 +9,14 @@ import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
+import system.CommonUtil;
+import system.InstanceRepo;
 import user_interface.factory.NodeFactory;
 
 import java.util.ArrayList;
 
-import static system.InstanceRepo.infoListViewL;
-import static system.InstanceRepo.infoListViewR;
 
-public class GroupNode extends HBox {
+public class GroupNode extends HBox implements InstanceRepo {
     private final ArrayList<Label> nameNodes = new ArrayList<>();
     private Label labelArrow;
     private Label labelText;
@@ -74,9 +74,14 @@ public class GroupNode extends HBox {
                 case PRIMARY:
                     if (this.getParent().getParent() instanceof InfoListViewL) {
                         infoListViewL.changeNodeState(this, null);
+                        reload.doReload();
+                        CommonUtil.updateNodeProperties();
                     }
                     break;
                 case SECONDARY:
+                    if (this.getParent().getParent() instanceof InfoListViewL) {
+                        mainStage.getInfoObjectRCM().show(this, event);
+                    }
                     break;
                 default:
                     break;
@@ -92,6 +97,13 @@ public class GroupNode extends HBox {
     }
     public void setText(String text) {
         labelText.setText(text);
+    }
+    public void setArrowExpanded(boolean value) {
+        if (value) {
+            labelArrow.setText("− ");
+        } else {
+            labelArrow.setText("+ ");
+        }
     }
     public Paint getTextFill() {
         return labelText.getTextFill();

@@ -25,6 +25,7 @@ public class BaseTileEvent implements InstanceRepo {
     }
     private void onMouseClick(BaseTile baseTile) {
         baseTile.setOnMouseClicked(event -> {
+            event.consume();
             switch (event.getButton()) {
                 case PRIMARY:
                     onLeftClick(baseTile, event);
@@ -40,7 +41,7 @@ public class BaseTileEvent implements InstanceRepo {
     private void onLeftClick(BaseTile baseTile, MouseEvent event) {
         DataObject dataObject = baseTile.getParentDataObject();
 
-        int tileSize = coreSettings.valueOf(SettingsEnum.TILEVIEW_ICONSIZE);
+        int tileSize = settings.intValueOf(SettingsEnum.TILEVIEW_ICONSIZE);
         if (event.getX() > tileSize - BaseTile.getEffectGroupSize() && event.getY() < BaseTile.getEffectGroupSize()) {
             onGroupButtonClick(dataObject);
         } else {
@@ -54,6 +55,7 @@ public class BaseTileEvent implements InstanceRepo {
         DataObject dataObject = sender.getParentDataObject();
         target.set(dataObject);
         select.set(dataObject);
+        reload.doReload();
         mainStage.getDataObjectRCM().show(sender, event);
     }
 }

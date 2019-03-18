@@ -47,8 +47,8 @@ public class MainStage extends Stage implements InstanceRepo {
             target.set(mainDataList.get(0));
 
             CommonUtil.updateNodeProperties();
-            this.setWidth(CommonUtil.coreSettings.valueOf(SettingsEnum.MAINSCENE_WIDTH));
-            this.setHeight(CommonUtil.coreSettings.valueOf(SettingsEnum.MAINSCENE_HEIGHT));
+            this.setWidth(CommonUtil.settings.intValueOf(SettingsEnum.MAINSCENE_WIDTH));
+            this.setHeight(CommonUtil.settings.intValueOf(SettingsEnum.MAINSCENE_HEIGHT));
             this.centerOnScreen();
         });
         this.setOnCloseRequest(event -> {
@@ -68,9 +68,11 @@ public class MainStage extends Stage implements InstanceRepo {
         if (this.isFullView()) {
             hBox.getChildren().set(hBox.getChildren().indexOf(fullView), tileView);
             tileView.adjustViewportToCurrentTarget();
+            tileView.requestFocus();
         } else {
             hBox.getChildren().set(hBox.getChildren().indexOf(tileView), fullView);
             fullView.reload();
+            fullView.requestFocus();
         }
     }
     public boolean isFullView() {

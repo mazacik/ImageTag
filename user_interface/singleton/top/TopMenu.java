@@ -24,8 +24,6 @@ public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
     Label nodeRandom;
     Label nodeFullview;
 
-    Label infoNode;
-
     public TopMenu() {
         ColorData colorData = new ColorData(ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
 
@@ -33,35 +31,35 @@ public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
         nodeSave = NodeFactory.getLabel("Save", colorData);
         nodeExit = NodeFactory.getLabel("Exit", colorData);
         new LeftClickMenu(cbFile, nodeSave, nodeExit);
+
         Label cbFilter = NodeFactory.getLabel("Filter", colorData);
         nodeReset = NodeFactory.getLabel("Reset", colorData);
         nodeCustom = NodeFactory.getLabel("Custom", colorData);
         new LeftClickMenu(cbFilter, nodeCustom, nodeReset);
+
         Label cbSelection = NodeFactory.getLabel("Selection", colorData);
         nodeSelectAll = NodeFactory.getLabel("Select All", colorData);
         nodeSelectNone = NodeFactory.getLabel("Select None", colorData);
         nodeSelectMerge = NodeFactory.getLabel("Merge Selection", colorData);
         new LeftClickMenu(cbSelection, nodeSelectAll, nodeSelectNone, nodeSelectMerge);
-        HBox hBoxMain = NodeFactory.getHBox(ColorType.DEF);
-        hBoxMain.getChildren().addAll(cbFile, cbFilter, cbSelection);
+
         nodeRandom = NodeFactory.getLabel("Random", colorData);
         nodeFullview = NodeFactory.getLabel("FullView", colorData);
         HBox hBoxTools = NodeFactory.getHBox(ColorType.DEF, nodeRandom, nodeFullview);
         hBoxTools.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 1, 0, 1))));
+        NodeFactory.addNodeToBackgroundManager(hBoxTools, ColorType.DEF);
+
+        HBox hBoxMain = NodeFactory.getHBox(ColorType.DEF);
+        hBoxMain.getChildren().addAll(cbFile, cbFilter, cbSelection);
         hBoxMain.getChildren().add(hBoxTools);
+        NodeFactory.addNodeToBackgroundManager(hBoxMain, ColorType.DEF);
 
         this.setCenter(hBoxMain);
-        infoNode = NodeFactory.getLabel("Info", ColorType.DEF, ColorType.DEF);
-        this.setRight(infoNode);
-
-        NodeFactory.addNodeToBackgroundManager(hBoxMain, ColorType.DEF);
-        NodeFactory.addNodeToBackgroundManager(hBoxTools, ColorType.DEF);
         NodeFactory.addNodeToBackgroundManager(this, ColorType.DEF);
     }
 
     public void reload() {
-        String text = "Item(s) selected: " + select.size();
-        infoNode.setText(text);
+
     }
 
     public Label getNodeSave() {
@@ -90,8 +88,5 @@ public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
     }
     public Label getNodeFullview() {
         return nodeFullview;
-    }
-    public Label getInfoNode() {
-        return infoNode;
     }
 }

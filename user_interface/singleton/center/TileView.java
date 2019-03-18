@@ -22,11 +22,11 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
     private Bounds customBounds;
 
     public TileView() {
-        final int galleryIconSize = coreSettings.valueOf(SettingsEnum.TILEVIEW_ICONSIZE);
+        final int galleryIconSize = settings.intValueOf(SettingsEnum.TILEVIEW_ICONSIZE);
 
         tilePane.setPrefTileWidth(galleryIconSize);
         tilePane.setPrefTileHeight(galleryIconSize);
-        tilePane.setPrefHeight(coreSettings.valueOf(SettingsEnum.MAINSCENE_HEIGHT));
+        tilePane.setPrefHeight(settings.intValueOf(SettingsEnum.MAINSCENE_HEIGHT));
         tilePane.setPrefColumns(10);
 
         this.setContent(tilePane);
@@ -40,8 +40,6 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
     }
 
     public void reload() {
-        if (CommonUtil.isFullView()) return;
-
         double scrollbarValue = this.getVvalue();
         ObservableList<Node> tilePaneItems = tilePane.getChildren();
         tilePaneItems.clear();
@@ -97,6 +95,7 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
     }
 
     public void postInit() {
+        this.requestFocus();
         this.setCustomBounds(tileView.getViewportBounds());
         this.lookupAll(".scroll-bar").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
         this.lookupAll(".increment-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));

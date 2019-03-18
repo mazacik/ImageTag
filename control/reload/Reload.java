@@ -11,8 +11,8 @@ public class Reload implements InstanceRepo {
 
     public Reload() {
         this.subscribe(fullView, Control.TARGET);
-        this.subscribe(infoListViewL, Control.INFO);
-        this.subscribe(infoListViewR, Control.INFO, Control.SELECT, Control.TARGET);
+        this.subscribe(infoListViewL, Control.INFO, Control.FILTER);
+        this.subscribe(infoListViewR, Control.INFO, Control.FILTER, Control.TARGET, Control.SELECT);
         this.subscribe(tileView, Control.DATA, Control.FILTER, Control.SELECT);
         this.subscribe(topMenu, Control.SELECT);
 

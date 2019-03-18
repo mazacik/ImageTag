@@ -21,20 +21,25 @@ import user_interface.factory.util.ColorData;
 import user_interface.factory.util.ColorUtil;
 import user_interface.factory.util.enums.ColorType;
 import user_interface.singleton.center.BaseTile;
+import user_interface.singleton.side.GroupNode;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public abstract class CommonUtil implements InstanceRepo {
-    private static boolean nightMode = userSettings.valueOf(SettingsEnum.COLORMODE);
+    private static int nightMode = settings.intValueOf(SettingsEnum.COLORMODE);
 
-    private static Font font = new Font(coreSettings.valueOf(SettingsEnum.FONTSIZE));
+    private static Font font = new Font(settings.intValueOf(SettingsEnum.FONTSIZE));
     public static boolean isNightMode() {
-        return nightMode;
+        return nightMode == 1;
     }
     public static void setNightMode(boolean value) {
-        nightMode = value;
-        userSettings.setValueOf(SettingsEnum.COLORMODE, value);
+        if (!value) {
+            nightMode = 0;
+        } else {
+            nightMode = 1;
+        }
+        settings.setValueOf(SettingsEnum.COLORMODE, nightMode);
         updateNodeProperties();
     }
     private static Background getBackgroundDef(ColorData colorData) {
@@ -73,15 +78,11 @@ public abstract class CommonUtil implements InstanceRepo {
             return null;
         }
     }
-    public static void updateNodeProperties() {
-        for (ColorData colorData : NodeFactory.getNodeList()) {
 
-            if (colorData.getBackgroundAlt() != ColorType.NULL) {
-                colorData.getNode().setOnMouseEntered(event -> colorData.getNode().setBackground(getBackgroundAlt(colorData)));
-                colorData.getNode().setOnMouseExited(event -> colorData.getNode().setBackground(getBackgroundDef(colorData)));
-            }
+    public static void updateNodeProperties(ArrayList<ColorData> colorDataList) {
+        for (ColorData colorData : colorDataList) {
             colorData.getNode().setBackground(getBackgroundDef(colorData));
-            if (colorData.getNodeType() == ColorData.NodeType.LABEL) {
+            if (colorData.getNode() instanceof Label) {
                 Label label = ((Label) colorData.getNode());
                 if (colorData.getTextFillDef() != ColorType.NULL) {
                     label.setTextFill(getTextColorDef(colorData));
@@ -102,7 +103,12 @@ public abstract class CommonUtil implements InstanceRepo {
                     label.setOnMouseExited(event -> label.setTextFill(getTextColorDef(colorData)));
                     label.setOnMouseEntered(event -> label.setTextFill(getTextColorHov(colorData)));
                 }
-            } else if (colorData.getNodeType() == ColorData.NodeType.INTROWINDOWCELL) {
+            } else if (colorData.getNode() instanceof GroupNode) {
+                if (colorData.getBackgroundAlt() != ColorType.NULL) {
+                    colorData.getNode().setOnMouseExited(event -> colorData.getNode().setBackground(getBackgroundDef(colorData)));
+                    colorData.getNode().setOnMouseEntered(event -> colorData.getNode().setBackground(getBackgroundAlt(colorData)));
+                }
+            } else if (colorData.getNode() instanceof IntroWindowCell) {
                 IntroWindowCell introWindowCell = ((IntroWindowCell) colorData.getNode());
                 introWindowCell.setBackground(getBackgroundDef(colorData));
                 introWindowCell.setOnMouseEntered(event -> {
@@ -115,7 +121,7 @@ public abstract class CommonUtil implements InstanceRepo {
                     introWindowCell.setCursor(Cursor.DEFAULT);
                     introWindowCell.getNodeRemove().setVisible(false);
                 });
-            } else if (colorData.getNodeType() == ColorData.NodeType.TEXTFIELD) {
+            } else if (colorData.getNode() instanceof TextField) {
                 TextField textField = ((TextField) colorData.getNode());
                 Color color = getTextColorDef(colorData);
                 String colorString = String.format("#%02X%02X%02X",
@@ -126,61 +132,24 @@ public abstract class CommonUtil implements InstanceRepo {
             }
         }
     }
+    public static void updateNodeProperties() {
+        updateNodeProperties(NodeFactory.getNodeList());
+    }
     public static void updateNodeProperties(Scene scene) {
+        ArrayList<ColorData> colorDataList = new ArrayList<>();
         for (ColorData colorData : NodeFactory.getNodeList()) {
             if (colorData.getNode().getScene() != null && colorData.getNode().getScene().equals(scene)) {
-                colorData.getNode().setBackground(getBackgroundDef(colorData));
-                if (colorData.getNodeType() == ColorData.NodeType.LABEL) {
-                    Label label = ((Label) colorData.getNode());
-                    if (colorData.getTextFillDef() != ColorType.NULL) {
-                        label.setTextFill(getTextColorDef(colorData));
-                    }
-                    if (colorData.getBackgroundAlt() != ColorType.NULL && colorData.getTextFillHov() != ColorType.NULL) {
-                        label.setOnMouseExited(event -> {
-                            label.setBackground(getBackgroundDef(colorData));
-                            label.setTextFill(getTextColorDef(colorData));
-                        });
-                        label.setOnMouseEntered(event -> {
-                            label.setBackground(getBackgroundAlt(colorData));
-                            label.setTextFill(getTextColorHov(colorData));
-                        });
-                    } else if (colorData.getBackgroundAlt() != ColorType.NULL) {
-                        label.setOnMouseExited(event -> label.setBackground(getBackgroundDef(colorData)));
-                        label.setOnMouseEntered(event -> label.setBackground(getBackgroundAlt(colorData)));
-                    } else if (colorData.getTextFillHov() != ColorType.NULL) {
-                        label.setOnMouseExited(event -> label.setTextFill(getTextColorDef(colorData)));
-                        label.setOnMouseEntered(event -> label.setTextFill(getTextColorHov(colorData)));
-                    }
-                } else if (colorData.getNodeType() == ColorData.NodeType.INTROWINDOWCELL) {
-                    IntroWindowCell introWindowCell = ((IntroWindowCell) colorData.getNode());
-                    introWindowCell.setBackground(getBackgroundDef(colorData));
-                    introWindowCell.setOnMouseEntered(event -> {
-                        introWindowCell.setBackground(getBackgroundAlt(colorData));
-                        introWindowCell.setCursor(Cursor.HAND);
-                        introWindowCell.getNodeRemove().setVisible(true);
-                    });
-                    introWindowCell.setOnMouseExited(event -> {
-                        introWindowCell.setBackground(getBackgroundDef(colorData));
-                        introWindowCell.setCursor(Cursor.DEFAULT);
-                        introWindowCell.getNodeRemove().setVisible(false);
-                    });
-                } else if (colorData.getNodeType() == ColorData.NodeType.TEXTFIELD) {
-                    TextField textField = ((TextField) colorData.getNode());
-                    Color color = getTextColorDef(colorData);
-                    String colorString = String.format("#%02X%02X%02X",
-                            (int) (color.getRed() * 255),
-                            (int) (color.getGreen() * 255),
-                            (int) (color.getBlue() * 255));
-                    textField.setStyle("-fx-text-fill: " + colorString + ";");
-                }
+                colorDataList.add(colorData);
             }
         }
+        updateNodeProperties(colorDataList);
     }
+
     public static Font getFont() {
         return font;
     }
     public static int getPadding() {
-        return coreSettings.valueOf(SettingsEnum.GLOBAL_PADDING);
+        return settings.intValueOf(SettingsEnum.GLOBAL_PADDING);
     }
 
     public static Image textToImage(String text) {
