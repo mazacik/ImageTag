@@ -2,8 +2,6 @@ package settings;
 
 public enum SettingsEnum {
     //System
-    MAINSCENE_WIDTH("mainSceneWidth"),
-    MAINSCENE_HEIGHT("mainSceneHeight"),
     TILEVIEW_ICONSIZE("tileViewIconSize"),
     GLOBAL_PADDING("globalSpacing"),
     FONTSIZE("fontSize"),

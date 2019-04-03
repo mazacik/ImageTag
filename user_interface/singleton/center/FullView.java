@@ -5,7 +5,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
-import settings.SettingsEnum;
 import system.CommonUtil;
 import system.InstanceRepo;
 import user_interface.factory.util.ColorUtil;
@@ -21,7 +20,7 @@ public class FullView extends Pane implements BaseNode, InstanceRepo {
         canvas.heightProperty().bind(this.heightProperty());
 
         this.minWidthProperty().bind(tileView.widthProperty());
-        this.setPrefHeight(settings.intValueOf(SettingsEnum.MAINSCENE_HEIGHT));
+        this.setPrefHeight(CommonUtil.getUsableScreenHeight());
         this.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 1, 0, 1))));
         this.getChildren().add(canvas);
     }

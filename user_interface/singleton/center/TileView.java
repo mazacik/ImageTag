@@ -26,12 +26,12 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
 
         tilePane.setPrefTileWidth(galleryIconSize);
         tilePane.setPrefTileHeight(galleryIconSize);
-        tilePane.setPrefHeight(settings.intValueOf(SettingsEnum.MAINSCENE_HEIGHT));
+        tilePane.setPrefHeight(CommonUtil.getUsableScreenHeight() - topMenu.getPrefHeight() - topMenu.getPadding().getBottom() - topMenu.getBorder().getInsets().getBottom());
         tilePane.setPrefColumns(10);
 
         this.setContent(tilePane);
         this.setFitToWidth(true);
-        this.setMinViewportWidth(tilePane.getPrefColumns() * tilePane.getPrefTileWidth() + (tilePane.getPrefColumns() - 1) * tilePane.getHgap());
+        this.setMinViewportWidth(tilePane.getPrefColumns() * tilePane.getPrefTileWidth() + (tilePane.getPrefColumns() - 1) * tilePane.getHgap() + 1);
         this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         this.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         this.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 1, 0, 1))));
@@ -94,13 +94,13 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
         }
     }
 
-    public void postInit() {
-        this.requestFocus();
-        this.setCustomBounds(tileView.getViewportBounds());
+    public void onShown() {
+        this.setCustomBounds(this.getViewportBounds());
         this.lookupAll(".scroll-bar").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
         this.lookupAll(".increment-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
         this.lookupAll(".decrement-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
         this.lookupAll(".thumb").forEach(sb -> sb.setStyle("-fx-background-color: gray; -fx-background-insets: 0 4 0 4;"));
+        this.requestFocus();
     }
 
     public int getColumnCount() {

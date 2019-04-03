@@ -26,6 +26,7 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
     private final Label nodeText = NodeFactory.getLabel("", ColorType.DEF, ColorType.DEF);
     private final VBox infoObjectVBox = NodeFactory.getVBox(ColorType.DEF);
     private final ArrayList<String> expandedGroupsList = new ArrayList<>();
+
     private final TextField textField = new TextField();
     private String actualText = "";
 
@@ -136,6 +137,11 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
     }
 
     public void reload() {
+        ObservableList<Node> nodes = infoObjectVBox.getChildren();
+        nodes.clear();
+
+        if (select.size() == 0) return;
+
         int hidden = 0;
         for (DataObject dataObject : select) {
             if (!filter.contains(dataObject)) {
@@ -143,13 +149,11 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
             }
         }
 
-        String text = "Selection: " + select.size() + ", " + hidden + " hidden";
+        String text = "Selection: " + select.size();
+        if (hidden > 0) {
+            text += ", " + hidden + " hidden";
+        }
         nodeText.setText(text);
-
-        ObservableList<Node> nodes = infoObjectVBox.getChildren();
-        nodes.clear();
-
-        if (select.size() == 0) return;
 
         ArrayList<String> groupsInter = select.getIntersectingTags().getGroups();
         ArrayList<String> groupsShare = select.getSharedTags().getGroups();
@@ -257,8 +261,10 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
                 nodes.addAll(groupNode.getNameNodes());
             }
         }
+
+        CommonUtil.updateNodeProperties(infoObjectVBox);
     }
-    public void postInit() {
+    public void onShown() {
         infoObjectVBox.lookupAll(".scroll-bar").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
         infoObjectVBox.lookupAll(".increment-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
         infoObjectVBox.lookupAll(".decrement-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));

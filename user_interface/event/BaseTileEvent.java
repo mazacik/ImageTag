@@ -1,10 +1,11 @@
-package user_interface.singleton.center;
+package user_interface.event;
 
 import control.reload.Reload;
 import database.object.DataObject;
 import javafx.scene.input.MouseEvent;
 import settings.SettingsEnum;
 import system.InstanceRepo;
+import user_interface.singleton.center.BaseTile;
 
 public class BaseTileEvent implements InstanceRepo {
     public BaseTileEvent(BaseTile gallerytile) {
@@ -49,13 +50,13 @@ public class BaseTileEvent implements InstanceRepo {
             select.swapState(dataObject);
         }
         reload.doReload();
-        mainStage.getDataObjectRCM().hide();
+        dataObjectRCM.hide();
     }
     private void onRightClick(BaseTile sender, MouseEvent event) {
         DataObject dataObject = sender.getParentDataObject();
         target.set(dataObject);
         select.set(dataObject);
         reload.doReload();
-        mainStage.getDataObjectRCM().show(sender, event);
+        dataObjectRCM.show(sender, event);
     }
 }

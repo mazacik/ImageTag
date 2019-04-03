@@ -1,4 +1,4 @@
-package user_interface.singleton.top;
+package user_interface.event;
 
 import control.filter.FilterTemplate;
 import javafx.scene.input.MouseButton;

@@ -119,6 +119,7 @@ public class IntroStage extends Stage implements InstanceRepo {
                 sourcePath += "\\";
             }
             settings.setCurrentDirectory(sourcePath);
+            settings.writeToDisk();
             new DataLoader().start();
             this.close();
         }

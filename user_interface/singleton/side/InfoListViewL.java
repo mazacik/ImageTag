@@ -127,11 +127,11 @@ public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
                         case PRIMARY:
                             changeNodeState(groupNode, nameNode);
                             reload.doReload();
-                            CommonUtil.updateNodeProperties();
+                            CommonUtil.updateNodeProperties(this.infoObjectVBox);
                             break;
                         case SECONDARY:
-                            mainStage.getInfoObjectRCM().setInfoObject(mainInfoList.getInfoObject(groupNode.getText(), nameNode.getText()));
-                            mainStage.getInfoObjectRCM().show(nameNode, event);
+                            infoObjectRCM.setInfoObject(mainInfoList.getInfoObject(groupNode.getText(), nameNode.getText()));
+                            infoObjectRCM.show(nameNode, event);
                             break;
                         default:
                             break;
@@ -147,7 +147,7 @@ public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
             }
         }
     }
-    public void postInit() {
+    public void onShown() {
         infoObjectVBox.lookupAll(".scroll-bar").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
         infoObjectVBox.lookupAll(".increment-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
         infoObjectVBox.lookupAll(".decrement-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));

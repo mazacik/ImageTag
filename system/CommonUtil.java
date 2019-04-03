@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -23,6 +24,7 @@ import user_interface.factory.util.enums.ColorType;
 import user_interface.singleton.center.BaseTile;
 import user_interface.singleton.side.GroupNode;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -132,9 +134,6 @@ public abstract class CommonUtil implements InstanceRepo {
             }
         }
     }
-    public static void updateNodeProperties() {
-        updateNodeProperties(NodeFactory.getNodeList());
-    }
     public static void updateNodeProperties(Scene scene) {
         ArrayList<ColorData> colorDataList = new ArrayList<>();
         for (ColorData colorData : NodeFactory.getNodeList()) {
@@ -143,6 +142,18 @@ public abstract class CommonUtil implements InstanceRepo {
             }
         }
         updateNodeProperties(colorDataList);
+    }
+    public static void updateNodeProperties(VBox vBox) {
+        ArrayList<ColorData> colorDataList = new ArrayList<>();
+        for (ColorData colorData : NodeFactory.getNodeList()) {
+            if (colorData.getNode().getParent() != null && colorData.getNode().getParent().equals(vBox)) {
+                colorDataList.add(colorData);
+            }
+        }
+        updateNodeProperties(colorDataList);
+    }
+    public static void updateNodeProperties() {
+        updateNodeProperties(NodeFactory.getNodeList());
     }
 
     public static Font getFont() {
@@ -172,8 +183,15 @@ public abstract class CommonUtil implements InstanceRepo {
         return img;
     }
 
+    public static double getUsableScreenWidth() {
+        return GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getWidth();
+    }
+    public static double getUsableScreenHeight() {
+        return GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getHeight();
+    }
+
     public static void swapDisplayMode() {
-        mainStage.swapDisplayMode();
+        mainStage.swapViewMode();
     }
     public static boolean isFullView() {
         return mainStage.isFullView();

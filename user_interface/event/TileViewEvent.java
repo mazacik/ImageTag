@@ -1,4 +1,4 @@
-package user_interface.singleton.center;
+package user_interface.event;
 
 import system.InstanceRepo;
 

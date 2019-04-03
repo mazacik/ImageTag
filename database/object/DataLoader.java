@@ -8,6 +8,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import org.apache.commons.io.FilenameUtils;
 import settings.SettingsEnum;
+import system.CommonUtil;
 import system.InstanceRepo;
 import user_interface.factory.stage.LoadingStage;
 import user_interface.singleton.center.BaseTile;
@@ -15,6 +16,8 @@ import user_interface.singleton.center.BaseTile;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -30,11 +33,12 @@ public class DataLoader extends Thread implements InstanceRepo {
         final LoadingStage[] loadingStage = new LoadingStage[1];
         Platform.runLater(() -> {
             loadingStage[0] = new LoadingStage();
-            mainStage.initialize();
+            mainStage.init();
         });
 
         checkDirectoryPaths();
-        ArrayList<File> fileList = getValidFiles();
+        //importFiles();
+        ArrayList<File> fileList = getValidFiles(PATH_SOURCE);
 
         try {
             mainDataList.addAll(mainDataList.readFromDisk());
@@ -62,8 +66,25 @@ public class DataLoader extends Thread implements InstanceRepo {
         logger.debug(this, "loader thread end");
     }
 
-    private ArrayList<File> getValidFiles() {
-        return new ArrayList<>(Arrays.asList(new File(PATH_SOURCE).listFiles((dir, name) -> {
+    private void importFiles() {
+        ArrayList<String> importDirectories = CommonUtil.settings.getImportDirectoriesList();
+        importDirectories.forEach(dir -> {
+            logger.debug(this, "importing files from " + dir);
+            int importCounter = 0;
+            for (File file : getValidFiles(dir)) {
+                try {
+                    Files.copy(Paths.get(file.getAbsolutePath()), Paths.get((PATH_SOURCE) + file.getName()));
+                    logger.debug(this, "imported " + file.getName());
+                    importCounter++;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            logger.debug(this, "imported " + importCounter + " files");
+        });
+    }
+    private ArrayList<File> getValidFiles(String directory) {
+        return new ArrayList<>(Arrays.asList(new File(directory).listFiles((dir, name) -> {
             String _name = name.toLowerCase();
             return _name.endsWith(".jpg") || _name.endsWith(".jpeg") || _name.endsWith(".png");
         })));

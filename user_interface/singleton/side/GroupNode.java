@@ -25,10 +25,10 @@ public class GroupNode extends HBox implements InstanceRepo {
         labelArrow = NodeFactory.getLabel("+ ");
         labelText = NodeFactory.getLabel(text);
 
-        HBox.setHgrow(labelText, Priority.ALWAYS);
-
         labelArrow.setPadding(new Insets(0, 5, 0, 15));
         labelText.setPadding(new Insets(0, 15, 0, 5));
+
+        HBox.setHgrow(labelText, Priority.ALWAYS);
 
         this.getChildren().addAll(labelArrow, labelText);
         labelArrow.setOnMouseClicked(event -> {
@@ -41,6 +41,7 @@ public class GroupNode extends HBox implements InstanceRepo {
                             ObservableList<Node> nodes = infoListViewL.getInfoObjectVBox().getChildren();
                             int index = nodes.indexOf(this) + 1;
                             nodes.addAll(index, nameNodes);
+                            CommonUtil.updateNodeProperties(infoListViewL.getInfoObjectVBox());
                             labelArrow.setText("− ");
                         } else {
                             infoListViewL.getExpandedGroupsList().remove(labelText.getText());
@@ -54,6 +55,7 @@ public class GroupNode extends HBox implements InstanceRepo {
                             ObservableList<Node> nodes = infoListViewR.getInfoObjectVBox().getChildren();
                             int index = nodes.indexOf(this) + 1;
                             nodes.addAll(index, nameNodes);
+                            CommonUtil.updateNodeProperties(infoListViewR.getInfoObjectVBox());
                             labelArrow.setText("− ");
                         } else {
                             infoListViewR.getExpandedGroupsList().remove(labelText.getText());
@@ -75,12 +77,12 @@ public class GroupNode extends HBox implements InstanceRepo {
                     if (this.getParent().getParent() instanceof InfoListViewL) {
                         infoListViewL.changeNodeState(this, null);
                         reload.doReload();
-                        CommonUtil.updateNodeProperties();
+                        CommonUtil.updateNodeProperties(infoListViewL.getInfoObjectVBox());
                     }
                     break;
                 case SECONDARY:
                     if (this.getParent().getParent() instanceof InfoListViewL) {
-                        mainStage.getInfoObjectRCM().show(this, event);
+                        infoObjectRCM.show(this, event);
                     }
                     break;
                 default:
@@ -95,18 +97,16 @@ public class GroupNode extends HBox implements InstanceRepo {
     public String getText() {
         return labelText.getText();
     }
-    public void setText(String text) {
-        labelText.setText(text);
+    public Paint getTextFill() {
+        return labelText.getTextFill();
     }
+
     public void setArrowExpanded(boolean value) {
         if (value) {
             labelArrow.setText("− ");
         } else {
             labelArrow.setText("+ ");
         }
-    }
-    public Paint getTextFill() {
-        return labelText.getTextFill();
     }
     public void setTextFill(Color textFill) {
         labelArrow.setTextFill(textFill);

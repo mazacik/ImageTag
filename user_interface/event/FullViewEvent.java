@@ -1,9 +1,8 @@
-package user_interface.singleton.center;
+package user_interface.event;
 
 import javafx.beans.value.ChangeListener;
 import javafx.scene.canvas.Canvas;
 import system.InstanceRepo;
-import user_interface.factory.node.popup.DataObjectRCM;
 
 public class FullViewEvent implements InstanceRepo {
     public FullViewEvent() {
@@ -12,14 +11,13 @@ public class FullViewEvent implements InstanceRepo {
     }
 
     private void onMouseClick() {
-        final DataObjectRCM contextMenu = mainStage.getDataObjectRCM();
         fullView.getCanvas().setOnMouseClicked(event -> {
             switch (event.getButton()) {
                 case PRIMARY:
-                    contextMenu.hide();
+                    dataObjectRCM.hide();
                     break;
                 case SECONDARY:
-                    contextMenu.show(fullView, event.getScreenX(), event.getScreenY());
+                    dataObjectRCM.show(fullView, event.getScreenX(), event.getScreenY());
                     break;
                 default:
                     break;

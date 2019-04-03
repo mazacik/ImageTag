@@ -10,6 +10,8 @@ import database.list.InfoObjectList;
 import database.list.InfoObjectListMain;
 import settings.Settings;
 import user_interface.MainStage;
+import user_interface.factory.node.popup.DataObjectRCM;
+import user_interface.factory.node.popup.InfoObjectRCM;
 import user_interface.singleton.center.FullView;
 import user_interface.singleton.center.TileView;
 import user_interface.singleton.side.InfoListViewL;
@@ -26,6 +28,9 @@ public interface InstanceRepo {
     InfoListViewL infoListViewL = new InfoListViewL();
     InfoListViewR infoListViewR = new InfoListViewR();
     MainStage mainStage = new MainStage();
+
+    DataObjectRCM dataObjectRCM = new DataObjectRCM();
+    InfoObjectRCM infoObjectRCM = new InfoObjectRCM();
 
     Filter filter = new Filter();
     Target target = new Target();

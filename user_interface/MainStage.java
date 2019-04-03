@@ -1,88 +1,67 @@
 package user_interface;
 
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import settings.SettingsEnum;
-import system.CommonUtil;
 import system.InstanceRepo;
+import user_interface.event.EventUtil;
 import user_interface.factory.NodeFactory;
 import user_interface.factory.node.TitleBar;
-import user_interface.factory.node.popup.DataObjectRCM;
-import user_interface.factory.node.popup.InfoObjectRCM;
 import user_interface.factory.util.enums.ColorType;
-import user_interface.singleton.center.FullViewEvent;
-import user_interface.singleton.center.TileViewEvent;
-import user_interface.singleton.top.TopMenuEvent;
 
 public class MainStage extends Stage implements InstanceRepo {
-    private final HBox hBox = NodeFactory.getHBox(ColorType.DEF, infoListViewL, tileView, infoListViewR);
-    private final DataObjectRCM dataObjectRCM = new DataObjectRCM();
-    private final InfoObjectRCM infoObjectRCM = new InfoObjectRCM();
+    private ObservableList<Node> views;
 
-    public void initialize() {
-        logger.debug(this, "user_interface initialize start");
-        setDefaultValues();
-        initializeEvents();
-        logger.debug(this, "user_interface initialize done");
-    }
-    private void setDefaultValues() {
-        TitleBar titleBar = new TitleBar(this, false);
-        titleBar.setLeft(topMenu);
-        titleBar.setPadding(new Insets(0, 5, 0, 0));
-        this.setScene(new Scene(NodeFactory.getVBox(ColorType.DEF, titleBar, hBox)));
-        this.initStyle(StageStyle.UNDECORATED);
+    public void init() {
+        logger.debug(this, "user interface init start");
+
         HBox.setHgrow(infoListViewL, Priority.ALWAYS);
         HBox.setHgrow(infoListViewR, Priority.ALWAYS);
 
-        this.setOnShowing(event -> reload.doReload());
-        this.setOnShown(event -> {
-            infoListViewL.postInit();
-            infoListViewR.postInit();
-            tileView.postInit();
+        this.initStyle(StageStyle.UNDECORATED);
+        this.setScene(this.createScene());
 
-            target.set(mainDataList.get(0));
+        EventUtil.init();
 
-            CommonUtil.updateNodeProperties();
-            this.setWidth(CommonUtil.settings.intValueOf(SettingsEnum.MAINSCENE_WIDTH));
-            this.setHeight(CommonUtil.settings.intValueOf(SettingsEnum.MAINSCENE_HEIGHT));
-            this.centerOnScreen();
-        });
-        this.setOnCloseRequest(event -> {
-            mainDataList.writeToDisk();
-            logger.debug(this, "application exit");
-        });
-    }
-    private void initializeEvents() {
-        new GlobalEvent();
-
-        new TopMenuEvent();
-        new TileViewEvent();
-        new FullViewEvent();
+        logger.debug(this, "user interface init end");
     }
 
-    public void swapDisplayMode() {
+    public void swapViewMode() {
         if (this.isFullView()) {
-            hBox.getChildren().set(hBox.getChildren().indexOf(fullView), tileView);
-            tileView.adjustViewportToCurrentTarget();
-            tileView.requestFocus();
+            int nodeIndex = views.indexOf(fullView);
+            if (nodeIndex != -1) {
+                views.set(nodeIndex, tileView);
+                tileView.adjustViewportToCurrentTarget();
+                //tileView.requestFocus();
+            }
         } else {
-            hBox.getChildren().set(hBox.getChildren().indexOf(tileView), fullView);
-            fullView.reload();
-            fullView.requestFocus();
+            int nodeIndex = views.indexOf(tileView);
+            if (nodeIndex != -1) {
+                views.set(nodeIndex, fullView);
+                fullView.reload();
+                //fullView.requestFocus();
+            }
         }
     }
     public boolean isFullView() {
-        return hBox.getChildren().contains(fullView);
+        return views.contains(fullView);
     }
 
-    public DataObjectRCM getDataObjectRCM() {
-        return dataObjectRCM;
-    }
-    public InfoObjectRCM getInfoObjectRCM() {
-        return infoObjectRCM;
+    private Scene createScene() {
+        TitleBar titleBar = new TitleBar(this, false);
+        titleBar.setPadding(new Insets(0, 5, 0, 0));
+        titleBar.setBorder(null);
+
+        topMenu.setRight(titleBar);
+
+        HBox mainHBox = NodeFactory.getHBox(ColorType.DEF, infoListViewL, tileView, infoListViewR);
+        views = mainHBox.getChildren();
+
+        return new Scene(NodeFactory.getVBox(ColorType.DEF, topMenu, mainHBox));
     }
 }
