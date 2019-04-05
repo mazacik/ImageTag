@@ -49,17 +49,17 @@ public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
         nodeFullview = NodeFactory.getLabel("FullView", colorData);
         HBox hBoxTools = NodeFactory.getHBox(ColorType.DEF, nodeRandom, nodeFullview);
         hBoxTools.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 1, 0, 1))));
-        NodeFactory.addNodeToBackgroundManager(hBoxTools, ColorType.DEF);
+        NodeFactory.addNodeToManager(hBoxTools, ColorType.DEF);
 
         HBox hBoxMain = NodeFactory.getHBox(ColorType.DEF);
         hBoxMain.getChildren().addAll(cbFile, cbFilter, cbSelection);
         hBoxMain.getChildren().add(hBoxTools);
-        NodeFactory.addNodeToBackgroundManager(hBoxMain, ColorType.DEF);
+        NodeFactory.addNodeToManager(hBoxMain, ColorType.DEF);
 
         this.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 1, 0))));
         this.setPrefHeight(30);
         this.setLeft(hBoxMain);
-        NodeFactory.addNodeToBackgroundManager(this, ColorType.DEF);
+        NodeFactory.addNodeToManager(this, ColorType.DEF);
     }
 
     public void reload() {

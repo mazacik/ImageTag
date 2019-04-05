@@ -3,6 +3,7 @@ package user_interface.factory;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
@@ -63,13 +64,13 @@ public abstract class NodeFactory {
     public static HBox getHBox(ColorType colorType, Node... children) {
         HBox hBox = new HBox(children);
         hBox.setAlignment(Pos.CENTER);
-        addNodeToBackgroundManager(hBox, colorType);
+        addNodeToManager(hBox, colorType);
         return hBox;
     }
     public static VBox getVBox(ColorType colorType, Node... children) {
         VBox vBox = new VBox(children);
         vBox.setAlignment(Pos.CENTER);
-        addNodeToBackgroundManager(vBox, colorType);
+        addNodeToManager(vBox, colorType);
         return vBox;
     }
 
@@ -80,10 +81,10 @@ public abstract class NodeFactory {
         return t;
     }
 
-    public static void addNodeToBackgroundManager(Region region, ColorType backgroundDef) {
-        addNodeToBackgroundManager(region, backgroundDef, ColorType.NULL, ColorType.NULL, ColorType.NULL);
+    public static void addNodeToManager(Region region, ColorType backgroundDef) {
+        addNodeToManager(region, backgroundDef, ColorType.NULL, ColorType.NULL, ColorType.NULL);
     }
-    public static void addNodeToBackgroundManager(Region region, ColorType backgroundDef, ColorType backgroundAlt, ColorType textFillDef, ColorType textFillAlt) {
+    public static void addNodeToManager(Region region, ColorType backgroundDef, ColorType backgroundAlt, ColorType textFillDef, ColorType textFillAlt) {
         boolean match = false;
         for (ColorData colorData : nodeList) {
             if (colorData.getNode() == region) {
@@ -95,5 +96,15 @@ public abstract class NodeFactory {
         if (!match) {
             nodeList.add(new ColorData(region, backgroundDef, backgroundAlt, textFillDef, textFillAlt));
         }
+    }
+
+    public static void removeNodesFromManager(Scene scene) {
+        ArrayList<ColorData> colorDataList = new ArrayList<>();
+        for (ColorData colorData : NodeFactory.getNodeList()) {
+            if (colorData.getNode().getScene() != null && colorData.getNode().getScene().equals(scene)) {
+                colorDataList.add(colorData);
+            }
+        }
+        nodeList.removeAll(colorDataList);
     }
 }

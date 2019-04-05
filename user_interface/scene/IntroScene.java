@@ -119,4 +119,8 @@ public class IntroScene implements InstanceRepo {
         new DataLoader().start();
         SceneUtil.createMainScene();
     }
+
+    public Scene getInstance() {
+        return introScene;
+    }
 }

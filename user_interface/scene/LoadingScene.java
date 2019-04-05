@@ -24,7 +24,7 @@ public class LoadingScene implements InstanceRepo {
         borderPane.setCenter(progressLabel);
         borderPane.setPrefWidth(300);
         borderPane.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1, 1, 1, 1))));
-        NodeFactory.addNodeToBackgroundManager(borderPane, ColorType.DEF);
+        NodeFactory.addNodeToManager(borderPane, ColorType.DEF);
 
         Scene loadingScene = new Scene(borderPane);
         CommonUtil.updateNodeProperties(loadingScene);
@@ -39,6 +39,9 @@ public class LoadingScene implements InstanceRepo {
         logger.debug(this, "waiting for directory");
     }
 
+    public Scene getInstance() {
+        return loadingScene;
+    }
     public Label getProgressLabel() {
         return progressLabel;
     }

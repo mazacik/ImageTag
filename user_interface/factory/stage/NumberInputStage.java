@@ -35,7 +35,7 @@ public class NumberInputStage extends Stage {
             result = Integer.valueOf(nodeTextField.getText());
             this.close();
         });
-        NodeFactory.addNodeToBackgroundManager(nodeTextField, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+        NodeFactory.addNodeToManager(nodeTextField, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
 
         ColorData colorData = new ColorData(ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
         Label buttonPositive = NodeFactory.getLabel("OK", colorData);
@@ -69,7 +69,7 @@ public class NumberInputStage extends Stage {
         vBoxMain.getChildren().add(nodeContent);
         vBoxMain.getChildren().add(nodeTextField);
         vBoxMain.getChildren().add(hBox);
-        NodeFactory.addNodeToBackgroundManager(vBoxMain, ColorType.DEF);
+        NodeFactory.addNodeToManager(vBoxMain, ColorType.DEF);
 
         this.setOnShown(event -> {
             this.centerOnScreen();

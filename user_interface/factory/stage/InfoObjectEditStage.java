@@ -49,8 +49,8 @@ public class InfoObjectEditStage extends Stage {
             }
         });
 
-        NodeFactory.addNodeToBackgroundManager(nodeGroupEdit, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
-        NodeFactory.addNodeToBackgroundManager(nodeNameEdit, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+        NodeFactory.addNodeToManager(nodeGroupEdit, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+        NodeFactory.addNodeToManager(nodeNameEdit, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
         nodeGroupEdit.requestFocus();
         if (infoObject != null) {
             nodeGroupEdit.setText(infoObject.getGroup());

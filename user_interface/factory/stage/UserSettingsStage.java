@@ -33,7 +33,7 @@ public class UserSettingsStage extends Stage {
                 TextField textField = new TextField(String.valueOf(setting.getValue()));
                 textField.setFont(CommonUtil.getFont());
                 textField.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1, 1, 1, 1))));
-                NodeFactory.addNodeToBackgroundManager(textField, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+                NodeFactory.addNodeToManager(textField, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
                 HBox hBox = NodeFactory.getHBox(ColorType.DEF, label, textField);
                 vBox.getChildren().add(hBox);
             }

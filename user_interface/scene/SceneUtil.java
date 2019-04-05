@@ -3,6 +3,7 @@ package user_interface.scene;
 import javafx.stage.StageStyle;
 import system.CommonUtil;
 import system.InstanceRepo;
+import user_interface.factory.NodeFactory;
 
 public class SceneUtil implements InstanceRepo {
     private static IntroScene introScene;
@@ -39,9 +40,11 @@ public class SceneUtil implements InstanceRepo {
         introScene.show();
     }
     public static void showLoadingScene() {
+        NodeFactory.removeNodesFromManager(introScene.getInstance());
         loadingScene.show();
     }
     public static void showMainScene() {
+        NodeFactory.removeNodesFromManager(loadingScene.getInstance());
         mainScene.show();
     }
 }

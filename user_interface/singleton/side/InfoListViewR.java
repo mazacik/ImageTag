@@ -75,7 +75,7 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
                 reload.doReload();
             }
         });
-        NodeFactory.addNodeToBackgroundManager(textField, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+        NodeFactory.addNodeToManager(textField, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
 
         HBox.setHgrow(this, Priority.ALWAYS);
         this.setPrefWidth(999);

@@ -41,7 +41,7 @@ public class TitleBar extends BorderPane {
         });
         BorderPane.setAlignment(btnExit, Pos.CENTER);
 
-        NodeFactory.addNodeToBackgroundManager(this, ColorType.DEF);
+        NodeFactory.addNodeToManager(this, ColorType.DEF);
 
         this.setCenter(labelTitle);
         this.setRight(btnExit);

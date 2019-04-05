@@ -30,7 +30,6 @@ public class DataLoader extends Thread implements InstanceRepo {
 
     public void run() {
         logger.debug(this, "loader thread start");
-        //todo maybe init main scene in this runlater
         Platform.runLater(SceneUtil::showLoadingScene);
 
         checkDirectoryPaths();
