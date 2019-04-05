@@ -48,7 +48,8 @@ public class OkCancelStage extends Stage {
         hBox.setSpacing(CommonUtil.getPadding());
 
         VBox vBox = NodeFactory.getVBox(ColorType.DEF);
-        vBox.getChildren().add(new TitleBar(this));
+        Scene scene = new Scene(vBox);
+        vBox.getChildren().add(new TitleBar(scene));
         vBox.getChildren().add(labelContent);
         vBox.getChildren().add(hBox);
         vBox.setBackground(ColorUtil.getBackgroundDef());
@@ -56,7 +57,7 @@ public class OkCancelStage extends Stage {
 
         this.initStyle(StageStyle.UNDECORATED);
 
-        this.setScene(new Scene(vBox));
+        this.setScene(scene);
         this.setAlwaysOnTop(true);
         this.centerOnScreen();
     }

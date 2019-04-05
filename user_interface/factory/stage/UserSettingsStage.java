@@ -50,12 +50,13 @@ public class UserSettingsStage extends Stage {
         HBox hBox = NodeFactory.getHBox(ColorType.DEF, lblCancel, lblOK);
 
         BorderPane borderPane = new BorderPane();
-        borderPane.setTop(new TitleBar(this));
+        Scene scene = new Scene(borderPane);
+        borderPane.setTop(new TitleBar(scene));
         borderPane.setCenter(vBox);
         borderPane.setBottom(hBox);
 
         this.initStyle(StageStyle.UNDECORATED);
-        this.setScene(new Scene(borderPane));
+        this.setScene(scene);
         this.setOnShown(event -> {
             int labelWidth = 0;
             for (Label label : labels) {

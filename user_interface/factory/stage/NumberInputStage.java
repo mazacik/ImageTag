@@ -64,7 +64,8 @@ public class NumberInputStage extends Stage {
         vBoxMain.setSpacing(padding);
         vBoxMain.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1, 1, 1, 1))));
 
-        vBoxMain.getChildren().add(new TitleBar(this));
+        Scene scene = new Scene(vBoxMain);
+        vBoxMain.getChildren().add(new TitleBar(scene));
         vBoxMain.getChildren().add(nodeContent);
         vBoxMain.getChildren().add(nodeTextField);
         vBoxMain.getChildren().add(hBox);
@@ -75,7 +76,7 @@ public class NumberInputStage extends Stage {
             CommonUtil.updateNodeProperties(this.getScene());
         });
         this.initStyle(StageStyle.UNDECORATED);
-        this.setScene(new Scene(vBoxMain));
+        this.setScene(scene);
         this.getScene().widthProperty().addListener(event -> nodeTextField.setMaxWidth(this.getScene().getWidth() - 4 * padding));
         this.setAlwaysOnTop(true);
     }

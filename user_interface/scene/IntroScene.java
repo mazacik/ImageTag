@@ -1,4 +1,4 @@
-package user_interface.factory.stage;
+package user_interface.scene;
 
 import database.object.DataLoader;
 import javafx.geometry.Insets;
@@ -10,23 +10,28 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import system.CommonUtil;
 import system.InstanceRepo;
 import user_interface.factory.NodeFactory;
 import user_interface.factory.node.ColorModeSwitch;
 import user_interface.factory.node.IntroWindowCell;
 import user_interface.factory.node.TitleBar;
+import user_interface.factory.stage.DirectoryChooserStage;
 import user_interface.factory.util.enums.ColorType;
 
 import java.io.File;
 import java.util.ArrayList;
 
-public class IntroStage extends Stage implements InstanceRepo {
-    public IntroStage() {
+public class IntroScene implements InstanceRepo {
+    private final Scene introScene;
+
+    IntroScene() {
+        introScene = create();
+    }
+
+    private Scene create() {
         VBox vBoxL = NodeFactory.getVBox(ColorType.ALT);
-        vBoxL.setPrefWidth(250);
+        vBoxL.setPrefWidth(350);
         vBoxL.setPadding(new Insets(5));
         new ArrayList<>(settings.getRecentDirList()).forEach(item -> {
             if (new File(item).exists()) {
@@ -37,7 +42,7 @@ public class IntroStage extends Stage implements InstanceRepo {
                             settings.getRecentDirList().remove(introWindowCell.getPath());
                             vBoxL.getChildren().remove(introWindowCell);
                         } else {
-                            startLoading(introWindowCell);
+                            startLoading(introWindowCell.getPath());
                         }
                     }
                 });
@@ -68,51 +73,35 @@ public class IntroStage extends Stage implements InstanceRepo {
         VBox.setVgrow(hBoxGrowHelper, Priority.ALWAYS);
 
         VBox vBoxMain = NodeFactory.getVBox(ColorType.DEF);
-        vBoxMain.getChildren().add(new TitleBar(this, "Welcome"));
-        vBoxMain.getChildren().add(hBoxGrowHelper);
-
         Scene introScene = new Scene(vBoxMain);
+        vBoxMain.getChildren().add(new TitleBar(introScene, "Welcome"));
+        vBoxMain.getChildren().add(hBoxGrowHelper);
         introScene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 if (!settings.getRecentDirList().isEmpty()) {
-                    this.startLoading((IntroWindowCell) vBoxL.getChildren().get(0));
+                    this.startLoading(((IntroWindowCell) vBoxL.getChildren().get(0)).getPath());
                 } else {
                     this.directoryChooser();
                 }
             }
         });
 
-        CommonUtil.updateNodeProperties();
+        CommonUtil.updateNodeProperties(introScene);
+        return introScene;
+    }
+    void show() {
+        mainStage.setScene(introScene);
+        mainStage.setWidth(CommonUtil.getUsableScreenWidth() / 2.5);
+        mainStage.setHeight(CommonUtil.getUsableScreenHeight() / 2);
+        mainStage.centerOnScreen();
 
-        this.setScene(introScene);
-        this.setOnShowing(event -> {
-            if (vBoxL.getChildren().isEmpty()) {
-                vBoxL.getChildren().add(NodeFactory.getIntroWindowCell("Stage Height Helper"));
-            }
-        });
-        this.setOnShown(event -> {
-            double newHeight;
-            if (settings.getRecentDirList().size() > 0) {
-                newHeight = this.getHeight() + ((6 - vBoxL.getChildren().size()) * ((IntroWindowCell) vBoxL.getChildren().get(0)).getHeight());
-            } else {
-                newHeight = 6 * ((IntroWindowCell) vBoxL.getChildren().get(0)).getHeight();
-                vBoxL.getChildren().clear();
-            }
-            this.setHeight(newHeight);
-            this.centerOnScreen();
-        });
-        this.initStyle(StageStyle.UNDECORATED);
-        this.setResizable(false);
-        this.setOnCloseRequest(event -> {
-            settings.writeToDisk();
-            logger.debug(this, "application exit");
-        });
-        this.show();
         logger.debug(this, "waiting for directory");
+
+        SceneUtil.createLoadingScene();
     }
 
     private void directoryChooser() {
-        String sourcePath = new DirectoryChooserStage(this, "Choose a Directory", "C:\\").getResultValue();
+        String sourcePath = new DirectoryChooserStage(mainStage, "Choose a Directory", "C:\\").getResultValue();
         if (!sourcePath.isEmpty()) {
             char lastchar = sourcePath.charAt(sourcePath.length() - 1);
             if (sourcePath.length() > 3 && (lastchar != '\\' || lastchar != '/')) {
@@ -121,13 +110,13 @@ public class IntroStage extends Stage implements InstanceRepo {
             settings.setCurrentDirectory(sourcePath);
             settings.writeToDisk();
             new DataLoader().start();
-            this.close();
+            startLoading(sourcePath);
         }
     }
-    private void startLoading(IntroWindowCell introWindowCell) {
-        settings.setCurrentDirectory(introWindowCell.getPath());
+    private void startLoading(String sourcePath) {
+        settings.setCurrentDirectory(sourcePath);
         settings.writeToDisk();
         new DataLoader().start();
-        this.close();
+        SceneUtil.createMainScene();
     }
 }

@@ -78,7 +78,8 @@ public class InfoObjectEditStage extends Stage {
 
         HBox hBoxBottom = NodeFactory.getHBox(ColorType.DEF, nodeCancel, nodeOK);
 
-        borderPane.setTop(new TitleBar(this, "Create a new tag"));
+        Scene scene = new Scene(borderPane);
+        borderPane.setTop(new TitleBar(scene, "Create a new tag"));
         borderPane.setCenter(vBoxHelper);
         borderPane.setBottom(hBoxBottom);
 
@@ -86,7 +87,7 @@ public class InfoObjectEditStage extends Stage {
 
         this.initStyle(StageStyle.UNDECORATED);
         setAlwaysOnTop(true);
-        setScene(new Scene(borderPane));
+        setScene(scene);
         setResizable(false);
         this.setOnShown(event -> {
             this.centerOnScreen();

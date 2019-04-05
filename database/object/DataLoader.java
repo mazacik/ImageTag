@@ -10,7 +10,7 @@ import org.apache.commons.io.FilenameUtils;
 import settings.SettingsEnum;
 import system.CommonUtil;
 import system.InstanceRepo;
-import user_interface.factory.stage.LoadingStage;
+import user_interface.scene.SceneUtil;
 import user_interface.singleton.center.BaseTile;
 
 import javax.imageio.ImageIO;
@@ -30,11 +30,8 @@ public class DataLoader extends Thread implements InstanceRepo {
 
     public void run() {
         logger.debug(this, "loader thread start");
-        final LoadingStage[] loadingStage = new LoadingStage[1];
-        Platform.runLater(() -> {
-            loadingStage[0] = new LoadingStage();
-            mainStage.init();
-        });
+        //todo maybe init main scene in this runlater
+        Platform.runLater(SceneUtil::showLoadingScene);
 
         checkDirectoryPaths();
         //importFiles();
@@ -49,7 +46,7 @@ public class DataLoader extends Thread implements InstanceRepo {
         }
 
         validateDatabaseCache(fileList);
-        loadImageCache(loadingStage[0], fileList.size());
+        loadImageCache(fileList.size());
 
         mainDataList.sort();
         mainDataList.writeToDisk();
@@ -59,10 +56,7 @@ public class DataLoader extends Thread implements InstanceRepo {
         filter.setFilter(FilterTemplate.SHOW_EVERYTHING);
         reload.notifyChangeIn(Reload.Control.values());
 
-        Platform.runLater(() -> {
-            loadingStage[0].close();
-            mainStage.show();
-        });
+        Platform.runLater(SceneUtil::showMainScene);
         logger.debug(this, "loader thread end");
     }
 
@@ -165,21 +159,21 @@ public class DataLoader extends Thread implements InstanceRepo {
         mainDataList.clear();
         mainDataList.addAll(temporaryList);
     }
-    private void loadImageCache(LoadingStage loadingStage, int fileListSize) {
+    private void loadImageCache(int fileListSize) {
         logger.debug(this, "loading image cache");
         final int galleryIconSizeMax = settings.intValueOf(SettingsEnum.TILEVIEW_ICONSIZE);
         int currentObjectIndex = 1;
         Image thumbnail;
 
         for (DataObject dataObject : mainDataList) {
-            updateLoadingLabel(loadingStage, fileListSize, currentObjectIndex++);
+            updateLoadingLabel(fileListSize, currentObjectIndex++);
             thumbnail = getImageFromDataObject(dataObject, galleryIconSizeMax);
             dataObject.setBaseTile(new BaseTile(dataObject, thumbnail));
         }
     }
-    private void updateLoadingLabel(LoadingStage loadingStage, int fileCount, int currentObjectIndex) {
-        if (loadingStage != null) {
-            Platform.runLater(() -> loadingStage.getProgressLabel().setText("Loading item " + currentObjectIndex + " of " + fileCount + ", " + currentObjectIndex * 100 / fileCount + "% done"));
+    private void updateLoadingLabel(int fileCount, int currentObjectIndex) {
+        if (mainStage.getScene() != null) {
+            Platform.runLater(() -> SceneUtil.getLoadingScene().getProgressLabel().setText("Loading item " + currentObjectIndex + " of " + fileCount + ", " + currentObjectIndex * 100 / fileCount + "% done"));
         }
     }
 
