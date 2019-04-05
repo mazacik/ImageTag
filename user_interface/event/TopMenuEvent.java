@@ -17,7 +17,7 @@ public class TopMenuEvent implements InstanceRepo {
         onAction_menuClearSelection();
         onAction_menuMergeSelection();
 
-        onAction_menuCustom();
+        onAction_menuLimit();
         onAction_menuReset();
 
         onAction_menuRandom();
@@ -68,12 +68,16 @@ public class TopMenuEvent implements InstanceRepo {
         });
     }
 
-    private void onAction_menuCustom() {
-        topMenu.getNodeCustom().setOnMouseClicked(event -> {
+    private void onAction_menuLimit() {
+        topMenu.getNodeLimit().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                int maxTags = new NumberInputStage("Maximum number of tags:").getResult();
-                if (maxTags == -1) return;
-                FilterTemplate.setMaxTagsValue(maxTags);
+                if (event.isControlDown()) {
+                    int maxTags = new NumberInputStage("Maximum number of tags:").getResult();
+                    if (maxTags == -1) return;
+                    FilterTemplate.setMaxTagsValue(maxTags);
+                } else {
+                    FilterTemplate.setMaxTagsValue(0);
+                }
 
                 filter.setFilter(FilterTemplate.SHOW_MAX_X_TAGS);
                 reload.doReload();

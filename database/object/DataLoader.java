@@ -67,7 +67,7 @@ public class DataLoader extends Thread implements InstanceRepo {
     }
 
     private void importFiles() {
-        ArrayList<String> importDirectories = CommonUtil.settings.getImportDirectoriesList();
+        ArrayList<String> importDirectories = CommonUtil.settings.getImportDirList();
         importDirectories.forEach(dir -> {
             logger.debug(this, "importing files from " + dir);
             int importCounter = 0;

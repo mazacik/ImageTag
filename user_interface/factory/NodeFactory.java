@@ -4,11 +4,13 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
+import javafx.util.Duration;
 import system.CommonUtil;
 import user_interface.factory.node.IntroWindowCell;
 import user_interface.factory.util.ColorData;
@@ -69,6 +71,13 @@ public abstract class NodeFactory {
         vBox.setAlignment(Pos.CENTER);
         addNodeToBackgroundManager(vBox, colorType);
         return vBox;
+    }
+
+    public static Tooltip getTooltip(String text) {
+        Tooltip t = new Tooltip(text);
+        t.setFont(CommonUtil.getFont());
+        t.setShowDelay(new Duration(500));
+        return t;
     }
 
     public static void addNodeToBackgroundManager(Region region, ColorType backgroundDef) {

@@ -10,8 +10,8 @@ import java.util.ArrayList;
 
 public class Settings implements InstanceRepo, Serializable {
     private ArrayList<Setting> settingsList;
-    private ArrayList<String> recentDirectoriesList;
-    private ArrayList<String> importDirectoriesList;
+    private ArrayList<String> recentDirList;
+    private ArrayList<String> importDirList;
 
     private transient String currentDirectory;
 
@@ -30,8 +30,8 @@ public class Settings implements InstanceRepo, Serializable {
         settingsList.add(new Setting(SettingsEnum.COLORMODE, 0, SettingType.USER));
         settingsList.add(new Setting(SettingsEnum.FONTSIZE, 14, SettingType.USER));
 
-        recentDirectoriesList = new ArrayList<>();
-        importDirectoriesList = new ArrayList<>();
+        recentDirList = new ArrayList<>();
+        importDirList = new ArrayList<>();
     }
     public void writeToDisk() {
         String dir = System.getenv("APPDATA") + "\\ImageTag";
@@ -82,17 +82,17 @@ public class Settings implements InstanceRepo, Serializable {
     public void setCurrentDirectory(String currentDirectory) {
         SettingsLoader.instance.currentDirectory = currentDirectory;
 
-        recentDirectoriesList.remove(currentDirectory);
-        recentDirectoriesList.add(0, currentDirectory);
+        recentDirList.remove(currentDirectory);
+        recentDirList.add(0, currentDirectory);
 
-        int size = recentDirectoriesList.size();
-        if (size > 10) recentDirectoriesList.subList(10, size).clear();
+        int size = recentDirList.size();
+        if (size > 10) recentDirList.subList(10, size).clear();
     }
-    public ArrayList<String> getRecentDirectoriesList() {
-        return recentDirectoriesList;
+    public ArrayList<String> getRecentDirList() {
+        return recentDirList;
     }
-    public ArrayList<String> getImportDirectoriesList() {
-        return importDirectoriesList;
+    public ArrayList<String> getImportDirList() {
+        return importDirList;
     }
     public ArrayList<Setting> getSettingsList() {
         return settingsList;

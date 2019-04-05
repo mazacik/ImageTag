@@ -140,7 +140,10 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
         ObservableList<Node> nodes = infoObjectVBox.getChildren();
         nodes.clear();
 
-        if (select.size() == 0) return;
+        if (select.size() == 0) {
+            nodeText.setText("Selection: 0");
+            return;
+        }
 
         int hidden = 0;
         for (DataObject dataObject : select) {

@@ -27,7 +27,10 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
         tilePane.setPrefTileWidth(galleryIconSize);
         tilePane.setPrefTileHeight(galleryIconSize);
         tilePane.setPrefHeight(CommonUtil.getUsableScreenHeight() - topMenu.getPrefHeight() - topMenu.getPadding().getBottom() - topMenu.getBorder().getInsets().getBottom());
-        tilePane.setPrefColumns(10);
+
+        int prefWidth = (int) CommonUtil.getUsableScreenWidth() * 4 / 5;
+        int prefColumns = prefWidth / galleryIconSize;
+        tilePane.setPrefColumns(prefColumns);
 
         this.setContent(tilePane);
         this.setFitToWidth(true);

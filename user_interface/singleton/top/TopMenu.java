@@ -1,6 +1,7 @@
 package user_interface.singleton.top;
 
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.*;
 import system.InstanceRepo;
 import user_interface.factory.NodeFactory;
@@ -14,7 +15,7 @@ public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
     Label nodeSave;
     Label nodeExit;
 
-    Label nodeCustom;
+    Label nodeLimit;
     Label nodeReset;
 
     Label nodeSelectAll;
@@ -34,8 +35,9 @@ public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
 
         Label cbFilter = NodeFactory.getLabel("Filter", colorData);
         nodeReset = NodeFactory.getLabel("Reset", colorData);
-        nodeCustom = NodeFactory.getLabel("Custom", colorData);
-        new LeftClickMenu(cbFilter, nodeCustom, nodeReset);
+        nodeLimit = NodeFactory.getLabel("Limit", colorData);
+        new LeftClickMenu(cbFilter, nodeLimit, nodeReset);
+        Tooltip.install(nodeLimit, NodeFactory.getTooltip("Only shows images with no tags.\nCtrl + Click to specify the upper limit."));
 
         Label cbSelection = NodeFactory.getLabel("Selection", colorData);
         nodeSelectAll = NodeFactory.getLabel("Select All", colorData);
@@ -79,8 +81,8 @@ public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
     public Label getNodeSelectMerge() {
         return nodeSelectMerge;
     }
-    public Label getNodeCustom() {
-        return nodeCustom;
+    public Label getNodeLimit() {
+        return nodeLimit;
     }
     public Label getNodeReset() {
         return nodeReset;

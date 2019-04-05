@@ -28,13 +28,13 @@ public class IntroStage extends Stage implements InstanceRepo {
         VBox vBoxL = NodeFactory.getVBox(ColorType.ALT);
         vBoxL.setPrefWidth(250);
         vBoxL.setPadding(new Insets(5));
-        new ArrayList<>(settings.getRecentDirectoriesList()).forEach(item -> {
+        new ArrayList<>(settings.getRecentDirList()).forEach(item -> {
             if (new File(item).exists()) {
                 IntroWindowCell introWindowCell = NodeFactory.getIntroWindowCell(item);
                 introWindowCell.setOnMouseClicked(event -> {
                     if (event.getButton() == MouseButton.PRIMARY) {
                         if (event.getPickResult().getIntersectedNode().getParent().equals(introWindowCell.getNodeRemove())) {
-                            settings.getRecentDirectoriesList().remove(introWindowCell.getPath());
+                            settings.getRecentDirList().remove(introWindowCell.getPath());
                             vBoxL.getChildren().remove(introWindowCell);
                         } else {
                             startLoading(introWindowCell);
@@ -44,7 +44,7 @@ public class IntroStage extends Stage implements InstanceRepo {
                 vBoxL.getChildren().add(introWindowCell);
             } else {
                 logger.debug(this, item + " not found, removing it from recent directory list");
-                settings.getRecentDirectoriesList().remove(item);
+                settings.getRecentDirList().remove(item);
             }
         });
 
@@ -74,7 +74,7 @@ public class IntroStage extends Stage implements InstanceRepo {
         Scene introScene = new Scene(vBoxMain);
         introScene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
-                if (!settings.getRecentDirectoriesList().isEmpty()) {
+                if (!settings.getRecentDirList().isEmpty()) {
                     this.startLoading((IntroWindowCell) vBoxL.getChildren().get(0));
                 } else {
                     this.directoryChooser();
@@ -92,7 +92,7 @@ public class IntroStage extends Stage implements InstanceRepo {
         });
         this.setOnShown(event -> {
             double newHeight;
-            if (settings.getRecentDirectoriesList().size() > 0) {
+            if (settings.getRecentDirList().size() > 0) {
                 newHeight = this.getHeight() + ((6 - vBoxL.getChildren().size()) * ((IntroWindowCell) vBoxL.getChildren().get(0)).getHeight());
             } else {
                 newHeight = 6 * ((IntroWindowCell) vBoxL.getChildren().get(0)).getHeight();
