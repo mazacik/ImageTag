@@ -1,7 +1,7 @@
 package control.reload;
 
 import system.InstanceRepo;
-import user_interface.single_instance.BaseNode;
+import user_interface.singleton.BaseNode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,11 +10,25 @@ public class Reload implements InstanceRepo {
     private ArrayList<BaseNode> queue;
 
     public Reload() {
-        this.subscribe(fullView, Control.TARGET);
-        this.subscribe(infoListViewL, Control.INFO);
-        this.subscribe(infoListViewR, Control.INFO, Control.SELECT, Control.TARGET);
-        this.subscribe(tileView, Control.DATA, Control.FILTER);
-        this.subscribe(topMenu, Control.SELECT);
+        this.subscribe(fullView
+                , Control.TARGET
+        );
+        this.subscribe(infoListViewL
+                , Control.INFO
+                , Control.FILTER
+        );
+        this.subscribe(infoListViewR
+                , Control.INFO
+                , Control.FILTER
+                //, Control.TARGET
+                , Control.SELECT
+        );
+        this.subscribe(tileView
+                , Control.DATA
+                , Control.FILTER
+                , Control.SELECT
+        );
+        //this.subscribe(topMenu);
 
         queue = new ArrayList<>();
     }

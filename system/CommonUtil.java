@@ -1,103 +1,132 @@
 package system;
 
+import database.object.DataObject;
+import javafx.geometry.Insets;
 import javafx.scene.Cursor;
+import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import settings.SettingsNamespace;
-import user_interface.node_factory.NodeColorData;
-import user_interface.node_factory.NodeFactory;
-import user_interface.node_factory.template.intro.IntroWindowCell;
-import user_interface.node_factory.utils.ColorType;
-import user_interface.node_factory.utils.ColorUtil;
+import javafx.scene.text.Text;
+import settings.SettingsEnum;
+import user_interface.factory.NodeFactory;
+import user_interface.factory.node.IntroWindowCell;
+import user_interface.factory.util.ColorData;
+import user_interface.factory.util.ColorUtil;
+import user_interface.factory.util.enums.ColorType;
+import user_interface.scene.MainScene;
+import user_interface.singleton.center.BaseTile;
+import user_interface.singleton.side.GroupNode;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Random;
 
 public abstract class CommonUtil implements InstanceRepo {
-    private static boolean nightMode = false;
-    /* Font */
-    private static Font font = new Font(coreSettings.valueOf(SettingsNamespace.FONTSIZE));
+    private static int nightMode = settings.intValueOf(SettingsEnum.COLORMODE);
+
+    private static Font font = new Font(settings.intValueOf(SettingsEnum.FONTSIZE));
     public static boolean isNightMode() {
-        return nightMode;
+        return nightMode == 1;
     }
     public static void setNightMode(boolean value) {
-        nightMode = value;
+        if (!value) {
+            nightMode = 0;
+        } else {
+            nightMode = 1;
+        }
+        settings.setValueOf(SettingsEnum.COLORMODE, nightMode);
         updateNodeProperties();
     }
-    private static Background getBackgroundDef(NodeColorData nodeColorData) {
-        if (nodeColorData.getBackgroundDef() == ColorType.DEF) {
+    private static Background getBackgroundDef(ColorData colorData) {
+        if (colorData.getBackgroundDef() == ColorType.DEF) {
             return ColorUtil.getBackgroundDef();
-        } else if (nodeColorData.getBackgroundDef() == ColorType.ALT) {
+        } else if (colorData.getBackgroundDef() == ColorType.ALT) {
             return ColorUtil.getBackgroundAlt();
         } else {
             return null;
         }
     }
-    private static Background getBackgroundHov(NodeColorData nodeColorData) {
-        if (nodeColorData.getBackgroundHov() == ColorType.DEF) {
+    private static Background getBackgroundAlt(ColorData colorData) {
+        if (colorData.getBackgroundAlt() == ColorType.DEF) {
             return ColorUtil.getBackgroundDef();
-        } else if (nodeColorData.getBackgroundHov() == ColorType.ALT) {
+        } else if (colorData.getBackgroundAlt() == ColorType.ALT) {
             return ColorUtil.getBackgroundAlt();
         } else {
             return null;
         }
     }
-    private static Color getTextColorDef(NodeColorData nodeColorData) {
-        if (nodeColorData.getTextFillDef() == ColorType.DEF) {
+    private static Color getTextColorDef(ColorData colorData) {
+        if (colorData.getTextFillDef() == ColorType.DEF) {
             return ColorUtil.getTextColorDef();
-        } else if (nodeColorData.getTextFillDef() == ColorType.ALT) {
+        } else if (colorData.getTextFillDef() == ColorType.ALT) {
             return ColorUtil.getTextColorAlt();
         } else {
             return null;
         }
     }
-    private static Color getTextColorHov(NodeColorData nodeColorData) {
-        if (nodeColorData.getTextFillHov() == ColorType.DEF) {
+    private static Color getTextColorHov(ColorData colorData) {
+        if (colorData.getTextFillHov() == ColorType.DEF) {
             return ColorUtil.getTextColorDef();
-        } else if (nodeColorData.getTextFillHov() == ColorType.ALT) {
+        } else if (colorData.getTextFillHov() == ColorType.ALT) {
             return ColorUtil.getTextColorAlt();
         } else {
             return null;
         }
     }
-    public static void updateNodeProperties() {
-        for (NodeColorData nodeColorData : NodeFactory.getNodeList()) {
-            nodeColorData.getNode().setBackground(getBackgroundDef(nodeColorData));
-            if (nodeColorData.getNodeType() == NodeColorData.NodeType.LABEL) {
-                Label label = ((Label) nodeColorData.getNode());
-                label.setTextFill(getTextColorDef(nodeColorData));
-                if (nodeColorData.getBackgroundHov() != ColorType.NULL && nodeColorData.getTextFillHov() != ColorType.NULL) {
+
+    public static void updateNodeProperties(ArrayList<ColorData> colorDataList) {
+        for (ColorData colorData : colorDataList) {
+            colorData.getNode().setBackground(getBackgroundDef(colorData));
+            if (colorData.getNode() instanceof Label) {
+                Label label = ((Label) colorData.getNode());
+                if (colorData.getTextFillDef() != ColorType.NULL) {
+                    label.setTextFill(getTextColorDef(colorData));
+                }
+                if (colorData.getBackgroundAlt() != ColorType.NULL && colorData.getTextFillHov() != ColorType.NULL) {
                     label.setOnMouseExited(event -> {
-                        label.setBackground(getBackgroundDef(nodeColorData));
-                        label.setTextFill(getTextColorDef(nodeColorData));
+                        label.setBackground(getBackgroundDef(colorData));
+                        label.setTextFill(getTextColorDef(colorData));
                     });
                     label.setOnMouseEntered(event -> {
-                        label.setBackground(getBackgroundHov(nodeColorData));
-                        label.setTextFill(getTextColorHov(nodeColorData));
+                        label.setBackground(getBackgroundAlt(colorData));
+                        label.setTextFill(getTextColorHov(colorData));
                     });
-                } else if (nodeColorData.getBackgroundHov() != ColorType.NULL) {
-                    label.setOnMouseExited(event -> label.setBackground(getBackgroundDef(nodeColorData)));
-                    label.setOnMouseEntered(event -> label.setBackground(getBackgroundHov(nodeColorData)));
-                } else if (nodeColorData.getTextFillHov() != ColorType.NULL) {
-                    label.setOnMouseExited(event -> label.setTextFill(getTextColorDef(nodeColorData)));
-                    label.setOnMouseEntered(event -> label.setTextFill(getTextColorHov(nodeColorData)));
+                } else if (colorData.getBackgroundAlt() != ColorType.NULL) {
+                    label.setOnMouseExited(event -> label.setBackground(getBackgroundDef(colorData)));
+                    label.setOnMouseEntered(event -> label.setBackground(getBackgroundAlt(colorData)));
+                } else if (colorData.getTextFillHov() != ColorType.NULL) {
+                    label.setOnMouseExited(event -> label.setTextFill(getTextColorDef(colorData)));
+                    label.setOnMouseEntered(event -> label.setTextFill(getTextColorHov(colorData)));
                 }
-            } else if (nodeColorData.getNodeType() == NodeColorData.NodeType.INTROWINDOWCELL) {
-                IntroWindowCell introWindowCell = ((IntroWindowCell) nodeColorData.getNode());
-                introWindowCell.setBackground(getBackgroundDef(nodeColorData));
+            } else if (colorData.getNode() instanceof GroupNode) {
+                if (colorData.getBackgroundAlt() != ColorType.NULL) {
+                    colorData.getNode().setOnMouseExited(event -> colorData.getNode().setBackground(getBackgroundDef(colorData)));
+                    colorData.getNode().setOnMouseEntered(event -> colorData.getNode().setBackground(getBackgroundAlt(colorData)));
+                }
+            } else if (colorData.getNode() instanceof IntroWindowCell) {
+                IntroWindowCell introWindowCell = ((IntroWindowCell) colorData.getNode());
+                introWindowCell.setBackground(getBackgroundDef(colorData));
                 introWindowCell.setOnMouseEntered(event -> {
-                    introWindowCell.setBackground(getBackgroundHov(nodeColorData));
+                    introWindowCell.setBackground(getBackgroundAlt(colorData));
                     introWindowCell.setCursor(Cursor.HAND);
                     introWindowCell.getNodeRemove().setVisible(true);
                 });
                 introWindowCell.setOnMouseExited(event -> {
-                    introWindowCell.setBackground(getBackgroundDef(nodeColorData));
+                    introWindowCell.setBackground(getBackgroundDef(colorData));
                     introWindowCell.setCursor(Cursor.DEFAULT);
                     introWindowCell.getNodeRemove().setVisible(false);
                 });
-            } else if (nodeColorData.getNodeType() == NodeColorData.NodeType.TEXTFIELD) {
-                TextField textField = ((TextField) nodeColorData.getNode());
-                Color color = getTextColorDef(nodeColorData);
+            } else if (colorData.getNode() instanceof TextField) {
+                TextField textField = ((TextField) colorData.getNode());
+                Color color = getTextColorDef(colorData);
                 String colorString = String.format("#%02X%02X%02X",
                         (int) (color.getRed() * 255),
                         (int) (color.getGreen() * 255),
@@ -106,14 +135,86 @@ public abstract class CommonUtil implements InstanceRepo {
             }
         }
     }
+    public static void updateNodeProperties(Scene scene) {
+        ArrayList<ColorData> colorDataList = new ArrayList<>();
+        for (ColorData colorData : NodeFactory.getNodeList()) {
+            if (colorData.getNode().getScene() != null && colorData.getNode().getScene().equals(scene)) {
+                colorDataList.add(colorData);
+            }
+        }
+        updateNodeProperties(colorDataList);
+    }
+    public static void updateNodeProperties(VBox vBox) {
+        ArrayList<ColorData> colorDataList = new ArrayList<>();
+        for (ColorData colorData : NodeFactory.getNodeList()) {
+            if (colorData.getNode().getParent() != null && colorData.getNode().getParent().equals(vBox)) {
+                colorDataList.add(colorData);
+            }
+        }
+        updateNodeProperties(colorDataList);
+    }
+    public static void updateNodeProperties() {
+        updateNodeProperties(NodeFactory.getNodeList());
+    }
+
     public static Font getFont() {
         return font;
     }
+    public static int getPadding() {
+        return settings.intValueOf(SettingsEnum.GLOBAL_PADDING);
+    }
+
+    public static Image textToImage(String text) {
+        Label label = new Label(text);
+        label.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, null, null)));
+        label.setTextFill(Color.RED);
+        label.setWrapText(true);
+        label.setFont(CommonUtil.getFont());
+        label.setPadding(new Insets(0, 0, 0, 0));
+
+        Text theText = new Text(label.getText());
+        theText.setFont(label.getFont());
+        int width = (int) theText.getBoundsInLocal().getWidth();
+        int height = (int) theText.getBoundsInLocal().getHeight();
+
+        WritableImage img = new WritableImage(width, height);
+        Scene scene = new Scene(new Group(label));
+        scene.setFill(Color.TRANSPARENT);
+        scene.snapshot(img);
+        return img;
+    }
+
+    public static double getUsableScreenWidth() {
+        return GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getWidth();
+    }
+    public static double getUsableScreenHeight() {
+        return GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getHeight();
+    }
 
     public static void swapDisplayMode() {
-        mainStage.swapDisplayMode();
+        MainScene.swapViewMode();
     }
     public static boolean isFullView() {
-        return mainStage.isFullView();
+        return MainScene.isFullView();
+    }
+    public static DataObject getRandomDataObject() {
+        ArrayList<BaseTile> tiles = tileView.getTiles();
+        int index = new Random().nextInt(tiles.size());
+        DataObject chosenDataObject = tiles.get(index).getParentDataObject();
+
+        if (chosenDataObject.getMergeID() == 0) {
+            return chosenDataObject;
+        } else {
+            ArrayList<DataObject> dataObjectsSameMergeID = new ArrayList<>();
+            for (DataObject dataObjectFromFilter : filter) {
+                if (dataObjectFromFilter.getMergeID() == chosenDataObject.getMergeID()) {
+                    dataObjectsSameMergeID.add(dataObjectFromFilter);
+                }
+            }
+            return dataObjectsSameMergeID.get(new Random().nextInt(dataObjectsSameMergeID.size()));
+        }
+    }
+    public static int getHash() {
+        return new Random().nextInt();
     }
 }

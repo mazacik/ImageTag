@@ -1,15 +1,21 @@
 package control.select;
 
 import control.reload.Reload;
-import database.list.BaseListInfo;
-import database.list.MainListData;
+import database.list.DataObjectList;
+import database.list.InfoObjectList;
 import database.object.DataObject;
 import database.object.InfoObject;
+import system.CommonUtil;
 import system.InstanceRepo;
 
-public class Select extends MainListData implements InstanceRepo {
+import java.util.ArrayList;
+
+public class Select extends DataObjectList implements InstanceRepo {
     public boolean add(DataObject dataObject) {
         if (dataObject == null) return false;
+        if (dataObject.getMergeID() != 0 && !tileView.getExpandedGroups().contains(dataObject.getMergeID())) {
+            return this.addAll(dataObject.getMergeGroup());
+        }
         if (super.add(dataObject)) {
             dataObject.generateTileEffect();
             reload.notifyChangeIn(Reload.Control.SELECT);
@@ -17,10 +23,10 @@ public class Select extends MainListData implements InstanceRepo {
         }
         return false;
     }
-    public boolean addAll(MainListData mainListData) {
-        if (mainListData == null) return false;
-        if (super.addAll(mainListData)) {
-            mainListData.forEach(DataObject::generateTileEffect);
+    public boolean addAll(ArrayList<DataObject> arrayList) {
+        if (arrayList == null) return false;
+        if (super.addAll(arrayList)) {
+            arrayList.forEach(DataObject::generateTileEffect);
             reload.notifyChangeIn(Reload.Control.SELECT);
             return true;
         }
@@ -28,8 +34,20 @@ public class Select extends MainListData implements InstanceRepo {
     }
     public boolean remove(DataObject dataObject) {
         if (dataObject == null) return false;
+        if (dataObject.getMergeID() != 0 && !tileView.getExpandedGroups().contains(dataObject.getMergeID())) {
+            return this.removeAll(dataObject.getMergeGroup());
+        }
         if (super.remove(dataObject)) {
             dataObject.generateTileEffect();
+            reload.notifyChangeIn(Reload.Control.SELECT);
+            return true;
+        }
+        return false;
+    }
+    public boolean removeAll(ArrayList<DataObject> arrayList) {
+        if (arrayList == null) return false;
+        if (super.removeAll(arrayList)) {
+            arrayList.forEach(DataObject::generateTileEffect);
             reload.notifyChangeIn(Reload.Control.SELECT);
             return true;
         }
@@ -40,12 +58,12 @@ public class Select extends MainListData implements InstanceRepo {
         this.add(dataObject);
     }
     public void setRandom() {
-        DataObject dataObject = filter.getRandomObject();
+        DataObject dataObject = CommonUtil.getRandomDataObject();
         select.set(dataObject);
         target.set(dataObject);
     }
     public void clear() {
-        MainListData helper = new MainListData();
+        DataObjectList helper = new DataObjectList();
         helper.addAll(this);
         super.clear();
         helper.forEach(DataObject::generateTileEffect);
@@ -58,51 +76,69 @@ public class Select extends MainListData implements InstanceRepo {
             this.add(dataObject);
         }
     }
+    public void merge() {
+        InfoObjectList infoObjectList = new InfoObjectList();
+        for (DataObject dataObject : this) {
+            for (InfoObject infoObject : dataObject.getInfoObjectList()) {
+                if (!infoObjectList.contains(infoObject)) {
+                    infoObjectList.add(infoObject);
+                }
+            }
+        }
+
+        int mergeID = CommonUtil.getHash();
+        for (DataObject dataObject : this) {
+            dataObject.setMergeID(mergeID);
+            dataObject.setInfoObjectList(infoObjectList);
+        }
+
+        reload.notifyChangeIn(Reload.Control.DATA, Reload.Control.INFO);
+    }
 
     public void addTagObject(InfoObject infoObject) {
         if (!infoObject.isEmpty()) {
-            if (!mainListInfo.contains(infoObject)) {
-                mainListInfo.add(infoObject);
+            if (!mainInfoList.contains(infoObject)) {
+                mainInfoList.add(infoObject);
             }
 
-            MainListData selectHelper = new MainListData();
+            DataObjectList selectHelper = new DataObjectList();
             selectHelper.addAll(select);
 
-            BaseListInfo baseListInfo;
+            InfoObjectList infoObjectList;
             for (DataObject dataObject : selectHelper) {
-                baseListInfo = dataObject.getBaseListInfo();
-                if (!baseListInfo.contains(infoObject)) {
-                    baseListInfo.add(infoObject);
+                infoObjectList = dataObject.getInfoObjectList();
+                if (!infoObjectList.contains(infoObject)) {
+                    infoObjectList.add(infoObject);
                 }
             }
         }
     }
     public void removeTagObject(InfoObject infoObject) {
         for (DataObject dataObject : this) {
-            dataObject.getBaseListInfo().remove(infoObject);
+            dataObject.getInfoObjectList().remove(infoObject);
         }
 
         boolean tagExists = false;
-        for (DataObject dataObject : mainListData) {
-            if (dataObject.getBaseListInfo().contains(infoObject)) {
+        for (DataObject dataObject : mainDataList) {
+            if (dataObject.getInfoObjectList().contains(infoObject)) {
                 tagExists = true;
                 break;
             }
         }
         if (!tagExists) {
             filter.unlistTagObject(infoObject);
-            mainListInfo.remove(infoObject);
+            mainInfoList.remove(infoObject);
         }
     }
 
-    public BaseListInfo getIntersectingTags() {
-        if (this.size() < 1) return new BaseListInfo();
+    public InfoObjectList getIntersectingTags() {
+        if (this.size() < 1) return new InfoObjectList();
 
-        BaseListInfo intersectingTags = new BaseListInfo();
+        InfoObjectList intersectingTags = new InfoObjectList();
         DataObject lastObject = this.get(this.size() - 1);
-        for (InfoObject infoObject : this.get(0).getBaseListInfo()) {
+        for (InfoObject infoObject : this.get(0).getInfoObjectList()) {
             for (DataObject dataObject : this) {
-                if (dataObject.getBaseListInfo().contains(infoObject)) {
+                if (dataObject.getInfoObjectList().contains(infoObject)) {
                     if (dataObject.equals(lastObject)) {
                         intersectingTags.add(infoObject);
                     }
@@ -111,12 +147,12 @@ public class Select extends MainListData implements InstanceRepo {
         }
         return intersectingTags;
     }
-    public BaseListInfo getSharedTags() {
-        if (this.size() < 1) return new BaseListInfo();
+    public InfoObjectList getSharedTags() {
+        if (this.size() < 1) return new InfoObjectList();
 
-        BaseListInfo sharedTags = new BaseListInfo();
+        InfoObjectList sharedTags = new InfoObjectList();
         for (DataObject dataObject : this) {
-            for (InfoObject infoObject : dataObject.getBaseListInfo()) {
+            for (InfoObject infoObject : dataObject.getInfoObjectList()) {
                 if (!sharedTags.contains(infoObject)) {
                     sharedTags.add(infoObject);
                 }

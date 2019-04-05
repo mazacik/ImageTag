@@ -5,38 +5,41 @@ import control.logger.Logger;
 import control.reload.Reload;
 import control.select.Select;
 import control.target.Target;
-import database.list.BaseListInfo;
-import database.list.MainListData;
-import database.list.MainListInfo;
-import settings.CoreSettings;
-import settings.UserSettings;
-import user_interface.MainStage;
-import user_interface.single_instance.center.FullView;
-import user_interface.single_instance.center.TileView;
-import user_interface.single_instance.side.InfoListViewL;
-import user_interface.single_instance.side.InfoListViewR;
-import user_interface.single_instance.top.TopMenu;
+import database.list.DataObjectListMain;
+import database.list.InfoObjectList;
+import database.list.InfoObjectListMain;
+import javafx.stage.Stage;
+import settings.Settings;
+import user_interface.factory.node.popup.DataObjectRCM;
+import user_interface.factory.node.popup.InfoObjectRCM;
+import user_interface.singleton.center.FullView;
+import user_interface.singleton.center.TileView;
+import user_interface.singleton.side.InfoListViewL;
+import user_interface.singleton.side.InfoListViewR;
+import user_interface.singleton.top.TopMenu;
 
 public interface InstanceRepo {
     Logger logger = Logger.getInstance();
-    CoreSettings coreSettings = CoreSettings.getInstance();
-    UserSettings userSettings = UserSettings.getInstance();
+    Settings settings = Settings.getInstance();
 
     TopMenu topMenu = new TopMenu();
     TileView tileView = new TileView();
     FullView fullView = new FullView();
     InfoListViewL infoListViewL = new InfoListViewL();
     InfoListViewR infoListViewR = new InfoListViewR();
-    MainStage mainStage = new MainStage();
+    Stage mainStage = new Stage();
+
+    DataObjectRCM dataObjectRCM = new DataObjectRCM();
+    InfoObjectRCM infoObjectRCM = new InfoObjectRCM();
 
     Filter filter = new Filter();
     Target target = new Target();
     Select select = new Select();
     Reload reload = new Reload();
 
-    MainListData mainListData = new MainListData();
-    MainListInfo mainListInfo = new MainListInfo();
+    DataObjectListMain mainDataList = new DataObjectListMain();
+    InfoObjectListMain mainInfoList = new InfoObjectListMain();
 
-    BaseListInfo infoListWhite = new BaseListInfo();
-    BaseListInfo infoListBlack = new BaseListInfo();
+    InfoObjectList infoListWhite = new InfoObjectList();
+    InfoObjectList infoListBlack = new InfoObjectList();
 }

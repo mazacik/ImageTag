@@ -32,11 +32,19 @@ public class Target implements InstanceRepo {
     }
     public void move(KeyCode keyCode) {
         int columnCount = tileView.getColumnCount();
-        int dataCountFilter = filter.size();
-        int currentTargetPosition = filter.indexOf(currentTarget);
+        int dataCountFilter = tileView.getTiles().size();
 
-        int newTargetPosition = 0;
-        if (currentTarget != null) newTargetPosition = filter.indexOf(currentTarget);
+        int currentTargetPosition;
+        if (currentTarget.getMergeID() == 0) {
+            currentTargetPosition = tileView.getDataObjects().indexOf(currentTarget);
+        } else {
+            if (tileView.getExpandedGroups().contains(currentTarget.getMergeID())) {
+                currentTargetPosition = tileView.getDataObjects().indexOf(currentTarget);
+            } else {
+                currentTargetPosition = tileView.getDataObjects().indexOf(currentTarget.getMergeGroup().get(0));
+            }
+        }
+        int newTargetPosition = currentTargetPosition;
 
         switch (keyCode) {
             case W:
@@ -58,16 +66,16 @@ public class Target implements InstanceRepo {
                 break;
         }
 
-        this.set(filter.get(newTargetPosition));
+        this.set(tileView.getDataObjects().get(newTargetPosition));
     }
     public void storePosition() {
-        this.storePos = filter.indexOf(currentTarget);
+        this.storePos = tileView.getDataObjects().indexOf(currentTarget);
     }
     public void restorePosition() {
-        if (storePos >= 0 && storePos < filter.size()) {
-            set(filter.get(storePos));
+        if (storePos >= 0 && storePos < tileView.getDataObjects().size()) {
+            this.set(tileView.getDataObjects().get(storePos));
         } else {
-            set(null);
+            this.set(null);
         }
     }
 

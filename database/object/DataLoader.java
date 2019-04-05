@@ -2,64 +2,83 @@ package database.object;
 
 import control.filter.FilterTemplate;
 import control.reload.Reload;
-import database.list.MainListData;
+import database.list.DataObjectList;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import org.apache.commons.io.FilenameUtils;
-import settings.SettingsNamespace;
+import settings.SettingsEnum;
+import system.CommonUtil;
 import system.InstanceRepo;
-import user_interface.node_factory.template.intro.LoadingWindow;
-import user_interface.single_instance.center.BaseTile;
+import user_interface.scene.SceneUtil;
+import user_interface.singleton.center.BaseTile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 
 public class DataLoader extends Thread implements InstanceRepo {
-    private final String PATH_SOURCE = coreSettings.getCurrentDirectory();
+    private final String PATH_SOURCE = settings.getCurrentDirectory();
     private final String PATH_CACHE = PATH_SOURCE + "cache\\";
     private final String PATH_DATA = PATH_SOURCE + "data\\";
 
     public void run() {
         logger.debug(this, "loader thread start");
-        final LoadingWindow[] loadingWindow = new LoadingWindow[1];
-        Platform.runLater(() -> {
-            loadingWindow[0] = new LoadingWindow();
-            mainStage.initialize();
-        });
+        //todo maybe init main scene in this runlater
+        Platform.runLater(SceneUtil::showLoadingScene);
 
         checkDirectoryPaths();
-        ArrayList<File> fileList = getValidFiles();
-        if (!loadExistingDatabase()) {
+        //importFiles();
+        ArrayList<File> fileList = getValidFiles(PATH_SOURCE);
+
+        try {
+            mainDataList.addAll(mainDataList.readFromDisk());
+        } catch (NullPointerException e) {
+            logger.debug(this, "existing database does not exist or failed to load");
             createBackup();
             createDatabase(fileList);
         }
-        validateDatabaseCache(fileList);
-        loadImageCache(loadingWindow[0], fileList.size());
 
-        mainListData.sort();
-        mainListData.writeToDisk();
-        mainListInfo.initialize();
-        filter.addAll(mainListData);
+        validateDatabaseCache(fileList);
+        loadImageCache(fileList.size());
+
+        mainDataList.sort();
+        mainDataList.writeToDisk();
+        mainInfoList.initialize();
+        filter.addAll(mainDataList);
 
         filter.setFilter(FilterTemplate.SHOW_EVERYTHING);
         reload.notifyChangeIn(Reload.Control.values());
-        reload.doReload();
 
-        Platform.runLater(() -> {
-            loadingWindow[0].close();
-            mainStage.show();
-        });
+        Platform.runLater(SceneUtil::showMainScene);
         logger.debug(this, "loader thread end");
     }
 
-    private ArrayList<File> getValidFiles() {
-        return new ArrayList<>(Arrays.asList(new File(PATH_SOURCE).listFiles((dir, name) -> {
+    private void importFiles() {
+        ArrayList<String> importDirectories = CommonUtil.settings.getImportDirList();
+        importDirectories.forEach(dir -> {
+            logger.debug(this, "importing files from " + dir);
+            int importCounter = 0;
+            for (File file : getValidFiles(dir)) {
+                try {
+                    Files.copy(Paths.get(file.getAbsolutePath()), Paths.get((PATH_SOURCE) + file.getName()));
+                    logger.debug(this, "imported " + file.getName());
+                    importCounter++;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            logger.debug(this, "imported " + importCounter + " files");
+        });
+    }
+    private ArrayList<File> getValidFiles(String directory) {
+        return new ArrayList<>(Arrays.asList(new File(directory).listFiles((dir, name) -> {
             String _name = name.toLowerCase();
             return _name.endsWith(".jpg") || _name.endsWith(".jpeg") || _name.endsWith(".png");
         })));
@@ -83,21 +102,20 @@ public class DataLoader extends Thread implements InstanceRepo {
         File backupData = new File(backupDir + "data.json");
         File currentData = new File(PATH_DATA + "data.json");
 
-        logger.debug(this, "backing up existing database");
-
         if (currentData.exists()) {
             if (!backupDir.exists()) {
                 backupDir.mkdir();
             }
+            logger.debug(this, "database backup created");
             currentData.renameTo(backupData);
         } else {
-            logger.debug(this, "cannot create database backup; no existing database found");
+            logger.debug(this, "database backup not created - database does not exist");
         }
     }
     private void createDatabase(ArrayList<File> fileList) {
         logger.debug(this, "creating database");
         for (File file : fileList) {
-            mainListData.add(new DataObject(file));
+            mainDataList.add(new DataObject(file));
         }
     }
     private void validateDatabaseCache(ArrayList<File> fileList) {
@@ -105,7 +123,7 @@ public class DataLoader extends Thread implements InstanceRepo {
         ArrayList<String> dataObjectNames = new ArrayList<>();
         ArrayList<String> fileListNames = new ArrayList<>();
 
-        mainListData.forEach(dataObject -> dataObjectNames.add(dataObject.getName()));
+        mainDataList.forEach(dataObject -> dataObjectNames.add(dataObject.getName()));
         fileList.forEach(file -> fileListNames.add(file.getName()));
 
         dataObjectNames.sort(Comparator.naturalOrder());
@@ -117,7 +135,7 @@ public class DataLoader extends Thread implements InstanceRepo {
         for (File file : fileList) {
             if (!dataObjectNames.contains(file.getName())) {
                 logger.debug(this, "adding " + file.getName());
-                mainListData.add(new DataObject(file));
+                mainDataList.add(new DataObject(file));
                 added++;
             }
         }
@@ -126,9 +144,9 @@ public class DataLoader extends Thread implements InstanceRepo {
         /* discard missing items */
         int removed = 0;
         logger.debug(this, "looking for orphan data objects");
-        MainListData temporaryList = new MainListData();
-        temporaryList.addAll(mainListData);
-        for (DataObject dataObject : mainListData) {
+        DataObjectList temporaryList = new DataObjectList();
+        temporaryList.addAll(mainDataList);
+        for (DataObject dataObject : mainDataList) {
             String objectName = dataObject.getName();
             if (!fileListNames.contains(objectName)) {
                 logger.debug(this, "discarding " + objectName);
@@ -138,28 +156,25 @@ public class DataLoader extends Thread implements InstanceRepo {
         }
         logger.debug(this, "discarded " + removed + " files");
 
-        mainListData.clear();
-        mainListData.addAll(temporaryList);
+        mainDataList.clear();
+        mainDataList.addAll(temporaryList);
     }
-    private void loadImageCache(LoadingWindow loadingWindow, int fileListSize) {
+    private void loadImageCache(int fileListSize) {
         logger.debug(this, "loading image cache");
-        final int galleryIconSizeMax = userSettings.valueOf(SettingsNamespace.TILEVIEW_ICONSIZE);
+        final int galleryIconSizeMax = settings.intValueOf(SettingsEnum.TILEVIEW_ICONSIZE);
         int currentObjectIndex = 1;
         Image thumbnail;
 
-        for (DataObject dataObject : mainListData) {
-            updateLoadingLabel(loadingWindow, fileListSize, currentObjectIndex++);
+        for (DataObject dataObject : mainDataList) {
+            updateLoadingLabel(fileListSize, currentObjectIndex++);
             thumbnail = getImageFromDataObject(dataObject, galleryIconSizeMax);
             dataObject.setBaseTile(new BaseTile(dataObject, thumbnail));
         }
     }
-    private void updateLoadingLabel(LoadingWindow loadingWindow, int fileCount, int currentObjectIndex) {
-        if (loadingWindow != null) {
-            Platform.runLater(() -> loadingWindow.getProgressLabel().setText("Loading item " + currentObjectIndex + " of " + fileCount + ", " + currentObjectIndex * 100 / fileCount + "% done"));
+    private void updateLoadingLabel(int fileCount, int currentObjectIndex) {
+        if (mainStage.getScene() != null) {
+            Platform.runLater(() -> SceneUtil.getLoadingScene().getProgressLabel().setText("Loading item " + currentObjectIndex + " of " + fileCount + ", " + currentObjectIndex * 100 / fileCount + "% done"));
         }
-    }
-    private boolean loadExistingDatabase() {
-        return mainListData.addAll(mainListData.readFromDisk());
     }
 
     private Image getImageFromDataObject(DataObject dataObject, double galleryIconMaxSize) {

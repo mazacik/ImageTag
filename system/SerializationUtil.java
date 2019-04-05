@@ -3,9 +3,8 @@ package system;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import database.list.MainListData;
-import settings.CoreSettings;
-import settings.UserSettings;
+import database.list.DataObjectListMain;
+import settings.Settings;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -19,14 +18,13 @@ public abstract class SerializationUtil implements InstanceRepo {
         GsonBuilder GSONBuilder = new GsonBuilder();
         GSONBuilder.setPrettyPrinting().serializeNulls();
         String JSON = GSONBuilder.create().toJson(object, type);
-
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(path, false));
             writer.write(JSON);
             writer.close();
-            logger.debug(SerializationUtil.class, "serializing " + type.getTypeName() + " ... ok");
+            logger.debug(SerializationUtil.class, "serializing " + path + " ... ok");
         } catch (IOException e) {
-            logger.debug(SerializationUtil.class, "serializing " + type.getTypeName() + " ... fail");
+            logger.debug(SerializationUtil.class, "serializing " + path + " ... fail");
             e.printStackTrace();
         }
     }
@@ -36,18 +34,18 @@ public abstract class SerializationUtil implements InstanceRepo {
         Gson GSON = GSONBuilder.create();
         try {
             String JSON = new String(Files.readAllBytes(Paths.get(path)));
-            logger.debug(SerializationUtil.class, "reading " + type.getTypeName() + " ... ok");
-            return GSON.fromJson(JSON, type);
+            Object fromJson = GSON.fromJson(JSON, type);
+            logger.debug(SerializationUtil.class, "reading " + path + " ... ok");
+            return fromJson;
         } catch (Exception e) {
-            logger.debug(SerializationUtil.class, "reading " + type.getTypeName() + " ... fail");
+            logger.debug(SerializationUtil.class, "reading " + path + " ... fail");
             return null;
         }
     }
 
     public enum TypeTokenEnum {
-        DATALIST(new TypeToken<MainListData>() {}.getType()),
-        USERSETTINGS(new TypeToken<UserSettings>() {}.getType()),
-        CORESETTINGS(new TypeToken<CoreSettings>() {}.getType()),
+        MAINDATALIST(new TypeToken<DataObjectListMain>() {}.getType()),
+        SETTINGS(new TypeToken<Settings>() {}.getType()),
         ;
 
         private Type value;
