@@ -39,6 +39,7 @@ public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
                 reload.doReload();
             }
         });
+        HBox.setHgrow(this, Priority.ALWAYS);
         this.setPrefWidth(999);
         this.setMinWidth(200);
         this.getChildren().addAll(nodeText, btnNew, infoObjectVBox);

@@ -21,6 +21,7 @@ import user_interface.factory.node.IntroWindowCell;
 import user_interface.factory.util.ColorData;
 import user_interface.factory.util.ColorUtil;
 import user_interface.factory.util.enums.ColorType;
+import user_interface.scene.MainScene;
 import user_interface.singleton.center.BaseTile;
 import user_interface.singleton.side.GroupNode;
 
@@ -191,10 +192,10 @@ public abstract class CommonUtil implements InstanceRepo {
     }
 
     public static void swapDisplayMode() {
-        mainStage.swapViewMode();
+        MainScene.swapViewMode();
     }
     public static boolean isFullView() {
-        return mainStage.isFullView();
+        return MainScene.isFullView();
     }
     public static DataObject getRandomDataObject() {
         ArrayList<BaseTile> tiles = tileView.getTiles();
