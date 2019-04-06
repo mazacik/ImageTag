@@ -34,6 +34,7 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
 
         this.setContent(tilePane);
         this.setFitToWidth(true);
+        this.setFitToHeight(true);
         this.setMinViewportWidth(tilePane.getPrefColumns() * tilePane.getPrefTileWidth() + (tilePane.getPrefColumns() - 1) * tilePane.getHgap() + 1);
         this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         this.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
@@ -99,10 +100,10 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
 
     public void onShown() {
         this.setCustomBounds(this.getViewportBounds());
-        this.lookupAll(".scroll-bar").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
-        this.lookupAll(".increment-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
-        this.lookupAll(".decrement-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
-        this.lookupAll(".thumb").forEach(sb -> sb.setStyle("-fx-background-color: gray; -fx-background-insets: 0 4 0 4;"));
+        this.lookup(".scroll-bar").setStyle("-fx-background-color: transparent;");
+        this.lookup(".increment-button").setStyle("-fx-background-color: transparent;");
+        this.lookup(".decrement-button").setStyle("-fx-background-color: transparent;");
+        this.lookup(".thumb").setStyle("-fx-background-color: gray; -fx-background-insets: 0 4 0 4;");
     }
 
     public int getColumnCount() {

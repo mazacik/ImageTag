@@ -22,13 +22,13 @@ public class InfoObject {
         return group;
     }
     public void setGroup(String group) {
-        this.group = WordUtils.capitalizeFully(group);
+        this.group = WordUtils.capitalizeFully(group, '-', '/', ' ');
     }
     public String getName() {
         return name;
     }
     public void setName(String name) {
-        this.name = WordUtils.capitalizeFully(name);
+        this.name = WordUtils.capitalizeFully(name, '-', '/', ' ');
     }
     public String getGroupAndName() {
         return group + " - " + name;

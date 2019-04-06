@@ -33,25 +33,30 @@ public class IntroScene implements InstanceRepo {
         VBox vBoxL = NodeFactory.getVBox(ColorType.ALT);
         vBoxL.setPrefWidth(350);
         vBoxL.setPadding(new Insets(5));
-        new ArrayList<>(settings.getRecentDirList()).forEach(item -> {
-            if (new File(item).exists()) {
-                IntroWindowCell introWindowCell = NodeFactory.getIntroWindowCell(item);
-                introWindowCell.setOnMouseClicked(event -> {
-                    if (event.getButton() == MouseButton.PRIMARY) {
-                        if (event.getPickResult().getIntersectedNode().getParent().equals(introWindowCell.getNodeRemove())) {
-                            settings.getRecentDirList().remove(introWindowCell.getPath());
-                            vBoxL.getChildren().remove(introWindowCell);
-                        } else {
-                            startLoading(introWindowCell.getPath());
+
+        if (settings.getRecentDirList().size() == 0) {
+            vBoxL.getChildren().add(NodeFactory.getLabel("No recent directories", ColorType.ALT, ColorType.DEF));
+        } else {
+            new ArrayList<>(settings.getRecentDirList()).forEach(item -> {
+                if (new File(item).exists()) {
+                    IntroWindowCell introWindowCell = NodeFactory.getIntroWindowCell(item);
+                    introWindowCell.setOnMouseClicked(event -> {
+                        if (event.getButton() == MouseButton.PRIMARY) {
+                            if (event.getPickResult().getIntersectedNode().getParent().equals(introWindowCell.getNodeRemove())) {
+                                settings.getRecentDirList().remove(introWindowCell.getPath());
+                                vBoxL.getChildren().remove(introWindowCell);
+                            } else {
+                                startLoading(introWindowCell.getPath());
+                            }
                         }
-                    }
-                });
-                vBoxL.getChildren().add(introWindowCell);
-            } else {
-                logger.debug(this, item + " not found, removing it from recent directory list");
-                settings.getRecentDirList().remove(item);
-            }
-        });
+                    });
+                    vBoxL.getChildren().add(introWindowCell);
+                } else {
+                    logger.debug(this, item + " not found, removing it from recent directory list");
+                    settings.getRecentDirList().remove(item);
+                }
+            });
+        }
 
         Label btnChoose = NodeFactory.getLabel("Choose a Directory", ColorType.DEF, ColorType.DEF, ColorType.DEF, ColorType.ALT);
         btnChoose.setFont(CommonUtil.getFont());

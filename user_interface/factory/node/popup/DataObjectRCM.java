@@ -28,11 +28,13 @@ public class DataObjectRCM extends RightClickMenu implements InstanceRepo {
         nodeCopyName.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 ClipboardUtil.setClipboardContent(target.getCurrentTarget().getName());
+                this.hide();
             }
         });
         nodeCopyPath.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 ClipboardUtil.setClipboardContent(settings.getCurrentDirectory() + target.getCurrentTarget().getName());
+                this.hide();
             }
         });
         nodeDelete.setOnMouseClicked(event -> {
@@ -42,6 +44,7 @@ public class DataObjectRCM extends RightClickMenu implements InstanceRepo {
                 } else {
                     this.deleteSelection();
                 }
+                this.hide();
             }
         });
 

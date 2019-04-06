@@ -6,6 +6,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
     private final Label nodeText = NodeFactory.getLabel("", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
     private final VBox infoObjectVBox = NodeFactory.getVBox(ColorType.DEF);
+    private final ScrollPane infoObjectScrollPane = new ScrollPane();
     private final ArrayList<String> expandedGroupsList = new ArrayList<>();
 
     private final Label nodeLimit;
@@ -52,10 +54,19 @@ public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
                 reload.doReload();
             }
         });
+
+        infoObjectScrollPane.setContent(infoObjectVBox);
+        infoObjectScrollPane.setFitToWidth(true);
+        infoObjectScrollPane.setFitToHeight(true);
+        infoObjectScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        infoObjectScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        VBox.setVgrow(infoObjectScrollPane, Priority.ALWAYS);
+        NodeFactory.addNodeToManager(infoObjectScrollPane, ColorType.DEF);
+
         HBox.setHgrow(this, Priority.ALWAYS);
         this.setPrefWidth(999);
         this.setMinWidth(200);
-        this.getChildren().addAll(nodeText, btnNew, infoObjectVBox);
+        this.getChildren().addAll(nodeText, btnNew, infoObjectScrollPane);
     }
 
     public void changeNodeState(GroupNode groupNode, Label nameNode) {
@@ -115,11 +126,11 @@ public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
         for (String groupName : groupNames) {
             GroupNode groupNode;
             if (filter.isGroupWhitelisted(groupName)) {
-                groupNode = NodeFactory.getGroupNode(groupName, textColorPositive);
+                groupNode = NodeFactory.getGroupNode(this, groupName, textColorPositive);
             } else if (filter.isGroupBlacklisted(groupName)) {
-                groupNode = NodeFactory.getGroupNode(groupName, textColorNegative);
+                groupNode = NodeFactory.getGroupNode(this, groupName, textColorNegative);
             } else {
-                groupNode = NodeFactory.getGroupNode(groupName, textColorDefault);
+                groupNode = NodeFactory.getGroupNode(this, groupName, textColorDefault);
             }
             groupNode.prefWidthProperty().bind(infoObjectVBox.widthProperty());
 
@@ -137,18 +148,13 @@ public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
                 nameNode.setAlignment(Pos.CENTER_LEFT);
                 nameNode.setPadding(new Insets(0, 0, 0, 50));
                 nameNode.setOnMouseClicked(event -> {
-                    switch (event.getButton()) {
-                        case PRIMARY:
-                            changeNodeState(groupNode, nameNode);
-                            reload.doReload();
-                            CommonUtil.updateNodeProperties(this.infoObjectVBox);
-                            break;
-                        case SECONDARY:
-                            infoObjectRCM.setInfoObject(mainInfoList.getInfoObject(groupNode.getText(), nameNode.getText()));
-                            infoObjectRCM.show(nameNode, event);
-                            break;
-                        default:
-                            break;
+                    if (event.getButton() == MouseButton.PRIMARY) {
+                        changeNodeState(groupNode, nameNode);
+                        reload.doReload();
+                        CommonUtil.updateNodeProperties(this.infoObjectVBox);
+                    } else if (event.getButton() == MouseButton.SECONDARY) {
+                        infoObjectRCM.setInfoObject(mainInfoList.getInfoObject(groupNode.getText(), nameNode.getText()));
+                        infoObjectRCM.show(nameNode, event);
                     }
                 });
                 groupNode.getNameNodes().add(nameNode);
@@ -160,12 +166,14 @@ public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
                 nodes.addAll(groupNode.getNameNodes());
             }
         }
+        CommonUtil.updateNodeProperties(infoObjectVBox);
     }
     public void onShown() {
-        infoObjectVBox.lookupAll(".scroll-bar").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
-        infoObjectVBox.lookupAll(".increment-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
-        infoObjectVBox.lookupAll(".decrement-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
-        infoObjectVBox.lookupAll(".thumb").forEach(sb -> sb.setStyle("-fx-background-color: gray; -fx-background-insets: 0 4 0 4;"));
+        infoObjectScrollPane.lookup(".scroll-bar").setStyle("-fx-background-color: transparent;");
+        infoObjectScrollPane.lookup(".increment-button").setStyle("-fx-background-color: transparent;");
+        infoObjectScrollPane.lookup(".decrement-button").setStyle("-fx-background-color: transparent;");
+        infoObjectScrollPane.lookup(".thumb").setStyle("-fx-background-color: gray; -fx-background-insets: 0 4 0 4;");
+        CommonUtil.updateNodeProperties(infoObjectVBox);
     }
 
     public VBox getInfoObjectVBox() {

@@ -47,8 +47,8 @@ public abstract class NodeFactory {
         return label;
     }
 
-    public static GroupNode getGroupNode(String text, Color textFill) {
-        GroupNode groupNode = new GroupNode(text);
+    public static GroupNode getGroupNode(VBox owner, String text, Color textFill) {
+        GroupNode groupNode = new GroupNode(text, owner);
         groupNode.setTextFill(textFill);
         groupNode.setFont(CommonUtil.getFont());
         nodeList.add(new ColorData(groupNode, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL));
@@ -63,13 +63,11 @@ public abstract class NodeFactory {
 
     public static HBox getHBox(ColorType colorType, Node... children) {
         HBox hBox = new HBox(children);
-        hBox.setAlignment(Pos.CENTER);
         addNodeToManager(hBox, colorType);
         return hBox;
     }
     public static VBox getVBox(ColorType colorType, Node... children) {
         VBox vBox = new VBox(children);
-        vBox.setAlignment(Pos.CENTER);
         addNodeToManager(vBox, colorType);
         return vBox;
     }

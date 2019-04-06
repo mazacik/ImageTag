@@ -66,7 +66,8 @@ public class InfoObjectListMain extends InfoObjectList implements InstanceRepo {
         return getInfoObject(tagObjectGroup, tagObjectName);
     }
     public InfoObject getInfoObject(String groupAndName) {
-        String[] split = groupAndName.split("-");
+        if (!groupAndName.contains(" - ")) return null;
+        String[] split = groupAndName.split(" - ");
         String tagObjectGroup = split[0].trim();
         String tagObjectName = split[1].trim();
         return getInfoObject(tagObjectGroup, tagObjectName);

@@ -22,14 +22,14 @@ public class OkCancelStage extends Stage {
     private Label buttonNegative;
 
     public OkCancelStage(String content) {
-        buttonPositive = NodeFactory.getLabel("OK", ColorType.DEF, ColorType.DEF);
+        buttonPositive = NodeFactory.getLabel("OK", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
         buttonPositive.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 result = true;
                 this.close();
             }
         });
-        buttonNegative = NodeFactory.getLabel("Cancel", ColorType.DEF, ColorType.DEF);
+        buttonNegative = NodeFactory.getLabel("Cancel", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
         buttonNegative.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 result = false;

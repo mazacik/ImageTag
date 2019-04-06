@@ -54,20 +54,20 @@ public class MainScene implements InstanceRepo {
         return mainScene;
     }
     void show() {
+        target.set(mainDataList.get(0));
+        reload.doReload();
+
         mainStage.setScene(mainScene);
         mainStage.setWidth(CommonUtil.getUsableScreenWidth());
         mainStage.setHeight(CommonUtil.getUsableScreenHeight());
         mainStage.centerOnScreen();
 
+        tileView.onShown();
         infoListViewL.onShown();
         infoListViewR.onShown();
-        tileView.onShown();
+
         topMenu.requestFocus();
 
-        target.set(mainDataList.get(0));
-        reload.doReload();
-
-        CommonUtil.updateNodeProperties(infoListViewL.getInfoObjectVBox());
         EventUtil.init();
     }
 }

@@ -6,8 +6,8 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import system.CommonUtil;
 import system.InstanceRepo;
@@ -22,7 +22,7 @@ public class GroupNode extends HBox implements InstanceRepo {
     private Label labelArrow;
     private Label labelText;
 
-    public GroupNode(String text) {
+    public GroupNode(String text, VBox owner) {
         labelArrow = NodeFactory.getLabel("+ ");
         labelText = NodeFactory.getLabel(text);
 
@@ -36,7 +36,7 @@ public class GroupNode extends HBox implements InstanceRepo {
             event.consume();
             switch (event.getButton()) {
                 case PRIMARY:
-                    if (this.getParent().getParent() instanceof InfoListViewL) {
+                    if (owner == infoListViewL) {
                         if (!infoListViewL.getExpandedGroupsList().contains(labelText.getText())) {
                             infoListViewL.getExpandedGroupsList().add(labelText.getText());
                             ObservableList<Node> nodes = infoListViewL.getInfoObjectVBox().getChildren();
@@ -50,7 +50,7 @@ public class GroupNode extends HBox implements InstanceRepo {
                             nodes.removeAll(nameNodes);
                             labelArrow.setText("+ ");
                         }
-                    } else if (this.getParent().getParent() instanceof InfoListViewR) {
+                    } else if (owner == infoListViewR) {
                         if (!infoListViewR.getExpandedGroupsList().contains(labelText.getText())) {
                             infoListViewR.getExpandedGroupsList().add(labelText.getText());
                             ObservableList<Node> nodes = infoListViewR.getInfoObjectBox().getChildren();
@@ -98,9 +98,6 @@ public class GroupNode extends HBox implements InstanceRepo {
     }
     public String getText() {
         return labelText.getText();
-    }
-    public Paint getTextFill() {
-        return labelText.getTextFill();
     }
 
     public void setArrowExpanded(boolean value) {
