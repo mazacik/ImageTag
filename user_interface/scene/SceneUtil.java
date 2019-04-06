@@ -46,7 +46,7 @@ public class SceneUtil implements InstanceRepo {
         loadingScene.show();
     }
     public static void showMainScene() {
-        NodeFactory.removeNodesFromManager(loadingScene.getInstance());
+        //NodeFactory.removeNodesFromManager(loadingScene.getInstance());
 
         mainStage.setOnCloseRequest(event -> {
             settings.writeToDisk();

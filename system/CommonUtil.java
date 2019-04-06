@@ -198,7 +198,7 @@ public abstract class CommonUtil implements InstanceRepo {
         return MainScene.isFullView();
     }
     public static DataObject getRandomDataObject() {
-        ArrayList<BaseTile> tiles = tileView.getTiles();
+        ArrayList<BaseTile> tiles = tileView.getTilesLive();
         int index = new Random().nextInt(tiles.size());
         DataObject chosenDataObject = tiles.get(index).getParentDataObject();
 

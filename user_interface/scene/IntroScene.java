@@ -103,7 +103,7 @@ public class IntroScene implements InstanceRepo {
 
         logger.debug(this, "waiting for directory");
 
-        SceneUtil.createLoadingScene();
+        SceneUtil.createMainScene();
     }
 
     private void directoryChooser() {

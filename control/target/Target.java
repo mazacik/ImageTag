@@ -32,7 +32,7 @@ public class Target implements InstanceRepo {
     }
     public void move(KeyCode keyCode) {
         int columnCount = tileView.getColumnCount();
-        int dataCountFilter = tileView.getTiles().size();
+        int dataCountFilter = tileView.getTilesLive().size();
 
         int currentTargetPosition;
         if (currentTarget.getMergeID() == 0) {
