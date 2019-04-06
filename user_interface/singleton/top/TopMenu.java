@@ -1,10 +1,10 @@
 package user_interface.singleton.top;
 
 import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
 import javafx.scene.layout.*;
 import system.InstanceRepo;
 import user_interface.factory.NodeFactory;
+import user_interface.factory.node.popup.Direction;
 import user_interface.factory.node.popup.LeftClickMenu;
 import user_interface.factory.util.ColorData;
 import user_interface.factory.util.ColorUtil;
@@ -15,12 +15,7 @@ public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
     Label nodeSave;
     Label nodeExit;
 
-    Label nodeLimit;
-    Label nodeReset;
 
-    Label nodeSelectAll;
-    Label nodeSelectNone;
-    Label nodeSelectMerge;
 
     Label nodeRandom;
     Label nodeFullview;
@@ -31,19 +26,7 @@ public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
         Label cbFile = NodeFactory.getLabel("File", colorData);
         nodeSave = NodeFactory.getLabel("Save", colorData);
         nodeExit = NodeFactory.getLabel("Exit", colorData);
-        new LeftClickMenu(cbFile, nodeSave, nodeExit);
-
-        Label cbFilter = NodeFactory.getLabel("Filter", colorData);
-        nodeReset = NodeFactory.getLabel("Reset", colorData);
-        nodeLimit = NodeFactory.getLabel("Limit", colorData);
-        new LeftClickMenu(cbFilter, nodeLimit, nodeReset);
-        Tooltip.install(nodeLimit, NodeFactory.getTooltip("Only shows images with no tags.\nCtrl + Click to specify the upper limit."));
-
-        Label cbSelection = NodeFactory.getLabel("Selection", colorData);
-        nodeSelectAll = NodeFactory.getLabel("Select All", colorData);
-        nodeSelectNone = NodeFactory.getLabel("Select None", colorData);
-        nodeSelectMerge = NodeFactory.getLabel("Merge Selection", colorData);
-        new LeftClickMenu(cbSelection, nodeSelectAll, nodeSelectNone, nodeSelectMerge);
+        new LeftClickMenu(cbFile, Direction.BELOW, nodeSave, nodeExit);
 
         nodeRandom = NodeFactory.getLabel("Random", colorData);
         nodeFullview = NodeFactory.getLabel("FullView", colorData);
@@ -52,7 +35,7 @@ public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
         NodeFactory.addNodeToManager(hBoxTools, ColorType.DEF);
 
         HBox hBoxMain = NodeFactory.getHBox(ColorType.DEF);
-        hBoxMain.getChildren().addAll(cbFile, cbFilter, cbSelection);
+        hBoxMain.getChildren().addAll(cbFile);
         hBoxMain.getChildren().add(hBoxTools);
         NodeFactory.addNodeToManager(hBoxMain, ColorType.DEF);
 
@@ -71,21 +54,6 @@ public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
     }
     public Label getNodeExit() {
         return nodeExit;
-    }
-    public Label getNodeSelectAll() {
-        return nodeSelectAll;
-    }
-    public Label getNodeSelectNone() {
-        return nodeSelectNone;
-    }
-    public Label getNodeSelectMerge() {
-        return nodeSelectMerge;
-    }
-    public Label getNodeLimit() {
-        return nodeLimit;
-    }
-    public Label getNodeReset() {
-        return nodeReset;
     }
     public Label getNodeRandom() {
         return nodeRandom;

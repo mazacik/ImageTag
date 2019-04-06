@@ -12,6 +12,7 @@ import javafx.scene.text.Font;
 import system.CommonUtil;
 import system.InstanceRepo;
 import user_interface.factory.NodeFactory;
+import user_interface.factory.util.ColorUtil;
 
 import java.util.ArrayList;
 
@@ -52,18 +53,19 @@ public class GroupNode extends HBox implements InstanceRepo {
                     } else if (this.getParent().getParent() instanceof InfoListViewR) {
                         if (!infoListViewR.getExpandedGroupsList().contains(labelText.getText())) {
                             infoListViewR.getExpandedGroupsList().add(labelText.getText());
-                            ObservableList<Node> nodes = infoListViewR.getInfoObjectVBox().getChildren();
+                            ObservableList<Node> nodes = infoListViewR.getInfoObjectBox().getChildren();
                             int index = nodes.indexOf(this) + 1;
                             nodes.addAll(index, nameNodes);
-                            CommonUtil.updateNodeProperties(infoListViewR.getInfoObjectVBox());
+                            CommonUtil.updateNodeProperties(infoListViewR.getInfoObjectBox());
                             labelArrow.setText("− ");
                         } else {
                             infoListViewR.getExpandedGroupsList().remove(labelText.getText());
-                            ObservableList<Node> nodes = infoListViewR.getInfoObjectVBox().getChildren();
+                            ObservableList<Node> nodes = infoListViewR.getInfoObjectBox().getChildren();
                             nodes.removeAll(nameNodes);
                             labelArrow.setText("+ ");
                         }
                     }
+                    this.setBackground(ColorUtil.getBackgroundAlt());
                     break;
                 case SECONDARY:
                     break;

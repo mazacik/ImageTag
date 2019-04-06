@@ -25,14 +25,14 @@ public class MainScene implements InstanceRepo {
             if (nodeIndex != -1) {
                 views.set(nodeIndex, tileView);
                 tileView.adjustViewportToCurrentTarget();
-                //tileView.requestFocus();
+                tileView.requestFocus();
             }
         } else {
             int nodeIndex = views.indexOf(tileView);
             if (nodeIndex != -1) {
                 views.set(nodeIndex, fullView);
                 fullView.reload();
-                //fullView.requestFocus();
+                fullView.requestFocus();
             }
         }
     }
@@ -62,6 +62,7 @@ public class MainScene implements InstanceRepo {
         infoListViewL.onShown();
         infoListViewR.onShown();
         tileView.onShown();
+        topMenu.requestFocus();
 
         target.set(mainDataList.get(0));
         reload.doReload();

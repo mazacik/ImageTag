@@ -17,9 +17,11 @@ public class SceneUtil implements InstanceRepo {
             settings.writeToDisk();
             logger.debug(mainStage, "application exit");
         });
-        mainStage.show();
 
         CommonUtil.updateNodeProperties();
+    }
+    public static void showMainStage() {
+        mainStage.show();
     }
 
     public static void createIntroScene() {
@@ -45,6 +47,13 @@ public class SceneUtil implements InstanceRepo {
     }
     public static void showMainScene() {
         NodeFactory.removeNodesFromManager(loadingScene.getInstance());
+
+        mainStage.setOnCloseRequest(event -> {
+            settings.writeToDisk();
+            mainDataList.writeToDisk();
+            logger.debug(mainStage, "application exit");
+        });
+
         mainScene.show();
     }
 }

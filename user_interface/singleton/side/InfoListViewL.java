@@ -6,13 +6,17 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import system.CommonUtil;
 import system.InstanceRepo;
 import user_interface.factory.NodeFactory;
+import user_interface.factory.node.popup.Direction;
+import user_interface.factory.node.popup.LeftClickMenu;
 import user_interface.factory.stage.InfoObjectEditStage;
+import user_interface.factory.util.ColorData;
 import user_interface.factory.util.ColorUtil;
 import user_interface.factory.util.enums.ColorType;
 import user_interface.singleton.BaseNode;
@@ -20,14 +24,23 @@ import user_interface.singleton.BaseNode;
 import java.util.ArrayList;
 
 public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
-    private final Label nodeText = NodeFactory.getLabel("", ColorType.DEF, ColorType.DEF);
+    private final Label nodeText = NodeFactory.getLabel("", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
     private final VBox infoObjectVBox = NodeFactory.getVBox(ColorType.DEF);
     private final ArrayList<String> expandedGroupsList = new ArrayList<>();
+
+    private final Label nodeLimit;
+    private final Label nodeReset;
 
     public InfoListViewL() {
         nodeText.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 1, 0))));
         nodeText.setFont(CommonUtil.getFont());
         nodeText.prefWidthProperty().bind(this.widthProperty());
+
+        ColorData colorData = new ColorData(ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+        nodeReset = NodeFactory.getLabel("Reset", colorData);
+        nodeLimit = NodeFactory.getLabel("Limit", colorData);
+        new LeftClickMenu(nodeText, Direction.RIGHT, nodeLimit, nodeReset);
+        Tooltip.install(nodeLimit, NodeFactory.getTooltip("Only shows images with no tags.\nCtrl + Click to specify the upper limit."));
 
         Label btnNew = NodeFactory.getLabel("New", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.NULL);
         btnNew.setPrefWidth(999);
@@ -160,5 +173,12 @@ public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
     }
     public ArrayList<String> getExpandedGroupsList() {
         return expandedGroupsList;
+    }
+
+    public Label getNodeLimit() {
+        return nodeLimit;
+    }
+    public Label getNodeReset() {
+        return nodeReset;
     }
 }

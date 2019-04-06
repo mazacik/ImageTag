@@ -94,6 +94,7 @@ public class IntroScene implements InstanceRepo {
         mainStage.setWidth(CommonUtil.getUsableScreenWidth() / 2.5);
         mainStage.setHeight(CommonUtil.getUsableScreenHeight() / 2);
         mainStage.centerOnScreen();
+        SceneUtil.showMainStage();
 
         logger.debug(this, "waiting for directory");
 

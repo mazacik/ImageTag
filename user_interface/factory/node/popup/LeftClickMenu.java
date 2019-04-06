@@ -20,13 +20,12 @@ public class LeftClickMenu extends Popup {
     private Label root;
     private VBox vBox = NodeFactory.getVBox(ColorType.DEF);
 
-    public LeftClickMenu(Label root, Label... labels) {
+    public LeftClickMenu(Label root, Direction direction, Label... labels) {
         instanceList.add(this);
         this.root = root;
         this.root.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                Bounds rootBounds = root.getBoundsInParent();
-                this.show(CommonUtil.mainStage, rootBounds.getMinX(), rootBounds.getMaxY());
+                show(direction);
             }
         });
         this.root.setOnMouseMoved(event -> {
@@ -34,8 +33,7 @@ public class LeftClickMenu extends Popup {
                 for (LeftClickMenu leftClickMenu : instanceList) {
                     if (leftClickMenu.isShowing()) {
                         leftClickMenu.hide();
-                        Bounds rootBounds = root.getBoundsInParent();
-                        this.show(CommonUtil.mainStage, rootBounds.getMinX(), rootBounds.getMaxY());
+                        show(direction);
                         break;
                     }
                 }
@@ -60,9 +58,44 @@ public class LeftClickMenu extends Popup {
         this.setHideOnEscape(true);
     }
 
-    public Label getRoot() {
-        return root;
+    private void show(Direction direction) {
+        this.show(CommonUtil.mainStage, 0, 0);
+
+        Bounds rootBounds = root.localToScreen(root.getBoundsInLocal());
+        Border border = root.getBorder();
+        double x = 0;
+        double y = 0;
+        switch (direction) {
+            case LEFT:
+                x = rootBounds.getMinX();
+                y = rootBounds.getMinY();
+                if (border != null) {
+                    x -= this.getWidth();
+                    x -= border.getInsets().getLeft();
+                    y -= border.getInsets().getBottom();
+                }
+                break;
+            case RIGHT:
+                x = rootBounds.getMaxX();
+                y = rootBounds.getMinY();
+                if (border != null) {
+                    x += border.getInsets().getRight();
+                    y -= border.getInsets().getBottom();
+                }
+                break;
+            case BELOW:
+                x = rootBounds.getMinX();
+                y = rootBounds.getMaxY();
+                if (border != null) {
+                    y -= border.getInsets().getBottom();
+                }
+                break;
+        }
+
+        this.setAnchorX(x);
+        this.setAnchorY(y);
     }
+
     public ObservableList<Node> getChildren() {
         return vBox.getChildren();
     }

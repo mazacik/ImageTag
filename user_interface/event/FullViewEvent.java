@@ -11,9 +11,10 @@ public class FullViewEvent implements InstanceRepo {
     }
 
     private void onMouseClick() {
-        fullView.getCanvas().setOnMouseClicked(event -> {
+        fullView.setOnMouseClicked(event -> {
             switch (event.getButton()) {
                 case PRIMARY:
+                    fullView.requestFocus();
                     dataObjectRCM.hide();
                     break;
                 case SECONDARY:

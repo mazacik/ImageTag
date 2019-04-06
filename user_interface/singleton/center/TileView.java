@@ -103,7 +103,6 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
         this.lookupAll(".increment-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
         this.lookupAll(".decrement-button").forEach(sb -> sb.setStyle("-fx-background-color: transparent;"));
         this.lookupAll(".thumb").forEach(sb -> sb.setStyle("-fx-background-color: gray; -fx-background-insets: 0 4 0 4;"));
-        this.requestFocus();
     }
 
     public int getColumnCount() {

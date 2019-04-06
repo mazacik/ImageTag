@@ -55,8 +55,11 @@ public class OkCancelStage extends Stage {
         vBox.setBackground(ColorUtil.getBackgroundDef());
         vBox.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1, 1, 1, 1))));
 
+        this.setOnShown(event -> {
+            this.centerOnScreen();
+            CommonUtil.updateNodeProperties(this.getScene());
+        });
         this.initStyle(StageStyle.UNDECORATED);
-
         this.setScene(scene);
         this.setAlwaysOnTop(true);
         this.centerOnScreen();
