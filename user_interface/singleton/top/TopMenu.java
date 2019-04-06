@@ -26,7 +26,7 @@ public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
         Label cbFile = NodeFactory.getLabel("File", colorData);
         nodeSave = NodeFactory.getLabel("Save", colorData);
         nodeExit = NodeFactory.getLabel("Exit", colorData);
-        new LeftClickMenu(cbFile, Direction.BELOW, nodeSave, nodeExit);
+        LeftClickMenu.install(cbFile, Direction.BELOW, nodeSave, nodeExit);
 
         nodeRandom = NodeFactory.getLabel("Random", colorData);
         nodeFullview = NodeFactory.getLabel("FullView", colorData);

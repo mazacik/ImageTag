@@ -1,6 +1,6 @@
 package user_interface.factory.node.popup;
 
-import database.object.InfoObject;
+import database.object.TagObject;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
@@ -11,7 +11,7 @@ import user_interface.factory.util.ColorData;
 import user_interface.factory.util.enums.ColorType;
 
 public class InfoObjectRCM extends RightClickMenu implements InstanceRepo {
-    private InfoObject infoObject = null;
+    private TagObject tagObject = null;
 
     public InfoObjectRCM() {
         ColorData colorData = new ColorData(ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
@@ -20,13 +20,13 @@ public class InfoObjectRCM extends RightClickMenu implements InstanceRepo {
 
         nodeEdit.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                mainInfoList.edit(infoObject);
+                mainInfoList.edit(tagObject);
                 reload.doReload();
             }
         });
         nodeRemove.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                mainInfoList.remove(infoObject);
+                mainInfoList.remove(tagObject);
                 reload.doReload();
             }
         });
@@ -50,7 +50,7 @@ public class InfoObjectRCM extends RightClickMenu implements InstanceRepo {
         super.show(anchor, event.getScreenX(), event.getScreenY());
     }
 
-    public void setInfoObject(InfoObject infoObject) {
-        this.infoObject = infoObject;
+    public void setTagObject(TagObject tagObject) {
+        this.tagObject = tagObject;
     }
 }

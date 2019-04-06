@@ -39,28 +39,28 @@ public class GroupNode extends HBox implements InstanceRepo {
                     if (owner == infoListViewL) {
                         if (!infoListViewL.getExpandedGroupsList().contains(labelText.getText())) {
                             infoListViewL.getExpandedGroupsList().add(labelText.getText());
-                            ObservableList<Node> nodes = infoListViewL.getInfoObjectVBox().getChildren();
+                            ObservableList<Node> nodes = infoListViewL.getTagListBox().getChildren();
                             int index = nodes.indexOf(this) + 1;
                             nodes.addAll(index, nameNodes);
-                            CommonUtil.updateNodeProperties(infoListViewL.getInfoObjectVBox());
+                            CommonUtil.updateNodeProperties(infoListViewL.getTagListBox());
                             labelArrow.setText("− ");
                         } else {
                             infoListViewL.getExpandedGroupsList().remove(labelText.getText());
-                            ObservableList<Node> nodes = infoListViewL.getInfoObjectVBox().getChildren();
+                            ObservableList<Node> nodes = infoListViewL.getTagListBox().getChildren();
                             nodes.removeAll(nameNodes);
                             labelArrow.setText("+ ");
                         }
                     } else if (owner == infoListViewR) {
                         if (!infoListViewR.getExpandedGroupsList().contains(labelText.getText())) {
                             infoListViewR.getExpandedGroupsList().add(labelText.getText());
-                            ObservableList<Node> nodes = infoListViewR.getInfoObjectBox().getChildren();
+                            ObservableList<Node> nodes = infoListViewR.getTagListBox().getChildren();
                             int index = nodes.indexOf(this) + 1;
                             nodes.addAll(index, nameNodes);
-                            CommonUtil.updateNodeProperties(infoListViewR.getInfoObjectBox());
+                            CommonUtil.updateNodeProperties(infoListViewR.getTagListBox());
                             labelArrow.setText("− ");
                         } else {
                             infoListViewR.getExpandedGroupsList().remove(labelText.getText());
-                            ObservableList<Node> nodes = infoListViewR.getInfoObjectBox().getChildren();
+                            ObservableList<Node> nodes = infoListViewR.getTagListBox().getChildren();
                             nodes.removeAll(nameNodes);
                             labelArrow.setText("+ ");
                         }
@@ -79,7 +79,7 @@ public class GroupNode extends HBox implements InstanceRepo {
                     if (this.getParent().getParent() instanceof InfoListViewL) {
                         infoListViewL.changeNodeState(this, null);
                         reload.doReload();
-                        CommonUtil.updateNodeProperties(infoListViewL.getInfoObjectVBox());
+                        CommonUtil.updateNodeProperties(infoListViewL.getTagListBox());
                     }
                     break;
                 case SECONDARY:

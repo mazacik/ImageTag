@@ -1,6 +1,6 @@
 package user_interface.factory.stage;
 
-import database.object.InfoObject;
+import database.object.TagObject;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -24,9 +24,9 @@ public class InfoObjectEditStage extends Stage {
     private final Label nodeOK = NodeFactory.getLabel("OK", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
     private final Label nodeCancel = NodeFactory.getLabel("Cancel", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
 
-    private InfoObject infoObject = null;
+    private TagObject tagObject = null;
 
-    public InfoObjectEditStage(InfoObject infoObject) {
+    public InfoObjectEditStage(TagObject tagObject) {
         BorderPane borderPane = new BorderPane();
 
         nodeGroup.setPrefWidth(60);
@@ -52,9 +52,9 @@ public class InfoObjectEditStage extends Stage {
         NodeFactory.addNodeToManager(nodeGroupEdit, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
         NodeFactory.addNodeToManager(nodeNameEdit, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
         nodeGroupEdit.requestFocus();
-        if (infoObject != null) {
-            nodeGroupEdit.setText(infoObject.getGroup());
-            nodeNameEdit.setText(infoObject.getName());
+        if (tagObject != null) {
+            nodeGroupEdit.setText(tagObject.getGroup());
+            nodeNameEdit.setText(tagObject.getName());
         }
 
         nodeOK.setOnMouseClicked(event -> {
@@ -100,14 +100,14 @@ public class InfoObjectEditStage extends Stage {
         this(null);
     }
 
-    public InfoObject getResult() {
-        return infoObject;
+    public TagObject getResult() {
+        return tagObject;
     }
     private void getValue() {
         String group = nodeGroupEdit.getText();
         String name = nodeNameEdit.getText();
         if (!group.isEmpty() && !name.isEmpty()) {
-            infoObject = new InfoObject(group, name);
+            tagObject = new TagObject(group, name);
         }
     }
 }

@@ -2,7 +2,7 @@ package user_interface.singleton.side;
 
 import control.reload.Reload;
 import database.object.DataObject;
-import database.object.InfoObject;
+import database.object.TagObject;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -11,10 +11,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import system.CommonUtil;
 import system.InstanceRepo;
@@ -30,190 +30,76 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
-    private final Label nodeText = NodeFactory.getLabel("", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
-    private final VBox infoObjectVBox = NodeFactory.getVBox(ColorType.DEF);
-    private final ScrollPane infoObjectScrollPane = new ScrollPane();
-    private final ArrayList<String> expandedGroupsList = new ArrayList<>();
-
-    private final TextField textField = new TextField();
+    private final Label nodeTitle;
+    private final TextField tfSearch;
     private String actualText = "";
 
     private final Label nodeSelectAll;
     private final Label nodeSelectNone;
     private final Label nodeSelectMerge;
 
+    private final VBox tagListBox;
+    private final Label nodeEmptySelection;
+    private final ScrollPane tagListScrollPane;
+    private final ArrayList<String> expandedGroupsList;
+
     public InfoListViewR() {
-        nodeText.prefWidthProperty().bind(this.widthProperty());
-        nodeText.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 1, 0))));
-        nodeText.setFont(CommonUtil.getFont());
+        ColorData colorDataSimple = new ColorData(ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
 
-        textField.setFont(CommonUtil.getFont());
-        textField.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 1, 0))));
-        textField.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (select.size() == 0) {
-                return;
-            }
-            if (event.getCode().isLetterKey()) {
-                actualText += event.getText().toLowerCase();
-            } else if (event.getCode() == KeyCode.BACK_SPACE) {
-                actualText = actualText.substring(0, actualText.length() - 1);
-            }
-        });
-        textField.setOnKeyTyped(event -> {
-            if (select.size() == 0) {
-                actualText = "";
-                textField.clear();
-                return;
-            }
-            if (actualText.isEmpty()) {
-                textField.clear();
-                return;
-            }
-            if (actualText.length() < 3) {
-                textField.setText(actualText);
-                textField.positionCaret(textField.getLength());
-            }
-            if (actualText.length() >= 3) {
-                ArrayList<InfoObject> matches = new ArrayList();
-                for (InfoObject infoObject : mainInfoList) {
-                    if (infoObject.getGroupAndName().toLowerCase().contains(actualText.toLowerCase())) {
-                        matches.add(infoObject);
-                    }
-                }
+        nodeTitle = NodeFactory.getLabel("", colorDataSimple);
+        nodeTitle.setBorder(NodeFactory.getBorder(0, 0, 1, 0));
+        nodeTitle.prefWidthProperty().bind(this.widthProperty());
 
-                InfoObject bestMatch = null;
-                //tag's name starts with actualtext
-                for (InfoObject infoObject : matches) {
-                    if (infoObject.getName().toLowerCase().startsWith(actualText)) {
-                        bestMatch = infoObject;
-                        break;
-                    }
+        tfSearch = new TextField();
+        tfSearch.setFont(CommonUtil.getFont());
+        tfSearch.setBorder(NodeFactory.getBorder(0, 0, 1, 0));
+        tfSearch.setPromptText("Start typing..");
+        NodeFactory.addNodeToManager(tfSearch, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
 
-                }
-                if (bestMatch == null) {
-                    //tag's name contains actualtext
-                    for (InfoObject infoObject : matches) {
-                        if (infoObject.getName().toLowerCase().contains(actualText)) {
-                            bestMatch = infoObject;
-                            break;
-                        }
+        nodeSelectAll = NodeFactory.getLabel("Select All", colorDataSimple);
+        nodeSelectNone = NodeFactory.getLabel("Select None", colorDataSimple);
+        nodeSelectMerge = NodeFactory.getLabel("Merge Selection", colorDataSimple);
+        LeftClickMenu.install(nodeTitle, Direction.LEFT, nodeSelectAll, nodeSelectNone, nodeSelectMerge);
 
-                    }
-                }
-                if (bestMatch == null) {
-                    //tag (group and name) contains actualtext
-                    for (InfoObject infoObject : matches) {
-                        if (infoObject.getGroupAndName().toLowerCase().contains(actualText)) {
-                            bestMatch = infoObject;
-                            break;
-                        }
+        tagListBox = NodeFactory.getVBox(ColorType.DEF);
+        nodeEmptySelection = NodeFactory.getLabel("Selection is empty", ColorType.DEF, ColorType.DEF);
+        tagListScrollPane = new ScrollPane();
+        tagListScrollPane.setContent(tagListBox);
+        tagListScrollPane.setFitToWidth(true);
+        tagListScrollPane.setFitToHeight(true);
+        tagListScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        tagListScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        NodeFactory.addNodeToManager(tagListScrollPane, ColorType.DEF);
 
-                    }
-                }
-
-                if (bestMatch != null) {
-                    String groupAndName = bestMatch.getGroupAndName();
-                    textField.setText(groupAndName);
-                    int caretPos = groupAndName.toLowerCase().lastIndexOf(actualText.toLowerCase()) + actualText.length();
-                    textField.positionCaret(caretPos);
-                }
-
-                if (matches.isEmpty()) {
-                    textField.setText(actualText);
-                    textField.positionCaret(textField.getLength());
-                }
-            }
-        });
-        textField.setOnAction(event -> {
-            InfoObject infoObject = mainInfoList.getInfoObject(textField.getText());
-            if (infoObject != null) {
-                this.addTagObjectToSelection(infoObject);
-                textField.clear();
-                actualText = "";
-                reload.notifyChangeIn(Reload.Control.INFO);
-                reload.doReload();
-            }
-        });
-        textField.setPromptText("Start typing..");
-        NodeFactory.addNodeToManager(textField, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
-
-        ColorData colorData = new ColorData(ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
-        nodeSelectAll = NodeFactory.getLabel("Select All", colorData);
-        nodeSelectNone = NodeFactory.getLabel("Select None", colorData);
-        nodeSelectMerge = NodeFactory.getLabel("Merge Selection", colorData);
-        new LeftClickMenu(nodeText, Direction.LEFT, nodeSelectAll, nodeSelectNone, nodeSelectMerge);
-
-        infoObjectScrollPane.setContent(infoObjectVBox);
-        infoObjectScrollPane.setFitToWidth(true);
-        infoObjectScrollPane.setFitToHeight(true);
-        infoObjectScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        infoObjectScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        VBox.setVgrow(infoObjectScrollPane, Priority.ALWAYS);
-        NodeFactory.addNodeToManager(infoObjectScrollPane, ColorType.DEF);
+        expandedGroupsList = new ArrayList<>();
 
         HBox.setHgrow(this, Priority.ALWAYS);
-        this.setPrefWidth(999);
-        this.setMinWidth(200);
-        this.getChildren().addAll(nodeText, textField, infoObjectScrollPane);
-    }
-
-    public void changeNodeState(GroupNode groupNode, Label nameNode) {
-        InfoObject infoObject = mainInfoList.getInfoObject(groupNode.getText(), nameNode.getText());
-        if (nameNode.getTextFill().equals(ColorUtil.getTextColorPos()) || nameNode.getTextFill().equals(ColorUtil.getTextColorInt())) {
-            nameNode.setTextFill(ColorUtil.getTextColorDef());
-            this.removeTagObjectFromSelection(infoObject);
-        } else {
-            nameNode.setTextFill(ColorUtil.getTextColorPos());
-            this.addTagObjectToSelection(infoObject);
-        }
-
-        reload.notifyChangeIn(Reload.Control.INFO);
-        reload.doReload();
-    }
-    public void addTagObjectToSelection(InfoObject infoObject) {
-        if (select.size() < 1) {
-            DataObject currentTargetedItem = target.getCurrentTarget();
-            if (currentTargetedItem != null) {
-                currentTargetedItem.getInfoObjectList().add(infoObject);
-            }
-        } else {
-            select.addTagObject(infoObject);
-        }
-    }
-    public void removeTagObjectFromSelection(InfoObject infoObject) {
-        if (select.size() < 1) {
-            DataObject currentTargetedItem = target.getCurrentTarget();
-            if (currentTargetedItem != null) {
-                currentTargetedItem.getInfoObjectList().remove(infoObject);
-            }
-        } else {
-            select.removeTagObject(infoObject);
-        }
+        this.setMinWidth(CommonUtil.getUsableScreenWidth() / 10);
+        this.getChildren().addAll(nodeTitle, tfSearch, tagListScrollPane);
     }
 
     public void reload() {
-        ObservableList<Node> nodes = infoObjectVBox.getChildren();
-        nodes.clear();
+        ObservableList<Node> tagListNodes = tagListBox.getChildren();
+        tagListNodes.clear();
 
         if (select.size() == 0) {
-            nodeText.setText("Selection: 0");
-            nodes.add(NodeFactory.getLabel("Selection is empty", ColorType.DEF, ColorType.DEF));
-            CommonUtil.updateNodeProperties(infoObjectVBox);
+            nodeTitle.setText("Selection: 0");
+            tagListNodes.add(nodeEmptySelection);
             return;
         }
 
-        int hidden = 0;
+        int hiddenTiles = 0;
         for (DataObject dataObject : select) {
             if (!filter.contains(dataObject)) {
-                hidden++;
+                hiddenTiles++;
             }
         }
 
         String text = "Selection: " + select.size();
-        if (hidden > 0) {
-            text += ", " + hidden + " hidden";
+        if (hiddenTiles > 0) {
+            text += ", " + hiddenTiles + " tiles hidden";
         }
-        nodeText.setText(text);
+        nodeTitle.setText(text);
 
         ArrayList<String> groupsInter = select.getIntersectingTags().getGroups();
         ArrayList<String> groupsShare = select.getSharedTags().getGroups();
@@ -231,6 +117,7 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
             groupsAll.remove(groupShare);
         }
         for (String group : mainInfoList.getGroups()) {
+            //todo this needs a rework... someday
             if (groupsInter.contains(group)) {
                 GroupNode groupNode = NodeFactory.getGroupNode(this, group, textColorPositive);
                 ArrayList<String> namesInter = select.getIntersectingTags().getNames(group);
@@ -243,12 +130,12 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
 
                     Label nameNode = NodeFactory.getLabel(nameInter, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
                     nameNode.setTextFill(textColorPositive);
-                    nameNode.prefWidthProperty().bind(infoObjectVBox.widthProperty());
+                    nameNode.prefWidthProperty().bind(tagListBox.widthProperty());
                     nameNode.setOnMouseClicked(event -> {
                         if (event.getButton() == MouseButton.PRIMARY) {
                             changeNodeState(groupNode, nameNode);
                         } else if (event.getButton() == MouseButton.SECONDARY) {
-                            infoObjectRCM.setInfoObject(mainInfoList.getInfoObject(groupNode.getText(), nameNode.getText()));
+                            infoObjectRCM.setTagObject(mainInfoList.getTagObject(groupNode.getText(), nameNode.getText()));
                             infoObjectRCM.show(nameNode, event);
                         }
                     });
@@ -261,12 +148,12 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
 
                     Label nameNode = NodeFactory.getLabel(nameShare, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
                     nameNode.setTextFill(textColorIntersect);
-                    nameNode.prefWidthProperty().bind(infoObjectVBox.widthProperty());
+                    nameNode.prefWidthProperty().bind(tagListBox.widthProperty());
                     nameNode.setOnMouseClicked(event -> {
                         if (event.getButton() == MouseButton.PRIMARY) {
                             changeNodeState(groupNode, nameNode);
                         } else if (event.getButton() == MouseButton.SECONDARY) {
-                            infoObjectRCM.setInfoObject(mainInfoList.getInfoObject(groupNode.getText(), nameNode.getText()));
+                            infoObjectRCM.setTagObject(mainInfoList.getTagObject(groupNode.getText(), nameNode.getText()));
                             infoObjectRCM.show(nameNode, event);
                         }
                     });
@@ -277,12 +164,12 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
                 for (String nameAll : namesAll) {
                     Label nameNode = NodeFactory.getLabel(nameAll, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
                     nameNode.setTextFill(textColorDefault);
-                    nameNode.prefWidthProperty().bind(infoObjectVBox.widthProperty());
+                    nameNode.prefWidthProperty().bind(tagListBox.widthProperty());
                     nameNode.setOnMouseClicked(event -> {
                         if (event.getButton() == MouseButton.PRIMARY) {
                             changeNodeState(groupNode, nameNode);
                         } else if (event.getButton() == MouseButton.SECONDARY) {
-                            infoObjectRCM.setInfoObject(mainInfoList.getInfoObject(groupNode.getText(), nameNode.getText()));
+                            infoObjectRCM.setTagObject(mainInfoList.getTagObject(groupNode.getText(), nameNode.getText()));
                             infoObjectRCM.show(nameNode, event);
                         }
                     });
@@ -293,10 +180,10 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
 
                 groupNode.getNameNodes().sort(Comparator.comparing(Labeled::getText));
 
-                nodes.add(groupNode);
+                tagListNodes.add(groupNode);
                 if (expandedGroupsList.contains(group)) {
                     groupNode.setArrowExpanded(true);
-                    nodes.addAll(groupNode.getNameNodes());
+                    tagListNodes.addAll(groupNode.getNameNodes());
                 }
             } else if (groupsShare.contains(group)) {
                 GroupNode groupNode = NodeFactory.getGroupNode(this, group, textColorIntersect);
@@ -308,12 +195,12 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
 
                     Label nameNode = NodeFactory.getLabel(nameShare, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
                     nameNode.setTextFill(textColorIntersect);
-                    nameNode.prefWidthProperty().bind(infoObjectVBox.widthProperty());
+                    nameNode.prefWidthProperty().bind(tagListBox.widthProperty());
                     nameNode.setOnMouseClicked(event -> {
                         if (event.getButton() == MouseButton.PRIMARY) {
                             changeNodeState(groupNode, nameNode);
                         } else if (event.getButton() == MouseButton.SECONDARY) {
-                            infoObjectRCM.setInfoObject(mainInfoList.getInfoObject(groupNode.getText(), nameNode.getText()));
+                            infoObjectRCM.setTagObject(mainInfoList.getTagObject(groupNode.getText(), nameNode.getText()));
                             infoObjectRCM.show(nameNode, event);
                         }
                     });
@@ -324,12 +211,12 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
                 for (String nameAll : namesAll) {
                     Label nameNode = NodeFactory.getLabel(nameAll, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
                     nameNode.setTextFill(textColorDefault);
-                    nameNode.prefWidthProperty().bind(infoObjectVBox.widthProperty());
+                    nameNode.prefWidthProperty().bind(tagListBox.widthProperty());
                     nameNode.setOnMouseClicked(event -> {
                         if (event.getButton() == MouseButton.PRIMARY) {
                             changeNodeState(groupNode, nameNode);
                         } else if (event.getButton() == MouseButton.SECONDARY) {
-                            infoObjectRCM.setInfoObject(mainInfoList.getInfoObject(groupNode.getText(), nameNode.getText()));
+                            infoObjectRCM.setTagObject(mainInfoList.getTagObject(groupNode.getText(), nameNode.getText()));
                             infoObjectRCM.show(nameNode, event);
                         }
                     });
@@ -338,10 +225,10 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
                     groupNode.getNameNodes().add(nameNode);
                 }
 
-                nodes.add(groupNode);
+                tagListNodes.add(groupNode);
                 if (expandedGroupsList.contains(group)) {
                     groupNode.setArrowExpanded(true);
-                    nodes.addAll(groupNode.getNameNodes());
+                    tagListNodes.addAll(groupNode.getNameNodes());
                 }
             } else {
                 GroupNode groupNode = NodeFactory.getGroupNode(this, group, textColorDefault);
@@ -350,12 +237,12 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
                 for (String nameAll : namesAll) {
                     Label nameNode = NodeFactory.getLabel(nameAll, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
                     nameNode.setTextFill(textColorDefault);
-                    nameNode.prefWidthProperty().bind(infoObjectVBox.widthProperty());
+                    nameNode.prefWidthProperty().bind(tagListBox.widthProperty());
                     nameNode.setOnMouseClicked(event -> {
                         if (event.getButton() == MouseButton.PRIMARY) {
                             changeNodeState(groupNode, nameNode);
                         } else if (event.getButton() == MouseButton.SECONDARY) {
-                            infoObjectRCM.setInfoObject(mainInfoList.getInfoObject(groupNode.getText(), nameNode.getText()));
+                            infoObjectRCM.setTagObject(mainInfoList.getTagObject(groupNode.getText(), nameNode.getText()));
                             infoObjectRCM.show(nameNode, event);
                         }
                     });
@@ -364,25 +251,65 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
                     groupNode.getNameNodes().add(nameNode);
                 }
 
-                nodes.add(groupNode);
+                tagListNodes.add(groupNode);
                 if (expandedGroupsList.contains(group)) {
                     groupNode.setArrowExpanded(true);
-                    nodes.addAll(groupNode.getNameNodes());
+                    tagListNodes.addAll(groupNode.getNameNodes());
                 }
             }
         }
 
-        CommonUtil.updateNodeProperties(infoObjectVBox);
+        CommonUtil.updateNodeProperties(tagListBox);
     }
     public void onShown() {
-        infoObjectScrollPane.lookup(".scroll-bar").setStyle("-fx-background-color: transparent;");
-        infoObjectScrollPane.lookup(".increment-button").setStyle("-fx-background-color: transparent;");
-        infoObjectScrollPane.lookup(".decrement-button").setStyle("-fx-background-color: transparent;");
-        infoObjectScrollPane.lookup(".thumb").setStyle("-fx-background-color: gray; -fx-background-insets: 0 4 0 4;");
+        tagListScrollPane.lookup(".scroll-bar").setStyle("-fx-background-color: transparent;");
+        tagListScrollPane.lookup(".increment-button").setStyle("-fx-background-color: transparent;");
+        tagListScrollPane.lookup(".decrement-button").setStyle("-fx-background-color: transparent;");
+        tagListScrollPane.lookup(".thumb").setStyle("-fx-background-color: gray; -fx-background-insets: 0 4 0 4;");
     }
 
-    public VBox getInfoObjectBox() {
-        return infoObjectVBox;
+    public void changeNodeState(GroupNode groupNode, Label nameNode) {
+        TagObject tagObject = mainInfoList.getTagObject(groupNode.getText(), nameNode.getText());
+        if (nameNode.getTextFill().equals(ColorUtil.getTextColorPos()) || nameNode.getTextFill().equals(ColorUtil.getTextColorInt())) {
+            nameNode.setTextFill(ColorUtil.getTextColorDef());
+            this.removeTagObjectFromSelection(tagObject);
+        } else {
+            nameNode.setTextFill(ColorUtil.getTextColorPos());
+            this.addTagObjectToSelection(tagObject);
+        }
+
+        reload.notifyChangeIn(Reload.Control.INFO);
+        reload.doReload();
+    }
+    public void addTagObjectToSelection(TagObject tagObject) {
+        if (select.size() < 1) {
+            DataObject currentTargetedItem = target.getCurrentTarget();
+            if (currentTargetedItem != null) {
+                currentTargetedItem.getInfoObjectList().add(tagObject);
+            }
+        } else {
+            select.addTagObject(tagObject);
+        }
+    }
+    public void removeTagObjectFromSelection(TagObject tagObject) {
+        if (select.size() < 1) {
+            DataObject currentTargetedItem = target.getCurrentTarget();
+            if (currentTargetedItem != null) {
+                currentTargetedItem.getInfoObjectList().remove(tagObject);
+            }
+        } else {
+            select.removeTagObject(tagObject);
+        }
+    }
+
+    public TextField getTfSearch() {
+        return tfSearch;
+    }
+    public String getActualText() {
+        return actualText;
+    }
+    public void setActualText(String actualText) {
+        this.actualText = actualText;
     }
     public ArrayList<String> getExpandedGroupsList() {
         return expandedGroupsList;
@@ -396,5 +323,8 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
     }
     public Label getNodeSelectMerge() {
         return nodeSelectMerge;
+    }
+    public VBox getTagListBox() {
+        return tagListBox;
     }
 }

@@ -6,15 +6,14 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import system.CommonUtil;
 import user_interface.factory.node.IntroWindowCell;
 import user_interface.factory.util.ColorData;
+import user_interface.factory.util.ColorUtil;
 import user_interface.factory.util.enums.ColorType;
 import user_interface.singleton.side.GroupNode;
 
@@ -77,6 +76,9 @@ public abstract class NodeFactory {
         t.setFont(CommonUtil.getFont());
         t.setShowDelay(new Duration(500));
         return t;
+    }
+    public static Border getBorder(int top, int right, int bottom, int left) {
+        return new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(top, right, bottom, left)));
     }
 
     public static void addNodeToManager(Region region, ColorType backgroundDef) {

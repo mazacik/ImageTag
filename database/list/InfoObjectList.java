@@ -1,22 +1,22 @@
 package database.list;
 
-import database.object.InfoObject;
+import database.object.TagObject;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class InfoObjectList extends ArrayList<InfoObject> {
+public class InfoObjectList extends ArrayList<TagObject> {
     public InfoObjectList() {
         super();
     }
 
-    public boolean contains(InfoObject object) {
+    public boolean contains(TagObject object) {
         if (object == null) return false;
         if (super.contains(object)) return true;
         else {
             String group = object.getGroup();
             String name = object.getName();
-            for (InfoObject iterator : this) {
+            for (TagObject iterator : this) {
                 String iteratorGroup = iterator.getGroup();
                 String iteratorName = iterator.getName();
                 if (group.equals(iteratorGroup) && name.equals(iteratorName)) {
@@ -27,12 +27,12 @@ public class InfoObjectList extends ArrayList<InfoObject> {
         }
     }
     public void sort() {
-        super.sort(InfoObject.getComparator());
+        super.sort(TagObject.getComparator());
     }
 
     public ArrayList<String> getGroups() {
         ArrayList<String> groups = new ArrayList<>();
-        for (InfoObject iterator : this) {
+        for (TagObject iterator : this) {
             if (!groups.contains(iterator.getGroup())) {
                 groups.add(iterator.getGroup());
             }
@@ -42,7 +42,7 @@ public class InfoObjectList extends ArrayList<InfoObject> {
     }
     public ArrayList<String> getNames(String group) {
         ArrayList<String> names = new ArrayList<>();
-        for (InfoObject iterator : this) {
+        for (TagObject iterator : this) {
             String iteratorGroup = iterator.getGroup();
             String iteratorName = iterator.getName();
             if (iteratorGroup.equals(group) && !names.contains(iteratorName)) {

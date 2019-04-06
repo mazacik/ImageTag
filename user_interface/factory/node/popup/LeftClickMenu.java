@@ -20,7 +20,7 @@ public class LeftClickMenu extends Popup {
     private Label root;
     private VBox vBox = NodeFactory.getVBox(ColorType.DEF);
 
-    public LeftClickMenu(Label root, Direction direction, Label... labels) {
+    private LeftClickMenu(Label root, Direction direction, Label... labels) {
         instanceList.add(this);
         this.root = root;
         this.root.setOnMouseClicked(event -> {
@@ -57,7 +57,6 @@ public class LeftClickMenu extends Popup {
         this.setAutoHide(true);
         this.setHideOnEscape(true);
     }
-
     private void show(Direction direction) {
         this.show(CommonUtil.mainStage, 0, 0);
 
@@ -94,6 +93,10 @@ public class LeftClickMenu extends Popup {
 
         this.setAnchorX(x);
         this.setAnchorY(y);
+    }
+
+    public static void install(Label root, Direction direction, Label... labels) {
+        new LeftClickMenu(root, direction, labels);
     }
 
     public ObservableList<Node> getChildren() {

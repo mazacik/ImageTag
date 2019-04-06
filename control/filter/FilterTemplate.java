@@ -2,7 +2,7 @@ package control.filter;
 
 import database.list.InfoObjectList;
 import database.object.DataObject;
-import database.object.InfoObject;
+import database.object.TagObject;
 import system.InstanceRepo;
 
 public enum FilterTemplate implements InstanceRepo {
@@ -53,8 +53,8 @@ public enum FilterTemplate implements InstanceRepo {
         } else if (whitelistMode.equals(Filter.FilterMode.All) && infoObjectList.containsAll(infoListWhite)) {
             return true;
         } else if (whitelistMode.equals(Filter.FilterMode.Any)) {
-            for (InfoObject infoObject : infoListWhite) {
-                if (infoObjectList.contains(infoObject)) {
+            for (TagObject tagObject : infoListWhite) {
+                if (infoObjectList.contains(tagObject)) {
                     return true;
                 }
             }
@@ -69,8 +69,8 @@ public enum FilterTemplate implements InstanceRepo {
         } else if (blacklistMode.equals(Filter.FilterMode.All) && infoObjectList.containsAll(infoListBlack)) {
             return false;
         } else if (blacklistMode.equals(Filter.FilterMode.Any)) {
-            for (InfoObject infoObject : infoListBlack) {
-                if (infoObjectList.contains(infoObject)) {
+            for (TagObject tagObject : infoListBlack) {
+                if (infoObjectList.contains(tagObject)) {
                     return false;
                 }
             }

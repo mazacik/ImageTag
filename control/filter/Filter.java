@@ -2,7 +2,7 @@ package control.filter;
 
 import control.reload.Reload;
 import database.list.DataObjectList;
-import database.object.InfoObject;
+import database.object.TagObject;
 import system.InstanceRepo;
 
 public class Filter extends DataObjectList implements InstanceRepo {
@@ -20,39 +20,39 @@ public class Filter extends DataObjectList implements InstanceRepo {
         reload.notifyChangeIn(Reload.Control.FILTER);
     }
 
-    public void whitelistTagObject(InfoObject infoObject) {
-        if (!isTagObjectWhitelisted(infoObject)) {
-            infoListWhite.add(infoObject);
-            infoListBlack.remove(infoObject);
+    public void whitelistTagObject(TagObject tagObject) {
+        if (!isTagObjectWhitelisted(tagObject)) {
+            infoListWhite.add(tagObject);
+            infoListBlack.remove(tagObject);
             currentFilterTemplate = FilterTemplate.CUSTOM;
         }
     }
-    public void blacklistTagObject(InfoObject infoObject) {
-        if (!isTagObjectBlacklisted(infoObject)) {
-            infoListWhite.remove(infoObject);
-            infoListBlack.add(infoObject);
+    public void blacklistTagObject(TagObject tagObject) {
+        if (!isTagObjectBlacklisted(tagObject)) {
+            infoListWhite.remove(tagObject);
+            infoListBlack.add(tagObject);
             currentFilterTemplate = FilterTemplate.CUSTOM;
         }
     }
-    public void unlistTagObject(InfoObject infoObject) {
-        infoListWhite.remove(infoObject);
-        infoListBlack.remove(infoObject);
+    public void unlistTagObject(TagObject tagObject) {
+        infoListWhite.remove(tagObject);
+        infoListBlack.remove(tagObject);
         currentFilterTemplate = FilterTemplate.CUSTOM;
     }
 
     public void whitelistGroup(String group) {
         for (String name : mainInfoList.getNames(group)) {
-            whitelistTagObject(mainInfoList.getInfoObject(group, name));
+            whitelistTagObject(mainInfoList.getTagObject(group, name));
         }
     }
     public void blacklistGroup(String group) {
         for (String name : mainInfoList.getNames(group)) {
-            blacklistTagObject(mainInfoList.getInfoObject(group, name));
+            blacklistTagObject(mainInfoList.getTagObject(group, name));
         }
     }
     public void unlistGroup(String group) {
         for (String name : mainInfoList.getNames(group)) {
-            unlistTagObject(mainInfoList.getInfoObject(group, name));
+            unlistTagObject(mainInfoList.getTagObject(group, name));
         }
     }
 
@@ -77,17 +77,17 @@ public class Filter extends DataObjectList implements InstanceRepo {
         return value;
     }
 
-    public boolean isTagObjectWhitelisted(InfoObject infoObject) {
-        return infoListWhite.contains(infoObject);
+    public boolean isTagObjectWhitelisted(TagObject tagObject) {
+        return infoListWhite.contains(tagObject);
     }
     public boolean isTagObjectWhitelisted(String group, String name) {
-        return infoListWhite.contains(mainInfoList.getInfoObject(group, name));
+        return infoListWhite.contains(mainInfoList.getTagObject(group, name));
     }
-    public boolean isTagObjectBlacklisted(InfoObject infoObject) {
-        return infoListBlack.contains(infoObject);
+    public boolean isTagObjectBlacklisted(TagObject tagObject) {
+        return infoListBlack.contains(tagObject);
     }
     public boolean isTagObjectBlacklisted(String group, String name) {
-        return infoListBlack.contains(mainInfoList.getInfoObject(group, name));
+        return infoListBlack.contains(mainInfoList.getTagObject(group, name));
     }
 
     public FilterMode getWhitelistMode() {

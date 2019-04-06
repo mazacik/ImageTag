@@ -4,7 +4,7 @@ import control.reload.Reload;
 import database.list.DataObjectList;
 import database.list.InfoObjectList;
 import database.object.DataObject;
-import database.object.InfoObject;
+import database.object.TagObject;
 import system.CommonUtil;
 import system.InstanceRepo;
 
@@ -79,9 +79,9 @@ public class Select extends DataObjectList implements InstanceRepo {
     public void merge() {
         InfoObjectList infoObjectList = new InfoObjectList();
         for (DataObject dataObject : this) {
-            for (InfoObject infoObject : dataObject.getInfoObjectList()) {
-                if (!infoObjectList.contains(infoObject)) {
-                    infoObjectList.add(infoObject);
+            for (TagObject tagObject : dataObject.getInfoObjectList()) {
+                if (!infoObjectList.contains(tagObject)) {
+                    infoObjectList.add(tagObject);
                 }
             }
         }
@@ -95,10 +95,10 @@ public class Select extends DataObjectList implements InstanceRepo {
         reload.notifyChangeIn(Reload.Control.DATA, Reload.Control.INFO);
     }
 
-    public void addTagObject(InfoObject infoObject) {
-        if (!infoObject.isEmpty()) {
-            if (!mainInfoList.contains(infoObject)) {
-                mainInfoList.add(infoObject);
+    public void addTagObject(TagObject tagObject) {
+        if (!tagObject.isEmpty()) {
+            if (!mainInfoList.contains(tagObject)) {
+                mainInfoList.add(tagObject);
             }
 
             DataObjectList selectHelper = new DataObjectList();
@@ -107,27 +107,27 @@ public class Select extends DataObjectList implements InstanceRepo {
             InfoObjectList infoObjectList;
             for (DataObject dataObject : selectHelper) {
                 infoObjectList = dataObject.getInfoObjectList();
-                if (!infoObjectList.contains(infoObject)) {
-                    infoObjectList.add(infoObject);
+                if (!infoObjectList.contains(tagObject)) {
+                    infoObjectList.add(tagObject);
                 }
             }
         }
     }
-    public void removeTagObject(InfoObject infoObject) {
+    public void removeTagObject(TagObject tagObject) {
         for (DataObject dataObject : this) {
-            dataObject.getInfoObjectList().remove(infoObject);
+            dataObject.getInfoObjectList().remove(tagObject);
         }
 
         boolean tagExists = false;
         for (DataObject dataObject : mainDataList) {
-            if (dataObject.getInfoObjectList().contains(infoObject)) {
+            if (dataObject.getInfoObjectList().contains(tagObject)) {
                 tagExists = true;
                 break;
             }
         }
         if (!tagExists) {
-            filter.unlistTagObject(infoObject);
-            mainInfoList.remove(infoObject);
+            filter.unlistTagObject(tagObject);
+            mainInfoList.remove(tagObject);
         }
     }
 
@@ -136,11 +136,11 @@ public class Select extends DataObjectList implements InstanceRepo {
 
         InfoObjectList intersectingTags = new InfoObjectList();
         DataObject lastObject = this.get(this.size() - 1);
-        for (InfoObject infoObject : this.get(0).getInfoObjectList()) {
+        for (TagObject tagObject : this.get(0).getInfoObjectList()) {
             for (DataObject dataObject : this) {
-                if (dataObject.getInfoObjectList().contains(infoObject)) {
+                if (dataObject.getInfoObjectList().contains(tagObject)) {
                     if (dataObject.equals(lastObject)) {
-                        intersectingTags.add(infoObject);
+                        intersectingTags.add(tagObject);
                     }
                 } else break;
             }
@@ -152,9 +152,9 @@ public class Select extends DataObjectList implements InstanceRepo {
 
         InfoObjectList sharedTags = new InfoObjectList();
         for (DataObject dataObject : this) {
-            for (InfoObject infoObject : dataObject.getInfoObjectList()) {
-                if (!sharedTags.contains(infoObject)) {
-                    sharedTags.add(infoObject);
+            for (TagObject tagObject : dataObject.getInfoObjectList()) {
+                if (!sharedTags.contains(tagObject)) {
+                    sharedTags.add(tagObject);
                 }
             }
         }
