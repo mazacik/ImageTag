@@ -5,7 +5,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import settings.SettingType;
@@ -13,7 +15,6 @@ import system.CommonUtil;
 import user_interface.factory.NodeFactory;
 import user_interface.factory.node.TitleBar;
 import user_interface.factory.util.ColorData;
-import user_interface.factory.util.ColorUtil;
 import user_interface.factory.util.enums.ColorType;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class UserSettingsStage extends Stage {
                 labels.add(label);
                 TextField textField = new TextField(String.valueOf(setting.getValue()));
                 textField.setFont(CommonUtil.getFont());
-                textField.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1, 1, 1, 1))));
+                textField.setBorder(NodeFactory.getBorder(1, 1, 1, 1));
                 NodeFactory.addNodeToManager(textField, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
                 HBox hBox = NodeFactory.getHBox(ColorType.DEF, label, textField);
                 vBox.getChildren().add(hBox);

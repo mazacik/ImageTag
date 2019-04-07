@@ -40,7 +40,7 @@ public class MainScene implements InstanceRepo {
         return views.contains(fullView);
     }
     private Scene create() {
-        HBox mainHBox = NodeFactory.getHBox(ColorType.DEF, infoListViewL, tileView, infoListViewR);
+        HBox mainHBox = NodeFactory.getHBox(ColorType.DEF, tagListViewL, tileView, tagListViewR);
         views = mainHBox.getChildren();
         Scene mainScene = new Scene(NodeFactory.getVBox(ColorType.DEF, topMenu, mainHBox));
         TitleBar titleBar = new TitleBar(mainScene, false);
@@ -63,8 +63,8 @@ public class MainScene implements InstanceRepo {
         mainStage.centerOnScreen();
 
         tileView.onShown();
-        infoListViewL.onShown();
-        infoListViewR.onShown();
+        tagListViewL.onShown();
+        tagListViewR.onShown();
 
         topMenu.requestFocus();
 

@@ -117,18 +117,6 @@ public class Select extends DataObjectList implements InstanceRepo {
         for (DataObject dataObject : this) {
             dataObject.getInfoObjectList().remove(tagObject);
         }
-
-        boolean tagExists = false;
-        for (DataObject dataObject : mainDataList) {
-            if (dataObject.getInfoObjectList().contains(tagObject)) {
-                tagExists = true;
-                break;
-            }
-        }
-        if (!tagExists) {
-            filter.unlistTagObject(tagObject);
-            mainInfoList.remove(tagObject);
-        }
     }
 
     public InfoObjectList getIntersectingTags() {

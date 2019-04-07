@@ -36,31 +36,31 @@ public class GroupNode extends HBox implements InstanceRepo {
             event.consume();
             switch (event.getButton()) {
                 case PRIMARY:
-                    if (owner == infoListViewL) {
-                        if (!infoListViewL.getExpandedGroupsList().contains(labelText.getText())) {
-                            infoListViewL.getExpandedGroupsList().add(labelText.getText());
-                            ObservableList<Node> nodes = infoListViewL.getTagListBox().getChildren();
+                    if (owner == tagListViewL) {
+                        if (!tagListViewL.getExpandedGroupsList().contains(labelText.getText())) {
+                            tagListViewL.getExpandedGroupsList().add(labelText.getText());
+                            ObservableList<Node> nodes = tagListViewL.getTagListBox().getChildren();
                             int index = nodes.indexOf(this) + 1;
                             nodes.addAll(index, nameNodes);
-                            CommonUtil.updateNodeProperties(infoListViewL.getTagListBox());
+                            CommonUtil.updateNodeProperties(tagListViewL.getTagListBox());
                             labelArrow.setText("− ");
                         } else {
-                            infoListViewL.getExpandedGroupsList().remove(labelText.getText());
-                            ObservableList<Node> nodes = infoListViewL.getTagListBox().getChildren();
+                            tagListViewL.getExpandedGroupsList().remove(labelText.getText());
+                            ObservableList<Node> nodes = tagListViewL.getTagListBox().getChildren();
                             nodes.removeAll(nameNodes);
                             labelArrow.setText("+ ");
                         }
-                    } else if (owner == infoListViewR) {
-                        if (!infoListViewR.getExpandedGroupsList().contains(labelText.getText())) {
-                            infoListViewR.getExpandedGroupsList().add(labelText.getText());
-                            ObservableList<Node> nodes = infoListViewR.getTagListBox().getChildren();
+                    } else if (owner == tagListViewR) {
+                        if (!tagListViewR.getExpandedGroupsList().contains(labelText.getText())) {
+                            tagListViewR.getExpandedGroupsList().add(labelText.getText());
+                            ObservableList<Node> nodes = tagListViewR.getTagListBox().getChildren();
                             int index = nodes.indexOf(this) + 1;
                             nodes.addAll(index, nameNodes);
-                            CommonUtil.updateNodeProperties(infoListViewR.getTagListBox());
+                            CommonUtil.updateNodeProperties(tagListViewR.getTagListBox());
                             labelArrow.setText("− ");
                         } else {
-                            infoListViewR.getExpandedGroupsList().remove(labelText.getText());
-                            ObservableList<Node> nodes = infoListViewR.getTagListBox().getChildren();
+                            tagListViewR.getExpandedGroupsList().remove(labelText.getText());
+                            ObservableList<Node> nodes = tagListViewR.getTagListBox().getChildren();
                             nodes.removeAll(nameNodes);
                             labelArrow.setText("+ ");
                         }
@@ -76,16 +76,14 @@ public class GroupNode extends HBox implements InstanceRepo {
         this.setOnMouseClicked(event -> {
             switch (event.getButton()) {
                 case PRIMARY:
-                    if (this.getParent().getParent() instanceof InfoListViewL) {
-                        infoListViewL.changeNodeState(this, null);
+                    if (owner == tagListViewL) {
+                        tagListViewL.changeNodeState(this, null);
                         reload.doReload();
-                        CommonUtil.updateNodeProperties(infoListViewL.getTagListBox());
+                        CommonUtil.updateNodeProperties(tagListViewL.getTagListBox());
                     }
                     break;
                 case SECONDARY:
-                    if (this.getParent().getParent() instanceof InfoListViewL) {
-                        infoObjectRCM.show(this, event);
-                    }
+                    infoObjectRCM.show(this, event);
                     break;
                 default:
                     break;

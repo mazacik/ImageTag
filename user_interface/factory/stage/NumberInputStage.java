@@ -6,14 +6,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import system.CommonUtil;
 import user_interface.factory.NodeFactory;
 import user_interface.factory.node.TitleBar;
 import user_interface.factory.util.ColorData;
-import user_interface.factory.util.ColorUtil;
 import user_interface.factory.util.enums.ColorType;
 
 public class NumberInputStage extends Stage {
@@ -25,7 +25,7 @@ public class NumberInputStage extends Stage {
         nodeContent.setPadding(new Insets(0, 1.5 * padding, 0, 1.5 * padding));
 
         TextField nodeTextField = new TextField();
-        nodeTextField.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1, 1, 1, 1))));
+        nodeTextField.setBorder(NodeFactory.getBorder(1, 1, 1, 1));
         nodeTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.equals("") && !isNumberPositive(newValue)) {
                 nodeTextField.setText(oldValue);
@@ -62,7 +62,7 @@ public class NumberInputStage extends Stage {
         VBox vBoxMain = NodeFactory.getVBox(ColorType.DEF);
         vBoxMain.setAlignment(Pos.CENTER);
         vBoxMain.setSpacing(padding);
-        vBoxMain.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1, 1, 1, 1))));
+        vBoxMain.setBorder(NodeFactory.getBorder(1, 1, 1, 1));
 
         Scene scene = new Scene(vBoxMain);
         vBoxMain.getChildren().add(new TitleBar(scene));

@@ -48,8 +48,8 @@ public class DataLoader extends Thread implements InstanceRepo {
         loadImageCache(fileList.size());
 
         mainDataList.sort();
-        mainDataList.writeToDisk();
         mainInfoList.initialize();
+        mainDataList.writeToDisk();
         filter.addAll(mainDataList);
 
         filter.setFilter(FilterTemplate.SHOW_EVERYTHING);

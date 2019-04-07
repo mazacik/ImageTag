@@ -12,8 +12,6 @@ import javafx.scene.control.Labeled;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import system.CommonUtil;
@@ -29,7 +27,7 @@ import user_interface.singleton.BaseNode;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
+public class TagListViewR extends VBox implements BaseNode, InstanceRepo {
     private final Label nodeTitle;
     private final TextField tfSearch;
     private String actualText = "";
@@ -43,7 +41,7 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
     private final ScrollPane tagListScrollPane;
     private final ArrayList<String> expandedGroupsList;
 
-    public InfoListViewR() {
+    public TagListViewR() {
         ColorData colorDataSimple = new ColorData(ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
 
         nodeTitle = NodeFactory.getLabel("", colorDataSimple);
@@ -73,7 +71,7 @@ public class InfoListViewR extends VBox implements BaseNode, InstanceRepo {
 
         expandedGroupsList = new ArrayList<>();
 
-        HBox.setHgrow(this, Priority.ALWAYS);
+        this.setPrefWidth(CommonUtil.getUsableScreenWidth());
         this.setMinWidth(CommonUtil.getUsableScreenWidth() / 10);
         this.getChildren().addAll(nodeTitle, tfSearch, tagListScrollPane);
     }

@@ -5,12 +5,11 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.*;
+import javafx.scene.layout.TilePane;
 import settings.SettingsEnum;
 import system.CommonUtil;
 import system.InstanceRepo;
 import user_interface.factory.NodeFactory;
-import user_interface.factory.util.ColorUtil;
 import user_interface.factory.util.enums.ColorType;
 import user_interface.singleton.BaseNode;
 
@@ -38,7 +37,7 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
         this.setMinViewportWidth(tilePane.getPrefColumns() * tilePane.getPrefTileWidth() + (tilePane.getPrefColumns() - 1) * tilePane.getHgap() + 1);
         this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         this.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        this.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 1, 0, 1))));
+        this.setBorder(NodeFactory.getBorder(0, 1, 0, 1));
         NodeFactory.addNodeToManager(this, ColorType.DEF);
         NodeFactory.addNodeToManager(tilePane, ColorType.DEF);
     }

@@ -14,8 +14,8 @@ import user_interface.factory.node.popup.DataObjectRCM;
 import user_interface.factory.node.popup.InfoObjectRCM;
 import user_interface.singleton.center.FullView;
 import user_interface.singleton.center.TileView;
-import user_interface.singleton.side.InfoListViewL;
-import user_interface.singleton.side.InfoListViewR;
+import user_interface.singleton.side.TagListViewL;
+import user_interface.singleton.side.TagListViewR;
 import user_interface.singleton.top.TopMenu;
 
 public interface InstanceRepo {
@@ -25,8 +25,8 @@ public interface InstanceRepo {
     TopMenu topMenu = new TopMenu();
     TileView tileView = new TileView();
     FullView fullView = new FullView();
-    InfoListViewL infoListViewL = new InfoListViewL();
-    InfoListViewR infoListViewR = new InfoListViewR();
+    TagListViewL tagListViewL = new TagListViewL();
+    TagListViewR tagListViewR = new TagListViewR();
     Stage mainStage = new Stage();
 
     DataObjectRCM dataObjectRCM = new DataObjectRCM();

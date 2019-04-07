@@ -11,8 +11,8 @@ import user_interface.factory.node.popup.LeftClickMenu;
 
 import java.util.ArrayList;
 
-public class InfoListViewREvent implements InstanceRepo {
-    public InfoListViewREvent() {
+public class TagListViewREvent implements InstanceRepo {
+    public TagListViewREvent() {
         onMouseClick();
 
         tfSearchEvents();
@@ -23,23 +23,23 @@ public class InfoListViewREvent implements InstanceRepo {
     }
 
     private void onMouseClick() {
-        infoListViewR.setOnMouseClicked(event -> infoListViewR.requestFocus());
+        tagListViewR.setOnMouseClicked(event -> tagListViewR.requestFocus());
     }
 
     private void tfSearchEvents() {
-        infoListViewR.getTfSearch().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            String actualText = infoListViewR.getActualText();
+        tagListViewR.getTfSearch().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            String actualText = tagListViewR.getActualText();
             if (event.getCode().isLetterKey()) {
-                infoListViewR.setActualText(actualText + event.getText().toLowerCase());
+                tagListViewR.setActualText(actualText + event.getText().toLowerCase());
             } else if (event.getCode() == KeyCode.BACK_SPACE) {
                 if (!actualText.isEmpty()) {
-                    infoListViewR.setActualText(actualText.substring(0, actualText.length() - 1));
+                    tagListViewR.setActualText(actualText.substring(0, actualText.length() - 1));
                 }
             }
         });
-        infoListViewR.getTfSearch().setOnKeyTyped(event -> {
-            String actualText = infoListViewR.getActualText();
-            TextField tfSearch = infoListViewR.getTfSearch();
+        tagListViewR.getTfSearch().setOnKeyTyped(event -> {
+            String actualText = tagListViewR.getActualText();
+            TextField tfSearch = tagListViewR.getTfSearch();
 
             if (actualText.isEmpty()) {
                 tfSearch.clear();
@@ -94,21 +94,23 @@ public class InfoListViewREvent implements InstanceRepo {
                 }
             }
         });
-        infoListViewR.getTfSearch().setOnAction(event -> {
-            TextField tfSearch = infoListViewR.getTfSearch();
-            TagObject tagObject = mainInfoList.getTagObject(tfSearch.getText());
-            if (tagObject != null) {
-                infoListViewR.addTagObjectToSelection(tagObject);
-                infoListViewR.setActualText("");
-                tfSearch.clear();
-                reload.notifyChangeIn(Reload.Control.INFO);
-                reload.doReload();
+        tagListViewR.getTfSearch().setOnAction(event -> {
+            if (!select.isEmpty()) {
+                TextField tfSearch = tagListViewR.getTfSearch();
+                TagObject tagObject = mainInfoList.getTagObject(tfSearch.getText());
+                if (tagObject != null) {
+                    tagListViewR.addTagObjectToSelection(tagObject);
+                    tagListViewR.setActualText("");
+                    tfSearch.clear();
+                    reload.notifyChangeIn(Reload.Control.INFO);
+                    reload.doReload();
+                }
             }
         });
     }
 
     private void onAction_menuSelectAll() {
-        infoListViewR.getNodeSelectAll().setOnMouseClicked(event -> {
+        tagListViewR.getNodeSelectAll().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 select.addAll(filter);
                 reload.doReload();
@@ -117,7 +119,7 @@ public class InfoListViewREvent implements InstanceRepo {
         });
     }
     private void onAction_menuClearSelection() {
-        infoListViewR.getNodeSelectNone().setOnMouseClicked(event -> {
+        tagListViewR.getNodeSelectNone().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 select.clear();
                 reload.doReload();
@@ -126,7 +128,7 @@ public class InfoListViewREvent implements InstanceRepo {
         });
     }
     private void onAction_menuMergeSelection() {
-        infoListViewR.getNodeSelectMerge().setOnMouseClicked(event -> {
+        tagListViewR.getNodeSelectMerge().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 select.merge();
                 reload.doReload();

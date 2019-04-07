@@ -3,11 +3,10 @@ package user_interface.scene;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
 import system.CommonUtil;
 import system.InstanceRepo;
 import user_interface.factory.NodeFactory;
-import user_interface.factory.util.ColorUtil;
 import user_interface.factory.util.enums.ColorType;
 
 public class LoadingScene implements InstanceRepo {
@@ -23,7 +22,7 @@ public class LoadingScene implements InstanceRepo {
         borderPane.setPadding(new Insets(10));
         borderPane.setCenter(progressLabel);
         borderPane.setPrefWidth(300);
-        borderPane.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1, 1, 1, 1))));
+        borderPane.setBorder(NodeFactory.getBorder(1, 1, 1, 1));
         NodeFactory.addNodeToManager(borderPane, ColorType.DEF);
 
         Scene loadingScene = new Scene(borderPane);

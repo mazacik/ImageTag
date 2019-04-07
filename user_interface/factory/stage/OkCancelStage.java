@@ -5,7 +5,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import system.CommonUtil;
@@ -53,7 +54,7 @@ public class OkCancelStage extends Stage {
         vBox.getChildren().add(labelContent);
         vBox.getChildren().add(hBox);
         vBox.setBackground(ColorUtil.getBackgroundDef());
-        vBox.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1, 1, 1, 1))));
+        vBox.setBorder(NodeFactory.getBorder(1, 1, 1, 1));
 
         this.setOnShown(event -> {
             this.centerOnScreen();

@@ -1,20 +1,19 @@
 package user_interface.singleton.top;
 
 import javafx.scene.control.Label;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import system.InstanceRepo;
 import user_interface.factory.NodeFactory;
 import user_interface.factory.node.popup.Direction;
 import user_interface.factory.node.popup.LeftClickMenu;
 import user_interface.factory.util.ColorData;
-import user_interface.factory.util.ColorUtil;
 import user_interface.factory.util.enums.ColorType;
 import user_interface.singleton.BaseNode;
 
 public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
     Label nodeSave;
     Label nodeExit;
-
 
 
     Label nodeRandom;
@@ -31,7 +30,7 @@ public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
         nodeRandom = NodeFactory.getLabel("Random", colorData);
         nodeFullview = NodeFactory.getLabel("FullView", colorData);
         HBox hBoxTools = NodeFactory.getHBox(ColorType.DEF, nodeRandom, nodeFullview);
-        hBoxTools.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 1, 0, 1))));
+        hBoxTools.setBorder(NodeFactory.getBorder(0, 1, 0, 1));
         NodeFactory.addNodeToManager(hBoxTools, ColorType.DEF);
 
         HBox hBoxMain = NodeFactory.getHBox(ColorType.DEF);
@@ -39,7 +38,7 @@ public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
         hBoxMain.getChildren().add(hBoxTools);
         NodeFactory.addNodeToManager(hBoxMain, ColorType.DEF);
 
-        this.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 1, 0))));
+        this.setBorder(NodeFactory.getBorder(0, 0, 1, 0));
         this.setPrefHeight(30);
         this.setLeft(hBoxMain);
         NodeFactory.addNodeToManager(this, ColorType.DEF);

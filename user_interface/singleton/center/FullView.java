@@ -4,10 +4,10 @@ import database.object.DataObject;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Pane;
 import system.CommonUtil;
 import system.InstanceRepo;
-import user_interface.factory.util.ColorUtil;
+import user_interface.factory.NodeFactory;
 import user_interface.singleton.BaseNode;
 
 public class FullView extends Pane implements BaseNode, InstanceRepo {
@@ -21,7 +21,7 @@ public class FullView extends Pane implements BaseNode, InstanceRepo {
 
         this.minWidthProperty().bind(tileView.widthProperty());
         this.setPrefHeight(CommonUtil.getUsableScreenHeight());
-        this.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 1, 0, 1))));
+        this.setBorder(NodeFactory.getBorder(0, 1, 0, 1));
         this.getChildren().add(canvas);
     }
     public Canvas getCanvas() {
@@ -40,17 +40,28 @@ public class FullView extends Pane implements BaseNode, InstanceRepo {
 
         double imageWidth = currentPreviewImage.getWidth();
         double imageHeight = currentPreviewImage.getHeight();
-        double maxWidth = canvas.getWidth() - 4;
+        double maxWidth = canvas.getWidth() - 4; //1px border + 1px offset from both sides = 4
         double maxHeight = canvas.getHeight();
 
-        // scale image to fit width
-        double resultWidth = maxWidth;
-        double resultHeight = imageHeight * maxWidth / imageWidth;
+        boolean upScale = false;
 
-        // if scaled image is too tall, scale to fit height instead
-        if (resultHeight > maxHeight) {
-            resultHeight = maxHeight;
-            resultWidth = imageWidth * maxHeight / imageHeight;
+        double resultWidth;
+        double resultHeight;
+
+        if (!upScale && imageWidth < maxWidth && imageHeight < maxHeight) {
+            // image is smaller than canvas, upscaling is off
+            resultWidth = imageWidth;
+            resultHeight = imageHeight;
+        } else {
+            // scale image to fit width
+            resultWidth = maxWidth;
+            resultHeight = imageHeight * maxWidth / imageWidth;
+
+            // if scaled image is too tall, scale to fit height instead
+            if (resultHeight > maxHeight) {
+                resultHeight = maxHeight;
+                resultWidth = imageWidth * maxHeight / imageHeight;
+            }
         }
 
         double resultX = maxWidth / 2 - resultWidth / 2 + 2;

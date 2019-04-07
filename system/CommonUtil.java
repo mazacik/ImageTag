@@ -199,19 +199,23 @@ public abstract class CommonUtil implements InstanceRepo {
     }
     public static DataObject getRandomDataObject() {
         ArrayList<BaseTile> tiles = tileView.getTiles();
-        int index = new Random().nextInt(tiles.size());
-        DataObject chosenDataObject = tiles.get(index).getParentDataObject();
+        if (tiles.size() >= 1) {
+            int index = new Random().nextInt(tiles.size());
+            DataObject chosenDataObject = tiles.get(index).getParentDataObject();
 
-        if (chosenDataObject.getMergeID() == 0) {
-            return chosenDataObject;
-        } else {
-            ArrayList<DataObject> dataObjectsSameMergeID = new ArrayList<>();
-            for (DataObject dataObjectFromFilter : filter) {
-                if (dataObjectFromFilter.getMergeID() == chosenDataObject.getMergeID()) {
-                    dataObjectsSameMergeID.add(dataObjectFromFilter);
+            if (chosenDataObject.getMergeID() == 0) {
+                return chosenDataObject;
+            } else {
+                ArrayList<DataObject> dataObjectsSameMergeID = new ArrayList<>();
+                for (DataObject dataObjectFromFilter : filter) {
+                    if (dataObjectFromFilter.getMergeID() == chosenDataObject.getMergeID()) {
+                        dataObjectsSameMergeID.add(dataObjectFromFilter);
+                    }
                 }
+                return dataObjectsSameMergeID.get(new Random().nextInt(dataObjectsSameMergeID.size()));
             }
-            return dataObjectsSameMergeID.get(new Random().nextInt(dataObjectsSameMergeID.size()));
+        } else {
+            return null;
         }
     }
     public static int getHash() {

@@ -19,6 +19,7 @@ public class DataObjectListMain extends DataObjectList implements InstanceRepo {
         Type typeToken = SerializationUtil.TypeTokenEnum.MAINDATALIST.getValue();
         String path = settings.getCurrentDirectory() + dataFile;
         SerializationUtil.writeJSON(mainDataList, typeToken, path);
+        mainInfoList.writeDummyToDisk();
     }
     public DataObjectListMain readFromDisk() {
         Type typeToken = SerializationUtil.TypeTokenEnum.MAINDATALIST.getValue();

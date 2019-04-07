@@ -6,8 +6,8 @@ import system.InstanceRepo;
 import user_interface.factory.node.popup.LeftClickMenu;
 import user_interface.factory.stage.NumberInputStage;
 
-public class InfoListViewLEvent implements InstanceRepo {
-    public InfoListViewLEvent() {
+public class TagListViewLEvent implements InstanceRepo {
+    public TagListViewLEvent() {
         onMouseClick();
 
         onAction_menuLimit();
@@ -15,11 +15,11 @@ public class InfoListViewLEvent implements InstanceRepo {
     }
 
     private void onMouseClick() {
-        infoListViewL.setOnMouseClicked(event -> infoListViewL.requestFocus());
+        tagListViewL.setOnMouseClicked(event -> tagListViewL.requestFocus());
     }
 
     private void onAction_menuLimit() {
-        infoListViewL.getNodeLimit().setOnMouseClicked(event -> {
+        tagListViewL.getNodeLimit().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 if (event.isControlDown()) {
                     int maxTags = new NumberInputStage("Maximum number of tags:").getResult();
@@ -36,7 +36,7 @@ public class InfoListViewLEvent implements InstanceRepo {
         });
     }
     private void onAction_menuReset() {
-        infoListViewL.getNodeReset().setOnMouseClicked(event -> {
+        tagListViewL.getNodeReset().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 filter.setFilter(FilterTemplate.SHOW_EVERYTHING);
                 reload.doReload();

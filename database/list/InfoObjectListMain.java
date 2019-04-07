@@ -1,12 +1,18 @@
 package database.list;
 
+import com.google.gson.reflect.TypeToken;
 import control.reload.Reload;
 import database.object.DataObject;
 import database.object.TagObject;
 import system.InstanceRepo;
+import system.SerializationUtil;
 import user_interface.factory.stage.InfoObjectEditStage;
 
+import java.lang.reflect.Type;
+
 public class InfoObjectListMain extends InfoObjectList implements InstanceRepo {
+    private static final transient String tagsFile = "data\\tags.json";
+
     public void initialize() {
         for (DataObject dataIterator : mainDataList) {
             InfoObjectList infoObjectList = dataIterator.getInfoObjectList();
@@ -18,7 +24,26 @@ public class InfoObjectListMain extends InfoObjectList implements InstanceRepo {
                 }
             }
         }
+        InfoObjectList allTags = readDummyFromDisk();
+        if (allTags != null) {
+            allTags.forEach(tagObject -> {
+                if (!this.contains(tagObject)) {
+                    this.add(tagObject);
+                }
+            });
+        }
         super.sort();
+    }
+
+    public void writeDummyToDisk() {
+        Type typeToken = new TypeToken<InfoObjectList>() {}.getType();
+        String path = settings.getCurrentDirectory() + tagsFile;
+        SerializationUtil.writeJSON(this, typeToken, path);
+    }
+    private InfoObjectList readDummyFromDisk() {
+        Type typeToken = new TypeToken<InfoObjectList>() {}.getType();
+        String path = settings.getCurrentDirectory() + tagsFile;
+        return (InfoObjectList) SerializationUtil.readJSON(typeToken, path);
     }
 
     public boolean add(TagObject tagObject) {
@@ -48,28 +73,5 @@ public class InfoObjectListMain extends InfoObjectList implements InstanceRepo {
             return true;
         }
         return false;
-    }
-
-    public TagObject getTagObject(String group, String name) {
-        for (TagObject iterator : this) {
-            String iteratorGroup = iterator.getGroup();
-            String iteratorName = iterator.getName();
-            if (group.equals(iteratorGroup) && name.equals(iteratorName)) {
-                return iterator;
-            }
-        }
-        return null;
-    }
-    public TagObject getTagObject(TagObject tagObject) {
-        String tagObjectGroup = tagObject.getGroup();
-        String tagObjectName = tagObject.getName();
-        return getTagObject(tagObjectGroup, tagObjectName);
-    }
-    public TagObject getTagObject(String groupAndName) {
-        if (!groupAndName.contains(" - ")) return null;
-        String[] split = groupAndName.split(" - ");
-        String tagObjectGroup = split[0].trim();
-        String tagObjectName = split[1].trim();
-        return getTagObject(tagObjectGroup, tagObjectName);
     }
 }

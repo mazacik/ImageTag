@@ -51,4 +51,27 @@ public class InfoObjectList extends ArrayList<TagObject> {
         }
         return names;
     }
+
+    public TagObject getTagObject(String group, String name) {
+        for (TagObject iterator : this) {
+            String iteratorGroup = iterator.getGroup();
+            String iteratorName = iterator.getName();
+            if (group.equals(iteratorGroup) && name.equals(iteratorName)) {
+                return iterator;
+            }
+        }
+        return null;
+    }
+    public TagObject getTagObject(TagObject tagObject) {
+        String tagObjectGroup = tagObject.getGroup();
+        String tagObjectName = tagObject.getName();
+        return getTagObject(tagObjectGroup, tagObjectName);
+    }
+    public TagObject getTagObject(String groupAndName) {
+        if (!groupAndName.contains(" - ")) return null;
+        String[] split = groupAndName.split(" - ");
+        String tagObjectGroup = split[0].trim();
+        String tagObjectName = split[1].trim();
+        return getTagObject(tagObjectGroup, tagObjectName);
+    }
 }

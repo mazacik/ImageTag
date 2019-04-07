@@ -6,11 +6,11 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import system.CommonUtil;
 import user_interface.factory.NodeFactory;
-import user_interface.factory.util.ColorUtil;
 import user_interface.factory.util.enums.ColorType;
 
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class LeftClickMenu extends Popup {
 
         vBox.getChildren().addAll(labels);
         vBox.setPadding(new Insets(CommonUtil.getPadding()));
-        vBox.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1, 1, 1, 1))));
+        vBox.setBorder(NodeFactory.getBorder(1, 1, 1, 1));
 
         this.setOnShown(event -> {
             double width = 0;

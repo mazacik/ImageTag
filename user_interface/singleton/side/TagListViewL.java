@@ -9,8 +9,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import system.CommonUtil;
@@ -26,7 +24,7 @@ import user_interface.singleton.BaseNode;
 
 import java.util.ArrayList;
 
-public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
+public class TagListViewL extends VBox implements BaseNode, InstanceRepo {
     private final Label nodeTitle;
     private final VBox tagListBox;
     private final ScrollPane tagListScrollPane;
@@ -35,7 +33,7 @@ public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
     private final Label nodeLimit;
     private final Label nodeReset;
 
-    public InfoListViewL() {
+    public TagListViewL() {
         ColorData colorDataSimple = new ColorData(ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
 
         nodeTitle = NodeFactory.getLabel("", colorDataSimple);
@@ -53,6 +51,7 @@ public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
         btnNew.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 mainInfoList.add(new InfoObjectEditStage().getResult());
+                mainInfoList.sort();
                 reload.doReload();
             }
         });
@@ -68,7 +67,7 @@ public class InfoListViewL extends VBox implements BaseNode, InstanceRepo {
 
         expandedGroupsList = new ArrayList<>();
 
-        HBox.setHgrow(this, Priority.ALWAYS);
+        this.setPrefWidth(CommonUtil.getUsableScreenWidth());
         this.setMinWidth(CommonUtil.getUsableScreenWidth() / 10);
         this.getChildren().addAll(nodeTitle, btnNew, tagListScrollPane);
     }

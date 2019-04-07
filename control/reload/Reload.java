@@ -13,11 +13,11 @@ public class Reload implements InstanceRepo {
         this.subscribe(fullView
                 , Control.TARGET
         );
-        this.subscribe(infoListViewL
+        this.subscribe(tagListViewL
                 , Control.INFO
                 , Control.FILTER
         );
-        this.subscribe(infoListViewR
+        this.subscribe(tagListViewR
                 , Control.INFO
                 , Control.FILTER
                 //, Control.TARGET
