@@ -1,7 +1,6 @@
 package user_interface.event;
 
 import javafx.beans.value.ChangeListener;
-import javafx.scene.canvas.Canvas;
 import system.InstanceRepo;
 
 public class FullViewEvent implements InstanceRepo {
@@ -27,9 +26,7 @@ public class FullViewEvent implements InstanceRepo {
     }
     private void onResize() {
         ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) -> fullView.reload();
-
-        final Canvas canvas = fullView.getCanvas();
-        canvas.widthProperty().addListener(previewPaneSizeListener);
-        canvas.heightProperty().addListener(previewPaneSizeListener);
+        fullView.widthProperty().addListener(previewPaneSizeListener);
+        fullView.heightProperty().addListener(previewPaneSizeListener);
     }
 }
