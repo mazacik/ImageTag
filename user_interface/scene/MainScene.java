@@ -54,7 +54,7 @@ public class MainScene implements InstanceRepo {
         return mainScene;
     }
     void show() {
-        target.set(mainDataList.get(0));
+        //target.set(mainDataList.get(0));
         reload.doReload();
 
         mainStage.setScene(mainScene);

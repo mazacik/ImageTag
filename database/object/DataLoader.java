@@ -30,7 +30,7 @@ public class DataLoader extends Thread implements InstanceRepo {
 
     public void run() {
         logger.debug(this, "loader thread start");
-        Platform.runLater(SceneUtil::showLoadingScene);
+        Platform.runLater(SceneUtil::showMainScene);
 
         checkDirectoryPaths();
         //importFiles();
@@ -55,7 +55,7 @@ public class DataLoader extends Thread implements InstanceRepo {
         filter.setFilter(FilterTemplate.SHOW_EVERYTHING);
         reload.notifyChangeIn(Reload.Control.values());
 
-        Platform.runLater(SceneUtil::showMainScene);
+        //Platform.runLater(SceneUtil::showMainScene);
         logger.debug(this, "loader thread end");
     }
 
@@ -165,9 +165,10 @@ public class DataLoader extends Thread implements InstanceRepo {
         Image thumbnail;
 
         for (DataObject dataObject : mainDataList) {
-            updateLoadingLabel(fileListSize, currentObjectIndex++);
+            //updateLoadingLabel(fileListSize, currentObjectIndex++);
             thumbnail = getImageFromDataObject(dataObject, galleryIconSizeMax);
             dataObject.setBaseTile(new BaseTile(dataObject, thumbnail));
+            Platform.runLater(() -> tileView.getTilePane().getChildren().add(dataObject.getBaseTile()));
         }
     }
     private void updateLoadingLabel(int fileCount, int currentObjectIndex) {

@@ -114,7 +114,7 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
         return (int) Math.ceil(itemCountFilter / columnCount);
     }
 
-    public ArrayList<BaseTile> getTiles() {
+    public ArrayList<BaseTile> getTilesLive() {
         ArrayList<BaseTile> arrayList = new ArrayList<>();
         tilePane.getChildren().forEach(tile -> arrayList.add((BaseTile) tile));
         return arrayList;
@@ -125,6 +125,9 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
         return dataObjects;
     }
 
+    public TilePane getTilePane() {
+        return tilePane;
+    }
     public ArrayList<Integer> getExpandedGroups() {
         return expandedGroups;
     }

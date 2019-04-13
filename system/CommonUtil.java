@@ -202,6 +202,9 @@ public abstract class CommonUtil implements InstanceRepo {
         if (tiles.size() >= 1) {
             int index = new Random().nextInt(tiles.size());
             DataObject chosenDataObject = tiles.get(index).getParentDataObject();
+        ArrayList<BaseTile> tiles = tileView.getTilesLive();
+        int index = new Random().nextInt(tiles.size());
+        DataObject chosenDataObject = tiles.get(index).getParentDataObject();
 
             if (chosenDataObject.getMergeID() == 0) {
                 return chosenDataObject;
