@@ -11,6 +11,7 @@ import system.CommonUtil;
 import system.InstanceRepo;
 import user_interface.factory.NodeFactory;
 import user_interface.factory.util.enums.ColorType;
+import user_interface.scene.SceneUtil;
 import user_interface.singleton.BaseNode;
 
 import java.util.ArrayList;
@@ -27,19 +28,24 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
         tilePane.setPrefTileHeight(galleryIconSize);
         tilePane.setPrefHeight(CommonUtil.getUsableScreenHeight() - topMenu.getPrefHeight() - topMenu.getPadding().getBottom() - topMenu.getBorder().getInsets().getBottom());
 
-        int prefWidth = (int) CommonUtil.getUsableScreenWidth() * 4 / 5;
-        int prefColumns = prefWidth / galleryIconSize;
-        tilePane.setPrefColumns(prefColumns);
+        tilePane.setPrefColumns(1);
 
         this.setContent(tilePane);
         this.setFitToWidth(true);
         this.setFitToHeight(true);
-        this.setMinViewportWidth(tilePane.getPrefColumns() * tilePane.getPrefTileWidth() + (tilePane.getPrefColumns() - 1) * tilePane.getHgap() + 1);
         this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         this.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         this.setBorder(NodeFactory.getBorder(0, 1, 0, 1));
         NodeFactory.addNodeToManager(this, ColorType.DEF);
         NodeFactory.addNodeToManager(tilePane, ColorType.DEF);
+    }
+
+    public void adjustPrefColumns() {
+        //int prefWidth = (int) CommonUtil.getUsableScreenWidth() * 4 / 5;
+        int prefWidth = (int) (CommonUtil.getUsableScreenWidth() - 2 * SceneUtil.getSidePanelMinWidth());
+        int prefColumns = prefWidth / settings.intValueOf(SettingsEnum.TILEVIEW_ICONSIZE) - 1;
+        tilePane.setPrefColumns(prefColumns);
+        this.setMinViewportWidth(tilePane.getPrefColumns() * tilePane.getPrefTileWidth() + (tilePane.getPrefColumns() - 1) * tilePane.getHgap() + 1);
     }
 
     public void reload() {
@@ -68,7 +74,7 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
     public void adjustViewportToCurrentTarget() {
         DataObject currentTarget = target.getCurrentTarget();
         if (CommonUtil.isFullView() || currentTarget == null) return;
-        int targetIndex = this.getDataObjects().indexOf(currentTarget);
+        int targetIndex = this.getVisibleDataObjects().indexOf(currentTarget);
         if (targetIndex < 0) return;
 
         ObservableList<Node> tilePaneItems = tilePane.getChildren();
@@ -99,6 +105,7 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
 
     public void onShown() {
         this.setCustomBounds(this.getViewportBounds());
+        this.adjustPrefColumns();
         this.lookup(".scroll-bar").setStyle("-fx-background-color: transparent;");
         this.lookup(".increment-button").setStyle("-fx-background-color: transparent;");
         this.lookup(".decrement-button").setStyle("-fx-background-color: transparent;");
@@ -114,15 +121,15 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
         return (int) Math.ceil(itemCountFilter / columnCount);
     }
 
-    public ArrayList<BaseTile> getTilesLive() {
-        ArrayList<BaseTile> arrayList = new ArrayList<>();
-        tilePane.getChildren().forEach(tile -> arrayList.add((BaseTile) tile));
-        return arrayList;
+    public ArrayList<BaseTile> getVisibleTiles() {
+        ArrayList<BaseTile> visibleTiles = new ArrayList<>();
+        tilePane.getChildren().forEach(tile -> visibleTiles.add((BaseTile) tile));
+        return visibleTiles;
     }
-    public ArrayList<DataObject> getDataObjects() {
-        ArrayList<DataObject> dataObjects = new ArrayList<>();
-        tilePane.getChildren().forEach(tile -> dataObjects.add(((BaseTile) tile).getParentDataObject()));
-        return dataObjects;
+    public ArrayList<DataObject> getVisibleDataObjects() {
+        ArrayList<DataObject> visibleDataObjects = new ArrayList<>();
+        tilePane.getChildren().forEach(tile -> visibleDataObjects.add(((BaseTile) tile).getParentDataObject()));
+        return visibleDataObjects;
     }
 
     public TilePane getTilePane() {

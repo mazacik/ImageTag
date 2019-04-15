@@ -14,7 +14,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import system.CommonUtil;
 import user_interface.factory.NodeFactory;
-import user_interface.factory.node.TitleBar;
 import user_interface.factory.util.enums.ColorType;
 
 public class InfoObjectEditStage extends Stage {
@@ -78,11 +77,11 @@ public class InfoObjectEditStage extends Stage {
 
         Scene scene = new Scene(borderPane);
         if (tagObject != null) {
-            borderPane.setTop(new TitleBar(scene, "Edit a new Tag"));
+            this.setTitle("Edit Tag");
             nodeGroupEdit.setText(tagObject.getGroup());
             nodeNameEdit.setText(tagObject.getName());
         } else {
-            borderPane.setTop(new TitleBar(scene, "Create Tag"));
+            this.setTitle("Create a new Tag");
         }
 
         borderPane.setCenter(vBoxHelper);

@@ -32,16 +32,16 @@ public class Target implements InstanceRepo {
     }
     public void move(KeyCode keyCode) {
         int columnCount = tileView.getColumnCount();
-        int dataCountFilter = tileView.getTilesLive().size();
+        int dataCountFilter = tileView.getVisibleTiles().size();
 
         int currentTargetPosition;
         if (currentTarget.getMergeID() == 0) {
-            currentTargetPosition = tileView.getDataObjects().indexOf(currentTarget);
+            currentTargetPosition = tileView.getVisibleDataObjects().indexOf(currentTarget);
         } else {
             if (tileView.getExpandedGroups().contains(currentTarget.getMergeID())) {
-                currentTargetPosition = tileView.getDataObjects().indexOf(currentTarget);
+                currentTargetPosition = tileView.getVisibleDataObjects().indexOf(currentTarget);
             } else {
-                currentTargetPosition = tileView.getDataObjects().indexOf(currentTarget.getMergeGroup().get(0));
+                currentTargetPosition = tileView.getVisibleDataObjects().indexOf(currentTarget.getMergeGroup().get(0));
             }
         }
         int newTargetPosition = currentTargetPosition;
@@ -66,16 +66,20 @@ public class Target implements InstanceRepo {
                 break;
         }
 
-        this.set(tileView.getDataObjects().get(newTargetPosition));
+        this.set(tileView.getVisibleDataObjects().get(newTargetPosition));
     }
     public void storePosition() {
-        this.storePos = tileView.getDataObjects().indexOf(currentTarget);
+        this.storePos = tileView.getVisibleDataObjects().indexOf(currentTarget);
     }
     public void restorePosition() {
-        if (storePos >= 0 && storePos < tileView.getDataObjects().size()) {
-            this.set(tileView.getDataObjects().get(storePos));
+        if (storePos >= 0 && storePos < tileView.getVisibleDataObjects().size()) {
+            this.set(tileView.getVisibleDataObjects().get(storePos));
         } else {
             this.set(null);
+        }
+
+        if (select.isEmpty()) {
+            select.set(tileView.getVisibleDataObjects().get(storePos));
         }
     }
 

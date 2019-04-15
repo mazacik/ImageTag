@@ -7,7 +7,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -30,6 +29,7 @@ public class TagListViewL extends VBox implements BaseNode, InstanceRepo {
     private final ScrollPane tagListScrollPane;
     private final ArrayList<String> expandedGroupsList;
 
+    private final Label nodeNoTags;
     private final Label nodeLimit;
     private final Label nodeReset;
 
@@ -40,10 +40,10 @@ public class TagListViewL extends VBox implements BaseNode, InstanceRepo {
         nodeTitle.setBorder(NodeFactory.getBorder(0, 0, 1, 0));
         nodeTitle.prefWidthProperty().bind(this.widthProperty());
 
-        nodeReset = NodeFactory.getLabel("Reset", colorDataSimple);
+        nodeNoTags = NodeFactory.getLabel("No Tags", colorDataSimple);
         nodeLimit = NodeFactory.getLabel("Limit", colorDataSimple);
-        LeftClickMenu.install(nodeTitle, Direction.RIGHT, nodeLimit, nodeReset);
-        Tooltip.install(nodeLimit, NodeFactory.getTooltip("Only shows images with no tags.\nCtrl + Click to specify the upper limit."));
+        nodeReset = NodeFactory.getLabel("Reset", colorDataSimple);
+        LeftClickMenu.install(nodeTitle, Direction.RIGHT, nodeNoTags, nodeLimit, nodeReset);
 
         Label btnNew = NodeFactory.getLabel("Create a new tag", colorDataSimple);
         btnNew.setBorder(NodeFactory.getBorder(0, 0, 1, 0));
@@ -69,6 +69,7 @@ public class TagListViewL extends VBox implements BaseNode, InstanceRepo {
 
         this.setPrefWidth(CommonUtil.getUsableScreenWidth());
         this.setMinWidth(CommonUtil.getUsableScreenWidth() / 10);
+        //this.setMinWidth(SceneUtil.getSidePanelMinWidth());
         this.getChildren().addAll(nodeTitle, btnNew, tagListScrollPane);
     }
 
@@ -187,6 +188,9 @@ public class TagListViewL extends VBox implements BaseNode, InstanceRepo {
         return expandedGroupsList;
     }
 
+    public Label getNodeNoTags() {
+        return nodeNoTags;
+    }
     public Label getNodeLimit() {
         return nodeLimit;
     }

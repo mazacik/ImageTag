@@ -57,7 +57,7 @@ public class TagListViewR extends VBox implements BaseNode, InstanceRepo {
         nodeSelectAll = NodeFactory.getLabel("Select All", colorDataSimple);
         nodeSelectNone = NodeFactory.getLabel("Select None", colorDataSimple);
         nodeSelectMerge = NodeFactory.getLabel("Merge Selection", colorDataSimple);
-        LeftClickMenu.install(nodeTitle, Direction.LEFT, nodeSelectAll, nodeSelectNone, nodeSelectMerge);
+        LeftClickMenu.install(nodeTitle, Direction.LEFT, nodeSelectAll, nodeSelectNone, NodeFactory.getSeparator(), nodeSelectMerge);
 
         tagListBox = NodeFactory.getVBox(ColorType.DEF);
         nodeEmptySelection = NodeFactory.getLabel("Selection is empty", ColorType.DEF, ColorType.DEF);
@@ -73,6 +73,7 @@ public class TagListViewR extends VBox implements BaseNode, InstanceRepo {
 
         this.setPrefWidth(CommonUtil.getUsableScreenWidth());
         this.setMinWidth(CommonUtil.getUsableScreenWidth() / 10);
+        //this.setMinWidth(SceneUtil.getSidePanelMinWidth());
         this.getChildren().addAll(nodeTitle, tfSearch, tagListScrollPane);
     }
 

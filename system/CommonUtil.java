@@ -1,5 +1,7 @@
 package system;
 
+import database.list.DataObjectList;
+import database.loader.LoaderUtil;
 import database.object.DataObject;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
@@ -26,7 +28,11 @@ import user_interface.singleton.center.BaseTile;
 import user_interface.singleton.side.GroupNode;
 
 import java.awt.*;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public abstract class CommonUtil implements InstanceRepo {
@@ -94,22 +100,42 @@ public abstract class CommonUtil implements InstanceRepo {
                     label.setOnMouseExited(event -> {
                         label.setBackground(getBackgroundDef(colorData));
                         label.setTextFill(getTextColorDef(colorData));
+                        //label.setCursor(Cursor.DEFAULT);
                     });
                     label.setOnMouseEntered(event -> {
                         label.setBackground(getBackgroundAlt(colorData));
                         label.setTextFill(getTextColorHov(colorData));
+                        //label.setCursor(Cursor.HAND);
                     });
                 } else if (colorData.getBackgroundAlt() != ColorType.NULL) {
-                    label.setOnMouseExited(event -> label.setBackground(getBackgroundDef(colorData)));
-                    label.setOnMouseEntered(event -> label.setBackground(getBackgroundAlt(colorData)));
+                    label.setOnMouseExited(event -> {
+                        label.setBackground(getBackgroundDef(colorData));
+                        //label.setCursor(Cursor.DEFAULT);
+                    });
+                    label.setOnMouseEntered(event -> {
+                        label.setBackground(getBackgroundAlt(colorData));
+                        //label.setCursor(Cursor.HAND);
+                    });
                 } else if (colorData.getTextFillHov() != ColorType.NULL) {
-                    label.setOnMouseExited(event -> label.setTextFill(getTextColorDef(colorData)));
-                    label.setOnMouseEntered(event -> label.setTextFill(getTextColorHov(colorData)));
+                    label.setOnMouseExited(event -> {
+                        label.setTextFill(getTextColorDef(colorData));
+                        //label.setCursor(Cursor.DEFAULT);
+                    });
+                    label.setOnMouseEntered(event -> {
+                        label.setTextFill(getTextColorHov(colorData));
+                        //label.setCursor(Cursor.HAND);
+                    });
                 }
             } else if (colorData.getNode() instanceof GroupNode) {
                 if (colorData.getBackgroundAlt() != ColorType.NULL) {
-                    colorData.getNode().setOnMouseExited(event -> colorData.getNode().setBackground(getBackgroundDef(colorData)));
-                    colorData.getNode().setOnMouseEntered(event -> colorData.getNode().setBackground(getBackgroundAlt(colorData)));
+                    colorData.getNode().setOnMouseExited(event -> {
+                        colorData.getNode().setBackground(getBackgroundDef(colorData));
+                        //colorData.getNode().setCursor(Cursor.DEFAULT);
+                    });
+                    colorData.getNode().setOnMouseEntered(event -> {
+                        colorData.getNode().setBackground(getBackgroundAlt(colorData));
+                        //colorData.getNode().setCursor(Cursor.HAND);
+                    });
                 }
             } else if (colorData.getNode() instanceof IntroWindowCell) {
                 IntroWindowCell introWindowCell = ((IntroWindowCell) colorData.getNode());
@@ -164,6 +190,37 @@ public abstract class CommonUtil implements InstanceRepo {
         return settings.intValueOf(SettingsEnum.GLOBAL_PADDING);
     }
 
+    public static ArrayList<File> getValidFiles(String directory) {
+        return new ArrayList<>(Arrays.asList(new File(directory).listFiles((dir, name) -> {
+            String _name = name.toLowerCase();
+            return _name.endsWith(".jpg") || _name.endsWith(".jpeg") || _name.endsWith(".png");
+        })));
+    }
+    public static void importFiles() {
+        String PATH_SOURCE = settings.getCurrentDirectory();
+        ArrayList<String> importDirectories = CommonUtil.settings.getImportDirList();
+
+        DataObjectList newDataObjects = new DataObjectList();
+        importDirectories.forEach(dir -> {
+            for (File file : getValidFiles(dir)) {
+                try {
+                    //Files.copy(Paths.get(file.getAbsolutePath()), Paths.get((PATH_SOURCE) + file.getName()));
+                    Files.move(Paths.get(file.getAbsolutePath()), Paths.get((PATH_SOURCE) + file.getName()));
+                    newDataObjects.add(new DataObject(file));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        LoaderUtil.readImageCache(newDataObjects);
+        mainDataList.addAll(newDataObjects);
+        mainDataList.sort();
+        filter.apply();
+        //reload.notifyChangeIn(Reload.Control.values());
+        reload.doReload();
+    }
+
     public static Image textToImage(String text) {
         Label label = new Label(text);
         label.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, null, null)));
@@ -198,13 +255,10 @@ public abstract class CommonUtil implements InstanceRepo {
         return MainScene.isFullView();
     }
     public static DataObject getRandomDataObject() {
-        ArrayList<BaseTile> tiles = tileView.getTiles();
+        ArrayList<BaseTile> tiles = tileView.getVisibleTiles();
         if (tiles.size() >= 1) {
             int index = new Random().nextInt(tiles.size());
             DataObject chosenDataObject = tiles.get(index).getParentDataObject();
-        ArrayList<BaseTile> tiles = tileView.getTilesLive();
-        int index = new Random().nextInt(tiles.size());
-        DataObject chosenDataObject = tiles.get(index).getParentDataObject();
 
             if (chosenDataObject.getMergeID() == 0) {
                 return chosenDataObject;

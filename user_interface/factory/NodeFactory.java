@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import system.CommonUtil;
@@ -44,6 +45,14 @@ public abstract class NodeFactory {
         nodeList.add(new ColorData(label, backgroundDef, backgroundAlt, textFillDef, textFillAlt));
 
         return label;
+    }
+
+    public static Label getSeparator() {
+        Label separator = new Label();
+        separator.setFont(new Font(0));
+        separator.setPrefHeight(0);
+        separator.setBorder(NodeFactory.getBorder(0, 0, 1, 0));
+        return separator;
     }
 
     public static GroupNode getGroupNode(VBox owner, String text, Color textFill) {

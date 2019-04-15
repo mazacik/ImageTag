@@ -13,7 +13,6 @@ import javafx.stage.StageStyle;
 import settings.SettingType;
 import system.CommonUtil;
 import user_interface.factory.NodeFactory;
-import user_interface.factory.node.TitleBar;
 import user_interface.factory.util.ColorData;
 import user_interface.factory.util.enums.ColorType;
 
@@ -52,7 +51,6 @@ public class UserSettingsStage extends Stage {
 
         BorderPane borderPane = new BorderPane();
         Scene scene = new Scene(borderPane);
-        borderPane.setTop(new TitleBar(scene));
         borderPane.setCenter(vBox);
         borderPane.setBottom(hBox);
 

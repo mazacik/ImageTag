@@ -16,15 +16,34 @@ import user_interface.factory.util.enums.ColorType;
 
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class DataObjectRCM extends RightClickMenu implements InstanceRepo {
     public DataObjectRCM() {
         ColorData colorData = new ColorData(ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+        Label nodeOpen = NodeFactory.getLabel("Open", colorData);
+        Label nodeOpenInPaint = NodeFactory.getLabel("Open in MS Paint", colorData);
         Label nodeCopyName = NodeFactory.getLabel("Copy Name", colorData);
         Label nodeCopyPath = NodeFactory.getLabel("Copy Path", colorData);
         Label nodeDelete = NodeFactory.getLabel("Delete File", colorData);
 
+        nodeOpen.setOnMouseClicked(event -> {
+            String fullPath = settings.getCurrentDirectory() + target.getCurrentTarget().getName();
+            try {
+                Desktop.getDesktop().open(new File(fullPath));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        nodeOpenInPaint.setOnMouseClicked(event -> {
+            String fullPath = settings.getCurrentDirectory() + target.getCurrentTarget().getName();
+            try {
+                Runtime.getRuntime().exec("C:\\WINDOWS\\system32\\mspaint.exe " + fullPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
         nodeCopyName.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 ClipboardUtil.setClipboardContent(target.getCurrentTarget().getName());
@@ -48,7 +67,7 @@ public class DataObjectRCM extends RightClickMenu implements InstanceRepo {
             }
         });
 
-        this.getChildren().addAll(nodeCopyName, nodeCopyPath, nodeDelete);
+        this.getChildren().addAll(nodeOpen, nodeOpenInPaint, NodeFactory.getSeparator(), nodeCopyName, nodeCopyPath, NodeFactory.getSeparator(), nodeDelete);
         this.setOnShown(event -> {
             double width = 0;
             for (Node node : this.getChildren()) {
@@ -69,8 +88,10 @@ public class DataObjectRCM extends RightClickMenu implements InstanceRepo {
 
     private void deleteDataObject(DataObject dataObject) {
         if (filter.contains(dataObject)) {
-            String fullPath = settings.getCurrentDirectory() + "\\" + dataObject.getName();
+            String fullPath = settings.getCurrentDirectory() + dataObject.getName();
             Desktop.getDesktop().moveToTrash(new File(fullPath));
+
+            tileView.getTilePane().getChildren().remove(dataObject.getBaseTile());
 
             select.remove(dataObject);
             filter.remove(dataObject);

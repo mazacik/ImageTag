@@ -1,6 +1,6 @@
 package user_interface.scene;
 
-import database.object.DataLoader;
+import database.loader.LoaderThread;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -15,7 +15,6 @@ import system.InstanceRepo;
 import user_interface.factory.NodeFactory;
 import user_interface.factory.node.ColorModeSwitch;
 import user_interface.factory.node.IntroWindowCell;
-import user_interface.factory.node.TitleBar;
 import user_interface.factory.stage.DirectoryChooserStage;
 import user_interface.factory.util.enums.ColorType;
 
@@ -33,6 +32,7 @@ public class IntroScene implements InstanceRepo {
         VBox vBoxL = NodeFactory.getVBox(ColorType.ALT);
         vBoxL.setPrefWidth(350);
         vBoxL.setPadding(new Insets(5));
+        vBoxL.setAlignment(Pos.CENTER);
 
         if (settings.getRecentDirList().size() == 0) {
             vBoxL.getChildren().add(NodeFactory.getLabel("No recent directories", ColorType.ALT, ColorType.DEF));
@@ -79,7 +79,6 @@ public class IntroScene implements InstanceRepo {
 
         VBox vBoxMain = NodeFactory.getVBox(ColorType.DEF);
         Scene introScene = new Scene(vBoxMain);
-        vBoxMain.getChildren().add(new TitleBar(introScene, "Welcome"));
         vBoxMain.getChildren().add(hBoxGrowHelper);
         introScene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
@@ -115,15 +114,15 @@ public class IntroScene implements InstanceRepo {
             }
             settings.setCurrentDirectory(sourcePath);
             settings.writeToDisk();
-            new DataLoader().start();
+            new LoaderThread().start();
             startLoading(sourcePath);
         }
     }
     private void startLoading(String sourcePath) {
         settings.setCurrentDirectory(sourcePath);
         settings.writeToDisk();
-        new DataLoader().start();
-        SceneUtil.createMainScene();
+        new LoaderThread().start();
+        SceneUtil.showMainScene();
     }
 
     public Scene getInstance() {

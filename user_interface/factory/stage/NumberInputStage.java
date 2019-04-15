@@ -12,7 +12,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import system.CommonUtil;
 import user_interface.factory.NodeFactory;
-import user_interface.factory.node.TitleBar;
 import user_interface.factory.util.ColorData;
 import user_interface.factory.util.enums.ColorType;
 
@@ -65,7 +64,6 @@ public class NumberInputStage extends Stage {
         vBoxMain.setBorder(NodeFactory.getBorder(1, 1, 1, 1));
 
         Scene scene = new Scene(vBoxMain);
-        vBoxMain.getChildren().add(new TitleBar(scene));
         vBoxMain.getChildren().add(nodeContent);
         vBoxMain.getChildren().add(nodeTextField);
         vBoxMain.getChildren().add(hBox);
