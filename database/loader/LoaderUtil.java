@@ -58,7 +58,6 @@ public class LoaderUtil implements InstanceRepo {
             int galleryIconSizeMax = settings.intValueOf(SettingsEnum.TILEVIEW_ICONSIZE);
             thumbnail = new Image(currentObjectFilePath, galleryIconSizeMax, galleryIconSizeMax, false, true);
             String currentObjectExtension = FilenameUtils.getExtension(currentObjectName);
-            //todo stop using SwingUtils, JavaFX should be able to do this
             BufferedImage currentObjectBufferedImage = SwingFXUtils.fromFXImage(thumbnail, null);
             ImageIO.write(currentObjectBufferedImage, currentObjectExtension, currentObjectCacheFile);
         } catch (Exception e) {

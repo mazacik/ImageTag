@@ -14,6 +14,7 @@ import user_interface.singleton.BaseNode;
 public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
     Label nodeSave;
     Label nodeImport;
+    Label nodeSettings;
     Label nodeExit;
 
     Label nodeInpaint;
@@ -27,8 +28,9 @@ public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
         Label nodeFile = NodeFactory.getLabel("File", colorData);
         nodeSave = NodeFactory.getLabel("Save", colorData);
         nodeImport = NodeFactory.getLabel("Import", colorData);
+        nodeSettings = NodeFactory.getLabel("Settings", colorData);
         nodeExit = NodeFactory.getLabel("Exit", colorData);
-        LeftClickMenu.install(nodeFile, Direction.BELOW, nodeSave, nodeImport, NodeFactory.getSeparator(), nodeExit);
+        LeftClickMenu.install(nodeFile, Direction.BELOW, nodeSave, nodeImport, nodeSettings, NodeFactory.getSeparator(), nodeExit);
 
         Label nodeTools = NodeFactory.getLabel("Tools", colorData);
         nodeInpaint = NodeFactory.getLabel("Inpaint", colorData);
@@ -60,6 +62,9 @@ public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
     }
     public Label getNodeImport() {
         return nodeImport;
+    }
+    public Label getNodeSettings() {
+        return nodeSettings;
     }
     public Label getNodeExit() {
         return nodeExit;

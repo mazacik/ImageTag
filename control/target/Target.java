@@ -14,6 +14,7 @@ public class Target implements InstanceRepo {
         currentTarget = null;
         previousTarget = null;
     }
+
     public void set(DataObject dataObject) {
         /* store old target position */
         previousTarget = currentTarget;
@@ -68,6 +69,7 @@ public class Target implements InstanceRepo {
 
         this.set(tileView.getVisibleDataObjects().get(newTargetPosition));
     }
+
     public void storePosition() {
         this.storePos = tileView.getVisibleDataObjects().indexOf(currentTarget);
     }

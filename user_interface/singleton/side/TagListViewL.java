@@ -19,6 +19,7 @@ import user_interface.factory.stage.InfoObjectEditStage;
 import user_interface.factory.util.ColorData;
 import user_interface.factory.util.ColorUtil;
 import user_interface.factory.util.enums.ColorType;
+import user_interface.scene.SceneUtil;
 import user_interface.singleton.BaseNode;
 
 import java.util.ArrayList;
@@ -67,14 +68,13 @@ public class TagListViewL extends VBox implements BaseNode, InstanceRepo {
 
         expandedGroupsList = new ArrayList<>();
 
-        this.setPrefWidth(CommonUtil.getUsableScreenWidth());
-        this.setMinWidth(CommonUtil.getUsableScreenWidth() / 10);
-        //this.setMinWidth(SceneUtil.getSidePanelMinWidth());
+        this.setPrefWidth(SceneUtil.getUsableScreenWidth());
+        this.setMinWidth(SceneUtil.getSidePanelMinWidth());
         this.getChildren().addAll(nodeTitle, btnNew, tagListScrollPane);
     }
 
     public void reload() {
-        nodeTitle.setText("Filter: " + filter.size());
+        nodeTitle.setText("Filter: " + filter.size() + " matches");
 
         ObservableList<Node> tagListNodes = tagListBox.getChildren();
         tagListNodes.clear();
@@ -83,7 +83,6 @@ public class TagListViewL extends VBox implements BaseNode, InstanceRepo {
         Color textColorPositive = ColorUtil.getTextColorPos();
         Color textColorNegative = ColorUtil.getTextColorNeg();
 
-        //todo this also probably needs a rework... someday2
         ArrayList<String> groupNames = mainInfoList.getGroups();
         for (String groupName : groupNames) {
             GroupNode groupNode;

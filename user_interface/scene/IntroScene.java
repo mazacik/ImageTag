@@ -30,7 +30,7 @@ public class IntroScene implements InstanceRepo {
 
     private Scene create() {
         VBox vBoxL = NodeFactory.getVBox(ColorType.ALT);
-        vBoxL.setPrefWidth(350);
+        vBoxL.setMinWidth(300);
         vBoxL.setPadding(new Insets(5));
         vBoxL.setAlignment(Pos.CENTER);
 
@@ -71,13 +71,16 @@ public class IntroScene implements InstanceRepo {
         vBoxR.getChildren().add(btnChoose);
         vBoxR.getChildren().add(new ColorModeSwitch());
         vBoxR.setSpacing(10);
-        vBoxR.setPrefWidth(500);
+        vBoxR.setMinWidth(350);
         vBoxR.setAlignment(Pos.CENTER);
+        vBoxR.setPrefWidth(SceneUtil.getUsableScreenWidth());
 
         HBox hBoxGrowHelper = NodeFactory.getHBox(ColorType.DEF, vBoxL, vBoxR);
         VBox.setVgrow(hBoxGrowHelper, Priority.ALWAYS);
 
         VBox vBoxMain = NodeFactory.getVBox(ColorType.DEF);
+        vBoxMain.setAlignment(Pos.CENTER);
+        mainStage.setTitle("Welcome");
         Scene introScene = new Scene(vBoxMain);
         vBoxMain.getChildren().add(hBoxGrowHelper);
         introScene.setOnKeyPressed(event -> {
@@ -94,9 +97,14 @@ public class IntroScene implements InstanceRepo {
         return introScene;
     }
     void show() {
+        double width = SceneUtil.getUsableScreenWidth() / 2.5;
+        double height = SceneUtil.getUsableScreenHeight() / 2;
+        mainStage.setWidth(width);
+        mainStage.setHeight(height);
+        mainStage.setMinWidth(width);
+        mainStage.setMinHeight(height);
+
         mainStage.setScene(introScene);
-        mainStage.setWidth(CommonUtil.getUsableScreenWidth() / 2.5);
-        mainStage.setHeight(CommonUtil.getUsableScreenHeight() / 2);
         mainStage.centerOnScreen();
         SceneUtil.showMainStage();
 
@@ -112,9 +120,6 @@ public class IntroScene implements InstanceRepo {
             if (sourcePath.length() > 3 && (lastchar != '\\' || lastchar != '/')) {
                 sourcePath += "\\";
             }
-            settings.setCurrentDirectory(sourcePath);
-            settings.writeToDisk();
-            new LoaderThread().start();
             startLoading(sourcePath);
         }
     }
@@ -122,10 +127,7 @@ public class IntroScene implements InstanceRepo {
         settings.setCurrentDirectory(sourcePath);
         settings.writeToDisk();
         new LoaderThread().start();
+        SceneUtil.createMainScene();
         SceneUtil.showMainScene();
-    }
-
-    public Scene getInstance() {
-        return introScene;
     }
 }

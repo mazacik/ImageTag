@@ -24,23 +24,17 @@ public class MainScene implements InstanceRepo {
         views = mainHBox.getChildren();
         Scene mainScene = new Scene(NodeFactory.getVBox(ColorType.DEF, topMenu, mainHBox));
 
-        ChangeListener<Number> sizeListener = (observable, oldValue, newValue) -> tileView.adjustPrefColumns();
-
-        mainScene.widthProperty().addListener(sizeListener);
-        mainScene.heightProperty().addListener(sizeListener);
-
+        mainStage.widthProperty().addListener((observable, oldValue, newValue) -> tileView.adjustPrefColumns());
         CommonUtil.updateNodeProperties(mainScene);
 
         return mainScene;
     }
     void show() {
-        mainStage.setScene(mainScene);
-        mainStage.setMaxWidth(CommonUtil.getUsableScreenWidth());
-        mainStage.setMaxHeight(CommonUtil.getUsableScreenHeight());
-        mainStage.setMaximized(true);
-
         mainStage.setMinWidth(tagListViewL.getMinWidth() + tileView.getTilePane().getPrefTileWidth() + tagListViewR.getMinWidth());
         mainStage.setMinHeight(topMenu.getHeight() + tileView.getTilePane().getPrefTileHeight());
+
+        mainStage.setScene(mainScene);
+        mainStage.setMaximized(true);
 
         tileView.onShown();
         tagListViewL.onShown();

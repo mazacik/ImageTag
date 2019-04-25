@@ -3,6 +3,8 @@ package user_interface.scene;
 import system.CommonUtil;
 import system.InstanceRepo;
 
+import java.awt.*;
+
 public class SceneUtil implements InstanceRepo {
     private static IntroScene introScene;
     private static MainScene mainScene;
@@ -41,6 +43,13 @@ public class SceneUtil implements InstanceRepo {
     }
 
     public static double getSidePanelMinWidth() {
-        return sidePanelPrefWidth;
+        return getUsableScreenWidth() / 10;
+    }
+
+    public static double getUsableScreenWidth() {
+        return GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getWidth();
+    }
+    public static double getUsableScreenHeight() {
+        return GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getHeight();
     }
 }

@@ -26,9 +26,7 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
 
         tilePane.setPrefTileWidth(galleryIconSize);
         tilePane.setPrefTileHeight(galleryIconSize);
-        tilePane.setPrefHeight(CommonUtil.getUsableScreenHeight() - topMenu.getPrefHeight() - topMenu.getPadding().getBottom() - topMenu.getBorder().getInsets().getBottom());
-
-        tilePane.setPrefColumns(1);
+        tilePane.setPrefHeight(SceneUtil.getUsableScreenHeight() - topMenu.getPrefHeight() - topMenu.getPadding().getBottom() - topMenu.getBorder().getInsets().getBottom());
 
         this.setContent(tilePane);
         this.setFitToWidth(true);
@@ -41,9 +39,8 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
     }
 
     public void adjustPrefColumns() {
-        //int prefWidth = (int) CommonUtil.getUsableScreenWidth() * 4 / 5;
-        int prefWidth = (int) (CommonUtil.getUsableScreenWidth() - 2 * SceneUtil.getSidePanelMinWidth());
-        int prefColumns = prefWidth / settings.intValueOf(SettingsEnum.TILEVIEW_ICONSIZE) - 1;
+        int prefWidth = (int) (mainStage.getWidth() - 2 * SceneUtil.getSidePanelMinWidth());
+        int prefColumns = prefWidth / settings.intValueOf(SettingsEnum.TILEVIEW_ICONSIZE);
         tilePane.setPrefColumns(prefColumns);
         this.setMinViewportWidth(tilePane.getPrefColumns() * tilePane.getPrefTileWidth() + (tilePane.getPrefColumns() - 1) * tilePane.getHgap() + 1);
     }
@@ -122,14 +119,14 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
     }
 
     public ArrayList<BaseTile> getVisibleTiles() {
-        ArrayList<BaseTile> visibleTiles = new ArrayList<>();
-        tilePane.getChildren().forEach(tile -> visibleTiles.add((BaseTile) tile));
-        return visibleTiles;
+        ArrayList<BaseTile> arrayList = new ArrayList<>();
+        tilePane.getChildren().forEach(tile -> arrayList.add((BaseTile) tile));
+        return arrayList;
     }
     public ArrayList<DataObject> getVisibleDataObjects() {
-        ArrayList<DataObject> visibleDataObjects = new ArrayList<>();
-        tilePane.getChildren().forEach(tile -> visibleDataObjects.add(((BaseTile) tile).getParentDataObject()));
-        return visibleDataObjects;
+        ArrayList<DataObject> dataObjects = new ArrayList<>();
+        tilePane.getChildren().forEach(tile -> dataObjects.add(((BaseTile) tile).getParentDataObject()));
+        return dataObjects;
     }
 
     public TilePane getTilePane() {

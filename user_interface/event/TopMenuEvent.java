@@ -1,10 +1,14 @@
 package user_interface.event;
 
 import javafx.scene.input.MouseButton;
+import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import system.CommonUtil;
 import system.InstanceRepo;
 import user_interface.factory.node.popup.LeftClickMenu;
+import user_interface.factory.stage.UserSettingsStage;
+
+import java.io.IOException;
 
 import java.io.IOException;
 
@@ -14,6 +18,7 @@ public class TopMenuEvent implements InstanceRepo {
 
         onAction_menuSave();
         onAction_menuImport();
+        onAction_menuSettings();
         onAction_menuExit();
 
         onAction_menuInpaint();
@@ -40,6 +45,13 @@ public class TopMenuEvent implements InstanceRepo {
                 CommonUtil.importFiles();
                 hideLeftClickMenus();
             }
+        });
+    }
+    private void onAction_menuSettings() {
+        topMenu.getNodeSettings().setOnMouseClicked(event -> {
+            Stage userSettingsStage = new UserSettingsStage();
+            userSettingsStage.show();
+            CommonUtil.updateNodeProperties(userSettingsStage.getScene());
         });
     }
     private void onAction_menuExit() {

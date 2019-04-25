@@ -11,6 +11,7 @@ import system.InstanceRepo;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 
 public class LoaderThread extends Thread implements InstanceRepo {
     public void run() {
@@ -21,7 +22,7 @@ public class LoaderThread extends Thread implements InstanceRepo {
             mainDataList.addAll(mainDataList.readFromDisk());
         } catch (Exception e) {
             logger.debug(this, "existing database failed to load or does not exist");
-            //createBackup(); // todo fix backup
+            createBackup();
             createDatabase(fileList);
         }
 
@@ -33,6 +34,8 @@ public class LoaderThread extends Thread implements InstanceRepo {
         mainDataList.writeToDisk();
         filter.addAll(mainDataList);
 
+        if (mainDataList.size() > 0) target.set(mainDataList.get(0));
+      
         filter.setFilter(FilterTemplate.SHOW_EVERYTHING);
         reload.notifyChangeIn(Reload.Control.values());
         Platform.runLater(reload::doReload);
@@ -55,23 +58,21 @@ public class LoaderThread extends Thread implements InstanceRepo {
             dirData.mkdir();
         }
     }
-    /*
     private void createBackup() {
-        File backupDir = new File(PATH_SOURCE + "backup\\");
-        File backupData = new File(backupDir + "data.json");
-        File currentData = new File(PATH_DATA + "data.json");
+        String dataDir = LoaderUtil.getPathData();
+        String backupPath = dataDir + "backup_" + new Date().toString() + ".json";
+        String currentDataPath = dataDir + "data.json";
 
-        if (currentData.exists()) {
-            if (!backupDir.exists()) {
-                backupDir.mkdir();
-            }
+        File backupFile = new File(backupPath);
+        File currentDataFile = new File(currentDataPath);
+
+        if (currentDataFile.exists()) {
+            currentDataFile.renameTo(backupFile);
             logger.debug(this, "database backup created");
-            currentData.renameTo(backupData);
         } else {
             logger.debug(this, "database backup not created - database does not exist");
         }
     }
-     */
     private void createDatabase(ArrayList<File> fileList) {
         logger.debug(this, "creating database");
         for (File file : fileList) {

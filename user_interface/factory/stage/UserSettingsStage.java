@@ -9,7 +9,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import settings.SettingType;
 import system.CommonUtil;
 import user_interface.factory.NodeFactory;
@@ -20,6 +19,7 @@ import java.util.ArrayList;
 
 public class UserSettingsStage extends Stage {
     public UserSettingsStage() {
+        //todo finish this
         int spacing = CommonUtil.getPadding();
         VBox vBox = NodeFactory.getVBox(ColorType.DEF);
         vBox.setPadding(new Insets(spacing));
@@ -47,6 +47,11 @@ public class UserSettingsStage extends Stage {
 
             }
         });
+        lblCancel.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                this.close();
+            }
+        });
         HBox hBox = NodeFactory.getHBox(ColorType.DEF, lblCancel, lblOK);
 
         BorderPane borderPane = new BorderPane();
@@ -54,7 +59,6 @@ public class UserSettingsStage extends Stage {
         borderPane.setCenter(vBox);
         borderPane.setBottom(hBox);
 
-        this.initStyle(StageStyle.UNDECORATED);
         this.setScene(scene);
         this.setOnShown(event -> {
             int labelWidth = 0;
@@ -68,6 +72,5 @@ public class UserSettingsStage extends Stage {
             }
             this.centerOnScreen();
         });
-        this.show();
     }
 }

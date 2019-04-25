@@ -35,11 +35,11 @@ public class ColorUtil {
             return ColorEnum.TEXTNIGHTNEG.getValue();
         }
     }
-    public static Color getTextColorInt() {
+    public static Color getTextColorShr() {
         if (!CommonUtil.isNightMode()) {
-            return ColorEnum.TEXTDAYINT.getValue();
+            return ColorEnum.TEXTDAYSHR.getValue();
         } else {
-            return ColorEnum.TEXTNIGHTINT.getValue();
+            return ColorEnum.TEXTNIGHTSHR.getValue();
         }
     }
 

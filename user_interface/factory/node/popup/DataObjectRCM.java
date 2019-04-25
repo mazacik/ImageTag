@@ -76,6 +76,8 @@ public class DataObjectRCM extends RightClickMenu implements InstanceRepo {
             for (Node node : this.getChildren()) {
                 ((Label) node).setPrefWidth(width);
             }
+
+            nodeDelete.setText("Delete " + select.size() + " file(s)");
         });
     }
 

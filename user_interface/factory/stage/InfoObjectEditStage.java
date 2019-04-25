@@ -77,11 +77,11 @@ public class InfoObjectEditStage extends Stage {
 
         Scene scene = new Scene(borderPane);
         if (tagObject != null) {
-            this.setTitle("Edit Tag");
+            borderPane.setTop(new TitleBar(scene, "Edit Tag"));
             nodeGroupEdit.setText(tagObject.getGroup());
             nodeNameEdit.setText(tagObject.getName());
         } else {
-            this.setTitle("Create a new Tag");
+            borderPane.setTop(new TitleBar(scene, "Create a new Tag"));
         }
 
         borderPane.setCenter(vBoxHelper);
