@@ -11,7 +11,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import system.CommonUtil;
 import user_interface.factory.NodeFactory;
-import user_interface.factory.node.TitleBar;
 import user_interface.factory.util.ColorUtil;
 import user_interface.factory.util.enums.ColorType;
 
@@ -50,7 +49,6 @@ public class OkCancelStage extends Stage {
 
         VBox vBox = NodeFactory.getVBox(ColorType.DEF);
         Scene scene = new Scene(vBox);
-        vBox.getChildren().add(new TitleBar(scene));
         vBox.getChildren().add(labelContent);
         vBox.getChildren().add(hBox);
         vBox.setBackground(ColorUtil.getBackgroundDef());

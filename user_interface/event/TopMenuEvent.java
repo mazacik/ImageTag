@@ -10,6 +10,8 @@ import user_interface.factory.stage.UserSettingsStage;
 
 import java.io.IOException;
 
+import java.io.IOException;
+
 public class TopMenuEvent implements InstanceRepo {
     public TopMenuEvent() {
         onMouseClick();

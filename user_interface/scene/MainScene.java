@@ -1,5 +1,6 @@
 package user_interface.scene;
 
+import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -24,7 +25,6 @@ public class MainScene implements InstanceRepo {
         Scene mainScene = new Scene(NodeFactory.getVBox(ColorType.DEF, topMenu, mainHBox));
 
         mainStage.widthProperty().addListener((observable, oldValue, newValue) -> tileView.adjustPrefColumns());
-
         CommonUtil.updateNodeProperties(mainScene);
 
         return mainScene;

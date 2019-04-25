@@ -55,7 +55,6 @@ public class TagListViewR extends VBox implements BaseNode, InstanceRepo {
         nodeSelectMerge = NodeFactory.getLabel("Merge Selection", colorDataSimple);
         LeftClickMenu.install(nodeTitle, Direction.LEFT, nodeSelectAll, nodeSelectNone, NodeFactory.getSeparator(), nodeSelectMerge);
 
-
         tagListBox = NodeFactory.getVBox(ColorType.DEF);
         tagListScrollPane = new ScrollPane();
         tagListScrollPane.setContent(tagListBox);

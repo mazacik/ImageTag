@@ -35,7 +35,7 @@ public class LoaderThread extends Thread implements InstanceRepo {
         filter.addAll(mainDataList);
 
         if (mainDataList.size() > 0) target.set(mainDataList.get(0));
-
+      
         filter.setFilter(FilterTemplate.SHOW_EVERYTHING);
         reload.notifyChangeIn(Reload.Control.values());
         Platform.runLater(reload::doReload);

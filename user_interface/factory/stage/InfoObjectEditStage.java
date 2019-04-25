@@ -14,7 +14,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import system.CommonUtil;
 import user_interface.factory.NodeFactory;
-import user_interface.factory.node.TitleBar;
 import user_interface.factory.util.enums.ColorType;
 
 public class InfoObjectEditStage extends Stage {

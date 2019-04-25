@@ -12,7 +12,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import system.CommonUtil;
 import user_interface.factory.NodeFactory;
-import user_interface.factory.node.TitleBar;
 import user_interface.factory.util.enums.ColorType;
 
 public class GroupEditStage extends Stage {
@@ -76,7 +75,7 @@ public class GroupEditStage extends Stage {
         HBox hBoxBottom = NodeFactory.getHBox(ColorType.DEF, nodeCancel, nodeOK);
 
         Scene scene = new Scene(borderPane);
-        borderPane.setTop(new TitleBar(scene, "Edit Group"));
+        this.setTitle("Edit Group");
         borderPane.setCenter(hBoxGroup);
         borderPane.setBottom(hBoxBottom);
 
