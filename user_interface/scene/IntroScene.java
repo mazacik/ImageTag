@@ -1,6 +1,6 @@
 package user_interface.scene;
 
-import database.object.DataLoader;
+import database.loader.LoaderThread;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -15,7 +15,6 @@ import system.InstanceRepo;
 import user_interface.factory.NodeFactory;
 import user_interface.factory.node.ColorModeSwitch;
 import user_interface.factory.node.IntroWindowCell;
-import user_interface.factory.node.TitleBar;
 import user_interface.factory.stage.DirectoryChooserStage;
 import user_interface.factory.util.enums.ColorType;
 
@@ -31,8 +30,9 @@ public class IntroScene implements InstanceRepo {
 
     private Scene create() {
         VBox vBoxL = NodeFactory.getVBox(ColorType.ALT);
-        vBoxL.setPrefWidth(350);
+        vBoxL.setMinWidth(300);
         vBoxL.setPadding(new Insets(5));
+        vBoxL.setAlignment(Pos.CENTER);
 
         if (settings.getRecentDirList().size() == 0) {
             vBoxL.getChildren().add(NodeFactory.getLabel("No recent directories", ColorType.ALT, ColorType.DEF));
@@ -71,15 +71,17 @@ public class IntroScene implements InstanceRepo {
         vBoxR.getChildren().add(btnChoose);
         vBoxR.getChildren().add(new ColorModeSwitch());
         vBoxR.setSpacing(10);
-        vBoxR.setPrefWidth(500);
+        vBoxR.setMinWidth(350);
         vBoxR.setAlignment(Pos.CENTER);
+        vBoxR.setPrefWidth(SceneUtil.getUsableScreenWidth());
 
         HBox hBoxGrowHelper = NodeFactory.getHBox(ColorType.DEF, vBoxL, vBoxR);
         VBox.setVgrow(hBoxGrowHelper, Priority.ALWAYS);
 
         VBox vBoxMain = NodeFactory.getVBox(ColorType.DEF);
+        vBoxMain.setAlignment(Pos.CENTER);
+        mainStage.setTitle("Welcome");
         Scene introScene = new Scene(vBoxMain);
-        vBoxMain.getChildren().add(new TitleBar(introScene, "Welcome"));
         vBoxMain.getChildren().add(hBoxGrowHelper);
         introScene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
@@ -95,9 +97,14 @@ public class IntroScene implements InstanceRepo {
         return introScene;
     }
     void show() {
+        double width = SceneUtil.getUsableScreenWidth() / 2.5;
+        double height = SceneUtil.getUsableScreenHeight() / 2;
+        mainStage.setWidth(width);
+        mainStage.setHeight(height);
+        mainStage.setMinWidth(width);
+        mainStage.setMinHeight(height);
+
         mainStage.setScene(introScene);
-        mainStage.setWidth(CommonUtil.getUsableScreenWidth() / 2.5);
-        mainStage.setHeight(CommonUtil.getUsableScreenHeight() / 2);
         mainStage.centerOnScreen();
         SceneUtil.showMainStage();
 
@@ -113,20 +120,14 @@ public class IntroScene implements InstanceRepo {
             if (sourcePath.length() > 3 && (lastchar != '\\' || lastchar != '/')) {
                 sourcePath += "\\";
             }
-            settings.setCurrentDirectory(sourcePath);
-            settings.writeToDisk();
-            new DataLoader().start();
             startLoading(sourcePath);
         }
     }
     private void startLoading(String sourcePath) {
         settings.setCurrentDirectory(sourcePath);
         settings.writeToDisk();
-        new DataLoader().start();
+        new LoaderThread().start();
         SceneUtil.createMainScene();
-    }
-
-    public Scene getInstance() {
-        return introScene;
+        SceneUtil.showMainScene();
     }
 }

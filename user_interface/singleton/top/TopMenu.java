@@ -13,8 +13,11 @@ import user_interface.singleton.BaseNode;
 
 public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
     Label nodeSave;
+    Label nodeImport;
+    Label nodeSettings;
     Label nodeExit;
 
+    Label nodeInpaint;
 
     Label nodeRandom;
     Label nodeFullview;
@@ -22,10 +25,16 @@ public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
     public TopMenu() {
         ColorData colorData = new ColorData(ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
 
-        Label cbFile = NodeFactory.getLabel("File", colorData);
+        Label nodeFile = NodeFactory.getLabel("File", colorData);
         nodeSave = NodeFactory.getLabel("Save", colorData);
+        nodeImport = NodeFactory.getLabel("Import", colorData);
+        nodeSettings = NodeFactory.getLabel("Settings", colorData);
         nodeExit = NodeFactory.getLabel("Exit", colorData);
-        LeftClickMenu.install(cbFile, Direction.BELOW, nodeSave, nodeExit);
+        LeftClickMenu.install(nodeFile, Direction.BELOW, nodeSave, nodeImport, nodeSettings, NodeFactory.getSeparator(), nodeExit);
+
+        Label nodeTools = NodeFactory.getLabel("Tools", colorData);
+        nodeInpaint = NodeFactory.getLabel("Inpaint", colorData);
+        LeftClickMenu.install(nodeTools, Direction.BELOW, nodeInpaint);
 
         nodeRandom = NodeFactory.getLabel("Random", colorData);
         nodeFullview = NodeFactory.getLabel("FullView", colorData);
@@ -34,7 +43,7 @@ public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
         NodeFactory.addNodeToManager(hBoxTools, ColorType.DEF);
 
         HBox hBoxMain = NodeFactory.getHBox(ColorType.DEF);
-        hBoxMain.getChildren().addAll(cbFile);
+        hBoxMain.getChildren().addAll(nodeFile, nodeTools);
         hBoxMain.getChildren().add(hBoxTools);
         NodeFactory.addNodeToManager(hBoxMain, ColorType.DEF);
 
@@ -51,8 +60,18 @@ public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
     public Label getNodeSave() {
         return nodeSave;
     }
+    public Label getNodeImport() {
+        return nodeImport;
+    }
+    public Label getNodeSettings() {
+        return nodeSettings;
+    }
     public Label getNodeExit() {
         return nodeExit;
+    }
+
+    public Label getNodeInpaint() {
+        return nodeInpaint;
     }
     public Label getNodeRandom() {
         return nodeRandom;

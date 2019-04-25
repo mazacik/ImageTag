@@ -20,7 +20,7 @@ public class Reload implements InstanceRepo {
         this.subscribe(tagListViewR
                 , Control.INFO
                 , Control.FILTER
-                //, Control.TARGET
+                , Control.TARGET
                 , Control.SELECT
         );
         this.subscribe(tileView

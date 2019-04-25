@@ -10,6 +10,7 @@ public class TagListViewLEvent implements InstanceRepo {
     public TagListViewLEvent() {
         onMouseClick();
 
+        onAction_menuNoTags();
         onAction_menuLimit();
         onAction_menuReset();
     }
@@ -18,17 +19,22 @@ public class TagListViewLEvent implements InstanceRepo {
         tagListViewL.setOnMouseClicked(event -> tagListViewL.requestFocus());
     }
 
+    private void onAction_menuNoTags() {
+        tagListViewL.getNodeNoTags().setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                FilterTemplate.setMaxTagsValue(0);
+                filter.setFilter(FilterTemplate.SHOW_MAX_X_TAGS);
+                reload.doReload();
+                hideLeftClickMenus();
+            }
+        });
+    }
     private void onAction_menuLimit() {
         tagListViewL.getNodeLimit().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                if (event.isControlDown()) {
-                    int maxTags = new NumberInputStage("Maximum number of tags:").getResult();
-                    if (maxTags == -1) return;
-                    FilterTemplate.setMaxTagsValue(maxTags);
-                } else {
-                    FilterTemplate.setMaxTagsValue(0);
-                }
-
+                int maxTags = new NumberInputStage("Maximum number of tags:").getResult();
+                if (maxTags == -1) return;
+                FilterTemplate.setMaxTagsValue(maxTags);
                 filter.setFilter(FilterTemplate.SHOW_MAX_X_TAGS);
                 reload.doReload();
                 hideLeftClickMenus();

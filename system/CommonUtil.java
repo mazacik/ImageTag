@@ -1,5 +1,7 @@
 package system;
 
+import database.list.DataObjectList;
+import database.loader.LoaderUtil;
 import database.object.DataObject;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
@@ -25,8 +27,11 @@ import user_interface.scene.MainScene;
 import user_interface.singleton.center.BaseTile;
 import user_interface.singleton.side.GroupNode;
 
-import java.awt.*;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public abstract class CommonUtil implements InstanceRepo {
@@ -184,11 +189,35 @@ public abstract class CommonUtil implements InstanceRepo {
         return img;
     }
 
-    public static double getUsableScreenWidth() {
-        return GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getWidth();
+    public static ArrayList<File> getValidFiles(String directory) {
+        return new ArrayList<>(Arrays.asList(new File(directory).listFiles((dir, name) -> {
+            String _name = name.toLowerCase();
+            return _name.endsWith(".jpg") || _name.endsWith(".jpeg") || _name.endsWith(".png");
+        })));
     }
-    public static double getUsableScreenHeight() {
-        return GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getHeight();
+    public static void importFiles() {
+        //todo finish this
+        String pathSource = settings.getCurrentDirectory();
+        ArrayList<String> importDirectories = settings.getImportDirList();
+
+        DataObjectList newDataObjects = new DataObjectList();
+        importDirectories.forEach(dir -> {
+            for (File file : CommonUtil.getValidFiles(dir)) {
+                try {
+                    //Files.copy(Paths.get(file.getAbsolutePath()), Paths.get((pathSource) + file.getName()));
+                    Files.move(Paths.get(file.getAbsolutePath()), Paths.get((pathSource) + file.getName()));
+                    newDataObjects.add(new DataObject(file));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        LoaderUtil.readImageCache(newDataObjects);
+        mainDataList.addAll(newDataObjects);
+        mainDataList.sort();
+        filter.apply();
+        reload.doReload();
     }
 
     public static void swapDisplayMode() {
@@ -198,13 +227,10 @@ public abstract class CommonUtil implements InstanceRepo {
         return MainScene.isFullView();
     }
     public static DataObject getRandomDataObject() {
-        ArrayList<BaseTile> tiles = tileView.getTiles();
+        ArrayList<BaseTile> tiles = tileView.getVisibleTiles();
         if (tiles.size() >= 1) {
             int index = new Random().nextInt(tiles.size());
             DataObject chosenDataObject = tiles.get(index).getParentDataObject();
-        ArrayList<BaseTile> tiles = tileView.getTilesLive();
-        int index = new Random().nextInt(tiles.size());
-        DataObject chosenDataObject = tiles.get(index).getParentDataObject();
 
             if (chosenDataObject.getMergeID() == 0) {
                 return chosenDataObject;

@@ -21,22 +21,30 @@ public class GroupEditStage extends Stage {
     private final Label nodeOK = NodeFactory.getLabel("OK", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
     private final Label nodeCancel = NodeFactory.getLabel("Cancel", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
 
-    private String result = "";
+    private String result;
 
     public GroupEditStage(String group) {
         BorderPane borderPane = new BorderPane();
 
+        result = group;
+
         nodeGroup.setPrefWidth(60);
+        nodeGroupEdit.setText(group);
         nodeGroupEdit.setPrefWidth(200);
         nodeGroupEdit.setBorder(NodeFactory.getBorder(1, 1, 1, 1));
         nodeGroupEdit.setFont(CommonUtil.getFont());
 
         borderPane.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
-                result = nodeGroupEdit.getText();
-                close();
+                String newGroup = nodeGroupEdit.getText();
+                if (this.isValid(newGroup)) {
+                    result = newGroup;
+                    this.close();
+                } else {
+                    //todo show a warning
+                }
             } else if (event.getCode() == KeyCode.ESCAPE) {
-                close();
+                this.close();
             }
         });
 
@@ -45,8 +53,13 @@ public class GroupEditStage extends Stage {
 
         nodeOK.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                result = nodeGroupEdit.getText();
-                this.close();
+                String newGroup = nodeGroupEdit.getText();
+                if (this.isValid(newGroup)) {
+                    result = newGroup;
+                    this.close();
+                } else {
+                    //todo show a warning
+                }
             }
         });
         nodeCancel.setOnMouseClicked(event -> {
@@ -79,6 +92,11 @@ public class GroupEditStage extends Stage {
         });
 
         showAndWait();
+    }
+
+    private boolean isValid(String group) {
+        if (group.isEmpty()) return false;
+        return !group.contains(" - ");
     }
 
     public String getResult() {

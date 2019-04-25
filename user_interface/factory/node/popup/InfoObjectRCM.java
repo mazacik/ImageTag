@@ -30,7 +30,7 @@ public class InfoObjectRCM extends RightClickMenu implements InstanceRepo {
                     GroupNode groupNode = (GroupNode) this.getOwnerNode();
                     String oldGroup = groupNode.getText();
                     String newGroup = WordUtils.capitalize(new GroupEditStage(oldGroup).getResult().toLowerCase());
-                    if (newGroup.isEmpty()) return; //todo show error in the editor instead of returning
+                    if (newGroup.isEmpty()) return;
 
                     mainInfoList.forEach(tagObject -> {
                         if (tagObject.getGroup().equals(oldGroup)) {

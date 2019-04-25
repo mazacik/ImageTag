@@ -8,7 +8,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Window;
 import javafx.util.Duration;
 import system.CommonUtil;
 import user_interface.factory.node.IntroWindowCell;
@@ -44,6 +46,14 @@ public abstract class NodeFactory {
         nodeList.add(new ColorData(label, backgroundDef, backgroundAlt, textFillDef, textFillAlt));
 
         return label;
+    }
+
+    public static Label getSeparator() {
+        Label separator = new Label();
+        separator.setFont(new Font(0));
+        separator.setPrefHeight(0);
+        separator.setBorder(NodeFactory.getBorder(0, 0, 1, 0));
+        return separator;
     }
 
     public static GroupNode getGroupNode(VBox owner, String text, Color textFill) {
@@ -98,13 +108,23 @@ public abstract class NodeFactory {
         }
     }
 
-    public static void removeNodesFromManager(Scene scene) {
-        ArrayList<ColorData> colorDataList = new ArrayList<>();
-        for (ColorData colorData : NodeFactory.getNodeList()) {
-            if (colorData.getNode().getScene() != null && colorData.getNode().getScene().equals(scene)) {
-                colorDataList.add(colorData);
+    public static void removeOrphanNodes() {
+        ArrayList<ColorData> orphans = new ArrayList<>();
+        for (ColorData colorData : nodeList) {
+            try {
+                Node node = colorData.getNode();
+                Scene scene = node.getScene();
+                Window window = scene.getWindow();
+
+                //Window window = colorData.getNode().getScene().getWindow();
+                if (window == null) throw new NullPointerException();
+            } catch (NullPointerException e) {
+                orphans.add(colorData);
             }
         }
-        nodeList.removeAll(colorDataList);
+
+        for (ColorData orphan : orphans) {
+            nodeList.remove(orphan);
+        }
     }
 }

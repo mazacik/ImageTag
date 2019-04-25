@@ -31,8 +31,8 @@ public class LoadingScene implements InstanceRepo {
     }
     void show() {
         mainStage.setScene(loadingScene);
-        mainStage.setWidth(CommonUtil.getUsableScreenWidth() / 6);
-        mainStage.setHeight(CommonUtil.getUsableScreenHeight() / 16);
+        mainStage.setWidth(SceneUtil.getUsableScreenWidth() / 6);
+        mainStage.setHeight(SceneUtil.getUsableScreenHeight() / 16);
         mainStage.centerOnScreen();
 
         logger.debug(this, "waiting for directory");

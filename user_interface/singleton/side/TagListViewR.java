@@ -3,12 +3,9 @@ package user_interface.singleton.side;
 import control.reload.Reload;
 import database.object.DataObject;
 import database.object.TagObject;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.Labeled;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
@@ -22,10 +19,10 @@ import user_interface.factory.node.popup.LeftClickMenu;
 import user_interface.factory.util.ColorData;
 import user_interface.factory.util.ColorUtil;
 import user_interface.factory.util.enums.ColorType;
+import user_interface.scene.SceneUtil;
 import user_interface.singleton.BaseNode;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 
 public class TagListViewR extends VBox implements BaseNode, InstanceRepo {
     private final Label nodeTitle;
@@ -37,7 +34,6 @@ public class TagListViewR extends VBox implements BaseNode, InstanceRepo {
     private final Label nodeSelectMerge;
 
     private final VBox tagListBox;
-    private final Label nodeEmptySelection;
     private final ScrollPane tagListScrollPane;
     private final ArrayList<String> expandedGroupsList;
 
@@ -57,10 +53,10 @@ public class TagListViewR extends VBox implements BaseNode, InstanceRepo {
         nodeSelectAll = NodeFactory.getLabel("Select All", colorDataSimple);
         nodeSelectNone = NodeFactory.getLabel("Select None", colorDataSimple);
         nodeSelectMerge = NodeFactory.getLabel("Merge Selection", colorDataSimple);
-        LeftClickMenu.install(nodeTitle, Direction.LEFT, nodeSelectAll, nodeSelectNone, nodeSelectMerge);
+        LeftClickMenu.install(nodeTitle, Direction.LEFT, nodeSelectAll, nodeSelectNone, NodeFactory.getSeparator(), nodeSelectMerge);
+
 
         tagListBox = NodeFactory.getVBox(ColorType.DEF);
-        nodeEmptySelection = NodeFactory.getLabel("Selection is empty", ColorType.DEF, ColorType.DEF);
         tagListScrollPane = new ScrollPane();
         tagListScrollPane.setContent(tagListBox);
         tagListScrollPane.setFitToWidth(true);
@@ -71,194 +67,111 @@ public class TagListViewR extends VBox implements BaseNode, InstanceRepo {
 
         expandedGroupsList = new ArrayList<>();
 
-        this.setPrefWidth(CommonUtil.getUsableScreenWidth());
-        this.setMinWidth(CommonUtil.getUsableScreenWidth() / 10);
+        this.setPrefWidth(SceneUtil.getUsableScreenWidth());
+        this.setMinWidth(SceneUtil.getSidePanelMinWidth());
         this.getChildren().addAll(nodeTitle, tfSearch, tagListScrollPane);
     }
 
     public void reload() {
-        ObservableList<Node> tagListNodes = tagListBox.getChildren();
-        tagListNodes.clear();
+        tagListBox.getChildren().clear();
 
         if (select.size() == 0) {
-            nodeTitle.setText("Selection: 0");
-            tagListNodes.add(nodeEmptySelection);
-            return;
-        }
-
-        int hiddenTiles = 0;
-        for (DataObject dataObject : select) {
-            if (!filter.contains(dataObject)) {
-                hiddenTiles++;
+            if (target.getCurrentTarget() != null) {
+                nodeTitle.setText("Selection: " + target.getCurrentTarget().getName());
             }
-        }
-
-        String text = "Selection: " + select.size();
-        if (hiddenTiles > 0) {
-            text += ", " + hiddenTiles + " tiles hidden";
-        }
-        nodeTitle.setText(text);
-
-        ArrayList<String> groupsInter = select.getIntersectingTags().getGroups();
-        ArrayList<String> groupsShare = select.getSharedTags().getGroups();
-        ArrayList<String> groupsAll = mainInfoList.getGroups();
-
-        Color textColorDefault = ColorUtil.getTextColorDef();
-        Color textColorPositive = ColorUtil.getTextColorPos();
-        Color textColorIntersect = ColorUtil.getTextColorInt();
-
-        for (String groupInter : groupsInter) {
-            groupsShare.remove(groupInter);
-            groupsAll.remove(groupInter);
-        }
-        for (String groupShare : groupsShare) {
-            groupsAll.remove(groupShare);
-        }
-        for (String group : mainInfoList.getGroups()) {
-            //todo this needs a rework... someday
-            if (groupsInter.contains(group)) {
-                GroupNode groupNode = NodeFactory.getGroupNode(this, group, textColorPositive);
-                ArrayList<String> namesInter = select.getIntersectingTags().getNames(group);
-                ArrayList<String> namesShare = select.getSharedTags().getNames(group);
-                ArrayList<String> namesAll = mainInfoList.getNames(group);
-
-                for (String nameInter : namesInter) {
-                    namesShare.remove(nameInter);
-                    namesAll.remove(nameInter);
-
-                    Label nameNode = NodeFactory.getLabel(nameInter, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
-                    nameNode.setTextFill(textColorPositive);
-                    nameNode.prefWidthProperty().bind(tagListBox.widthProperty());
-                    nameNode.setOnMouseClicked(event -> {
-                        if (event.getButton() == MouseButton.PRIMARY) {
-                            changeNodeState(groupNode, nameNode);
-                        } else if (event.getButton() == MouseButton.SECONDARY) {
-                            infoObjectRCM.setTagObject(mainInfoList.getTagObject(groupNode.getText(), nameNode.getText()));
-                            infoObjectRCM.show(nameNode, event);
-                        }
-                    });
-                    nameNode.setPadding(new Insets(0, 0, 0, 50));
-                    nameNode.setAlignment(Pos.CENTER_LEFT);
-                    groupNode.getNameNodes().add(nameNode);
-                }
-                for (String nameShare : namesShare) {
-                    namesAll.remove(nameShare);
-
-                    Label nameNode = NodeFactory.getLabel(nameShare, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
-                    nameNode.setTextFill(textColorIntersect);
-                    nameNode.prefWidthProperty().bind(tagListBox.widthProperty());
-                    nameNode.setOnMouseClicked(event -> {
-                        if (event.getButton() == MouseButton.PRIMARY) {
-                            changeNodeState(groupNode, nameNode);
-                        } else if (event.getButton() == MouseButton.SECONDARY) {
-                            infoObjectRCM.setTagObject(mainInfoList.getTagObject(groupNode.getText(), nameNode.getText()));
-                            infoObjectRCM.show(nameNode, event);
-                        }
-                    });
-                    nameNode.setPadding(new Insets(0, 0, 0, 50));
-                    nameNode.setAlignment(Pos.CENTER_LEFT);
-                    groupNode.getNameNodes().add(nameNode);
-                }
-                for (String nameAll : namesAll) {
-                    Label nameNode = NodeFactory.getLabel(nameAll, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
-                    nameNode.setTextFill(textColorDefault);
-                    nameNode.prefWidthProperty().bind(tagListBox.widthProperty());
-                    nameNode.setOnMouseClicked(event -> {
-                        if (event.getButton() == MouseButton.PRIMARY) {
-                            changeNodeState(groupNode, nameNode);
-                        } else if (event.getButton() == MouseButton.SECONDARY) {
-                            infoObjectRCM.setTagObject(mainInfoList.getTagObject(groupNode.getText(), nameNode.getText()));
-                            infoObjectRCM.show(nameNode, event);
-                        }
-                    });
-                    nameNode.setPadding(new Insets(0, 0, 0, 50));
-                    nameNode.setAlignment(Pos.CENTER_LEFT);
-                    groupNode.getNameNodes().add(nameNode);
-                }
-
-                groupNode.getNameNodes().sort(Comparator.comparing(Labeled::getText));
-
-                tagListNodes.add(groupNode);
-                if (expandedGroupsList.contains(group)) {
-                    groupNode.setArrowExpanded(true);
-                    tagListNodes.addAll(groupNode.getNameNodes());
-                }
-            } else if (groupsShare.contains(group)) {
-                GroupNode groupNode = NodeFactory.getGroupNode(this, group, textColorIntersect);
-                ArrayList<String> namesShare = select.getSharedTags().getNames(group);
-                ArrayList<String> namesAll = mainInfoList.getNames(group);
-
-                for (String nameShare : namesShare) {
-                    namesAll.remove(nameShare);
-
-                    Label nameNode = NodeFactory.getLabel(nameShare, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
-                    nameNode.setTextFill(textColorIntersect);
-                    nameNode.prefWidthProperty().bind(tagListBox.widthProperty());
-                    nameNode.setOnMouseClicked(event -> {
-                        if (event.getButton() == MouseButton.PRIMARY) {
-                            changeNodeState(groupNode, nameNode);
-                        } else if (event.getButton() == MouseButton.SECONDARY) {
-                            infoObjectRCM.setTagObject(mainInfoList.getTagObject(groupNode.getText(), nameNode.getText()));
-                            infoObjectRCM.show(nameNode, event);
-                        }
-                    });
-                    nameNode.setPadding(new Insets(0, 0, 0, 50));
-                    nameNode.setAlignment(Pos.CENTER_LEFT);
-                    groupNode.getNameNodes().add(nameNode);
-                }
-                for (String nameAll : namesAll) {
-                    Label nameNode = NodeFactory.getLabel(nameAll, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
-                    nameNode.setTextFill(textColorDefault);
-                    nameNode.prefWidthProperty().bind(tagListBox.widthProperty());
-                    nameNode.setOnMouseClicked(event -> {
-                        if (event.getButton() == MouseButton.PRIMARY) {
-                            changeNodeState(groupNode, nameNode);
-                        } else if (event.getButton() == MouseButton.SECONDARY) {
-                            infoObjectRCM.setTagObject(mainInfoList.getTagObject(groupNode.getText(), nameNode.getText()));
-                            infoObjectRCM.show(nameNode, event);
-                        }
-                    });
-                    nameNode.setPadding(new Insets(0, 0, 0, 50));
-                    nameNode.setAlignment(Pos.CENTER_LEFT);
-                    groupNode.getNameNodes().add(nameNode);
-                }
-
-                tagListNodes.add(groupNode);
-                if (expandedGroupsList.contains(group)) {
-                    groupNode.setArrowExpanded(true);
-                    tagListNodes.addAll(groupNode.getNameNodes());
-                }
-            } else {
-                GroupNode groupNode = NodeFactory.getGroupNode(this, group, textColorDefault);
-                ArrayList<String> namesAll = mainInfoList.getNames(group);
-
-                for (String nameAll : namesAll) {
-                    Label nameNode = NodeFactory.getLabel(nameAll, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
-                    nameNode.setTextFill(textColorDefault);
-                    nameNode.prefWidthProperty().bind(tagListBox.widthProperty());
-                    nameNode.setOnMouseClicked(event -> {
-                        if (event.getButton() == MouseButton.PRIMARY) {
-                            changeNodeState(groupNode, nameNode);
-                        } else if (event.getButton() == MouseButton.SECONDARY) {
-                            infoObjectRCM.setTagObject(mainInfoList.getTagObject(groupNode.getText(), nameNode.getText()));
-                            infoObjectRCM.show(nameNode, event);
-                        }
-                    });
-                    nameNode.setPadding(new Insets(0, 0, 0, 50));
-                    nameNode.setAlignment(Pos.CENTER_LEFT);
-                    groupNode.getNameNodes().add(nameNode);
-                }
-
-                tagListNodes.add(groupNode);
-                if (expandedGroupsList.contains(group)) {
-                    groupNode.setArrowExpanded(true);
-                    tagListNodes.addAll(groupNode.getNameNodes());
+        } else {
+            int hiddenTilesCount = 0;
+            for (DataObject dataObject : select) {
+                if (!filter.contains(dataObject)) {
+                    hiddenTilesCount++;
                 }
             }
-        }
 
+            String text = "Selection: " + select.size() + " file(s)";
+            if (hiddenTilesCount > 0) {
+                text += ", " + hiddenTilesCount + " filtered out";
+            }
+            nodeTitle.setText(text);
+        }
+        this.actuallyReload();
         CommonUtil.updateNodeProperties(tagListBox);
     }
+    private void actuallyReload() {
+        Color textColorDefault = ColorUtil.getTextColorDef();
+        Color textColorPositive = ColorUtil.getTextColorPos();
+        Color textColorShare = ColorUtil.getTextColorShr();
+
+        ArrayList<String> groupsInter;
+        ArrayList<String> groupsShare;
+        if (select.size() == 0) {
+            if (target.getCurrentTarget() != null) {
+                groupsInter = target.getCurrentTarget().getInfoObjectList().getGroups();
+                groupsShare = new ArrayList<>();
+            } else {
+                return;
+            }
+        } else {
+            groupsInter = select.getIntersectingTags().getGroups();
+            groupsShare = select.getSharedTags().getGroups();
+        }
+
+        for (String group : mainInfoList.getGroups()) {
+            GroupNode groupNode;
+            if (groupsInter.contains(group)) {
+                groupNode = NodeFactory.getGroupNode(this, group, textColorPositive);
+            } else if (groupsShare.contains(group)) {
+                groupNode = NodeFactory.getGroupNode(this, group, textColorShare);
+            } else {
+                groupNode = NodeFactory.getGroupNode(this, group, textColorDefault);
+            }
+
+            ArrayList<String> namesInter;
+            ArrayList<String> namesShare;
+            if (select.size() == 0) {
+                namesInter = target.getCurrentTarget().getInfoObjectList().getNames(group);
+                namesShare = new ArrayList<>();
+            } else {
+                namesInter = select.getIntersectingTags().getNames(group);
+                namesShare = select.getSharedTags().getNames(group);
+            }
+
+            for (String name : mainInfoList.getNames(group)) {
+                if (namesInter.contains(name)) {
+                    groupNode.getNameNodes().add(this.createNameNode(name, textColorPositive, groupNode));
+                } else if (namesShare.contains(name)) {
+                    groupNode.getNameNodes().add(this.createNameNode(name, textColorShare, groupNode));
+                } else {
+                    groupNode.getNameNodes().add(this.createNameNode(name, textColorDefault, groupNode));
+                }
+            }
+
+            tagListBox.getChildren().add(groupNode);
+
+            if (expandedGroupsList.contains(group)) {
+                groupNode.setArrowExpanded(true);
+                tagListBox.getChildren().addAll(groupNode.getNameNodes());
+            }
+        }
+    }
+    private Label createNameNode(String name, Color textColor, GroupNode groupNode) {
+        Label nameNode = NodeFactory.getLabel(name, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
+
+        nameNode.setTextFill(textColor);
+        nameNode.setAlignment(Pos.CENTER_LEFT);
+        nameNode.prefWidthProperty().bind(tagListBox.widthProperty());
+        nameNode.setPadding(new Insets(0, 0, 0, 50));
+        nameNode.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                changeNodeState(groupNode, nameNode);
+            } else if (event.getButton() == MouseButton.SECONDARY) {
+                infoObjectRCM.setTagObject(mainInfoList.getTagObject(groupNode.getText(), nameNode.getText()));
+                infoObjectRCM.show(nameNode, event);
+            }
+        });
+
+        return nameNode;
+    }
+
     public void onShown() {
         tagListScrollPane.lookup(".scroll-bar").setStyle("-fx-background-color: transparent;");
         tagListScrollPane.lookup(".increment-button").setStyle("-fx-background-color: transparent;");
@@ -268,7 +181,7 @@ public class TagListViewR extends VBox implements BaseNode, InstanceRepo {
 
     public void changeNodeState(GroupNode groupNode, Label nameNode) {
         TagObject tagObject = mainInfoList.getTagObject(groupNode.getText(), nameNode.getText());
-        if (nameNode.getTextFill().equals(ColorUtil.getTextColorPos()) || nameNode.getTextFill().equals(ColorUtil.getTextColorInt())) {
+        if (nameNode.getTextFill().equals(ColorUtil.getTextColorPos()) || nameNode.getTextFill().equals(ColorUtil.getTextColorShr())) {
             nameNode.setTextFill(ColorUtil.getTextColorDef());
             this.removeTagObjectFromSelection(tagObject);
         } else {

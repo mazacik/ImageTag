@@ -7,7 +7,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -20,6 +19,7 @@ import user_interface.factory.stage.InfoObjectEditStage;
 import user_interface.factory.util.ColorData;
 import user_interface.factory.util.ColorUtil;
 import user_interface.factory.util.enums.ColorType;
+import user_interface.scene.SceneUtil;
 import user_interface.singleton.BaseNode;
 
 import java.util.ArrayList;
@@ -30,6 +30,7 @@ public class TagListViewL extends VBox implements BaseNode, InstanceRepo {
     private final ScrollPane tagListScrollPane;
     private final ArrayList<String> expandedGroupsList;
 
+    private final Label nodeNoTags;
     private final Label nodeLimit;
     private final Label nodeReset;
 
@@ -40,10 +41,10 @@ public class TagListViewL extends VBox implements BaseNode, InstanceRepo {
         nodeTitle.setBorder(NodeFactory.getBorder(0, 0, 1, 0));
         nodeTitle.prefWidthProperty().bind(this.widthProperty());
 
-        nodeReset = NodeFactory.getLabel("Reset", colorDataSimple);
+        nodeNoTags = NodeFactory.getLabel("No Tags", colorDataSimple);
         nodeLimit = NodeFactory.getLabel("Limit", colorDataSimple);
-        LeftClickMenu.install(nodeTitle, Direction.RIGHT, nodeLimit, nodeReset);
-        Tooltip.install(nodeLimit, NodeFactory.getTooltip("Only shows images with no tags.\nCtrl + Click to specify the upper limit."));
+        nodeReset = NodeFactory.getLabel("Reset", colorDataSimple);
+        LeftClickMenu.install(nodeTitle, Direction.RIGHT, nodeNoTags, nodeLimit, nodeReset);
 
         Label btnNew = NodeFactory.getLabel("Create a new tag", colorDataSimple);
         btnNew.setBorder(NodeFactory.getBorder(0, 0, 1, 0));
@@ -67,13 +68,13 @@ public class TagListViewL extends VBox implements BaseNode, InstanceRepo {
 
         expandedGroupsList = new ArrayList<>();
 
-        this.setPrefWidth(CommonUtil.getUsableScreenWidth());
-        this.setMinWidth(CommonUtil.getUsableScreenWidth() / 10);
+        this.setPrefWidth(SceneUtil.getUsableScreenWidth());
+        this.setMinWidth(SceneUtil.getSidePanelMinWidth());
         this.getChildren().addAll(nodeTitle, btnNew, tagListScrollPane);
     }
 
     public void reload() {
-        nodeTitle.setText("Filter: " + filter.size());
+        nodeTitle.setText("Filter: " + filter.size() + " matches");
 
         ObservableList<Node> tagListNodes = tagListBox.getChildren();
         tagListNodes.clear();
@@ -82,7 +83,6 @@ public class TagListViewL extends VBox implements BaseNode, InstanceRepo {
         Color textColorPositive = ColorUtil.getTextColorPos();
         Color textColorNegative = ColorUtil.getTextColorNeg();
 
-        //todo this also probably needs a rework... someday2
         ArrayList<String> groupNames = mainInfoList.getGroups();
         for (String groupName : groupNames) {
             GroupNode groupNode;
@@ -187,6 +187,9 @@ public class TagListViewL extends VBox implements BaseNode, InstanceRepo {
         return expandedGroupsList;
     }
 
+    public Label getNodeNoTags() {
+        return nodeNoTags;
+    }
     public Label getNodeLimit() {
         return nodeLimit;
     }
