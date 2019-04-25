@@ -9,8 +9,6 @@ public class SceneUtil implements InstanceRepo {
     private static IntroScene introScene;
     private static MainScene mainScene;
 
-    private static double sidePanelPrefWidth = CommonUtil.getUsableScreenWidth() / 10;
-
     public static void createMainStage() {
         mainStage.setOnCloseRequest(event -> {
             settings.writeToDisk();

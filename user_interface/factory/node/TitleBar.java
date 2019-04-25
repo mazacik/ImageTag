@@ -11,7 +11,7 @@ import system.CommonUtil;
 import user_interface.factory.NodeFactory;
 import user_interface.factory.util.enums.ColorType;
 
-/* public */ class TitleBar extends BorderPane {
+public class TitleBar extends BorderPane {
     public TitleBar(Scene scene) {
         this(scene, "", true);
     }
