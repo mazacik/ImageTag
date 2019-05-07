@@ -76,7 +76,11 @@ public class TagListViewR extends VBox implements BaseNode, InstanceRepo {
 
         if (select.size() == 0) {
             if (target.getCurrentTarget() != null) {
-                nodeTitle.setText("Selection: " + target.getCurrentTarget().getName());
+                if (target.getCurrentTarget().getMergeID() != 0 && !tileView.getExpandedGroups().contains(target.getCurrentTarget().getMergeID())) {
+                    nodeTitle.setText("Selection: " + target.getCurrentTarget().getMergeGroup().size() + " file(s)");
+                } else {
+                    nodeTitle.setText("Selection: " + target.getCurrentTarget().getName());
+                }
             }
         } else {
             int hiddenTilesCount = 0;
