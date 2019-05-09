@@ -2,7 +2,7 @@ package settings;
 
 public enum SettingsEnum {
     //System
-    TILEVIEW_ICONSIZE("tileViewIconSize"),
+    TILEVIEW_THUMBSIZE("tileViewIconSize"),
     GLOBAL_PADDING("globalSpacing"),
     FONTSIZE("fontSize"),
 

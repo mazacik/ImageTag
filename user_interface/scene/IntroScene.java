@@ -120,6 +120,8 @@ public class IntroScene implements InstanceRepo {
             if (sourcePath.length() > 3 && (lastchar != '\\' || lastchar != '/')) {
                 sourcePath += "\\";
             }
+            //todo don't start loading automatically
+            // also add options like recursive search etc.
             startLoading(sourcePath);
         }
     }

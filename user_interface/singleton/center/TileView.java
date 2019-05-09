@@ -22,7 +22,7 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
     private Bounds customBounds;
 
     public TileView() {
-        final int galleryIconSize = settings.intValueOf(SettingsEnum.TILEVIEW_ICONSIZE);
+        final int galleryIconSize = settings.intValueOf(SettingsEnum.TILEVIEW_THUMBSIZE);
 
         tilePane.setPrefTileWidth(galleryIconSize);
         tilePane.setPrefTileHeight(galleryIconSize);
@@ -40,7 +40,7 @@ public class TileView extends ScrollPane implements BaseNode, InstanceRepo {
 
     public void adjustPrefColumns() {
         int prefWidth = (int) (mainStage.getWidth() - 2 * SceneUtil.getSidePanelMinWidth());
-        int prefColumns = prefWidth / settings.intValueOf(SettingsEnum.TILEVIEW_ICONSIZE);
+        int prefColumns = prefWidth / settings.intValueOf(SettingsEnum.TILEVIEW_THUMBSIZE);
         tilePane.setPrefColumns(prefColumns);
         this.setMinViewportWidth(tilePane.getPrefColumns() * tilePane.getPrefTileWidth() + (tilePane.getPrefColumns() - 1) * tilePane.getHgap() + 1);
     }

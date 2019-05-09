@@ -25,7 +25,7 @@ public class Settings implements InstanceRepo, Serializable {
     }
     private void setDefaults() {
         settingsList = new ArrayList<>();
-        settingsList.add(new Setting(SettingsEnum.TILEVIEW_ICONSIZE, 150, SettingType.SYSTEM));
+        settingsList.add(new Setting(SettingsEnum.TILEVIEW_THUMBSIZE, 150, SettingType.SYSTEM));
         settingsList.add(new Setting(SettingsEnum.GLOBAL_PADDING, 2, SettingType.SYSTEM));
         settingsList.add(new Setting(SettingsEnum.COLORMODE, 0, SettingType.USER));
         settingsList.add(new Setting(SettingsEnum.FONTSIZE, 14, SettingType.USER));

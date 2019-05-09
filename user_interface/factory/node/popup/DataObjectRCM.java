@@ -1,5 +1,6 @@
 package user_interface.factory.node.popup;
 
+import com.sun.jna.platform.FileUtils;
 import control.reload.Reload;
 import database.object.DataObject;
 import javafx.scene.Node;
@@ -91,7 +92,15 @@ public class DataObjectRCM extends RightClickMenu implements InstanceRepo {
     private void deleteDataObject(DataObject dataObject) {
         if (filter.contains(dataObject)) {
             String fullPath = settings.getCurrentDirectory() + dataObject.getName();
-            Desktop.getDesktop().moveToTrash(new File(fullPath));
+
+            FileUtils fo = FileUtils.getInstance();
+            if (fo.hasTrash()) {
+                try {
+                    fo.moveToTrash(new File[]{new File(fullPath)});
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
 
             tileView.getTilePane().getChildren().remove(dataObject.getBaseTile());
 

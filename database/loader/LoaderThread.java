@@ -5,7 +5,6 @@ import control.reload.Reload;
 import database.list.DataObjectList;
 import database.object.DataObject;
 import javafx.application.Platform;
-import system.CommonUtil;
 import system.InstanceRepo;
 
 import java.io.File;
@@ -16,7 +15,7 @@ import java.util.Date;
 public class LoaderThread extends Thread implements InstanceRepo {
     public void run() {
         initDirs();
-        ArrayList<File> fileList = CommonUtil.getValidFiles(LoaderUtil.getPathSource());
+        ArrayList<File> fileList = LoaderUtil.getValidFiles(LoaderUtil.getPathSource());
 
         try {
             mainDataList.addAll(mainDataList.readFromDisk());
@@ -35,7 +34,7 @@ public class LoaderThread extends Thread implements InstanceRepo {
         filter.addAll(mainDataList);
 
         if (mainDataList.size() > 0) target.set(mainDataList.get(0));
-      
+
         filter.setFilter(FilterTemplate.SHOW_EVERYTHING);
         reload.notifyChangeIn(Reload.Control.values());
         Platform.runLater(reload::doReload);
@@ -50,12 +49,12 @@ public class LoaderThread extends Thread implements InstanceRepo {
         File dirCache = new File(pathCache);
         if (!dirCache.exists()) {
             logger.debug(this, "creating cache directory: " + pathCache);
-            dirCache.mkdir();
+            dirCache.mkdirs();
         }
         File dirData = new File(pathData);
         if (!dirData.exists()) {
             logger.debug(this, "creating data directory: " + pathData);
-            dirData.mkdir();
+            dirData.mkdirs();
         }
     }
     private void createBackup() {

@@ -11,7 +11,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Window;
-import javafx.util.Duration;
 import system.CommonUtil;
 import user_interface.factory.node.IntroWindowCell;
 import user_interface.factory.util.ColorData;
@@ -84,7 +83,7 @@ public abstract class NodeFactory {
     public static Tooltip getTooltip(String text) {
         Tooltip t = new Tooltip(text);
         t.setFont(CommonUtil.getFont());
-        t.setShowDelay(new Duration(500));
+        //t.setShowDelay(new Duration(500));
         return t;
     }
     public static Border getBorder(int top, int right, int bottom, int left) {

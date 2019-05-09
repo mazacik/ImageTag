@@ -38,6 +38,8 @@ public class TagListViewREvent implements InstanceRepo {
             }
         });
         tagListViewR.getTfSearch().setOnKeyTyped(event -> {
+            event.consume();
+
             String actualText = tagListViewR.getActualText();
             TextField tfSearch = tagListViewR.getTfSearch();
 

@@ -1,7 +1,10 @@
 package database.object;
 
 import database.list.InfoObjectList;
+import database.loader.LoaderUtil;
 import system.CommonUtil;
+import system.FileTypeEnum;
+import system.InstanceRepo;
 import user_interface.singleton.center.BaseTile;
 
 import java.io.File;
@@ -36,6 +39,25 @@ public class DataObject implements Serializable {
             return mergedObjects;
         }
     }
+    public FileTypeEnum getFileType() {
+        for (String ext : LoaderUtil.getImageExtensions()) {
+            if (name.endsWith(ext)) {
+                return FileTypeEnum.IMAGE;
+            }
+        }
+        for (String ext : LoaderUtil.getGifExtensions()) {
+            if (name.endsWith(ext)) {
+                return FileTypeEnum.GIF;
+            }
+        }
+        for (String ext : LoaderUtil.getVideoExtensions()) {
+            if (name.endsWith(ext)) {
+                return FileTypeEnum.VIDEO;
+            }
+        }
+        InstanceRepo.logger.error(this, "file type not supported");
+        return null;
+    }
 
     public String getName() {
         return name;
@@ -43,19 +65,19 @@ public class DataObject implements Serializable {
     public int getMergeID() {
         return mergeID;
     }
-    public void setMergeID(int mergeID) {
-        this.mergeID = mergeID;
+    public InfoObjectList getInfoObjectList() {
+        return infoObjectList;
     }
     public BaseTile getBaseTile() {
         return baseTile;
-    }
-    public InfoObjectList getInfoObjectList() {
-        return infoObjectList;
     }
     public void setBaseTile(BaseTile baseTile) {
         this.baseTile = (baseTile != null) ? baseTile : new BaseTile(this, null);
     }
     public void setInfoObjectList(InfoObjectList infoObjectList) {
         this.infoObjectList = infoObjectList;
+    }
+    public void setMergeID(int mergeID) {
+        this.mergeID = mergeID;
     }
 }

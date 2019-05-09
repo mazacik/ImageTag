@@ -1,5 +1,6 @@
 package user_interface.event;
 
+import database.loader.LoaderUtil;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -7,8 +8,6 @@ import system.CommonUtil;
 import system.InstanceRepo;
 import user_interface.factory.node.popup.LeftClickMenu;
 import user_interface.factory.stage.UserSettingsStage;
-
-import java.io.IOException;
 
 import java.io.IOException;
 
@@ -42,7 +41,7 @@ public class TopMenuEvent implements InstanceRepo {
     private void onAction_menuImport() {
         topMenu.getNodeImport().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                CommonUtil.importFiles();
+                LoaderUtil.importFiles();
                 hideLeftClickMenus();
             }
         });

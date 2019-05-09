@@ -1,7 +1,5 @@
 package system;
 
-import database.list.DataObjectList;
-import database.loader.LoaderUtil;
 import database.object.DataObject;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
@@ -27,11 +25,7 @@ import user_interface.scene.MainScene;
 import user_interface.singleton.center.BaseTile;
 import user_interface.singleton.side.GroupNode;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 public abstract class CommonUtil implements InstanceRepo {
@@ -187,37 +181,6 @@ public abstract class CommonUtil implements InstanceRepo {
     }
     public static int getPadding() {
         return settings.intValueOf(SettingsEnum.GLOBAL_PADDING);
-    }
-
-    public static ArrayList<File> getValidFiles(String directory) {
-        return new ArrayList<>(Arrays.asList(new File(directory).listFiles((dir, name) -> {
-            String _name = name.toLowerCase();
-            return _name.endsWith(".jpg") || _name.endsWith(".jpeg") || _name.endsWith(".png");
-        })));
-    }
-    public static void importFiles() {
-        String PATH_SOURCE = settings.getCurrentDirectory();
-        ArrayList<String> importDirectories = CommonUtil.settings.getImportDirList();
-
-        DataObjectList newDataObjects = new DataObjectList();
-        importDirectories.forEach(dir -> {
-            for (File file : getValidFiles(dir)) {
-                try {
-                    //Files.copy(Paths.get(file.getAbsolutePath()), Paths.get((PATH_SOURCE) + file.getName()));
-                    Files.move(Paths.get(file.getAbsolutePath()), Paths.get((PATH_SOURCE) + file.getName()));
-                    newDataObjects.add(new DataObject(file));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        LoaderUtil.readImageCache(newDataObjects);
-        mainDataList.addAll(newDataObjects);
-        mainDataList.sort();
-        filter.apply();
-        //reload.notifyChangeIn(Reload.Control.values());
-        reload.doReload();
     }
 
     public static Image textToImage(String text) {
