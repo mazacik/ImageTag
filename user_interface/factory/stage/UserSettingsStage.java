@@ -28,7 +28,7 @@ public class UserSettingsStage extends Stage {
 
         CommonUtil.settings.getSettingsList().forEach(setting -> {
             if (setting.getSettingType() == SettingType.USER) {
-                Label label = NodeFactory.getLabel(setting.getSettingsEnum().getValue(), ColorType.DEF, ColorType.DEF);
+                Label label = NodeFactory.getLabel(setting.getSettingsEnum().toString(), ColorType.DEF, ColorType.DEF);
                 labels.add(label);
                 TextField textField = new TextField(String.valueOf(setting.getValue()));
                 textField.setFont(CommonUtil.getFont());

@@ -42,7 +42,7 @@ public class BaseTileEvent implements InstanceRepo {
     private void onLeftClick(BaseTile baseTile, MouseEvent event) {
         DataObject dataObject = baseTile.getParentDataObject();
 
-        int tileSize = settings.intValueOf(SettingsEnum.TILEVIEW_THUMBSIZE);
+        int tileSize = settings.intValueOf(SettingsEnum.TILEVIEW_ICONSIZE);
         if (event.getX() > tileSize - BaseTile.getEffectGroupSize() && event.getY() < BaseTile.getEffectGroupSize()) {
             onGroupButtonClick(dataObject);
         } else {

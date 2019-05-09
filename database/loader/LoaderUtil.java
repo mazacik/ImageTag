@@ -25,7 +25,7 @@ import java.util.Objects;
 
 public class LoaderUtil implements InstanceRepo {
     private static final String pathSource = settings.getCurrentDirectory();
-    private static final String pathCache = pathSource + "cache" + File.separator + settings.intValueOf(SettingsEnum.TILEVIEW_THUMBSIZE) + "px" + File.separator;
+    private static final String pathCache = pathSource + "cache" + File.separator + settings.intValueOf(SettingsEnum.TILEVIEW_ICONSIZE) + "px" + File.separator;
     private static final String pathData = pathSource + "data" + File.separator;
     private static String[] imageExtensions = new String[]{".jpg", ".jpeg", ".png"};
     private static String[] gifExtensions = new String[]{".gif"};
@@ -87,7 +87,7 @@ public class LoaderUtil implements InstanceRepo {
             currentObjectCacheFile.createNewFile();
             String currentObjectName = dataObject.getName();
             String currentObjectFilePath = "file:" + LoaderUtil.getPathSource() + currentObjectName;
-            int galleryIconSizeMax = settings.intValueOf(SettingsEnum.TILEVIEW_THUMBSIZE);
+            int galleryIconSizeMax = settings.intValueOf(SettingsEnum.TILEVIEW_ICONSIZE);
             thumbnail = new Image(currentObjectFilePath, galleryIconSizeMax, galleryIconSizeMax, false, true);
             String currentObjectExtension = FilenameUtils.getExtension(currentObjectName);
             BufferedImage currentObjectBufferedImage = SwingFXUtils.fromFXImage(thumbnail, null);
@@ -103,7 +103,7 @@ public class LoaderUtil implements InstanceRepo {
 
             String currentObjectName = dataObject.getName();
             String currentObjectFilePath = "file:" + LoaderUtil.getPathSource() + currentObjectName;
-            int thumbSize = settings.intValueOf(SettingsEnum.TILEVIEW_THUMBSIZE);
+            int thumbSize = settings.intValueOf(SettingsEnum.TILEVIEW_ICONSIZE);
 
             GifDecoder gifDecoder = new GifDecoder();
             gifDecoder.read(currentObjectFilePath);
@@ -129,7 +129,7 @@ public class LoaderUtil implements InstanceRepo {
             currentObjectCacheFile.createNewFile();
             String currentObjectName = dataObject.getName();
             String currentObjectFilePath = "file:" + LoaderUtil.getPathSource() + currentObjectName;
-            int galleryIconSizeMax = settings.intValueOf(SettingsEnum.TILEVIEW_THUMBSIZE);
+            int galleryIconSizeMax = settings.intValueOf(SettingsEnum.TILEVIEW_ICONSIZE);
             thumbnail = new Image(currentObjectFilePath, galleryIconSizeMax, galleryIconSizeMax, false, true);
             String currentObjectExtension = FilenameUtils.getExtension(currentObjectName);
             BufferedImage currentObjectBufferedImage = SwingFXUtils.fromFXImage(thumbnail, null);
