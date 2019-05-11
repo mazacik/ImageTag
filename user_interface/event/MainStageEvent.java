@@ -26,7 +26,7 @@ public class MainStageEvent implements InstanceRepo {
                     reload.doReload();
                     break;
                 case F:
-                    CommonUtil.swapDisplayMode();
+                    CommonUtil.swapViewMode();
                     break;
                 case W:
                 case A:

@@ -11,14 +11,14 @@ public class FullViewEvent implements InstanceRepo {
     }
 
     private void onMouseClick() {
-        fullView.setOnMouseClicked(event -> {
+        mediaView.setOnMouseClicked(event -> {
             switch (event.getButton()) {
                 case PRIMARY:
-                    fullView.requestFocus();
+                    mediaView.requestFocus();
                     dataObjectRCM.hide();
                     break;
                 case SECONDARY:
-                    dataObjectRCM.show(fullView, event.getScreenX(), event.getScreenY());
+                    dataObjectRCM.show(mediaView, event.getScreenX(), event.getScreenY());
                     break;
                 default:
                     break;
@@ -26,9 +26,9 @@ public class FullViewEvent implements InstanceRepo {
         });
     }
     private void onResize() {
-        ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) -> fullView.reload();
+        ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) -> mediaView.reload();
 
-        final Canvas canvas = fullView.getCanvas();
+        final Canvas canvas = mediaView.getCanvas();
         canvas.widthProperty().addListener(previewPaneSizeListener);
         canvas.heightProperty().addListener(previewPaneSizeListener);
     }

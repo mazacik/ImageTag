@@ -1,9 +1,9 @@
 package user_interface.event;
 
-import database.loader.LoaderUtil;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import loader.LoaderUtil;
 import system.CommonUtil;
 import system.InstanceRepo;
 import user_interface.factory.node.popup.LeftClickMenu;
@@ -93,7 +93,7 @@ public class TopMenuEvent implements InstanceRepo {
     private void onAction_menuFullView() {
         topMenu.getNodeFullview().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                CommonUtil.swapDisplayMode();
+                CommonUtil.swapViewMode();
             }
         });
     }

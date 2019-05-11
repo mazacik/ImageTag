@@ -82,7 +82,7 @@ public class LeftClickMenu extends Popup {
                     y -= border.getInsets().getBottom();
                 }
                 break;
-            case BELOW:
+            case DOWN:
                 x = rootBounds.getMinX();
                 y = rootBounds.getMaxY();
                 if (border != null) {

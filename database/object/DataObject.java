@@ -1,7 +1,8 @@
 package database.object;
 
 import database.list.InfoObjectList;
-import database.loader.LoaderUtil;
+import loader.DirectoryUtil;
+import loader.FileSupportUtil;
 import system.CommonUtil;
 import system.FileTypeEnum;
 import system.InstanceRepo;
@@ -15,12 +16,18 @@ public class DataObject implements Serializable {
     private String name;
     private int mergeID;
     private InfoObjectList infoObjectList;
+
+    private transient String sourcePath;
+    private transient String cachePath;
     private transient BaseTile baseTile;
 
     public DataObject(File file) {
         this.name = file.getName();
         this.mergeID = 0;
         this.infoObjectList = new InfoObjectList();
+
+        this.sourcePath = file.getAbsolutePath();
+        this.cachePath = DirectoryUtil.getPathCache() + this.name + ".jpg";
     }
 
     public void generateTileEffect() {
@@ -40,17 +47,17 @@ public class DataObject implements Serializable {
         }
     }
     public FileTypeEnum getFileType() {
-        for (String ext : LoaderUtil.getImageExtensions()) {
+        for (String ext : FileSupportUtil.getSprtImageExt()) {
             if (name.endsWith(ext)) {
                 return FileTypeEnum.IMAGE;
             }
         }
-        for (String ext : LoaderUtil.getGifExtensions()) {
+        for (String ext : FileSupportUtil.getSprtGifExt()) {
             if (name.endsWith(ext)) {
                 return FileTypeEnum.GIF;
             }
         }
-        for (String ext : LoaderUtil.getVideoExtensions()) {
+        for (String ext : FileSupportUtil.getSprtVideoExt()) {
             if (name.endsWith(ext)) {
                 return FileTypeEnum.VIDEO;
             }
@@ -68,9 +75,17 @@ public class DataObject implements Serializable {
     public InfoObjectList getInfoObjectList() {
         return infoObjectList;
     }
+
     public BaseTile getBaseTile() {
         return baseTile;
     }
+    public String getSourcePath() {
+        return sourcePath;
+    }
+    public void setSourcePath(String sourcePath) {
+        this.sourcePath = sourcePath;
+    }
+
     public void setBaseTile(BaseTile baseTile) {
         this.baseTile = (baseTile != null) ? baseTile : new BaseTile(this, null);
     }
@@ -79,5 +94,11 @@ public class DataObject implements Serializable {
     }
     public void setMergeID(int mergeID) {
         this.mergeID = mergeID;
+    }
+    public String getCachePath() {
+        return cachePath;
+    }
+    public void setCachePath(String cachePath) {
+        this.cachePath = cachePath;
     }
 }

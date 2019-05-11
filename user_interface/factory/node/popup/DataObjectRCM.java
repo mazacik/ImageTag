@@ -27,10 +27,10 @@ public class DataObjectRCM extends RightClickMenu implements InstanceRepo {
         Label nodeOpenInPaint = NodeFactory.getLabel("Open in MS Paint", colorData);
         Label nodeCopyName = NodeFactory.getLabel("Copy Name", colorData);
         Label nodeCopyPath = NodeFactory.getLabel("Copy Path", colorData);
-        Label nodeDelete = NodeFactory.getLabel("Delete File", colorData);
+        Label nodeDelete = NodeFactory.getLabel("Delete", colorData);
 
         nodeOpen.setOnMouseClicked(event -> {
-            String fullPath = settings.getCurrentDirectory() + target.getCurrentTarget().getName();
+            String fullPath = target.getCurrentTarget().getSourcePath();
             try {
                 Desktop.getDesktop().open(new File(fullPath));
             } catch (IOException e) {
@@ -77,8 +77,6 @@ public class DataObjectRCM extends RightClickMenu implements InstanceRepo {
             for (Node node : this.getChildren()) {
                 ((Label) node).setPrefWidth(width);
             }
-
-            nodeDelete.setText("Delete " + select.size() + " file(s)");
         });
     }
 

@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 import settings.Settings;
 import user_interface.factory.node.popup.DataObjectRCM;
 import user_interface.factory.node.popup.InfoObjectRCM;
-import user_interface.singleton.center.FullView;
+import user_interface.singleton.center.MediaView;
 import user_interface.singleton.center.TileView;
 import user_interface.singleton.side.TagListViewL;
 import user_interface.singleton.side.TagListViewR;
@@ -24,7 +24,7 @@ public interface InstanceRepo {
 
     TopMenu topMenu = new TopMenu();
     TileView tileView = new TileView();
-    FullView fullView = new FullView();
+    MediaView mediaView = new MediaView();
     TagListViewL tagListViewL = new TagListViewL();
     TagListViewR tagListViewR = new TagListViewR();
     Stage mainStage = new Stage();

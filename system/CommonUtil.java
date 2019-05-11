@@ -203,7 +203,7 @@ public abstract class CommonUtil implements InstanceRepo {
         return img;
     }
 
-    public static void swapDisplayMode() {
+    public static void swapViewMode() {
         MainScene.swapViewMode();
     }
     public static boolean isFullView() {

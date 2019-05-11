@@ -4,6 +4,7 @@ import control.reload.Reload;
 import database.object.DataObject;
 import javafx.scene.input.KeyCode;
 import system.InstanceRepo;
+import user_interface.factory.node.popup.Direction;
 
 public class Target implements InstanceRepo {
     private DataObject currentTarget;
@@ -31,7 +32,9 @@ public class Target implements InstanceRepo {
         tileView.adjustViewportToCurrentTarget();
         reload.notifyChangeIn(Reload.Control.TARGET);
     }
-    public void move(KeyCode keyCode) {
+    public void move(Direction direction) {
+        if (currentTarget == null) return;
+
         int columnCount = tileView.getColumnCount();
         int dataCountFilter = tileView.getVisibleTiles().size();
 
@@ -47,14 +50,14 @@ public class Target implements InstanceRepo {
         }
         int newTargetPosition = currentTargetPosition;
 
-        switch (keyCode) {
-            case W:
+        switch (direction) {
+            case UP:
                 if (currentTargetPosition >= columnCount) newTargetPosition -= columnCount;
                 break;
-            case A:
+            case LEFT:
                 if (newTargetPosition > 0) newTargetPosition -= 1;
                 break;
-            case S:
+            case DOWN:
                 if (currentTargetPosition < dataCountFilter - (columnCount - (tileView.getRowCount() * columnCount - dataCountFilter))) {
                     newTargetPosition += columnCount;
                     if (newTargetPosition > dataCountFilter - 1) {
@@ -62,12 +65,28 @@ public class Target implements InstanceRepo {
                     }
                 }
                 break;
-            case D:
+            case RIGHT:
                 if (newTargetPosition < dataCountFilter - 1) newTargetPosition += 1;
                 break;
         }
 
         this.set(tileView.getVisibleDataObjects().get(newTargetPosition));
+    }
+    public void move(KeyCode keyCode) {
+        switch (keyCode) {
+            case W:
+                move(Direction.UP);
+                break;
+            case A:
+                move(Direction.LEFT);
+                break;
+            case S:
+                move(Direction.DOWN);
+                break;
+            case D:
+                move(Direction.RIGHT);
+                break;
+        }
     }
 
     public void storePosition() {

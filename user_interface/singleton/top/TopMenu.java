@@ -30,14 +30,14 @@ public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
         nodeImport = NodeFactory.getLabel("Import", colorData);
         nodeSettings = NodeFactory.getLabel("Settings", colorData);
         nodeExit = NodeFactory.getLabel("Exit", colorData);
-        LeftClickMenu.install(nodeFile, Direction.BELOW, nodeSave, nodeImport, nodeSettings, NodeFactory.getSeparator(), nodeExit);
+        LeftClickMenu.install(nodeFile, Direction.DOWN, nodeSave, nodeImport, nodeSettings, NodeFactory.getSeparator(), nodeExit);
 
         Label nodeTools = NodeFactory.getLabel("Tools", colorData);
         nodeInpaint = NodeFactory.getLabel("Inpaint", colorData);
-        LeftClickMenu.install(nodeTools, Direction.BELOW, nodeInpaint);
+        LeftClickMenu.install(nodeTools, Direction.DOWN, nodeInpaint);
 
         nodeRandom = NodeFactory.getLabel("Random", colorData);
-        nodeFullview = NodeFactory.getLabel("FullView", colorData);
+        nodeFullview = NodeFactory.getLabel("MediaView", colorData);
         HBox hBoxTools = NodeFactory.getHBox(ColorType.DEF, nodeRandom, nodeFullview);
         hBoxTools.setBorder(NodeFactory.getBorder(0, 1, 0, 1));
         NodeFactory.addNodeToManager(hBoxTools, ColorType.DEF);

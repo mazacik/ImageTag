@@ -10,7 +10,7 @@ public class Reload implements InstanceRepo {
     private ArrayList<BaseNode> queue;
 
     public Reload() {
-        this.subscribe(fullView
+        this.subscribe(mediaView
                 , Control.TARGET
         );
         this.subscribe(tagListViewL

@@ -45,23 +45,20 @@ public class MainScene implements InstanceRepo {
     }
 
     public static void swapViewMode() {
-        if (isFullView()) {
-            int nodeIndex = views.indexOf(fullView);
-            if (nodeIndex != -1) {
-                views.set(nodeIndex, tileView);
-                tileView.adjustViewportToCurrentTarget();
-                tileView.requestFocus();
+        if (views.contains(mediaView)) {
+            if (mediaView.getVideoPlayer().isPlaying()) {
+                mediaView.getVideoPlayer().pause();
             }
-        } else {
-            int nodeIndex = views.indexOf(tileView);
-            if (nodeIndex != -1) {
-                views.set(nodeIndex, fullView);
-                fullView.reload();
-                fullView.requestFocus();
-            }
+            views.set(views.indexOf(mediaView), tileView);
+            tileView.adjustViewportToCurrentTarget();
+            tileView.requestFocus();
+        } else if (views.contains(tileView)) {
+            views.set(views.indexOf(tileView), mediaView);
+            mediaView.reload();
+            mediaView.requestFocus();
         }
     }
     public static boolean isFullView() {
-        return views.contains(fullView);
+        return views.contains(mediaView);
     }
 }

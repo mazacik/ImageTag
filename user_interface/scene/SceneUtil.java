@@ -33,6 +33,7 @@ public class SceneUtil implements InstanceRepo {
     }
     public static void showMainScene() {
         mainStage.setOnCloseRequest(event -> {
+            mediaView.getVideoPlayer().dispose();
             settings.writeToDisk();
             mainDataList.writeToDisk();
             logger.debug(mainStage, "application exit");

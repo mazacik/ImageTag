@@ -1,10 +1,11 @@
-package database.loader;
+package loader;
 
 import control.filter.FilterTemplate;
 import control.reload.Reload;
 import database.list.DataObjectList;
 import database.object.DataObject;
 import javafx.application.Platform;
+import loader.cache.CacheReader;
 import system.InstanceRepo;
 
 import java.io.File;
@@ -15,7 +16,7 @@ import java.util.Date;
 public class LoaderThread extends Thread implements InstanceRepo {
     public void run() {
         initDirs();
-        ArrayList<File> fileList = LoaderUtil.getValidFiles(LoaderUtil.getPathSource());
+        ArrayList<File> fileList = LoaderUtil.getSupportedFiles(DirectoryUtil.getPathSource());
 
         try {
             mainDataList.addAll(mainDataList.readFromDisk());
@@ -25,8 +26,11 @@ public class LoaderThread extends Thread implements InstanceRepo {
             createDatabase(fileList);
         }
 
-        checkCache(fileList);
-        LoaderUtil.readImageCache(mainDataList);
+        checkDatabase(fileList);
+
+        LoaderUtil.initDataObjectPaths(mainDataList, fileList);
+
+        CacheReader.readCache(mainDataList);
 
         mainDataList.sort();
         mainInfoList.initialize();
@@ -43,8 +47,8 @@ public class LoaderThread extends Thread implements InstanceRepo {
     private void initDirs() {
         logger.debug(this, "checking directories");
 
-        String pathCache = LoaderUtil.getPathCache();
-        String pathData = LoaderUtil.getPathData();
+        String pathCache = DirectoryUtil.getPathCache();
+        String pathData = DirectoryUtil.getPathData();
 
         File dirCache = new File(pathCache);
         if (!dirCache.exists()) {
@@ -58,7 +62,7 @@ public class LoaderThread extends Thread implements InstanceRepo {
         }
     }
     private void createBackup() {
-        String dataDir = LoaderUtil.getPathData();
+        String dataDir = DirectoryUtil.getPathData();
         String backupPath = dataDir + "backup_" + new Date().toString() + ".json";
         String currentDataPath = dataDir + "data.json";
 
@@ -78,7 +82,7 @@ public class LoaderThread extends Thread implements InstanceRepo {
             mainDataList.add(new DataObject(file));
         }
     }
-    private void checkCache(ArrayList<File> fileList) {
+    private void checkDatabase(ArrayList<File> fileList) {
         logger.debug(this, "validating database");
         ArrayList<String> dataObjectNames = new ArrayList<>();
         ArrayList<String> fileListNames = new ArrayList<>();
