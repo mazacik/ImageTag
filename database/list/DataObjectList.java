@@ -1,25 +1,38 @@
 package database.list;
 
+import control.reload.Reload;
 import database.object.DataObject;
 import database.object.TagObject;
-import system.InstanceRepo;
+import system.Instances;
 
 import java.util.ArrayList;
 
-public class DataObjectList extends ArrayList<DataObject> implements InstanceRepo {
+public class DataObjectList extends ArrayList<DataObject> implements Instances {
+    public boolean add(DataObject dataObject) {
+        if (super.add(dataObject)) {
+            reload.notifyChangeIn(Reload.Control.FILTER);
+            return true;
+        }
+        return false;
+    }
     public boolean setAll(DataObjectList dataObjects) {
         this.clear();
+        reload.notifyChangeIn(Reload.Control.FILTER);
         return this.addAll(dataObjects);
     }
+    public void clear() {
+        super.clear();
+        reload.notifyChangeIn(Reload.Control.FILTER);
+    }
 
-    public InfoObjectList getIntersectingTags() {
-        if (this.size() < 1) return new InfoObjectList();
+    public TagList getIntersectingTags() {
+        if (this.size() < 1) return new TagList();
 
-        InfoObjectList intersectingTags = new InfoObjectList();
+        TagList intersectingTags = new TagList();
         DataObject lastObject = this.get(this.size() - 1);
-        for (TagObject tagObject : this.get(0).getInfoObjectList()) {
+        for (TagObject tagObject : this.get(0).getTagList()) {
             for (DataObject dataObject : this) {
-                if (dataObject.getInfoObjectList().contains(tagObject)) {
+                if (dataObject.getTagList().contains(tagObject)) {
                     if (dataObject.equals(lastObject)) {
                         intersectingTags.add(tagObject);
                     }
@@ -28,12 +41,12 @@ public class DataObjectList extends ArrayList<DataObject> implements InstanceRep
         }
         return intersectingTags;
     }
-    public InfoObjectList getSharedTags() {
-        if (this.size() < 1) return new InfoObjectList();
+    public TagList getSharedTags() {
+        if (this.size() < 1) return new TagList();
 
-        InfoObjectList sharedTags = new InfoObjectList();
+        TagList sharedTags = new TagList();
         for (DataObject dataObject : this) {
-            for (TagObject tagObject : dataObject.getInfoObjectList()) {
+            for (TagObject tagObject : dataObject.getTagList()) {
                 if (!sharedTags.contains(tagObject)) {
                     sharedTags.add(tagObject);
                 }

@@ -1,28 +1,17 @@
 package user_interface.scene;
 
-import system.CommonUtil;
-import system.InstanceRepo;
+import system.Instances;
 
-import java.awt.*;
-
-public class SceneUtil implements InstanceRepo {
+public class SceneUtil implements Instances {
     private static IntroScene introScene;
+    private static ProjectScene projectScene;
     private static MainScene mainScene;
-
-    public static void createMainStage() {
-        mainStage.setOnCloseRequest(event -> {
-            settings.writeToDisk();
-            logger.debug(mainStage, "application exit");
-        });
-
-        CommonUtil.updateNodeProperties();
-    }
-    public static void showMainStage() {
-        mainStage.show();
-    }
 
     public static void createIntroScene() {
         introScene = new IntroScene();
+    }
+    public static void createProjectScene() {
+        projectScene = new ProjectScene();
     }
     public static void createMainScene() {
         mainScene = new MainScene();
@@ -30,6 +19,10 @@ public class SceneUtil implements InstanceRepo {
 
     public static void showIntroScene() {
         introScene.show();
+    }
+    public static void showProjectScene() {
+        createProjectScene();
+        projectScene.show();
     }
     public static void showMainScene() {
         mainStage.setOnCloseRequest(event -> {
@@ -39,16 +32,5 @@ public class SceneUtil implements InstanceRepo {
             logger.debug(mainStage, "application exit");
         });
         mainScene.show();
-    }
-
-    public static double getSidePanelMinWidth() {
-        return getUsableScreenWidth() / 10;
-    }
-
-    public static double getUsableScreenWidth() {
-        return GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getWidth();
-    }
-    public static double getUsableScreenHeight() {
-        return GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getHeight();
     }
 }

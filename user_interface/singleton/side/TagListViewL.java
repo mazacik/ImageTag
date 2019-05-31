@@ -1,53 +1,52 @@
 package user_interface.singleton.side;
 
+import control.filter.FilterManager;
 import database.object.TagObject;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import system.CommonUtil;
-import system.InstanceRepo;
-import user_interface.factory.NodeFactory;
-import user_interface.factory.node.popup.Direction;
-import user_interface.factory.node.popup.LeftClickMenu;
+import system.Direction;
+import system.Instances;
+import user_interface.factory.NodeUtil;
+import user_interface.factory.base.TextNode;
+import user_interface.factory.menu.ClickMenuLeft;
 import user_interface.factory.stage.InfoObjectEditStage;
 import user_interface.factory.util.ColorData;
 import user_interface.factory.util.ColorUtil;
 import user_interface.factory.util.enums.ColorType;
-import user_interface.scene.SceneUtil;
 import user_interface.singleton.BaseNode;
+import user_interface.singleton.utils.SizeUtil;
 
 import java.util.ArrayList;
 
-public class TagListViewL extends VBox implements BaseNode, InstanceRepo {
-    private final Label nodeTitle;
+public class TagListViewL extends VBox implements BaseNode, Instances {
+    private final TextNode nodeTitle;
     private final VBox tagListBox;
     private final ScrollPane tagListScrollPane;
     private final ArrayList<String> expandedGroupsList;
 
-    private final Label nodeNoTags;
-    private final Label nodeLimit;
-    private final Label nodeReset;
+    private final TextNode nodeSettings;
+    private final TextNode nodeReset;
 
     public TagListViewL() {
         ColorData colorDataSimple = new ColorData(ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
 
-        nodeTitle = NodeFactory.getLabel("", colorDataSimple);
-        nodeTitle.setBorder(NodeFactory.getBorder(0, 0, 1, 0));
+        nodeTitle = new TextNode("", colorDataSimple);
+        nodeTitle.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
         nodeTitle.prefWidthProperty().bind(this.widthProperty());
 
-        nodeNoTags = NodeFactory.getLabel("No Tags", colorDataSimple);
-        nodeLimit = NodeFactory.getLabel("Limit", colorDataSimple);
-        nodeReset = NodeFactory.getLabel("Reset", colorDataSimple);
-        LeftClickMenu.install(nodeTitle, Direction.RIGHT, nodeNoTags, nodeLimit, nodeReset);
+        nodeSettings = new TextNode("Settings", colorDataSimple);
+        nodeReset = new TextNode("Reset", colorDataSimple);
+        ClickMenuLeft.install(nodeTitle, Direction.RIGHT, nodeSettings, nodeReset);
 
-        Label btnNew = NodeFactory.getLabel("Create a new tag", colorDataSimple);
-        btnNew.setBorder(NodeFactory.getBorder(0, 0, 1, 0));
+        TextNode btnNew = new TextNode("Create a new tag", colorDataSimple);
+        btnNew.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
         btnNew.prefWidthProperty().bind(this.widthProperty());
         btnNew.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
@@ -57,23 +56,23 @@ public class TagListViewL extends VBox implements BaseNode, InstanceRepo {
             }
         });
 
-        tagListBox = NodeFactory.getVBox(ColorType.DEF);
+        tagListBox = NodeUtil.getVBox(ColorType.DEF);
         tagListScrollPane = new ScrollPane();
         tagListScrollPane.setContent(tagListBox);
         tagListScrollPane.setFitToWidth(true);
         tagListScrollPane.setFitToHeight(true);
         tagListScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         tagListScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        NodeFactory.addNodeToManager(tagListScrollPane, ColorType.DEF);
+        NodeUtil.addToManager(tagListScrollPane, ColorType.DEF);
 
         expandedGroupsList = new ArrayList<>();
 
-        this.setPrefWidth(SceneUtil.getUsableScreenWidth());
-        this.setMinWidth(SceneUtil.getSidePanelMinWidth());
+        this.setPrefWidth(SizeUtil.getUsableScreenWidth());
+        this.setMinWidth(SizeUtil.getMinWidthSideLists());
         this.getChildren().addAll(nodeTitle, btnNew, tagListScrollPane);
     }
 
-    public void reload() {
+    public boolean reload() {
         nodeTitle.setText("Filter: " + filter.size() + " matches");
 
         ObservableList<Node> tagListNodes = tagListBox.getChildren();
@@ -87,16 +86,16 @@ public class TagListViewL extends VBox implements BaseNode, InstanceRepo {
         for (String groupName : groupNames) {
             GroupNode groupNode;
             if (filter.isGroupWhitelisted(groupName)) {
-                groupNode = NodeFactory.getGroupNode(this, groupName, textColorPositive);
+                groupNode = NodeUtil.getGroupNode(this, groupName, textColorPositive);
             } else if (filter.isGroupBlacklisted(groupName)) {
-                groupNode = NodeFactory.getGroupNode(this, groupName, textColorNegative);
+                groupNode = NodeUtil.getGroupNode(this, groupName, textColorNegative);
             } else {
-                groupNode = NodeFactory.getGroupNode(this, groupName, textColorDefault);
+                groupNode = NodeUtil.getGroupNode(this, groupName, textColorDefault);
             }
             groupNode.prefWidthProperty().bind(tagListBox.widthProperty());
 
             for (String tagName : mainInfoList.getNames(groupName)) {
-                Label nameNode = NodeFactory.getLabel(tagName, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
+                TextNode nameNode = new TextNode(tagName, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
 
                 if (filter.isTagObjectWhitelisted(groupName, tagName)) {
                     nameNode.setTextFill(textColorPositive);
@@ -114,8 +113,9 @@ public class TagListViewL extends VBox implements BaseNode, InstanceRepo {
                         reload.doReload();
                         CommonUtil.updateNodeProperties(this.tagListBox);
                     } else if (event.getButton() == MouseButton.SECONDARY) {
-                        infoObjectRCM.setTagObject(mainInfoList.getTagObject(groupNode.getText(), nameNode.getText()));
-                        infoObjectRCM.show(nameNode, event);
+                        clickMenuInfo.setGroup(groupNode.getText());
+                        clickMenuInfo.setName(nameNode.getText());
+                        clickMenuInfo.show(nameNode, event);
                     }
                 });
                 groupNode.getNameNodes().add(nameNode);
@@ -128,16 +128,10 @@ public class TagListViewL extends VBox implements BaseNode, InstanceRepo {
             }
         }
         CommonUtil.updateNodeProperties(tagListBox);
-    }
-    public void onShown() {
-        tagListScrollPane.lookup(".scroll-bar").setStyle("-fx-background-color: transparent;");
-        tagListScrollPane.lookup(".increment-button").setStyle("-fx-background-color: transparent;");
-        tagListScrollPane.lookup(".decrement-button").setStyle("-fx-background-color: transparent;");
-        tagListScrollPane.lookup(".thumb").setStyle("-fx-background-color: gray; -fx-background-insets: 0 4 0 4;");
-        CommonUtil.updateNodeProperties(tagListBox);
+        return true;
     }
 
-    public void changeNodeState(GroupNode groupNode, Label nameNode) {
+    public void changeNodeState(GroupNode groupNode, TextNode nameNode) {
         if (nameNode == null) {
             String groupName = groupNode.getText();
             Color textColor;
@@ -177,9 +171,12 @@ public class TagListViewL extends VBox implements BaseNode, InstanceRepo {
                 nameNode.setTextFill(ColorUtil.getTextColorPos());
             }
         }
-        filter.apply();
+        FilterManager.apply();
     }
 
+    public ScrollPane getTagListScrollPane() {
+        return tagListScrollPane;
+    }
     public VBox getTagListBox() {
         return tagListBox;
     }
@@ -187,13 +184,10 @@ public class TagListViewL extends VBox implements BaseNode, InstanceRepo {
         return expandedGroupsList;
     }
 
-    public Label getNodeNoTags() {
-        return nodeNoTags;
+    public TextNode getNodeSettings() {
+        return nodeSettings;
     }
-    public Label getNodeLimit() {
-        return nodeLimit;
-    }
-    public Label getNodeReset() {
+    public TextNode getNodeReset() {
         return nodeReset;
     }
 }

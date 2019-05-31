@@ -1,0 +1,93 @@
+package user_interface.singleton.top;
+
+import javafx.scene.input.MouseButton;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import loader.LoaderUtil;
+import system.CommonUtil;
+import system.Instances;
+import user_interface.factory.menu.ClickMenuLeft;
+import user_interface.factory.stage.UserSettingsStage;
+
+import java.io.IOException;
+
+public class TopMenuEvent implements Instances {
+    public TopMenuEvent() {
+        onMouseClick();
+
+        onAction_menuSave();
+        onAction_menuImport();
+        onAction_menuSettings();
+        onAction_menuExit();
+
+        onAction_menuInpaint();
+
+        onAction_menuRandom();
+        onAction_menuFullView();
+    }
+
+    private void onMouseClick() {
+        topMenu.setOnMouseClicked(event -> topMenu.requestFocus());
+    }
+
+    private void onAction_menuSave() {
+        topMenu.getNodeSave().setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                mainDataList.writeToDisk();
+                ClickMenuLeft.hideAll();
+            }
+        });
+    }
+    private void onAction_menuImport() {
+        topMenu.getNodeImport().setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                LoaderUtil.importFiles();
+                ClickMenuLeft.hideAll();
+            }
+        });
+    }
+    private void onAction_menuSettings() {
+        topMenu.getNodeSettings().setOnMouseClicked(event -> {
+            Stage userSettingsStage = new UserSettingsStage();
+            userSettingsStage.show();
+            CommonUtil.updateNodeProperties(userSettingsStage.getScene());
+        });
+    }
+    private void onAction_menuExit() {
+        topMenu.getNodeExit().setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                topMenu.fireEvent(new WindowEvent(mainStage, WindowEvent.WINDOW_CLOSE_REQUEST));
+            }
+        });
+    }
+
+    private void onAction_menuInpaint() {
+        topMenu.getNodeInpaint().setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                try {
+                    //Runtime.getRuntime().exec(settings.getInpaintExecutable);
+                    Runtime.getRuntime().exec("C:\\Michal\\Program\\Inpaint v7.2\\Inpaint.exe");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void onAction_menuRandom() {
+        topMenu.getNodeRandom().setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                select.setRandom();
+                reload.doReload();
+            }
+        });
+    }
+    private void onAction_menuFullView() {
+        topMenu.getNodeFullview().setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                CommonUtil.swapViewMode();
+                reload.doReload();
+            }
+        });
+    }
+}

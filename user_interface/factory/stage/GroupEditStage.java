@@ -2,7 +2,6 @@ package user_interface.factory.stage;
 
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
@@ -11,14 +10,16 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import system.CommonUtil;
-import user_interface.factory.NodeFactory;
+import user_interface.factory.NodeUtil;
+import user_interface.factory.base.TextNode;
 import user_interface.factory.util.enums.ColorType;
+import user_interface.singleton.utils.SizeUtil;
 
 public class GroupEditStage extends Stage {
     private final TextField nodeGroupEdit = new TextField();
-    private final Label nodeGroup = NodeFactory.getLabel("Group", ColorType.DEF, ColorType.DEF);
-    private final Label nodeOK = NodeFactory.getLabel("OK", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
-    private final Label nodeCancel = NodeFactory.getLabel("Cancel", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+    private final TextNode nodeGroup = new TextNode("Group", ColorType.DEF, ColorType.DEF);
+    private final TextNode nodeOK = new TextNode("OK", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+    private final TextNode nodeCancel = new TextNode("Cancel", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
 
     private String result;
 
@@ -30,7 +31,7 @@ public class GroupEditStage extends Stage {
         nodeGroup.setPrefWidth(60);
         nodeGroupEdit.setText(group);
         nodeGroupEdit.setPrefWidth(200);
-        nodeGroupEdit.setBorder(NodeFactory.getBorder(1, 1, 1, 1));
+        nodeGroupEdit.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
         nodeGroupEdit.setFont(CommonUtil.getFont());
 
         borderPane.setOnKeyPressed(event -> {
@@ -47,7 +48,7 @@ public class GroupEditStage extends Stage {
             }
         });
 
-        NodeFactory.addNodeToManager(nodeGroupEdit, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+        NodeUtil.addToManager(nodeGroupEdit, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
         nodeGroupEdit.requestFocus();
 
         nodeOK.setOnMouseClicked(event -> {
@@ -67,19 +68,19 @@ public class GroupEditStage extends Stage {
             }
         });
 
-        HBox hBoxGroup = NodeFactory.getHBox(ColorType.DEF, nodeGroup, nodeGroupEdit);
-        double padding = CommonUtil.getPadding();
+        HBox hBoxGroup = NodeUtil.getHBox(ColorType.DEF, nodeGroup, nodeGroupEdit);
+        double padding = SizeUtil.getGlobalSpacing();
         hBoxGroup.setPadding(new Insets(padding, padding, 0, 0));
         hBoxGroup.setSpacing(padding);
 
-        HBox hBoxBottom = NodeFactory.getHBox(ColorType.DEF, nodeCancel, nodeOK);
+        HBox hBoxBottom = NodeUtil.getHBox(ColorType.DEF, nodeCancel, nodeOK);
 
         Scene scene = new Scene(borderPane);
         this.setTitle("Edit Group");
         borderPane.setCenter(hBoxGroup);
         borderPane.setBottom(hBoxBottom);
 
-        borderPane.setBorder(NodeFactory.getBorder(1, 1, 1, 1));
+        borderPane.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
 
         this.initStyle(StageStyle.UNDECORATED);
         setAlwaysOnTop(true);

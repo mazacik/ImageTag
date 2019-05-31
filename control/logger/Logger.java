@@ -2,7 +2,7 @@ package control.logger;
 
 public final class Logger {
     private final int classNameLength = 16;
-    private boolean active = true;
+    private boolean active = false;
 
     private Logger() {
         if (LoggerLoader.instance != null) {

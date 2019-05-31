@@ -5,8 +5,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import loader.LoaderUtil;
 import settings.SettingsEnum;
-import system.GifDecoder;
-import system.InstanceRepo;
+import system.Instances;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
@@ -19,16 +18,16 @@ import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
 public abstract class CacheCreator {
-    private static final String cacheExt = ".jpg";
+    private static final String CACHE_EXT = ".jpg";
 
     public static String getCacheExt() {
-        return cacheExt;
+        return CACHE_EXT;
     }
 
     public static Image createThumbnail(DataObject dataObject, File cacheFile) {
-        InstanceRepo.logger.debug(LoaderUtil.class, "thumbnail for " + dataObject.getName() + " not found, generating");
+        Instances.logger.debug(LoaderUtil.class, "generating thumbnail for " + dataObject.getName());
 
-        int thumbSize = InstanceRepo.settings.intValueOf(SettingsEnum.TILEVIEW_ICONSIZE);
+        int thumbSize = Instances.settings.intValueOf(SettingsEnum.THUMBSIZE);
 
         switch (dataObject.getFileType()) {
             case IMAGE:

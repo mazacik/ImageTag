@@ -1,25 +1,30 @@
 package loader;
 
-import control.filter.FilterTemplate;
+import control.filter.FilterManager;
 import control.reload.Reload;
 import database.list.DataObjectList;
+import database.list.DataObjectListMain;
 import database.object.DataObject;
 import javafx.application.Platform;
 import loader.cache.CacheReader;
-import system.InstanceRepo;
+import system.Instances;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 
-public class LoaderThread extends Thread implements InstanceRepo {
+public class LoaderThread extends Thread implements Instances {
     public void run() {
         initDirs();
         ArrayList<File> fileList = LoaderUtil.getSupportedFiles(DirectoryUtil.getPathSource());
 
         try {
-            mainDataList.addAll(mainDataList.readFromDisk());
+            mainDataList.addAll(DataObjectListMain.readFromDisk());
         } catch (Exception e) {
             logger.debug(this, "existing database failed to load or does not exist");
             createBackup();
@@ -30,8 +35,6 @@ public class LoaderThread extends Thread implements InstanceRepo {
 
         LoaderUtil.initDataObjectPaths(mainDataList, fileList);
 
-        CacheReader.readCache(mainDataList);
-
         mainDataList.sort();
         mainInfoList.initialize();
         mainDataList.writeToDisk();
@@ -39,17 +42,34 @@ public class LoaderThread extends Thread implements InstanceRepo {
 
         if (mainDataList.size() > 0) target.set(mainDataList.get(0));
 
-        filter.setFilter(FilterTemplate.SHOW_EVERYTHING);
-        reload.notifyChangeIn(Reload.Control.values());
+        Platform.runLater(() -> {
+            tagListViewL.reload();
+            tagListViewR.reload();
+        });
+
+        CacheReader.readCache(mainDataList);
+
+        reload.notifyChangeIn(Reload.Control.DATA);
         Platform.runLater(reload::doReload);
     }
 
     private void initDirs() {
         logger.debug(this, "checking directories");
 
-        String pathCache = DirectoryUtil.getPathCache();
+        String pathCacheDump = DirectoryUtil.getPathCacheDump();
+        String pathCache = DirectoryUtil.getPathCacheProject();
         String pathData = DirectoryUtil.getPathData();
 
+        File dirCacheDump = new File(pathCacheDump);
+        if (!dirCacheDump.exists()) {
+            logger.debug(this, "creating cache dump directory: " + pathCacheDump);
+            dirCacheDump.mkdirs();
+        }
+        try {
+            Files.setAttribute(Paths.get(pathCacheDump), "dos:hidden", true, LinkOption.NOFOLLOW_LINKS);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         File dirCache = new File(pathCache);
         if (!dirCache.exists()) {
             logger.debug(this, "creating cache directory: " + pathCache);
@@ -59,6 +79,11 @@ public class LoaderThread extends Thread implements InstanceRepo {
         if (!dirData.exists()) {
             logger.debug(this, "creating data directory: " + pathData);
             dirData.mkdirs();
+        }
+        try {
+            Files.setAttribute(Paths.get(pathData), "dos:hidden", true, LinkOption.NOFOLLOW_LINKS);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
     private void createBackup() {
@@ -99,11 +124,13 @@ public class LoaderThread extends Thread implements InstanceRepo {
         for (File file : fileList) {
             if (!dataObjectNames.contains(file.getName())) {
                 logger.debug(this, "adding " + file.getName());
-                mainDataList.add(new DataObject(file));
+                DataObject dataObject = new DataObject(file);
+                mainDataList.add(dataObject);
+                FilterManager.addNewDataObject(dataObject);
                 added++;
             }
         }
-        logger.debug(this, "added " + added + " files");
+        logger.debug(this, "newItems " + added + " files");
 
         /* discard missing items */
         int removed = 0;

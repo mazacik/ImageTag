@@ -3,10 +3,11 @@ package control.target;
 import control.reload.Reload;
 import database.object.DataObject;
 import javafx.scene.input.KeyCode;
-import system.InstanceRepo;
-import user_interface.factory.node.popup.Direction;
+import system.Direction;
+import system.Instances;
+import user_interface.singleton.center.BaseTile;
 
-public class Target implements InstanceRepo {
+public class Target implements Instances {
     private DataObject currentTarget;
     private DataObject previousTarget;
     private int storePos = -1;
@@ -22,11 +23,13 @@ public class Target implements InstanceRepo {
 
         /* apply new target effect */
         currentTarget = dataObject;
-        currentTarget.getBaseTile().generateEffect();
+        BaseTile baseTile = currentTarget.getBaseTile();
+        if (baseTile != null) baseTile.generateEffect();
 
         /* remove old target effect */
         if (previousTarget != null) {
-            previousTarget.getBaseTile().generateEffect();
+            baseTile = previousTarget.getBaseTile();
+            if (baseTile != null) baseTile.generateEffect();
         }
 
         tileView.adjustViewportToCurrentTarget();

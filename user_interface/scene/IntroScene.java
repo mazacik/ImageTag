@@ -1,27 +1,30 @@
 package user_interface.scene;
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import loader.LoaderThread;
+import loader.LoaderUtil;
+import loader.Project;
 import system.CommonUtil;
-import system.InstanceRepo;
-import user_interface.factory.NodeFactory;
+import system.Instances;
+import user_interface.factory.NodeUtil;
+import user_interface.factory.base.TextNode;
 import user_interface.factory.node.ColorModeSwitch;
 import user_interface.factory.node.IntroWindowCell;
-import user_interface.factory.stage.DirectoryChooserStage;
+import user_interface.factory.stage.FileChooserStage;
 import user_interface.factory.util.enums.ColorType;
+import user_interface.singleton.utils.SizeUtil;
 
 import java.io.File;
 import java.util.ArrayList;
 
-public class IntroScene implements InstanceRepo {
+public class IntroScene implements Instances {
     private final Scene introScene;
 
     IntroScene() {
@@ -29,66 +32,81 @@ public class IntroScene implements InstanceRepo {
     }
 
     private Scene create() {
-        VBox vBoxL = NodeFactory.getVBox(ColorType.ALT);
+        VBox vBoxL = NodeUtil.getVBox(ColorType.ALT);
         vBoxL.setMinWidth(300);
         vBoxL.setPadding(new Insets(5));
         vBoxL.setAlignment(Pos.CENTER);
 
-        if (settings.getRecentDirList().size() == 0) {
-            vBoxL.getChildren().add(NodeFactory.getLabel("No recent directories", ColorType.ALT, ColorType.DEF));
+        if (settings.getRecentProjects().size() == 0) {
+            vBoxL.getChildren().add(new TextNode("No recent directories", ColorType.ALT, ColorType.DEF));
         } else {
-            new ArrayList<>(settings.getRecentDirList()).forEach(item -> {
-                if (new File(item).exists()) {
-                    IntroWindowCell introWindowCell = NodeFactory.getIntroWindowCell(item);
+            new ArrayList<>(settings.getRecentProjects()).forEach(recentProject -> {
+                File projectFile = new File(recentProject);
+                if (projectFile.exists()) {
+                    Project project = Project.readFromDisk(recentProject);
+
+                    IntroWindowCell introWindowCell = NodeUtil.getIntroWindowCell(recentProject, project.getSourceDirectoryList().get(0));
                     introWindowCell.setOnMouseClicked(event -> {
                         if (event.getButton() == MouseButton.PRIMARY) {
                             if (event.getPickResult().getIntersectedNode().getParent().equals(introWindowCell.getNodeRemove())) {
-                                settings.getRecentDirList().remove(introWindowCell.getPath());
+                                settings.getRecentProjects().remove(introWindowCell.getWorkingDirectory());
                                 vBoxL.getChildren().remove(introWindowCell);
                             } else {
-                                startLoading(introWindowCell.getPath());
+                                LoaderUtil.startLoading(introWindowCell.getWorkingDirectory());
                             }
                         }
                     });
                     vBoxL.getChildren().add(introWindowCell);
                 } else {
-                    logger.debug(this, item + " not found, removing it from recent directory list");
-                    settings.getRecentDirList().remove(item);
+                    logger.debug(this, recentProject + " not found, removing it from recent directory list");
+                    settings.getRecentProjects().remove(recentProject);
                 }
             });
         }
 
-        Label btnChoose = NodeFactory.getLabel("Choose a Directory", ColorType.DEF, ColorType.DEF, ColorType.DEF, ColorType.ALT);
-        btnChoose.setFont(CommonUtil.getFont());
-        btnChoose.setFocusTraversable(false);
-        btnChoose.setOnMouseClicked(event -> {
+        TextNode btnNewProject = new TextNode("Create a New Project", ColorType.DEF, ColorType.DEF, ColorType.DEF, ColorType.ALT);
+        btnNewProject.setFocusTraversable(false);
+        btnNewProject.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                this.directoryChooser();
+                SceneUtil.showProjectScene();
+            }
+        });
+        TextNode btnOpenProject = new TextNode("Open Project", ColorType.DEF, ColorType.DEF, ColorType.DEF, ColorType.ALT);
+        btnOpenProject.setFocusTraversable(false);
+        btnOpenProject.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                String projectFilePath = new FileChooserStage(mainStage, "Open Project", System.getProperty("user.dir")).getResultValue();
+                if (!projectFilePath.isEmpty()) {
+                    settings.addProjectPath(projectFilePath);
+                    Project project = Project.readFromDisk(projectFilePath);
+                    LoaderUtil.startLoading(project.getSourceDirectoryList().get(0));
+                }
             }
         });
 
-        VBox vBoxR = NodeFactory.getVBox(ColorType.DEF);
-        vBoxR.getChildren().add(btnChoose);
+        VBox vBoxR = NodeUtil.getVBox(ColorType.DEF);
+        vBoxR.getChildren().add(btnOpenProject);
+        vBoxR.getChildren().add(btnNewProject);
         vBoxR.getChildren().add(new ColorModeSwitch());
         vBoxR.setSpacing(10);
         vBoxR.setMinWidth(350);
         vBoxR.setAlignment(Pos.CENTER);
-        vBoxR.setPrefWidth(SceneUtil.getUsableScreenWidth());
+        vBoxR.setPrefWidth(SizeUtil.getUsableScreenWidth());
 
-        HBox hBoxGrowHelper = NodeFactory.getHBox(ColorType.DEF, vBoxL, vBoxR);
+        HBox hBoxGrowHelper = NodeUtil.getHBox(ColorType.DEF, vBoxL, vBoxR);
         VBox.setVgrow(hBoxGrowHelper, Priority.ALWAYS);
 
-        VBox vBoxMain = NodeFactory.getVBox(ColorType.DEF);
+        VBox vBoxMain = NodeUtil.getVBox(ColorType.DEF);
         vBoxMain.setAlignment(Pos.CENTER);
         mainStage.setTitle("Welcome");
         Scene introScene = new Scene(vBoxMain);
         vBoxMain.getChildren().add(hBoxGrowHelper);
         introScene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
-                if (!settings.getRecentDirList().isEmpty()) {
-                    this.startLoading(((IntroWindowCell) vBoxL.getChildren().get(0)).getPath());
+                if (!settings.getRecentProjects().isEmpty()) {
+                    LoaderUtil.startLoading((((IntroWindowCell) vBoxL.getChildren().get(0)).getWorkingDirectory()));
                 } else {
-                    this.directoryChooser();
+                    SceneUtil.showProjectScene();
                 }
             }
         });
@@ -97,39 +115,20 @@ public class IntroScene implements InstanceRepo {
         return introScene;
     }
     void show() {
-        double width = SceneUtil.getUsableScreenWidth() / 2.5;
-        double height = SceneUtil.getUsableScreenHeight() / 2;
+        mainStage.setOpacity(0);
+        mainStage.setScene(introScene);
+        mainStage.show();
+
+        double width = SizeUtil.getUsableScreenWidth() / 2.5;
+        double height = SizeUtil.getUsableScreenHeight() / 2;
         mainStage.setWidth(width);
         mainStage.setHeight(height);
         mainStage.setMinWidth(width);
         mainStage.setMinHeight(height);
-
-        mainStage.setScene(introScene);
         mainStage.centerOnScreen();
-        SceneUtil.showMainStage();
+
+        Platform.runLater(() -> mainStage.setOpacity(1));
 
         logger.debug(this, "waiting for directory");
-
-        SceneUtil.createMainScene();
-    }
-
-    private void directoryChooser() {
-        String sourcePath = new DirectoryChooserStage(mainStage, "Choose a Directory", "C:\\").getResultValue();
-        if (!sourcePath.isEmpty()) {
-            char lastchar = sourcePath.charAt(sourcePath.length() - 1);
-            if (sourcePath.length() > 3 && (lastchar != '\\' || lastchar != '/')) {
-                sourcePath += "\\";
-            }
-            //todo don't start loading automatically
-            // also add options like recursive search etc.
-            startLoading(sourcePath);
-        }
-    }
-    private void startLoading(String sourcePath) {
-        settings.setCurrentDirectory(sourcePath);
-        settings.writeToDisk();
-        new LoaderThread().start();
-        SceneUtil.createMainScene();
-        SceneUtil.showMainScene();
     }
 }

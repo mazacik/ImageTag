@@ -1,64 +1,75 @@
 package user_interface.scene;
 
+import javafx.animation.Animation;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import system.CommonUtil;
-import system.InstanceRepo;
-import user_interface.event.EventUtil;
-import user_interface.factory.NodeFactory;
+import system.Instances;
+import user_interface.factory.NodeUtil;
 import user_interface.factory.util.enums.ColorType;
+import user_interface.singleton.utils.EventUtil;
+import user_interface.singleton.utils.SizeUtil;
+import user_interface.singleton.utils.StyleUtil;
 
-public class MainScene implements InstanceRepo {
-    private static ObservableList<Node> views;
+public class MainScene implements Instances {
+    private static ObservableList<Node> panes;
     private final Scene mainScene;
 
     MainScene() {
         mainScene = create();
     }
-
-    private Scene create() {
-        HBox mainHBox = NodeFactory.getHBox(ColorType.DEF, tagListViewL, tileView, tagListViewR);
-        views = mainHBox.getChildren();
-        Scene mainScene = new Scene(NodeFactory.getVBox(ColorType.DEF, topMenu, mainHBox));
-
-        mainStage.widthProperty().addListener((observable, oldValue, newValue) -> tileView.adjustPrefColumns());
-        CommonUtil.updateNodeProperties(mainScene);
-
-        return mainScene;
-    }
-    void show() {
-        mainStage.setMinWidth(tagListViewL.getMinWidth() + tileView.getTilePane().getPrefTileWidth() + tagListViewR.getMinWidth());
-        mainStage.setMinHeight(topMenu.getHeight() + tileView.getTilePane().getPrefTileHeight());
-
-        mainStage.setScene(mainScene);
-        mainStage.setMaximized(true);
-
-        tileView.onShown();
-        tagListViewL.onShown();
-        tagListViewR.onShown();
-
-        topMenu.requestFocus();
-
-        EventUtil.init();
-    }
-
     public static void swapViewMode() {
-        if (views.contains(mediaView)) {
+        if (panes.contains(mediaView)) {
+            if (mediaView.getControlsPopupDelay().getStatus() == Animation.Status.RUNNING) {
+                mediaView.getControlsPopupDelay().stop();
+            }
+            if (mediaView.getControlsPopup().isShowing()) {
+                mediaView.getControlsPopup().hide();
+            }
             if (mediaView.getVideoPlayer().isPlaying()) {
                 mediaView.getVideoPlayer().pause();
             }
-            views.set(views.indexOf(mediaView), tileView);
+
+            panes.set(panes.indexOf(mediaView), tileView);
             tileView.adjustViewportToCurrentTarget();
             tileView.requestFocus();
-        } else if (views.contains(tileView)) {
-            views.set(views.indexOf(tileView), mediaView);
-            mediaView.reload();
+        } else if (panes.contains(tileView)) {
+            panes.set(panes.indexOf(tileView), mediaView);
             mediaView.requestFocus();
         }
     }
     public static boolean isFullView() {
-        return views.contains(mediaView);
+        return panes.contains(mediaView);
+    }
+    private Scene create() {
+        HBox mainHBox = NodeUtil.getHBox(ColorType.DEF, tagListViewL, tileView, tagListViewR);
+        panes = mainHBox.getChildren();
+        Scene mainScene = new Scene(NodeUtil.getVBox(ColorType.DEF, topMenu, mainHBox));
+        CommonUtil.updateNodeProperties();
+        return mainScene;
+    }
+    void show() {
+        mainStage.setOpacity(0);
+        mainStage.setMinWidth(100 + SizeUtil.getMinWidthSideLists() * 2 + SizeUtil.getGalleryIconSize());
+        mainStage.setMinHeight(100 + SizeUtil.getPrefHeightTopMenu() + SizeUtil.getGalleryIconSize());
+        mainStage.setScene(mainScene);
+        mainStage.setMaximized(true);
+        tileView.requestFocus();
+
+        StyleUtil.applyScrollbarStyle(tileView);
+        StyleUtil.applyScrollbarStyle(tagListViewL.getTagListScrollPane());
+        StyleUtil.applyScrollbarStyle(tagListViewR.getTagListScrollPane());
+
+        SizeUtil.stageWidthChangeHandler();
+        SizeUtil.stageHeightChangehandler();
+        mainScene.widthProperty().addListener((observable, oldValue, newValue) -> SizeUtil.stageWidthChangeHandler());
+        mainScene.heightProperty().addListener((observable, oldValue, newValue) -> SizeUtil.stageHeightChangehandler());
+
+        Platform.runLater(() -> mainStage.setOpacity(1));
+
+        EventUtil.init();
     }
 }

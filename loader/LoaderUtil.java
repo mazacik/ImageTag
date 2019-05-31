@@ -4,7 +4,8 @@ import control.logger.Logger;
 import database.list.DataObjectList;
 import database.object.DataObject;
 import loader.cache.CacheCreator;
-import system.InstanceRepo;
+import system.Instances;
+import user_interface.scene.SceneUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -12,7 +13,14 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 
-public abstract class LoaderUtil implements InstanceRepo {
+public abstract class LoaderUtil implements Instances {
+    public static void startLoading(String sourcePath) {
+        DirectoryUtil.init(sourcePath);
+        new LoaderThread().start();
+        SceneUtil.createMainScene();
+        SceneUtil.showMainScene();
+    }
+
     private static ArrayList<File> getAllFiles(File directory) {
         ArrayList<File> allFiles = new ArrayList<>();
         ArrayList<File> currentDir = new ArrayList<>(Arrays.asList(Objects.requireNonNull(directory.listFiles())));
@@ -61,7 +69,7 @@ public abstract class LoaderUtil implements InstanceRepo {
             for (int i = 0; i < dataObjects.size(); i++) {
                 DataObject dataObject = dataObjects.get(i);
                 dataObject.setSourcePath(fileList.get(i).getAbsolutePath());
-                dataObject.setCachePath(DirectoryUtil.getPathCache() + dataObject.getName() + CacheCreator.getCacheExt());
+                dataObject.setCachePath(DirectoryUtil.getPathCacheProject() + dataObject.getName() + CacheCreator.getCacheExt());
             }
         } else {
             String error = "dataObjects.size() != fileList.size()";
@@ -72,7 +80,7 @@ public abstract class LoaderUtil implements InstanceRepo {
         /*
         String pathSource = DirectoryUtil.getPathSource();
 
-        ArrayList<String> importDirectories = CommonUtil.settings.getImportDirList();
+        ArrayList<String> importDirectories = CommonUtil.settings.getImportDirectoryList();
 
         DataObjectList newDataObjects = new DataObjectList();
         importDirectories.forEach(dir -> {

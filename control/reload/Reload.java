@@ -1,12 +1,12 @@
 package control.reload;
 
-import system.InstanceRepo;
+import system.Instances;
 import user_interface.singleton.BaseNode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Reload implements InstanceRepo {
+public class Reload implements Instances {
     private ArrayList<BaseNode> queue;
 
     public Reload() {
@@ -28,7 +28,9 @@ public class Reload implements InstanceRepo {
                 , Control.FILTER
                 , Control.SELECT
         );
-        //this.subscribe(topMenu);
+        this.subscribe(topMenu
+                , Control.TARGET
+        );
 
         queue = new ArrayList<>();
     }
@@ -47,8 +49,15 @@ public class Reload implements InstanceRepo {
         });
     }
     public void doReload() {
-        queue.forEach(BaseNode::reload);
-        queue.clear();
+        ArrayList<BaseNode> newQueue = new ArrayList<>(queue);
+
+        queue.forEach(baseNode -> {
+            if (baseNode.reload()) {
+                newQueue.remove(baseNode);
+            }
+        });
+
+        queue = newQueue;
     }
 
     public enum Control {

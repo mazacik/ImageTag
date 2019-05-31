@@ -3,28 +3,27 @@ package user_interface.singleton.side;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import system.CommonUtil;
-import system.InstanceRepo;
-import user_interface.factory.NodeFactory;
+import system.Instances;
+import user_interface.factory.base.TextNode;
 import user_interface.factory.util.ColorUtil;
 
 import java.util.ArrayList;
 
 
-public class GroupNode extends HBox implements InstanceRepo {
-    private final ArrayList<Label> nameNodes = new ArrayList<>();
-    private Label labelArrow;
-    private Label labelText;
+public class GroupNode extends HBox implements Instances {
+    private final ArrayList<TextNode> nameNodes = new ArrayList<>();
+    private TextNode labelArrow;
+    private TextNode labelText;
 
     public GroupNode(String text, VBox owner) {
-        labelArrow = NodeFactory.getLabel("+ ");
-        labelText = NodeFactory.getLabel(text);
+        labelArrow = new TextNode("+ ");
+        labelText = new TextNode(text);
 
         labelArrow.setPadding(new Insets(0, 5, 0, 15));
         labelText.setPadding(new Insets(0, 15, 0, 5));
@@ -83,7 +82,9 @@ public class GroupNode extends HBox implements InstanceRepo {
                     }
                     break;
                 case SECONDARY:
-                    infoObjectRCM.show(this, event);
+                    clickMenuInfo.setGroup(text);
+                    clickMenuInfo.setName("");
+                    clickMenuInfo.show(this, event);
                     break;
                 default:
                     break;
@@ -91,7 +92,7 @@ public class GroupNode extends HBox implements InstanceRepo {
         });
     }
 
-    public ArrayList<Label> getNameNodes() {
+    public ArrayList<TextNode> getNameNodes() {
         return nameNodes;
     }
     public String getText() {

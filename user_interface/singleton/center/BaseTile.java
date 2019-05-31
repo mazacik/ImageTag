@@ -7,12 +7,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import settings.SettingsEnum;
 import system.CommonUtil;
-import system.InstanceRepo;
-import user_interface.event.BaseTileEvent;
+import system.Instances;
 
 import java.util.ArrayList;
 
-public class BaseTile extends ImageView implements InstanceRepo {
+public class BaseTile extends ImageView implements Instances {
 
     private static final InnerShadow effectSelect = createEffectSelect();
     private static final ColorInput effectTarget = createEffectTarget();
@@ -37,7 +36,7 @@ public class BaseTile extends ImageView implements InstanceRepo {
     }
     private static ColorInput createEffectTarget() {
         int markSize = 6;
-        int markPositionInTile = (settings.intValueOf(SettingsEnum.TILEVIEW_ICONSIZE) - markSize) / 2;
+        int markPositionInTile = (settings.intValueOf(SettingsEnum.THUMBSIZE) - markSize) / 2;
         Color markColor = Color.RED;
         return new ColorInput(markPositionInTile, markPositionInTile, markSize, markSize, markColor);
     }
@@ -69,7 +68,7 @@ public class BaseTile extends ImageView implements InstanceRepo {
             } else {
                 groupIconText = "[" + middle + "]";
             }
-            int tileSize = settings.intValueOf(SettingsEnum.TILEVIEW_ICONSIZE);
+            int tileSize = settings.intValueOf(SettingsEnum.THUMBSIZE);
             Image imageText = CommonUtil.textToImage(groupIconText);
             effectList.add(new ImageInput(imageText, tileSize - imageText.getWidth() - 5, 1));
             effectGroupSize = (int) imageText.getWidth() + 10;

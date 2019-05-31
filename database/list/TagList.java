@@ -5,8 +5,8 @@ import database.object.TagObject;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class InfoObjectList extends ArrayList<TagObject> {
-    public InfoObjectList() {
+public class TagList extends ArrayList<TagObject> {
+    public TagList() {
         super();
     }
 

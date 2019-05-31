@@ -1,82 +1,107 @@
 package user_interface.singleton.top;
 
-import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import system.InstanceRepo;
-import user_interface.factory.NodeFactory;
-import user_interface.factory.node.popup.Direction;
-import user_interface.factory.node.popup.LeftClickMenu;
+import system.Direction;
+import system.Instances;
+import user_interface.factory.NodeUtil;
+import user_interface.factory.base.Separator;
+import user_interface.factory.base.TextNode;
+import user_interface.factory.buttons.ButtonFactory;
+import user_interface.factory.buttons.ButtonTemplates;
+import user_interface.factory.menu.ClickMenuLeft;
 import user_interface.factory.util.ColorData;
 import user_interface.factory.util.enums.ColorType;
 import user_interface.singleton.BaseNode;
+import user_interface.singleton.utils.SizeUtil;
 
-public class TopMenu extends BorderPane implements BaseNode, InstanceRepo {
-    Label nodeSave;
-    Label nodeImport;
-    Label nodeSettings;
-    Label nodeExit;
+public class TopMenu extends BorderPane implements BaseNode, Instances {
+    private final TextNode nodeSave;
+    private final TextNode nodeImport;
+    private final TextNode nodeSettings;
+    private final TextNode nodeExit;
 
-    Label nodeInpaint;
+    private final TextNode nodeInpaint;
 
-    Label nodeRandom;
-    Label nodeFullview;
+    private final TextNode nodeRandom;
+    private final TextNode nodeFullview;
+
+    private final TextNode nodeTarget;
 
     public TopMenu() {
         ColorData colorData = new ColorData(ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
 
-        Label nodeFile = NodeFactory.getLabel("File", colorData);
-        nodeSave = NodeFactory.getLabel("Save", colorData);
-        nodeImport = NodeFactory.getLabel("Import", colorData);
-        nodeSettings = NodeFactory.getLabel("Settings", colorData);
-        nodeExit = NodeFactory.getLabel("Exit", colorData);
-        LeftClickMenu.install(nodeFile, Direction.DOWN, nodeSave, nodeImport, nodeSettings, NodeFactory.getSeparator(), nodeExit);
+        TextNode nodeFile = new TextNode("File", colorData);
+        nodeSave = new TextNode("Save", colorData);
+        nodeImport = new TextNode("Import", colorData);
+        nodeSettings = new TextNode("Settings", colorData);
+        nodeExit = new TextNode("Exit", colorData);
+        ClickMenuLeft.install(nodeFile, Direction.DOWN, nodeSave, nodeImport, nodeSettings, new Separator(), nodeExit);
 
-        Label nodeTools = NodeFactory.getLabel("Tools", colorData);
-        nodeInpaint = NodeFactory.getLabel("Inpaint", colorData);
-        LeftClickMenu.install(nodeTools, Direction.DOWN, nodeInpaint);
+        TextNode nodeTools = new TextNode("Tools", colorData);
+        nodeInpaint = new TextNode("Inpaint", colorData);
+        ClickMenuLeft.install(nodeTools, Direction.DOWN, nodeInpaint);
 
-        nodeRandom = NodeFactory.getLabel("Random", colorData);
-        nodeFullview = NodeFactory.getLabel("MediaView", colorData);
-        HBox hBoxTools = NodeFactory.getHBox(ColorType.DEF, nodeRandom, nodeFullview);
-        hBoxTools.setBorder(NodeFactory.getBorder(0, 1, 0, 1));
-        NodeFactory.addNodeToManager(hBoxTools, ColorType.DEF);
+        nodeRandom = new TextNode("Random", colorData);
+        nodeFullview = new TextNode("MediaView", colorData);
+        HBox hBoxTools = NodeUtil.getHBox(ColorType.DEF, nodeRandom, nodeFullview);
+        hBoxTools.setBorder(NodeUtil.getBorder(0, 1, 0, 1));
+        NodeUtil.addToManager(hBoxTools, ColorType.DEF);
 
-        HBox hBoxMain = NodeFactory.getHBox(ColorType.DEF);
+        ButtonFactory buttonFactory = ButtonFactory.getInstance();
+        TextNode nodeShowSimilar = buttonFactory.get(ButtonTemplates.OBJ_SIMILAR);
+        TextNode nodeOpen = buttonFactory.get(ButtonTemplates.OBJ_OPEN);
+        TextNode nodeEdit = buttonFactory.get(ButtonTemplates.OBJ_EDIT);
+        TextNode nodeCopyName = buttonFactory.get(ButtonTemplates.OBJ_COPY_NAME);
+        TextNode nodeCopyPath = buttonFactory.get(ButtonTemplates.OBJ_COPY_PATH);
+        TextNode nodeDeleteTarget = buttonFactory.get(ButtonTemplates.OBJ_DELETE);
+        nodeTarget = new TextNode("", colorData);
+        ClickMenuLeft.install(nodeTarget, Direction.DOWN,
+                nodeShowSimilar,
+                nodeOpen,
+                nodeEdit,
+                nodeCopyName,
+                nodeCopyPath,
+                nodeDeleteTarget
+        );
+
+        HBox hBoxMain = NodeUtil.getHBox(ColorType.DEF);
         hBoxMain.getChildren().addAll(nodeFile, nodeTools);
         hBoxMain.getChildren().add(hBoxTools);
-        NodeFactory.addNodeToManager(hBoxMain, ColorType.DEF);
+        NodeUtil.addToManager(hBoxMain, ColorType.DEF);
 
-        this.setBorder(NodeFactory.getBorder(0, 0, 1, 0));
-        this.setPrefHeight(30);
+        this.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
+        this.setPrefHeight(SizeUtil.getPrefHeightTopMenu());
         this.setLeft(hBoxMain);
-        NodeFactory.addNodeToManager(this, ColorType.DEF);
+        this.setRight(nodeTarget);
+        NodeUtil.addToManager(this, ColorType.DEF);
     }
 
-    public void reload() {
-
+    public boolean reload() {
+        nodeTarget.setText(target.getCurrentTarget().getName());
+        return true;
     }
 
-    public Label getNodeSave() {
+    public TextNode getNodeSave() {
         return nodeSave;
     }
-    public Label getNodeImport() {
+    public TextNode getNodeImport() {
         return nodeImport;
     }
-    public Label getNodeSettings() {
+    public TextNode getNodeSettings() {
         return nodeSettings;
     }
-    public Label getNodeExit() {
+    public TextNode getNodeExit() {
         return nodeExit;
     }
 
-    public Label getNodeInpaint() {
+    public TextNode getNodeInpaint() {
         return nodeInpaint;
     }
-    public Label getNodeRandom() {
+    public TextNode getNodeRandom() {
         return nodeRandom;
     }
-    public Label getNodeFullview() {
+    public TextNode getNodeFullview() {
         return nodeFullview;
     }
 }

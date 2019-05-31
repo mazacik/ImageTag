@@ -1,43 +1,33 @@
 package control.filter;
 
-import control.reload.Reload;
 import database.list.DataObjectList;
 import database.object.TagObject;
-import system.InstanceRepo;
+import system.Instances;
 
-public class Filter extends DataObjectList implements InstanceRepo {
+public class Filter extends DataObjectList implements Instances {
     private FilterMode whitelistMode;
     private FilterMode blacklistMode;
-    private FilterTemplate currentFilterTemplate;
 
     public Filter() {
         whitelistMode = FilterMode.All;
         blacklistMode = FilterMode.Any;
-        currentFilterTemplate = FilterTemplate.NONE;
-    }
-    public void apply() {
-        currentFilterTemplate.apply();
-        reload.notifyChangeIn(Reload.Control.FILTER);
     }
 
     public void whitelistTagObject(TagObject tagObject) {
         if (!isTagObjectWhitelisted(tagObject)) {
             infoListWhite.add(tagObject);
             infoListBlack.remove(tagObject);
-            currentFilterTemplate = FilterTemplate.CUSTOM;
         }
     }
     public void blacklistTagObject(TagObject tagObject) {
         if (!isTagObjectBlacklisted(tagObject)) {
             infoListWhite.remove(tagObject);
             infoListBlack.add(tagObject);
-            currentFilterTemplate = FilterTemplate.CUSTOM;
         }
     }
     public void unlistTagObject(TagObject tagObject) {
         infoListWhite.remove(tagObject);
         infoListBlack.remove(tagObject);
-        currentFilterTemplate = FilterTemplate.CUSTOM;
     }
 
     public void whitelistGroup(String group) {
@@ -101,10 +91,6 @@ public class Filter extends DataObjectList implements InstanceRepo {
     }
     public void setBlacklistMode(FilterMode blacklistMode) {
         this.blacklistMode = blacklistMode;
-    }
-    public void setFilter(FilterTemplate filterTemplate) {
-        this.currentFilterTemplate = filterTemplate;
-        this.apply();
     }
 
     public enum FilterMode {

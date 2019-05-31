@@ -12,31 +12,28 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Popup;
 import javafx.util.Duration;
 import system.CommonUtil;
-import system.InstanceRepo;
-import user_interface.factory.NodeFactory;
+import system.Instances;
+import user_interface.factory.NodeUtil;
 import user_interface.singleton.BaseNode;
-import user_interface.singleton.center.VideoPlayer.MediaViewControls;
-import user_interface.singleton.center.VideoPlayer.VideoPlayer;
 
-public class MediaView extends BorderPane implements BaseNode, InstanceRepo {
+public class MediaView extends BorderPane implements BaseNode, Instances {
     private Image currentImage = null;
     private final Canvas canvas = new Canvas();
     private final ImageView gifPlayer = new ImageView();
     private final VideoPlayer videoPlayer = new VideoPlayer(canvas);
     private final MediaViewControls controls = new MediaViewControls(videoPlayer);
     private final Popup controlsPopup = new Popup();
+    private final PauseTransition controlsPopupDelay = new PauseTransition(new Duration(1000));
+
     private DataObject currentCache = null;
 
     public MediaView() {
-        canvas.widthProperty().bind(tileView.widthProperty());
-        canvas.heightProperty().bind(tileView.heightProperty());
-
         setupControls();
 
         gifPlayer.fitWidthProperty().bind(tileView.widthProperty());
         gifPlayer.fitHeightProperty().bind(tileView.heightProperty());
 
-        this.setBorder(NodeFactory.getBorder(0, 1, 0, 1));
+        this.setBorder(NodeUtil.getBorder(0, 1, 0, 1));
         this.setCenter(canvas);
     }
     public Canvas getCanvas() {
@@ -57,12 +54,11 @@ public class MediaView extends BorderPane implements BaseNode, InstanceRepo {
                 controlsPopup.hide();
             }
         });
-        PauseTransition timer = new PauseTransition(new Duration(1000));
-        timer.setOnFinished(e -> mouseMoving.set(false));
 
+        controlsPopupDelay.setOnFinished(e -> mouseMoving.set(false));
         canvas.setOnMouseMoved(event -> {
             mouseMoving.set(true);
-            timer.playFromStart();
+            controlsPopupDelay.playFromStart();
 
             double x = canvas.localToScreen(canvas.getBoundsInLocal()).getMinX();
             double y = canvas.localToScreen(canvas.getBoundsInLocal()).getMinY();
@@ -70,20 +66,15 @@ public class MediaView extends BorderPane implements BaseNode, InstanceRepo {
             controlsPopup.show(this, x, y);
         });
 
-        controls.setOnMouseEntered(event -> timer.stop());
-        controls.setOnMouseExited(event -> timer.playFromStart());
+        controls.setOnMouseEntered(event -> controlsPopupDelay.stop());
+        controls.setOnMouseExited(event -> controlsPopupDelay.playFromStart());
 
         controlsPopup.getContent().setAll(controls);
-        controlsPopup.setAutoHide(true);
-        controlsPopup.setHideOnEscape(true);
     }
 
-    public void reload() {
-        if (!CommonUtil.isFullView()) return;
-
+    public boolean reload() {
         DataObject currentTarget = target.getCurrentTarget();
-
-        if (currentTarget != null) {
+        if (CommonUtil.isCenterFullscreen() && currentTarget != null) {
             switch (currentTarget.getFileType()) {
                 case IMAGE:
                     controls.setVideoMode(false);
@@ -98,7 +89,10 @@ public class MediaView extends BorderPane implements BaseNode, InstanceRepo {
                     reloadAsVideo(currentTarget);
                     break;
             }
+            return true;
         }
+
+        return false;
     }
 
     private void reloadAsImage(DataObject currentTarget) {
@@ -162,5 +156,12 @@ public class MediaView extends BorderPane implements BaseNode, InstanceRepo {
         } else {
             videoPlayer.resume();
         }
+    }
+
+    public Popup getControlsPopup() {
+        return controlsPopup;
+    }
+    public PauseTransition getControlsPopupDelay() {
+        return controlsPopupDelay;
     }
 }

@@ -5,33 +5,34 @@ import database.object.DataObject;
 import database.object.TagObject;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import system.CommonUtil;
-import system.InstanceRepo;
-import user_interface.factory.NodeFactory;
-import user_interface.factory.node.popup.Direction;
-import user_interface.factory.node.popup.LeftClickMenu;
+import system.Direction;
+import system.Instances;
+import user_interface.factory.NodeUtil;
+import user_interface.factory.base.Separator;
+import user_interface.factory.base.TextNode;
+import user_interface.factory.menu.ClickMenuLeft;
 import user_interface.factory.util.ColorData;
 import user_interface.factory.util.ColorUtil;
 import user_interface.factory.util.enums.ColorType;
-import user_interface.scene.SceneUtil;
 import user_interface.singleton.BaseNode;
+import user_interface.singleton.utils.SizeUtil;
 
 import java.util.ArrayList;
 
-public class TagListViewR extends VBox implements BaseNode, InstanceRepo {
-    private final Label nodeTitle;
+public class TagListViewR extends VBox implements BaseNode, Instances {
+    private final TextNode nodeTitle;
     private final TextField tfSearch;
     private String actualText = "";
 
-    private final Label nodeSelectAll;
-    private final Label nodeSelectNone;
-    private final Label nodeSelectMerge;
+    private final TextNode nodeSelectAll;
+    private final TextNode nodeSelectNone;
+    private final TextNode nodeSelectMerge;
 
     private final VBox tagListBox;
     private final ScrollPane tagListScrollPane;
@@ -40,38 +41,38 @@ public class TagListViewR extends VBox implements BaseNode, InstanceRepo {
     public TagListViewR() {
         ColorData colorDataSimple = new ColorData(ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
 
-        nodeTitle = NodeFactory.getLabel("", colorDataSimple);
-        nodeTitle.setBorder(NodeFactory.getBorder(0, 0, 1, 0));
+        nodeTitle = new TextNode("", colorDataSimple);
+        nodeTitle.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
         nodeTitle.prefWidthProperty().bind(this.widthProperty());
 
         tfSearch = new TextField();
         tfSearch.setFont(CommonUtil.getFont());
-        tfSearch.setBorder(NodeFactory.getBorder(0, 0, 1, 0));
+        tfSearch.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
         tfSearch.setPromptText("Start typing..");
-        NodeFactory.addNodeToManager(tfSearch, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+        NodeUtil.addToManager(tfSearch, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
 
-        nodeSelectAll = NodeFactory.getLabel("Select All", colorDataSimple);
-        nodeSelectNone = NodeFactory.getLabel("Select None", colorDataSimple);
-        nodeSelectMerge = NodeFactory.getLabel("Merge Selection", colorDataSimple);
-        LeftClickMenu.install(nodeTitle, Direction.LEFT, nodeSelectAll, nodeSelectNone, NodeFactory.getSeparator(), nodeSelectMerge);
+        nodeSelectAll = new TextNode("Select All", colorDataSimple);
+        nodeSelectNone = new TextNode("Select None", colorDataSimple);
+        nodeSelectMerge = new TextNode("Merge Selection", colorDataSimple);
+        ClickMenuLeft.install(nodeTitle, Direction.LEFT, nodeSelectAll, nodeSelectNone, new Separator(), nodeSelectMerge);
 
-        tagListBox = NodeFactory.getVBox(ColorType.DEF);
+        tagListBox = NodeUtil.getVBox(ColorType.DEF);
         tagListScrollPane = new ScrollPane();
         tagListScrollPane.setContent(tagListBox);
         tagListScrollPane.setFitToWidth(true);
         tagListScrollPane.setFitToHeight(true);
         tagListScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         tagListScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        NodeFactory.addNodeToManager(tagListScrollPane, ColorType.DEF);
+        NodeUtil.addToManager(tagListScrollPane, ColorType.DEF);
 
         expandedGroupsList = new ArrayList<>();
 
-        this.setPrefWidth(SceneUtil.getUsableScreenWidth());
-        this.setMinWidth(SceneUtil.getSidePanelMinWidth());
+        this.setPrefWidth(SizeUtil.getUsableScreenWidth());
+        this.setMinWidth(SizeUtil.getMinWidthSideLists());
         this.getChildren().addAll(nodeTitle, tfSearch, tagListScrollPane);
     }
 
-    public void reload() {
+    public boolean reload() {
         tagListBox.getChildren().clear();
 
         if (select.size() == 0) {
@@ -98,6 +99,7 @@ public class TagListViewR extends VBox implements BaseNode, InstanceRepo {
         }
         this.actuallyReload();
         CommonUtil.updateNodeProperties(tagListBox);
+        return true;
     }
     private void actuallyReload() {
         Color textColorDefault = ColorUtil.getTextColorDef();
@@ -108,7 +110,7 @@ public class TagListViewR extends VBox implements BaseNode, InstanceRepo {
         ArrayList<String> groupsShare;
         if (select.size() == 0) {
             if (target.getCurrentTarget() != null) {
-                groupsInter = target.getCurrentTarget().getInfoObjectList().getGroups();
+                groupsInter = target.getCurrentTarget().getTagList().getGroups();
                 groupsShare = new ArrayList<>();
             } else {
                 return;
@@ -121,17 +123,17 @@ public class TagListViewR extends VBox implements BaseNode, InstanceRepo {
         for (String group : mainInfoList.getGroups()) {
             GroupNode groupNode;
             if (groupsInter.contains(group)) {
-                groupNode = NodeFactory.getGroupNode(this, group, textColorPositive);
+                groupNode = NodeUtil.getGroupNode(this, group, textColorPositive);
             } else if (groupsShare.contains(group)) {
-                groupNode = NodeFactory.getGroupNode(this, group, textColorShare);
+                groupNode = NodeUtil.getGroupNode(this, group, textColorShare);
             } else {
-                groupNode = NodeFactory.getGroupNode(this, group, textColorDefault);
+                groupNode = NodeUtil.getGroupNode(this, group, textColorDefault);
             }
 
             ArrayList<String> namesInter;
             ArrayList<String> namesShare;
             if (select.size() == 0) {
-                namesInter = target.getCurrentTarget().getInfoObjectList().getNames(group);
+                namesInter = target.getCurrentTarget().getTagList().getNames(group);
                 namesShare = new ArrayList<>();
             } else {
                 namesInter = select.getIntersectingTags().getNames(group);
@@ -156,8 +158,8 @@ public class TagListViewR extends VBox implements BaseNode, InstanceRepo {
             }
         }
     }
-    private Label createNameNode(String name, Color textColor, GroupNode groupNode) {
-        Label nameNode = NodeFactory.getLabel(name, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
+    private TextNode createNameNode(String name, Color textColor, GroupNode groupNode) {
+        TextNode nameNode = new TextNode(name, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
 
         nameNode.setTextFill(textColor);
         nameNode.setAlignment(Pos.CENTER_LEFT);
@@ -167,22 +169,16 @@ public class TagListViewR extends VBox implements BaseNode, InstanceRepo {
             if (event.getButton() == MouseButton.PRIMARY) {
                 changeNodeState(groupNode, nameNode);
             } else if (event.getButton() == MouseButton.SECONDARY) {
-                infoObjectRCM.setTagObject(mainInfoList.getTagObject(groupNode.getText(), nameNode.getText()));
-                infoObjectRCM.show(nameNode, event);
+                clickMenuInfo.setGroup(groupNode.getText());
+                clickMenuInfo.setName(nameNode.getText());
+                clickMenuInfo.show(nameNode, event);
             }
         });
 
         return nameNode;
     }
 
-    public void onShown() {
-        tagListScrollPane.lookup(".scroll-bar").setStyle("-fx-background-color: transparent;");
-        tagListScrollPane.lookup(".increment-button").setStyle("-fx-background-color: transparent;");
-        tagListScrollPane.lookup(".decrement-button").setStyle("-fx-background-color: transparent;");
-        tagListScrollPane.lookup(".thumb").setStyle("-fx-background-color: gray; -fx-background-insets: 0 4 0 4;");
-    }
-
-    public void changeNodeState(GroupNode groupNode, Label nameNode) {
+    public void changeNodeState(GroupNode groupNode, TextNode nameNode) {
         TagObject tagObject = mainInfoList.getTagObject(groupNode.getText(), nameNode.getText());
         if (nameNode.getTextFill().equals(ColorUtil.getTextColorPos()) || nameNode.getTextFill().equals(ColorUtil.getTextColorShr())) {
             nameNode.setTextFill(ColorUtil.getTextColorDef());
@@ -199,7 +195,7 @@ public class TagListViewR extends VBox implements BaseNode, InstanceRepo {
         if (select.size() < 1) {
             DataObject currentTargetedItem = target.getCurrentTarget();
             if (currentTargetedItem != null) {
-                currentTargetedItem.getInfoObjectList().add(tagObject);
+                currentTargetedItem.getTagList().add(tagObject);
             }
         } else {
             select.addTagObject(tagObject);
@@ -209,13 +205,16 @@ public class TagListViewR extends VBox implements BaseNode, InstanceRepo {
         if (select.size() < 1) {
             DataObject currentTargetedItem = target.getCurrentTarget();
             if (currentTargetedItem != null) {
-                currentTargetedItem.getInfoObjectList().remove(tagObject);
+                currentTargetedItem.getTagList().remove(tagObject);
             }
         } else {
             select.removeTagObject(tagObject);
         }
     }
 
+    public ScrollPane getTagListScrollPane() {
+        return tagListScrollPane;
+    }
     public TextField getTfSearch() {
         return tfSearch;
     }
@@ -229,13 +228,13 @@ public class TagListViewR extends VBox implements BaseNode, InstanceRepo {
         return expandedGroupsList;
     }
 
-    public Label getNodeSelectAll() {
+    public TextNode getNodeSelectAll() {
         return nodeSelectAll;
     }
-    public Label getNodeSelectNone() {
+    public TextNode getNodeSelectNone() {
         return nodeSelectNone;
     }
-    public Label getNodeSelectMerge() {
+    public TextNode getNodeSelectMerge() {
         return nodeSelectMerge;
     }
     public VBox getTagListBox() {

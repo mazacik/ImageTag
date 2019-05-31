@@ -1,30 +1,31 @@
 package database.list;
 
 import database.object.DataObject;
-import system.InstanceRepo;
-import system.SerializationUtil;
+import loader.DirectoryUtil;
+import system.Instances;
+import system.JsonUtil;
 
+import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class DataObjectListMain extends DataObjectList implements InstanceRepo {
-    private static final String dataFile = "data\\data.json";
+public class DataObjectListMain extends DataObjectList implements Instances {
+    private static final String dataFile = DirectoryUtil.getDirNameData() + File.separator + "data.json";
 
     public void sort() {
         super.sort(Comparator.comparing(DataObject::getName));
     }
-
-    public void writeToDisk() {
-        Type typeToken = SerializationUtil.TypeTokenEnum.MAINDATALIST.getValue();
-        String path = settings.getCurrentDirectory() + dataFile;
-        SerializationUtil.writeJSON(mainDataList, typeToken, path);
-        mainInfoList.writeDummyToDisk();
+    public static DataObjectListMain readFromDisk() {
+        Type typeToken = JsonUtil.TypeTokenEnum.MAINDATALIST.getValue();
+        String path = DirectoryUtil.getPathSource() + dataFile;
+        return (DataObjectListMain) JsonUtil.read(typeToken, path);
     }
-    public DataObjectListMain readFromDisk() {
-        Type typeToken = SerializationUtil.TypeTokenEnum.MAINDATALIST.getValue();
-        String path = settings.getCurrentDirectory() + dataFile;
-        return (DataObjectListMain) SerializationUtil.readJSON(typeToken, path);
+    public void writeToDisk() {
+        Type typeToken = JsonUtil.TypeTokenEnum.MAINDATALIST.getValue();
+        String path = DirectoryUtil.getPathSource() + dataFile;
+        JsonUtil.write(mainDataList, typeToken, path);
+        mainInfoList.writeDummyToDisk();
     }
 
     public ArrayList<Integer> getAllGroups() {

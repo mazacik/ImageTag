@@ -22,7 +22,7 @@ public class ColorData {
         this.textFillAlt = textFillAlt;
     }
 
-    public Region getNode() {
+    public Region getRegion() {
         return node;
     }
     public ColorType getBackgroundDef() {

@@ -1,11 +1,12 @@
 package database.object;
 
-import database.list.InfoObjectList;
+import database.list.TagList;
 import loader.DirectoryUtil;
 import loader.FileSupportUtil;
+import loader.cache.CacheCreator;
 import system.CommonUtil;
-import system.FileTypeEnum;
-import system.InstanceRepo;
+import system.FileType;
+import system.Instances;
 import user_interface.singleton.center.BaseTile;
 
 import java.io.File;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 public class DataObject implements Serializable {
     private String name;
     private int mergeID;
-    private InfoObjectList infoObjectList;
+    private TagList tagList;
 
     private transient String sourcePath;
     private transient String cachePath;
@@ -24,10 +25,10 @@ public class DataObject implements Serializable {
     public DataObject(File file) {
         this.name = file.getName();
         this.mergeID = 0;
-        this.infoObjectList = new InfoObjectList();
+        this.tagList = new TagList();
 
         this.sourcePath = file.getAbsolutePath();
-        this.cachePath = DirectoryUtil.getPathCache() + this.name + ".jpg";
+        this.cachePath = DirectoryUtil.getPathCacheProject() + this.name + CacheCreator.getCacheExt();
     }
 
     public void generateTileEffect() {
@@ -46,23 +47,23 @@ public class DataObject implements Serializable {
             return mergedObjects;
         }
     }
-    public FileTypeEnum getFileType() {
+    public FileType getFileType() {
         for (String ext : FileSupportUtil.getSprtImageExt()) {
             if (name.endsWith(ext)) {
-                return FileTypeEnum.IMAGE;
+                return FileType.IMAGE;
             }
         }
         for (String ext : FileSupportUtil.getSprtGifExt()) {
             if (name.endsWith(ext)) {
-                return FileTypeEnum.GIF;
+                return FileType.GIF;
             }
         }
         for (String ext : FileSupportUtil.getSprtVideoExt()) {
             if (name.endsWith(ext)) {
-                return FileTypeEnum.VIDEO;
+                return FileType.VIDEO;
             }
         }
-        InstanceRepo.logger.error(this, "file type not supported");
+        Instances.logger.error(this, "file type not supported");
         return null;
     }
 
@@ -72,8 +73,8 @@ public class DataObject implements Serializable {
     public int getMergeID() {
         return mergeID;
     }
-    public InfoObjectList getInfoObjectList() {
-        return infoObjectList;
+    public TagList getTagList() {
+        return tagList;
     }
 
     public BaseTile getBaseTile() {
@@ -89,8 +90,8 @@ public class DataObject implements Serializable {
     public void setBaseTile(BaseTile baseTile) {
         this.baseTile = (baseTile != null) ? baseTile : new BaseTile(this, null);
     }
-    public void setInfoObjectList(InfoObjectList infoObjectList) {
-        this.infoObjectList = infoObjectList;
+    public void setTagList(TagList tagList) {
+        this.tagList = tagList;
     }
     public void setMergeID(int mergeID) {
         this.mergeID = mergeID;

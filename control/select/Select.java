@@ -2,15 +2,15 @@ package control.select;
 
 import control.reload.Reload;
 import database.list.DataObjectList;
-import database.list.InfoObjectList;
+import database.list.TagList;
 import database.object.DataObject;
 import database.object.TagObject;
 import system.CommonUtil;
-import system.InstanceRepo;
+import system.Instances;
 
 import java.util.ArrayList;
 
-public class Select extends DataObjectList implements InstanceRepo {
+public class Select extends DataObjectList implements Instances {
     public boolean add(DataObject dataObject) {
         if (dataObject == null) return false;
         if (dataObject.getMergeID() != 0 && !tileView.getExpandedGroups().contains(dataObject.getMergeID())) {
@@ -78,19 +78,19 @@ public class Select extends DataObjectList implements InstanceRepo {
         }
     }
     public void merge() {
-        InfoObjectList infoObjectList = new InfoObjectList();
+        TagList tagList = new TagList();
         for (DataObject dataObject : this) {
-            for (TagObject tagObject : dataObject.getInfoObjectList()) {
-                if (!infoObjectList.contains(tagObject)) {
-                    infoObjectList.add(tagObject);
+            for (TagObject tagObject : dataObject.getTagList()) {
+                if (!tagList.contains(tagObject)) {
+                    tagList.add(tagObject);
                 }
             }
         }
 
-        int mergeID = CommonUtil.getHash();
+        int mergeID = CommonUtil.getRandomHash();
         for (DataObject dataObject : this) {
             dataObject.setMergeID(mergeID);
-            dataObject.setInfoObjectList(infoObjectList);
+            dataObject.setTagList(tagList);
         }
 
         reload.notifyChangeIn(Reload.Control.DATA, Reload.Control.INFO);
@@ -105,18 +105,18 @@ public class Select extends DataObjectList implements InstanceRepo {
             DataObjectList selectHelper = new DataObjectList();
             selectHelper.addAll(select);
 
-            InfoObjectList infoObjectList;
+            TagList tagList;
             for (DataObject dataObject : selectHelper) {
-                infoObjectList = dataObject.getInfoObjectList();
-                if (!infoObjectList.contains(tagObject)) {
-                    infoObjectList.add(tagObject);
+                tagList = dataObject.getTagList();
+                if (!tagList.contains(tagObject)) {
+                    tagList.add(tagObject);
                 }
             }
         }
     }
     public void removeTagObject(TagObject tagObject) {
         for (DataObject dataObject : this) {
-            dataObject.getInfoObjectList().remove(tagObject);
+            dataObject.getTagList().remove(tagObject);
         }
     }
 }

@@ -4,19 +4,22 @@ import database.object.DataObject;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import settings.SettingsEnum;
-import user_interface.factory.NodeFactory;
+import user_interface.factory.NodeUtil;
+import user_interface.factory.base.CheckBoxNode;
+import user_interface.factory.base.TextNode;
 import user_interface.factory.node.IntroWindowCell;
 import user_interface.factory.util.ColorData;
 import user_interface.factory.util.ColorUtil;
@@ -28,7 +31,7 @@ import user_interface.singleton.side.GroupNode;
 import java.util.ArrayList;
 import java.util.Random;
 
-public abstract class CommonUtil implements InstanceRepo {
+public abstract class CommonUtil implements Instances {
     private static int nightMode = settings.intValueOf(SettingsEnum.COLORMODE);
 
     private static Font font = new Font(settings.intValueOf(SettingsEnum.FONTSIZE));
@@ -83,9 +86,9 @@ public abstract class CommonUtil implements InstanceRepo {
 
     public static void updateNodeProperties(ArrayList<ColorData> colorDataList) {
         for (ColorData colorData : colorDataList) {
-            colorData.getNode().setBackground(getBackgroundDef(colorData));
-            if (colorData.getNode() instanceof Label) {
-                Label label = ((Label) colorData.getNode());
+            colorData.getRegion().setBackground(getBackgroundDef(colorData));
+            if (colorData.getRegion() instanceof TextNode) {
+                TextNode label = ((TextNode) colorData.getRegion());
                 if (colorData.getTextFillDef() != ColorType.NULL) {
                     label.setTextFill(getTextColorDef(colorData));
                 }
@@ -119,19 +122,19 @@ public abstract class CommonUtil implements InstanceRepo {
                         //label.setCursor(Cursor.HAND);
                     });
                 }
-            } else if (colorData.getNode() instanceof GroupNode) {
+            } else if (colorData.getRegion() instanceof GroupNode) {
                 if (colorData.getBackgroundAlt() != ColorType.NULL) {
-                    colorData.getNode().setOnMouseExited(event -> {
-                        colorData.getNode().setBackground(getBackgroundDef(colorData));
-                        //colorData.getNode().setCursor(Cursor.DEFAULT);
+                    colorData.getRegion().setOnMouseExited(event -> {
+                        colorData.getRegion().setBackground(getBackgroundDef(colorData));
+                        //colorData.getRegion().setCursor(Cursor.DEFAULT);
                     });
-                    colorData.getNode().setOnMouseEntered(event -> {
-                        colorData.getNode().setBackground(getBackgroundAlt(colorData));
-                        //colorData.getNode().setCursor(Cursor.HAND);
+                    colorData.getRegion().setOnMouseEntered(event -> {
+                        colorData.getRegion().setBackground(getBackgroundAlt(colorData));
+                        //colorData.getRegion().setCursor(Cursor.HAND);
                     });
                 }
-            } else if (colorData.getNode() instanceof IntroWindowCell) {
-                IntroWindowCell introWindowCell = ((IntroWindowCell) colorData.getNode());
+            } else if (colorData.getRegion() instanceof IntroWindowCell) {
+                IntroWindowCell introWindowCell = ((IntroWindowCell) colorData.getRegion());
                 introWindowCell.setBackground(getBackgroundDef(colorData));
                 introWindowCell.setOnMouseEntered(event -> {
                     introWindowCell.setBackground(getBackgroundAlt(colorData));
@@ -143,48 +146,52 @@ public abstract class CommonUtil implements InstanceRepo {
                     introWindowCell.setCursor(Cursor.DEFAULT);
                     introWindowCell.getNodeRemove().setVisible(false);
                 });
-            } else if (colorData.getNode() instanceof TextField) {
-                TextField textField = ((TextField) colorData.getNode());
+            } else if (colorData.getRegion() instanceof TextField) {
+                TextField textField = ((TextField) colorData.getRegion());
                 Color color = getTextColorDef(colorData);
                 String colorString = String.format("#%02X%02X%02X",
                         (int) (color.getRed() * 255),
                         (int) (color.getGreen() * 255),
                         (int) (color.getBlue() * 255));
                 textField.setStyle("-fx-text-fill: " + colorString + ";");
+            } else if (colorData.getRegion() instanceof CheckBoxNode) {
+                CheckBoxNode checkBoxNode = ((CheckBoxNode) colorData.getRegion());
+                if (colorData.getTextFillDef() != ColorType.NULL) {
+                    checkBoxNode.setTextFill(getTextColorDef(colorData));
+                }
             }
         }
     }
     public static void updateNodeProperties(Scene scene) {
         ArrayList<ColorData> colorDataList = new ArrayList<>();
-        for (ColorData colorData : NodeFactory.getNodeList()) {
-            if (colorData.getNode().getScene() != null && colorData.getNode().getScene().equals(scene)) {
+        for (ColorData colorData : NodeUtil.getNodeList()) {
+            if (colorData.getRegion().getScene() != null && colorData.getRegion().getScene().equals(scene)) {
                 colorDataList.add(colorData);
             }
         }
         updateNodeProperties(colorDataList);
     }
-    public static void updateNodeProperties(VBox vBox) {
+    public static void updateNodeProperties(Pane pane) {
         ArrayList<ColorData> colorDataList = new ArrayList<>();
-        for (ColorData colorData : NodeFactory.getNodeList()) {
-            if (colorData.getNode().getParent() != null && colorData.getNode().getParent().equals(vBox)) {
+        for (ColorData colorData : NodeUtil.getNodeList()) {
+            Region region = colorData.getRegion();
+            Parent parent = region.getParent();
+            if ((parent != null && parent.equals(pane)) || region == pane) {
                 colorDataList.add(colorData);
             }
         }
         updateNodeProperties(colorDataList);
     }
     public static void updateNodeProperties() {
-        updateNodeProperties(NodeFactory.getNodeList());
+        updateNodeProperties(NodeUtil.getNodeList());
     }
 
     public static Font getFont() {
         return font;
     }
-    public static int getPadding() {
-        return settings.intValueOf(SettingsEnum.GLOBAL_PADDING);
-    }
 
     public static Image textToImage(String text) {
-        Label label = new Label(text);
+        TextNode label = new TextNode(text);
         label.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, null, null)));
         label.setTextFill(Color.RED);
         label.setWrapText(true);
@@ -206,7 +213,7 @@ public abstract class CommonUtil implements InstanceRepo {
     public static void swapViewMode() {
         MainScene.swapViewMode();
     }
-    public static boolean isFullView() {
+    public static boolean isCenterFullscreen() {
         return MainScene.isFullView();
     }
     public static DataObject getRandomDataObject() {
@@ -230,7 +237,7 @@ public abstract class CommonUtil implements InstanceRepo {
             return null;
         }
     }
-    public static int getHash() {
+    public static int getRandomHash() {
         return new Random().nextInt();
     }
 }
