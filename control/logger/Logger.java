@@ -1,6 +1,7 @@
 package control.logger;
 
-public final class Logger {
+@SuppressWarnings("FieldCanBeLocal")
+public class Logger {
     private final int classNameLength = 16;
     private boolean active = false;
 
@@ -28,24 +29,24 @@ public final class Logger {
         private static final Logger instance = new Logger();
     }
     private String formatSource(Object source) {
-        String value;
+        StringBuilder sb;
         if (source instanceof Class)
-            value = ((Class) source).getSimpleName().trim();
+            sb = new StringBuilder(((Class) source).getSimpleName().trim());
         else
-            value = source.getClass().getSimpleName().trim();
+            sb = new StringBuilder(source.getClass().getSimpleName().trim());
 
-        int length = value.length();
+        int length = sb.length();
 
         if (length >= classNameLength) {
-            value = value.substring(0, classNameLength - 1);
-            value += "~";
+            sb = new StringBuilder(sb.substring(0, classNameLength - 1));
+            sb.append("~");
         }
 
         while (length < classNameLength) {
-            value += " ";
+            sb.append(" ");
             length++;
         }
 
-        return value;
+        return sb.toString();
     }
 }

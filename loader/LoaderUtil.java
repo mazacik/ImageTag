@@ -19,6 +19,7 @@ public abstract class LoaderUtil implements Instances {
         new LoaderThread().start();
         SceneUtil.createMainScene();
         SceneUtil.showMainScene();
+        SceneUtil.initStageLayoutMain();
     }
 
     private static ArrayList<File> getAllFiles(File directory) {
@@ -97,7 +98,7 @@ public abstract class LoaderUtil implements Instances {
         CacheReader.readCache(newDataObjects);
         mainDataList.addAll(newDataObjects);
         mainDataList.sort();
-        filter.apply();
+        filter.refresh();
         reload.doReload();
         */
     }

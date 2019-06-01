@@ -9,17 +9,17 @@ import system.Instances;
 import java.util.ArrayList;
 
 public abstract class FilterManager implements Instances {
-    private static final DataObjectList newDataObjects = new DataObjectList();
-    private static final double FACTOR = 0.5;
     private static boolean showImages = true;
     private static boolean showGifs = true;
     private static boolean showVideos = true;
     private static boolean sessionOnly = false;
-    private static boolean enableLEQ = false;
-    private static int tagLimit = 0;
+    private static final DataObjectList newDataObjects = new DataObjectList();
+    private static final double SIMILARITY_FACTOR = 0.5;
+    private static boolean enableLimit = false;
     public static void addNewDataObject(DataObject dataObject) {
         newDataObjects.add(dataObject);
     }
+
     private static boolean isWhitelistOk(TagList tagList) {
         Filter.FilterMode whitelistMode = filter.getWhitelistMode();
         if (infoListWhite.isEmpty()) {
@@ -33,7 +33,6 @@ public abstract class FilterManager implements Instances {
                 }
             }
         }
-
         return false;
     }
     private static boolean isBlacklistOk(TagList tagList) {
@@ -49,10 +48,15 @@ public abstract class FilterManager implements Instances {
                 }
             }
         }
-
         return true;
     }
-    public static void apply() {
+    private static int limit = 0;
+    public static void reset() {
+        infoListWhite.clear();
+        infoListBlack.clear();
+        filter.setAll(mainDataList);
+    }
+    public static void refresh() {
         filter.clear();
         for (DataObject dataObject : mainDataList) {
             switch (dataObject.getFileType()) {
@@ -70,17 +74,12 @@ public abstract class FilterManager implements Instances {
             if (sessionOnly && !newDataObjects.contains(dataObject)) continue;
 
             TagList tagList = dataObject.getTagList();
-            if (enableLEQ && tagList.size() > tagLimit) continue;
+            if (enableLimit && tagList.size() > limit) continue;
 
             if (isWhitelistOk(tagList) && isBlacklistOk(tagList)) {
                 filter.add(dataObject);
             }
         }
-    }
-    public static void reset() {
-        infoListWhite.clear();
-        infoListBlack.clear();
-        filter.setAll(mainDataList);
     }
     public static void showSimilar(DataObject dataObject) {
         infoListWhite.clear();
@@ -96,7 +95,7 @@ public abstract class FilterManager implements Instances {
 
                 if (sameTags.size() != 0) {
                     double similarity = (double) sameTags.size() / (double) query.size();
-                    if (similarity >= FACTOR) {
+                    if (similarity >= SIMILARITY_FACTOR) {
                         filter.add(iterator);
                     }
                 }
@@ -128,16 +127,16 @@ public abstract class FilterManager implements Instances {
     public static void setSessionOnly(boolean showSessionOnly) {
         FilterManager.sessionOnly = showSessionOnly;
     }
-    public static boolean isEnableLEQ() {
-        return enableLEQ;
+    public static boolean isEnableLimit() {
+        return enableLimit;
     }
-    public static void setEnableLEQ(boolean enableLEQ) {
-        FilterManager.enableLEQ = enableLEQ;
+    public static void setEnableLimit(boolean enableLimit) {
+        FilterManager.enableLimit = enableLimit;
     }
-    public static int getTagLimit() {
-        return tagLimit;
+    public static int getLimit() {
+        return limit;
     }
-    public static void setTagLimit(int tagLimit) {
-        FilterManager.tagLimit = tagLimit;
+    public static void setLimit(int limit) {
+        FilterManager.limit = limit;
     }
 }

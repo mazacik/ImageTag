@@ -85,9 +85,9 @@ public class TagListViewL extends VBox implements BaseNode, Instances {
         ArrayList<String> groupNames = mainInfoList.getGroups();
         for (String groupName : groupNames) {
             GroupNode groupNode;
-            if (filter.isGroupWhitelisted(groupName)) {
+            if (filter.isWhitelisted(groupName)) {
                 groupNode = NodeUtil.getGroupNode(this, groupName, textColorPositive);
-            } else if (filter.isGroupBlacklisted(groupName)) {
+            } else if (filter.isBlacklisted(groupName)) {
                 groupNode = NodeUtil.getGroupNode(this, groupName, textColorNegative);
             } else {
                 groupNode = NodeUtil.getGroupNode(this, groupName, textColorDefault);
@@ -97,9 +97,9 @@ public class TagListViewL extends VBox implements BaseNode, Instances {
             for (String tagName : mainInfoList.getNames(groupName)) {
                 TextNode nameNode = new TextNode(tagName, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
 
-                if (filter.isTagObjectWhitelisted(groupName, tagName)) {
+                if (filter.isWhitelisted(groupName, tagName)) {
                     nameNode.setTextFill(textColorPositive);
-                } else if (filter.isTagObjectBlacklisted(groupName, tagName)) {
+                } else if (filter.isBlacklisted(groupName, tagName)) {
                     nameNode.setTextFill(textColorNegative);
                 } else {
                     nameNode.setTextFill(textColorDefault);
@@ -135,43 +135,43 @@ public class TagListViewL extends VBox implements BaseNode, Instances {
         if (nameNode == null) {
             String groupName = groupNode.getText();
             Color textColor;
-            if (filter.isGroupWhitelisted(groupName)) {
-                filter.blacklistGroup(groupName);
+            if (filter.isWhitelisted(groupName)) {
+                filter.blacklist(groupName);
                 textColor = ColorUtil.getTextColorNeg();
-            } else if (filter.isGroupBlacklisted(groupName)) {
-                filter.unlistGroup(groupName);
+            } else if (filter.isBlacklisted(groupName)) {
+                filter.unlist(groupName);
                 textColor = ColorUtil.getTextColorDef();
             } else {
-                filter.whitelistGroup(groupName);
+                filter.whitelist(groupName);
                 textColor = ColorUtil.getTextColorPos();
             }
             groupNode.setTextFill(textColor);
             groupNode.getNameNodes().forEach(node -> node.setTextFill(textColor));
         } else {
             TagObject tagObject = mainInfoList.getTagObject(groupNode.getText(), nameNode.getText());
-            if (filter.isTagObjectWhitelisted(tagObject)) {
-                filter.blacklistTagObject(tagObject);
-                if (filter.isGroupBlacklisted(tagObject.getGroup())) {
+            if (filter.isWhitelisted(tagObject)) {
+                filter.blacklist(tagObject);
+                if (filter.isBlacklisted(tagObject.getGroup())) {
                     groupNode.setTextFill(ColorUtil.getTextColorNeg());
-                } else if (!filter.isGroupWhitelisted(tagObject.getGroup())) {
+                } else if (!filter.isWhitelisted(tagObject.getGroup())) {
                     groupNode.setTextFill(ColorUtil.getTextColorDef());
                 }
                 nameNode.setTextFill(ColorUtil.getTextColorNeg());
-            } else if (filter.isTagObjectBlacklisted(tagObject)) {
-                filter.unlistTagObject(tagObject);
-                if (!filter.isGroupWhitelisted(tagObject.getGroup()) && !filter.isGroupBlacklisted(tagObject.getGroup())) {
+            } else if (filter.isBlacklisted(tagObject)) {
+                filter.unlist(tagObject);
+                if (!filter.isWhitelisted(tagObject.getGroup()) && !filter.isBlacklisted(tagObject.getGroup())) {
                     groupNode.setTextFill(ColorUtil.getTextColorDef());
                 }
                 nameNode.setTextFill(ColorUtil.getTextColorDef());
             } else {
-                filter.whitelistTagObject(tagObject);
-                if (filter.isGroupWhitelisted(tagObject.getGroup())) {
+                filter.whitelist(tagObject);
+                if (filter.isWhitelisted(tagObject.getGroup())) {
                     groupNode.setTextFill(ColorUtil.getTextColorPos());
                 }
                 nameNode.setTextFill(ColorUtil.getTextColorPos());
             }
         }
-        FilterManager.apply();
+        FilterManager.refresh();
     }
 
     public ScrollPane getTagListScrollPane() {

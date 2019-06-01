@@ -1,6 +1,5 @@
 package user_interface.scene;
 
-import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -88,6 +87,7 @@ public class ProjectScene implements Instances {
             settings.addProjectPath(projectFile);
             LoaderUtil.startLoading(workingDirectory);
         });
+        btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> SceneUtil.showIntroScene());
 
         HBox hBoxCreateCancel = NodeUtil.getHBox(ColorType.DEF, btnCreateProject, btnCancel);
 
@@ -113,8 +113,6 @@ public class ProjectScene implements Instances {
         return projectScene;
     }
     void show() {
-        mainStage.setOpacity(0);
         mainStage.setScene(scene);
-        Platform.runLater(() -> mainStage.setOpacity(1));
     }
 }

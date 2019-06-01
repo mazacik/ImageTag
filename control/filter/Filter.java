@@ -13,53 +13,53 @@ public class Filter extends DataObjectList implements Instances {
         blacklistMode = FilterMode.Any;
     }
 
-    public void whitelistTagObject(TagObject tagObject) {
-        if (!isTagObjectWhitelisted(tagObject)) {
+    public void whitelist(TagObject tagObject) {
+        if (!isWhitelisted(tagObject)) {
             infoListWhite.add(tagObject);
             infoListBlack.remove(tagObject);
         }
     }
-    public void blacklistTagObject(TagObject tagObject) {
-        if (!isTagObjectBlacklisted(tagObject)) {
+    public void blacklist(TagObject tagObject) {
+        if (!isBlacklisted(tagObject)) {
             infoListWhite.remove(tagObject);
             infoListBlack.add(tagObject);
         }
     }
-    public void unlistTagObject(TagObject tagObject) {
+    public void unlist(TagObject tagObject) {
         infoListWhite.remove(tagObject);
         infoListBlack.remove(tagObject);
     }
 
-    public void whitelistGroup(String group) {
+    public void whitelist(String group) {
         for (String name : mainInfoList.getNames(group)) {
-            whitelistTagObject(mainInfoList.getTagObject(group, name));
+            whitelist(mainInfoList.getTagObject(group, name));
         }
     }
-    public void blacklistGroup(String group) {
+    public void blacklist(String group) {
         for (String name : mainInfoList.getNames(group)) {
-            blacklistTagObject(mainInfoList.getTagObject(group, name));
+            blacklist(mainInfoList.getTagObject(group, name));
         }
     }
-    public void unlistGroup(String group) {
+    public void unlist(String group) {
         for (String name : mainInfoList.getNames(group)) {
-            unlistTagObject(mainInfoList.getTagObject(group, name));
+            unlist(mainInfoList.getTagObject(group, name));
         }
     }
 
-    public boolean isGroupWhitelisted(String group) {
+    public boolean isWhitelisted(String group) {
         boolean value = true;
         for (String name : mainInfoList.getNames(group)) {
-            if (!isTagObjectWhitelisted(group, name)) {
+            if (!isWhitelisted(group, name)) {
                 value = false;
                 break;
             }
         }
         return value;
     }
-    public boolean isGroupBlacklisted(String group) {
+    public boolean isBlacklisted(String group) {
         boolean value = true;
         for (String name : mainInfoList.getNames(group)) {
-            if (!isTagObjectBlacklisted(group, name)) {
+            if (!isBlacklisted(group, name)) {
                 value = false;
                 break;
             }
@@ -67,19 +67,20 @@ public class Filter extends DataObjectList implements Instances {
         return value;
     }
 
-    public boolean isTagObjectWhitelisted(TagObject tagObject) {
+    public boolean isWhitelisted(TagObject tagObject) {
         return infoListWhite.contains(tagObject);
     }
-    public boolean isTagObjectWhitelisted(String group, String name) {
+    public boolean isWhitelisted(String group, String name) {
         return infoListWhite.contains(mainInfoList.getTagObject(group, name));
     }
-    public boolean isTagObjectBlacklisted(TagObject tagObject) {
+    public boolean isBlacklisted(TagObject tagObject) {
         return infoListBlack.contains(tagObject);
     }
-    public boolean isTagObjectBlacklisted(String group, String name) {
+    public boolean isBlacklisted(String group, String name) {
         return infoListBlack.contains(mainInfoList.getTagObject(group, name));
     }
 
+    //todo re-implement this
     public FilterMode getWhitelistMode() {
         return whitelistMode;
     }

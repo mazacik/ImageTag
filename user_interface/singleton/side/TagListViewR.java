@@ -14,6 +14,7 @@ import system.CommonUtil;
 import system.Direction;
 import system.Instances;
 import user_interface.factory.NodeUtil;
+import user_interface.factory.base.EditNode;
 import user_interface.factory.base.Separator;
 import user_interface.factory.base.TextNode;
 import user_interface.factory.menu.ClickMenuLeft;
@@ -27,7 +28,7 @@ import java.util.ArrayList;
 
 public class TagListViewR extends VBox implements BaseNode, Instances {
     private final TextNode nodeTitle;
-    private final TextField tfSearch;
+    private final EditNode tfSearch;
     private String actualText = "";
 
     private final TextNode nodeSelectAll;
@@ -45,11 +46,7 @@ public class TagListViewR extends VBox implements BaseNode, Instances {
         nodeTitle.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
         nodeTitle.prefWidthProperty().bind(this.widthProperty());
 
-        tfSearch = new TextField();
-        tfSearch.setFont(CommonUtil.getFont());
-        tfSearch.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
-        tfSearch.setPromptText("Start typing..");
-        NodeUtil.addToManager(tfSearch, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+        tfSearch = new EditNode("Search tags..");
 
         nodeSelectAll = new TextNode("Select All", colorDataSimple);
         nodeSelectNone = new TextNode("Select None", colorDataSimple);

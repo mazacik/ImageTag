@@ -21,7 +21,7 @@ public class Target implements Instances {
         /* store old target position */
         previousTarget = currentTarget;
 
-        /* apply new target effect */
+        /* refresh new target effect */
         currentTarget = dataObject;
         BaseTile baseTile = currentTarget.getBaseTile();
         if (baseTile != null) baseTile.generateEffect();

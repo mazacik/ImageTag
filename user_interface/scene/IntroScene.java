@@ -1,11 +1,12 @@
 package user_interface.scene;
 
-import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -32,48 +33,21 @@ public class IntroScene implements Instances {
     }
 
     private Scene create() {
-        VBox vBoxL = NodeUtil.getVBox(ColorType.ALT);
-        vBoxL.setMinWidth(300);
-        vBoxL.setPadding(new Insets(5));
-        vBoxL.setAlignment(Pos.CENTER);
+        VBox vBoxRecentProjects = NodeUtil.getVBox(ColorType.ALT);
+        vBoxRecentProjects.setMinWidth(300);
+        vBoxRecentProjects.setPadding(new Insets(5));
 
-        if (settings.getRecentProjects().size() == 0) {
-            vBoxL.getChildren().add(new TextNode("No recent directories", ColorType.ALT, ColorType.DEF));
-        } else {
-            new ArrayList<>(settings.getRecentProjects()).forEach(recentProject -> {
-                File projectFile = new File(recentProject);
-                if (projectFile.exists()) {
-                    Project project = Project.readFromDisk(recentProject);
+        VBox vBoxStartMenu = NodeUtil.getVBox(ColorType.DEF);
+        vBoxStartMenu.setSpacing(10);
+        vBoxStartMenu.setMinWidth(350);
+        vBoxStartMenu.setAlignment(Pos.CENTER);
+        vBoxStartMenu.setPrefWidth(SizeUtil.getUsableScreenWidth());
 
-                    IntroWindowCell introWindowCell = NodeUtil.getIntroWindowCell(recentProject, project.getSourceDirectoryList().get(0));
-                    introWindowCell.setOnMouseClicked(event -> {
-                        if (event.getButton() == MouseButton.PRIMARY) {
-                            if (event.getPickResult().getIntersectedNode().getParent().equals(introWindowCell.getNodeRemove())) {
-                                settings.getRecentProjects().remove(introWindowCell.getWorkingDirectory());
-                                vBoxL.getChildren().remove(introWindowCell);
-                            } else {
-                                LoaderUtil.startLoading(introWindowCell.getWorkingDirectory());
-                            }
-                        }
-                    });
-                    vBoxL.getChildren().add(introWindowCell);
-                } else {
-                    logger.debug(this, recentProject + " not found, removing it from recent directory list");
-                    settings.getRecentProjects().remove(recentProject);
-                }
-            });
-        }
+        HBox hBoxLayoutHelper = NodeUtil.getHBox(ColorType.DEF, vBoxRecentProjects, vBoxStartMenu);
+        VBox.setVgrow(hBoxLayoutHelper, Priority.ALWAYS);
 
-        TextNode btnNewProject = new TextNode("Create a New Project", ColorType.DEF, ColorType.DEF, ColorType.DEF, ColorType.ALT);
-        btnNewProject.setFocusTraversable(false);
-        btnNewProject.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY) {
-                SceneUtil.showProjectScene();
-            }
-        });
         TextNode btnOpenProject = new TextNode("Open Project", ColorType.DEF, ColorType.DEF, ColorType.DEF, ColorType.ALT);
-        btnOpenProject.setFocusTraversable(false);
-        btnOpenProject.setOnMouseClicked(event -> {
+        btnOpenProject.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 String projectFilePath = new FileChooserStage(mainStage, "Open Project", System.getProperty("user.dir")).getResultValue();
                 if (!projectFilePath.isEmpty()) {
@@ -84,27 +58,50 @@ public class IntroScene implements Instances {
             }
         });
 
-        VBox vBoxR = NodeUtil.getVBox(ColorType.DEF);
-        vBoxR.getChildren().add(btnOpenProject);
-        vBoxR.getChildren().add(btnNewProject);
-        vBoxR.getChildren().add(new ColorModeSwitch());
-        vBoxR.setSpacing(10);
-        vBoxR.setMinWidth(350);
-        vBoxR.setAlignment(Pos.CENTER);
-        vBoxR.setPrefWidth(SizeUtil.getUsableScreenWidth());
+        TextNode btnNewProject = new TextNode("Create a New Project", ColorType.DEF, ColorType.DEF, ColorType.DEF, ColorType.ALT);
+        btnNewProject.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                SceneUtil.showProjectScene();
+            }
+        });
 
-        HBox hBoxGrowHelper = NodeUtil.getHBox(ColorType.DEF, vBoxL, vBoxR);
-        VBox.setVgrow(hBoxGrowHelper, Priority.ALWAYS);
+        vBoxStartMenu.getChildren().add(btnOpenProject);
+        vBoxStartMenu.getChildren().add(btnNewProject);
+        vBoxStartMenu.getChildren().add(new ColorModeSwitch());
 
-        VBox vBoxMain = NodeUtil.getVBox(ColorType.DEF);
-        vBoxMain.setAlignment(Pos.CENTER);
-        mainStage.setTitle("Welcome");
-        Scene introScene = new Scene(vBoxMain);
-        vBoxMain.getChildren().add(hBoxGrowHelper);
-        introScene.setOnKeyPressed(event -> {
+        if (settings.getRecentProjects().size() == 0) {
+            vBoxRecentProjects.getChildren().add(new TextNode("No recent directories", ColorType.ALT, ColorType.DEF));
+        } else {
+            new ArrayList<>(settings.getRecentProjects()).forEach(recentProject -> {
+                File projectFile = new File(recentProject);
+                if (projectFile.exists()) {
+                    Project project = Project.readFromDisk(recentProject);
+
+                    IntroWindowCell introWindowCell = NodeUtil.getIntroWindowCell(recentProject, project.getSourceDirectoryList().get(0));
+                    introWindowCell.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+                        if (event.getButton() == MouseButton.PRIMARY) {
+                            if (event.getPickResult().getIntersectedNode().getParent().equals(introWindowCell.getNodeRemove())) {
+                                settings.getRecentProjects().remove(introWindowCell.getWorkingDirectory());
+                                vBoxRecentProjects.getChildren().remove(introWindowCell);
+                            } else {
+                                LoaderUtil.startLoading(introWindowCell.getWorkingDirectory());
+                            }
+                        }
+                    });
+                    vBoxRecentProjects.getChildren().add(introWindowCell);
+                } else {
+                    logger.debug(this, recentProject + " not found, removing it from recent projects");
+                    settings.getRecentProjects().remove(recentProject);
+                }
+            });
+        }
+
+        Scene introScene = new Scene(NodeUtil.getVBox(ColorType.DEF, hBoxLayoutHelper));
+        introScene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 if (!settings.getRecentProjects().isEmpty()) {
-                    LoaderUtil.startLoading((((IntroWindowCell) vBoxL.getChildren().get(0)).getWorkingDirectory()));
+                    IntroWindowCell cell = (IntroWindowCell) vBoxRecentProjects.getChildren().get(0);
+                    LoaderUtil.startLoading(cell.getWorkingDirectory());
                 } else {
                     SceneUtil.showProjectScene();
                 }
@@ -115,20 +112,6 @@ public class IntroScene implements Instances {
         return introScene;
     }
     void show() {
-        mainStage.setOpacity(0);
         mainStage.setScene(introScene);
-        mainStage.show();
-
-        double width = SizeUtil.getUsableScreenWidth() / 2.5;
-        double height = SizeUtil.getUsableScreenHeight() / 2;
-        mainStage.setWidth(width);
-        mainStage.setHeight(height);
-        mainStage.setMinWidth(width);
-        mainStage.setMinHeight(height);
-        mainStage.centerOnScreen();
-
-        Platform.runLater(() -> mainStage.setOpacity(1));
-
-        logger.debug(this, "waiting for directory");
     }
 }

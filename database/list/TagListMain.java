@@ -61,7 +61,7 @@ public class TagListMain extends TagList implements Instances {
     public boolean remove(TagObject tagObject) {
         if (tagObject == null) return false;
         if (super.remove(tagObject)) {
-            //filter.apply();
+            //filter.refresh();
             reload.notifyChangeIn(Reload.Control.INFO);
             return true;
         }

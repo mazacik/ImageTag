@@ -12,7 +12,6 @@ import user_interface.factory.NodeUtil;
 import user_interface.factory.util.enums.ColorType;
 import user_interface.singleton.utils.EventUtil;
 import user_interface.singleton.utils.SizeUtil;
-import user_interface.singleton.utils.StyleUtil;
 
 public class MainScene implements Instances {
     private static ObservableList<Node> panes;
@@ -21,6 +20,15 @@ public class MainScene implements Instances {
     MainScene() {
         mainScene = create();
     }
+
+    private Scene create() {
+        HBox mainHBox = NodeUtil.getHBox(ColorType.DEF, tagListViewL, tileView, tagListViewR);
+        panes = mainHBox.getChildren();
+        Scene mainScene = new Scene(NodeUtil.getVBox(ColorType.DEF, topMenu, mainHBox));
+        CommonUtil.updateNodeProperties();
+        return mainScene;
+    }
+    //todo move these two methods somewhere else
     public static void swapViewMode() {
         if (panes.contains(mediaView)) {
             if (mediaView.getControlsPopupDelay().getStatus() == Animation.Status.RUNNING) {
@@ -44,24 +52,10 @@ public class MainScene implements Instances {
     public static boolean isFullView() {
         return panes.contains(mediaView);
     }
-    private Scene create() {
-        HBox mainHBox = NodeUtil.getHBox(ColorType.DEF, tagListViewL, tileView, tagListViewR);
-        panes = mainHBox.getChildren();
-        Scene mainScene = new Scene(NodeUtil.getVBox(ColorType.DEF, topMenu, mainHBox));
-        CommonUtil.updateNodeProperties();
-        return mainScene;
-    }
     void show() {
         mainStage.setOpacity(0);
-        mainStage.setMinWidth(100 + SizeUtil.getMinWidthSideLists() * 2 + SizeUtil.getGalleryIconSize());
-        mainStage.setMinHeight(100 + SizeUtil.getPrefHeightTopMenu() + SizeUtil.getGalleryIconSize());
         mainStage.setScene(mainScene);
-        mainStage.setMaximized(true);
         tileView.requestFocus();
-
-        StyleUtil.applyScrollbarStyle(tileView);
-        StyleUtil.applyScrollbarStyle(tagListViewL.getTagListScrollPane());
-        StyleUtil.applyScrollbarStyle(tagListViewR.getTagListScrollPane());
 
         SizeUtil.stageWidthChangeHandler();
         SizeUtil.stageHeightChangehandler();
@@ -71,5 +65,9 @@ public class MainScene implements Instances {
         Platform.runLater(() -> mainStage.setOpacity(1));
 
         EventUtil.init();
+
+        //StyleUtil.applyScrollbarStyle(tileView);
+        //StyleUtil.applyScrollbarStyle(tagListViewL.getTagListScrollPane());
+        //StyleUtil.applyScrollbarStyle(tagListViewR.getTagListScrollPane());
     }
 }

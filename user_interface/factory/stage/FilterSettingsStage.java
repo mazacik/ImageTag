@@ -63,9 +63,9 @@ public class FilterSettingsStage extends Stage {
                 FilterManager.setShowGifs(cbGifs.isSelected());
                 FilterManager.setShowVideos(cbVideos.isSelected());
                 FilterManager.setSessionOnly(cbSession.isSelected());
-                FilterManager.setEnableLEQ(cbLimit.isSelected());
-                FilterManager.setTagLimit(Integer.valueOf(tfLimit.getText()));
-                FilterManager.apply();
+                FilterManager.setEnableLimit(cbLimit.isSelected());
+                FilterManager.setLimit(Integer.valueOf(tfLimit.getText()));
+                FilterManager.refresh();
                 Instances.reload.doReload();
                 this.hide();
             }
@@ -99,8 +99,8 @@ public class FilterSettingsStage extends Stage {
         cbGifs.setSelected(FilterManager.isShowGifs());
         cbVideos.setSelected(FilterManager.isShowVideos());
         cbSession.setSelected(FilterManager.isSessionOnly());
-        cbLimit.setSelected(FilterManager.isEnableLEQ());
-        tfLimit.setText(String.valueOf(FilterManager.getTagLimit()));
+        cbLimit.setSelected(FilterManager.isEnableLimit());
+        tfLimit.setText(String.valueOf(FilterManager.getLimit()));
 
         this.show();
     }

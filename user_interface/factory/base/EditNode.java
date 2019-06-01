@@ -10,6 +10,7 @@ public class EditNode extends TextField {
         this.setFont(CommonUtil.getFont());
         this.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
         this.setPromptText(promptText);
+        this.skinProperty().addListener((observable, oldValue, newValue) -> setStyle("-fx-prompt-text-fill: grey;"));
 
         switch (type) {
             case DEFAULT:
