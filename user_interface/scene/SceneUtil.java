@@ -1,14 +1,16 @@
 package user_interface.scene;
 
-import system.Instances;
+import javafx.stage.Stage;
+import lifecycle.InstanceManager;
 import user_interface.singleton.utils.SizeUtil;
 
-public class SceneUtil implements Instances {
+public class SceneUtil {
     private static IntroScene introScene;
     private static ProjectScene projectScene;
     private static MainScene mainScene;
 
     public static void initStageLayoutIntro() {
+        Stage mainStage = InstanceManager.getMainStage();
         mainStage.setTitle("Welcome");
         mainStage.show();
         double width = SizeUtil.getUsableScreenWidth() / 2.5;
@@ -20,6 +22,7 @@ public class SceneUtil implements Instances {
         mainStage.centerOnScreen();
     }
     public static void initStageLayoutMain() {
+        Stage mainStage = InstanceManager.getMainStage();
         mainStage.setMinWidth(100 + SizeUtil.getMinWidthSideLists() * 2 + SizeUtil.getGalleryIconSize());
         mainStage.setMinHeight(100 + SizeUtil.getPrefHeightTopMenu() + SizeUtil.getGalleryIconSize());
         mainStage.setMaximized(true);
@@ -42,11 +45,11 @@ public class SceneUtil implements Instances {
         projectScene.show();
     }
     public static void showMainScene() {
-        mainStage.setOnCloseRequest(event -> {
-            mediaView.getVideoPlayer().dispose();
-            settings.writeToDisk();
-            mainDataList.writeToDisk();
-            logger.debug(mainStage, "application exit");
+        InstanceManager.getMainStage().setOnCloseRequest(event -> {
+            InstanceManager.getMediaView().getVideoPlayer().dispose();
+            InstanceManager.getSettings().writeToDisk();
+            InstanceManager.getMainDataList().writeToDisk();
+            InstanceManager.getLogger().debug(SceneUtil.class, "application exit");
         });
         mainScene.show();
     }

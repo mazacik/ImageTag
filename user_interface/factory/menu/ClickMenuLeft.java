@@ -8,8 +8,8 @@ import javafx.scene.layout.Border;
 import javafx.scene.layout.Region;
 import javafx.stage.Popup;
 import javafx.stage.Window;
+import lifecycle.InstanceManager;
 import system.Direction;
-import system.Instances;
 import user_interface.factory.NodeUtil;
 import user_interface.factory.base.TextNode;
 
@@ -72,7 +72,7 @@ public class ClickMenuLeft extends ClickMenuBase {
                     }
                     y -= rootBorder.getInsets().getTop();
                 }
-                this.show(Instances.mainStage, x, y);
+                this.show(InstanceManager.getMainStage(), x, y);
                 this.setAnchorX(this.getAnchorX() - this.getWidth());
                 break;
             case RIGHT:
@@ -84,7 +84,7 @@ public class ClickMenuLeft extends ClickMenuBase {
                     }
                     y -= rootBorder.getInsets().getTop();
                 }
-                this.show(Instances.mainStage, x, y);
+                this.show(InstanceManager.getMainStage(), x, y);
                 break;
             case DOWN:
                 x = rootBounds.getMinX();
@@ -92,7 +92,7 @@ public class ClickMenuLeft extends ClickMenuBase {
                 if (rootBorder != null) {
                     y -= rootBorder.getInsets().getBottom();
                 }
-                this.show(Instances.mainStage, x, y);
+                this.show(InstanceManager.getMainStage(), x, y);
                 break;
         }
     }

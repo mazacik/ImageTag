@@ -10,9 +10,9 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import lifecycle.InstanceManager;
 import system.CommonUtil;
 import system.Direction;
-import system.Instances;
 import user_interface.factory.NodeUtil;
 import user_interface.factory.base.TextNode;
 import user_interface.factory.menu.ClickMenuLeft;
@@ -25,7 +25,7 @@ import user_interface.singleton.utils.SizeUtil;
 
 import java.util.ArrayList;
 
-public class TagListViewL extends VBox implements BaseNode, Instances {
+public class TagListViewL extends VBox implements BaseNode {
     private final TextNode nodeTitle;
     private final VBox tagListBox;
     private final ScrollPane tagListScrollPane;
@@ -50,9 +50,9 @@ public class TagListViewL extends VBox implements BaseNode, Instances {
         btnNew.prefWidthProperty().bind(this.widthProperty());
         btnNew.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                mainInfoList.add(new InfoObjectEditStage().getResult());
-                mainInfoList.sort();
-                reload.doReload();
+                InstanceManager.getMainInfoList().add(new InfoObjectEditStage().getResult());
+                InstanceManager.getMainInfoList().sort();
+                InstanceManager.getReload().doReload();
             }
         });
 
@@ -73,7 +73,7 @@ public class TagListViewL extends VBox implements BaseNode, Instances {
     }
 
     public boolean reload() {
-        nodeTitle.setText("Filter: " + filter.size() + " matches");
+        nodeTitle.setText("Filter: " + InstanceManager.getFilter().size() + " matches");
 
         ObservableList<Node> tagListNodes = tagListBox.getChildren();
         tagListNodes.clear();
@@ -82,24 +82,24 @@ public class TagListViewL extends VBox implements BaseNode, Instances {
         Color textColorPositive = ColorUtil.getTextColorPos();
         Color textColorNegative = ColorUtil.getTextColorNeg();
 
-        ArrayList<String> groupNames = mainInfoList.getGroups();
+        ArrayList<String> groupNames = InstanceManager.getMainInfoList().getGroups();
         for (String groupName : groupNames) {
             GroupNode groupNode;
-            if (filter.isWhitelisted(groupName)) {
+            if (InstanceManager.getFilter().isWhitelisted(groupName)) {
                 groupNode = NodeUtil.getGroupNode(this, groupName, textColorPositive);
-            } else if (filter.isBlacklisted(groupName)) {
+            } else if (InstanceManager.getFilter().isBlacklisted(groupName)) {
                 groupNode = NodeUtil.getGroupNode(this, groupName, textColorNegative);
             } else {
                 groupNode = NodeUtil.getGroupNode(this, groupName, textColorDefault);
             }
             groupNode.prefWidthProperty().bind(tagListBox.widthProperty());
 
-            for (String tagName : mainInfoList.getNames(groupName)) {
+            for (String tagName : InstanceManager.getMainInfoList().getNames(groupName)) {
                 TextNode nameNode = new TextNode(tagName, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
 
-                if (filter.isWhitelisted(groupName, tagName)) {
+                if (InstanceManager.getFilter().isWhitelisted(groupName, tagName)) {
                     nameNode.setTextFill(textColorPositive);
-                } else if (filter.isBlacklisted(groupName, tagName)) {
+                } else if (InstanceManager.getFilter().isBlacklisted(groupName, tagName)) {
                     nameNode.setTextFill(textColorNegative);
                 } else {
                     nameNode.setTextFill(textColorDefault);
@@ -110,12 +110,12 @@ public class TagListViewL extends VBox implements BaseNode, Instances {
                 nameNode.setOnMouseClicked(event -> {
                     if (event.getButton() == MouseButton.PRIMARY) {
                         changeNodeState(groupNode, nameNode);
-                        reload.doReload();
+                        InstanceManager.getReload().doReload();
                         CommonUtil.updateNodeProperties(this.tagListBox);
                     } else if (event.getButton() == MouseButton.SECONDARY) {
-                        clickMenuInfo.setGroup(groupNode.getText());
-                        clickMenuInfo.setName(nameNode.getText());
-                        clickMenuInfo.show(nameNode, event);
+                        InstanceManager.getClickMenuInfo().setGroup(groupNode.getText());
+                        InstanceManager.getClickMenuInfo().setName(nameNode.getText());
+                        InstanceManager.getClickMenuInfo().show(nameNode, event);
                     }
                 });
                 groupNode.getNameNodes().add(nameNode);
@@ -135,37 +135,37 @@ public class TagListViewL extends VBox implements BaseNode, Instances {
         if (nameNode == null) {
             String groupName = groupNode.getText();
             Color textColor;
-            if (filter.isWhitelisted(groupName)) {
-                filter.blacklist(groupName);
+            if (InstanceManager.getFilter().isWhitelisted(groupName)) {
+                InstanceManager.getFilter().blacklist(groupName);
                 textColor = ColorUtil.getTextColorNeg();
-            } else if (filter.isBlacklisted(groupName)) {
-                filter.unlist(groupName);
+            } else if (InstanceManager.getFilter().isBlacklisted(groupName)) {
+                InstanceManager.getFilter().unlist(groupName);
                 textColor = ColorUtil.getTextColorDef();
             } else {
-                filter.whitelist(groupName);
+                InstanceManager.getFilter().whitelist(groupName);
                 textColor = ColorUtil.getTextColorPos();
             }
             groupNode.setTextFill(textColor);
             groupNode.getNameNodes().forEach(node -> node.setTextFill(textColor));
         } else {
-            TagObject tagObject = mainInfoList.getTagObject(groupNode.getText(), nameNode.getText());
-            if (filter.isWhitelisted(tagObject)) {
-                filter.blacklist(tagObject);
-                if (filter.isBlacklisted(tagObject.getGroup())) {
+            TagObject tagObject = InstanceManager.getMainInfoList().getTagObject(groupNode.getText(), nameNode.getText());
+            if (InstanceManager.getFilter().isWhitelisted(tagObject)) {
+                InstanceManager.getFilter().blacklist(tagObject);
+                if (InstanceManager.getFilter().isBlacklisted(tagObject.getGroup())) {
                     groupNode.setTextFill(ColorUtil.getTextColorNeg());
-                } else if (!filter.isWhitelisted(tagObject.getGroup())) {
+                } else if (!InstanceManager.getFilter().isWhitelisted(tagObject.getGroup())) {
                     groupNode.setTextFill(ColorUtil.getTextColorDef());
                 }
                 nameNode.setTextFill(ColorUtil.getTextColorNeg());
-            } else if (filter.isBlacklisted(tagObject)) {
-                filter.unlist(tagObject);
-                if (!filter.isWhitelisted(tagObject.getGroup()) && !filter.isBlacklisted(tagObject.getGroup())) {
+            } else if (InstanceManager.getFilter().isBlacklisted(tagObject)) {
+                InstanceManager.getFilter().unlist(tagObject);
+                if (!InstanceManager.getFilter().isWhitelisted(tagObject.getGroup()) && !InstanceManager.getFilter().isBlacklisted(tagObject.getGroup())) {
                     groupNode.setTextFill(ColorUtil.getTextColorDef());
                 }
                 nameNode.setTextFill(ColorUtil.getTextColorDef());
             } else {
-                filter.whitelist(tagObject);
-                if (filter.isWhitelisted(tagObject.getGroup())) {
+                InstanceManager.getFilter().whitelist(tagObject);
+                if (InstanceManager.getFilter().isWhitelisted(tagObject.getGroup())) {
                     groupNode.setTextFill(ColorUtil.getTextColorPos());
                 }
                 nameNode.setTextFill(ColorUtil.getTextColorPos());

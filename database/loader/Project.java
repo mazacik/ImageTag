@@ -1,13 +1,12 @@
-package loader;
+package database.loader;
 
-import system.Instances;
 import system.JsonUtil;
 
 import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-public class Project implements Instances {
+public class Project {
     private transient String projectFile;
     private ArrayList<String> sourceDirectoryList;
     private ArrayList<String> importDirectoryList;

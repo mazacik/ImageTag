@@ -4,11 +4,11 @@ import database.list.DataObjectList;
 import database.list.TagList;
 import database.object.DataObject;
 import database.object.TagObject;
-import system.Instances;
+import lifecycle.InstanceManager;
 
 import java.util.ArrayList;
 
-public abstract class FilterManager implements Instances {
+public abstract class FilterManager {
     private static boolean showImages = true;
     private static boolean showGifs = true;
     private static boolean showVideos = true;
@@ -21,13 +21,13 @@ public abstract class FilterManager implements Instances {
     }
 
     private static boolean isWhitelistOk(TagList tagList) {
-        Filter.FilterMode whitelistMode = filter.getWhitelistMode();
-        if (infoListWhite.isEmpty()) {
+        Filter.FilterMode whitelistMode = InstanceManager.getFilter().getWhitelistMode();
+        if (InstanceManager.getFilter().getInfoListWhite().isEmpty()) {
             return true;
-        } else if (whitelistMode.equals(Filter.FilterMode.All) && tagList.containsAll(infoListWhite)) {
+        } else if (whitelistMode.equals(Filter.FilterMode.All) && tagList.containsAll(InstanceManager.getFilter().getInfoListWhite())) {
             return true;
         } else if (whitelistMode.equals(Filter.FilterMode.Any)) {
-            for (TagObject tagObject : infoListWhite) {
+            for (TagObject tagObject : InstanceManager.getFilter().getInfoListWhite()) {
                 if (tagList.contains(tagObject)) {
                     return true;
                 }
@@ -36,13 +36,13 @@ public abstract class FilterManager implements Instances {
         return false;
     }
     private static boolean isBlacklistOk(TagList tagList) {
-        Filter.FilterMode blacklistMode = filter.getBlacklistMode();
-        if (infoListBlack.isEmpty()) {
+        Filter.FilterMode blacklistMode = InstanceManager.getFilter().getBlacklistMode();
+        if (InstanceManager.getFilter().getInfoListBlack().isEmpty()) {
             return true;
-        } else if (blacklistMode.equals(Filter.FilterMode.All) && tagList.containsAll(infoListBlack)) {
+        } else if (blacklistMode.equals(Filter.FilterMode.All) && tagList.containsAll(InstanceManager.getFilter().getInfoListBlack())) {
             return false;
         } else if (blacklistMode.equals(Filter.FilterMode.Any)) {
-            for (TagObject tagObject : infoListBlack) {
+            for (TagObject tagObject : InstanceManager.getFilter().getInfoListBlack()) {
                 if (tagList.contains(tagObject)) {
                     return false;
                 }
@@ -52,13 +52,13 @@ public abstract class FilterManager implements Instances {
     }
     private static int limit = 0;
     public static void reset() {
-        infoListWhite.clear();
-        infoListBlack.clear();
-        filter.setAll(mainDataList);
+        InstanceManager.getFilter().getInfoListWhite().clear();
+        InstanceManager.getFilter().getInfoListBlack().clear();
+        InstanceManager.getFilter().setAll(InstanceManager.getMainDataList());
     }
     public static void refresh() {
-        filter.clear();
-        for (DataObject dataObject : mainDataList) {
+        InstanceManager.getFilter().clear();
+        for (DataObject dataObject : InstanceManager.getMainDataList()) {
             switch (dataObject.getFileType()) {
                 case IMAGE:
                     if (!showImages) continue;
@@ -77,18 +77,18 @@ public abstract class FilterManager implements Instances {
             if (enableLimit && tagList.size() > limit) continue;
 
             if (isWhitelistOk(tagList) && isBlacklistOk(tagList)) {
-                filter.add(dataObject);
+                InstanceManager.getFilter().add(dataObject);
             }
         }
     }
     public static void showSimilar(DataObject dataObject) {
-        infoListWhite.clear();
-        infoListBlack.clear();
-        filter.clear();
+        InstanceManager.getFilter().getInfoListWhite().clear();
+        InstanceManager.getFilter().getInfoListBlack().clear();
+        InstanceManager.getFilter().clear();
 
         TagList query = dataObject.getTagList();
 
-        for (DataObject iterator : mainDataList) {
+        for (DataObject iterator : InstanceManager.getMainDataList()) {
             if (iterator.getTagList().size() != 0) {
                 ArrayList<TagObject> sameTags = new ArrayList<>(query);
                 sameTags.retainAll(iterator.getTagList());
@@ -96,7 +96,7 @@ public abstract class FilterManager implements Instances {
                 if (sameTags.size() != 0) {
                     double similarity = (double) sameTags.size() / (double) query.size();
                     if (similarity >= SIMILARITY_FACTOR) {
-                        filter.add(iterator);
+                        InstanceManager.getFilter().add(iterator);
                     }
                 }
             }

@@ -8,11 +8,11 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import loader.DirectoryUtil;
-import loader.LoaderUtil;
-import loader.Project;
+import database.loader.DirectoryUtil;
+import database.loader.LoaderUtil;
+import database.loader.Project;
+import lifecycle.InstanceManager;
 import system.CommonUtil;
-import system.Instances;
 import user_interface.factory.NodeUtil;
 import user_interface.factory.base.CheckBoxNode;
 import user_interface.factory.base.EditNode;
@@ -20,7 +20,7 @@ import user_interface.factory.base.TextNode;
 import user_interface.factory.util.enums.ColorType;
 import user_interface.singleton.utils.SizeUtil;
 
-public class ProjectScene implements Instances {
+public class ProjectScene {
     private final Scene scene;
 
     ProjectScene() {
@@ -84,7 +84,7 @@ public class ProjectScene implements Instances {
 
             Project project = new Project(projectFile, workingDirectory);
             project.writeToDisk();
-            settings.addProjectPath(projectFile);
+            InstanceManager.getSettings().addProjectPath(projectFile);
             LoaderUtil.startLoading(workingDirectory);
         });
         btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> SceneUtil.showIntroScene());
@@ -101,7 +101,6 @@ public class ProjectScene implements Instances {
         vBoxMain.setSpacing(5 * SizeUtil.getGlobalSpacing());
         vBoxMain.setPadding(new Insets(15 * SizeUtil.getGlobalSpacing()));
 
-        mainStage.setTitle("Welcome");
         Scene projectScene = new Scene(vBoxMain);
         projectScene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
@@ -113,6 +112,6 @@ public class ProjectScene implements Instances {
         return projectScene;
     }
     void show() {
-        mainStage.setScene(scene);
+        InstanceManager.getMainStage().setScene(scene);
     }
 }

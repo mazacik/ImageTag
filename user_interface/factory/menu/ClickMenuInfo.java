@@ -1,11 +1,10 @@
 package user_interface.factory.menu;
 
-import system.Instances;
 import user_interface.factory.base.TextNode;
 import user_interface.factory.buttons.ButtonFactory;
 import user_interface.factory.buttons.ButtonTemplates;
 
-public class ClickMenuInfo extends ClickMenuRight implements Instances {
+public class ClickMenuInfo extends ClickMenuRight {
     private String group;
     private String name;
 

@@ -1,41 +1,41 @@
 package user_interface.scene;
 
+import lifecycle.InstanceManager;
 import system.CommonUtil;
-import system.Instances;
 import user_interface.singleton.center.BaseTileEvent;
 
-public class MainStageEvent implements Instances {
+public class MainStageEvent {
     public MainStageEvent() {
         onKeyPress();
     }
     private void onKeyPress() {
-        mainStage.getScene().setOnKeyPressed(event -> {
+        InstanceManager.getMainStage().getScene().setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case ESCAPE:
-                    topMenu.requestFocus();
+                    InstanceManager.getTopMenu().requestFocus();
                     break;
                 case Q:
-                    select.swapState(target.getCurrentTarget());
-                    reload.doReload();
+                    InstanceManager.getSelect().swapState(InstanceManager.getTarget().getCurrentTarget());
+                    InstanceManager.getReload().doReload();
                     break;
                 case E:
-                    BaseTileEvent.onGroupButtonClick(target.getCurrentTarget());
-                    reload.doReload();
+                    BaseTileEvent.onGroupButtonClick(InstanceManager.getTarget().getCurrentTarget());
+                    InstanceManager.getReload().doReload();
                     break;
                 case R:
-                    select.setRandom();
-                    reload.doReload();
+                    InstanceManager.getSelect().setRandom();
+                    InstanceManager.getReload().doReload();
                     break;
                 case F:
                     CommonUtil.swapViewMode();
-                    reload.doReload();
+                    InstanceManager.getReload().doReload();
                     break;
                 case W:
                 case A:
                 case S:
                 case D:
-                    target.move(event.getCode());
-                    reload.doReload();
+                    InstanceManager.getTarget().move(event.getCode());
+                    InstanceManager.getReload().doReload();
                     break;
                 default:
                     break;

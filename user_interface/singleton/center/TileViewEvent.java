@@ -1,13 +1,13 @@
 package user_interface.singleton.center;
 
-import system.Instances;
+import lifecycle.InstanceManager;
 
-public class TileViewEvent implements Instances {
+public class TileViewEvent {
     public TileViewEvent() {
         onMouseClick();
     }
 
     private void onMouseClick() {
-        tileView.setOnMouseClicked(event -> tileView.requestFocus());
+        InstanceManager.getTileView().setOnMouseClicked(event -> InstanceManager.getTileView().requestFocus());
     }
 }

@@ -1,5 +1,6 @@
 package user_interface.singleton.center;
 
+import database.loader.cache.CacheReader;
 import database.object.DataObject;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -10,9 +11,8 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import loader.cache.CacheReader;
+import lifecycle.InstanceManager;
 import system.Direction;
-import system.Instances;
 import user_interface.factory.NodeUtil;
 import user_interface.factory.base.TextNode;
 import user_interface.factory.util.ColorUtil;
@@ -21,7 +21,7 @@ import user_interface.singleton.utils.SizeUtil;
 
 import java.io.File;
 
-public class MediaViewControls extends BorderPane implements Instances {
+public class MediaViewControls extends BorderPane {
     private TextNode btnPlayPause;
 
     private TextNode btnSkipBackward;
@@ -148,15 +148,15 @@ public class MediaViewControls extends BorderPane implements Instances {
         });
         btnSnapshot.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                DataObject dataObject = target.getCurrentTarget();
+                DataObject dataObject = InstanceManager.getTarget().getCurrentTarget();
                 File cacheFile = new File(dataObject.getCachePath());
                 int thumbSize = (int) SizeUtil.getGalleryIconSize();
-                mediaView.getVideoPlayer().snapshot(cacheFile, thumbSize, thumbSize);
+                InstanceManager.getMediaView().getVideoPlayer().snapshot(cacheFile, thumbSize, thumbSize);
                 Image thumbnail = CacheReader.readCache(dataObject);
 
-                ObservableList<Node> visibleTiles = tileView.getTilePane().getChildren();
+                ObservableList<Node> visibleTiles = InstanceManager.getTileView().getTilePane().getChildren();
                 if (visibleTiles.contains(dataObject.getBaseTile())) {
-                    int galleryPosition = tileView.getTilePane().getChildren().indexOf(dataObject.getBaseTile());
+                    int galleryPosition = InstanceManager.getTileView().getTilePane().getChildren().indexOf(dataObject.getBaseTile());
                     dataObject.setBaseTile(new BaseTile(dataObject, thumbnail));
                     visibleTiles.set(galleryPosition, dataObject.getBaseTile());
                 } else {
@@ -167,14 +167,14 @@ public class MediaViewControls extends BorderPane implements Instances {
 
         btnPrevious.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                target.move(Direction.LEFT);
-                reload.doReload();
+                InstanceManager.getTarget().move(Direction.LEFT);
+                InstanceManager.getReload().doReload();
             }
         });
         btnNext.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                target.move(Direction.RIGHT);
-                reload.doReload();
+                InstanceManager.getTarget().move(Direction.RIGHT);
+                InstanceManager.getReload().doReload();
             }
         });
     }
@@ -203,7 +203,7 @@ public class MediaViewControls extends BorderPane implements Instances {
             this.setCenter(hBoxCenter);
             this.setBottom(progressBar);
         } else {
-            mediaView.getVideoPlayer().pause();
+            InstanceManager.getMediaView().getVideoPlayer().pause();
 
             this.setLeft(btnPrevious);
             this.setRight(btnNext);

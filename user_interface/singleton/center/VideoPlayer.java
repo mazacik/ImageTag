@@ -9,7 +9,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.image.WritablePixelFormat;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Affine;
-import system.Instances;
+import lifecycle.InstanceManager;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.base.ControlsApi;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
@@ -56,21 +56,21 @@ public class VideoPlayer {
             @Override
             public void positionChanged(MediaPlayer mediaPlayer, float newPosition) {
                 super.positionChanged(mediaPlayer, newPosition);
-                Instances.mediaView.getControls().setVideoProgress(newPosition);
+                InstanceManager.getMediaView().getControls().setVideoProgress(newPosition);
             }
         });
         mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
             @Override
             public void timeChanged(MediaPlayer mediaPlayer, long newTime) {
                 super.timeChanged(mediaPlayer, newTime);
-                Instances.mediaView.getControls().setTimeCurrent(newTime);
+                InstanceManager.getMediaView().getControls().setTimeCurrent(newTime);
             }
         });
         mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
             @Override
             public void lengthChanged(MediaPlayer mediaPlayer, long newLength) {
                 super.lengthChanged(mediaPlayer, newLength);
-                Instances.mediaView.getControls().setTimeTotal(newLength);
+                InstanceManager.getMediaView().getControls().setTimeTotal(newLength);
             }
         });
 
@@ -78,14 +78,14 @@ public class VideoPlayer {
             @Override
             public void opening(MediaPlayer mediaPlayer) {
                 super.opening(mediaPlayer);
-                Instances.mediaView.getControls().setVideoProgress(0);
+                InstanceManager.getMediaView().getControls().setVideoProgress(0);
             }
         });
         mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
             @Override
             public void finished(MediaPlayer mediaPlayer) {
                 super.finished(mediaPlayer);
-                Instances.mediaView.getControls().setVideoProgress(1);
+                InstanceManager.getMediaView().getControls().setVideoProgress(1);
             }
         });
     }

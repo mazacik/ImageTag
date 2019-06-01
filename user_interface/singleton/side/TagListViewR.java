@@ -10,9 +10,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import lifecycle.InstanceManager;
 import system.CommonUtil;
 import system.Direction;
-import system.Instances;
 import user_interface.factory.NodeUtil;
 import user_interface.factory.base.EditNode;
 import user_interface.factory.base.Separator;
@@ -26,7 +26,7 @@ import user_interface.singleton.utils.SizeUtil;
 
 import java.util.ArrayList;
 
-public class TagListViewR extends VBox implements BaseNode, Instances {
+public class TagListViewR extends VBox implements BaseNode {
     private final TextNode nodeTitle;
     private final EditNode tfSearch;
     private String actualText = "";
@@ -72,23 +72,23 @@ public class TagListViewR extends VBox implements BaseNode, Instances {
     public boolean reload() {
         tagListBox.getChildren().clear();
 
-        if (select.size() == 0) {
-            if (target.getCurrentTarget() != null) {
-                if (target.getCurrentTarget().getMergeID() != 0 && !tileView.getExpandedGroups().contains(target.getCurrentTarget().getMergeID())) {
-                    nodeTitle.setText("Selection: " + target.getCurrentTarget().getMergeGroup().size() + " file(s)");
+        if (InstanceManager.getSelect().size() == 0) {
+            if (InstanceManager.getTarget().getCurrentTarget() != null) {
+                if (InstanceManager.getTarget().getCurrentTarget().getMergeID() != 0 && !InstanceManager.getTileView().getExpandedGroups().contains(InstanceManager.getTarget().getCurrentTarget().getMergeID())) {
+                    nodeTitle.setText("Selection: " + InstanceManager.getTarget().getCurrentTarget().getMergeGroup().size() + " file(s)");
                 } else {
-                    nodeTitle.setText("Selection: " + target.getCurrentTarget().getName());
+                    nodeTitle.setText("Selection: " + InstanceManager.getTarget().getCurrentTarget().getName());
                 }
             }
         } else {
             int hiddenTilesCount = 0;
-            for (DataObject dataObject : select) {
-                if (!filter.contains(dataObject)) {
+            for (DataObject dataObject : InstanceManager.getSelect()) {
+                if (!InstanceManager.getFilter().contains(dataObject)) {
                     hiddenTilesCount++;
                 }
             }
 
-            String text = "Selection: " + select.size() + " file(s)";
+            String text = "Selection: " + InstanceManager.getSelect().size() + " file(s)";
             if (hiddenTilesCount > 0) {
                 text += ", " + hiddenTilesCount + " filtered out";
             }
@@ -105,19 +105,19 @@ public class TagListViewR extends VBox implements BaseNode, Instances {
 
         ArrayList<String> groupsInter;
         ArrayList<String> groupsShare;
-        if (select.size() == 0) {
-            if (target.getCurrentTarget() != null) {
-                groupsInter = target.getCurrentTarget().getTagList().getGroups();
+        if (InstanceManager.getSelect().size() == 0) {
+            if (InstanceManager.getTarget().getCurrentTarget() != null) {
+                groupsInter = InstanceManager.getTarget().getCurrentTarget().getTagList().getGroups();
                 groupsShare = new ArrayList<>();
             } else {
                 return;
             }
         } else {
-            groupsInter = select.getIntersectingTags().getGroups();
-            groupsShare = select.getSharedTags().getGroups();
+            groupsInter = InstanceManager.getSelect().getIntersectingTags().getGroups();
+            groupsShare = InstanceManager.getSelect().getSharedTags().getGroups();
         }
 
-        for (String group : mainInfoList.getGroups()) {
+        for (String group : InstanceManager.getMainInfoList().getGroups()) {
             GroupNode groupNode;
             if (groupsInter.contains(group)) {
                 groupNode = NodeUtil.getGroupNode(this, group, textColorPositive);
@@ -129,15 +129,15 @@ public class TagListViewR extends VBox implements BaseNode, Instances {
 
             ArrayList<String> namesInter;
             ArrayList<String> namesShare;
-            if (select.size() == 0) {
-                namesInter = target.getCurrentTarget().getTagList().getNames(group);
+            if (InstanceManager.getSelect().size() == 0) {
+                namesInter = InstanceManager.getTarget().getCurrentTarget().getTagList().getNames(group);
                 namesShare = new ArrayList<>();
             } else {
-                namesInter = select.getIntersectingTags().getNames(group);
-                namesShare = select.getSharedTags().getNames(group);
+                namesInter = InstanceManager.getSelect().getIntersectingTags().getNames(group);
+                namesShare = InstanceManager.getSelect().getSharedTags().getNames(group);
             }
 
-            for (String name : mainInfoList.getNames(group)) {
+            for (String name : InstanceManager.getMainInfoList().getNames(group)) {
                 if (namesInter.contains(name)) {
                     groupNode.getNameNodes().add(this.createNameNode(name, textColorPositive, groupNode));
                 } else if (namesShare.contains(name)) {
@@ -166,9 +166,9 @@ public class TagListViewR extends VBox implements BaseNode, Instances {
             if (event.getButton() == MouseButton.PRIMARY) {
                 changeNodeState(groupNode, nameNode);
             } else if (event.getButton() == MouseButton.SECONDARY) {
-                clickMenuInfo.setGroup(groupNode.getText());
-                clickMenuInfo.setName(nameNode.getText());
-                clickMenuInfo.show(nameNode, event);
+                InstanceManager.getClickMenuInfo().setGroup(groupNode.getText());
+                InstanceManager.getClickMenuInfo().setName(nameNode.getText());
+                InstanceManager.getClickMenuInfo().show(nameNode, event);
             }
         });
 
@@ -176,7 +176,7 @@ public class TagListViewR extends VBox implements BaseNode, Instances {
     }
 
     public void changeNodeState(GroupNode groupNode, TextNode nameNode) {
-        TagObject tagObject = mainInfoList.getTagObject(groupNode.getText(), nameNode.getText());
+        TagObject tagObject = InstanceManager.getMainInfoList().getTagObject(groupNode.getText(), nameNode.getText());
         if (nameNode.getTextFill().equals(ColorUtil.getTextColorPos()) || nameNode.getTextFill().equals(ColorUtil.getTextColorShr())) {
             nameNode.setTextFill(ColorUtil.getTextColorDef());
             this.removeTagObjectFromSelection(tagObject);
@@ -185,27 +185,27 @@ public class TagListViewR extends VBox implements BaseNode, Instances {
             this.addTagObjectToSelection(tagObject);
         }
 
-        reload.notifyChangeIn(Reload.Control.INFO);
-        reload.doReload();
+        InstanceManager.getReload().notifyChangeIn(Reload.Control.INFO);
+        InstanceManager.getReload().doReload();
     }
     public void addTagObjectToSelection(TagObject tagObject) {
-        if (select.size() < 1) {
-            DataObject currentTargetedItem = target.getCurrentTarget();
+        if (InstanceManager.getSelect().size() < 1) {
+            DataObject currentTargetedItem = InstanceManager.getTarget().getCurrentTarget();
             if (currentTargetedItem != null) {
                 currentTargetedItem.getTagList().add(tagObject);
             }
         } else {
-            select.addTagObject(tagObject);
+            InstanceManager.getSelect().addTagObject(tagObject);
         }
     }
     public void removeTagObjectFromSelection(TagObject tagObject) {
-        if (select.size() < 1) {
-            DataObject currentTargetedItem = target.getCurrentTarget();
+        if (InstanceManager.getSelect().size() < 1) {
+            DataObject currentTargetedItem = InstanceManager.getTarget().getCurrentTarget();
             if (currentTargetedItem != null) {
                 currentTargetedItem.getTagList().remove(tagObject);
             }
         } else {
-            select.removeTagObject(tagObject);
+            InstanceManager.getSelect().removeTagObject(tagObject);
         }
     }
 

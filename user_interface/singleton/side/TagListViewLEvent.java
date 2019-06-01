@@ -2,12 +2,12 @@ package user_interface.singleton.side;
 
 import control.filter.FilterManager;
 import javafx.scene.input.MouseButton;
-import system.Instances;
+import lifecycle.InstanceManager;
 import user_interface.factory.menu.ClickMenuLeft;
 import user_interface.factory.stage.StageUtil;
 import user_interface.factory.stage.Stages;
 
-public class TagListViewLEvent implements Instances {
+public class TagListViewLEvent {
     public TagListViewLEvent() {
         onMouseClick();
 
@@ -16,11 +16,11 @@ public class TagListViewLEvent implements Instances {
     }
 
     private void onMouseClick() {
-        tagListViewL.setOnMouseClicked(event -> tagListViewL.requestFocus());
+        InstanceManager.getTagListViewL().setOnMouseClicked(event -> InstanceManager.getTagListViewL().requestFocus());
     }
 
     private void onAction_menuSettings() {
-        tagListViewL.getNodeSettings().setOnMouseClicked(event -> {
+        InstanceManager.getTagListViewL().getNodeSettings().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 StageUtil.show(Stages.FILTER_SETTINGS);
                 ClickMenuLeft.hideAll();
@@ -28,10 +28,10 @@ public class TagListViewLEvent implements Instances {
         });
     }
     private void onAction_menuReset() {
-        tagListViewL.getNodeReset().setOnMouseClicked(event -> {
+        InstanceManager.getTagListViewL().getNodeReset().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 FilterManager.reset();
-                reload.doReload();
+                InstanceManager.getReload().doReload();
                 ClickMenuLeft.hideAll();
             }
         });

@@ -1,7 +1,6 @@
 package user_interface.factory.menu;
 
 import system.Direction;
-import system.Instances;
 import user_interface.factory.base.Separator;
 import user_interface.factory.base.TextNode;
 import user_interface.factory.buttons.ButtonFactory;
@@ -9,7 +8,7 @@ import user_interface.factory.buttons.ButtonTemplates;
 import user_interface.factory.util.ColorData;
 import user_interface.factory.util.enums.ColorType;
 
-public class ClickMenuData extends ClickMenuRight implements Instances {
+public class ClickMenuData extends ClickMenuRight {
     public ClickMenuData() {
         ColorData colorData = new ColorData(ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
 

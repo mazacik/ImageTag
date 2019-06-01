@@ -1,11 +1,11 @@
-package loader.cache;
+package database.loader.cache;
 
 import database.object.DataObject;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
-import loader.LoaderUtil;
+import database.loader.LoaderUtil;
+import lifecycle.InstanceManager;
 import settings.SettingsEnum;
-import system.Instances;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
@@ -25,9 +25,9 @@ public abstract class CacheCreator {
     }
 
     public static Image createThumbnail(DataObject dataObject, File cacheFile) {
-        Instances.logger.debug(LoaderUtil.class, "generating thumbnail for " + dataObject.getName());
+        InstanceManager.getLogger().debug(LoaderUtil.class, "generating thumbnail for " + dataObject.getName());
 
-        int thumbSize = Instances.settings.intValueOf(SettingsEnum.THUMBSIZE);
+        int thumbSize = InstanceManager.getSettings().intValueOf(SettingsEnum.THUMBSIZE);
 
         switch (dataObject.getFileType()) {
             case IMAGE:

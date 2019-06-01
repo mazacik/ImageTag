@@ -8,7 +8,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import settings.SettingType;
+import lifecycle.InstanceManager;
 import system.CommonUtil;
 import user_interface.factory.NodeUtil;
 import user_interface.factory.base.TextNode;
@@ -27,17 +27,15 @@ public class UserSettingsStage extends Stage {
         vBox.setSpacing(spacing);
         ArrayList<TextNode> labels = new ArrayList<>();
 
-        CommonUtil.settings.getSettingsList().forEach(setting -> {
-            if (setting.getSettingType() == SettingType.USER) {
-                TextNode label = new TextNode(setting.getSettingsEnum().toString(), ColorType.DEF, ColorType.DEF);
-                labels.add(label);
-                TextField textField = new TextField(String.valueOf(setting.getValue()));
-                textField.setFont(CommonUtil.getFont());
-                textField.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
-                NodeUtil.addToManager(textField, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
-                HBox hBox = NodeUtil.getHBox(ColorType.DEF, label, textField);
-                vBox.getChildren().add(hBox);
-            }
+        InstanceManager.getSettings().getSettingsList().forEach(setting -> {
+            TextNode label = new TextNode(setting.getSettingsEnum().toString(), ColorType.DEF, ColorType.DEF);
+            labels.add(label);
+            TextField textField = new TextField(String.valueOf(setting.getValue()));
+            textField.setFont(CommonUtil.getFont());
+            textField.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
+            NodeUtil.addToManager(textField, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+            HBox hBox = NodeUtil.getHBox(ColorType.DEF, label, textField);
+            vBox.getChildren().add(hBox);
         });
 
         ColorData colorData = new ColorData(ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);

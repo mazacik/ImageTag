@@ -1,4 +1,4 @@
-package loader;
+package database.loader;
 
 import control.filter.FilterManager;
 import control.reload.Reload;
@@ -6,8 +6,8 @@ import database.list.DataObjectList;
 import database.list.DataObjectListMain;
 import database.object.DataObject;
 import javafx.application.Platform;
-import loader.cache.CacheReader;
-import system.Instances;
+import database.loader.cache.CacheReader;
+import lifecycle.InstanceManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,43 +18,43 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 
-public class LoaderThread extends Thread implements Instances {
+public class LoaderThread extends Thread {
     public void run() {
         initDirs();
         ArrayList<File> fileList = LoaderUtil.getSupportedFiles(DirectoryUtil.getPathSource());
 
         try {
-            mainDataList.addAll(DataObjectListMain.readFromDisk());
+            InstanceManager.getMainDataList().addAll(DataObjectListMain.readFromDisk());
         } catch (Exception e) {
-            logger.debug(this, "existing database failed to load or does not exist");
+            InstanceManager.getLogger().debug(this, "existing database failed to load or does not exist");
             createBackup();
             createDatabase(fileList);
         }
 
         checkDatabase(fileList);
 
-        LoaderUtil.initDataObjectPaths(mainDataList, fileList);
+        LoaderUtil.initDataObjectPaths(InstanceManager.getMainDataList(), fileList);
 
-        mainDataList.sort();
-        mainInfoList.initialize();
-        mainDataList.writeToDisk();
-        filter.addAll(mainDataList);
+        InstanceManager.getMainDataList().sort();
+        InstanceManager.getMainInfoList().initialize();
+        InstanceManager.getMainDataList().writeToDisk();
+        InstanceManager.getFilter().addAll(InstanceManager.getMainDataList());
 
-        if (mainDataList.size() > 0) target.set(mainDataList.get(0));
+        if (InstanceManager.getMainDataList().size() > 0) InstanceManager.getTarget().set(InstanceManager.getMainDataList().get(0));
 
         Platform.runLater(() -> {
-            tagListViewL.reload();
-            tagListViewR.reload();
+            InstanceManager.getTagListViewL().reload();
+            InstanceManager.getTagListViewR().reload();
         });
 
-        CacheReader.readCache(mainDataList);
+        CacheReader.readCache(InstanceManager.getMainDataList());
 
-        reload.notifyChangeIn(Reload.Control.DATA);
-        Platform.runLater(reload::doReload);
+        InstanceManager.getReload().notifyChangeIn(Reload.Control.DATA);
+        Platform.runLater(InstanceManager.getReload()::doReload);
     }
 
     private void initDirs() {
-        logger.debug(this, "checking directories");
+        InstanceManager.getLogger().debug(this, "checking directories");
 
         String pathCacheDump = DirectoryUtil.getPathCacheDump();
         String pathCache = DirectoryUtil.getPathCacheProject();
@@ -62,7 +62,7 @@ public class LoaderThread extends Thread implements Instances {
 
         File dirCacheDump = new File(pathCacheDump);
         if (!dirCacheDump.exists()) {
-            logger.debug(this, "creating cache dump directory: " + pathCacheDump);
+            InstanceManager.getLogger().debug(this, "creating cache dump directory: " + pathCacheDump);
             dirCacheDump.mkdirs();
         }
         try {
@@ -72,12 +72,12 @@ public class LoaderThread extends Thread implements Instances {
         }
         File dirCache = new File(pathCache);
         if (!dirCache.exists()) {
-            logger.debug(this, "creating cache directory: " + pathCache);
+            InstanceManager.getLogger().debug(this, "creating cache directory: " + pathCache);
             dirCache.mkdirs();
         }
         File dirData = new File(pathData);
         if (!dirData.exists()) {
-            logger.debug(this, "creating data directory: " + pathData);
+            InstanceManager.getLogger().debug(this, "creating data directory: " + pathData);
             dirData.mkdirs();
         }
         try {
@@ -96,23 +96,23 @@ public class LoaderThread extends Thread implements Instances {
 
         if (currentDataFile.exists()) {
             currentDataFile.renameTo(backupFile);
-            logger.debug(this, "database backup created");
+            InstanceManager.getLogger().debug(this, "database backup created");
         } else {
-            logger.debug(this, "database backup not created - database does not exist");
+            InstanceManager.getLogger().debug(this, "database backup not created - database does not exist");
         }
     }
     private void createDatabase(ArrayList<File> fileList) {
-        logger.debug(this, "creating database");
+        InstanceManager.getLogger().debug(this, "creating database");
         for (File file : fileList) {
-            mainDataList.add(new DataObject(file));
+            InstanceManager.getMainDataList().add(new DataObject(file));
         }
     }
     private void checkDatabase(ArrayList<File> fileList) {
-        logger.debug(this, "validating database");
+        InstanceManager.getLogger().debug(this, "validating database");
         ArrayList<String> dataObjectNames = new ArrayList<>();
         ArrayList<String> fileListNames = new ArrayList<>();
 
-        mainDataList.forEach(dataObject -> dataObjectNames.add(dataObject.getName()));
+        InstanceManager.getMainDataList().forEach(dataObject -> dataObjectNames.add(dataObject.getName()));
         fileList.forEach(file -> fileListNames.add(file.getName()));
 
         dataObjectNames.sort(Comparator.naturalOrder());
@@ -120,34 +120,34 @@ public class LoaderThread extends Thread implements Instances {
 
         /* add unrecognized items */
         int added = 0;
-        logger.debug(this, "looking for new data objects");
+        InstanceManager.getLogger().debug(this, "looking for new data objects");
         for (File file : fileList) {
             if (!dataObjectNames.contains(file.getName())) {
-                logger.debug(this, "adding " + file.getName());
+                InstanceManager.getLogger().debug(this, "adding " + file.getName());
                 DataObject dataObject = new DataObject(file);
-                mainDataList.add(dataObject);
+                InstanceManager.getMainDataList().add(dataObject);
                 FilterManager.addNewDataObject(dataObject);
                 added++;
             }
         }
-        logger.debug(this, "newItems " + added + " files");
+        InstanceManager.getLogger().debug(this, "newItems " + added + " files");
 
         /* discard missing items */
         int removed = 0;
-        logger.debug(this, "looking for orphan data objects");
+        InstanceManager.getLogger().debug(this, "looking for orphan data objects");
         DataObjectList temporaryList = new DataObjectList();
-        temporaryList.addAll(mainDataList);
-        for (DataObject dataObject : mainDataList) {
+        temporaryList.addAll(InstanceManager.getMainDataList());
+        for (DataObject dataObject : InstanceManager.getMainDataList()) {
             String objectName = dataObject.getName();
             if (!fileListNames.contains(objectName)) {
-                logger.debug(this, "discarding " + objectName);
+                InstanceManager.getLogger().debug(this, "discarding " + objectName);
                 temporaryList.remove(dataObject);
                 removed++;
             }
         }
-        logger.debug(this, "discarded " + removed + " files");
+        InstanceManager.getLogger().debug(this, "discarded " + removed + " files");
 
-        mainDataList.clear();
-        mainDataList.addAll(temporaryList);
+        InstanceManager.getMainDataList().clear();
+        InstanceManager.getMainDataList().addAll(temporaryList);
     }
 }

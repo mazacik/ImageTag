@@ -1,23 +1,23 @@
 package user_interface.singleton.center;
 
 import javafx.beans.value.ChangeListener;
-import system.Instances;
+import lifecycle.InstanceManager;
 
-public class MediaViewEvent implements Instances {
+public class MediaViewEvent {
     public MediaViewEvent() {
         onMouseClick();
         onResize();
     }
 
     private void onMouseClick() {
-        mediaView.setOnMouseClicked(event -> {
+        InstanceManager.getMediaView().setOnMouseClicked(event -> {
             switch (event.getButton()) {
                 case PRIMARY:
-                    mediaView.requestFocus();
-                    clickMenuData.hide();
+                    InstanceManager.getMediaView().requestFocus();
+                    InstanceManager.getClickMenuData().hide();
                     break;
                 case SECONDARY:
-                    clickMenuData.show(mediaView, event.getScreenX(), event.getScreenY());
+                    InstanceManager.getClickMenuData().show(InstanceManager.getMediaView(), event.getScreenX(), event.getScreenY());
                     break;
                 default:
                     break;
@@ -25,9 +25,9 @@ public class MediaViewEvent implements Instances {
         });
     }
     private void onResize() {
-        ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) -> mediaView.reload();
+        ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) -> InstanceManager.getMediaView().reload();
 
-        mediaView.getCanvas().widthProperty().addListener(previewPaneSizeListener);
-        mediaView.getCanvas().heightProperty().addListener(previewPaneSizeListener);
+        InstanceManager.getMediaView().getCanvas().widthProperty().addListener(previewPaneSizeListener);
+        InstanceManager.getMediaView().getCanvas().heightProperty().addListener(previewPaneSizeListener);
     }
 }

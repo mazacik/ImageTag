@@ -5,6 +5,7 @@ import javafx.scene.Node;
 public abstract class StyleUtil {
     public static void applyScrollbarStyle(Node node) {
         try {
+            node.applyCss();
             node.lookup(".track").setStyle("-fx-background-color: transparent;" +
                     " -fx-border-color: transparent;" +
                     " -fx-background-radius: 0.0em;" +

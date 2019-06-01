@@ -1,4 +1,4 @@
-package loader;
+package database.loader;
 
 public abstract class FileSupportUtil {
     private static final String[] sprtImageExt = new String[]{

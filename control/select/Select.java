@@ -5,20 +5,20 @@ import database.list.DataObjectList;
 import database.list.TagList;
 import database.object.DataObject;
 import database.object.TagObject;
+import lifecycle.InstanceManager;
 import system.CommonUtil;
-import system.Instances;
 
 import java.util.ArrayList;
 
-public class Select extends DataObjectList implements Instances {
+public class Select extends DataObjectList {
     public boolean add(DataObject dataObject) {
         if (dataObject == null) return false;
-        if (dataObject.getMergeID() != 0 && !tileView.getExpandedGroups().contains(dataObject.getMergeID())) {
+        if (dataObject.getMergeID() != 0 && !InstanceManager.getTileView().getExpandedGroups().contains(dataObject.getMergeID())) {
             return this.addAll(dataObject.getMergeGroup());
         }
         if (super.add(dataObject)) {
             dataObject.generateTileEffect();
-            reload.notifyChangeIn(Reload.Control.SELECT);
+            InstanceManager.getReload().notifyChangeIn(Reload.Control.SELECT);
             return true;
         }
         return false;
@@ -27,19 +27,19 @@ public class Select extends DataObjectList implements Instances {
         if (arrayList == null) return false;
         if (super.addAll(arrayList)) {
             arrayList.forEach(DataObject::generateTileEffect);
-            reload.notifyChangeIn(Reload.Control.SELECT);
+            InstanceManager.getReload().notifyChangeIn(Reload.Control.SELECT);
             return true;
         }
         return false;
     }
     public boolean remove(DataObject dataObject) {
         if (dataObject == null) return false;
-        if (dataObject.getMergeID() != 0 && !tileView.getExpandedGroups().contains(dataObject.getMergeID())) {
+        if (dataObject.getMergeID() != 0 && !InstanceManager.getTileView().getExpandedGroups().contains(dataObject.getMergeID())) {
             return this.removeAll(dataObject.getMergeGroup());
         }
         if (super.remove(dataObject)) {
             dataObject.generateTileEffect();
-            reload.notifyChangeIn(Reload.Control.SELECT);
+            InstanceManager.getReload().notifyChangeIn(Reload.Control.SELECT);
             return true;
         }
         return false;
@@ -48,7 +48,7 @@ public class Select extends DataObjectList implements Instances {
         if (arrayList == null) return false;
         if (super.removeAll(arrayList)) {
             arrayList.forEach(DataObject::generateTileEffect);
-            reload.notifyChangeIn(Reload.Control.SELECT);
+            InstanceManager.getReload().notifyChangeIn(Reload.Control.SELECT);
             return true;
         }
         return false;
@@ -60,15 +60,15 @@ public class Select extends DataObjectList implements Instances {
     }
     public void setRandom() {
         DataObject dataObject = CommonUtil.getRandomDataObject();
-        select.set(dataObject);
-        target.set(dataObject);
+        InstanceManager.getSelect().set(dataObject);
+        InstanceManager.getTarget().set(dataObject);
     }
     public void clear() {
         DataObjectList helper = new DataObjectList();
         helper.addAll(this);
         super.clear();
         helper.forEach(DataObject::generateTileEffect);
-        reload.notifyChangeIn(Reload.Control.SELECT);
+        InstanceManager.getReload().notifyChangeIn(Reload.Control.SELECT);
     }
     public void swapState(DataObject dataObject) {
         if (super.contains(dataObject)) {
@@ -93,17 +93,17 @@ public class Select extends DataObjectList implements Instances {
             dataObject.setTagList(tagList);
         }
 
-        reload.notifyChangeIn(Reload.Control.DATA, Reload.Control.INFO);
+        InstanceManager.getReload().notifyChangeIn(Reload.Control.DATA, Reload.Control.INFO);
     }
 
     public void addTagObject(TagObject tagObject) {
         if (!tagObject.isEmpty()) {
-            if (!mainInfoList.contains(tagObject)) {
-                mainInfoList.add(tagObject);
+            if (!InstanceManager.getMainInfoList().contains(tagObject)) {
+                InstanceManager.getMainInfoList().add(tagObject);
             }
 
             DataObjectList selectHelper = new DataObjectList();
-            selectHelper.addAll(select);
+            selectHelper.addAll(InstanceManager.getSelect());
 
             TagList tagList;
             for (DataObject dataObject : selectHelper) {

@@ -8,15 +8,15 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import lifecycle.InstanceManager;
 import system.CommonUtil;
-import system.Instances;
 import user_interface.factory.base.TextNode;
 import user_interface.factory.util.ColorUtil;
 
 import java.util.ArrayList;
 
 
-public class GroupNode extends HBox implements Instances {
+public class GroupNode extends HBox {
     private final ArrayList<TextNode> nameNodes = new ArrayList<>();
     private TextNode labelArrow;
     private TextNode labelText;
@@ -35,31 +35,31 @@ public class GroupNode extends HBox implements Instances {
             event.consume();
             switch (event.getButton()) {
                 case PRIMARY:
-                    if (owner == tagListViewL) {
-                        if (!tagListViewL.getExpandedGroupsList().contains(labelText.getText())) {
-                            tagListViewL.getExpandedGroupsList().add(labelText.getText());
-                            ObservableList<Node> nodes = tagListViewL.getTagListBox().getChildren();
+                    if (owner == InstanceManager.getTagListViewL()) {
+                        if (!InstanceManager.getTagListViewL().getExpandedGroupsList().contains(labelText.getText())) {
+                            InstanceManager.getTagListViewL().getExpandedGroupsList().add(labelText.getText());
+                            ObservableList<Node> nodes = InstanceManager.getTagListViewL().getTagListBox().getChildren();
                             int index = nodes.indexOf(this) + 1;
                             nodes.addAll(index, nameNodes);
-                            CommonUtil.updateNodeProperties(tagListViewL.getTagListBox());
+                            CommonUtil.updateNodeProperties(InstanceManager.getTagListViewL().getTagListBox());
                             labelArrow.setText("− ");
                         } else {
-                            tagListViewL.getExpandedGroupsList().remove(labelText.getText());
-                            ObservableList<Node> nodes = tagListViewL.getTagListBox().getChildren();
+                            InstanceManager.getTagListViewL().getExpandedGroupsList().remove(labelText.getText());
+                            ObservableList<Node> nodes = InstanceManager.getTagListViewL().getTagListBox().getChildren();
                             nodes.removeAll(nameNodes);
                             labelArrow.setText("+ ");
                         }
-                    } else if (owner == tagListViewR) {
-                        if (!tagListViewR.getExpandedGroupsList().contains(labelText.getText())) {
-                            tagListViewR.getExpandedGroupsList().add(labelText.getText());
-                            ObservableList<Node> nodes = tagListViewR.getTagListBox().getChildren();
+                    } else if (owner == InstanceManager.getTagListViewR()) {
+                        if (!InstanceManager.getTagListViewR().getExpandedGroupsList().contains(labelText.getText())) {
+                            InstanceManager.getTagListViewR().getExpandedGroupsList().add(labelText.getText());
+                            ObservableList<Node> nodes = InstanceManager.getTagListViewR().getTagListBox().getChildren();
                             int index = nodes.indexOf(this) + 1;
                             nodes.addAll(index, nameNodes);
-                            CommonUtil.updateNodeProperties(tagListViewR.getTagListBox());
+                            CommonUtil.updateNodeProperties(InstanceManager.getTagListViewR().getTagListBox());
                             labelArrow.setText("− ");
                         } else {
-                            tagListViewR.getExpandedGroupsList().remove(labelText.getText());
-                            ObservableList<Node> nodes = tagListViewR.getTagListBox().getChildren();
+                            InstanceManager.getTagListViewR().getExpandedGroupsList().remove(labelText.getText());
+                            ObservableList<Node> nodes = InstanceManager.getTagListViewR().getTagListBox().getChildren();
                             nodes.removeAll(nameNodes);
                             labelArrow.setText("+ ");
                         }
@@ -75,16 +75,16 @@ public class GroupNode extends HBox implements Instances {
         this.setOnMouseClicked(event -> {
             switch (event.getButton()) {
                 case PRIMARY:
-                    if (owner == tagListViewL) {
-                        tagListViewL.changeNodeState(this, null);
-                        reload.doReload();
-                        CommonUtil.updateNodeProperties(tagListViewL.getTagListBox());
+                    if (owner == InstanceManager.getTagListViewL()) {
+                        InstanceManager.getTagListViewL().changeNodeState(this, null);
+                        InstanceManager.getReload().doReload();
+                        CommonUtil.updateNodeProperties(InstanceManager.getTagListViewL().getTagListBox());
                     }
                     break;
                 case SECONDARY:
-                    clickMenuInfo.setGroup(text);
-                    clickMenuInfo.setName("");
-                    clickMenuInfo.show(this, event);
+                    InstanceManager.getClickMenuInfo().setGroup(text);
+                    InstanceManager.getClickMenuInfo().setName("");
+                    InstanceManager.getClickMenuInfo().show(this, event);
                     break;
                 default:
                     break;

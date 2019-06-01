@@ -7,8 +7,8 @@ import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.TilePane;
+import lifecycle.InstanceManager;
 import system.CommonUtil;
-import system.Instances;
 import user_interface.factory.NodeUtil;
 import user_interface.factory.util.ColorUtil;
 import user_interface.factory.util.enums.ColorType;
@@ -17,7 +17,7 @@ import user_interface.singleton.utils.SizeUtil;
 
 import java.util.ArrayList;
 
-public class TileView extends ScrollPane implements BaseNode, Instances {
+public class TileView extends ScrollPane implements BaseNode {
     private final TilePane tilePane = new TilePane(1, 1);
     private final ArrayList<Integer> expandedGroups = new ArrayList<>();
 
@@ -57,7 +57,7 @@ public class TileView extends ScrollPane implements BaseNode, Instances {
         ObservableList<Node> tilePaneItems = tilePane.getChildren();
         tilePaneItems.clear();
         ArrayList<Integer> mergeIDs = new ArrayList<>();
-        for (DataObject dataObject : filter) {
+        for (DataObject dataObject : InstanceManager.getFilter()) {
             if (dataObject.getBaseTile() != null) {
                 if (dataObject.getMergeID() == 0) {
                     tilePaneItems.add(dataObject.getBaseTile());
@@ -80,7 +80,7 @@ public class TileView extends ScrollPane implements BaseNode, Instances {
     }
 
     public void adjustViewportToCurrentTarget() {
-        DataObject currentTarget = target.getCurrentTarget();
+        DataObject currentTarget = InstanceManager.getTarget().getCurrentTarget();
         if (CommonUtil.isCenterFullscreen() || currentTarget == null) return;
         int targetIndex = this.getVisibleDataObjects().indexOf(currentTarget);
         if (targetIndex < 0) return;

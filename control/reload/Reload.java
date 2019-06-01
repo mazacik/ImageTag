@@ -1,45 +1,46 @@
 package control.reload;
 
-import system.Instances;
+import lifecycle.InstanceManager;
 import user_interface.singleton.BaseNode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Reload implements Instances {
+public class Reload {
     private ArrayList<BaseNode> queue;
 
     public Reload() {
-        this.subscribe(mediaView
+        queue = new ArrayList<>();
+    }
+    public void init() {
+        this.subscribe(InstanceManager.getMediaView()
                 , Control.TARGET
         );
-        this.subscribe(tagListViewL
+        this.subscribe(InstanceManager.getTagListViewL()
                 , Control.INFO
                 , Control.FILTER
         );
-        this.subscribe(tagListViewR
+        this.subscribe(InstanceManager.getTagListViewR()
                 , Control.INFO
                 , Control.FILTER
                 , Control.TARGET
                 , Control.SELECT
         );
-        this.subscribe(tileView
+        this.subscribe(InstanceManager.getTileView()
                 , Control.DATA
                 , Control.FILTER
                 , Control.SELECT
         );
-        this.subscribe(topMenu
+        this.subscribe(InstanceManager.getTopMenu()
                 , Control.TARGET
         );
-
-        queue = new ArrayList<>();
     }
     private void subscribe(BaseNode node, Control... controls) {
         Arrays.asList(controls).forEach(control -> control.getSubscribers().add(node));
     }
 
     public void notifyChangeIn(Control... controls) {
-        Arrays.asList(controls).forEach(control -> this.queue(control.getSubscribers()));
+        Arrays.asList(controls).forEach(control -> queue(control.getSubscribers()));
     }
     private void queue(ArrayList<BaseNode> nodes) {
         nodes.forEach(node -> {

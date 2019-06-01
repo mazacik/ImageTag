@@ -1,17 +1,15 @@
 package user_interface.singleton.top;
 
+import database.loader.LoaderUtil;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import loader.LoaderUtil;
+import lifecycle.InstanceManager;
 import system.CommonUtil;
-import system.Instances;
 import user_interface.factory.menu.ClickMenuLeft;
 import user_interface.factory.stage.UserSettingsStage;
 
-import java.io.IOException;
-
-public class TopMenuEvent implements Instances {
+public class TopMenuEvent {
     public TopMenuEvent() {
         onMouseClick();
 
@@ -20,25 +18,26 @@ public class TopMenuEvent implements Instances {
         onAction_menuSettings();
         onAction_menuExit();
 
-        onAction_menuInpaint();
-
         onAction_menuRandom();
         onAction_menuFullView();
     }
 
     private void onMouseClick() {
+        TopMenu topMenu = InstanceManager.getTopMenu();
         topMenu.setOnMouseClicked(event -> topMenu.requestFocus());
     }
 
     private void onAction_menuSave() {
+        TopMenu topMenu = InstanceManager.getTopMenu();
         topMenu.getNodeSave().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                mainDataList.writeToDisk();
+                InstanceManager.getMainDataList().writeToDisk();
                 ClickMenuLeft.hideAll();
             }
         });
     }
     private void onAction_menuImport() {
+        TopMenu topMenu = InstanceManager.getTopMenu();
         topMenu.getNodeImport().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 LoaderUtil.importFiles();
@@ -47,6 +46,7 @@ public class TopMenuEvent implements Instances {
         });
     }
     private void onAction_menuSettings() {
+        TopMenu topMenu = InstanceManager.getTopMenu();
         topMenu.getNodeSettings().setOnMouseClicked(event -> {
             Stage userSettingsStage = new UserSettingsStage();
             userSettingsStage.show();
@@ -54,39 +54,29 @@ public class TopMenuEvent implements Instances {
         });
     }
     private void onAction_menuExit() {
+        TopMenu topMenu = InstanceManager.getTopMenu();
         topMenu.getNodeExit().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                topMenu.fireEvent(new WindowEvent(mainStage, WindowEvent.WINDOW_CLOSE_REQUEST));
-            }
-        });
-    }
-
-    private void onAction_menuInpaint() {
-        topMenu.getNodeInpaint().setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY) {
-                try {
-                    //Runtime.getRuntime().exec(settings.getInpaintExecutable);
-                    Runtime.getRuntime().exec("C:\\Michal\\Program\\Inpaint v7.2\\Inpaint.exe");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                topMenu.fireEvent(new WindowEvent(InstanceManager.getMainStage(), WindowEvent.WINDOW_CLOSE_REQUEST));
             }
         });
     }
 
     private void onAction_menuRandom() {
+        TopMenu topMenu = InstanceManager.getTopMenu();
         topMenu.getNodeRandom().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                select.setRandom();
-                reload.doReload();
+                InstanceManager.getSelect().setRandom();
+                InstanceManager.getReload().doReload();
             }
         });
     }
     private void onAction_menuFullView() {
+        TopMenu topMenu = InstanceManager.getTopMenu();
         topMenu.getNodeFullview().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 CommonUtil.swapViewMode();
-                reload.doReload();
+                InstanceManager.getReload().doReload();
             }
         });
     }

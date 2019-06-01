@@ -3,14 +3,14 @@ package user_interface.scene;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import lifecycle.InstanceManager;
 import system.CommonUtil;
-import system.Instances;
 import user_interface.factory.NodeUtil;
 import user_interface.factory.base.TextNode;
 import user_interface.factory.util.enums.ColorType;
 import user_interface.singleton.utils.SizeUtil;
 
-public class LoadingScene implements Instances {
+public class LoadingScene {
     private final Scene loadingScene;
     private final TextNode progressTextNode = new TextNode("", ColorType.DEF, ColorType.DEF);
 
@@ -31,12 +31,12 @@ public class LoadingScene implements Instances {
         return loadingScene;
     }
     void show() {
-        mainStage.setScene(loadingScene);
-        mainStage.setWidth(SizeUtil.getUsableScreenWidth() / 6);
-        mainStage.setHeight(SizeUtil.getUsableScreenHeight() / 16);
-        mainStage.centerOnScreen();
+        InstanceManager.getMainStage().setScene(loadingScene);
+        InstanceManager.getMainStage().setWidth(SizeUtil.getUsableScreenWidth() / 6);
+        InstanceManager.getMainStage().setHeight(SizeUtil.getUsableScreenHeight() / 16);
+        InstanceManager.getMainStage().centerOnScreen();
 
-        logger.debug(this, "waiting for directory");
+        InstanceManager.getLogger().debug(this, "waiting for directory");
     }
 
     public Scene getInstance() {

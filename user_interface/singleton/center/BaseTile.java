@@ -5,13 +5,13 @@ import javafx.scene.effect.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import lifecycle.InstanceManager;
 import settings.SettingsEnum;
 import system.CommonUtil;
-import system.Instances;
 
 import java.util.ArrayList;
 
-public class BaseTile extends ImageView implements Instances {
+public class BaseTile extends ImageView {
 
     private static final InnerShadow effectSelect = createEffectSelect();
     private static final ColorInput effectTarget = createEffectTarget();
@@ -36,7 +36,7 @@ public class BaseTile extends ImageView implements Instances {
     }
     private static ColorInput createEffectTarget() {
         int markSize = 6;
-        int markPositionInTile = (settings.intValueOf(SettingsEnum.THUMBSIZE) - markSize) / 2;
+        int markPositionInTile = (InstanceManager.getSettings().intValueOf(SettingsEnum.THUMBSIZE) - markSize) / 2;
         Color markColor = Color.RED;
         return new ColorInput(markPositionInTile, markPositionInTile, markSize, markSize, markColor);
     }
@@ -48,27 +48,27 @@ public class BaseTile extends ImageView implements Instances {
 
         ArrayList<Effect> effectList = new ArrayList<>();
 
-        if (select.contains(parentDataObject)) {
+        if (InstanceManager.getSelect().contains(parentDataObject)) {
             effectList.add(effectSelect);
         }
-        if (target.getCurrentTarget() != null && target.getCurrentTarget().equals(parentDataObject)) {
+        if (InstanceManager.getTarget().getCurrentTarget() != null && InstanceManager.getTarget().getCurrentTarget().equals(parentDataObject)) {
             effectList.add(effectTarget);
         }
         if (parentDataObject.getMergeID() != 0) {
             String middle;
-            if (tileView.getExpandedGroups().contains(parentDataObject.getMergeID())) {
+            if (InstanceManager.getTileView().getExpandedGroups().contains(parentDataObject.getMergeID())) {
                 middle = "-";
             } else {
                 middle = String.valueOf(parentDataObject.getMergeGroup().size());
             }
 
             String groupIconText;
-            if (mainDataList.getAllGroups().indexOf(parentDataObject.getMergeID()) % 2 == 0) {
+            if (InstanceManager.getMainDataList().getAllGroups().indexOf(parentDataObject.getMergeID()) % 2 == 0) {
                 groupIconText = "(" + middle + ")";
             } else {
                 groupIconText = "[" + middle + "]";
             }
-            int tileSize = settings.intValueOf(SettingsEnum.THUMBSIZE);
+            int tileSize = InstanceManager.getSettings().intValueOf(SettingsEnum.THUMBSIZE);
             Image imageText = CommonUtil.textToImage(groupIconText);
             effectList.add(new ImageInput(imageText, tileSize - imageText.getWidth() - 5, 1));
             effectGroupSize = (int) imageText.getWidth() + 10;

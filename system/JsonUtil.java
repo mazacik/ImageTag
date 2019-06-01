@@ -4,7 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import database.list.DataObjectListMain;
-import loader.Project;
+import database.loader.Project;
+import lifecycle.InstanceManager;
 import settings.Settings;
 
 import java.io.BufferedWriter;
@@ -14,7 +15,7 @@ import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public abstract class JsonUtil implements Instances {
+public abstract class JsonUtil {
     public static void write(Object object, Type type, String path) {
         GsonBuilder GSONBuilder = new GsonBuilder();
         GSONBuilder.setPrettyPrinting().serializeNulls();
@@ -23,9 +24,9 @@ public abstract class JsonUtil implements Instances {
             BufferedWriter writer = new BufferedWriter(new FileWriter(path, false));
             writer.write(JSON);
             writer.close();
-            logger.debug(JsonUtil.class, "serializing " + path + " ... ok");
+            InstanceManager.getLogger().debug(JsonUtil.class, "serializing " + path + " .. ok");
         } catch (IOException e) {
-            logger.debug(JsonUtil.class, "serializing " + path + " ... fail");
+            InstanceManager.getLogger().debug(JsonUtil.class, "serializing " + path + " .. fail");
             e.printStackTrace();
         }
     }
@@ -36,10 +37,10 @@ public abstract class JsonUtil implements Instances {
         try {
             String JSON = new String(Files.readAllBytes(Paths.get(path)));
             Object fromJson = GSON.fromJson(JSON, type);
-            logger.debug(JsonUtil.class, "reading " + path + " ... ok");
+            InstanceManager.getLogger().debug(JsonUtil.class, "reading " + path + " .. ok");
             return fromJson;
         } catch (Exception e) {
-            logger.debug(JsonUtil.class, "reading " + path + " ... fail");
+            InstanceManager.getLogger().debug(JsonUtil.class, "reading " + path + " .. fail");
             return null;
         }
     }

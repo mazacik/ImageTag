@@ -11,12 +11,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Popup;
 import javafx.util.Duration;
+import lifecycle.InstanceManager;
 import system.CommonUtil;
-import system.Instances;
 import user_interface.factory.NodeUtil;
 import user_interface.singleton.BaseNode;
 
-public class MediaView extends BorderPane implements BaseNode, Instances {
+public class MediaView extends BorderPane implements BaseNode {
     private Image currentImage = null;
     private final Canvas canvas = new Canvas();
     private final ImageView gifPlayer = new ImageView();
@@ -29,6 +29,8 @@ public class MediaView extends BorderPane implements BaseNode, Instances {
 
     public MediaView() {
         setupControls();
+
+        TileView tileView = InstanceManager.getTileView();
 
         gifPlayer.fitWidthProperty().bind(tileView.widthProperty());
         gifPlayer.fitHeightProperty().bind(tileView.heightProperty());
@@ -73,7 +75,7 @@ public class MediaView extends BorderPane implements BaseNode, Instances {
     }
 
     public boolean reload() {
-        DataObject currentTarget = target.getCurrentTarget();
+        DataObject currentTarget = InstanceManager.getTarget().getCurrentTarget();
         if (CommonUtil.isCenterFullscreen() && currentTarget != null) {
             switch (currentTarget.getFileType()) {
                 case IMAGE:

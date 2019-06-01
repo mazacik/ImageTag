@@ -1,8 +1,8 @@
 package database.list;
 
 import database.object.DataObject;
-import loader.DirectoryUtil;
-import system.Instances;
+import database.loader.DirectoryUtil;
+import lifecycle.InstanceManager;
 import system.JsonUtil;
 
 import java.io.File;
@@ -10,7 +10,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class DataObjectListMain extends DataObjectList implements Instances {
+public class DataObjectListMain extends DataObjectList {
     private static final String dataFile = DirectoryUtil.getDirNameData() + File.separator + "data.json";
 
     public void sort() {
@@ -24,8 +24,8 @@ public class DataObjectListMain extends DataObjectList implements Instances {
     public void writeToDisk() {
         Type typeToken = JsonUtil.TypeTokenEnum.MAINDATALIST.getValue();
         String path = DirectoryUtil.getPathSource() + dataFile;
-        JsonUtil.write(mainDataList, typeToken, path);
-        mainInfoList.writeDummyToDisk();
+        JsonUtil.write(InstanceManager.getMainDataList(), typeToken, path);
+        InstanceManager.getMainInfoList().writeDummyToDisk();
     }
 
     public ArrayList<Integer> getAllGroups() {

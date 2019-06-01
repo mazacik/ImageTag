@@ -4,19 +4,19 @@ import com.google.gson.reflect.TypeToken;
 import control.reload.Reload;
 import database.object.DataObject;
 import database.object.TagObject;
-import loader.DirectoryUtil;
-import system.Instances;
+import database.loader.DirectoryUtil;
+import lifecycle.InstanceManager;
 import system.JsonUtil;
 import user_interface.factory.stage.InfoObjectEditStage;
 
 import java.io.File;
 import java.lang.reflect.Type;
 
-public class TagListMain extends TagList implements Instances {
+public class TagListMain extends TagList {
     private static final transient String tagsFile = DirectoryUtil.getDirNameData() + File.separator + "tags.json";
 
     public void initialize() {
-        for (DataObject dataIterator : mainDataList) {
+        for (DataObject dataIterator : InstanceManager.getMainDataList()) {
             TagList tagList = dataIterator.getTagList();
             for (TagObject tagIterator : tagList) {
                 if (this.contains(tagIterator)) {
@@ -53,7 +53,7 @@ public class TagListMain extends TagList implements Instances {
     public boolean add(TagObject tagObject) {
         if (tagObject == null) return false;
         if (super.add(tagObject)) {
-            reload.notifyChangeIn(Reload.Control.INFO);
+            InstanceManager.getReload().notifyChangeIn(Reload.Control.INFO);
             return true;
         }
         return false;
@@ -61,8 +61,8 @@ public class TagListMain extends TagList implements Instances {
     public boolean remove(TagObject tagObject) {
         if (tagObject == null) return false;
         if (super.remove(tagObject)) {
-            //filter.refresh();
-            reload.notifyChangeIn(Reload.Control.INFO);
+            //InstanceManager.getFilter().refresh();
+            InstanceManager.getReload().notifyChangeIn(Reload.Control.INFO);
             return true;
         }
         return false;
@@ -73,7 +73,7 @@ public class TagListMain extends TagList implements Instances {
         if (newTagObject != null) {
             tagObject.setFull(newTagObject.getGroup(), newTagObject.getName());
             super.sort();
-            reload.notifyChangeIn(Reload.Control.INFO);
+            InstanceManager.getReload().notifyChangeIn(Reload.Control.INFO);
             return true;
         }
         return false;

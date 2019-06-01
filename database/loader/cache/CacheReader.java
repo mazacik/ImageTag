@@ -1,4 +1,4 @@
-package loader.cache;
+package database.loader.cache;
 
 import database.list.DataObjectList;
 import database.object.DataObject;
@@ -6,8 +6,8 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
-import loader.LoaderUtil;
-import system.Instances;
+import database.loader.LoaderUtil;
+import lifecycle.InstanceManager;
 import user_interface.singleton.center.BaseTile;
 
 import java.io.File;
@@ -15,10 +15,10 @@ import java.util.ArrayList;
 
 public abstract class CacheReader {
     public static void readCache(DataObjectList dataObjects) {
-        Instances.logger.debug(LoaderUtil.class, "loading image cache");
+        InstanceManager.getLogger().debug(LoaderUtil.class, "loading image cache");
 
         ArrayList<Integer> mergeGroupsAlreadyShown = new ArrayList<>();
-        ObservableList<Node> tilePaneChildren = Instances.tileView.getTilePane().getChildren();
+        ObservableList<Node> tilePaneChildren = InstanceManager.getTileView().getTilePane().getChildren();
 
         for (DataObject dataObject : dataObjects) {
             dataObject.setBaseTile(new BaseTile(dataObject, readCache(dataObject)));

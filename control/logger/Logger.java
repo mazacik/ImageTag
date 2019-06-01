@@ -1,18 +1,13 @@
 package control.logger;
 
-@SuppressWarnings("FieldCanBeLocal")
 public class Logger {
-    private final int classNameLength = 16;
-    private boolean active = false;
+    private static final int CLASS_NAME_LENGTH = 16;
+    private static final boolean ACTIVE = false;
 
-    private Logger() {
-        if (LoggerLoader.instance != null) {
-            throw new IllegalStateException(this.getClass().getSimpleName() + " already instantiated");
-        }
+    public Logger() {
+
     }
-    public static Logger getInstance() {
-        return LoggerLoader.instance;
-    }
+
     public void error(Object source, String message) {
         this.out("ERROR: ", source, message);
     }
@@ -20,14 +15,11 @@ public class Logger {
         this.out("DEBUG: ", source, message);
     }
     private void out(String mode, Object source, String message) {
-        if (active) {
+        if (ACTIVE) {
             System.out.println(mode + formatSource(source) + ": " + message.trim());
         }
     }
 
-    private static class LoggerLoader {
-        private static final Logger instance = new Logger();
-    }
     private String formatSource(Object source) {
         StringBuilder sb;
         if (source instanceof Class)
@@ -37,12 +29,12 @@ public class Logger {
 
         int length = sb.length();
 
-        if (length >= classNameLength) {
-            sb = new StringBuilder(sb.substring(0, classNameLength - 1));
+        if (length >= CLASS_NAME_LENGTH) {
+            sb = new StringBuilder(sb.substring(0, CLASS_NAME_LENGTH - 1));
             sb.append("~");
         }
 
-        while (length < classNameLength) {
+        while (length < CLASS_NAME_LENGTH) {
             sb.append(" ");
             length++;
         }

@@ -16,6 +16,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import lifecycle.InstanceManager;
 import settings.SettingsEnum;
 import user_interface.factory.NodeUtil;
 import user_interface.factory.base.CheckBoxNode;
@@ -31,10 +32,10 @@ import user_interface.singleton.side.GroupNode;
 import java.util.ArrayList;
 import java.util.Random;
 
-public abstract class CommonUtil implements Instances {
-    private static int nightMode = settings.intValueOf(SettingsEnum.COLORMODE);
+public abstract class CommonUtil {
+    private static int nightMode = InstanceManager.getSettings().intValueOf(SettingsEnum.COLORMODE);
 
-    private static Font font = new Font(settings.intValueOf(SettingsEnum.FONTSIZE));
+    private static Font font = new Font(InstanceManager.getSettings().intValueOf(SettingsEnum.FONTSIZE));
     public static boolean isNightMode() {
         return nightMode == 1;
     }
@@ -44,7 +45,7 @@ public abstract class CommonUtil implements Instances {
         } else {
             nightMode = 1;
         }
-        settings.setValueOf(SettingsEnum.COLORMODE, nightMode);
+        InstanceManager.getSettings().setValueOf(SettingsEnum.COLORMODE, nightMode);
         updateNodeProperties();
     }
     private static Background getBackgroundDef(ColorData colorData) {
@@ -217,7 +218,7 @@ public abstract class CommonUtil implements Instances {
         return MainScene.isFullView();
     }
     public static DataObject getRandomDataObject() {
-        ArrayList<BaseTile> tiles = tileView.getVisibleTiles();
+        ArrayList<BaseTile> tiles = InstanceManager.getTileView().getVisibleTiles();
         if (tiles.size() >= 1) {
             int index = new Random().nextInt(tiles.size());
             DataObject chosenDataObject = tiles.get(index).getParentDataObject();
@@ -226,7 +227,7 @@ public abstract class CommonUtil implements Instances {
                 return chosenDataObject;
             } else {
                 ArrayList<DataObject> dataObjectsSameMergeID = new ArrayList<>();
-                for (DataObject dataObjectFromFilter : filter) {
+                for (DataObject dataObjectFromFilter : InstanceManager.getFilter()) {
                     if (dataObjectFromFilter.getMergeID() == chosenDataObject.getMergeID()) {
                         dataObjectsSameMergeID.add(dataObjectFromFilter);
                     }

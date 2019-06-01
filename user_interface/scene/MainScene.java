@@ -6,14 +6,17 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
+import lifecycle.InstanceManager;
 import system.CommonUtil;
-import system.Instances;
 import user_interface.factory.NodeUtil;
 import user_interface.factory.util.enums.ColorType;
+import user_interface.singleton.center.MediaView;
+import user_interface.singleton.center.TileView;
 import user_interface.singleton.utils.EventUtil;
 import user_interface.singleton.utils.SizeUtil;
+import user_interface.singleton.utils.StyleUtil;
 
-public class MainScene implements Instances {
+public class MainScene {
     private static ObservableList<Node> panes;
     private final Scene mainScene;
 
@@ -22,52 +25,54 @@ public class MainScene implements Instances {
     }
 
     private Scene create() {
-        HBox mainHBox = NodeUtil.getHBox(ColorType.DEF, tagListViewL, tileView, tagListViewR);
+        HBox mainHBox = NodeUtil.getHBox(ColorType.DEF, InstanceManager.getTagListViewL(), InstanceManager.getTileView(), InstanceManager.getTagListViewR());
         panes = mainHBox.getChildren();
-        Scene mainScene = new Scene(NodeUtil.getVBox(ColorType.DEF, topMenu, mainHBox));
-        CommonUtil.updateNodeProperties();
+        Scene mainScene = new Scene(NodeUtil.getVBox(ColorType.DEF, InstanceManager.getTopMenu(), mainHBox));
+        CommonUtil.updateNodeProperties(mainScene);
         return mainScene;
     }
     //todo move these two methods somewhere else
     public static void swapViewMode() {
+        MediaView mediaView = InstanceManager.getMediaView();
+        TileView tileView = InstanceManager.getTileView();
         if (panes.contains(mediaView)) {
-            if (mediaView.getControlsPopupDelay().getStatus() == Animation.Status.RUNNING) {
-                mediaView.getControlsPopupDelay().stop();
+            if (InstanceManager.getMediaView().getControlsPopupDelay().getStatus() == Animation.Status.RUNNING) {
+                InstanceManager.getMediaView().getControlsPopupDelay().stop();
             }
-            if (mediaView.getControlsPopup().isShowing()) {
-                mediaView.getControlsPopup().hide();
+            if (InstanceManager.getMediaView().getControlsPopup().isShowing()) {
+                InstanceManager.getMediaView().getControlsPopup().hide();
             }
-            if (mediaView.getVideoPlayer().isPlaying()) {
-                mediaView.getVideoPlayer().pause();
+            if (InstanceManager.getMediaView().getVideoPlayer().isPlaying()) {
+                InstanceManager.getMediaView().getVideoPlayer().pause();
             }
 
             panes.set(panes.indexOf(mediaView), tileView);
-            tileView.adjustViewportToCurrentTarget();
-            tileView.requestFocus();
+            InstanceManager.getTileView().adjustViewportToCurrentTarget();
+            InstanceManager.getTileView().requestFocus();
         } else if (panes.contains(tileView)) {
             panes.set(panes.indexOf(tileView), mediaView);
-            mediaView.requestFocus();
+            InstanceManager.getMediaView().requestFocus();
         }
     }
     public static boolean isFullView() {
-        return panes.contains(mediaView);
+        return panes.contains(InstanceManager.getMediaView());
     }
     void show() {
-        mainStage.setOpacity(0);
-        mainStage.setScene(mainScene);
-        tileView.requestFocus();
+        InstanceManager.getMainStage().setOpacity(0);
+        InstanceManager.getMainStage().setScene(mainScene);
+        InstanceManager.getTileView().requestFocus();
 
         SizeUtil.stageWidthChangeHandler();
         SizeUtil.stageHeightChangehandler();
         mainScene.widthProperty().addListener((observable, oldValue, newValue) -> SizeUtil.stageWidthChangeHandler());
         mainScene.heightProperty().addListener((observable, oldValue, newValue) -> SizeUtil.stageHeightChangehandler());
 
-        Platform.runLater(() -> mainStage.setOpacity(1));
+        Platform.runLater(() -> InstanceManager.getMainStage().setOpacity(1));
 
         EventUtil.init();
 
-        //StyleUtil.applyScrollbarStyle(tileView);
-        //StyleUtil.applyScrollbarStyle(tagListViewL.getTagListScrollPane());
-        //StyleUtil.applyScrollbarStyle(tagListViewR.getTagListScrollPane());
+        StyleUtil.applyScrollbarStyle(InstanceManager.getTileView());
+        StyleUtil.applyScrollbarStyle(InstanceManager.getTagListViewL().getTagListScrollPane());
+        StyleUtil.applyScrollbarStyle(InstanceManager.getTagListViewR().getTagListScrollPane());
     }
 }

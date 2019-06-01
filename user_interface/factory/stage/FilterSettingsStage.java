@@ -10,8 +10,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import lifecycle.InstanceManager;
 import system.CommonUtil;
-import system.Instances;
 import user_interface.factory.NodeUtil;
 import user_interface.factory.base.CheckBoxNode;
 import user_interface.factory.base.EditNode;
@@ -66,7 +66,7 @@ public class FilterSettingsStage extends Stage {
                 FilterManager.setEnableLimit(cbLimit.isSelected());
                 FilterManager.setLimit(Integer.valueOf(tfLimit.getText()));
                 FilterManager.refresh();
-                Instances.reload.doReload();
+                InstanceManager.getReload().doReload();
                 this.hide();
             }
         });

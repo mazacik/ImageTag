@@ -3,25 +3,25 @@ package user_interface.singleton.center;
 import control.reload.Reload;
 import database.object.DataObject;
 import javafx.scene.input.MouseEvent;
+import lifecycle.InstanceManager;
 import settings.SettingsEnum;
-import system.Instances;
 
-public class BaseTileEvent implements Instances {
+public class BaseTileEvent {
     public BaseTileEvent(BaseTile gallerytile) {
         onMouseClick(gallerytile);
     }
 
     public static void onGroupButtonClick(DataObject dataObject) {
-        if (!tileView.getExpandedGroups().contains(dataObject.getMergeID())) {
-            tileView.getExpandedGroups().add(dataObject.getMergeID());
+        if (!InstanceManager.getTileView().getExpandedGroups().contains(dataObject.getMergeID())) {
+            InstanceManager.getTileView().getExpandedGroups().add(dataObject.getMergeID());
         } else {
             //noinspection RedundantCollectionOperation
-            tileView.getExpandedGroups().remove(tileView.getExpandedGroups().indexOf(dataObject.getMergeID()));
+            InstanceManager.getTileView().getExpandedGroups().remove(InstanceManager.getTileView().getExpandedGroups().indexOf(dataObject.getMergeID()));
         }
         for (DataObject dataObject1 : dataObject.getMergeGroup()) {
             dataObject1.generateTileEffect();
         }
-        reload.notifyChangeIn(Reload.Control.DATA);
+        InstanceManager.getReload().notifyChangeIn(Reload.Control.DATA);
     }
     private void onMouseClick(BaseTile baseTile) {
         baseTile.setOnMouseClicked(event -> {
@@ -41,25 +41,25 @@ public class BaseTileEvent implements Instances {
     private void onLeftClick(BaseTile baseTile, MouseEvent event) {
         DataObject dataObject = baseTile.getParentDataObject();
 
-        int tileSize = settings.intValueOf(SettingsEnum.THUMBSIZE);
+        int tileSize = InstanceManager.getSettings().intValueOf(SettingsEnum.THUMBSIZE);
         if (event.getX() > tileSize - BaseTile.getEffectGroupSize() && event.getY() < BaseTile.getEffectGroupSize()) {
             onGroupButtonClick(dataObject);
         } else {
-            target.set(dataObject);
-            select.swapState(dataObject);
+            InstanceManager.getTarget().set(dataObject);
+            InstanceManager.getSelect().swapState(dataObject);
         }
-        reload.doReload();
-        clickMenuData.hide();
+        InstanceManager.getReload().doReload();
+        InstanceManager.getClickMenuData().hide();
     }
     private void onRightClick(BaseTile sender, MouseEvent event) {
         DataObject dataObject = sender.getParentDataObject();
 
-        if (!select.contains(dataObject)) {
-            select.add(dataObject);
+        if (!InstanceManager.getSelect().contains(dataObject)) {
+            InstanceManager.getSelect().add(dataObject);
         }
 
-        target.set(dataObject);
-        reload.doReload();
-        clickMenuData.show(sender, event);
+        InstanceManager.getTarget().set(dataObject);
+        InstanceManager.getReload().doReload();
+        InstanceManager.getClickMenuData().show(sender, event);
     }
 }

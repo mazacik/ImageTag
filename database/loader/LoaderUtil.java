@@ -1,10 +1,9 @@
-package loader;
+package database.loader;
 
-import control.logger.Logger;
 import database.list.DataObjectList;
+import database.loader.cache.CacheCreator;
 import database.object.DataObject;
-import loader.cache.CacheCreator;
-import system.Instances;
+import lifecycle.InstanceManager;
 import user_interface.scene.SceneUtil;
 
 import java.io.File;
@@ -13,11 +12,10 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 
-public abstract class LoaderUtil implements Instances {
+public abstract class LoaderUtil {
     public static void startLoading(String sourcePath) {
         DirectoryUtil.init(sourcePath);
         new LoaderThread().start();
-        SceneUtil.createMainScene();
         SceneUtil.showMainScene();
         SceneUtil.initStageLayoutMain();
     }
@@ -74,7 +72,7 @@ public abstract class LoaderUtil implements Instances {
             }
         } else {
             String error = "dataObjects.size() != fileList.size()";
-            Logger.getInstance().error(LoaderUtil.class, error);
+            InstanceManager.getLogger().error(LoaderUtil.class, error);
         }
     }
     public static void importFiles() {
@@ -96,10 +94,10 @@ public abstract class LoaderUtil implements Instances {
         });
 
         CacheReader.readCache(newDataObjects);
-        mainDataList.addAll(newDataObjects);
-        mainDataList.sort();
-        filter.refresh();
-        reload.doReload();
+        InstanceManager.getMainDataList().addAll(newDataObjects);
+        InstanceManager.getMainDataList().sort();
+        InstanceManager.getFilter().refresh();
+        InstanceManager.getReload().doReload();
         */
     }
 }

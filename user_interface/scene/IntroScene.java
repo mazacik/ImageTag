@@ -10,10 +10,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import loader.LoaderUtil;
-import loader.Project;
+import database.loader.LoaderUtil;
+import database.loader.Project;
+import lifecycle.InstanceManager;
 import system.CommonUtil;
-import system.Instances;
 import user_interface.factory.NodeUtil;
 import user_interface.factory.base.TextNode;
 import user_interface.factory.node.ColorModeSwitch;
@@ -25,7 +25,7 @@ import user_interface.singleton.utils.SizeUtil;
 import java.io.File;
 import java.util.ArrayList;
 
-public class IntroScene implements Instances {
+public class IntroScene {
     private final Scene introScene;
 
     IntroScene() {
@@ -49,9 +49,9 @@ public class IntroScene implements Instances {
         TextNode btnOpenProject = new TextNode("Open Project", ColorType.DEF, ColorType.DEF, ColorType.DEF, ColorType.ALT);
         btnOpenProject.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                String projectFilePath = new FileChooserStage(mainStage, "Open Project", System.getProperty("user.dir")).getResultValue();
+                String projectFilePath = new FileChooserStage(InstanceManager.getMainStage(), "Open Project", System.getProperty("user.dir")).getResultValue();
                 if (!projectFilePath.isEmpty()) {
-                    settings.addProjectPath(projectFilePath);
+                    InstanceManager.getSettings().addProjectPath(projectFilePath);
                     Project project = Project.readFromDisk(projectFilePath);
                     LoaderUtil.startLoading(project.getSourceDirectoryList().get(0));
                 }
@@ -69,10 +69,10 @@ public class IntroScene implements Instances {
         vBoxStartMenu.getChildren().add(btnNewProject);
         vBoxStartMenu.getChildren().add(new ColorModeSwitch());
 
-        if (settings.getRecentProjects().size() == 0) {
+        if (InstanceManager.getSettings().getRecentProjects().size() == 0) {
             vBoxRecentProjects.getChildren().add(new TextNode("No recent directories", ColorType.ALT, ColorType.DEF));
         } else {
-            new ArrayList<>(settings.getRecentProjects()).forEach(recentProject -> {
+            new ArrayList<>(InstanceManager.getSettings().getRecentProjects()).forEach(recentProject -> {
                 File projectFile = new File(recentProject);
                 if (projectFile.exists()) {
                     Project project = Project.readFromDisk(recentProject);
@@ -81,7 +81,7 @@ public class IntroScene implements Instances {
                     introWindowCell.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
                         if (event.getButton() == MouseButton.PRIMARY) {
                             if (event.getPickResult().getIntersectedNode().getParent().equals(introWindowCell.getNodeRemove())) {
-                                settings.getRecentProjects().remove(introWindowCell.getWorkingDirectory());
+                                InstanceManager.getSettings().getRecentProjects().remove(introWindowCell.getWorkingDirectory());
                                 vBoxRecentProjects.getChildren().remove(introWindowCell);
                             } else {
                                 LoaderUtil.startLoading(introWindowCell.getWorkingDirectory());
@@ -90,8 +90,8 @@ public class IntroScene implements Instances {
                     });
                     vBoxRecentProjects.getChildren().add(introWindowCell);
                 } else {
-                    logger.debug(this, recentProject + " not found, removing it from recent projects");
-                    settings.getRecentProjects().remove(recentProject);
+                    InstanceManager.getLogger().debug(this, recentProject + " not found, removing it from recent projects");
+                    InstanceManager.getSettings().getRecentProjects().remove(recentProject);
                 }
             });
         }
@@ -99,7 +99,7 @@ public class IntroScene implements Instances {
         Scene introScene = new Scene(NodeUtil.getVBox(ColorType.DEF, hBoxLayoutHelper));
         introScene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER) {
-                if (!settings.getRecentProjects().isEmpty()) {
+                if (!InstanceManager.getSettings().getRecentProjects().isEmpty()) {
                     IntroWindowCell cell = (IntroWindowCell) vBoxRecentProjects.getChildren().get(0);
                     LoaderUtil.startLoading(cell.getWorkingDirectory());
                 } else {
@@ -112,6 +112,6 @@ public class IntroScene implements Instances {
         return introScene;
     }
     void show() {
-        mainStage.setScene(introScene);
+        InstanceManager.getMainStage().setScene(introScene);
     }
 }

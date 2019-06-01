@@ -1,8 +1,8 @@
-package loader;
+package database.loader;
 
 import javafx.scene.Scene;
+import lifecycle.InstanceManager;
 import settings.SettingsEnum;
-import system.Instances;
 import user_interface.factory.stage.DirectoryChooserStage;
 
 import java.io.File;
@@ -25,7 +25,7 @@ public abstract class DirectoryUtil {
             if (!pathSource.endsWith(sep)) pathSource += sep;
             pathData = pathSource + dirNameData + sep;
             pathCacheDump = pathSource + dirNameCache + sep;
-            pathCacheProject = pathCacheDump + Instances.settings.intValueOf(SettingsEnum.THUMBSIZE) + "px" + sep;
+            pathCacheProject = pathCacheDump + InstanceManager.getSettings().intValueOf(SettingsEnum.THUMBSIZE) + "px" + sep;
         } else {
             //error, directory not found
         }

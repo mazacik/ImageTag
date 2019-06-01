@@ -1,12 +1,11 @@
 package database.object;
 
 import database.list.TagList;
-import loader.DirectoryUtil;
-import loader.FileSupportUtil;
-import loader.cache.CacheCreator;
-import system.CommonUtil;
+import database.loader.DirectoryUtil;
+import database.loader.FileSupportUtil;
+import database.loader.cache.CacheCreator;
+import lifecycle.InstanceManager;
 import system.FileType;
-import system.Instances;
 import user_interface.singleton.center.BaseTile;
 
 import java.io.File;
@@ -39,7 +38,7 @@ public class DataObject implements Serializable {
             return new ArrayList<>();
         } else {
             ArrayList<DataObject> mergedObjects = new ArrayList<>();
-            for (DataObject dataObject : CommonUtil.mainDataList) {
+            for (DataObject dataObject : InstanceManager.getMainDataList()) {
                 if (dataObject.getMergeID() == mergeID) {
                     mergedObjects.add(dataObject);
                 }
@@ -63,7 +62,7 @@ public class DataObject implements Serializable {
                 return FileType.VIDEO;
             }
         }
-        Instances.logger.error(this, "file type not supported");
+        InstanceManager.getLogger().error(this, "file type not supported");
         return null;
     }
 

@@ -2,8 +2,8 @@ package user_interface.singleton.top;
 
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import lifecycle.InstanceManager;
 import system.Direction;
-import system.Instances;
 import user_interface.factory.NodeUtil;
 import user_interface.factory.base.Separator;
 import user_interface.factory.base.TextNode;
@@ -15,7 +15,7 @@ import user_interface.factory.util.enums.ColorType;
 import user_interface.singleton.BaseNode;
 import user_interface.singleton.utils.SizeUtil;
 
-public class TopMenu extends BorderPane implements BaseNode, Instances {
+public class TopMenu extends BorderPane implements BaseNode {
     private final TextNode nodeSave;
     private final TextNode nodeImport;
     private final TextNode nodeSettings;
@@ -78,7 +78,7 @@ public class TopMenu extends BorderPane implements BaseNode, Instances {
     }
 
     public boolean reload() {
-        nodeTarget.setText(target.getCurrentTarget().getName());
+        nodeTarget.setText(InstanceManager.getTarget().getCurrentTarget().getName());
         return true;
     }
 
