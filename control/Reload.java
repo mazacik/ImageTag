@@ -1,4 +1,4 @@
-package control.reload;
+package control;
 
 import lifecycle.InstanceManager;
 import user_interface.singleton.BaseNode;
@@ -11,27 +11,25 @@ public class Reload {
 
     public Reload() {
         queue = new ArrayList<>();
-    }
-    public void init() {
-        this.subscribe(InstanceManager.getMediaView()
+        this.subscribe(InstanceManager.getMediaPane()
                 , Control.TARGET
         );
-        this.subscribe(InstanceManager.getTagListViewL()
+        this.subscribe(InstanceManager.getFilterPane()
                 , Control.INFO
                 , Control.FILTER
         );
-        this.subscribe(InstanceManager.getTagListViewR()
+        this.subscribe(InstanceManager.getSelectPane()
                 , Control.INFO
                 , Control.FILTER
                 , Control.TARGET
                 , Control.SELECT
         );
-        this.subscribe(InstanceManager.getTileView()
+        this.subscribe(InstanceManager.getGalleryPane()
                 , Control.DATA
                 , Control.FILTER
                 , Control.SELECT
         );
-        this.subscribe(InstanceManager.getTopMenu()
+        this.subscribe(InstanceManager.getToolbarPane()
                 , Control.TARGET
         );
     }

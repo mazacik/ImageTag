@@ -1,7 +1,6 @@
-package control.select;
+package control;
 
-import control.reload.Reload;
-import database.list.DataObjectList;
+import database.list.ObjectList;
 import database.list.TagList;
 import database.object.DataObject;
 import database.object.TagObject;
@@ -10,10 +9,14 @@ import system.CommonUtil;
 
 import java.util.ArrayList;
 
-public class Select extends DataObjectList {
+public class Select extends ObjectList {
+    public Select() {
+
+    }
+
     public boolean add(DataObject dataObject) {
         if (dataObject == null) return false;
-        if (dataObject.getMergeID() != 0 && !InstanceManager.getTileView().getExpandedGroups().contains(dataObject.getMergeID())) {
+        if (dataObject.getMergeID() != 0 && !InstanceManager.getGalleryPane().getExpandedGroups().contains(dataObject.getMergeID())) {
             return this.addAll(dataObject.getMergeGroup());
         }
         if (super.add(dataObject)) {
@@ -34,7 +37,7 @@ public class Select extends DataObjectList {
     }
     public boolean remove(DataObject dataObject) {
         if (dataObject == null) return false;
-        if (dataObject.getMergeID() != 0 && !InstanceManager.getTileView().getExpandedGroups().contains(dataObject.getMergeID())) {
+        if (dataObject.getMergeID() != 0 && !InstanceManager.getGalleryPane().getExpandedGroups().contains(dataObject.getMergeID())) {
             return this.removeAll(dataObject.getMergeGroup());
         }
         if (super.remove(dataObject)) {
@@ -64,7 +67,7 @@ public class Select extends DataObjectList {
         InstanceManager.getTarget().set(dataObject);
     }
     public void clear() {
-        DataObjectList helper = new DataObjectList();
+        ObjectList helper = new ObjectList();
         helper.addAll(this);
         super.clear();
         helper.forEach(DataObject::generateTileEffect);
@@ -98,11 +101,11 @@ public class Select extends DataObjectList {
 
     public void addTagObject(TagObject tagObject) {
         if (!tagObject.isEmpty()) {
-            if (!InstanceManager.getMainInfoList().contains(tagObject)) {
-                InstanceManager.getMainInfoList().add(tagObject);
+            if (!InstanceManager.getTagListMain().contains(tagObject)) {
+                InstanceManager.getTagListMain().add(tagObject);
             }
 
-            DataObjectList selectHelper = new DataObjectList();
+            ObjectList selectHelper = new ObjectList();
             selectHelper.addAll(InstanceManager.getSelect());
 
             TagList tagList;

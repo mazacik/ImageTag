@@ -1,4 +1,4 @@
-package control.logger;
+package control;
 
 public class Logger {
     private static final int CLASS_NAME_LENGTH = 16;
