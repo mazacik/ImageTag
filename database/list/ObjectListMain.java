@@ -1,31 +1,32 @@
 package database.list;
 
+import database.loader.FileUtil;
 import database.object.DataObject;
-import database.loader.DirectoryUtil;
 import lifecycle.InstanceManager;
 import system.JsonUtil;
 
-import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class DataObjectListMain extends DataObjectList {
-    private static final String dataFile = DirectoryUtil.getDirNameData() + File.separator + "data.json";
+public class ObjectListMain extends ObjectList {
+    public ObjectListMain() {
+
+    }
+
+    public static ObjectListMain readFromDisk() {
+        Type typeToken = JsonUtil.TypeTokenEnum.MAINDATALIST.getValue();
+        String path = FileUtil.getFileData();
+        return (ObjectListMain) JsonUtil.read(typeToken, path);
+    }
 
     public void sort() {
         super.sort(Comparator.comparing(DataObject::getName));
     }
-    public static DataObjectListMain readFromDisk() {
-        Type typeToken = JsonUtil.TypeTokenEnum.MAINDATALIST.getValue();
-        String path = DirectoryUtil.getPathSource() + dataFile;
-        return (DataObjectListMain) JsonUtil.read(typeToken, path);
-    }
     public void writeToDisk() {
         Type typeToken = JsonUtil.TypeTokenEnum.MAINDATALIST.getValue();
-        String path = DirectoryUtil.getPathSource() + dataFile;
-        JsonUtil.write(InstanceManager.getMainDataList(), typeToken, path);
-        InstanceManager.getMainInfoList().writeDummyToDisk();
+        String path = FileUtil.getFileData();
+        JsonUtil.write(InstanceManager.getObjectListMain(), typeToken, path);
     }
 
     public ArrayList<Integer> getAllGroups() {

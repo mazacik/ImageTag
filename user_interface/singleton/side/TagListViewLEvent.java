@@ -1,6 +1,5 @@
 package user_interface.singleton.side;
 
-import control.filter.FilterManager;
 import javafx.scene.input.MouseButton;
 import lifecycle.InstanceManager;
 import user_interface.factory.menu.ClickMenuLeft;
@@ -16,11 +15,11 @@ public class TagListViewLEvent {
     }
 
     private void onMouseClick() {
-        InstanceManager.getTagListViewL().setOnMouseClicked(event -> InstanceManager.getTagListViewL().requestFocus());
+        InstanceManager.getFilterPane().setOnMouseClicked(event -> InstanceManager.getFilterPane().requestFocus());
     }
 
     private void onAction_menuSettings() {
-        InstanceManager.getTagListViewL().getNodeSettings().setOnMouseClicked(event -> {
+        InstanceManager.getFilterPane().getNodeSettings().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 StageUtil.show(Stages.FILTER_SETTINGS);
                 ClickMenuLeft.hideAll();
@@ -28,9 +27,9 @@ public class TagListViewLEvent {
         });
     }
     private void onAction_menuReset() {
-        InstanceManager.getTagListViewL().getNodeReset().setOnMouseClicked(event -> {
+        InstanceManager.getFilterPane().getNodeReset().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                FilterManager.reset();
+                InstanceManager.getFilter().reset();
                 InstanceManager.getReload().doReload();
                 ClickMenuLeft.hideAll();
             }

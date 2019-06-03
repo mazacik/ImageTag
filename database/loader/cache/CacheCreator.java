@@ -3,7 +3,6 @@ package database.loader.cache;
 import database.object.DataObject;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
-import database.loader.LoaderUtil;
 import lifecycle.InstanceManager;
 import settings.SettingsEnum;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
@@ -18,14 +17,14 @@ import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
 public abstract class CacheCreator {
-    private static final String CACHE_EXT = ".jpg";
+    private static final String CACHE_EXTENSION = ".jpg";
 
-    public static String getCacheExt() {
-        return CACHE_EXT;
+    public static String getCacheExtension() {
+        return CACHE_EXTENSION;
     }
 
     public static Image createThumbnail(DataObject dataObject, File cacheFile) {
-        InstanceManager.getLogger().debug(LoaderUtil.class, "generating thumbnail for " + dataObject.getName());
+        InstanceManager.getLogger().debug(CacheCreator.class, "generating thumbnail for " + dataObject.getName());
 
         int thumbSize = InstanceManager.getSettings().intValueOf(SettingsEnum.THUMBSIZE);
 
@@ -43,7 +42,7 @@ public abstract class CacheCreator {
 
     private static Image createThumbnailFromImage(DataObject dataObject, int thumbSize, File cacheFile) {
         try {
-            Image thumbnail = new Image("file:" + dataObject.getSourcePath(), thumbSize, thumbSize, false, false);
+            Image thumbnail = new Image("file:" + dataObject.getPath(), thumbSize, thumbSize, false, false);
             BufferedImage writableImage = SwingFXUtils.fromFXImage(thumbnail, null);
             ImageIO.write(writableImage, "jpg", cacheFile);
             return thumbnail;
@@ -55,7 +54,7 @@ public abstract class CacheCreator {
     private static Image createThumbnailFromGif(DataObject dataObject, int thumbSize, File cacheFile) {
         try {
             GifDecoder gifDecoder = new GifDecoder();
-            gifDecoder.read(dataObject.getSourcePath());
+            gifDecoder.read(dataObject.getPath());
             java.awt.Image firstFrame = gifDecoder.getFrame(0).getScaledInstance(thumbSize, thumbSize, java.awt.Image.SCALE_FAST);
             BufferedImage buffer = new BufferedImage(thumbSize, thumbSize, BufferedImage.TYPE_INT_RGB);
             Graphics2D tGraphics2D = buffer.createGraphics();
@@ -100,7 +99,7 @@ public abstract class CacheCreator {
             }
         });
 
-        if (mediaPlayer.media().start(dataObject.getSourcePath())) {
+        if (mediaPlayer.media().start(dataObject.getPath())) {
             try {
                 mediaPlayer.controls().setPosition(mediaPosition);
                 inPositionLatch.await(); // Might wait forever if error
@@ -118,7 +117,7 @@ public abstract class CacheCreator {
         factory.release();
 
         if (cacheFile.exists()) {
-            return new Image("file:" + dataObject.getCachePath());
+            return new Image("file:" + dataObject.getCacheFile());
         } else {
             return null;
         }

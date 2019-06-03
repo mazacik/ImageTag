@@ -1,6 +1,6 @@
 package user_interface.singleton.side;
 
-import control.reload.Reload;
+import control.Reload;
 import database.object.DataObject;
 import database.object.TagObject;
 import javafx.geometry.Insets;
@@ -21,12 +21,12 @@ import user_interface.factory.menu.ClickMenuLeft;
 import user_interface.factory.util.ColorData;
 import user_interface.factory.util.ColorUtil;
 import user_interface.factory.util.enums.ColorType;
-import user_interface.singleton.BaseNode;
+import user_interface.singleton.NodeBase;
 import user_interface.singleton.utils.SizeUtil;
 
 import java.util.ArrayList;
 
-public class TagListViewR extends VBox implements BaseNode {
+public class SelectPane extends VBox implements NodeBase {
     private final TextNode nodeTitle;
     private final EditNode tfSearch;
     private String actualText = "";
@@ -39,7 +39,7 @@ public class TagListViewR extends VBox implements BaseNode {
     private final ScrollPane tagListScrollPane;
     private final ArrayList<String> expandedGroupsList;
 
-    public TagListViewR() {
+    public SelectPane() {
         ColorData colorDataSimple = new ColorData(ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
 
         nodeTitle = new TextNode("", colorDataSimple);
@@ -74,7 +74,7 @@ public class TagListViewR extends VBox implements BaseNode {
 
         if (InstanceManager.getSelect().size() == 0) {
             if (InstanceManager.getTarget().getCurrentTarget() != null) {
-                if (InstanceManager.getTarget().getCurrentTarget().getMergeID() != 0 && !InstanceManager.getTileView().getExpandedGroups().contains(InstanceManager.getTarget().getCurrentTarget().getMergeID())) {
+                if (InstanceManager.getTarget().getCurrentTarget().getMergeID() != 0 && !InstanceManager.getGalleryPane().getExpandedGroups().contains(InstanceManager.getTarget().getCurrentTarget().getMergeID())) {
                     nodeTitle.setText("Selection: " + InstanceManager.getTarget().getCurrentTarget().getMergeGroup().size() + " file(s)");
                 } else {
                     nodeTitle.setText("Selection: " + InstanceManager.getTarget().getCurrentTarget().getName());
@@ -117,7 +117,7 @@ public class TagListViewR extends VBox implements BaseNode {
             groupsShare = InstanceManager.getSelect().getSharedTags().getGroups();
         }
 
-        for (String group : InstanceManager.getMainInfoList().getGroups()) {
+        for (String group : InstanceManager.getTagListMain().getGroups()) {
             GroupNode groupNode;
             if (groupsInter.contains(group)) {
                 groupNode = NodeUtil.getGroupNode(this, group, textColorPositive);
@@ -137,7 +137,7 @@ public class TagListViewR extends VBox implements BaseNode {
                 namesShare = InstanceManager.getSelect().getSharedTags().getNames(group);
             }
 
-            for (String name : InstanceManager.getMainInfoList().getNames(group)) {
+            for (String name : InstanceManager.getTagListMain().getNames(group)) {
                 if (namesInter.contains(name)) {
                     groupNode.getNameNodes().add(this.createNameNode(name, textColorPositive, groupNode));
                 } else if (namesShare.contains(name)) {
@@ -176,7 +176,7 @@ public class TagListViewR extends VBox implements BaseNode {
     }
 
     public void changeNodeState(GroupNode groupNode, TextNode nameNode) {
-        TagObject tagObject = InstanceManager.getMainInfoList().getTagObject(groupNode.getText(), nameNode.getText());
+        TagObject tagObject = InstanceManager.getTagListMain().getTagObject(groupNode.getText(), nameNode.getText());
         if (nameNode.getTextFill().equals(ColorUtil.getTextColorPos()) || nameNode.getTextFill().equals(ColorUtil.getTextColorShr())) {
             nameNode.setTextFill(ColorUtil.getTextColorDef());
             this.removeTagObjectFromSelection(tagObject);
@@ -185,7 +185,7 @@ public class TagListViewR extends VBox implements BaseNode {
             this.addTagObjectToSelection(tagObject);
         }
 
-        InstanceManager.getReload().notifyChangeIn(Reload.Control.INFO);
+        InstanceManager.getReload().flag(Reload.Control.INFO);
         InstanceManager.getReload().doReload();
     }
     public void addTagObjectToSelection(TagObject tagObject) {

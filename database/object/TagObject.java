@@ -16,7 +16,7 @@ public class TagObject {
     public boolean isEmpty() {
         return group.isEmpty() || name.isEmpty();
     }
-    public static Comparator getComparator() {
+    public static Comparator<TagObject> getComparator() {
         return Comparator.comparing(TagObject::getFull);
     }
 

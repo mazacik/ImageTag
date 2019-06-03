@@ -218,7 +218,7 @@ public abstract class CommonUtil {
         return MainScene.isFullView();
     }
     public static DataObject getRandomDataObject() {
-        ArrayList<BaseTile> tiles = InstanceManager.getTileView().getVisibleTiles();
+        ArrayList<BaseTile> tiles = InstanceManager.getGalleryPane().getVisibleTiles();
         if (tiles.size() >= 1) {
             int index = new Random().nextInt(tiles.size());
             DataObject chosenDataObject = tiles.get(index).getParentDataObject();

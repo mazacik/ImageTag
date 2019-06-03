@@ -1,6 +1,5 @@
 package user_interface.singleton.side;
 
-import control.filter.FilterManager;
 import database.object.TagObject;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -20,12 +19,12 @@ import user_interface.factory.stage.InfoObjectEditStage;
 import user_interface.factory.util.ColorData;
 import user_interface.factory.util.ColorUtil;
 import user_interface.factory.util.enums.ColorType;
-import user_interface.singleton.BaseNode;
+import user_interface.singleton.NodeBase;
 import user_interface.singleton.utils.SizeUtil;
 
 import java.util.ArrayList;
 
-public class TagListViewL extends VBox implements BaseNode {
+public class FilterPane extends VBox implements NodeBase {
     private final TextNode nodeTitle;
     private final VBox tagListBox;
     private final ScrollPane tagListScrollPane;
@@ -34,7 +33,7 @@ public class TagListViewL extends VBox implements BaseNode {
     private final TextNode nodeSettings;
     private final TextNode nodeReset;
 
-    public TagListViewL() {
+    public FilterPane() {
         ColorData colorDataSimple = new ColorData(ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
 
         nodeTitle = new TextNode("", colorDataSimple);
@@ -50,8 +49,8 @@ public class TagListViewL extends VBox implements BaseNode {
         btnNew.prefWidthProperty().bind(this.widthProperty());
         btnNew.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                InstanceManager.getMainInfoList().add(new InfoObjectEditStage().getResult());
-                InstanceManager.getMainInfoList().sort();
+                InstanceManager.getTagListMain().add(new InfoObjectEditStage().getResult());
+                InstanceManager.getTagListMain().sort();
                 InstanceManager.getReload().doReload();
             }
         });
@@ -82,7 +81,7 @@ public class TagListViewL extends VBox implements BaseNode {
         Color textColorPositive = ColorUtil.getTextColorPos();
         Color textColorNegative = ColorUtil.getTextColorNeg();
 
-        ArrayList<String> groupNames = InstanceManager.getMainInfoList().getGroups();
+        ArrayList<String> groupNames = InstanceManager.getTagListMain().getGroups();
         for (String groupName : groupNames) {
             GroupNode groupNode;
             if (InstanceManager.getFilter().isWhitelisted(groupName)) {
@@ -94,7 +93,7 @@ public class TagListViewL extends VBox implements BaseNode {
             }
             groupNode.prefWidthProperty().bind(tagListBox.widthProperty());
 
-            for (String tagName : InstanceManager.getMainInfoList().getNames(groupName)) {
+            for (String tagName : InstanceManager.getTagListMain().getNames(groupName)) {
                 TextNode nameNode = new TextNode(tagName, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
 
                 if (InstanceManager.getFilter().isWhitelisted(groupName, tagName)) {
@@ -148,7 +147,7 @@ public class TagListViewL extends VBox implements BaseNode {
             groupNode.setTextFill(textColor);
             groupNode.getNameNodes().forEach(node -> node.setTextFill(textColor));
         } else {
-            TagObject tagObject = InstanceManager.getMainInfoList().getTagObject(groupNode.getText(), nameNode.getText());
+            TagObject tagObject = InstanceManager.getTagListMain().getTagObject(groupNode.getText(), nameNode.getText());
             if (InstanceManager.getFilter().isWhitelisted(tagObject)) {
                 InstanceManager.getFilter().blacklist(tagObject);
                 if (InstanceManager.getFilter().isBlacklisted(tagObject.getGroup())) {
@@ -171,7 +170,7 @@ public class TagListViewL extends VBox implements BaseNode {
                 nameNode.setTextFill(ColorUtil.getTextColorPos());
             }
         }
-        FilterManager.refresh();
+        InstanceManager.getFilter().refresh();
     }
 
     public ScrollPane getTagListScrollPane() {

@@ -1,153 +1,99 @@
 package database.loader;
 
-import control.filter.FilterManager;
-import control.reload.Reload;
-import database.list.DataObjectList;
-import database.list.DataObjectListMain;
+import database.list.ObjectList;
+import database.list.ObjectListMain;
+import database.loader.cache.CacheReader;
 import database.object.DataObject;
 import javafx.application.Platform;
-import database.loader.cache.CacheReader;
 import lifecycle.InstanceManager;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Date;
 
 public class LoaderThread extends Thread {
     public void run() {
-        initDirs();
-        ArrayList<File> fileList = LoaderUtil.getSupportedFiles(DirectoryUtil.getPathSource());
+        ArrayList<File> fileList = FileUtil.getSupportedFiles(FileUtil.getDirSource());
 
         try {
-            InstanceManager.getMainDataList().addAll(DataObjectListMain.readFromDisk());
+            InstanceManager.getObjectListMain().addAll(ObjectListMain.readFromDisk());
         } catch (Exception e) {
             InstanceManager.getLogger().debug(this, "existing database failed to load or does not exist");
-            createBackup();
             createDatabase(fileList);
         }
 
         checkDatabase(fileList);
+        FileUtil.initDataObjectPaths(fileList);
 
-        LoaderUtil.initDataObjectPaths(InstanceManager.getMainDataList(), fileList);
+        InstanceManager.getObjectListMain().sort();
+        InstanceManager.getTagListMain().initialize();
+        InstanceManager.getObjectListMain().writeToDisk();
+        InstanceManager.getTagListMain().writeDummyToDisk();
+        InstanceManager.getFilter().addAll(InstanceManager.getObjectListMain());
+        InstanceManager.getTarget().set(InstanceManager.getFilter().get(0));
 
-        InstanceManager.getMainDataList().sort();
-        InstanceManager.getMainInfoList().initialize();
-        InstanceManager.getMainDataList().writeToDisk();
-        InstanceManager.getFilter().addAll(InstanceManager.getMainDataList());
-
-        if (InstanceManager.getMainDataList().size() > 0) InstanceManager.getTarget().set(InstanceManager.getMainDataList().get(0));
-
-        Platform.runLater(() -> {
-            InstanceManager.getTagListViewL().reload();
-            InstanceManager.getTagListViewR().reload();
-        });
-
-        CacheReader.readCache(InstanceManager.getMainDataList());
-
-        InstanceManager.getReload().notifyChangeIn(Reload.Control.DATA);
-        Platform.runLater(InstanceManager.getReload()::doReload);
+        Runnable reload = () -> InstanceManager.getReload().doReload();
+        Platform.runLater(reload);
+        CacheReader.readCache(InstanceManager.getObjectListMain());
+        Platform.runLater(reload);
     }
 
-    private void initDirs() {
-        InstanceManager.getLogger().debug(this, "checking directories");
-
-        String pathCacheDump = DirectoryUtil.getPathCacheDump();
-        String pathCache = DirectoryUtil.getPathCacheProject();
-        String pathData = DirectoryUtil.getPathData();
-
-        File dirCacheDump = new File(pathCacheDump);
-        if (!dirCacheDump.exists()) {
-            InstanceManager.getLogger().debug(this, "creating cache dump directory: " + pathCacheDump);
-            dirCacheDump.mkdirs();
-        }
-        try {
-            Files.setAttribute(Paths.get(pathCacheDump), "dos:hidden", true, LinkOption.NOFOLLOW_LINKS);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        File dirCache = new File(pathCache);
-        if (!dirCache.exists()) {
-            InstanceManager.getLogger().debug(this, "creating cache directory: " + pathCache);
-            dirCache.mkdirs();
-        }
-        File dirData = new File(pathData);
-        if (!dirData.exists()) {
-            InstanceManager.getLogger().debug(this, "creating data directory: " + pathData);
-            dirData.mkdirs();
-        }
-        try {
-            Files.setAttribute(Paths.get(pathData), "dos:hidden", true, LinkOption.NOFOLLOW_LINKS);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    private void createBackup() {
-        String dataDir = DirectoryUtil.getPathData();
-        String backupPath = dataDir + "backup_" + new Date().toString() + ".json";
-        String currentDataPath = dataDir + "data.json";
-
-        File backupFile = new File(backupPath);
-        File currentDataFile = new File(currentDataPath);
-
-        if (currentDataFile.exists()) {
-            currentDataFile.renameTo(backupFile);
-            InstanceManager.getLogger().debug(this, "database backup created");
-        } else {
-            InstanceManager.getLogger().debug(this, "database backup not created - database does not exist");
-        }
-    }
     private void createDatabase(ArrayList<File> fileList) {
-        InstanceManager.getLogger().debug(this, "creating database");
         for (File file : fileList) {
-            InstanceManager.getMainDataList().add(new DataObject(file));
+            InstanceManager.getObjectListMain().add(new DataObject(file));
         }
     }
     private void checkDatabase(ArrayList<File> fileList) {
-        InstanceManager.getLogger().debug(this, "validating database");
-        ArrayList<String> dataObjectNames = new ArrayList<>();
-        ArrayList<String> fileListNames = new ArrayList<>();
+        ObjectList objectList = InstanceManager.getObjectListMain();
+        objectList.sort(Comparator.comparing(DataObject::getName));
+        fileList.sort(Comparator.comparing(File::getName));
 
-        InstanceManager.getMainDataList().forEach(dataObject -> dataObjectNames.add(dataObject.getName()));
-        fileList.forEach(file -> fileListNames.add(file.getName()));
+        ArrayList<DataObject> orphanObjects = new ArrayList<>(objectList);
+        ArrayList<File> newFiles = new ArrayList<>(fileList);
 
-        dataObjectNames.sort(Comparator.naturalOrder());
-        fileListNames.sort(Comparator.naturalOrder());
-
-        /* add unrecognized items */
-        int added = 0;
-        InstanceManager.getLogger().debug(this, "looking for new data objects");
-        for (File file : fileList) {
-            if (!dataObjectNames.contains(file.getName())) {
-                InstanceManager.getLogger().debug(this, "adding " + file.getName());
-                DataObject dataObject = new DataObject(file);
-                InstanceManager.getMainDataList().add(dataObject);
-                FilterManager.addNewDataObject(dataObject);
-                added++;
+        /* compare files in the working directory with knwon objects in the database */
+        for (DataObject dataObject : objectList) {
+            for (File file : fileList) {
+                //todo complexity = n^2, needs optimization
+                //todo maybe this loop can do FileUtil.initDataObjectPaths(fileList); ?
+                if (dataObject.getName().equals(file.getName())) {
+                    newFiles.remove(file);
+                    orphanObjects.remove(dataObject);
+                }
             }
         }
-        InstanceManager.getLogger().debug(this, "newItems " + added + " files");
 
-        /* discard missing items */
-        int removed = 0;
-        InstanceManager.getLogger().debug(this, "looking for orphan data objects");
-        DataObjectList temporaryList = new DataObjectList();
-        temporaryList.addAll(InstanceManager.getMainDataList());
-        for (DataObject dataObject : InstanceManager.getMainDataList()) {
-            String objectName = dataObject.getName();
-            if (!fileListNames.contains(objectName)) {
-                InstanceManager.getLogger().debug(this, "discarding " + objectName);
-                temporaryList.remove(dataObject);
-                removed++;
+        /* match files with the exact same size, these were probably renamed outside of the application */
+        for (File file : new ArrayList<>(newFiles)) {
+            for (DataObject dataObject : new ArrayList<>(orphanObjects)) {
+                if (file.length() == dataObject.getSize()) {
+                    newFiles.remove(file);
+                    orphanObjects.remove(dataObject);
+
+                    /* rename the db object and cache file */
+                    File oldCacheFile = new File(dataObject.getCacheFile());
+                    dataObject.setName(file.getName());
+                    File newCacheFile = new File(dataObject.getCacheFile());
+
+                    if (oldCacheFile.exists() && !newCacheFile.exists()) {
+                        oldCacheFile.renameTo(newCacheFile);
+                    }
+                }
             }
         }
-        InstanceManager.getLogger().debug(this, "discarded " + removed + " files");
 
-        InstanceManager.getMainDataList().clear();
-        InstanceManager.getMainDataList().addAll(temporaryList);
+        /* add unrecognized objects */
+        for (File file : newFiles) {
+            DataObject dataObject = new DataObject(file);
+            objectList.add(dataObject);
+            InstanceManager.getFilter().getCurrentSessionObjects().add(dataObject);
+        }
+
+        /* discard orphan objects */
+        for (DataObject dataObject : orphanObjects) {
+            objectList.remove(dataObject);
+        }
+
+        objectList.sort(Comparator.comparing(DataObject::getName));
     }
 }

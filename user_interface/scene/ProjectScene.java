@@ -1,5 +1,7 @@
 package user_interface.scene;
 
+import database.loader.FileUtil;
+import database.loader.Project;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -8,10 +10,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import database.loader.DirectoryUtil;
-import database.loader.LoaderUtil;
-import database.loader.Project;
 import lifecycle.InstanceManager;
+import lifecycle.LifeCycleManager;
 import system.CommonUtil;
 import user_interface.factory.NodeUtil;
 import user_interface.factory.base.CheckBoxNode;
@@ -66,7 +66,7 @@ public class ProjectScene {
 
         btnProjectDirectory.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                String projectDirectory = DirectoryUtil.directoryChooser(scene);
+                String projectDirectory = FileUtil.directoryChooser(scene);
                 if (!projectDirectory.isEmpty()) {
                     edtProjectDirectory.setText(projectDirectory);
                 }
@@ -74,7 +74,7 @@ public class ProjectScene {
         });
         btnWorkingDirectory.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                edtWorkingDirectory.setText(DirectoryUtil.directoryChooser(scene));
+                edtWorkingDirectory.setText(FileUtil.directoryChooser(scene));
             }
         });
 
@@ -85,7 +85,7 @@ public class ProjectScene {
             Project project = new Project(projectFile, workingDirectory);
             project.writeToDisk();
             InstanceManager.getSettings().addProjectPath(projectFile);
-            LoaderUtil.startLoading(workingDirectory);
+            LifeCycleManager.startLoading(project);
         });
         btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> SceneUtil.showIntroScene());
 

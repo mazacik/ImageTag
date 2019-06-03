@@ -21,7 +21,7 @@ public class Select extends ObjectList {
         }
         if (super.add(dataObject)) {
             dataObject.generateTileEffect();
-            InstanceManager.getReload().notifyChangeIn(Reload.Control.SELECT);
+            InstanceManager.getReload().flag(Reload.Control.SELECT);
             return true;
         }
         return false;
@@ -30,7 +30,7 @@ public class Select extends ObjectList {
         if (arrayList == null) return false;
         if (super.addAll(arrayList)) {
             arrayList.forEach(DataObject::generateTileEffect);
-            InstanceManager.getReload().notifyChangeIn(Reload.Control.SELECT);
+            InstanceManager.getReload().flag(Reload.Control.SELECT);
             return true;
         }
         return false;
@@ -42,7 +42,7 @@ public class Select extends ObjectList {
         }
         if (super.remove(dataObject)) {
             dataObject.generateTileEffect();
-            InstanceManager.getReload().notifyChangeIn(Reload.Control.SELECT);
+            InstanceManager.getReload().flag(Reload.Control.SELECT);
             return true;
         }
         return false;
@@ -51,7 +51,7 @@ public class Select extends ObjectList {
         if (arrayList == null) return false;
         if (super.removeAll(arrayList)) {
             arrayList.forEach(DataObject::generateTileEffect);
-            InstanceManager.getReload().notifyChangeIn(Reload.Control.SELECT);
+            InstanceManager.getReload().flag(Reload.Control.SELECT);
             return true;
         }
         return false;
@@ -71,7 +71,7 @@ public class Select extends ObjectList {
         helper.addAll(this);
         super.clear();
         helper.forEach(DataObject::generateTileEffect);
-        InstanceManager.getReload().notifyChangeIn(Reload.Control.SELECT);
+        InstanceManager.getReload().flag(Reload.Control.SELECT);
     }
     public void swapState(DataObject dataObject) {
         if (super.contains(dataObject)) {
@@ -96,7 +96,7 @@ public class Select extends ObjectList {
             dataObject.setTagList(tagList);
         }
 
-        InstanceManager.getReload().notifyChangeIn(Reload.Control.DATA, Reload.Control.INFO);
+        InstanceManager.getReload().flag(Reload.Control.DATA, Reload.Control.INFO);
     }
 
     public void addTagObject(TagObject tagObject) {

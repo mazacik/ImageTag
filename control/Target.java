@@ -17,22 +17,24 @@ public class Target {
     }
 
     public void set(DataObject dataObject) {
-        /* store old target position */
-        previousTarget = currentTarget;
+        if (dataObject != null) {
+            /* store old target position */
+            previousTarget = currentTarget;
 
-        /* refresh new target effect */
-        currentTarget = dataObject;
-        BaseTile baseTile = currentTarget.getBaseTile();
-        if (baseTile != null) baseTile.generateEffect();
-
-        /* remove old target effect */
-        if (previousTarget != null) {
-            baseTile = previousTarget.getBaseTile();
+            /* refresh new target effect */
+            currentTarget = dataObject;
+            BaseTile baseTile = currentTarget.getBaseTile();
             if (baseTile != null) baseTile.generateEffect();
-        }
 
-        InstanceManager.getGalleryPane().adjustViewportToCurrentTarget();
-        InstanceManager.getReload().notifyChangeIn(Reload.Control.TARGET);
+            /* remove old target effect */
+            if (previousTarget != null) {
+                baseTile = previousTarget.getBaseTile();
+                if (baseTile != null) baseTile.generateEffect();
+            }
+
+            InstanceManager.getGalleryPane().adjustViewportToCurrentTarget();
+            InstanceManager.getReload().flag(Reload.Control.TARGET);
+        }
     }
     public void move(Direction direction) {
         if (currentTarget == null) return;

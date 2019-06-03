@@ -1,16 +1,16 @@
 package control;
 
 import lifecycle.InstanceManager;
-import user_interface.singleton.BaseNode;
+import user_interface.singleton.NodeBase;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Reload {
-    private ArrayList<BaseNode> queue;
+    private ArrayList<NodeBase> queue;
 
     public Reload() {
         queue = new ArrayList<>();
+
         this.subscribe(InstanceManager.getMediaPane()
                 , Control.TARGET
         );
@@ -33,30 +33,23 @@ public class Reload {
                 , Control.TARGET
         );
     }
-    private void subscribe(BaseNode node, Control... controls) {
-        Arrays.asList(controls).forEach(control -> control.getSubscribers().add(node));
-    }
 
-    public void notifyChangeIn(Control... controls) {
-        Arrays.asList(controls).forEach(control -> queue(control.getSubscribers()));
-    }
-    private void queue(ArrayList<BaseNode> nodes) {
-        nodes.forEach(node -> {
-            if (!queue.contains(node)) {
-                queue.add(node);
-            }
-        });
+    public void flag(Control... controls) {
+        for (Control control : controls) queue(control.getSubscribers());
     }
     public void doReload() {
-        ArrayList<BaseNode> newQueue = new ArrayList<>(queue);
+        ArrayList<NodeBase> newQueue = new ArrayList<>(queue);
 
-        queue.forEach(baseNode -> {
-            if (baseNode.reload()) {
-                newQueue.remove(baseNode);
-            }
-        });
+        for (NodeBase node : queue) if (node.reload()) newQueue.remove(node);
 
         queue = newQueue;
+    }
+
+    private void subscribe(NodeBase node, Control... controls) {
+        for (Control control : controls) control.getSubscribers().add(node);
+    }
+    private void queue(ArrayList<NodeBase> nodes) {
+        for (NodeBase node : nodes) if (!queue.contains(node)) queue.add(node);
     }
 
     public enum Control {
@@ -67,11 +60,11 @@ public class Reload {
         SELECT,
         ;
 
-        private ArrayList<BaseNode> subscribers;
+        private ArrayList<NodeBase> subscribers;
         Control() {
             this.subscribers = new ArrayList<>();
         }
-        public ArrayList<BaseNode> getSubscribers() {
+        public ArrayList<NodeBase> getSubscribers() {
             return this.subscribers;
         }
     }

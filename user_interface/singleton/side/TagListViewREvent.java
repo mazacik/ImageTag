@@ -1,6 +1,6 @@
 package user_interface.singleton.side;
 
-import control.reload.Reload;
+import control.Reload;
 import database.object.TagObject;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -23,25 +23,25 @@ public class TagListViewREvent {
     }
 
     private void onMouseClick() {
-        InstanceManager.getTagListViewR().setOnMouseClicked(event -> InstanceManager.getTagListViewR().requestFocus());
+        InstanceManager.getSelectPane().setOnMouseClicked(event -> InstanceManager.getSelectPane().requestFocus());
     }
 
     private void tfSearchEvents() {
-        InstanceManager.getTagListViewR().getTfSearch().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            String actualText = InstanceManager.getTagListViewR().getActualText();
+        InstanceManager.getSelectPane().getTfSearch().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            String actualText = InstanceManager.getSelectPane().getActualText();
             if (event.getCode().isLetterKey()) {
-                InstanceManager.getTagListViewR().setActualText(actualText + event.getText().toLowerCase());
+                InstanceManager.getSelectPane().setActualText(actualText + event.getText().toLowerCase());
             } else if (event.getCode() == KeyCode.BACK_SPACE) {
                 if (!actualText.isEmpty()) {
-                    InstanceManager.getTagListViewR().setActualText(actualText.substring(0, actualText.length() - 1));
+                    InstanceManager.getSelectPane().setActualText(actualText.substring(0, actualText.length() - 1));
                 }
             }
         });
-        InstanceManager.getTagListViewR().getTfSearch().setOnKeyTyped(event -> {
+        InstanceManager.getSelectPane().getTfSearch().setOnKeyTyped(event -> {
             event.consume();
 
-            String actualText = InstanceManager.getTagListViewR().getActualText();
-            TextField tfSearch = InstanceManager.getTagListViewR().getTfSearch();
+            String actualText = InstanceManager.getSelectPane().getActualText();
+            TextField tfSearch = InstanceManager.getSelectPane().getTfSearch();
 
             if (actualText.isEmpty()) {
                 tfSearch.clear();
@@ -50,7 +50,7 @@ public class TagListViewREvent {
                 tfSearch.positionCaret(tfSearch.getLength());
             } else if (actualText.length() >= 3) {
                 ArrayList<TagObject> matches = new ArrayList<>();
-                for (TagObject tagObject : InstanceManager.getMainInfoList()) {
+                for (TagObject tagObject : InstanceManager.getTagListMain()) {
                     if (tagObject.getFull().toLowerCase().contains(actualText)) {
                         matches.add(tagObject);
                     }
@@ -96,15 +96,15 @@ public class TagListViewREvent {
                 }
             }
         });
-        InstanceManager.getTagListViewR().getTfSearch().setOnAction(event -> {
+        InstanceManager.getSelectPane().getTfSearch().setOnAction(event -> {
             if (!InstanceManager.getSelect().isEmpty()) {
-                TextField tfSearch = InstanceManager.getTagListViewR().getTfSearch();
-                TagObject tagObject = InstanceManager.getMainInfoList().getTagObject(tfSearch.getText());
+                TextField tfSearch = InstanceManager.getSelectPane().getTfSearch();
+                TagObject tagObject = InstanceManager.getTagListMain().getTagObject(tfSearch.getText());
                 if (tagObject != null) {
-                    InstanceManager.getTagListViewR().addTagObjectToSelection(tagObject);
-                    InstanceManager.getTagListViewR().setActualText("");
+                    InstanceManager.getSelectPane().addTagObjectToSelection(tagObject);
+                    InstanceManager.getSelectPane().setActualText("");
                     tfSearch.clear();
-                    InstanceManager.getReload().notifyChangeIn(Reload.Control.INFO);
+                    InstanceManager.getReload().flag(Reload.Control.INFO);
                     InstanceManager.getReload().doReload();
                 }
             }
@@ -112,7 +112,7 @@ public class TagListViewREvent {
     }
 
     private void onAction_menuSelectAll() {
-        InstanceManager.getTagListViewR().getNodeSelectAll().setOnMouseClicked(event -> {
+        InstanceManager.getSelectPane().getNodeSelectAll().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 InstanceManager.getSelect().addAll(InstanceManager.getFilter());
                 InstanceManager.getReload().doReload();
@@ -121,7 +121,7 @@ public class TagListViewREvent {
         });
     }
     private void onAction_menuClearSelection() {
-        InstanceManager.getTagListViewR().getNodeSelectNone().setOnMouseClicked(event -> {
+        InstanceManager.getSelectPane().getNodeSelectNone().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 InstanceManager.getSelect().clear();
                 InstanceManager.getReload().doReload();
@@ -130,7 +130,7 @@ public class TagListViewREvent {
         });
     }
     private void onAction_menuMergeSelection() {
-        InstanceManager.getTagListViewR().getNodeSelectMerge().setOnMouseClicked(event -> {
+        InstanceManager.getSelectPane().getNodeSelectMerge().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 InstanceManager.getSelect().merge();
                 InstanceManager.getReload().doReload();

@@ -1,5 +1,5 @@
 package user_interface.singleton;
 
-public interface BaseNode {
+public interface NodeBase {
     boolean reload();
 }

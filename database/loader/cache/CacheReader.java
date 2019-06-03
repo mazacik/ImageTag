@@ -1,12 +1,12 @@
 package database.loader.cache;
 
-import database.list.DataObjectList;
+import control.Reload;
+import database.list.ObjectList;
 import database.object.DataObject;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
-import database.loader.LoaderUtil;
 import lifecycle.InstanceManager;
 import user_interface.singleton.center.BaseTile;
 
@@ -14,13 +14,16 @@ import java.io.File;
 import java.util.ArrayList;
 
 public abstract class CacheReader {
-    public static void readCache(DataObjectList dataObjects) {
-        InstanceManager.getLogger().debug(LoaderUtil.class, "loading image cache");
+    public static void readCache(ObjectList dataObjects) {
+        InstanceManager.getLogger().debug(CacheReader.class, "loading image cache");
 
         ArrayList<Integer> mergeGroupsAlreadyShown = new ArrayList<>();
-        ObservableList<Node> tilePaneChildren = InstanceManager.getTileView().getTilePane().getChildren();
+        ObservableList<Node> tilePaneChildren = InstanceManager.getGalleryPane().getTilePane().getChildren();
 
         for (DataObject dataObject : dataObjects) {
+            String message = "loading progress: " + (dataObjects.indexOf(dataObject) + 1) + "/" + dataObjects.size();
+            Platform.runLater(() -> InstanceManager.getToolbarPane().getNodeInfo().setText(message));
+
             dataObject.setBaseTile(new BaseTile(dataObject, readCache(dataObject)));
 
             int mergeID = dataObject.getMergeID();
@@ -36,12 +39,14 @@ public abstract class CacheReader {
                 Platform.runLater(showTile);
             }
         }
+
+        InstanceManager.getReload().flag(Reload.Control.DATA);
     }
     public static Image readCache(DataObject dataObject) {
-        File cacheFile = new File(dataObject.getCachePath());
+        File cacheFile = new File(dataObject.getCacheFile());
 
         if (cacheFile.exists()) {
-            return new Image("file:" + dataObject.getCachePath());
+            return new Image("file:" + dataObject.getCacheFile());
         } else {
             return CacheCreator.createThumbnail(dataObject, cacheFile);
         }

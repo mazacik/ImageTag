@@ -1,6 +1,6 @@
 package user_interface.singleton.center;
 
-import control.reload.Reload;
+import control.Reload;
 import database.object.DataObject;
 import javafx.scene.input.MouseEvent;
 import lifecycle.InstanceManager;
@@ -12,16 +12,16 @@ public class BaseTileEvent {
     }
 
     public static void onGroupButtonClick(DataObject dataObject) {
-        if (!InstanceManager.getTileView().getExpandedGroups().contains(dataObject.getMergeID())) {
-            InstanceManager.getTileView().getExpandedGroups().add(dataObject.getMergeID());
+        if (!InstanceManager.getGalleryPane().getExpandedGroups().contains(dataObject.getMergeID())) {
+            InstanceManager.getGalleryPane().getExpandedGroups().add(dataObject.getMergeID());
         } else {
             //noinspection RedundantCollectionOperation
-            InstanceManager.getTileView().getExpandedGroups().remove(InstanceManager.getTileView().getExpandedGroups().indexOf(dataObject.getMergeID()));
+            InstanceManager.getGalleryPane().getExpandedGroups().remove(InstanceManager.getGalleryPane().getExpandedGroups().indexOf(dataObject.getMergeID()));
         }
         for (DataObject dataObject1 : dataObject.getMergeGroup()) {
             dataObject1.generateTileEffect();
         }
-        InstanceManager.getReload().notifyChangeIn(Reload.Control.DATA);
+        InstanceManager.getReload().flag(Reload.Control.DATA);
     }
     private void onMouseClick(BaseTile baseTile) {
         baseTile.setOnMouseClicked(event -> {

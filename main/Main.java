@@ -9,6 +9,6 @@ public class Main extends Application {
         launch(args);
     }
     public void start(Stage stage) {
-        LifeCycleManager.start();
+        LifeCycleManager.initialize();
     }
 }

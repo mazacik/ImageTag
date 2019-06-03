@@ -56,21 +56,21 @@ public class VideoPlayer {
             @Override
             public void positionChanged(MediaPlayer mediaPlayer, float newPosition) {
                 super.positionChanged(mediaPlayer, newPosition);
-                InstanceManager.getMediaView().getControls().setVideoProgress(newPosition);
+                InstanceManager.getMediaPane().getControls().setVideoProgress(newPosition);
             }
         });
         mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
             @Override
             public void timeChanged(MediaPlayer mediaPlayer, long newTime) {
                 super.timeChanged(mediaPlayer, newTime);
-                InstanceManager.getMediaView().getControls().setTimeCurrent(newTime);
+                InstanceManager.getMediaPane().getControls().setTimeCurrent(newTime);
             }
         });
         mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
             @Override
             public void lengthChanged(MediaPlayer mediaPlayer, long newLength) {
                 super.lengthChanged(mediaPlayer, newLength);
-                InstanceManager.getMediaView().getControls().setTimeTotal(newLength);
+                InstanceManager.getMediaPane().getControls().setTimeTotal(newLength);
             }
         });
 
@@ -78,14 +78,14 @@ public class VideoPlayer {
             @Override
             public void opening(MediaPlayer mediaPlayer) {
                 super.opening(mediaPlayer);
-                InstanceManager.getMediaView().getControls().setVideoProgress(0);
+                InstanceManager.getMediaPane().getControls().setVideoProgress(0);
             }
         });
         mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
             @Override
             public void finished(MediaPlayer mediaPlayer) {
                 super.finished(mediaPlayer);
-                InstanceManager.getMediaView().getControls().setVideoProgress(1);
+                InstanceManager.getMediaPane().getControls().setVideoProgress(1);
             }
         });
     }

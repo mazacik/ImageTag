@@ -1,28 +1,28 @@
 package database.list;
 
-import control.reload.Reload;
+import control.Reload;
 import database.object.DataObject;
 import database.object.TagObject;
 import lifecycle.InstanceManager;
 
 import java.util.ArrayList;
 
-public class DataObjectList extends ArrayList<DataObject> {
+public class ObjectList extends ArrayList<DataObject> {
     public boolean add(DataObject dataObject) {
         if (super.add(dataObject)) {
-            InstanceManager.getReload().notifyChangeIn(Reload.Control.FILTER);
+            InstanceManager.getReload().flag(Reload.Control.FILTER);
             return true;
         }
         return false;
     }
-    public boolean setAll(DataObjectList dataObjects) {
+    public boolean setAll(ObjectList dataObjects) {
         this.clear();
-        InstanceManager.getReload().notifyChangeIn(Reload.Control.FILTER);
+        InstanceManager.getReload().flag(Reload.Control.FILTER);
         return this.addAll(dataObjects);
     }
     public void clear() {
         super.clear();
-        InstanceManager.getReload().notifyChangeIn(Reload.Control.FILTER);
+        InstanceManager.getReload().flag(Reload.Control.FILTER);
     }
 
     public TagList getIntersectingTags() {

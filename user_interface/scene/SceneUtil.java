@@ -9,7 +9,7 @@ public class SceneUtil {
     private static ProjectScene projectScene;
     private static MainScene mainScene;
 
-    public static void initStageLayoutIntro() {
+    public static void stageLayoutIntro() {
         Stage mainStage = InstanceManager.getMainStage();
         mainStage.setTitle("Welcome");
         mainStage.show();
@@ -21,7 +21,7 @@ public class SceneUtil {
         mainStage.setMinHeight(height);
         mainStage.centerOnScreen();
     }
-    public static void initStageLayoutMain() {
+    public static void stageLayoutMain() {
         Stage mainStage = InstanceManager.getMainStage();
         mainStage.setMinWidth(100 + SizeUtil.getMinWidthSideLists() * 2 + SizeUtil.getGalleryIconSize());
         mainStage.setMinHeight(100 + SizeUtil.getPrefHeightTopMenu() + SizeUtil.getGalleryIconSize());
@@ -46,9 +46,10 @@ public class SceneUtil {
     }
     public static void showMainScene() {
         InstanceManager.getMainStage().setOnCloseRequest(event -> {
-            InstanceManager.getMediaView().getVideoPlayer().dispose();
+            InstanceManager.getMediaPane().getVideoPlayer().dispose();
             InstanceManager.getSettings().writeToDisk();
-            InstanceManager.getMainDataList().writeToDisk();
+            InstanceManager.getObjectListMain().writeToDisk();
+            InstanceManager.getTagListMain().writeDummyToDisk();
             InstanceManager.getLogger().debug(SceneUtil.class, "application exit");
         });
         mainScene.show();

@@ -202,12 +202,12 @@ public class GifDecoder {
             line += iy;
             if (line < height) {
                 int k = line * width;
-                int dx = k + ix; // start of line in dest
+                int dx = k + ix; // initialize of line in dest
                 int dlim = dx + iw; // end of dest line
                 if ((k + width) < dlim) {
                     dlim = k + width; // past dest edge
                 }
-                int sx = i * iw; // start of line in source
+                int sx = i * iw; // initialize of line in source
                 while (dx < dlim) {
                     // map color and insert in destination
                     int index = ((int) pixels[sx++]) & 0xff;

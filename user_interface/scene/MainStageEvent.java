@@ -12,7 +12,7 @@ public class MainStageEvent {
         InstanceManager.getMainStage().getScene().setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case ESCAPE:
-                    InstanceManager.getTopMenu().requestFocus();
+                    InstanceManager.getToolbarPane().requestFocus();
                     break;
                 case Q:
                     InstanceManager.getSelect().swapState(InstanceManager.getTarget().getCurrentTarget());

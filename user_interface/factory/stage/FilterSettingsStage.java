@@ -1,6 +1,6 @@
 package user_interface.factory.stage;
 
-import control.filter.FilterManager;
+import control.Filter;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -59,13 +59,14 @@ public class FilterSettingsStage extends Stage {
         TextNode lblOK = new TextNode("OK", colorData);
         lblOK.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                FilterManager.setShowImages(cbImages.isSelected());
-                FilterManager.setShowGifs(cbGifs.isSelected());
-                FilterManager.setShowVideos(cbVideos.isSelected());
-                FilterManager.setSessionOnly(cbSession.isSelected());
-                FilterManager.setEnableLimit(cbLimit.isSelected());
-                FilterManager.setLimit(Integer.valueOf(tfLimit.getText()));
-                FilterManager.refresh();
+                Filter filter = InstanceManager.getFilter();
+                filter.setShowImages(cbImages.isSelected());
+                filter.setShowGifs(cbGifs.isSelected());
+                filter.setShowVideos(cbVideos.isSelected());
+                filter.setSessionOnly(cbSession.isSelected());
+                filter.setEnableLimit(cbLimit.isSelected());
+                filter.setLimit(Integer.valueOf(tfLimit.getText()));
+                filter.refresh();
                 InstanceManager.getReload().doReload();
                 this.hide();
             }
@@ -95,12 +96,13 @@ public class FilterSettingsStage extends Stage {
     }
 
     void _show() {
-        cbImages.setSelected(FilterManager.isShowImages());
-        cbGifs.setSelected(FilterManager.isShowGifs());
-        cbVideos.setSelected(FilterManager.isShowVideos());
-        cbSession.setSelected(FilterManager.isSessionOnly());
-        cbLimit.setSelected(FilterManager.isEnableLimit());
-        tfLimit.setText(String.valueOf(FilterManager.getLimit()));
+        Filter filter = InstanceManager.getFilter();
+        cbImages.setSelected(filter.isShowImages());
+        cbGifs.setSelected(filter.isShowGifs());
+        cbVideos.setSelected(filter.isShowVideos());
+        cbSession.setSelected(filter.isSessionOnly());
+        cbLimit.setSelected(filter.isEnableLimit());
+        tfLimit.setText(String.valueOf(filter.getLimit()));
 
         this.show();
     }

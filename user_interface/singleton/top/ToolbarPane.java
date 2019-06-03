@@ -1,5 +1,6 @@
 package user_interface.singleton.top;
 
+import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import lifecycle.InstanceManager;
@@ -12,23 +13,23 @@ import user_interface.factory.buttons.ButtonTemplates;
 import user_interface.factory.menu.ClickMenuLeft;
 import user_interface.factory.util.ColorData;
 import user_interface.factory.util.enums.ColorType;
-import user_interface.singleton.BaseNode;
+import user_interface.singleton.NodeBase;
 import user_interface.singleton.utils.SizeUtil;
 
-public class TopMenu extends BorderPane implements BaseNode {
+public class ToolbarPane extends BorderPane implements NodeBase {
     private final TextNode nodeSave;
     private final TextNode nodeImport;
     private final TextNode nodeSettings;
     private final TextNode nodeExit;
 
-    private final TextNode nodeInpaint;
-
     private final TextNode nodeRandom;
     private final TextNode nodeFullview;
 
+    private final TextNode nodeInfo;
+
     private final TextNode nodeTarget;
 
-    public TopMenu() {
+    public ToolbarPane() {
         ColorData colorData = new ColorData(ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
 
         TextNode nodeFile = new TextNode("File", colorData);
@@ -38,15 +39,13 @@ public class TopMenu extends BorderPane implements BaseNode {
         nodeExit = new TextNode("Exit", colorData);
         ClickMenuLeft.install(nodeFile, Direction.DOWN, nodeSave, nodeImport, nodeSettings, new Separator(), nodeExit);
 
-        TextNode nodeTools = new TextNode("Tools", colorData);
-        nodeInpaint = new TextNode("Inpaint", colorData);
-        ClickMenuLeft.install(nodeTools, Direction.DOWN, nodeInpaint);
-
         nodeRandom = new TextNode("Random", colorData);
-        nodeFullview = new TextNode("MediaView", colorData);
+        nodeFullview = new TextNode("MediaPane", colorData);
         HBox hBoxTools = NodeUtil.getHBox(ColorType.DEF, nodeRandom, nodeFullview);
         hBoxTools.setBorder(NodeUtil.getBorder(0, 1, 0, 1));
         NodeUtil.addToManager(hBoxTools, ColorType.DEF);
+
+        nodeInfo = new TextNode("", ColorType.DEF, ColorType.DEF);
 
         ButtonFactory buttonFactory = ButtonFactory.getInstance();
         TextNode nodeShowSimilar = buttonFactory.get(ButtonTemplates.OBJ_SIMILAR);
@@ -66,13 +65,15 @@ public class TopMenu extends BorderPane implements BaseNode {
         );
 
         HBox hBoxMain = NodeUtil.getHBox(ColorType.DEF);
-        hBoxMain.getChildren().addAll(nodeFile, nodeTools);
+        hBoxMain.getChildren().add(nodeFile);
         hBoxMain.getChildren().add(hBoxTools);
         NodeUtil.addToManager(hBoxMain, ColorType.DEF);
 
         this.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
         this.setPrefHeight(SizeUtil.getPrefHeightTopMenu());
         this.setLeft(hBoxMain);
+        this.setCenter(nodeInfo);
+        BorderPane.setAlignment(nodeInfo, Pos.CENTER);
         this.setRight(nodeTarget);
         NodeUtil.addToManager(this, ColorType.DEF);
     }
@@ -95,13 +96,13 @@ public class TopMenu extends BorderPane implements BaseNode {
         return nodeExit;
     }
 
-    public TextNode getNodeInpaint() {
-        return nodeInpaint;
-    }
     public TextNode getNodeRandom() {
         return nodeRandom;
     }
     public TextNode getNodeFullview() {
         return nodeFullview;
+    }
+    public TextNode getNodeInfo() {
+        return nodeInfo;
     }
 }

@@ -1,8 +1,7 @@
 package user_interface.factory.buttons;
 
 import com.sun.jna.platform.FileUtils;
-import control.filter.FilterManager;
-import control.reload.Reload;
+import control.Reload;
 import database.object.DataObject;
 import database.object.TagObject;
 import javafx.scene.input.MouseButton;
@@ -60,7 +59,7 @@ public class ButtonFactory {
         TextNode textNode = new TextNode("Show Similar", colorData);
         textNode.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                FilterManager.showSimilar(InstanceManager.getTarget().getCurrentTarget());
+                InstanceManager.getFilter().showSimilar(InstanceManager.getTarget().getCurrentTarget());
                 InstanceManager.getReload().doReload();
                 ClickMenuBase.hideAll();
             }
@@ -71,7 +70,7 @@ public class ButtonFactory {
         TextNode textNode = new TextNode("Open", colorData);
         textNode.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                String fullPath = InstanceManager.getTarget().getCurrentTarget().getSourcePath();
+                String fullPath = InstanceManager.getTarget().getCurrentTarget().getPath();
                 try {
                     Desktop.getDesktop().open(new File(fullPath));
                 } catch (IOException e) {
@@ -87,7 +86,7 @@ public class ButtonFactory {
         TextNode textNode = new TextNode("Edit", colorData);
         textNode.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                String fullPath = InstanceManager.getTarget().getCurrentTarget().getSourcePath();
+                String fullPath = InstanceManager.getTarget().getCurrentTarget().getPath();
                 try {
                     //todo cross platform support
                     Runtime.getRuntime().exec("C:\\WINDOWS\\system32\\mspaint.exe " + fullPath);
@@ -114,7 +113,7 @@ public class ButtonFactory {
         TextNode textNode = new TextNode("Copy Path", colorData);
         textNode.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                ClipboardUtil.setClipboardContent(InstanceManager.getTarget().getCurrentTarget().getSourcePath());
+                ClipboardUtil.setClipboardContent(InstanceManager.getTarget().getCurrentTarget().getName());
                 ClickMenuBase.hideAll();
             }
         });
@@ -145,31 +144,31 @@ public class ButtonFactory {
         textNode.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 if (!InstanceManager.getClickMenuInfo().getName().isEmpty()) {
-                    InstanceManager.getMainInfoList().edit(InstanceManager.getMainInfoList().getTagObject(InstanceManager.getClickMenuInfo().getGroup(), InstanceManager.getClickMenuInfo().getName()));
+                    InstanceManager.getTagListMain().edit(InstanceManager.getTagListMain().getTagObject(InstanceManager.getClickMenuInfo().getGroup(), InstanceManager.getClickMenuInfo().getName()));
                 } else {
                     String oldGroup = InstanceManager.getClickMenuInfo().getGroup();
                     String newGroup = WordUtils.capitalize(new GroupEditStage(oldGroup).getResult().toLowerCase());
                     if (newGroup.isEmpty()) return;
 
-                    InstanceManager.getMainInfoList().forEach(tagObject -> {
+                    InstanceManager.getTagListMain().forEach(tagObject -> {
                         if (tagObject.getGroup().equals(oldGroup)) {
                             tagObject.setGroup(newGroup);
                         }
                     });
 
-                    ArrayList<String> expandedGroupsL = InstanceManager.getTagListViewL().getExpandedGroupsList();
+                    ArrayList<String> expandedGroupsL = InstanceManager.getFilterPane().getExpandedGroupsList();
                     if (expandedGroupsL.contains(oldGroup)) {
                         expandedGroupsL.remove(oldGroup);
                         expandedGroupsL.add(newGroup);
                     }
 
-                    ArrayList<String> expandedGroupsR = InstanceManager.getTagListViewR().getExpandedGroupsList();
+                    ArrayList<String> expandedGroupsR = InstanceManager.getSelectPane().getExpandedGroupsList();
                     if (expandedGroupsR.contains(oldGroup)) {
                         expandedGroupsR.remove(oldGroup);
                         expandedGroupsR.add(newGroup);
                     }
 
-                    InstanceManager.getReload().notifyChangeIn(Reload.Control.INFO);
+                    InstanceManager.getReload().flag(Reload.Control.INFO);
                 }
                 InstanceManager.getReload().doReload();
                 ClickMenuBase.hideAll();
@@ -181,9 +180,9 @@ public class ButtonFactory {
         TextNode textNode = new TextNode("Remove", colorData);
         textNode.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                TagObject tagObject = InstanceManager.getMainInfoList().getTagObject(InstanceManager.getClickMenuInfo().getGroup(), InstanceManager.getClickMenuInfo().getName());
-                InstanceManager.getMainDataList().forEach(dataObject -> dataObject.getTagList().remove(tagObject));
-                InstanceManager.getMainInfoList().remove(tagObject);
+                TagObject tagObject = InstanceManager.getTagListMain().getTagObject(InstanceManager.getClickMenuInfo().getGroup(), InstanceManager.getClickMenuInfo().getName());
+                InstanceManager.getObjectListMain().forEach(dataObject -> dataObject.getTagList().remove(tagObject));
+                InstanceManager.getTagListMain().remove(tagObject);
                 InstanceManager.getReload().doReload();
                 ClickMenuBase.hideAll();
             }
@@ -192,8 +191,9 @@ public class ButtonFactory {
     }
     private void deleteDataObject(DataObject dataObject) {
         if (InstanceManager.getFilter().contains(dataObject)) {
-            String sourcePath = InstanceManager.getTarget().getCurrentTarget().getSourcePath();
-            String cachePath = InstanceManager.getTarget().getCurrentTarget().getCachePath();
+            DataObject currentTarget = InstanceManager.getTarget().getCurrentTarget();
+            String sourcePath = currentTarget.getPath();
+            String cachePath = currentTarget.getCacheFile();
 
             FileUtils fo = FileUtils.getInstance();
             if (fo.hasTrash()) {
@@ -204,10 +204,10 @@ public class ButtonFactory {
                 }
             }
 
-            InstanceManager.getTileView().getTilePane().getChildren().remove(dataObject.getBaseTile());
+            InstanceManager.getGalleryPane().getTilePane().getChildren().remove(dataObject.getBaseTile());
             InstanceManager.getSelect().remove(dataObject);
             InstanceManager.getFilter().remove(dataObject);
-            InstanceManager.getMainDataList().remove(dataObject);
+            InstanceManager.getObjectListMain().remove(dataObject);
         }
     }
     private void deleteSelection() {
@@ -218,7 +218,7 @@ public class ButtonFactory {
 
         ArrayList<DataObject> dataObjectsToDelete = new ArrayList<>();
         InstanceManager.getSelect().forEach(dataObject -> {
-            if (dataObject.getMergeID() != 0 && !InstanceManager.getTileView().getExpandedGroups().contains(dataObject.getMergeID())) {
+            if (dataObject.getMergeID() != 0 && !InstanceManager.getGalleryPane().getExpandedGroups().contains(dataObject.getMergeID())) {
                 dataObjectsToDelete.addAll(dataObject.getMergeGroup());
             } else {
                 dataObjectsToDelete.add(dataObject);
@@ -231,14 +231,14 @@ public class ButtonFactory {
             dataObjectsToDelete.forEach(this::deleteDataObject);
             InstanceManager.getTarget().restorePosition();
 
-            InstanceManager.getReload().notifyChangeIn(Reload.Control.FILTER, Reload.Control.TARGET);
+            InstanceManager.getReload().flag(Reload.Control.FILTER, Reload.Control.TARGET);
             InstanceManager.getReload().doReload();
         }
     }
     private void deleteCurrentTarget() {
         DataObject currentTarget = InstanceManager.getTarget().getCurrentTarget();
         if (currentTarget.getMergeID() != 0) {
-            if (!InstanceManager.getTileView().getExpandedGroups().contains(currentTarget.getMergeID())) {
+            if (!InstanceManager.getGalleryPane().getExpandedGroups().contains(currentTarget.getMergeID())) {
                 OkCancelStage okCancelStage = new OkCancelStage("Delete " + currentTarget.getMergeGroup().size() + " file(s)?");
                 if (okCancelStage.getResult()) {
                     currentTarget.getMergeGroup().forEach(this::deleteDataObject);
@@ -246,14 +246,14 @@ public class ButtonFactory {
                 }
             }
         } else {
-            String sourcePath = InstanceManager.getTarget().getCurrentTarget().getSourcePath();
+            String sourcePath = InstanceManager.getTarget().getCurrentTarget().getPath();
             OkCancelStage okCancelStage = new OkCancelStage("Delete file: " + sourcePath + "?");
             if (okCancelStage.getResult()) {
                 InstanceManager.getTarget().storePosition();
                 this.deleteDataObject(currentTarget);
                 InstanceManager.getTarget().restorePosition();
 
-                InstanceManager.getReload().notifyChangeIn(Reload.Control.FILTER, Reload.Control.TARGET);
+                InstanceManager.getReload().flag(Reload.Control.FILTER, Reload.Control.TARGET);
                 InstanceManager.getReload().doReload();
             }
         }

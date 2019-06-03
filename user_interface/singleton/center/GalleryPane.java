@@ -12,16 +12,19 @@ import system.CommonUtil;
 import user_interface.factory.NodeUtil;
 import user_interface.factory.util.ColorUtil;
 import user_interface.factory.util.enums.ColorType;
-import user_interface.singleton.BaseNode;
+import user_interface.singleton.NodeBase;
 import user_interface.singleton.utils.SizeUtil;
 
 import java.util.ArrayList;
 
-public class TileView extends ScrollPane implements BaseNode {
-    private final TilePane tilePane = new TilePane(1, 1);
-    private final ArrayList<Integer> expandedGroups = new ArrayList<>();
+public class GalleryPane extends ScrollPane implements NodeBase {
+    private final TilePane tilePane;
+    private final ArrayList<Integer> expandedGroups;
 
-    public TileView() {
+    public GalleryPane() {
+        tilePane = new TilePane(1, 1);
+        expandedGroups = new ArrayList<>();
+
         tilePane.setPrefTileWidth(SizeUtil.getGalleryIconSize());
         tilePane.setPrefTileHeight(SizeUtil.getGalleryIconSize());
         tilePane.setOnScroll(event -> {

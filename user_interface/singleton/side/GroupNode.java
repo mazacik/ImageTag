@@ -35,31 +35,31 @@ public class GroupNode extends HBox {
             event.consume();
             switch (event.getButton()) {
                 case PRIMARY:
-                    if (owner == InstanceManager.getTagListViewL()) {
-                        if (!InstanceManager.getTagListViewL().getExpandedGroupsList().contains(labelText.getText())) {
-                            InstanceManager.getTagListViewL().getExpandedGroupsList().add(labelText.getText());
-                            ObservableList<Node> nodes = InstanceManager.getTagListViewL().getTagListBox().getChildren();
+                    if (owner == InstanceManager.getFilterPane()) {
+                        if (!InstanceManager.getFilterPane().getExpandedGroupsList().contains(labelText.getText())) {
+                            InstanceManager.getFilterPane().getExpandedGroupsList().add(labelText.getText());
+                            ObservableList<Node> nodes = InstanceManager.getFilterPane().getTagListBox().getChildren();
                             int index = nodes.indexOf(this) + 1;
                             nodes.addAll(index, nameNodes);
-                            CommonUtil.updateNodeProperties(InstanceManager.getTagListViewL().getTagListBox());
+                            CommonUtil.updateNodeProperties(InstanceManager.getFilterPane().getTagListBox());
                             labelArrow.setText("− ");
                         } else {
-                            InstanceManager.getTagListViewL().getExpandedGroupsList().remove(labelText.getText());
-                            ObservableList<Node> nodes = InstanceManager.getTagListViewL().getTagListBox().getChildren();
+                            InstanceManager.getFilterPane().getExpandedGroupsList().remove(labelText.getText());
+                            ObservableList<Node> nodes = InstanceManager.getFilterPane().getTagListBox().getChildren();
                             nodes.removeAll(nameNodes);
                             labelArrow.setText("+ ");
                         }
-                    } else if (owner == InstanceManager.getTagListViewR()) {
-                        if (!InstanceManager.getTagListViewR().getExpandedGroupsList().contains(labelText.getText())) {
-                            InstanceManager.getTagListViewR().getExpandedGroupsList().add(labelText.getText());
-                            ObservableList<Node> nodes = InstanceManager.getTagListViewR().getTagListBox().getChildren();
+                    } else if (owner == InstanceManager.getSelectPane()) {
+                        if (!InstanceManager.getSelectPane().getExpandedGroupsList().contains(labelText.getText())) {
+                            InstanceManager.getSelectPane().getExpandedGroupsList().add(labelText.getText());
+                            ObservableList<Node> nodes = InstanceManager.getSelectPane().getTagListBox().getChildren();
                             int index = nodes.indexOf(this) + 1;
                             nodes.addAll(index, nameNodes);
-                            CommonUtil.updateNodeProperties(InstanceManager.getTagListViewR().getTagListBox());
+                            CommonUtil.updateNodeProperties(InstanceManager.getSelectPane().getTagListBox());
                             labelArrow.setText("− ");
                         } else {
-                            InstanceManager.getTagListViewR().getExpandedGroupsList().remove(labelText.getText());
-                            ObservableList<Node> nodes = InstanceManager.getTagListViewR().getTagListBox().getChildren();
+                            InstanceManager.getSelectPane().getExpandedGroupsList().remove(labelText.getText());
+                            ObservableList<Node> nodes = InstanceManager.getSelectPane().getTagListBox().getChildren();
                             nodes.removeAll(nameNodes);
                             labelArrow.setText("+ ");
                         }
@@ -75,10 +75,10 @@ public class GroupNode extends HBox {
         this.setOnMouseClicked(event -> {
             switch (event.getButton()) {
                 case PRIMARY:
-                    if (owner == InstanceManager.getTagListViewL()) {
-                        InstanceManager.getTagListViewL().changeNodeState(this, null);
+                    if (owner == InstanceManager.getFilterPane()) {
+                        InstanceManager.getFilterPane().changeNodeState(this, null);
                         InstanceManager.getReload().doReload();
-                        CommonUtil.updateNodeProperties(InstanceManager.getTagListViewL().getTagListBox());
+                        CommonUtil.updateNodeProperties(InstanceManager.getFilterPane().getTagListBox());
                     }
                     break;
                 case SECONDARY:

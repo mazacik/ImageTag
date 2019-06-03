@@ -21,7 +21,9 @@ public class Project {
     }
     public static Project readFromDisk(String projectFile) {
         Type typeToken = JsonUtil.TypeTokenEnum.PROJECT.getValue();
-        return (Project) JsonUtil.read(typeToken, projectFile);
+        Project project = (Project) JsonUtil.read(typeToken, projectFile);
+        project.projectFile = projectFile;
+        return project;
     }
     public void writeToDisk() {
         File projectDir = new File(projectFile).getParentFile();
@@ -29,6 +31,10 @@ public class Project {
 
         Type typeToken = JsonUtil.TypeTokenEnum.PROJECT.getValue();
         JsonUtil.write(this, typeToken, projectFile);
+    }
+
+    public String getProjectFilePath() {
+        return projectFile;
     }
     public ArrayList<String> getSourceDirectoryList() {
         return sourceDirectoryList;

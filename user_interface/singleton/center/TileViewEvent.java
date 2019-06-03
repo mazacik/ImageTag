@@ -8,6 +8,6 @@ public class TileViewEvent {
     }
 
     private void onMouseClick() {
-        InstanceManager.getTileView().setOnMouseClicked(event -> InstanceManager.getTileView().requestFocus());
+        InstanceManager.getGalleryPane().setOnMouseClicked(event -> InstanceManager.getGalleryPane().requestFocus());
     }
 }

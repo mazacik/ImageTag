@@ -2,7 +2,6 @@ package settings;
 
 import system.JsonUtil;
 
-import java.io.File;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -12,7 +11,13 @@ public class Settings implements Serializable {
     private ArrayList<String> recentProjects;
 
     public Settings() {
-
+        Settings settings = readFromDisk();
+        if (settings != null && settings.settingsList != null && settings.recentProjects != null) {
+            settingsList = settings.settingsList;
+            recentProjects = settings.recentProjects;
+        } else {
+            setDefaults();
+        }
     }
     private void setDefaults() {
         settingsList = new ArrayList<>();
@@ -25,17 +30,11 @@ public class Settings implements Serializable {
 
     public void writeToDisk() {
         Type typeToken = JsonUtil.TypeTokenEnum.SETTINGS.getValue();
-        JsonUtil.write(this, typeToken, "Settings.json");
+        JsonUtil.write(this, typeToken, "settings.json");
     }
-    public static Settings readFromDisk() {
+    private static Settings readFromDisk() {
         Type typeToken = JsonUtil.TypeTokenEnum.SETTINGS.getValue();
-        Settings settings = (Settings) JsonUtil.read(typeToken, "Settings.json");
-
-        if (settings == null) {
-            settings = new Settings();
-            settings.setDefaults();
-        }
-        return settings;
+        return (Settings) JsonUtil.read(typeToken, "settings.json");
     }
 
     public String strValueOf(SettingsEnum setting) {

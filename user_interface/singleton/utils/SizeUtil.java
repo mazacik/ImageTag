@@ -21,7 +21,7 @@ public class SizeUtil {
         return GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getHeight();
     }
     public static void stageWidthChangeHandler() {
-        TilePane tilePane = InstanceManager.getTileView().getTilePane();
+        TilePane tilePane = InstanceManager.getGalleryPane().getTilePane();
 
         //int availableWidth = (int) (SizeUtil.getUsableScreenWidth() - 2 * SizeUtil.getMinWidthSideLists());
         int availableWidth = (int) (InstanceManager.getMainStage().getScene().getWidth() - 2 * SizeUtil.getMinWidthSideLists());
@@ -32,14 +32,14 @@ public class SizeUtil {
             tilePane.setPrefColumns(prefColumnsNew);
 
             double width = tilePane.getPrefColumns() * tilePane.getPrefTileWidth() + (tilePane.getPrefColumns() - 1) * tilePane.getHgap();
-            InstanceManager.getTileView().setMinViewportWidth(width);
-            InstanceManager.getTileView().setPrefViewportWidth(width);
+            InstanceManager.getGalleryPane().setMinViewportWidth(width);
+            InstanceManager.getGalleryPane().setPrefViewportWidth(width);
         }
 
-        InstanceManager.getMediaView().getCanvas().setWidth(availableWidth - 10);
+        InstanceManager.getMediaPane().getCanvas().setWidth(availableWidth - 10);
     }
     public static void stageHeightChangehandler() {
-        InstanceManager.getMediaView().getCanvas().setHeight(InstanceManager.getMainStage().getScene().getHeight() - InstanceManager.getTopMenu().getPrefHeight() - InstanceManager.getTopMenu().getPadding().getBottom() - InstanceManager.getTopMenu().getBorder().getInsets().getBottom());
+        InstanceManager.getMediaPane().getCanvas().setHeight(InstanceManager.getMainStage().getScene().getHeight() - InstanceManager.getToolbarPane().getPrefHeight() - InstanceManager.getToolbarPane().getPadding().getBottom() - InstanceManager.getToolbarPane().getBorder().getInsets().getBottom());
     }
     public static double getStringWidth(String s) {
         Text t = new Text(s);

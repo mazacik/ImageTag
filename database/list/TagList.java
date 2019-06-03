@@ -7,24 +7,18 @@ import java.util.Comparator;
 
 public class TagList extends ArrayList<TagObject> {
     public TagList() {
-        super();
+
     }
 
-    public boolean contains(TagObject object) {
-        if (object == null) return false;
-        if (super.contains(object)) return true;
-        else {
-            String group = object.getGroup();
-            String name = object.getName();
-            for (TagObject iterator : this) {
-                String iteratorGroup = iterator.getGroup();
-                String iteratorName = iterator.getName();
-                if (group.equals(iteratorGroup) && name.equals(iteratorName)) {
-                    return true;
-                }
-            }
-            return false;
+    public boolean contains(TagObject tagObject) {
+        String group = tagObject.getGroup();
+        String name = tagObject.getName();
+        for (TagObject iterator : this) {
+            String iteratorGroup = iterator.getGroup();
+            String iteratorName = iterator.getName();
+            if (group.equals(iteratorGroup) && name.equals(iteratorName)) return true;
         }
+        return false;
     }
     public void sort() {
         super.sort(TagObject.getComparator());

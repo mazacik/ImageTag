@@ -1,15 +1,15 @@
 package database.loader;
 
 public abstract class FileSupportUtil {
-    private static final String[] sprtImageExt = new String[]{
+    private static final String[] imageExtensions = new String[]{
             ".jpg",
             ".jpeg",
             ".png",
     };
-    private static final String[] sprtGifExt = new String[]{
+    private static final String[] gifExtensions = new String[]{
             ".gif",
     };
-    private static final String[] sprtVideoExt = new String[]{
+    private static final String[] videoExtensions = new String[]{
             ".mp4",
             ".m4v",
             ".mov",
@@ -18,13 +18,13 @@ public abstract class FileSupportUtil {
             ".webm",
     };
 
-    public static String[] getSprtImageExt() {
-        return sprtImageExt;
+    public static String[] getImageExtensions() {
+        return imageExtensions;
     }
-    public static String[] getSprtGifExt() {
-        return sprtGifExt;
+    public static String[] getGifExtensions() {
+        return gifExtensions;
     }
-    public static String[] getSprtVideoExt() {
-        return sprtVideoExt;
+    public static String[] getVideoExtensions() {
+        return videoExtensions;
     }
 }

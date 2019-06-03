@@ -62,7 +62,7 @@ public class Filter extends ObjectList {
     }
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final double SIMILARITY_FACTOR = 0.5;
+    private final double similarityFactor = 0.5;
     public void showSimilar(DataObject dataObject) {
         InstanceManager.getFilter().getInfoListWhite().clear();
         InstanceManager.getFilter().getInfoListBlack().clear();
@@ -77,7 +77,7 @@ public class Filter extends ObjectList {
 
                 if (sameTags.size() != 0) {
                     double similarity = (double) sameTags.size() / (double) query.size();
-                    if (similarity >= SIMILARITY_FACTOR) {
+                    if (similarity >= similarityFactor) {
                         InstanceManager.getFilter().add(iterator);
                     }
                 }

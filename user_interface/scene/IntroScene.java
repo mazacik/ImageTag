@@ -1,5 +1,6 @@
 package user_interface.scene;
 
+import database.loader.Project;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -10,9 +11,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import database.loader.LoaderUtil;
-import database.loader.Project;
 import lifecycle.InstanceManager;
+import lifecycle.LifeCycleManager;
 import system.CommonUtil;
 import user_interface.factory.NodeUtil;
 import user_interface.factory.base.TextNode;
@@ -53,7 +53,7 @@ public class IntroScene {
                 if (!projectFilePath.isEmpty()) {
                     InstanceManager.getSettings().addProjectPath(projectFilePath);
                     Project project = Project.readFromDisk(projectFilePath);
-                    LoaderUtil.startLoading(project.getSourceDirectoryList().get(0));
+                    LifeCycleManager.startLoading(project);
                 }
             }
         });
@@ -84,7 +84,7 @@ public class IntroScene {
                                 InstanceManager.getSettings().getRecentProjects().remove(introWindowCell.getWorkingDirectory());
                                 vBoxRecentProjects.getChildren().remove(introWindowCell);
                             } else {
-                                LoaderUtil.startLoading(introWindowCell.getWorkingDirectory());
+                                LifeCycleManager.startLoading(project);
                             }
                         }
                     });
@@ -100,8 +100,7 @@ public class IntroScene {
         introScene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 if (!InstanceManager.getSettings().getRecentProjects().isEmpty()) {
-                    IntroWindowCell cell = (IntroWindowCell) vBoxRecentProjects.getChildren().get(0);
-                    LoaderUtil.startLoading(cell.getWorkingDirectory());
+                    LifeCycleManager.startLoading(Project.readFromDisk(InstanceManager.getSettings().getRecentProjects().get(0)));
                 } else {
                     SceneUtil.showProjectScene();
                 }

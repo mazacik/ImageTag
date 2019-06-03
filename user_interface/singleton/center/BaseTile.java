@@ -56,14 +56,14 @@ public class BaseTile extends ImageView {
         }
         if (parentDataObject.getMergeID() != 0) {
             String middle;
-            if (InstanceManager.getTileView().getExpandedGroups().contains(parentDataObject.getMergeID())) {
+            if (InstanceManager.getGalleryPane().getExpandedGroups().contains(parentDataObject.getMergeID())) {
                 middle = "-";
             } else {
                 middle = String.valueOf(parentDataObject.getMergeGroup().size());
             }
 
             String groupIconText;
-            if (InstanceManager.getMainDataList().getAllGroups().indexOf(parentDataObject.getMergeID()) % 2 == 0) {
+            if (InstanceManager.getObjectListMain().getAllGroups().indexOf(parentDataObject.getMergeID()) % 2 == 0) {
                 groupIconText = "(" + middle + ")";
             } else {
                 groupIconText = "[" + middle + "]";

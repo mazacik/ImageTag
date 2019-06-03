@@ -1,39 +1,35 @@
 package user_interface.singleton.center;
 
 import database.object.DataObject;
-import javafx.animation.PauseTransition;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Popup;
-import javafx.util.Duration;
 import lifecycle.InstanceManager;
 import system.CommonUtil;
 import user_interface.factory.NodeUtil;
-import user_interface.singleton.BaseNode;
+import user_interface.singleton.NodeBase;
 
-public class MediaView extends BorderPane implements BaseNode {
+public class MediaPane extends BorderPane implements NodeBase {
+    private final Canvas canvas;
+    private final ImageView gifPlayer;
+    private final VideoPlayer videoPlayer;
+    private final MediaViewControls controls;
+
     private Image currentImage = null;
-    private final Canvas canvas = new Canvas();
-    private final ImageView gifPlayer = new ImageView();
-    private final VideoPlayer videoPlayer = new VideoPlayer(canvas);
-    private final MediaViewControls controls = new MediaViewControls(videoPlayer);
-    private final Popup controlsPopup = new Popup();
-    private final PauseTransition controlsPopupDelay = new PauseTransition(new Duration(1000));
-
     private DataObject currentCache = null;
 
-    public MediaView() {
-        setupControls();
+    public MediaPane() {
+        canvas = new Canvas();
+        gifPlayer = new ImageView();
+        videoPlayer = new VideoPlayer(canvas);
+        controls = new MediaViewControls(canvas, videoPlayer);
 
-        TileView tileView = InstanceManager.getTileView();
+        GalleryPane galleryPane = InstanceManager.getGalleryPane();
 
-        gifPlayer.fitWidthProperty().bind(tileView.widthProperty());
-        gifPlayer.fitHeightProperty().bind(tileView.heightProperty());
+        gifPlayer.fitWidthProperty().bind(galleryPane.widthProperty());
+        gifPlayer.fitHeightProperty().bind(galleryPane.heightProperty());
 
         this.setBorder(NodeUtil.getBorder(0, 1, 0, 1));
         this.setCenter(canvas);
@@ -46,32 +42,6 @@ public class MediaView extends BorderPane implements BaseNode {
     }
     public MediaViewControls getControls() {
         return controls;
-    }
-    private void setupControls() {
-        controls.prefWidthProperty().bind(canvas.widthProperty());
-
-        BooleanProperty mouseMoving = new SimpleBooleanProperty();
-        mouseMoving.addListener((obs, wasMoving, isNowMoving) -> {
-            if (!isNowMoving) {
-                controlsPopup.hide();
-            }
-        });
-
-        controlsPopupDelay.setOnFinished(e -> mouseMoving.set(false));
-        canvas.setOnMouseMoved(event -> {
-            mouseMoving.set(true);
-            controlsPopupDelay.playFromStart();
-
-            double x = canvas.localToScreen(canvas.getBoundsInLocal()).getMinX();
-            double y = canvas.localToScreen(canvas.getBoundsInLocal()).getMinY();
-
-            controlsPopup.show(this, x, y);
-        });
-
-        controls.setOnMouseEntered(event -> controlsPopupDelay.stop());
-        controls.setOnMouseExited(event -> controlsPopupDelay.playFromStart());
-
-        controlsPopup.getContent().setAll(controls);
     }
 
     public boolean reload() {
@@ -102,7 +72,7 @@ public class MediaView extends BorderPane implements BaseNode {
 
         if (currentCache == null || !currentCache.equals(currentTarget)) {
             currentCache = currentTarget;
-            currentImage = new Image("file:" + currentCache.getSourcePath());
+            currentImage = new Image("file:" + currentCache.getPath());
         }
 
         double imageWidth = currentImage.getWidth();
@@ -144,7 +114,7 @@ public class MediaView extends BorderPane implements BaseNode {
 
         if (currentCache == null || !currentCache.equals(currentTarget)) {
             currentCache = currentTarget;
-            currentImage = new Image("file:" + currentCache.getSourcePath());
+            currentImage = new Image("file:" + currentCache.getPath());
         }
 
         gifPlayer.setImage(currentImage);
@@ -154,16 +124,9 @@ public class MediaView extends BorderPane implements BaseNode {
 
         if (currentCache == null || !currentCache.equals(currentTarget)) {
             currentCache = currentTarget;
-            videoPlayer.start(currentTarget.getSourcePath());
+            videoPlayer.start(currentTarget.getPath());
         } else {
             videoPlayer.resume();
         }
-    }
-
-    public Popup getControlsPopup() {
-        return controlsPopup;
-    }
-    public PauseTransition getControlsPopupDelay() {
-        return controlsPopupDelay;
     }
 }

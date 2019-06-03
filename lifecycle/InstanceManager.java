@@ -1,21 +1,17 @@
 package lifecycle;
 
-import control.filter.Filter;
-import control.logger.Logger;
-import control.reload.Reload;
-import control.select.Select;
-import control.target.Target;
-import database.list.DataObjectListMain;
+import control.*;
+import database.list.ObjectListMain;
 import database.list.TagListMain;
 import javafx.stage.Stage;
 import settings.Settings;
 import user_interface.factory.menu.ClickMenuData;
 import user_interface.factory.menu.ClickMenuInfo;
-import user_interface.singleton.center.MediaView;
-import user_interface.singleton.center.TileView;
-import user_interface.singleton.side.TagListViewL;
-import user_interface.singleton.side.TagListViewR;
-import user_interface.singleton.top.TopMenu;
+import user_interface.singleton.center.GalleryPane;
+import user_interface.singleton.center.MediaPane;
+import user_interface.singleton.side.FilterPane;
+import user_interface.singleton.side.SelectPane;
+import user_interface.singleton.top.ToolbarPane;
 
 public abstract class InstanceManager {
     private static Logger logger;
@@ -26,52 +22,54 @@ public abstract class InstanceManager {
     private static Select select;
     private static Reload reload;
 
-    private static DataObjectListMain mainDataList;
-    private static TagListMain mainInfoList;
+    private static TagListMain tagListMain;
+    private static ObjectListMain objectListMain;
 
     private static Stage mainStage;
-    private static TopMenu topMenu;
-    private static TileView tileView;
-    private static MediaView mediaView;
-    private static TagListViewL tagListViewL;
-    private static TagListViewR tagListViewR;
+    private static MediaPane mediaPane;
+    private static FilterPane filterPane;
+    private static SelectPane selectPane;
+    private static ToolbarPane toolbarPane;
+    private static GalleryPane galleryPane;
 
     private static ClickMenuData clickMenuData;
     private static ClickMenuInfo clickMenuInfo;
 
-    public static void init() {
-        initSystem();
+    public static void createInstances() {
+        createInstancesSystem();
 
-        initDatabase();
+        createInstancesDatabase();
 
-        initGUI();
+        createInstancesFrontend();
 
-        reload.init();
+        createInstancesBackend();
     }
 
-    private static void initSystem() {
+    private static void createInstancesSystem() {
         logger = new Logger();
-        settings = Settings.readFromDisk();
-
-        filter = new Filter();
-        target = new Target();
-        select = new Select();
-        reload = new Reload();
+        settings = new Settings();
     }
-    private static void initDatabase() {
-        mainDataList = new DataObjectListMain();
-        mainInfoList = new TagListMain();
+    private static void createInstancesDatabase() {
+        objectListMain = new ObjectListMain();
+        tagListMain = new TagListMain();
     }
-    private static void initGUI() {
+    private static void createInstancesFrontend() {
         mainStage = new Stage();
-        topMenu = new TopMenu();
-        tileView = new TileView();
-        mediaView = new MediaView();
-        tagListViewL = new TagListViewL();
-        tagListViewR = new TagListViewR();
+
+        toolbarPane = new ToolbarPane();    /* needs Settings */
+        galleryPane = new GalleryPane();    /* needs Settings */
+        mediaPane = new MediaPane();        /* needs Settings, GalleryPane */
+        filterPane = new FilterPane();      /* needs Settings */
+        selectPane = new SelectPane();      /* needs Settings */
 
         clickMenuData = new ClickMenuData();
         clickMenuInfo = new ClickMenuInfo();
+    }
+    private static void createInstancesBackend() {
+        filter = new Filter();
+        target = new Target();
+        select = new Select();
+        reload = new Reload();  /* needs Frontend */
     }
 
     public static Logger getLogger() {
@@ -92,29 +90,29 @@ public abstract class InstanceManager {
     public static Reload getReload() {
         return reload;
     }
-    public static DataObjectListMain getMainDataList() {
-        return mainDataList;
+    public static ObjectListMain getObjectListMain() {
+        return objectListMain;
     }
-    public static TagListMain getMainInfoList() {
-        return mainInfoList;
+    public static TagListMain getTagListMain() {
+        return tagListMain;
     }
     public static Stage getMainStage() {
         return mainStage;
     }
-    public static TopMenu getTopMenu() {
-        return topMenu;
+    public static ToolbarPane getToolbarPane() {
+        return toolbarPane;
     }
-    public static TileView getTileView() {
-        return tileView;
+    public static GalleryPane getGalleryPane() {
+        return galleryPane;
     }
-    public static MediaView getMediaView() {
-        return mediaView;
+    public static MediaPane getMediaPane() {
+        return mediaPane;
     }
-    public static TagListViewL getTagListViewL() {
-        return tagListViewL;
+    public static FilterPane getFilterPane() {
+        return filterPane;
     }
-    public static TagListViewR getTagListViewR() {
-        return tagListViewR;
+    public static SelectPane getSelectPane() {
+        return selectPane;
     }
     public static ClickMenuData getClickMenuData() {
         return clickMenuData;

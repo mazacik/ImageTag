@@ -10,14 +10,14 @@ public class MediaViewEvent {
     }
 
     private void onMouseClick() {
-        InstanceManager.getMediaView().setOnMouseClicked(event -> {
+        InstanceManager.getMediaPane().setOnMouseClicked(event -> {
             switch (event.getButton()) {
                 case PRIMARY:
-                    InstanceManager.getMediaView().requestFocus();
+                    InstanceManager.getMediaPane().requestFocus();
                     InstanceManager.getClickMenuData().hide();
                     break;
                 case SECONDARY:
-                    InstanceManager.getClickMenuData().show(InstanceManager.getMediaView(), event.getScreenX(), event.getScreenY());
+                    InstanceManager.getClickMenuData().show(InstanceManager.getMediaPane(), event.getScreenX(), event.getScreenY());
                     break;
                 default:
                     break;
@@ -25,9 +25,9 @@ public class MediaViewEvent {
         });
     }
     private void onResize() {
-        ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) -> InstanceManager.getMediaView().reload();
+        ChangeListener<Number> previewPaneSizeListener = (observable, oldValue, newValue) -> InstanceManager.getMediaPane().reload();
 
-        InstanceManager.getMediaView().getCanvas().widthProperty().addListener(previewPaneSizeListener);
-        InstanceManager.getMediaView().getCanvas().heightProperty().addListener(previewPaneSizeListener);
+        InstanceManager.getMediaPane().getCanvas().widthProperty().addListener(previewPaneSizeListener);
+        InstanceManager.getMediaPane().getCanvas().heightProperty().addListener(previewPaneSizeListener);
     }
 }

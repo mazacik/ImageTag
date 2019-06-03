@@ -8,16 +8,17 @@ public class Logger {
 
     }
 
+    private void out(String mode, Object source, String message) {
+        if (ACTIVE) {
+            System.out.println(mode + formatSource(source) + ": " + message.trim());
+        }
+    }
+
     public void error(Object source, String message) {
         this.out("ERROR: ", source, message);
     }
     public void debug(Object source, String message) {
         this.out("DEBUG: ", source, message);
-    }
-    private void out(String mode, Object source, String message) {
-        if (ACTIVE) {
-            System.out.println(mode + formatSource(source) + ": " + message.trim());
-        }
     }
 
     private String formatSource(Object source) {
