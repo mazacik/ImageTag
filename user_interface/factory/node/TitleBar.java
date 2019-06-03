@@ -3,19 +3,15 @@ package user_interface.factory.node;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.WindowEvent;
 import system.CommonUtil;
-import user_interface.factory.NodeFactory;
-import user_interface.factory.util.ColorUtil;
+import user_interface.factory.NodeUtil;
+import user_interface.factory.base.TextNode;
 import user_interface.factory.util.enums.ColorType;
 
 public class TitleBar extends BorderPane {
-    private final Label labelTitle;
-    private final Label btnExit;
-
     public TitleBar(Scene scene) {
         this(scene, "", true);
     }
@@ -26,13 +22,12 @@ public class TitleBar extends BorderPane {
         this(scene, title, true);
     }
     public TitleBar(Scene scene, String title, boolean movement) {
-        labelTitle = NodeFactory.getLabel(title, ColorType.DEF, ColorType.DEF);
+        TextNode labelTitle = new TextNode(title, ColorType.DEF, ColorType.DEF);
         labelTitle.setFont(CommonUtil.getFont());
         labelTitle.setPadding(new Insets(1, 5, 1, 5));
         BorderPane.setAlignment(labelTitle, Pos.CENTER_LEFT);
 
-        btnExit = NodeFactory.getLabel("✕", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.ALT);
-        btnExit.setFont(CommonUtil.getFont());
+        TextNode btnExit = new TextNode("✕", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.ALT);
         btnExit.setPadding(new Insets(1, 5, 1, 5));
         btnExit.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
@@ -41,11 +36,10 @@ public class TitleBar extends BorderPane {
         });
         BorderPane.setAlignment(btnExit, Pos.CENTER);
 
-        NodeFactory.addNodeToBackgroundManager(this, ColorType.DEF);
-
-        this.setCenter(labelTitle);
+        this.setLeft(labelTitle);
         this.setRight(btnExit);
-        this.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 1, 0))));
+        this.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
+        NodeUtil.addToManager(this, ColorType.DEF);
 
         if (movement) {
             final double[] xOffset = {0};

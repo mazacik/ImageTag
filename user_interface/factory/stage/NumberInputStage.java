@@ -3,29 +3,29 @@ package user_interface.factory.stage;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import system.CommonUtil;
-import user_interface.factory.NodeFactory;
-import user_interface.factory.node.TitleBar;
+import user_interface.factory.NodeUtil;
+import user_interface.factory.base.TextNode;
 import user_interface.factory.util.ColorData;
-import user_interface.factory.util.ColorUtil;
 import user_interface.factory.util.enums.ColorType;
+import user_interface.singleton.utils.SizeUtil;
 
 public class NumberInputStage extends Stage {
     private int result = -1;
 
     public NumberInputStage(String content) {
-        Label nodeContent = NodeFactory.getLabel(content, ColorType.DEF, ColorType.DEF);
-        int padding = CommonUtil.getPadding();
+        TextNode nodeContent = new TextNode(content, ColorType.DEF, ColorType.DEF);
+        double padding = SizeUtil.getGlobalSpacing();
         nodeContent.setPadding(new Insets(0, 1.5 * padding, 0, 1.5 * padding));
 
         TextField nodeTextField = new TextField();
-        nodeTextField.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1, 1, 1, 1))));
+        nodeTextField.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
         nodeTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.equals("") && !isNumberPositive(newValue)) {
                 nodeTextField.setText(oldValue);
@@ -35,11 +35,11 @@ public class NumberInputStage extends Stage {
             result = Integer.valueOf(nodeTextField.getText());
             this.close();
         });
-        NodeFactory.addNodeToBackgroundManager(nodeTextField, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+        NodeUtil.addToManager(nodeTextField, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
 
         ColorData colorData = new ColorData(ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
-        Label buttonPositive = NodeFactory.getLabel("OK", colorData);
-        Label buttonNegative = NodeFactory.getLabel("Cancel", colorData);
+        TextNode buttonPositive = new TextNode("OK", colorData);
+        TextNode buttonNegative = new TextNode("Cancel", colorData);
         buttonPositive.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 String text = nodeTextField.getText();
@@ -59,17 +59,16 @@ public class NumberInputStage extends Stage {
         hBox.setAlignment(Pos.CENTER);
         hBox.setSpacing(padding);
 
-        VBox vBoxMain = NodeFactory.getVBox(ColorType.DEF);
+        VBox vBoxMain = NodeUtil.getVBox(ColorType.DEF);
         vBoxMain.setAlignment(Pos.CENTER);
         vBoxMain.setSpacing(padding);
-        vBoxMain.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1, 1, 1, 1))));
+        vBoxMain.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
 
         Scene scene = new Scene(vBoxMain);
-        vBoxMain.getChildren().add(new TitleBar(scene));
         vBoxMain.getChildren().add(nodeContent);
         vBoxMain.getChildren().add(nodeTextField);
         vBoxMain.getChildren().add(hBox);
-        NodeFactory.addNodeToBackgroundManager(vBoxMain, ColorType.DEF);
+        NodeUtil.addToManager(vBoxMain, ColorType.DEF);
 
         this.setOnShown(event -> {
             this.centerOnScreen();

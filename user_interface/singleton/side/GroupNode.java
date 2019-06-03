@@ -3,27 +3,27 @@ package user_interface.singleton.side;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
+import lifecycle.InstanceManager;
 import system.CommonUtil;
-import system.InstanceRepo;
-import user_interface.factory.NodeFactory;
+import user_interface.factory.base.TextNode;
+import user_interface.factory.util.ColorUtil;
 
 import java.util.ArrayList;
 
 
-public class GroupNode extends HBox implements InstanceRepo {
-    private final ArrayList<Label> nameNodes = new ArrayList<>();
-    private Label labelArrow;
-    private Label labelText;
+public class GroupNode extends HBox {
+    private final ArrayList<TextNode> nameNodes = new ArrayList<>();
+    private TextNode labelArrow;
+    private TextNode labelText;
 
-    public GroupNode(String text) {
-        labelArrow = NodeFactory.getLabel("+ ");
-        labelText = NodeFactory.getLabel(text);
+    public GroupNode(String text, VBox owner) {
+        labelArrow = new TextNode("+ ");
+        labelText = new TextNode(text);
 
         labelArrow.setPadding(new Insets(0, 5, 0, 15));
         labelText.setPadding(new Insets(0, 15, 0, 5));
@@ -35,35 +35,36 @@ public class GroupNode extends HBox implements InstanceRepo {
             event.consume();
             switch (event.getButton()) {
                 case PRIMARY:
-                    if (this.getParent().getParent() instanceof InfoListViewL) {
-                        if (!infoListViewL.getExpandedGroupsList().contains(labelText.getText())) {
-                            infoListViewL.getExpandedGroupsList().add(labelText.getText());
-                            ObservableList<Node> nodes = infoListViewL.getInfoObjectVBox().getChildren();
+                    if (owner == InstanceManager.getFilterPane()) {
+                        if (!InstanceManager.getFilterPane().getExpandedGroupsList().contains(labelText.getText())) {
+                            InstanceManager.getFilterPane().getExpandedGroupsList().add(labelText.getText());
+                            ObservableList<Node> nodes = InstanceManager.getFilterPane().getTagListBox().getChildren();
                             int index = nodes.indexOf(this) + 1;
                             nodes.addAll(index, nameNodes);
-                            CommonUtil.updateNodeProperties(infoListViewL.getInfoObjectVBox());
+                            CommonUtil.updateNodeProperties(InstanceManager.getFilterPane().getTagListBox());
                             labelArrow.setText("− ");
                         } else {
-                            infoListViewL.getExpandedGroupsList().remove(labelText.getText());
-                            ObservableList<Node> nodes = infoListViewL.getInfoObjectVBox().getChildren();
+                            InstanceManager.getFilterPane().getExpandedGroupsList().remove(labelText.getText());
+                            ObservableList<Node> nodes = InstanceManager.getFilterPane().getTagListBox().getChildren();
                             nodes.removeAll(nameNodes);
                             labelArrow.setText("+ ");
                         }
-                    } else if (this.getParent().getParent() instanceof InfoListViewR) {
-                        if (!infoListViewR.getExpandedGroupsList().contains(labelText.getText())) {
-                            infoListViewR.getExpandedGroupsList().add(labelText.getText());
-                            ObservableList<Node> nodes = infoListViewR.getInfoObjectVBox().getChildren();
+                    } else if (owner == InstanceManager.getSelectPane()) {
+                        if (!InstanceManager.getSelectPane().getExpandedGroupsList().contains(labelText.getText())) {
+                            InstanceManager.getSelectPane().getExpandedGroupsList().add(labelText.getText());
+                            ObservableList<Node> nodes = InstanceManager.getSelectPane().getTagListBox().getChildren();
                             int index = nodes.indexOf(this) + 1;
                             nodes.addAll(index, nameNodes);
-                            CommonUtil.updateNodeProperties(infoListViewR.getInfoObjectVBox());
+                            CommonUtil.updateNodeProperties(InstanceManager.getSelectPane().getTagListBox());
                             labelArrow.setText("− ");
                         } else {
-                            infoListViewR.getExpandedGroupsList().remove(labelText.getText());
-                            ObservableList<Node> nodes = infoListViewR.getInfoObjectVBox().getChildren();
+                            InstanceManager.getSelectPane().getExpandedGroupsList().remove(labelText.getText());
+                            ObservableList<Node> nodes = InstanceManager.getSelectPane().getTagListBox().getChildren();
                             nodes.removeAll(nameNodes);
                             labelArrow.setText("+ ");
                         }
                     }
+                    this.setBackground(ColorUtil.getBackgroundAlt());
                     break;
                 case SECONDARY:
                     break;
@@ -74,16 +75,16 @@ public class GroupNode extends HBox implements InstanceRepo {
         this.setOnMouseClicked(event -> {
             switch (event.getButton()) {
                 case PRIMARY:
-                    if (this.getParent().getParent() instanceof InfoListViewL) {
-                        infoListViewL.changeNodeState(this, null);
-                        reload.doReload();
-                        CommonUtil.updateNodeProperties(infoListViewL.getInfoObjectVBox());
+                    if (owner == InstanceManager.getFilterPane()) {
+                        InstanceManager.getFilterPane().changeNodeState(this, null);
+                        InstanceManager.getReload().doReload();
+                        CommonUtil.updateNodeProperties(InstanceManager.getFilterPane().getTagListBox());
                     }
                     break;
                 case SECONDARY:
-                    if (this.getParent().getParent() instanceof InfoListViewL) {
-                        infoObjectRCM.show(this, event);
-                    }
+                    InstanceManager.getClickMenuInfo().setGroup(text);
+                    InstanceManager.getClickMenuInfo().setName("");
+                    InstanceManager.getClickMenuInfo().show(this, event);
                     break;
                 default:
                     break;
@@ -91,14 +92,11 @@ public class GroupNode extends HBox implements InstanceRepo {
         });
     }
 
-    public ArrayList<Label> getNameNodes() {
+    public ArrayList<TextNode> getNameNodes() {
         return nameNodes;
     }
     public String getText() {
         return labelText.getText();
-    }
-    public Paint getTextFill() {
-        return labelText.getTextFill();
     }
 
     public void setArrowExpanded(boolean value) {

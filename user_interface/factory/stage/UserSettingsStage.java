@@ -2,73 +2,74 @@ package user_interface.factory.stage;
 
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import settings.SettingType;
+import lifecycle.InstanceManager;
 import system.CommonUtil;
-import user_interface.factory.NodeFactory;
-import user_interface.factory.node.TitleBar;
+import user_interface.factory.NodeUtil;
+import user_interface.factory.base.TextNode;
 import user_interface.factory.util.ColorData;
-import user_interface.factory.util.ColorUtil;
 import user_interface.factory.util.enums.ColorType;
+import user_interface.singleton.utils.SizeUtil;
 
 import java.util.ArrayList;
 
 public class UserSettingsStage extends Stage {
     public UserSettingsStage() {
-        int spacing = CommonUtil.getPadding();
-        VBox vBox = NodeFactory.getVBox(ColorType.DEF);
+        //todo finish this
+        double spacing = SizeUtil.getGlobalSpacing();
+        VBox vBox = NodeUtil.getVBox(ColorType.DEF);
         vBox.setPadding(new Insets(spacing));
         vBox.setSpacing(spacing);
-        ArrayList<Label> labels = new ArrayList<>();
+        ArrayList<TextNode> labels = new ArrayList<>();
 
-        CommonUtil.settings.getSettingsList().forEach(setting -> {
-            if (setting.getSettingType() == SettingType.USER) {
-                Label label = NodeFactory.getLabel(setting.getSettingsEnum().getValue(), ColorType.DEF, ColorType.DEF);
-                labels.add(label);
-                TextField textField = new TextField(String.valueOf(setting.getValue()));
-                textField.setFont(CommonUtil.getFont());
-                textField.setBorder(new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1, 1, 1, 1))));
-                NodeFactory.addNodeToBackgroundManager(textField, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
-                HBox hBox = NodeFactory.getHBox(ColorType.DEF, label, textField);
-                vBox.getChildren().add(hBox);
-            }
+        InstanceManager.getSettings().getSettingsList().forEach(setting -> {
+            TextNode label = new TextNode(setting.getSettingsEnum().toString(), ColorType.DEF, ColorType.DEF);
+            labels.add(label);
+            TextField textField = new TextField(String.valueOf(setting.getValue()));
+            textField.setFont(CommonUtil.getFont());
+            textField.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
+            NodeUtil.addToManager(textField, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+            HBox hBox = NodeUtil.getHBox(ColorType.DEF, label, textField);
+            vBox.getChildren().add(hBox);
         });
 
         ColorData colorData = new ColorData(ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
-        Label lblCancel = NodeFactory.getLabel("Cancel", colorData);
-        Label lblOK = NodeFactory.getLabel("OK", colorData);
+        TextNode lblCancel = new TextNode("Cancel", colorData);
+        TextNode lblOK = new TextNode("OK", colorData);
         lblOK.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
 
             }
         });
-        HBox hBox = NodeFactory.getHBox(ColorType.DEF, lblCancel, lblOK);
+        lblCancel.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                this.close();
+            }
+        });
+        HBox hBox = NodeUtil.getHBox(ColorType.DEF, lblCancel, lblOK);
 
         BorderPane borderPane = new BorderPane();
         Scene scene = new Scene(borderPane);
-        borderPane.setTop(new TitleBar(scene));
         borderPane.setCenter(vBox);
         borderPane.setBottom(hBox);
 
-        this.initStyle(StageStyle.UNDECORATED);
         this.setScene(scene);
         this.setOnShown(event -> {
             int labelWidth = 0;
-            for (Label label : labels) {
+            for (TextNode label : labels) {
                 if (labelWidth < label.getWidth()) {
                     labelWidth = (int) label.getWidth();
                 }
             }
-            for (Label label : labels) {
+            for (TextNode label : labels) {
                 label.setPrefWidth(labelWidth);
             }
             this.centerOnScreen();
         });
-        this.show();
     }
 }
