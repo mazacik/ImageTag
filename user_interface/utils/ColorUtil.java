@@ -1,10 +1,12 @@
-package user_interface.factory.util;
+package user_interface.utils;
 
 import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
-import system.CommonUtil;
-import user_interface.factory.util.enums.BackgroundEnum;
-import user_interface.factory.util.enums.ColorEnum;
+import user_interface.factory.ColorData;
+import user_interface.utils.enums.BackgroundEnum;
+import user_interface.utils.enums.ColorEnum;
+import user_interface.utils.enums.ColorType;
+import utils.CommonUtil;
 
 public class ColorUtil {
     public static Color getTextColorDef() {
@@ -63,6 +65,43 @@ public class ColorUtil {
             return ColorEnum.BORDERDAY.getValue();
         } else {
             return ColorEnum.BORDERNIGHT.getValue();
+        }
+    }
+
+    public static Background getBackgroundDef(ColorData colorData) {
+        if (colorData.getBackgroundDef() == ColorType.DEF) {
+            return getBackgroundDef();
+        } else if (colorData.getBackgroundDef() == ColorType.ALT) {
+            return getBackgroundAlt();
+        } else {
+            return null;
+        }
+    }
+    public static Background getBackgroundAlt(ColorData colorData) {
+        if (colorData.getBackgroundAlt() == ColorType.DEF) {
+            return getBackgroundDef();
+        } else if (colorData.getBackgroundAlt() == ColorType.ALT) {
+            return getBackgroundAlt();
+        } else {
+            return null;
+        }
+    }
+    public static Color getTextColorDef(ColorData colorData) {
+        if (colorData.getTextFillDef() == ColorType.DEF) {
+            return getTextColorDef();
+        } else if (colorData.getTextFillDef() == ColorType.ALT) {
+            return getTextColorAlt();
+        } else {
+            return null;
+        }
+    }
+    public static Color getTextColorAlt(ColorData colorData) {
+        if (colorData.getTextFillAlt() == ColorType.DEF) {
+            return getTextColorDef();
+        } else if (colorData.getTextFillAlt() == ColorType.ALT) {
+            return getTextColorAlt();
+        } else {
+            return null;
         }
     }
 }

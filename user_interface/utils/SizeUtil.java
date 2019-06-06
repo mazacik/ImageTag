@@ -1,10 +1,10 @@
-package user_interface.singleton.utils;
+package user_interface.utils;
 
 import javafx.scene.layout.TilePane;
 import javafx.scene.text.Text;
 import lifecycle.InstanceManager;
 import settings.SettingsEnum;
-import system.CommonUtil;
+import utils.CommonUtil;
 
 import java.awt.*;
 
@@ -20,6 +20,7 @@ public class SizeUtil {
     public static double getUsableScreenHeight() {
         return GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getHeight();
     }
+
     public static void stageWidthChangeHandler() {
         TilePane tilePane = InstanceManager.getGalleryPane().getTilePane();
 
@@ -41,11 +42,13 @@ public class SizeUtil {
     public static void stageHeightChangehandler() {
         InstanceManager.getMediaPane().getCanvas().setHeight(InstanceManager.getMainStage().getScene().getHeight() - InstanceManager.getToolbarPane().getPrefHeight() - InstanceManager.getToolbarPane().getPadding().getBottom() - InstanceManager.getToolbarPane().getBorder().getInsets().getBottom());
     }
+
     public static double getStringWidth(String s) {
         Text t = new Text(s);
         t.setFont(CommonUtil.getFont());
         return t.getLayoutBounds().getWidth();
     }
+
     public static double getGlobalSpacing() {
         return GLOBAL_SPACING;
     }

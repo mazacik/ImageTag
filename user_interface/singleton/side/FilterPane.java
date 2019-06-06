@@ -10,17 +10,17 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import lifecycle.InstanceManager;
-import system.CommonUtil;
-import system.Direction;
-import user_interface.factory.NodeUtil;
+import utils.enums.Direction;
+import user_interface.utils.NodeUtil;
 import user_interface.factory.base.TextNode;
 import user_interface.factory.menu.ClickMenuLeft;
 import user_interface.factory.stage.InfoObjectEditStage;
-import user_interface.factory.util.ColorData;
-import user_interface.factory.util.ColorUtil;
-import user_interface.factory.util.enums.ColorType;
+import user_interface.factory.ColorData;
+import user_interface.utils.ColorUtil;
+import user_interface.utils.enums.ColorType;
 import user_interface.singleton.NodeBase;
-import user_interface.singleton.utils.SizeUtil;
+import user_interface.utils.SizeUtil;
+import user_interface.utils.StyleUtil;
 
 import java.util.ArrayList;
 
@@ -110,7 +110,7 @@ public class FilterPane extends VBox implements NodeBase {
                     if (event.getButton() == MouseButton.PRIMARY) {
                         changeNodeState(groupNode, nameNode);
                         InstanceManager.getReload().doReload();
-                        CommonUtil.updateNodeProperties(this.tagListBox);
+                        StyleUtil.applyStyle(this.tagListBox);
                     } else if (event.getButton() == MouseButton.SECONDARY) {
                         InstanceManager.getClickMenuInfo().setGroup(groupNode.getText());
                         InstanceManager.getClickMenuInfo().setName(nameNode.getText());
@@ -126,7 +126,7 @@ public class FilterPane extends VBox implements NodeBase {
                 tagListNodes.addAll(groupNode.getNameNodes());
             }
         }
-        CommonUtil.updateNodeProperties(tagListBox);
+        StyleUtil.applyStyle(tagListBox);
         return true;
     }
 

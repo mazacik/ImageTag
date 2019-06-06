@@ -8,12 +8,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import system.CommonUtil;
-import user_interface.factory.NodeUtil;
+import utils.CommonUtil;
+import user_interface.utils.NodeUtil;
 import user_interface.factory.base.TextNode;
-import user_interface.factory.util.ColorUtil;
-import user_interface.factory.util.enums.ColorType;
-import user_interface.singleton.utils.SizeUtil;
+import user_interface.utils.ColorUtil;
+import user_interface.utils.enums.ColorType;
+import user_interface.utils.SizeUtil;
+import user_interface.utils.StyleUtil;
 
 public class OkCancelStage extends Stage {
     private boolean result = false;
@@ -57,7 +58,7 @@ public class OkCancelStage extends Stage {
 
         this.setOnShown(event -> {
             this.centerOnScreen();
-            CommonUtil.updateNodeProperties(this.getScene());
+            StyleUtil.applyStyle(this.getScene());
         });
         this.initStyle(StageStyle.UNDECORATED);
         this.setScene(scene);

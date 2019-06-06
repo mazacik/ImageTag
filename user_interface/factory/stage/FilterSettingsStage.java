@@ -11,16 +11,16 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import lifecycle.InstanceManager;
-import system.CommonUtil;
-import user_interface.factory.NodeUtil;
+import user_interface.utils.NodeUtil;
 import user_interface.factory.base.CheckBoxNode;
 import user_interface.factory.base.EditNode;
 import user_interface.factory.base.EditNodeType;
 import user_interface.factory.base.TextNode;
 import user_interface.factory.node.TitleBar;
-import user_interface.factory.util.ColorData;
-import user_interface.factory.util.enums.ColorType;
-import user_interface.singleton.utils.SizeUtil;
+import user_interface.factory.ColorData;
+import user_interface.utils.enums.ColorType;
+import user_interface.utils.SizeUtil;
+import user_interface.utils.StyleUtil;
 
 public class FilterSettingsStage extends Stage {
     CheckBoxNode cbImages = new CheckBoxNode("Images");
@@ -30,7 +30,7 @@ public class FilterSettingsStage extends Stage {
     CheckBoxNode cbLimit = new CheckBoxNode("Limit");
     EditNode tfLimit = new EditNode("", EditNodeType.NUMERIC_POSITIVE);
 
-    FilterSettingsStage() {
+    public FilterSettingsStage() {
         double spacing = SizeUtil.getGlobalSpacing();
         VBox vBox = NodeUtil.getVBox(ColorType.DEF);
         vBox.setPadding(new Insets(spacing));
@@ -92,10 +92,10 @@ public class FilterSettingsStage extends Stage {
         this.setResizable(false);
         this.setScene(scene);
 
-        CommonUtil.updateNodeProperties(scene);
+        StyleUtil.applyStyle(scene);
     }
 
-    void _show() {
+    public void _show() {
         Filter filter = InstanceManager.getFilter();
         cbImages.setSelected(filter.isShowImages());
         cbGifs.setSelected(filter.isShowGifs());

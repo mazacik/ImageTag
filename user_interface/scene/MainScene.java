@@ -6,20 +6,20 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import lifecycle.InstanceManager;
-import system.CommonUtil;
-import user_interface.factory.NodeUtil;
-import user_interface.factory.util.enums.ColorType;
+import user_interface.utils.NodeUtil;
+import user_interface.utils.enums.ColorType;
 import user_interface.singleton.center.GalleryPane;
 import user_interface.singleton.center.MediaPane;
-import user_interface.singleton.utils.EventUtil;
-import user_interface.singleton.utils.SizeUtil;
-import user_interface.singleton.utils.StyleUtil;
+import user_interface.singleton.center.VideoPlayer;
+import user_interface.singleton.Events;
+import user_interface.utils.SizeUtil;
+import user_interface.utils.StyleUtil;
 
 public class MainScene {
     private static ObservableList<Node> panes;
     private final Scene mainScene;
 
-    MainScene() {
+    public MainScene() {
         mainScene = create();
     }
 
@@ -27,7 +27,7 @@ public class MainScene {
         HBox mainHBox = NodeUtil.getHBox(ColorType.DEF, InstanceManager.getFilterPane(), InstanceManager.getGalleryPane(), InstanceManager.getSelectPane());
         panes = mainHBox.getChildren();
         Scene mainScene = new Scene(NodeUtil.getVBox(ColorType.DEF, InstanceManager.getToolbarPane(), mainHBox));
-        CommonUtil.updateNodeProperties(mainScene);
+        StyleUtil.applyStyle(mainScene);
         return mainScene;
     }
     //todo move these two methods somewhere else
@@ -38,8 +38,10 @@ public class MainScene {
             if (InstanceManager.getMediaPane().getControls().isShowing()) {
                 InstanceManager.getMediaPane().getControls().hide();
             }
-            if (InstanceManager.getMediaPane().getVideoPlayer().isPlaying()) {
-                InstanceManager.getMediaPane().getVideoPlayer().pause();
+
+            VideoPlayer videoPlayer = InstanceManager.getMediaPane().getVideoPlayer();
+            if (videoPlayer != null && videoPlayer.isPlaying()) {
+                videoPlayer.pause();
             }
 
             panes.set(panes.indexOf(mediaPane), galleryPane);
@@ -53,7 +55,7 @@ public class MainScene {
     public static boolean isFullView() {
         return panes.contains(InstanceManager.getMediaPane());
     }
-    void show() {
+    public void show() {
         InstanceManager.getMainStage().setOpacity(0);
         InstanceManager.getMainStage().setScene(mainScene);
         InstanceManager.getGalleryPane().requestFocus();
@@ -65,7 +67,7 @@ public class MainScene {
 
         Platform.runLater(() -> InstanceManager.getMainStage().setOpacity(1));
 
-        EventUtil.init();
+        Events.init();
 
         StyleUtil.applyScrollbarStyle(InstanceManager.getGalleryPane());
         StyleUtil.applyScrollbarStyle(InstanceManager.getFilterPane().getTagListScrollPane());

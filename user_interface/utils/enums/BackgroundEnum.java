@@ -1,4 +1,4 @@
-package user_interface.factory.util.enums;
+package user_interface.utils.enums;
 
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;

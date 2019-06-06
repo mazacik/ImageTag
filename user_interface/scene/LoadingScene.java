@@ -4,11 +4,11 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import lifecycle.InstanceManager;
-import system.CommonUtil;
-import user_interface.factory.NodeUtil;
+import user_interface.utils.NodeUtil;
 import user_interface.factory.base.TextNode;
-import user_interface.factory.util.enums.ColorType;
-import user_interface.singleton.utils.SizeUtil;
+import user_interface.utils.enums.ColorType;
+import user_interface.utils.SizeUtil;
+import user_interface.utils.StyleUtil;
 
 public class LoadingScene {
     private final Scene loadingScene;
@@ -27,7 +27,7 @@ public class LoadingScene {
         NodeUtil.addToManager(borderPane, ColorType.DEF);
 
         Scene loadingScene = new Scene(borderPane);
-        CommonUtil.updateNodeProperties(loadingScene);
+        StyleUtil.applyStyle(loadingScene);
         return loadingScene;
     }
     void show() {
@@ -36,7 +36,7 @@ public class LoadingScene {
         InstanceManager.getMainStage().setHeight(SizeUtil.getUsableScreenHeight() / 16);
         InstanceManager.getMainStage().centerOnScreen();
 
-        InstanceManager.getLogger().debug(this, "waiting for directory");
+        InstanceManager.getLogger().debug("waiting for directory");
     }
 
     public Scene getInstance() {

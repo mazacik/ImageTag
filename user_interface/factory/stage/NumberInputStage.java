@@ -9,12 +9,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import system.CommonUtil;
-import user_interface.factory.NodeUtil;
+import user_interface.utils.NodeUtil;
 import user_interface.factory.base.TextNode;
-import user_interface.factory.util.ColorData;
-import user_interface.factory.util.enums.ColorType;
-import user_interface.singleton.utils.SizeUtil;
+import user_interface.factory.ColorData;
+import user_interface.utils.enums.ColorType;
+import user_interface.utils.SizeUtil;
+import user_interface.utils.StyleUtil;
 
 public class NumberInputStage extends Stage {
     private int result = -1;
@@ -72,7 +72,7 @@ public class NumberInputStage extends Stage {
 
         this.setOnShown(event -> {
             this.centerOnScreen();
-            CommonUtil.updateNodeProperties(this.getScene());
+            StyleUtil.applyStyle(this.getScene());
         });
         this.initStyle(StageStyle.UNDECORATED);
         this.setScene(scene);

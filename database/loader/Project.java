@@ -1,6 +1,6 @@
 package database.loader;
 
-import system.JsonUtil;
+import utils.JsonUtil;
 
 import java.io.File;
 import java.lang.reflect.Type;

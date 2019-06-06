@@ -9,9 +9,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import lifecycle.InstanceManager;
-import system.CommonUtil;
 import user_interface.factory.base.TextNode;
-import user_interface.factory.util.ColorUtil;
+import user_interface.utils.ColorUtil;
+import user_interface.utils.StyleUtil;
 
 import java.util.ArrayList;
 
@@ -41,7 +41,7 @@ public class GroupNode extends HBox {
                             ObservableList<Node> nodes = InstanceManager.getFilterPane().getTagListBox().getChildren();
                             int index = nodes.indexOf(this) + 1;
                             nodes.addAll(index, nameNodes);
-                            CommonUtil.updateNodeProperties(InstanceManager.getFilterPane().getTagListBox());
+                            StyleUtil.applyStyle(InstanceManager.getFilterPane().getTagListBox());
                             labelArrow.setText("− ");
                         } else {
                             InstanceManager.getFilterPane().getExpandedGroupsList().remove(labelText.getText());
@@ -55,7 +55,7 @@ public class GroupNode extends HBox {
                             ObservableList<Node> nodes = InstanceManager.getSelectPane().getTagListBox().getChildren();
                             int index = nodes.indexOf(this) + 1;
                             nodes.addAll(index, nameNodes);
-                            CommonUtil.updateNodeProperties(InstanceManager.getSelectPane().getTagListBox());
+                            StyleUtil.applyStyle(InstanceManager.getSelectPane().getTagListBox());
                             labelArrow.setText("− ");
                         } else {
                             InstanceManager.getSelectPane().getExpandedGroupsList().remove(labelText.getText());
@@ -78,7 +78,7 @@ public class GroupNode extends HBox {
                     if (owner == InstanceManager.getFilterPane()) {
                         InstanceManager.getFilterPane().changeNodeState(this, null);
                         InstanceManager.getReload().doReload();
-                        CommonUtil.updateNodeProperties(InstanceManager.getFilterPane().getTagListBox());
+                        StyleUtil.applyStyle(InstanceManager.getFilterPane().getTagListBox());
                     }
                     break;
                 case SECONDARY:

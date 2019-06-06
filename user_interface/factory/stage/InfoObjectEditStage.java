@@ -11,12 +11,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import system.CommonUtil;
-import user_interface.factory.NodeUtil;
+import utils.CommonUtil;
+import user_interface.utils.NodeUtil;
+import user_interface.factory.base.CheckBoxNode;
 import user_interface.factory.base.TextNode;
 import user_interface.factory.node.TitleBar;
-import user_interface.factory.util.enums.ColorType;
-import user_interface.singleton.utils.SizeUtil;
+import user_interface.utils.enums.ColorType;
+import user_interface.utils.SizeUtil;
+import user_interface.utils.StyleUtil;
 
 public class InfoObjectEditStage extends Stage {
     private final TextField nodeGroupEdit = new TextField();
@@ -25,6 +27,7 @@ public class InfoObjectEditStage extends Stage {
     private final TextNode nodeName = new TextNode("Name", ColorType.DEF, ColorType.DEF);
     private final TextNode nodeOK = new TextNode("OK", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
     private final TextNode nodeCancel = new TextNode("Cancel", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+    private final CheckBoxNode nodeAddToSelection = new CheckBoxNode("Apply to selection?");
 
     private TagObject tagObject = null;
 
@@ -55,7 +58,6 @@ public class InfoObjectEditStage extends Stage {
         NodeUtil.addToManager(nodeNameEdit, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
         nodeGroupEdit.requestFocus();
 
-
         nodeOK.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 this.getValue();
@@ -70,7 +72,7 @@ public class InfoObjectEditStage extends Stage {
 
         HBox hBoxGroup = NodeUtil.getHBox(ColorType.DEF, nodeGroup, nodeGroupEdit);
         HBox hBoxName = NodeUtil.getHBox(ColorType.DEF, nodeName, nodeNameEdit);
-        VBox vBoxHelper = NodeUtil.getVBox(ColorType.DEF, hBoxGroup, hBoxName);
+        VBox vBoxHelper = NodeUtil.getVBox(ColorType.DEF, hBoxGroup, hBoxName, nodeAddToSelection);
         double padding = SizeUtil.getGlobalSpacing();
         vBoxHelper.setPadding(new Insets(padding, padding, 0, 0));
         vBoxHelper.setSpacing(padding);
@@ -96,7 +98,7 @@ public class InfoObjectEditStage extends Stage {
         setScene(scene);
         setResizable(false);
 
-        CommonUtil.updateNodeProperties(this.getScene());
+        StyleUtil.applyStyle(this.getScene());
 
         showAndWait();
     }

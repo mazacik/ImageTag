@@ -6,8 +6,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import user_interface.factory.base.TextNode;
-import user_interface.factory.util.ColorData;
-import user_interface.factory.util.enums.ColorType;
+import user_interface.factory.ColorData;
+import user_interface.utils.enums.ColorType;
 
 import java.io.File;
 

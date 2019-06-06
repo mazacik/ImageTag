@@ -1,4 +1,4 @@
-package database.loader.cache;
+package database.loader;
 
 import database.object.DataObject;
 import javafx.embed.swing.SwingFXUtils;
@@ -8,6 +8,7 @@ import settings.SettingsEnum;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
+import user_interface.singleton.center.VideoPlayer;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -16,7 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
-public abstract class CacheCreator {
+public abstract class ThumbnailCreator {
     private static final String CACHE_EXTENSION = ".jpg";
 
     public static String getCacheExtension() {
@@ -24,7 +25,7 @@ public abstract class CacheCreator {
     }
 
     public static Image createThumbnail(DataObject dataObject, File cacheFile) {
-        InstanceManager.getLogger().debug(CacheCreator.class, "generating thumbnail for " + dataObject.getName());
+        InstanceManager.getLogger().debug("generating thumbnail for " + dataObject.getName());
 
         int thumbSize = InstanceManager.getSettings().intValueOf(SettingsEnum.THUMBSIZE);
 
@@ -70,54 +71,58 @@ public abstract class CacheCreator {
         }
     }
     private static Image createThumbnailFromVideo(DataObject dataObject, int thumbSize, File cacheFile) {
-        String[] vlcArgs = {
-                "--intf", "dummy",          /* no interface */
-                "--vout", "dummy",          /* we don't want video (output) */
-                "--no-audio",               /* we don't want audio (decoding) */
-                "--no-snapshot-preview",    /* no blending in dummy vout */
-        };
+        if (VideoPlayer.hasLibs()) {
+            String[] vlcArgs = {
+                    "--intf", "dummy",          /* no interface */
+                    "--vout", "dummy",          /* we don't want video (output) */
+                    "--no-audio",               /* we don't want audio (decoding) */
+                    "--no-snapshot-preview",    /* no blending in dummy vout */
+            };
 
-        float mediaPosition = 0.5f;
+            float mediaPosition = 0.5f;
 
-        MediaPlayerFactory factory = new MediaPlayerFactory(vlcArgs);
-        MediaPlayer mediaPlayer = factory.mediaPlayers().newMediaPlayer();
+            MediaPlayerFactory factory = new MediaPlayerFactory(vlcArgs);
+            MediaPlayer mediaPlayer = factory.mediaPlayers().newMediaPlayer();
 
-        final CountDownLatch inPositionLatch = new CountDownLatch(1);
-        final CountDownLatch snapshotTakenLatch = new CountDownLatch(1);
+            final CountDownLatch inPositionLatch = new CountDownLatch(1);
+            final CountDownLatch snapshotTakenLatch = new CountDownLatch(1);
 
-        mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
-            @Override
-            public void positionChanged(MediaPlayer mediaPlayer, float newPosition) {
-                if (newPosition >= mediaPosition * 0.9f) { /* 90% margin */
-                    inPositionLatch.countDown();
+            mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
+                @Override
+                public void positionChanged(MediaPlayer mediaPlayer, float newPosition) {
+                    if (newPosition >= mediaPosition * 0.9f) { /* 90% margin */
+                        inPositionLatch.countDown();
+                    }
                 }
+
+                @Override
+                public void snapshotTaken(MediaPlayer mediaPlayer, String filename) {
+                    snapshotTakenLatch.countDown();
+                }
+            });
+
+            if (mediaPlayer.media().start(dataObject.getPath())) {
+                try {
+                    mediaPlayer.controls().setPosition(mediaPosition);
+                    inPositionLatch.await(); // Might wait forever if error
+
+                    mediaPlayer.snapshots().save(cacheFile, thumbSize, thumbSize);
+                    snapshotTakenLatch.await(); // Might wait forever if error
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                mediaPlayer.controls().stop();
             }
 
-            @Override
-            public void snapshotTaken(MediaPlayer mediaPlayer, String filename) {
-                snapshotTakenLatch.countDown();
+            mediaPlayer.release();
+            factory.release();
+
+            if (cacheFile.exists()) {
+                return new Image("file:" + dataObject.getCacheFile());
+            } else {
+                return null;
             }
-        });
-
-        if (mediaPlayer.media().start(dataObject.getPath())) {
-            try {
-                mediaPlayer.controls().setPosition(mediaPosition);
-                inPositionLatch.await(); // Might wait forever if error
-
-                mediaPlayer.snapshots().save(cacheFile, thumbSize, thumbSize);
-                snapshotTakenLatch.await(); // Might wait forever if error
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            mediaPlayer.controls().stop();
-        }
-
-        mediaPlayer.release();
-        factory.release();
-
-        if (cacheFile.exists()) {
-            return new Image("file:" + dataObject.getCacheFile());
         } else {
             return null;
         }

@@ -6,8 +6,9 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.stage.WindowEvent;
-import user_interface.factory.NodeUtil;
-import user_interface.factory.util.enums.ColorType;
+import user_interface.utils.NodeUtil;
+import user_interface.utils.enums.ColorType;
+import user_interface.utils.StyleUtil;
 
 import java.util.ArrayList;
 
@@ -19,6 +20,8 @@ public class ClickMenuBase extends Popup {
     public ClickMenuBase(Region... children) {
         vBox.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
         vBox.getChildren().setAll(children);
+
+        StyleUtil.applyStyle(vBox);
 
         this.addEventFilter(WindowEvent.WINDOW_SHOWN, event -> NodeUtil.equalizeWidth(vBox.getChildren()));
         this.getContent().setAll(vBox);

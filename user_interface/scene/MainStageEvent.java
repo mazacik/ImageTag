@@ -1,7 +1,8 @@
 package user_interface.scene;
 
+import database.object.DataObject;
 import lifecycle.InstanceManager;
-import system.CommonUtil;
+import utils.CommonUtil;
 import user_interface.singleton.center.BaseTileEvent;
 
 public class MainStageEvent {
@@ -12,11 +13,12 @@ public class MainStageEvent {
         InstanceManager.getMainStage().getScene().setOnKeyPressed(event -> {
             switch (event.getCode()) {
                 case ESCAPE:
-                    InstanceManager.getToolbarPane().requestFocus();
-                    break;
-                case Q:
-                    InstanceManager.getSelect().swapState(InstanceManager.getTarget().getCurrentTarget());
-                    InstanceManager.getReload().doReload();
+                    if (MainScene.isFullView()) {
+                        MainScene.swapViewMode();
+                    } else if (InstanceManager.getSelectPane().getTfSearch().isFocused()){
+                        InstanceManager.getToolbarPane().requestFocus();
+                    }
+
                     break;
                 case E:
                     BaseTileEvent.onGroupButtonClick(InstanceManager.getTarget().getCurrentTarget());
@@ -35,6 +37,14 @@ public class MainStageEvent {
                 case S:
                 case D:
                     InstanceManager.getTarget().move(event.getCode());
+                    DataObject dataObject = InstanceManager.getTarget().getCurrentTarget();
+
+                    if (event.isShiftDown()) {
+                        InstanceManager.getSelect().add(dataObject);
+                    } else {
+                        InstanceManager.getSelect().set(dataObject);
+                    }
+
                     InstanceManager.getReload().doReload();
                     break;
                 default:

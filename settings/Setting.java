@@ -4,10 +4,10 @@ public class Setting {
     private SettingsEnum settingsEnum;
     private String value;
 
-    public Setting(SettingsEnum settingsEnum, int value) {
+    Setting(SettingsEnum settingsEnum, int value) {
         this(settingsEnum, String.valueOf(value));
     }
-    public Setting(SettingsEnum settingsEnum, String value) {
+    Setting(SettingsEnum settingsEnum, String value) {
         this.settingsEnum = settingsEnum;
         this.value = value;
     }

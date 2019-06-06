@@ -1,27 +1,31 @@
 package user_interface.factory.base;
 
 import javafx.scene.control.TextField;
-import system.CommonUtil;
-import user_interface.factory.NodeUtil;
-import user_interface.factory.util.enums.ColorType;
+import utils.CommonUtil;
+import user_interface.utils.NodeUtil;
+import user_interface.utils.enums.ColorType;
 
 public class EditNode extends TextField {
     public EditNode(String promptText, EditNodeType type) {
         this.setFont(CommonUtil.getFont());
         this.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
         this.setPromptText(promptText);
-        this.skinProperty().addListener((observable, oldValue, newValue) -> setStyle("-fx-prompt-text-fill: grey;"));
+        this.applyCss();
+        this.setStyle("-fx-prompt-text-fill: grey;");
 
         switch (type) {
             case DEFAULT:
-                //todo
                 break;
             case NUMERIC:
-                //todo
+                this.textProperty().addListener((observable, oldValue, newValue) -> {
+                    if (!newValue.equals("") && !isInteger(newValue)) {
+                        this.setText(oldValue);
+                    }
+                });
                 break;
             case NUMERIC_POSITIVE:
                 this.textProperty().addListener((observable, oldValue, newValue) -> {
-                    if (!newValue.equals("") && !isNumberPositive(newValue)) {
+                    if (!newValue.equals("") && !isIntegerPositive(newValue)) {
                         this.setText(oldValue);
                     }
                 });
@@ -37,7 +41,7 @@ public class EditNode extends TextField {
         this("", EditNodeType.DEFAULT);
     }
 
-    public boolean isNumber(String str) {
+    public boolean isInteger(String str) {
         if (str == null) {
             return false;
         }
@@ -60,8 +64,8 @@ public class EditNode extends TextField {
         }
         return true;
     }
-    public boolean isNumberPositive(String str) {
-        if (!isNumber(str)) return false;
+    public boolean isIntegerPositive(String str) {
+        if (!isInteger(str)) return false;
         return !(str.charAt(0) == '-');
     }
 }

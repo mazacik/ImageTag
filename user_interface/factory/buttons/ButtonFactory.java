@@ -7,13 +7,13 @@ import database.object.TagObject;
 import javafx.scene.input.MouseButton;
 import lifecycle.InstanceManager;
 import org.apache.commons.text.WordUtils;
-import system.ClipboardUtil;
+import utils.ClipboardUtil;
 import user_interface.factory.base.TextNode;
 import user_interface.factory.menu.ClickMenuBase;
 import user_interface.factory.stage.GroupEditStage;
 import user_interface.factory.stage.OkCancelStage;
-import user_interface.factory.util.ColorData;
-import user_interface.factory.util.enums.ColorType;
+import user_interface.factory.ColorData;
+import user_interface.utils.enums.ColorType;
 
 import java.awt.*;
 import java.io.File;
@@ -88,8 +88,7 @@ public class ButtonFactory {
             if (event.getButton() == MouseButton.PRIMARY) {
                 String fullPath = InstanceManager.getTarget().getCurrentTarget().getPath();
                 try {
-                    //todo cross platform support
-                    Runtime.getRuntime().exec("C:\\WINDOWS\\system32\\mspaint.exe " + fullPath);
+                    Runtime.getRuntime().exec("mspaint.exe " + fullPath);
                 } catch (IOException e) {
                     e.printStackTrace();
                 } finally {
@@ -212,7 +211,7 @@ public class ButtonFactory {
     }
     private void deleteSelection() {
         if (InstanceManager.getSelect().isEmpty()) {
-            InstanceManager.getLogger().debug(this, "deleteSelection() - empty selection");
+            InstanceManager.getLogger().debug("deleteSelection() - empty selection");
             return;
         }
 

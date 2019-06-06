@@ -1,4 +1,4 @@
-package system;
+package utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -24,9 +24,9 @@ public abstract class JsonUtil {
             BufferedWriter writer = new BufferedWriter(new FileWriter(path, false));
             writer.write(JSON);
             writer.close();
-            InstanceManager.getLogger().debug(JsonUtil.class, "serializing " + path + " .. ok");
+            InstanceManager.getLogger().debug("serializing " + path + " .. ok");
         } catch (IOException e) {
-            InstanceManager.getLogger().debug(JsonUtil.class, "serializing " + path + " .. fail");
+            InstanceManager.getLogger().debug("serializing " + path + " .. fail");
             e.printStackTrace();
         }
     }
@@ -37,10 +37,10 @@ public abstract class JsonUtil {
         try {
             String JSON = new String(Files.readAllBytes(Paths.get(path)));
             Object fromJson = GSON.fromJson(JSON, type);
-            InstanceManager.getLogger().debug(JsonUtil.class, "reading " + path + " .. ok");
+            InstanceManager.getLogger().debug("reading " + path + " .. ok");
             return fromJson;
         } catch (Exception e) {
-            InstanceManager.getLogger().debug(JsonUtil.class, "reading " + path + " .. fail");
+            InstanceManager.getLogger().debug("reading " + path + " .. fail");
             return null;
         }
     }

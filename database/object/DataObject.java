@@ -1,11 +1,10 @@
 package database.object;
 
 import database.list.TagList;
-import database.loader.FileSupportUtil;
-import database.loader.FileUtil;
-import database.loader.cache.CacheCreator;
+import utils.FileUtil;
+import database.loader.ThumbnailCreator;
 import lifecycle.InstanceManager;
-import system.FileType;
+import utils.enums.FileType;
 import user_interface.singleton.center.BaseTile;
 
 import java.io.File;
@@ -47,22 +46,22 @@ public class DataObject implements Serializable {
         }
     }
     public FileType getFileType() {
-        for (String ext : FileSupportUtil.getImageExtensions()) {
+        for (String ext : FileUtil.getImageExtensions()) {
             if (getName().endsWith(ext)) {
                 return FileType.IMAGE;
             }
         }
-        for (String ext : FileSupportUtil.getGifExtensions()) {
+        for (String ext : FileUtil.getGifExtensions()) {
             if (getName().endsWith(ext)) {
                 return FileType.GIF;
             }
         }
-        for (String ext : FileSupportUtil.getVideoExtensions()) {
+        for (String ext : FileUtil.getVideoExtensions()) {
             if (getName().endsWith(ext)) {
                 return FileType.VIDEO;
             }
         }
-        InstanceManager.getLogger().error(this, "file type not supported");
+        InstanceManager.getLogger().error("file type not supported");
         return null;
     }
 
@@ -85,7 +84,7 @@ public class DataObject implements Serializable {
         return baseTile;
     }
     public String getCacheFile() {
-        return FileUtil.getDirCache() + name + "-" + size + CacheCreator.getCacheExtension();
+        return FileUtil.getDirCache() + name + "-" + size + ThumbnailCreator.getCacheExtension();
     }
 
     public void setName(String name) {

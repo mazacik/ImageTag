@@ -13,14 +13,15 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import lifecycle.InstanceManager;
 import lifecycle.LifeCycleManager;
-import system.CommonUtil;
-import user_interface.factory.NodeUtil;
+import user_interface.utils.NodeUtil;
 import user_interface.factory.base.TextNode;
 import user_interface.factory.node.ColorModeSwitch;
 import user_interface.factory.node.IntroWindowCell;
 import user_interface.factory.stage.FileChooserStage;
-import user_interface.factory.util.enums.ColorType;
-import user_interface.singleton.utils.SizeUtil;
+import user_interface.utils.enums.ColorType;
+import user_interface.utils.SceneUtil;
+import user_interface.utils.SizeUtil;
+import user_interface.utils.StyleUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ import java.util.ArrayList;
 public class IntroScene {
     private final Scene introScene;
 
-    IntroScene() {
+    public IntroScene() {
         introScene = create();
     }
 
@@ -90,7 +91,7 @@ public class IntroScene {
                     });
                     vBoxRecentProjects.getChildren().add(introWindowCell);
                 } else {
-                    InstanceManager.getLogger().debug(this, recentProject + " not found, removing it from recent projects");
+                    InstanceManager.getLogger().debug(recentProject + " not found, removing it from recent projects");
                     InstanceManager.getSettings().getRecentProjects().remove(recentProject);
                 }
             });
@@ -107,10 +108,10 @@ public class IntroScene {
             }
         });
 
-        CommonUtil.updateNodeProperties(introScene);
+        StyleUtil.applyStyle(introScene);
         return introScene;
     }
-    void show() {
+    public void show() {
         InstanceManager.getMainStage().setScene(introScene);
     }
 }

@@ -3,8 +3,8 @@ package user_interface.singleton.side;
 import javafx.scene.input.MouseButton;
 import lifecycle.InstanceManager;
 import user_interface.factory.menu.ClickMenuLeft;
-import user_interface.factory.stage.StageUtil;
-import user_interface.factory.stage.Stages;
+import user_interface.utils.StageUtil;
+import user_interface.utils.enums.Stages;
 
 public class TagListViewLEvent {
     public TagListViewLEvent() {

@@ -3,11 +3,11 @@ package user_interface.factory.node;
 import javafx.geometry.Pos;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
-import system.CommonUtil;
-import user_interface.factory.NodeUtil;
+import utils.CommonUtil;
+import user_interface.utils.NodeUtil;
 import user_interface.factory.base.TextNode;
-import user_interface.factory.util.ColorData;
-import user_interface.factory.util.enums.ColorType;
+import user_interface.factory.ColorData;
+import user_interface.utils.enums.ColorType;
 
 public class ColorModeSwitch extends HBox {
     private int nodeWidth = 70;

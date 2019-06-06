@@ -1,4 +1,4 @@
-package user_interface.factory;
+package user_interface.utils;
 
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -7,11 +7,10 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Window;
-import system.CommonUtil;
+import user_interface.factory.ColorData;
+import user_interface.utils.enums.ColorType;
+import utils.CommonUtil;
 import user_interface.factory.node.IntroWindowCell;
-import user_interface.factory.util.ColorData;
-import user_interface.factory.util.ColorUtil;
-import user_interface.factory.util.enums.ColorType;
 import user_interface.singleton.side.GroupNode;
 
 import java.util.ArrayList;

@@ -11,6 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.transform.Affine;
 import lifecycle.InstanceManager;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
+import uk.co.caprica.vlcj.factory.discovery.NativeDiscovery;
 import uk.co.caprica.vlcj.player.base.ControlsApi;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
@@ -43,7 +44,18 @@ public class VideoPlayer {
     };
     private boolean playing;
 
-    public VideoPlayer(Canvas canvas) {
+    private static boolean hasLibs = false;
+
+    @SuppressWarnings("UnusedReturnValue")
+    public static boolean checkLibs() {
+        hasLibs = new NativeDiscovery().discover();
+        return hasLibs;
+    }
+    public static boolean hasLibs() {
+        return hasLibs;
+    }
+
+    private VideoPlayer(Canvas canvas) {
         this.canvas = canvas;
 
         pixelWriter = canvas.getGraphicsContext2D().getPixelWriter();
@@ -89,6 +101,11 @@ public class VideoPlayer {
             }
         });
     }
+    public static VideoPlayer create(Canvas canvas) {
+        if (hasLibs) return new VideoPlayer(canvas);
+        else return null;
+    }
+
     public void start(String videoFilePath) {
         playing = true;
         frameTimer.start();

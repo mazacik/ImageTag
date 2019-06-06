@@ -1,6 +1,6 @@
 package user_interface.singleton.center;
 
-import database.loader.cache.CacheReader;
+import database.loader.ThumbnailReader;
 import database.object.DataObject;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -12,14 +12,14 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import lifecycle.InstanceManager;
-import system.CommonUtil;
-import system.ConverterUtil;
-import system.Direction;
-import user_interface.factory.NodeUtil;
+import utils.ConverterUtil;
+import utils.enums.Direction;
+import user_interface.utils.NodeUtil;
 import user_interface.factory.base.TextNode;
-import user_interface.factory.util.ColorUtil;
-import user_interface.factory.util.enums.ColorType;
-import user_interface.singleton.utils.SizeUtil;
+import user_interface.utils.ColorUtil;
+import user_interface.utils.enums.ColorType;
+import user_interface.utils.SizeUtil;
+import user_interface.utils.StyleUtil;
 
 import java.io.File;
 
@@ -67,105 +67,107 @@ public class MediaViewControlsBase extends BorderPane {
     }
 
     private void initEvents(VideoPlayer videoPlayer) {
-        btnPlayPause.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY) {
-                if (videoPlayer.hasMedia()) {
-                    if (videoPlayer.isPlaying()) {
-                        videoPlayer.pause();
+        if (videoPlayer != null) {
+            btnPlayPause.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY) {
+                    if (videoPlayer.hasMedia()) {
+                        if (videoPlayer.isPlaying()) {
+                            videoPlayer.pause();
+                        } else {
+                            videoPlayer.resume();
+                        }
+                    }
+                }
+            });
+
+            long timeDelta = 5000; // time in milliseconds
+            btnSkipBackward5s.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY) {
+                    if (videoPlayer.hasMedia()) {
+                        videoPlayer.getControls().skipTime(-timeDelta);
+                        if (!videoPlayer.isPlaying()) {
+                            videoPlayer.renderFrame();
+                            float position = videoPlayer.getPosition();
+                            setVideoProgress(progressBar.getProgress() - position);
+                        }
+                    }
+                }
+            });
+            btnSkipForward5s.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY) {
+                    if (videoPlayer.hasMedia()) {
+                        videoPlayer.getControls().skipPosition(+timeDelta);
+                        if (!videoPlayer.isPlaying()) {
+                            videoPlayer.renderFrame();
+                            float position = videoPlayer.getPosition();
+                            setVideoProgress(progressBar.getProgress() + position);
+                        }
+                    }
+                }
+            });
+
+            float skipDelta = 0.05f; // 0.01f = 1% of media length
+            btnSkipBackward.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY) {
+                    if (videoPlayer.hasMedia()) {
+                        videoPlayer.getControls().skipPosition(-skipDelta);
+                        if (!videoPlayer.isPlaying()) {
+                            videoPlayer.renderFrame();
+                            setVideoProgress(progressBar.getProgress() - skipDelta);
+                        }
+                    }
+                }
+            });
+            btnSkipForward.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY) {
+                    if (videoPlayer.hasMedia()) {
+                        videoPlayer.getControls().skipPosition(+skipDelta);
+                        if (!videoPlayer.isPlaying()) {
+                            videoPlayer.renderFrame();
+                            setVideoProgress(progressBar.getProgress() + skipDelta);
+                        }
+                    }
+                }
+            });
+
+            progressBar.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY) {
+                    if (videoPlayer.hasMedia()) {
+                        double eventX = event.getX();
+                        double barWidth = progressBar.getWidth();
+                        double position = (eventX / barWidth);
+                        videoPlayer.setPosition(position);
+                        if (!videoPlayer.isPlaying()) {
+                            videoPlayer.renderFrame();
+                        }
+                    }
+                }
+            });
+
+            btnMute.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY) {
+                    videoPlayer.swapMute();
+                }
+            });
+            btnSnapshot.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY) {
+                    DataObject dataObject = InstanceManager.getTarget().getCurrentTarget();
+                    File cacheFile = new File(dataObject.getCacheFile());
+                    int thumbSize = (int) SizeUtil.getGalleryIconSize();
+                    InstanceManager.getMediaPane().getVideoPlayer().snapshot(cacheFile, thumbSize, thumbSize);
+                    Image thumbnail = ThumbnailReader.readThumbnail(dataObject);
+
+                    ObservableList<Node> visibleTiles = InstanceManager.getGalleryPane().getTilePane().getChildren();
+                    if (visibleTiles.contains(dataObject.getBaseTile())) {
+                        int galleryPosition = InstanceManager.getGalleryPane().getTilePane().getChildren().indexOf(dataObject.getBaseTile());
+                        dataObject.setBaseTile(new BaseTile(dataObject, thumbnail));
+                        visibleTiles.set(galleryPosition, dataObject.getBaseTile());
                     } else {
-                        videoPlayer.resume();
+                        dataObject.setBaseTile(new BaseTile(dataObject, thumbnail));
                     }
                 }
-            }
-        });
-
-        long timeDelta = 5000; // time in milliseconds
-        btnSkipBackward5s.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY) {
-                if (videoPlayer.hasMedia()) {
-                    videoPlayer.getControls().skipTime(-timeDelta);
-                    if (!videoPlayer.isPlaying()) {
-                        videoPlayer.renderFrame();
-                        float position = videoPlayer.getPosition();
-                        setVideoProgress(progressBar.getProgress() - position);
-                    }
-                }
-            }
-        });
-        btnSkipForward5s.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY) {
-                if (videoPlayer.hasMedia()) {
-                    videoPlayer.getControls().skipPosition(+timeDelta);
-                    if (!videoPlayer.isPlaying()) {
-                        videoPlayer.renderFrame();
-                        float position = videoPlayer.getPosition();
-                        setVideoProgress(progressBar.getProgress() + position);
-                    }
-                }
-            }
-        });
-
-        float skipDelta = 0.05f; // 0.01f = 1% of media length
-        btnSkipBackward.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY) {
-                if (videoPlayer.hasMedia()) {
-                    videoPlayer.getControls().skipPosition(-skipDelta);
-                    if (!videoPlayer.isPlaying()) {
-                        videoPlayer.renderFrame();
-                        setVideoProgress(progressBar.getProgress() - skipDelta);
-                    }
-                }
-            }
-        });
-        btnSkipForward.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY) {
-                if (videoPlayer.hasMedia()) {
-                    videoPlayer.getControls().skipPosition(+skipDelta);
-                    if (!videoPlayer.isPlaying()) {
-                        videoPlayer.renderFrame();
-                        setVideoProgress(progressBar.getProgress() + skipDelta);
-                    }
-                }
-            }
-        });
-
-        progressBar.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY) {
-                if (videoPlayer.hasMedia()) {
-                    double eventX = event.getX();
-                    double barWidth = progressBar.getWidth();
-                    double position = (eventX / barWidth);
-                    videoPlayer.setPosition(position);
-                    if (!videoPlayer.isPlaying()) {
-                        videoPlayer.renderFrame();
-                    }
-                }
-            }
-        });
-
-        btnMute.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY) {
-                videoPlayer.swapMute();
-            }
-        });
-        btnSnapshot.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY) {
-                DataObject dataObject = InstanceManager.getTarget().getCurrentTarget();
-                File cacheFile = new File(dataObject.getCacheFile());
-                int thumbSize = (int) SizeUtil.getGalleryIconSize();
-                InstanceManager.getMediaPane().getVideoPlayer().snapshot(cacheFile, thumbSize, thumbSize);
-                Image thumbnail = CacheReader.readCache(dataObject);
-
-                ObservableList<Node> visibleTiles = InstanceManager.getGalleryPane().getTilePane().getChildren();
-                if (visibleTiles.contains(dataObject.getBaseTile())) {
-                    int galleryPosition = InstanceManager.getGalleryPane().getTilePane().getChildren().indexOf(dataObject.getBaseTile());
-                    dataObject.setBaseTile(new BaseTile(dataObject, thumbnail));
-                    visibleTiles.set(galleryPosition, dataObject.getBaseTile());
-                } else {
-                    dataObject.setBaseTile(new BaseTile(dataObject, thumbnail));
-                }
-            }
-        });
+            });
+        }
 
         btnPrevious.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
@@ -205,7 +207,8 @@ public class MediaViewControlsBase extends BorderPane {
             this.setCenter(hBoxCenter);
             this.setBottom(progressBar);
         } else {
-            InstanceManager.getMediaPane().getVideoPlayer().pause();
+            if (InstanceManager.getMediaPane().getVideoPlayer() != null)
+                InstanceManager.getMediaPane().getVideoPlayer().pause();
 
             this.setLeft(btnPrevious);
             this.setRight(btnNext);
@@ -213,7 +216,7 @@ public class MediaViewControlsBase extends BorderPane {
             this.setBottom(null);
         }
 
-        CommonUtil.updateNodeProperties(this);
+        StyleUtil.applyStyle(this);
     }
     public void setVideoProgress(double value) {
         if (value > 0 && value <= 1) Platform.runLater(() -> progressBar.setProgress(value));

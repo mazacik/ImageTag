@@ -1,4 +1,4 @@
-package system;
+package utils;
 
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;

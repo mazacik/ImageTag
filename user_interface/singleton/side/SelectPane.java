@@ -11,18 +11,18 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import lifecycle.InstanceManager;
-import system.CommonUtil;
-import system.Direction;
-import user_interface.factory.NodeUtil;
+import utils.enums.Direction;
+import user_interface.utils.NodeUtil;
 import user_interface.factory.base.EditNode;
 import user_interface.factory.base.Separator;
 import user_interface.factory.base.TextNode;
 import user_interface.factory.menu.ClickMenuLeft;
-import user_interface.factory.util.ColorData;
-import user_interface.factory.util.ColorUtil;
-import user_interface.factory.util.enums.ColorType;
+import user_interface.factory.ColorData;
+import user_interface.utils.ColorUtil;
+import user_interface.utils.enums.ColorType;
 import user_interface.singleton.NodeBase;
-import user_interface.singleton.utils.SizeUtil;
+import user_interface.utils.SizeUtil;
+import user_interface.utils.StyleUtil;
 
 import java.util.ArrayList;
 
@@ -47,6 +47,7 @@ public class SelectPane extends VBox implements NodeBase {
         nodeTitle.prefWidthProperty().bind(this.widthProperty());
 
         tfSearch = new EditNode("Search tags..");
+        tfSearch.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
 
         nodeSelectAll = new TextNode("Select All", colorDataSimple);
         nodeSelectNone = new TextNode("Select None", colorDataSimple);
@@ -95,7 +96,7 @@ public class SelectPane extends VBox implements NodeBase {
             nodeTitle.setText(text);
         }
         this.actuallyReload();
-        CommonUtil.updateNodeProperties(tagListBox);
+        StyleUtil.applyStyle(tagListBox);
         return true;
     }
     private void actuallyReload() {

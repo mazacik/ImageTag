@@ -4,8 +4,10 @@ import control.Reload;
 import database.object.DataObject;
 import database.object.TagObject;
 import lifecycle.InstanceManager;
+import user_interface.singleton.center.BaseTile;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class ObjectList extends ArrayList<DataObject> {
     public boolean add(DataObject dataObject) {
@@ -53,5 +55,21 @@ public class ObjectList extends ArrayList<DataObject> {
             }
         }
         return sharedTags;
+    }
+
+    public DataObject getRandom() {
+        if (!this.isEmpty()) {
+            int index = new Random().nextInt(this.size());
+            DataObject chosenDataObject = this.get(index);
+
+            if (chosenDataObject.getMergeID() == 0) {
+                return chosenDataObject;
+            } else {
+                ArrayList<DataObject> mergeGroup = chosenDataObject.getMergeGroup();
+                return mergeGroup.get(new Random().nextInt(mergeGroup.size()));
+            }
+        } else {
+            return null;
+        }
     }
 }

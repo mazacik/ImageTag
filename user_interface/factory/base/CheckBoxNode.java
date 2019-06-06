@@ -9,9 +9,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import user_interface.factory.NodeUtil;
-import user_interface.factory.util.enums.ColorType;
-import user_interface.singleton.utils.SizeUtil;
+import user_interface.utils.NodeUtil;
+import user_interface.utils.enums.ColorType;
+import user_interface.utils.SizeUtil;
 
 public class CheckBoxNode extends Pane {
     private final TextNode nodeMark;

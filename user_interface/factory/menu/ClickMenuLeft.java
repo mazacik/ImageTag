@@ -9,8 +9,8 @@ import javafx.scene.layout.Region;
 import javafx.stage.Popup;
 import javafx.stage.Window;
 import lifecycle.InstanceManager;
-import system.Direction;
-import user_interface.factory.NodeUtil;
+import utils.enums.Direction;
+import user_interface.utils.NodeUtil;
 import user_interface.factory.base.TextNode;
 
 public class ClickMenuLeft extends ClickMenuBase {

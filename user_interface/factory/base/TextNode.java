@@ -4,17 +4,17 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.text.TextAlignment;
-import system.CommonUtil;
-import user_interface.factory.NodeUtil;
-import user_interface.factory.util.ColorData;
-import user_interface.factory.util.enums.ColorType;
+import utils.CommonUtil;
+import user_interface.utils.NodeUtil;
+import user_interface.factory.ColorData;
+import user_interface.utils.enums.ColorType;
 
 public class TextNode extends Label {
     public TextNode(String text) {
         this(text, ColorType.NULL, ColorType.NULL, ColorType.NULL, ColorType.NULL);
     }
     public TextNode(String text, ColorData colorData) {
-        this(text, colorData.getBackgroundDef(), colorData.getBackgroundAlt(), colorData.getTextFillDef(), colorData.getTextFillHov());
+        this(text, colorData.getBackgroundDef(), colorData.getBackgroundAlt(), colorData.getTextFillDef(), colorData.getTextFillAlt());
     }
     public TextNode(String text, ColorType background, ColorType textFill) {
         this(text, background, ColorType.NULL, textFill, ColorType.NULL);

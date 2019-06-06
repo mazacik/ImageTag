@@ -6,10 +6,10 @@ import javafx.scene.Scene;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.WindowEvent;
-import system.CommonUtil;
-import user_interface.factory.NodeUtil;
+import utils.CommonUtil;
+import user_interface.utils.NodeUtil;
 import user_interface.factory.base.TextNode;
-import user_interface.factory.util.enums.ColorType;
+import user_interface.utils.enums.ColorType;
 
 public class TitleBar extends BorderPane {
     public TitleBar(Scene scene) {

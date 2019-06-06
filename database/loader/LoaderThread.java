@@ -2,10 +2,10 @@ package database.loader;
 
 import database.list.ObjectList;
 import database.list.ObjectListMain;
-import database.loader.cache.CacheReader;
 import database.object.DataObject;
 import javafx.application.Platform;
 import lifecycle.InstanceManager;
+import utils.FileUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ public class LoaderThread extends Thread {
         try {
             InstanceManager.getObjectListMain().addAll(ObjectListMain.readFromDisk());
         } catch (Exception e) {
-            InstanceManager.getLogger().debug(this, "existing database failed to load or does not exist");
+            InstanceManager.getLogger().debug("existing database failed to load or does not exist");
             createDatabase(fileList);
         }
 
@@ -34,7 +34,7 @@ public class LoaderThread extends Thread {
 
         Runnable reload = () -> InstanceManager.getReload().doReload();
         Platform.runLater(reload);
-        CacheReader.readCache(InstanceManager.getObjectListMain());
+        ThumbnailReader.readThumbnail(InstanceManager.getObjectListMain());
         Platform.runLater(reload);
     }
 
@@ -54,8 +54,7 @@ public class LoaderThread extends Thread {
         /* compare files in the working directory with knwon objects in the database */
         for (DataObject dataObject : objectList) {
             for (File file : fileList) {
-                //todo complexity = n^2, needs optimization
-                //todo maybe this loop can do FileUtil.initDataObjectPaths(fileList); ?
+                //complexity n^2, optimizable
                 if (dataObject.getName().equals(file.getName())) {
                     newFiles.remove(file);
                     orphanObjects.remove(dataObject);
@@ -70,7 +69,7 @@ public class LoaderThread extends Thread {
                     newFiles.remove(file);
                     orphanObjects.remove(dataObject);
 
-                    /* rename the db object and cache file */
+                    /* rename the object and cache file */
                     File oldCacheFile = new File(dataObject.getCacheFile());
                     dataObject.setName(file.getName());
                     File newCacheFile = new File(dataObject.getCacheFile());

@@ -1,8 +1,12 @@
-package user_interface.scene;
+package user_interface.utils;
 
 import javafx.stage.Stage;
 import lifecycle.InstanceManager;
-import user_interface.singleton.utils.SizeUtil;
+import user_interface.scene.IntroScene;
+import user_interface.scene.MainScene;
+import user_interface.scene.ProjectScene;
+import user_interface.singleton.center.VideoPlayer;
+import user_interface.utils.SizeUtil;
 
 public class SceneUtil {
     private static IntroScene introScene;
@@ -46,11 +50,12 @@ public class SceneUtil {
     }
     public static void showMainScene() {
         InstanceManager.getMainStage().setOnCloseRequest(event -> {
-            InstanceManager.getMediaPane().getVideoPlayer().dispose();
+            VideoPlayer videoPlayer = InstanceManager.getMediaPane().getVideoPlayer();
+            if (videoPlayer != null) videoPlayer.dispose();
             InstanceManager.getSettings().writeToDisk();
             InstanceManager.getObjectListMain().writeToDisk();
             InstanceManager.getTagListMain().writeDummyToDisk();
-            InstanceManager.getLogger().debug(SceneUtil.class, "application exit");
+            InstanceManager.getLogger().debug("application exit");
         });
         mainScene.show();
     }

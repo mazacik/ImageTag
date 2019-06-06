@@ -4,9 +4,10 @@ import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import lifecycle.InstanceManager;
-import system.CommonUtil;
+import utils.CommonUtil;
 import user_interface.factory.menu.ClickMenuLeft;
 import user_interface.factory.stage.UserSettingsStage;
+import user_interface.utils.StyleUtil;
 
 public class TopMenuEvent {
     public TopMenuEvent() {
@@ -50,7 +51,7 @@ public class TopMenuEvent {
         toolbarPane.getNodeSettings().setOnMouseClicked(event -> {
             Stage userSettingsStage = new UserSettingsStage();
             userSettingsStage.show();
-            CommonUtil.updateNodeProperties(userSettingsStage.getScene());
+            StyleUtil.applyStyle(userSettingsStage.getScene());
         });
     }
     private void onAction_menuExit() {

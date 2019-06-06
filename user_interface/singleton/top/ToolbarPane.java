@@ -4,17 +4,17 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import lifecycle.InstanceManager;
-import system.Direction;
-import user_interface.factory.NodeUtil;
+import utils.enums.Direction;
+import user_interface.utils.NodeUtil;
 import user_interface.factory.base.Separator;
 import user_interface.factory.base.TextNode;
 import user_interface.factory.buttons.ButtonFactory;
 import user_interface.factory.buttons.ButtonTemplates;
 import user_interface.factory.menu.ClickMenuLeft;
-import user_interface.factory.util.ColorData;
-import user_interface.factory.util.enums.ColorType;
+import user_interface.factory.ColorData;
+import user_interface.utils.enums.ColorType;
 import user_interface.singleton.NodeBase;
-import user_interface.singleton.utils.SizeUtil;
+import user_interface.utils.SizeUtil;
 
 public class ToolbarPane extends BorderPane implements NodeBase {
     private final TextNode nodeSave;

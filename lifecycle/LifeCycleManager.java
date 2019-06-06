@@ -1,15 +1,18 @@
 package lifecycle;
 
-import database.loader.FileUtil;
+import utils.FileUtil;
 import database.loader.LoaderThread;
 import database.loader.Project;
 import javafx.application.Platform;
-import user_interface.scene.SceneUtil;
+import user_interface.utils.SceneUtil;
+import user_interface.singleton.center.VideoPlayer;
 
 import java.io.File;
 
 public abstract class LifeCycleManager {
     public static void initialize() {
+        VideoPlayer.checkLibs();
+
         InstanceManager.createInstances();
 
         SceneUtil.createIntroScene();

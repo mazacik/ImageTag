@@ -7,8 +7,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import lifecycle.InstanceManager;
-import system.CommonUtil;
-import user_interface.factory.NodeUtil;
+import user_interface.utils.NodeUtil;
+import user_interface.scene.MainScene;
 import user_interface.singleton.NodeBase;
 
 public class MediaPane extends BorderPane implements NodeBase {
@@ -23,7 +23,7 @@ public class MediaPane extends BorderPane implements NodeBase {
     public MediaPane() {
         canvas = new Canvas();
         gifPlayer = new ImageView();
-        videoPlayer = new VideoPlayer(canvas);
+        videoPlayer = VideoPlayer.create(canvas);
         controls = new MediaViewControls(canvas, videoPlayer);
 
         GalleryPane galleryPane = InstanceManager.getGalleryPane();
@@ -34,30 +34,18 @@ public class MediaPane extends BorderPane implements NodeBase {
         this.setBorder(NodeUtil.getBorder(0, 1, 0, 1));
         this.setCenter(canvas);
     }
-    public Canvas getCanvas() {
-        return canvas;
-    }
-    public VideoPlayer getVideoPlayer() {
-        return videoPlayer;
-    }
-    public MediaViewControls getControls() {
-        return controls;
-    }
 
     public boolean reload() {
         DataObject currentTarget = InstanceManager.getTarget().getCurrentTarget();
-        if (CommonUtil.isCenterFullscreen() && currentTarget != null) {
+        if (MainScene.isFullView() && currentTarget != null) {
             switch (currentTarget.getFileType()) {
                 case IMAGE:
-                    controls.setVideoMode(false);
                     reloadAsImage(currentTarget);
                     break;
                 case GIF:
-                    controls.setVideoMode(false);
                     reloadAsGif(currentTarget);
                     break;
                 case VIDEO:
-                    controls.setVideoMode(true);
                     reloadAsVideo(currentTarget);
                     break;
             }
@@ -68,6 +56,8 @@ public class MediaPane extends BorderPane implements NodeBase {
     }
 
     private void reloadAsImage(DataObject currentTarget) {
+        controls.setVideoMode(false);
+
         if (this.getCenter() != canvas) this.setCenter(canvas);
 
         if (currentCache == null || !currentCache.equals(currentTarget)) {
@@ -110,6 +100,8 @@ public class MediaPane extends BorderPane implements NodeBase {
         gc.drawImage(currentImage, resultX, resultY, resultWidth, resultHeight);
     }
     private void reloadAsGif(DataObject currentTarget) {
+        controls.setVideoMode(false);
+
         if (this.getCenter() != gifPlayer) this.setCenter(gifPlayer);
 
         if (currentCache == null || !currentCache.equals(currentTarget)) {
@@ -120,13 +112,31 @@ public class MediaPane extends BorderPane implements NodeBase {
         gifPlayer.setImage(currentImage);
     }
     private void reloadAsVideo(DataObject currentTarget) {
-        if (this.getCenter() != canvas) this.setCenter(canvas);
+        if (VideoPlayer.hasLibs()) {
+            controls.setVideoMode(true);
 
-        if (currentCache == null || !currentCache.equals(currentTarget)) {
-            currentCache = currentTarget;
-            videoPlayer.start(currentTarget.getPath());
+            if (this.getCenter() != canvas) this.setCenter(canvas);
+
+            if (currentCache == null || !currentCache.equals(currentTarget)) {
+                currentCache = currentTarget;
+                videoPlayer.start(currentTarget.getPath());
+            } else {
+                videoPlayer.resume();
+            }
         } else {
-            videoPlayer.resume();
+            GraphicsContext gc = canvas.getGraphicsContext2D();
+            gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+            //todo add placeholder, same as ThumnailReader
         }
+    }
+
+    public Canvas getCanvas() {
+        return canvas;
+    }
+    public VideoPlayer getVideoPlayer() {
+        return videoPlayer;
+    }
+    public MediaViewControls getControls() {
+        return controls;
     }
 }

@@ -2,11 +2,11 @@ package database.list;
 
 import com.google.gson.reflect.TypeToken;
 import control.Reload;
-import database.loader.FileUtil;
+import utils.FileUtil;
 import database.object.DataObject;
 import database.object.TagObject;
 import lifecycle.InstanceManager;
-import system.JsonUtil;
+import utils.JsonUtil;
 import user_interface.factory.stage.InfoObjectEditStage;
 
 import java.lang.reflect.Type;

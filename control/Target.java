@@ -3,7 +3,7 @@ package control;
 import database.object.DataObject;
 import javafx.scene.input.KeyCode;
 import lifecycle.InstanceManager;
-import system.Direction;
+import utils.enums.Direction;
 import user_interface.singleton.center.BaseTile;
 
 public class Target {

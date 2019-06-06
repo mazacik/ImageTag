@@ -8,12 +8,12 @@ import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.TilePane;
 import lifecycle.InstanceManager;
-import system.CommonUtil;
-import user_interface.factory.NodeUtil;
-import user_interface.factory.util.ColorUtil;
-import user_interface.factory.util.enums.ColorType;
+import user_interface.utils.NodeUtil;
+import user_interface.utils.ColorUtil;
+import user_interface.utils.enums.ColorType;
+import user_interface.scene.MainScene;
 import user_interface.singleton.NodeBase;
-import user_interface.singleton.utils.SizeUtil;
+import user_interface.utils.SizeUtil;
 
 import java.util.ArrayList;
 
@@ -84,7 +84,7 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 
     public void adjustViewportToCurrentTarget() {
         DataObject currentTarget = InstanceManager.getTarget().getCurrentTarget();
-        if (CommonUtil.isCenterFullscreen() || currentTarget == null) return;
+        if (MainScene.isFullView() || currentTarget == null) return;
         int targetIndex = this.getVisibleDataObjects().indexOf(currentTarget);
         if (targetIndex < 0) return;
 
@@ -92,7 +92,7 @@ public class GalleryPane extends ScrollPane implements NodeBase {
         int columnCount = this.getColumnCount();
         int targetRow = targetIndex / columnCount;
 
-        //todo try to figure out how and why does this work
+        //try to figure out how and why does this work
         Bounds buggyBounds = this.getViewportBounds();
         Bounds correctBounds = new BoundingBox(0, 0, 0, buggyBounds.getWidth(), buggyBounds.getHeight(), buggyBounds.getDepth());
         Bounds viewportBoundsTransform = tilePane.sceneToLocal(this.localToScene(correctBounds));

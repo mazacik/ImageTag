@@ -1,4 +1,4 @@
-package database.loader.cache;
+package database.loader;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

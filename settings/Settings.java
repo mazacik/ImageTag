@@ -1,6 +1,6 @@
 package settings;
 
-import system.JsonUtil;
+import utils.JsonUtil;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;

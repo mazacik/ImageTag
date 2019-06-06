@@ -1,9 +1,9 @@
 package database.list;
 
-import database.loader.FileUtil;
+import utils.FileUtil;
 import database.object.DataObject;
 import lifecycle.InstanceManager;
-import system.JsonUtil;
+import utils.JsonUtil;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

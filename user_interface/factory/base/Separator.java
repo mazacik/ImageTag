@@ -1,7 +1,7 @@
 package user_interface.factory.base;
 
 import javafx.scene.layout.Region;
-import user_interface.factory.NodeUtil;
+import user_interface.utils.NodeUtil;
 
 public class Separator extends Region {
     public Separator() {

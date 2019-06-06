@@ -5,7 +5,7 @@ import database.list.TagList;
 import database.object.DataObject;
 import database.object.TagObject;
 import lifecycle.InstanceManager;
-import system.CommonUtil;
+import utils.CommonUtil;
 
 import java.util.ArrayList;
 
@@ -62,7 +62,7 @@ public class Select extends ObjectList {
         this.add(dataObject);
     }
     public void setRandom() {
-        DataObject dataObject = CommonUtil.getRandomDataObject();
+        DataObject dataObject = InstanceManager.getFilter().getRandom();
         InstanceManager.getSelect().set(dataObject);
         InstanceManager.getTarget().set(dataObject);
     }

@@ -7,7 +7,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import lifecycle.InstanceManager;
 import settings.SettingsEnum;
-import system.CommonUtil;
+import utils.CommonUtil;
 
 import java.util.ArrayList;
 
