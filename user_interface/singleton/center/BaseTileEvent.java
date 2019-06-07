@@ -1,13 +1,10 @@
 package user_interface.singleton.center;
 
 import control.Reload;
-import database.list.ObjectList;
 import database.object.DataObject;
 import javafx.scene.input.MouseEvent;
 import lifecycle.InstanceManager;
 import settings.SettingsEnum;
-
-import java.util.ArrayList;
 
 public class BaseTileEvent {
     public BaseTileEvent(BaseTile gallerytile) {
@@ -48,25 +45,15 @@ public class BaseTileEvent {
         if (event.getX() > tileSize - BaseTile.getEffectGroupSize() && event.getY() < BaseTile.getEffectGroupSize()) {
             onGroupButtonClick(dataObject);
         } else {
+            InstanceManager.getTarget().set(dataObject);
+
             if (event.isControlDown()) {
                 InstanceManager.getSelect().swapState(dataObject);
             } else if (event.isShiftDown()) {
-                ObjectList objectList = InstanceManager.getObjectListMain();
-                int index1 = objectList.indexOf(InstanceManager.getTarget().getCurrentTarget());
-                int index2 = objectList.indexOf(dataObject);
-
-                if (index1 > index2) {
-                    InstanceManager.getSelect().addAll(new ArrayList<>(objectList.subList(index2, index1 + 1)));
-                } else if (index1 < index2) {
-                    InstanceManager.getSelect().addAll(new ArrayList<>(objectList.subList(index1, index2 + 1)));
-                } else {
-                    InstanceManager.getSelect().add(dataObject);
-                }
+                InstanceManager.getSelect().shiftSelectTo(InstanceManager.getTarget().getCurrentTarget());
             } else {
                 InstanceManager.getSelect().set(dataObject);
             }
-
-            InstanceManager.getTarget().set(dataObject);
         }
         InstanceManager.getReload().doReload();
         InstanceManager.getClickMenuData().hide();

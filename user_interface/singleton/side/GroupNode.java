@@ -15,7 +15,7 @@ import user_interface.utils.StyleUtil;
 
 import java.util.ArrayList;
 
-
+//todo eventualne mozno nieje zly napad mat vo filter a select zoznamoch pre kazdy groupnode svoj vlastny VBox v ktorom by boli aj namenodes
 public class GroupNode extends HBox {
     private final ArrayList<TextNode> nameNodes = new ArrayList<>();
     private TextNode labelArrow;
@@ -31,23 +31,29 @@ public class GroupNode extends HBox {
         HBox.setHgrow(labelText, Priority.ALWAYS);
 
         this.getChildren().addAll(labelArrow, labelText);
+        labelArrow.setOnMouseEntered(event -> labelArrow.setTextFill(ColorUtil.getTextColorAlt()));
+        labelArrow.setOnMouseExited(event -> labelArrow.setTextFill(ColorUtil.getTextColorDef()));
         labelArrow.setOnMouseClicked(event -> {
             event.consume();
             switch (event.getButton()) {
                 case PRIMARY:
                     if (owner == InstanceManager.getFilterPane()) {
-                        if (!InstanceManager.getFilterPane().getExpandedGroupsList().contains(labelText.getText())) {
-                            InstanceManager.getFilterPane().getExpandedGroupsList().add(labelText.getText());
-                            ObservableList<Node> nodes = InstanceManager.getFilterPane().getTagListBox().getChildren();
-                            int index = nodes.indexOf(this) + 1;
-                            nodes.addAll(index, nameNodes);
-                            StyleUtil.applyStyle(InstanceManager.getFilterPane().getTagListBox());
-                            labelArrow.setText("− ");
+                        if (event.isShiftDown()) {
+                            InstanceManager.getFilterPane().expand();
                         } else {
-                            InstanceManager.getFilterPane().getExpandedGroupsList().remove(labelText.getText());
-                            ObservableList<Node> nodes = InstanceManager.getFilterPane().getTagListBox().getChildren();
-                            nodes.removeAll(nameNodes);
-                            labelArrow.setText("+ ");
+                            if (!InstanceManager.getFilterPane().getExpandedGroupsList().contains(labelText.getText())) {
+                                InstanceManager.getFilterPane().getExpandedGroupsList().add(labelText.getText());
+                                ObservableList<Node> nodes = InstanceManager.getFilterPane().getTagListBox().getChildren();
+                                int index = nodes.indexOf(this) + 1;
+                                nodes.addAll(index, nameNodes);
+                                StyleUtil.applyStyle(InstanceManager.getFilterPane().getTagListBox());
+                                labelArrow.setText("− ");
+                            } else {
+                                InstanceManager.getFilterPane().getExpandedGroupsList().remove(labelText.getText());
+                                ObservableList<Node> nodes = InstanceManager.getFilterPane().getTagListBox().getChildren();
+                                nodes.removeAll(nameNodes);
+                                labelArrow.setText("+ ");
+                            }
                         }
                     } else if (owner == InstanceManager.getSelectPane()) {
                         if (!InstanceManager.getSelectPane().getExpandedGroupsList().contains(labelText.getText())) {
@@ -107,7 +113,6 @@ public class GroupNode extends HBox {
         }
     }
     public void setTextFill(Color textFill) {
-        labelArrow.setTextFill(textFill);
         labelText.setTextFill(textFill);
     }
     public void setFont(Font font) {

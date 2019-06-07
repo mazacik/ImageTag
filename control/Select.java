@@ -10,6 +10,8 @@ import utils.CommonUtil;
 import java.util.ArrayList;
 
 public class Select extends ObjectList {
+    private DataObject shiftStart = null;
+
     public Select() {
 
     }
@@ -61,6 +63,10 @@ public class Select extends ObjectList {
         this.clear();
         this.add(dataObject);
     }
+    public void setAll(ArrayList<DataObject> dataObjects) {
+        this.clear();
+        this.addAll(dataObjects);
+    }
     public void setRandom() {
         DataObject dataObject = InstanceManager.getFilter().getRandom();
         InstanceManager.getSelect().set(dataObject);
@@ -99,6 +105,26 @@ public class Select extends ObjectList {
         InstanceManager.getReload().flag(Reload.Control.DATA, Reload.Control.INFO);
     }
 
+    public void shiftSelectTo(DataObject shiftCurrent) {
+        Filter filter = InstanceManager.getFilter();
+
+        int indexFrom = filter.indexOf(shiftStart);
+        int indexTo = filter.indexOf(shiftCurrent);
+
+        int indexLower;
+        int indexHigher;
+
+        if (indexFrom > indexTo) {
+            indexLower = indexTo;
+            indexHigher = indexFrom;
+        } else {
+            indexLower = indexFrom;
+            indexHigher = indexTo;
+        }
+
+        this.setAll(new ArrayList<>(filter.subList(indexLower, indexHigher + 1)));
+    }
+
     public void addTagObject(TagObject tagObject) {
         if (!tagObject.isEmpty()) {
             if (!InstanceManager.getTagListMain().contains(tagObject)) {
@@ -121,5 +147,9 @@ public class Select extends ObjectList {
         for (DataObject dataObject : this) {
             dataObject.getTagList().remove(tagObject);
         }
+    }
+
+    public void setShiftStart(DataObject shiftStart) {
+        this.shiftStart = shiftStart;
     }
 }

@@ -4,10 +4,10 @@ import javafx.scene.paint.Color;
 
 public enum ColorEnum {
     TEXTDAYDEF(Color.BLACK),
-    TEXTDAYALT(Color.RED),
+    TEXTDAYALT(Color.DARKORANGE),
     TEXTDAYPOS(Color.GREEN),
     TEXTDAYNEG(Color.RED),
-    TEXTDAYSHR(Color.BLUE),
+    TEXTDAYSHR(Color.CORNFLOWERBLUE),
 
     TEXTNIGHTDEF(Color.LIGHTGRAY),
     TEXTNIGHTALT(Color.ORANGE),

@@ -1,17 +1,16 @@
 package user_interface.factory.base;
 
 import javafx.scene.control.TextField;
-import utils.CommonUtil;
 import user_interface.utils.NodeUtil;
 import user_interface.utils.enums.ColorType;
+import utils.CommonUtil;
 
 public class EditNode extends TextField {
     public EditNode(String promptText, EditNodeType type) {
         this.setFont(CommonUtil.getFont());
         this.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
         this.setPromptText(promptText);
-        this.applyCss();
-        this.setStyle("-fx-prompt-text-fill: grey;");
+        this.skinProperty().addListener((observable, oldValue, newValue) -> setStyle("-fx-prompt-text-fill: gray;"));
 
         switch (type) {
             case DEFAULT:

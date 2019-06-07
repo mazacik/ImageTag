@@ -10,17 +10,17 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import lifecycle.InstanceManager;
-import utils.enums.Direction;
-import user_interface.utils.NodeUtil;
+import user_interface.factory.ColorData;
 import user_interface.factory.base.TextNode;
 import user_interface.factory.menu.ClickMenuLeft;
 import user_interface.factory.stage.InfoObjectEditStage;
-import user_interface.factory.ColorData;
-import user_interface.utils.ColorUtil;
-import user_interface.utils.enums.ColorType;
 import user_interface.singleton.NodeBase;
+import user_interface.utils.ColorUtil;
+import user_interface.utils.NodeUtil;
 import user_interface.utils.SizeUtil;
 import user_interface.utils.StyleUtil;
+import user_interface.utils.enums.ColorType;
+import utils.enums.Direction;
 
 import java.util.ArrayList;
 
@@ -171,6 +171,21 @@ public class FilterPane extends VBox implements NodeBase {
             }
         }
         InstanceManager.getFilter().refresh();
+    }
+
+    public void expand() {
+        //todo finish this
+        for (Node node : tagListBox.getChildren()) {
+            if (node instanceof GroupNode) {
+                expandedGroupsList.add(((GroupNode) node).getText());
+            }
+        }
+        reload();
+    }
+
+    public void collapse() {
+        expandedGroupsList.clear();
+        reload();
     }
 
     public ScrollPane getTagListScrollPane() {

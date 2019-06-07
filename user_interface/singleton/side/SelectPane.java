@@ -11,18 +11,18 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import lifecycle.InstanceManager;
-import utils.enums.Direction;
-import user_interface.utils.NodeUtil;
+import user_interface.factory.ColorData;
 import user_interface.factory.base.EditNode;
 import user_interface.factory.base.Separator;
 import user_interface.factory.base.TextNode;
 import user_interface.factory.menu.ClickMenuLeft;
-import user_interface.factory.ColorData;
-import user_interface.utils.ColorUtil;
-import user_interface.utils.enums.ColorType;
 import user_interface.singleton.NodeBase;
+import user_interface.utils.ColorUtil;
+import user_interface.utils.NodeUtil;
 import user_interface.utils.SizeUtil;
 import user_interface.utils.StyleUtil;
+import user_interface.utils.enums.ColorType;
+import utils.enums.Direction;
 
 import java.util.ArrayList;
 
@@ -46,7 +46,7 @@ public class SelectPane extends VBox implements NodeBase {
         nodeTitle.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
         nodeTitle.prefWidthProperty().bind(this.widthProperty());
 
-        tfSearch = new EditNode("Search tags..");
+        tfSearch = new EditNode("Search tags to add to selection");
         tfSearch.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
 
         nodeSelectAll = new TextNode("Select All", colorDataSimple);

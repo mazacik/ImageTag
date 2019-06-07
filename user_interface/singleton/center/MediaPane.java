@@ -1,15 +1,24 @@
 package user_interface.singleton.center;
 
 import database.object.DataObject;
+import javafx.geometry.Pos;
+import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import lifecycle.InstanceManager;
-import user_interface.utils.NodeUtil;
 import user_interface.scene.MainScene;
 import user_interface.singleton.NodeBase;
+import user_interface.utils.NodeUtil;
 
 public class MediaPane extends BorderPane implements NodeBase {
     private final Canvas canvas;
@@ -19,6 +28,8 @@ public class MediaPane extends BorderPane implements NodeBase {
 
     private Image currentImage = null;
     private DataObject currentCache = null;
+
+    private Image placeholder = null;
 
     public MediaPane() {
         canvas = new Canvas();
@@ -112,10 +123,10 @@ public class MediaPane extends BorderPane implements NodeBase {
         gifPlayer.setImage(currentImage);
     }
     private void reloadAsVideo(DataObject currentTarget) {
+        if (this.getCenter() != canvas) this.setCenter(canvas);
+
         if (VideoPlayer.hasLibs()) {
             controls.setVideoMode(true);
-
-            if (this.getCenter() != canvas) this.setCenter(canvas);
 
             if (currentCache == null || !currentCache.equals(currentTarget)) {
                 currentCache = currentTarget;
@@ -124,10 +135,35 @@ public class MediaPane extends BorderPane implements NodeBase {
                 videoPlayer.resume();
             }
         } else {
+            controls.setVideoMode(false);
+
             GraphicsContext gc = canvas.getGraphicsContext2D();
             gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-            //todo add placeholder, same as ThumnailReader
+            if (placeholder == null) placeholder = createPlaceholder();
+            gc.drawImage(placeholder, 0, 0, canvas.getWidth(), canvas.getHeight());
         }
+    }
+
+    private Image createPlaceholder() {
+        Label label = new Label("Placeholder");
+        label.setBackground(new Background(new BackgroundFill(Color.GRAY, null, null)));
+        label.setWrapText(true);
+        label.setFont(new Font(100));
+        label.setAlignment(Pos.CENTER);
+
+        int width = (int) canvas.getWidth();
+        int height = (int) canvas.getHeight();
+
+        label.setMinWidth(width);
+        label.setMinHeight(height);
+        label.setMaxWidth(width);
+        label.setMaxHeight(height);
+
+        WritableImage img = new WritableImage(width, height);
+        Scene scene = new Scene(new Group(label));
+        scene.setFill(Color.GRAY);
+        scene.snapshot(img);
+        return img;
     }
 
     public Canvas getCanvas() {
