@@ -4,11 +4,10 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import lifecycle.InstanceManager;
-import user_interface.utils.NodeUtil;
 import user_interface.factory.base.TextNode;
-import user_interface.utils.enums.ColorType;
+import user_interface.utils.NodeUtil;
 import user_interface.utils.SizeUtil;
-import user_interface.utils.StyleUtil;
+import user_interface.utils.enums.ColorType;
 
 public class LoadingScene {
     private final Scene loadingScene;
@@ -26,9 +25,7 @@ public class LoadingScene {
         borderPane.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
         NodeUtil.addToManager(borderPane, ColorType.DEF);
 
-        Scene loadingScene = new Scene(borderPane);
-        StyleUtil.applyStyle(loadingScene);
-        return loadingScene;
+        return new Scene(borderPane);
     }
     void show() {
         InstanceManager.getMainStage().setScene(loadingScene);

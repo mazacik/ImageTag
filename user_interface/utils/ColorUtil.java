@@ -2,43 +2,58 @@ package user_interface.utils;
 
 import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
+import lifecycle.InstanceManager;
+import settings.SettingsEnum;
 import user_interface.factory.ColorData;
 import user_interface.utils.enums.BackgroundEnum;
 import user_interface.utils.enums.ColorEnum;
 import user_interface.utils.enums.ColorType;
-import utils.CommonUtil;
 
 public class ColorUtil {
+    private static int nightMode = InstanceManager.getSettings().intValueOf(SettingsEnum.COLORMODE);
+    public static boolean isNightMode() {
+        return nightMode == 1;
+    }
+    public static void setNightMode(boolean value) {
+        if (!value) {
+            nightMode = 0;
+        } else {
+            nightMode = 1;
+        }
+        InstanceManager.getSettings().setValueOf(SettingsEnum.COLORMODE, nightMode);
+        StyleUtil.applyStyle();
+    }
+
     public static Color getTextColorDef() {
-        if (!CommonUtil.isNightMode()) {
+        if (!isNightMode()) {
             return ColorEnum.TEXTDAYDEF.getValue();
         } else {
             return ColorEnum.TEXTNIGHTDEF.getValue();
         }
     }
     public static Color getTextColorAlt() {
-        if (!CommonUtil.isNightMode()) {
+        if (!isNightMode()) {
             return ColorEnum.TEXTDAYALT.getValue();
         } else {
             return ColorEnum.TEXTNIGHTALT.getValue();
         }
     }
     public static Color getTextColorPos() {
-        if (!CommonUtil.isNightMode()) {
+        if (!isNightMode()) {
             return ColorEnum.TEXTDAYPOS.getValue();
         } else {
             return ColorEnum.TEXTNIGHTPOS.getValue();
         }
     }
     public static Color getTextColorNeg() {
-        if (!CommonUtil.isNightMode()) {
+        if (!isNightMode()) {
             return ColorEnum.TEXTDAYNEG.getValue();
         } else {
             return ColorEnum.TEXTNIGHTNEG.getValue();
         }
     }
     public static Color getTextColorShr() {
-        if (!CommonUtil.isNightMode()) {
+        if (!isNightMode()) {
             return ColorEnum.TEXTDAYSHR.getValue();
         } else {
             return ColorEnum.TEXTNIGHTSHR.getValue();
@@ -46,14 +61,14 @@ public class ColorUtil {
     }
 
     public static Background getBackgroundDef() {
-        if (!CommonUtil.isNightMode()) {
+        if (!isNightMode()) {
             return BackgroundEnum.DAYDEF.getValue();
         } else {
             return BackgroundEnum.NIGHTDEF.getValue();
         }
     }
     public static Background getBackgroundAlt() {
-        if (!CommonUtil.isNightMode()) {
+        if (!isNightMode()) {
             return BackgroundEnum.DAYALT.getValue();
         } else {
             return BackgroundEnum.NIGHTALT.getValue();
@@ -61,7 +76,7 @@ public class ColorUtil {
     }
 
     public static Color getBorderColor() {
-        if (!CommonUtil.isNightMode()) {
+        if (!isNightMode()) {
             return ColorEnum.BORDERDAY.getValue();
         } else {
             return ColorEnum.BORDERNIGHT.getValue();

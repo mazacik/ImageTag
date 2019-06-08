@@ -1,14 +1,13 @@
 package user_interface.utils;
 
-import javafx.collections.ObservableList;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import lifecycle.InstanceManager;
+import settings.SettingsEnum;
 import user_interface.factory.ColorData;
 import user_interface.factory.base.CheckBoxNode;
 import user_interface.factory.base.TextNode;
@@ -19,6 +18,8 @@ import user_interface.utils.enums.ColorType;
 import java.util.ArrayList;
 
 public abstract class StyleUtil {
+    private static Font font = new Font(InstanceManager.getSettings().intValueOf(SettingsEnum.FONTSIZE));
+
     public static void applyScrollbarStyle(Node node) {
         try {
             node.applyCss();
@@ -47,6 +48,15 @@ public abstract class StyleUtil {
         }
     }
 
+    public static void applyStyle(Region region) {
+        ArrayList<ColorData> colorDataList = new ArrayList<>();
+        for (ColorData colorData : NodeUtil.getNodeList()) {
+            if (colorData.getRegion() == region) {
+                colorDataList.add(colorData);
+            }
+        }
+        applyStyle(colorDataList);
+    }
     public static void applyStyle(ArrayList<ColorData> colorDataList) {
         for (ColorData colorData : colorDataList) {
             colorData.getRegion().setBackground(ColorUtil.getBackgroundDef(colorData));
@@ -125,38 +135,11 @@ public abstract class StyleUtil {
             }
         }
     }
-    public static void applyStyle(ObservableList<Node> nodes) {
-        ArrayList<ColorData> needsUpdate = new ArrayList<>();
-        for (ColorData colorData : NodeUtil.getNodeList()) {
-            for (Node node : nodes) {
-                if (colorData.getRegion() != null && colorData.getRegion() == node) {
-                    needsUpdate.add(colorData);
-                }
-            }
-        }
-        applyStyle(needsUpdate);
-    }
-    public static void applyStyle(Scene scene) {
-        ArrayList<ColorData> colorDataList = new ArrayList<>();
-        for (ColorData colorData : NodeUtil.getNodeList()) {
-            if (colorData.getRegion().getScene() != null && colorData.getRegion().getScene().equals(scene)) {
-                colorDataList.add(colorData);
-            }
-        }
-        applyStyle(colorDataList);
-    }
-    public static void applyStyle(Pane pane) {
-        ArrayList<ColorData> colorDataList = new ArrayList<>();
-        for (ColorData colorData : NodeUtil.getNodeList()) {
-            Region region = colorData.getRegion();
-            Parent parent = region.getParent();
-            if ((parent != null && parent.equals(pane)) || region == pane) {
-                colorDataList.add(colorData);
-            }
-        }
-        applyStyle(colorDataList);
-    }
     public static void applyStyle() {
         applyStyle(NodeUtil.getNodeList());
+    }
+
+    public static Font getFont() {
+        return font;
     }
 }

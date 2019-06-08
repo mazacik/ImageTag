@@ -13,15 +13,14 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import lifecycle.InstanceManager;
 import lifecycle.LifeCycleManager;
-import user_interface.utils.NodeUtil;
 import user_interface.factory.base.TextNode;
 import user_interface.factory.node.ColorModeSwitch;
 import user_interface.factory.node.IntroWindowCell;
 import user_interface.factory.stage.FileChooserStage;
-import user_interface.utils.enums.ColorType;
+import user_interface.utils.NodeUtil;
 import user_interface.utils.SceneUtil;
 import user_interface.utils.SizeUtil;
-import user_interface.utils.StyleUtil;
+import user_interface.utils.enums.ColorType;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -108,7 +107,6 @@ public class IntroScene {
             }
         });
 
-        StyleUtil.applyStyle(introScene);
         return introScene;
     }
     public void show() {

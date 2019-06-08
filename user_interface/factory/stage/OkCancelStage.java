@@ -8,13 +8,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import utils.CommonUtil;
-import user_interface.utils.NodeUtil;
 import user_interface.factory.base.TextNode;
 import user_interface.utils.ColorUtil;
-import user_interface.utils.enums.ColorType;
+import user_interface.utils.NodeUtil;
 import user_interface.utils.SizeUtil;
 import user_interface.utils.StyleUtil;
+import user_interface.utils.enums.ColorType;
 
 public class OkCancelStage extends Stage {
     private boolean result = false;
@@ -42,7 +41,7 @@ public class OkCancelStage extends Stage {
         double padding = SizeUtil.getGlobalSpacing();
         labelContent = new TextNode("", ColorType.DEF, ColorType.DEF);
         labelContent.setText(content);
-        labelContent.setFont(CommonUtil.getFont());
+        labelContent.setFont(StyleUtil.getFont());
         labelContent.setPadding(new Insets(0, 1.5 * padding, 0, 1.5 * padding));
 
         HBox hBox = NodeUtil.getHBox(ColorType.DEF, buttonPositive, buttonNegative);
@@ -56,10 +55,7 @@ public class OkCancelStage extends Stage {
         vBox.setBackground(ColorUtil.getBackgroundDef());
         vBox.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
 
-        this.setOnShown(event -> {
-            this.centerOnScreen();
-            StyleUtil.applyStyle(this.getScene());
-        });
+        this.setOnShown(event -> this.centerOnScreen());
         this.initStyle(StageStyle.UNDECORATED);
         this.setScene(scene);
         this.setAlwaysOnTop(true);

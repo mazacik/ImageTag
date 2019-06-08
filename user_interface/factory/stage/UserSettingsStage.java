@@ -9,12 +9,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lifecycle.InstanceManager;
-import utils.CommonUtil;
-import user_interface.utils.NodeUtil;
-import user_interface.factory.base.TextNode;
 import user_interface.factory.ColorData;
-import user_interface.utils.enums.ColorType;
+import user_interface.factory.base.TextNode;
+import user_interface.utils.NodeUtil;
 import user_interface.utils.SizeUtil;
+import user_interface.utils.StyleUtil;
+import user_interface.utils.enums.ColorType;
 
 import java.util.ArrayList;
 
@@ -31,7 +31,7 @@ public class UserSettingsStage extends Stage {
             TextNode label = new TextNode(setting.getSettingsEnum().toString(), ColorType.DEF, ColorType.DEF);
             labels.add(label);
             TextField textField = new TextField(String.valueOf(setting.getValue()));
-            textField.setFont(CommonUtil.getFont());
+            textField.setFont(StyleUtil.getFont());
             textField.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
             NodeUtil.addToManager(textField, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
             HBox hBox = NodeUtil.getHBox(ColorType.DEF, label, textField);

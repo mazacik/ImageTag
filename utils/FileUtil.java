@@ -131,7 +131,7 @@ public abstract class FileUtil {
             }
         });
 
-        ThumbnailReader.readThumbnail(newDataObjects);
+        ThumbnailReader.readThumbnails(newDataObjects);
         InstanceManager.getObjectListMain().addAll(newDataObjects);
         InstanceManager.getObjectListMain().sort();
         InstanceManager.getFilter().refresh();

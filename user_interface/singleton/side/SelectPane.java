@@ -72,29 +72,19 @@ public class SelectPane extends VBox implements NodeBase {
 
     public boolean reload() {
         tagListBox.getChildren().clear();
-
-        if (InstanceManager.getSelect().size() == 0) {
-            if (InstanceManager.getTarget().getCurrentTarget() != null) {
-                if (InstanceManager.getTarget().getCurrentTarget().getMergeID() != 0 && !InstanceManager.getGalleryPane().getExpandedGroups().contains(InstanceManager.getTarget().getCurrentTarget().getMergeID())) {
-                    nodeTitle.setText("Selection: " + InstanceManager.getTarget().getCurrentTarget().getMergeGroup().size() + " file(s)");
-                } else {
-                    nodeTitle.setText("Selection: " + InstanceManager.getTarget().getCurrentTarget().getName());
-                }
+        int hiddenTilesCount = 0;
+        for (DataObject dataObject : InstanceManager.getSelect()) {
+            if (!InstanceManager.getFilter().contains(dataObject)) {
+                hiddenTilesCount++;
             }
-        } else {
-            int hiddenTilesCount = 0;
-            for (DataObject dataObject : InstanceManager.getSelect()) {
-                if (!InstanceManager.getFilter().contains(dataObject)) {
-                    hiddenTilesCount++;
-                }
-            }
-
-            String text = "Selection: " + InstanceManager.getSelect().size() + " file(s)";
-            if (hiddenTilesCount > 0) {
-                text += ", " + hiddenTilesCount + " filtered out";
-            }
-            nodeTitle.setText(text);
         }
+
+        String text = "Selection: " + InstanceManager.getSelect().size() + " file(s)";
+        if (hiddenTilesCount > 0) {
+            text += ", " + hiddenTilesCount + " filtered out";
+        }
+
+        nodeTitle.setText(text);
         this.actuallyReload();
         StyleUtil.applyStyle(tagListBox);
         return true;

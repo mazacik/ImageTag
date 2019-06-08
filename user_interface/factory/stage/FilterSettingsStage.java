@@ -11,16 +11,15 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import lifecycle.InstanceManager;
-import user_interface.utils.NodeUtil;
+import user_interface.factory.ColorData;
 import user_interface.factory.base.CheckBoxNode;
 import user_interface.factory.base.EditNode;
 import user_interface.factory.base.EditNodeType;
 import user_interface.factory.base.TextNode;
 import user_interface.factory.node.TitleBar;
-import user_interface.factory.ColorData;
-import user_interface.utils.enums.ColorType;
+import user_interface.utils.NodeUtil;
 import user_interface.utils.SizeUtil;
-import user_interface.utils.StyleUtil;
+import user_interface.utils.enums.ColorType;
 
 public class FilterSettingsStage extends Stage {
     CheckBoxNode cbImages = new CheckBoxNode("Images");
@@ -91,8 +90,6 @@ public class FilterSettingsStage extends Stage {
         this.setAlwaysOnTop(true);
         this.setResizable(false);
         this.setScene(scene);
-
-        StyleUtil.applyStyle(scene);
     }
 
     public void _show() {

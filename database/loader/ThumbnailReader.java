@@ -28,7 +28,7 @@ import java.util.concurrent.FutureTask;
 public abstract class ThumbnailReader {
     private static Image placeholder = null;
 
-    public static void readThumbnail(ObjectList dataObjects) {
+    public static void readThumbnails(ObjectList dataObjects) {
         InstanceManager.getLogger().debug("loading image cache");
 
         ArrayList<Integer> mergeGroupsAlreadyShown = new ArrayList<>();
@@ -38,20 +38,22 @@ public abstract class ThumbnailReader {
             String message = "loading progress: " + (dataObjects.indexOf(dataObject) + 1) + "/" + dataObjects.size();
             Platform.runLater(() -> InstanceManager.getToolbarPane().getNodeInfo().setText(message));
 
-            Image thumbnail = readThumbnail(dataObject);
-            dataObject.setBaseTile(new BaseTile(dataObject, thumbnail));
+            dataObject.setBaseTile(new BaseTile(dataObject, readThumbnail(dataObject)));
 
             int mergeID = dataObject.getMergeID();
-            Runnable showTile = () -> {
-                if (!tilePaneChildren.contains(dataObject.getBaseTile())) {
-                    tilePaneChildren.add(dataObject.getBaseTile());
-                }
-            };
             if (mergeID == 0) {
-                Platform.runLater(showTile);
+                if (InstanceManager.getFilter().refreshObject(dataObject)) {
+                    dataObject.generateTileEffect();
+                    Platform.runLater(() -> tilePaneChildren.add(dataObject.getBaseTile()));
+                }
             } else if (mergeID != 0 && !mergeGroupsAlreadyShown.contains(mergeID)) {
                 mergeGroupsAlreadyShown.add(dataObject.getMergeID());
-                Platform.runLater(showTile);
+                if (InstanceManager.getFilter().refreshObject(dataObject)) {
+                    Platform.runLater(() -> {
+                        dataObject.generateTileEffect();
+                        tilePaneChildren.add(dataObject.getBaseTile());
+                    });
+                }
             }
         }
 

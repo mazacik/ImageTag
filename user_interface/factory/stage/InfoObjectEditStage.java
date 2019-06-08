@@ -11,14 +11,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import utils.CommonUtil;
-import user_interface.utils.NodeUtil;
 import user_interface.factory.base.CheckBoxNode;
 import user_interface.factory.base.TextNode;
 import user_interface.factory.node.TitleBar;
-import user_interface.utils.enums.ColorType;
+import user_interface.utils.NodeUtil;
 import user_interface.utils.SizeUtil;
 import user_interface.utils.StyleUtil;
+import user_interface.utils.enums.ColorType;
 
 public class InfoObjectEditStage extends Stage {
     private final TextField nodeGroupEdit = new TextField();
@@ -42,8 +41,8 @@ public class InfoObjectEditStage extends Stage {
         nodeGroupEdit.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
         nodeNameEdit.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
 
-        nodeGroupEdit.setFont(CommonUtil.getFont());
-        nodeNameEdit.setFont(CommonUtil.getFont());
+        nodeGroupEdit.setFont(StyleUtil.getFont());
+        nodeNameEdit.setFont(StyleUtil.getFont());
 
         borderPane.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
@@ -97,8 +96,6 @@ public class InfoObjectEditStage extends Stage {
         setAlwaysOnTop(true);
         setScene(scene);
         setResizable(false);
-
-        StyleUtil.applyStyle(this.getScene());
 
         showAndWait();
     }

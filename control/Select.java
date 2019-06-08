@@ -5,9 +5,9 @@ import database.list.TagList;
 import database.object.DataObject;
 import database.object.TagObject;
 import lifecycle.InstanceManager;
-import utils.CommonUtil;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Select extends ObjectList {
     private DataObject shiftStart = null;
@@ -96,7 +96,7 @@ public class Select extends ObjectList {
             }
         }
 
-        int mergeID = CommonUtil.getRandomHash();
+        int mergeID = new Random().nextInt();
         for (DataObject dataObject : this) {
             dataObject.setMergeID(mergeID);
             dataObject.setTagList(tagList);

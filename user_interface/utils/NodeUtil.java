@@ -8,10 +8,9 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Window;
 import user_interface.factory.ColorData;
-import user_interface.utils.enums.ColorType;
-import utils.CommonUtil;
 import user_interface.factory.node.IntroWindowCell;
 import user_interface.singleton.side.GroupNode;
+import user_interface.utils.enums.ColorType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,14 +41,14 @@ public abstract class NodeUtil {
     public static GroupNode getGroupNode(VBox owner, String text, Color textFill) {
         GroupNode groupNode = new GroupNode(text, owner);
         groupNode.setTextFill(textFill);
-        groupNode.setFont(CommonUtil.getFont());
-        nodeList.add(new ColorData(groupNode, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL));
+        groupNode.setFont(StyleUtil.getFont());
+        addToManager(groupNode, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
 
         return groupNode;
     }
     public static IntroWindowCell getIntroWindowCell(String projectFile, String workingDirectory) {
         IntroWindowCell introWindowCell = new IntroWindowCell(projectFile, workingDirectory);
-        nodeList.add(new ColorData(introWindowCell, ColorType.ALT, ColorType.DEF, ColorType.NULL, ColorType.NULL));
+        addToManager(introWindowCell, ColorType.ALT, ColorType.DEF, ColorType.NULL, ColorType.NULL);
         return introWindowCell;
     }
 
@@ -66,7 +65,7 @@ public abstract class NodeUtil {
 
     public static Tooltip getTooltip(String text) {
         Tooltip t = new Tooltip(text);
-        t.setFont(CommonUtil.getFont());
+        t.setFont(StyleUtil.getFont());
         //t.setShowDelay(new Duration(500));
         return t;
     }
@@ -82,6 +81,7 @@ public abstract class NodeUtil {
     }
     public static void addToManager(Region region, ColorType backgroundDef, ColorType backgroundAlt, ColorType textFillDef, ColorType textFillAlt) {
         nodeList.add(new ColorData(region, backgroundDef, backgroundAlt, textFillDef, textFillAlt));
+        StyleUtil.applyStyle(region);
     }
 
     public static void removeOrphanNodes() {

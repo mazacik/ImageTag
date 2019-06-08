@@ -1,13 +1,12 @@
 package user_interface.factory.menu;
 
-import utils.enums.Direction;
+import user_interface.factory.ColorData;
 import user_interface.factory.base.Separator;
 import user_interface.factory.base.TextNode;
 import user_interface.factory.buttons.ButtonFactory;
 import user_interface.factory.buttons.ButtonTemplates;
-import user_interface.factory.ColorData;
 import user_interface.utils.enums.ColorType;
-import user_interface.utils.StyleUtil;
+import utils.enums.Direction;
 
 public class ClickMenuData extends ClickMenuRight {
     public ClickMenuData() {
@@ -40,8 +39,6 @@ public class ClickMenuData extends ClickMenuRight {
         );
 
         this.getChildren().addAll(nodeObject, nodeSelection);
-
-        StyleUtil.applyStyle(this.getChildren());
 
         instanceList.add(this);
     }

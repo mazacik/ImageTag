@@ -4,7 +4,8 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.text.Text;
 import lifecycle.InstanceManager;
 import settings.SettingsEnum;
-import utils.CommonUtil;
+import user_interface.singleton.center.GalleryPane;
+import user_interface.singleton.center.MediaPane;
 
 import java.awt.*;
 
@@ -22,22 +23,26 @@ public class SizeUtil {
     }
 
     public static void stageWidthChangeHandler() {
-        TilePane tilePane = InstanceManager.getGalleryPane().getTilePane();
+        GalleryPane galleryPane = InstanceManager.getGalleryPane();
+        MediaPane mediaPane = InstanceManager.getMediaPane();
+        TilePane tilePane = galleryPane.getTilePane();
 
-        //int availableWidth = (int) (SizeUtil.getUsableScreenWidth() - 2 * SizeUtil.getMinWidthSideLists());
-        int availableWidth = (int) (InstanceManager.getMainStage().getScene().getWidth() - 2 * SizeUtil.getMinWidthSideLists());
-        int prefColumnsNew = (int) ((availableWidth - 50) / tilePane.getPrefTileWidth());
+        double sceneWidth = InstanceManager.getMainStage().getScene().getWidth();
+
+        int availableWidth = (int) (sceneWidth - 2 * SizeUtil.getMinWidthSideLists());
+        int prefColumnsNew = (int) (availableWidth / tilePane.getPrefTileWidth());
         int prefColumnsOld = tilePane.getPrefColumns();
 
         if (prefColumnsNew != prefColumnsOld) {
             tilePane.setPrefColumns(prefColumnsNew);
 
             double width = tilePane.getPrefColumns() * tilePane.getPrefTileWidth() + (tilePane.getPrefColumns() - 1) * tilePane.getHgap();
-            InstanceManager.getGalleryPane().setMinViewportWidth(width);
-            InstanceManager.getGalleryPane().setPrefViewportWidth(width);
-        }
 
-        InstanceManager.getMediaPane().getCanvas().setWidth(availableWidth - 10);
+            galleryPane.setMinViewportWidth(width);
+            galleryPane.setPrefViewportWidth(width);
+
+            mediaPane.getCanvas().setWidth(availableWidth - 10);
+        }
     }
     public static void stageHeightChangehandler() {
         InstanceManager.getMediaPane().getCanvas().setHeight(InstanceManager.getMainStage().getScene().getHeight() - InstanceManager.getToolbarPane().getPrefHeight() - InstanceManager.getToolbarPane().getPadding().getBottom() - InstanceManager.getToolbarPane().getBorder().getInsets().getBottom());
@@ -45,7 +50,7 @@ public class SizeUtil {
 
     public static double getStringWidth(String s) {
         Text t = new Text(s);
-        t.setFont(CommonUtil.getFont());
+        t.setFont(StyleUtil.getFont());
         return t.getLayoutBounds().getWidth();
     }
 

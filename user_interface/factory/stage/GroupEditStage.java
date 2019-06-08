@@ -9,12 +9,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import utils.CommonUtil;
-import user_interface.utils.NodeUtil;
 import user_interface.factory.base.TextNode;
-import user_interface.utils.enums.ColorType;
+import user_interface.utils.NodeUtil;
 import user_interface.utils.SizeUtil;
 import user_interface.utils.StyleUtil;
+import user_interface.utils.enums.ColorType;
 
 public class GroupEditStage extends Stage {
     private final TextField nodeGroupEdit = new TextField();
@@ -33,7 +32,7 @@ public class GroupEditStage extends Stage {
         nodeGroupEdit.setText(group);
         nodeGroupEdit.setPrefWidth(200);
         nodeGroupEdit.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
-        nodeGroupEdit.setFont(CommonUtil.getFont());
+        nodeGroupEdit.setFont(StyleUtil.getFont());
 
         borderPane.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
@@ -87,10 +86,7 @@ public class GroupEditStage extends Stage {
         setAlwaysOnTop(true);
         setScene(scene);
         setResizable(false);
-        this.setOnShown(event -> {
-            this.centerOnScreen();
-            StyleUtil.applyStyle(this.getScene());
-        });
+        this.setOnShown(event -> this.centerOnScreen());
 
         showAndWait();
     }

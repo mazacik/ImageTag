@@ -1,11 +1,11 @@
 package database.object;
 
 import database.list.TagList;
-import utils.FileUtil;
 import database.loader.ThumbnailCreator;
 import lifecycle.InstanceManager;
-import utils.enums.FileType;
 import user_interface.singleton.center.BaseTile;
+import utils.FileUtil;
+import utils.enums.FileType;
 
 import java.io.File;
 import java.io.Serializable;
@@ -30,7 +30,7 @@ public class DataObject implements Serializable {
     }
 
     public void generateTileEffect() {
-        baseTile.generateEffect();
+        if (baseTile != null) baseTile.generateEffect();
     }
     public ArrayList<DataObject> getMergeGroup() {
         if (mergeID == 0) {

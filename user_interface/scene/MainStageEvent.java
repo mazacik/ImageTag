@@ -7,7 +7,7 @@ import control.Target;
 import javafx.scene.input.KeyEvent;
 import lifecycle.InstanceManager;
 import user_interface.singleton.center.BaseTileEvent;
-import utils.CommonUtil;
+import user_interface.utils.SceneUtil;
 
 public class MainStageEvent {
     public MainStageEvent() {
@@ -23,15 +23,15 @@ public class MainStageEvent {
 
             switch (event.getCode()) {
                 case ESCAPE:
-                    if (MainScene.isFullView()) {
-                        MainScene.swapViewMode();
+                    if (SceneUtil.isFullView()) {
+                        SceneUtil.swapViewMode();
                     } else if (InstanceManager.getSelectPane().getTfSearch().isFocused()) {
                         InstanceManager.getToolbarPane().requestFocus();
                     }
 
                     break;
                 case E:
-                    BaseTileEvent.onGroupButtonClick(target.getCurrentTarget());
+                    BaseTileEvent.onGroupButtonPress(target.getCurrentTarget());
                     reload.doReload();
                     break;
                 case R:
@@ -39,7 +39,7 @@ public class MainStageEvent {
                     reload.doReload();
                     break;
                 case F:
-                    CommonUtil.swapViewMode();
+                    SceneUtil.swapViewMode();
                     reload.doReload();
                     break;
                 case SHIFT:

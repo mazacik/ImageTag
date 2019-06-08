@@ -16,9 +16,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import lifecycle.InstanceManager;
-import user_interface.scene.MainScene;
 import user_interface.singleton.NodeBase;
 import user_interface.utils.NodeUtil;
+import user_interface.utils.SceneUtil;
 
 public class MediaPane extends BorderPane implements NodeBase {
     private final Canvas canvas;
@@ -48,7 +48,7 @@ public class MediaPane extends BorderPane implements NodeBase {
 
     public boolean reload() {
         DataObject currentTarget = InstanceManager.getTarget().getCurrentTarget();
-        if (MainScene.isFullView() && currentTarget != null) {
+        if (SceneUtil.isFullView() && currentTarget != null) {
             switch (currentTarget.getFileType()) {
                 case IMAGE:
                     reloadAsImage(currentTarget);

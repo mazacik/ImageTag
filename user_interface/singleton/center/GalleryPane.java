@@ -8,12 +8,11 @@ import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.TilePane;
 import lifecycle.InstanceManager;
-import user_interface.utils.NodeUtil;
-import user_interface.utils.ColorUtil;
-import user_interface.utils.enums.ColorType;
-import user_interface.scene.MainScene;
 import user_interface.singleton.NodeBase;
+import user_interface.utils.NodeUtil;
+import user_interface.utils.SceneUtil;
 import user_interface.utils.SizeUtil;
+import user_interface.utils.enums.ColorType;
 
 import java.util.ArrayList;
 
@@ -42,14 +41,12 @@ public class GalleryPane extends ScrollPane implements NodeBase {
             }
         });
 
+        this.setMaxWidth(1);
         this.setContent(tilePane);
         this.setHbarPolicy(ScrollBarPolicy.NEVER);
         this.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
         this.setPrefViewportHeight(SizeUtil.getUsableScreenHeight());
         this.setBorder(NodeUtil.getBorder(0, 1, 0, 1));
-
-        this.setBackground(ColorUtil.getBackgroundDef());
-        tilePane.setBackground(ColorUtil.getBackgroundDef());
 
         NodeUtil.addToManager(this, ColorType.DEF);
         NodeUtil.addToManager(tilePane, ColorType.DEF);
@@ -62,16 +59,18 @@ public class GalleryPane extends ScrollPane implements NodeBase {
         ArrayList<Integer> mergeIDs = new ArrayList<>();
         for (DataObject dataObject : InstanceManager.getFilter()) {
             if (dataObject.getBaseTile() != null) {
-                if (dataObject.getMergeID() == 0) {
+                if (dataObject.getMergeID() == 0 && !tilePaneItems.contains(dataObject.getBaseTile())) {
                     tilePaneItems.add(dataObject.getBaseTile());
                 } else if (!mergeIDs.contains(dataObject.getMergeID())) {
-                    if (!expandedGroups.contains(dataObject.getMergeID())) {
+                    if (!expandedGroups.contains(dataObject.getMergeID()) && !tilePaneItems.contains(dataObject.getBaseTile())) {
                         tilePaneItems.add(dataObject.getBaseTile());
                         dataObject.generateTileEffect();
                     } else {
                         dataObject.getMergeGroup().forEach(dataObjectInMergeGroup -> {
-                            tilePaneItems.add(dataObjectInMergeGroup.getBaseTile());
-                            dataObjectInMergeGroup.generateTileEffect();
+                            if (!tilePaneItems.contains(dataObject.getBaseTile())) {
+                                tilePaneItems.add(dataObjectInMergeGroup.getBaseTile());
+                                dataObjectInMergeGroup.generateTileEffect();
+                            }
                         });
                     }
                     mergeIDs.add(dataObject.getMergeID());
@@ -84,7 +83,7 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 
     public void adjustViewportToCurrentTarget() {
         DataObject currentTarget = InstanceManager.getTarget().getCurrentTarget();
-        if (MainScene.isFullView() || currentTarget == null) return;
+        if (SceneUtil.isFullView() || currentTarget == null) return;
         int targetIndex = this.getVisibleDataObjects().indexOf(currentTarget);
         if (targetIndex < 0) return;
 
@@ -133,7 +132,7 @@ public class GalleryPane extends ScrollPane implements NodeBase {
     }
     public ArrayList<DataObject> getVisibleDataObjects() {
         ArrayList<DataObject> dataObjects = new ArrayList<>();
-        tilePane.getChildren().forEach(tile -> dataObjects.add(((BaseTile) tile).getParentDataObject()));
+        tilePane.getChildren().forEach(tile -> dataObjects.add(((BaseTile) tile).getParentObject()));
         return dataObjects;
     }
 

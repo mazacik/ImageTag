@@ -60,6 +60,47 @@ public class Filter extends ObjectList {
             }
         }
     }
+    public boolean refreshObject(DataObject dataObject) {
+        switch (dataObject.getFileType()) {
+            case IMAGE:
+                if (!showImages) {
+                    this.remove(dataObject);
+                    return false;
+                }
+
+                break;
+            case VIDEO:
+                if (!showVideos) {
+                    this.remove(dataObject);
+                    return false;
+                }
+                break;
+            case GIF:
+                if (!showGifs) {
+                    this.remove(dataObject);
+                    return false;
+                }
+                break;
+        }
+
+        if (sessionOnly && !currentSessionObjects.contains(dataObject)) {
+            this.remove(dataObject);
+            return false;
+        }
+
+        TagList tagList = dataObject.getTagList();
+        if (enableLimit && tagList.size() > limit) {
+            this.remove(dataObject);
+            return false;
+        }
+
+        if (isWhitelistOk(tagList) && isBlacklistOk(tagList)) {
+            this.add(dataObject);
+            return true;
+        }
+
+        return false;
+    }
 
     @SuppressWarnings("FieldCanBeLocal")
     private final double similarityFactor = 0.5;

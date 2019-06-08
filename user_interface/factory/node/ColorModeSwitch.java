@@ -3,10 +3,10 @@ package user_interface.factory.node;
 import javafx.geometry.Pos;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
-import utils.CommonUtil;
-import user_interface.utils.NodeUtil;
-import user_interface.factory.base.TextNode;
 import user_interface.factory.ColorData;
+import user_interface.factory.base.TextNode;
+import user_interface.utils.ColorUtil;
+import user_interface.utils.NodeUtil;
 import user_interface.utils.enums.ColorType;
 
 public class ColorModeSwitch extends HBox {
@@ -24,8 +24,8 @@ public class ColorModeSwitch extends HBox {
 
         nodeDefault.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                if (CommonUtil.isNightMode()) {
-                    CommonUtil.setNightMode(false);
+                if (ColorUtil.isNightMode()) {
+                    ColorUtil.setNightMode(false);
                     nodeDefault.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
                     nodeDark.setBorder(null);
                 }
@@ -33,15 +33,15 @@ public class ColorModeSwitch extends HBox {
         });
         nodeDark.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                if (!CommonUtil.isNightMode()) {
-                    CommonUtil.setNightMode(true);
+                if (!ColorUtil.isNightMode()) {
+                    ColorUtil.setNightMode(true);
                     nodeDefault.setBorder(null);
                     nodeDark.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
                 }
             }
         });
 
-        if (!CommonUtil.isNightMode()) {
+        if (!ColorUtil.isNightMode()) {
             nodeDefault.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
         } else {
             nodeDark.setBorder(NodeUtil.getBorder(1, 1, 1, 1));

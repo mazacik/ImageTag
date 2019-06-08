@@ -6,9 +6,9 @@ import javafx.scene.Scene;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.WindowEvent;
-import utils.CommonUtil;
-import user_interface.utils.NodeUtil;
 import user_interface.factory.base.TextNode;
+import user_interface.utils.NodeUtil;
+import user_interface.utils.StyleUtil;
 import user_interface.utils.enums.ColorType;
 
 public class TitleBar extends BorderPane {
@@ -23,7 +23,7 @@ public class TitleBar extends BorderPane {
     }
     public TitleBar(Scene scene, String title, boolean movement) {
         TextNode labelTitle = new TextNode(title, ColorType.DEF, ColorType.DEF);
-        labelTitle.setFont(CommonUtil.getFont());
+        labelTitle.setFont(StyleUtil.getFont());
         labelTitle.setPadding(new Insets(1, 5, 1, 5));
         BorderPane.setAlignment(labelTitle, Pos.CENTER_LEFT);
 

@@ -29,13 +29,16 @@ public class LoaderThread extends Thread {
         InstanceManager.getTagListMain().initialize();
         InstanceManager.getObjectListMain().writeToDisk();
         InstanceManager.getTagListMain().writeDummyToDisk();
-        InstanceManager.getFilter().addAll(InstanceManager.getObjectListMain());
+        InstanceManager.getFilter().refresh();
         InstanceManager.getTarget().set(InstanceManager.getFilter().get(0));
+        InstanceManager.getSelect().set(InstanceManager.getFilter().get(0));
 
-        Runnable reload = () -> InstanceManager.getReload().doReload();
-        Platform.runLater(reload);
-        ThumbnailReader.readThumbnail(InstanceManager.getObjectListMain());
-        Platform.runLater(reload);
+        Platform.runLater(() -> {
+            InstanceManager.getFilterPane().reload();
+            InstanceManager.getSelectPane().reload();
+            InstanceManager.getToolbarPane().reload();
+        });
+        ThumbnailReader.readThumbnails(InstanceManager.getObjectListMain());
     }
 
     private void createDatabase(ArrayList<File> fileList) {

@@ -1,6 +1,5 @@
 package user_interface.scene;
 
-import utils.FileUtil;
 import database.loader.Project;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -12,14 +11,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import lifecycle.InstanceManager;
 import lifecycle.LifeCycleManager;
-import user_interface.utils.NodeUtil;
 import user_interface.factory.base.CheckBoxNode;
 import user_interface.factory.base.EditNode;
 import user_interface.factory.base.TextNode;
-import user_interface.utils.enums.ColorType;
+import user_interface.utils.NodeUtil;
 import user_interface.utils.SceneUtil;
 import user_interface.utils.SizeUtil;
-import user_interface.utils.StyleUtil;
+import user_interface.utils.enums.ColorType;
+import utils.FileUtil;
 
 public class ProjectScene {
     private final Scene scene;
@@ -109,7 +108,6 @@ public class ProjectScene {
             }
         });
 
-        StyleUtil.applyStyle(projectScene);
         return projectScene;
     }
     public void show() {

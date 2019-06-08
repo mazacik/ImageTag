@@ -7,42 +7,33 @@ import lifecycle.InstanceManager;
 import settings.SettingsEnum;
 
 public class BaseTileEvent {
-    public BaseTileEvent(BaseTile gallerytile) {
-        onMouseClick(gallerytile);
+    public BaseTileEvent(BaseTile baseTile) {
+        onMousePress(baseTile);
+        //onMouseHover(baseTile);
+        //onMouseRelease(baseTile);
+
+        onMouseClick(baseTile);
     }
 
-    public static void onGroupButtonClick(DataObject dataObject) {
-        if (!InstanceManager.getGalleryPane().getExpandedGroups().contains(dataObject.getMergeID())) {
-            InstanceManager.getGalleryPane().getExpandedGroups().add(dataObject.getMergeID());
-        } else {
-            //noinspection RedundantCollectionOperation
-            InstanceManager.getGalleryPane().getExpandedGroups().remove(InstanceManager.getGalleryPane().getExpandedGroups().indexOf(dataObject.getMergeID()));
-        }
-        for (DataObject dataObject1 : dataObject.getMergeGroup()) {
-            dataObject1.generateTileEffect();
-        }
-        InstanceManager.getReload().flag(Reload.Control.DATA);
-    }
-    private void onMouseClick(BaseTile baseTile) {
-        baseTile.setOnMouseClicked(event -> {
+    private void onMousePress(BaseTile baseTile) {
+        baseTile.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
             event.consume();
             switch (event.getButton()) {
                 case PRIMARY:
-                    onLeftClick(baseTile, event);
+                    onLeftPress(baseTile, event);
                     break;
                 case SECONDARY:
-                    onRightClick(baseTile, event);
                     break;
                 default:
                     break;
             }
         });
     }
-    private void onLeftClick(BaseTile baseTile, MouseEvent event) {
-        DataObject dataObject = baseTile.getParentDataObject();
+    private void onLeftPress(BaseTile baseTile, MouseEvent event) {
+        DataObject dataObject = baseTile.getParentObject();
 
-        if (wasClickOnGroupButton(event)) {
-            onGroupButtonClick(dataObject);
+        if (isOnGroupButton(event)) {
+            onGroupButtonPress(dataObject);
         } else {
             InstanceManager.getTarget().set(dataObject);
 
@@ -58,13 +49,40 @@ public class BaseTileEvent {
         InstanceManager.getReload().doReload();
         InstanceManager.getClickMenuData().hide();
     }
-    private boolean wasClickOnGroupButton(MouseEvent event) {
+
+    private boolean isOnGroupButton(MouseEvent event) {
         int tileSize = InstanceManager.getSettings().intValueOf(SettingsEnum.THUMBSIZE);
         return event.getX() > tileSize - BaseTile.getEffectGroupSize() && event.getY() < BaseTile.getEffectGroupSize();
     }
+    public static void onGroupButtonPress(DataObject dataObject) {
+        if (!InstanceManager.getGalleryPane().getExpandedGroups().contains(dataObject.getMergeID())) {
+            InstanceManager.getGalleryPane().getExpandedGroups().add(dataObject.getMergeID());
+        } else {
+            //noinspection RedundantCollectionOperation
+            InstanceManager.getGalleryPane().getExpandedGroups().remove(InstanceManager.getGalleryPane().getExpandedGroups().indexOf(dataObject.getMergeID()));
+        }
+        for (DataObject dataObject1 : dataObject.getMergeGroup()) {
+            dataObject1.generateTileEffect();
+        }
+        InstanceManager.getReload().flag(Reload.Control.DATA);
+    }
 
+    private void onMouseClick(BaseTile baseTile) {
+        baseTile.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+            event.consume();
+            switch (event.getButton()) {
+                case PRIMARY:
+                    break;
+                case SECONDARY:
+                    onRightClick(baseTile, event);
+                    break;
+                default:
+                    break;
+            }
+        });
+    }
     private void onRightClick(BaseTile sender, MouseEvent event) {
-        DataObject dataObject = sender.getParentDataObject();
+        DataObject dataObject = sender.getParentObject();
 
         if (!InstanceManager.getSelect().contains(dataObject)) {
             InstanceManager.getSelect().add(dataObject);

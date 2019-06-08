@@ -4,7 +4,6 @@ import database.object.DataObject;
 import javafx.scene.input.KeyCode;
 import lifecycle.InstanceManager;
 import utils.enums.Direction;
-import user_interface.singleton.center.BaseTile;
 
 public class Target {
     private DataObject currentTarget;
@@ -23,14 +22,11 @@ public class Target {
 
             /* refresh new target effect */
             currentTarget = dataObject;
-            BaseTile baseTile = currentTarget.getBaseTile();
-            if (baseTile != null) baseTile.generateEffect();
+            currentTarget.generateTileEffect();
 
             /* remove old target effect */
-            if (previousTarget != null) {
-                baseTile = previousTarget.getBaseTile();
-                if (baseTile != null) baseTile.generateEffect();
-            }
+            if (previousTarget != null)
+                previousTarget.generateTileEffect();
 
             InstanceManager.getGalleryPane().adjustViewportToCurrentTarget();
             InstanceManager.getReload().flag(Reload.Control.TARGET);
