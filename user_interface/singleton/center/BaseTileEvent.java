@@ -41,8 +41,7 @@ public class BaseTileEvent {
     private void onLeftClick(BaseTile baseTile, MouseEvent event) {
         DataObject dataObject = baseTile.getParentDataObject();
 
-        int tileSize = InstanceManager.getSettings().intValueOf(SettingsEnum.THUMBSIZE);
-        if (event.getX() > tileSize - BaseTile.getEffectGroupSize() && event.getY() < BaseTile.getEffectGroupSize()) {
+        if (wasClickOnGroupButton(event)) {
             onGroupButtonClick(dataObject);
         } else {
             InstanceManager.getTarget().set(dataObject);
@@ -55,9 +54,15 @@ public class BaseTileEvent {
                 InstanceManager.getSelect().set(dataObject);
             }
         }
+
         InstanceManager.getReload().doReload();
         InstanceManager.getClickMenuData().hide();
     }
+    private boolean wasClickOnGroupButton(MouseEvent event) {
+        int tileSize = InstanceManager.getSettings().intValueOf(SettingsEnum.THUMBSIZE);
+        return event.getX() > tileSize - BaseTile.getEffectGroupSize() && event.getY() < BaseTile.getEffectGroupSize();
+    }
+
     private void onRightClick(BaseTile sender, MouseEvent event) {
         DataObject dataObject = sender.getParentDataObject();
 

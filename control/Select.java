@@ -68,7 +68,7 @@ public class Select extends ObjectList {
         this.addAll(dataObjects);
     }
     public void setRandom() {
-        DataObject dataObject = InstanceManager.getFilter().getRandom();
+        DataObject dataObject = ObjectList.getRandom(InstanceManager.getGalleryPane().getVisibleDataObjects());
         InstanceManager.getSelect().set(dataObject);
         InstanceManager.getTarget().set(dataObject);
     }

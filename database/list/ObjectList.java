@@ -4,7 +4,6 @@ import control.Reload;
 import database.object.DataObject;
 import database.object.TagObject;
 import lifecycle.InstanceManager;
-import user_interface.singleton.center.BaseTile;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -58,9 +57,12 @@ public class ObjectList extends ArrayList<DataObject> {
     }
 
     public DataObject getRandom() {
-        if (!this.isEmpty()) {
-            int index = new Random().nextInt(this.size());
-            DataObject chosenDataObject = this.get(index);
+        return getRandom(this);
+    }
+    public static DataObject getRandom(ArrayList<DataObject> dataObjects) {
+        if (!dataObjects.isEmpty()) {
+            int index = new Random().nextInt(dataObjects.size());
+            DataObject chosenDataObject = dataObjects.get(index);
 
             if (chosenDataObject.getMergeID() == 0) {
                 return chosenDataObject;
