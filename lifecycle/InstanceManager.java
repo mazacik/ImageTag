@@ -7,11 +7,17 @@ import javafx.stage.Stage;
 import settings.Settings;
 import user_interface.factory.menu.ClickMenuData;
 import user_interface.factory.menu.ClickMenuInfo;
+import user_interface.scene.MainStageEvent;
 import user_interface.singleton.center.GalleryPane;
 import user_interface.singleton.center.MediaPane;
+import user_interface.singleton.center.MediaViewEvent;
+import user_interface.singleton.center.TileViewEvent;
 import user_interface.singleton.side.FilterPane;
 import user_interface.singleton.side.SelectPane;
+import user_interface.singleton.side.TagListViewLEvent;
+import user_interface.singleton.side.TagListViewREvent;
 import user_interface.singleton.top.ToolbarPane;
+import user_interface.singleton.top.TopMenuEvent;
 
 public abstract class InstanceManager {
     private static Logger logger;
@@ -34,6 +40,14 @@ public abstract class InstanceManager {
 
     private static ClickMenuData clickMenuData;
     private static ClickMenuInfo clickMenuInfo;
+
+    private static MainStageEvent mainStageEvent;
+    private static TopMenuEvent topMenuEvent;
+    private static TagListViewLEvent tagListViewLEvent;
+    private static TagListViewREvent tagListViewREvent;
+    private static TileViewEvent tileViewEvent;
+    private static MediaViewEvent mediaViewEvent;
+
 
     public static void createInstances() {
         createInstancesSystem();
@@ -70,6 +84,14 @@ public abstract class InstanceManager {
         target = new Target();
         select = new Select();
         reload = new Reload();  /* needs Frontend */
+    }
+    public static void createInstancesEvents() {
+        mainStageEvent = new MainStageEvent();
+        topMenuEvent = new TopMenuEvent();
+        tagListViewLEvent = new TagListViewLEvent();
+        tagListViewREvent = new TagListViewREvent();
+        tileViewEvent = new TileViewEvent();
+        mediaViewEvent = new MediaViewEvent();
     }
 
     public static Logger getLogger() {
@@ -119,5 +141,24 @@ public abstract class InstanceManager {
     }
     public static ClickMenuInfo getClickMenuInfo() {
         return clickMenuInfo;
+    }
+
+    public static MainStageEvent getMainStageEvent() {
+        return mainStageEvent;
+    }
+    public static TopMenuEvent getTopMenuEvent() {
+        return topMenuEvent;
+    }
+    public static TagListViewLEvent getTagListViewLEvent() {
+        return tagListViewLEvent;
+    }
+    public static TagListViewREvent getTagListViewREvent() {
+        return tagListViewREvent;
+    }
+    public static TileViewEvent getTileViewEvent() {
+        return tileViewEvent;
+    }
+    public static MediaViewEvent getMediaViewEvent() {
+        return mediaViewEvent;
     }
 }

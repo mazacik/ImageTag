@@ -7,13 +7,13 @@ import database.object.TagObject;
 import javafx.scene.input.MouseButton;
 import lifecycle.InstanceManager;
 import org.apache.commons.text.WordUtils;
-import utils.ClipboardUtil;
+import user_interface.factory.ColorData;
 import user_interface.factory.base.TextNode;
 import user_interface.factory.menu.ClickMenuBase;
 import user_interface.factory.stage.GroupEditStage;
 import user_interface.factory.stage.OkCancelStage;
-import user_interface.factory.ColorData;
 import user_interface.utils.enums.ColorType;
+import utils.ClipboardUtil;
 
 import java.awt.*;
 import java.io.File;
@@ -154,19 +154,6 @@ public class ButtonFactory {
                             tagObject.setGroup(newGroup);
                         }
                     });
-
-                    ArrayList<String> expandedGroupsL = InstanceManager.getFilterPane().getExpandedGroupsList();
-                    if (expandedGroupsL.contains(oldGroup)) {
-                        expandedGroupsL.remove(oldGroup);
-                        expandedGroupsL.add(newGroup);
-                    }
-
-                    ArrayList<String> expandedGroupsR = InstanceManager.getSelectPane().getExpandedGroupsList();
-                    if (expandedGroupsR.contains(oldGroup)) {
-                        expandedGroupsR.remove(oldGroup);
-                        expandedGroupsR.add(newGroup);
-                    }
-
                     InstanceManager.getReload().flag(Reload.Control.INFO);
                 }
                 InstanceManager.getReload().doReload();

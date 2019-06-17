@@ -7,15 +7,15 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.stage.WindowEvent;
 import user_interface.utils.NodeUtil;
-import user_interface.utils.enums.ColorType;
 import user_interface.utils.StyleUtil;
+import user_interface.utils.enums.ColorType;
 
 import java.util.ArrayList;
 
 public class ClickMenuBase extends Popup {
     protected static final ArrayList<ClickMenuBase> instanceList = new ArrayList<>();
 
-    private VBox vBox = NodeUtil.getVBox(ColorType.DEF);
+    private VBox vBox = NodeUtil.getVBox(ColorType.DEF, ColorType.DEF);
 
     public ClickMenuBase(Region... children) {
         vBox.setBorder(NodeUtil.getBorder(1, 1, 1, 1));

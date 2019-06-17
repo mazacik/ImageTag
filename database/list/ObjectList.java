@@ -10,6 +10,7 @@ import java.util.Random;
 
 public class ObjectList extends ArrayList<DataObject> {
     public boolean add(DataObject dataObject) {
+        if (contains(dataObject)) return false;
         if (super.add(dataObject)) {
             InstanceManager.getReload().flag(Reload.Control.FILTER);
             return true;

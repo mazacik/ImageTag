@@ -41,7 +41,7 @@ public class GroupEditStage extends Stage {
                     result = newGroup;
                     this.close();
                 } else {
-                    //todo show a warning
+                    new ErrorStage("tag group cannot contain the following character sequence: \" - \"");
                 }
             } else if (event.getCode() == KeyCode.ESCAPE) {
                 this.close();
@@ -58,7 +58,7 @@ public class GroupEditStage extends Stage {
                     result = newGroup;
                     this.close();
                 } else {
-                    //todo show a warning
+                    new ErrorStage("tag group cannot contain the following character sequence: \" - \"");
                 }
             }
         });
@@ -68,12 +68,12 @@ public class GroupEditStage extends Stage {
             }
         });
 
-        HBox hBoxGroup = NodeUtil.getHBox(ColorType.DEF, nodeGroup, nodeGroupEdit);
+        HBox hBoxGroup = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF, nodeGroup, nodeGroupEdit);
         double padding = SizeUtil.getGlobalSpacing();
         hBoxGroup.setPadding(new Insets(padding, padding, 0, 0));
         hBoxGroup.setSpacing(padding);
 
-        HBox hBoxBottom = NodeUtil.getHBox(ColorType.DEF, nodeCancel, nodeOK);
+        HBox hBoxBottom = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF, nodeCancel, nodeOK);
 
         Scene scene = new Scene(borderPane);
         this.setTitle("Edit Group");

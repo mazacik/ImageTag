@@ -43,6 +43,7 @@ public class BaseTileEvent {
                 InstanceManager.getSelect().shiftSelectTo(InstanceManager.getTarget().getCurrentTarget());
             } else {
                 InstanceManager.getSelect().set(dataObject);
+                //InstanceManager.getSelect().setShiftStart(baseTile.getParentObject());
             }
         }
 

@@ -12,14 +12,14 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import lifecycle.InstanceManager;
-import utils.ConverterUtil;
-import utils.enums.Direction;
-import user_interface.utils.NodeUtil;
 import user_interface.factory.base.TextNode;
 import user_interface.utils.ColorUtil;
-import user_interface.utils.enums.ColorType;
+import user_interface.utils.NodeUtil;
 import user_interface.utils.SizeUtil;
 import user_interface.utils.StyleUtil;
+import user_interface.utils.enums.ColorType;
+import utils.ConverterUtil;
+import utils.enums.Direction;
 
 import java.io.File;
 
@@ -185,11 +185,11 @@ public class MediaViewControlsBase extends BorderPane {
 
     public void setVideoMode(boolean enabled) {
         if (enabled) {
-            HBox hBoxLeft = NodeUtil.getHBox(ColorType.DEF);
+            HBox hBoxLeft = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF);
             hBoxLeft.getChildren().add(btnPrevious);
             hBoxLeft.getChildren().add(lblTimeCurrent);
 
-            HBox hBoxCenter = NodeUtil.getHBox(ColorType.DEF);
+            HBox hBoxCenter = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF);
             hBoxCenter.getChildren().add(btnSkipBackward5s);
             hBoxCenter.getChildren().add(btnSkipBackward);
             hBoxCenter.getChildren().add(btnPlayPause);
@@ -198,7 +198,7 @@ public class MediaViewControlsBase extends BorderPane {
             hBoxCenter.getChildren().add(btnMute);
             hBoxCenter.setAlignment(Pos.CENTER);
 
-            HBox hBoxRight = NodeUtil.getHBox(ColorType.DEF);
+            HBox hBoxRight = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF);
             hBoxRight.getChildren().add(lblTimeTotal);
             hBoxRight.getChildren().add(btnNext);
 

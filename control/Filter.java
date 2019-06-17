@@ -17,7 +17,7 @@ public class Filter extends ObjectList {
 
     private boolean showImages = true;
     private boolean showGifs = true;
-    private boolean showVideos = true;
+    private boolean showVideos = false;
     private boolean sessionOnly = false;
     private boolean enableLimit = false;
     private int limit = 0;
@@ -33,7 +33,7 @@ public class Filter extends ObjectList {
     public void reset() {
         InstanceManager.getFilter().getInfoListWhite().clear();
         InstanceManager.getFilter().getInfoListBlack().clear();
-        InstanceManager.getFilter().setAll(InstanceManager.getObjectListMain());
+        refresh();
     }
     public void refresh() {
         InstanceManager.getFilter().clear();
@@ -56,7 +56,7 @@ public class Filter extends ObjectList {
             if (enableLimit && tagList.size() > limit) continue;
 
             if (isWhitelistOk(tagList) && isBlacklistOk(tagList)) {
-                InstanceManager.getFilter().add(dataObject);
+                this.add(dataObject);
             }
         }
     }
@@ -67,7 +67,6 @@ public class Filter extends ObjectList {
                     this.remove(dataObject);
                     return false;
                 }
-
                 break;
             case VIDEO:
                 if (!showVideos) {

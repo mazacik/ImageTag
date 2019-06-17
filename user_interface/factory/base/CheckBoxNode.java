@@ -10,8 +10,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import user_interface.utils.NodeUtil;
-import user_interface.utils.enums.ColorType;
 import user_interface.utils.SizeUtil;
+import user_interface.utils.enums.ColorType;
 
 public class CheckBoxNode extends Pane {
     private final TextNode nodeMark;
@@ -37,7 +37,7 @@ public class CheckBoxNode extends Pane {
         nodeMark.setBorder(NodeUtil.getBorder(1));
         nodeMark.heightProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> nodeMark.setMinWidth(nodeMark.getHeight())));
 
-        HBox hBox = NodeUtil.getHBox(ColorType.DEF, nodeMark, nodeText);
+        HBox hBox = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF, nodeMark, nodeText);
         hBox.addEventFilter(MouseEvent.MOUSE_PRESSED, (EventHandler<Event>) event -> setSelected(!isSelected()));
         hBox.setSpacing(SizeUtil.getGlobalSpacing());
 

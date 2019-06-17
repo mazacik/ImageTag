@@ -5,11 +5,9 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.stage.Window;
 import user_interface.factory.ColorData;
 import user_interface.factory.node.IntroWindowCell;
-import user_interface.singleton.side.GroupNode;
 import user_interface.utils.enums.ColorType;
 
 import java.util.ArrayList;
@@ -38,28 +36,20 @@ public abstract class NodeUtil {
         return nodeList;
     }
 
-    public static GroupNode getGroupNode(VBox owner, String text, Color textFill) {
-        GroupNode groupNode = new GroupNode(text, owner);
-        groupNode.setTextFill(textFill);
-        groupNode.setFont(StyleUtil.getFont());
-        addToManager(groupNode, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
-
-        return groupNode;
-    }
     public static IntroWindowCell getIntroWindowCell(String projectFile, String workingDirectory) {
         IntroWindowCell introWindowCell = new IntroWindowCell(projectFile, workingDirectory);
         addToManager(introWindowCell, ColorType.ALT, ColorType.DEF, ColorType.NULL, ColorType.NULL);
         return introWindowCell;
     }
 
-    public static HBox getHBox(ColorType colorType, Node... children) {
+    public static HBox getHBox(ColorType backgroundDef, ColorType backgroundAlt, Node... children) {
         HBox hBox = new HBox(children);
-        addToManager(hBox, colorType);
+        addToManager(hBox, backgroundDef, backgroundAlt, ColorType.NULL, ColorType.NULL);
         return hBox;
     }
-    public static VBox getVBox(ColorType colorType, Node... children) {
+    public static VBox getVBox(ColorType backgroundDef, ColorType backgroundAlt, Node... children) {
         VBox vBox = new VBox(children);
-        addToManager(vBox, colorType);
+        addToManager(vBox, backgroundDef, backgroundAlt, ColorType.NULL, ColorType.NULL);
         return vBox;
     }
 

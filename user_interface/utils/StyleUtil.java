@@ -3,7 +3,9 @@ package user_interface.utils;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import lifecycle.InstanceManager;
@@ -12,7 +14,6 @@ import user_interface.factory.ColorData;
 import user_interface.factory.base.CheckBoxNode;
 import user_interface.factory.base.TextNode;
 import user_interface.factory.node.IntroWindowCell;
-import user_interface.singleton.side.GroupNode;
 import user_interface.utils.enums.ColorType;
 
 import java.util.ArrayList;
@@ -60,7 +61,10 @@ public abstract class StyleUtil {
     public static void applyStyle(ArrayList<ColorData> colorDataList) {
         for (ColorData colorData : colorDataList) {
             colorData.getRegion().setBackground(ColorUtil.getBackgroundDef(colorData));
-            if (colorData.getRegion() instanceof TextNode) {
+            if (colorData.getRegion() instanceof HBox || colorData.getRegion() instanceof VBox) {
+                colorData.getRegion().setOnMouseEntered(event -> colorData.getRegion().setBackground(ColorUtil.getBackgroundAlt(colorData)));
+                colorData.getRegion().setOnMouseExited(event -> colorData.getRegion().setBackground(ColorUtil.getBackgroundDef(colorData)));
+            } else if (colorData.getRegion() instanceof TextNode) {
                 TextNode label = ((TextNode) colorData.getRegion());
                 if (colorData.getTextFillDef() != ColorType.NULL) {
                     label.setTextFill(ColorUtil.getTextColorDef(colorData));
@@ -93,17 +97,6 @@ public abstract class StyleUtil {
                     label.setOnMouseEntered(event -> {
                         label.setTextFill(ColorUtil.getTextColorAlt(colorData));
                         //label.setCursor(Cursor.HAND);
-                    });
-                }
-            } else if (colorData.getRegion() instanceof GroupNode) {
-                if (colorData.getBackgroundAlt() != ColorType.NULL) {
-                    colorData.getRegion().setOnMouseExited(event -> {
-                        colorData.getRegion().setBackground(ColorUtil.getBackgroundDef(colorData));
-                        //colorData.getRegion().setCursor(Cursor.DEFAULT);
-                    });
-                    colorData.getRegion().setOnMouseEntered(event -> {
-                        colorData.getRegion().setBackground(ColorUtil.getBackgroundAlt(colorData));
-                        //colorData.getRegion().setCursor(Cursor.HAND);
                     });
                 }
             } else if (colorData.getRegion() instanceof IntroWindowCell) {

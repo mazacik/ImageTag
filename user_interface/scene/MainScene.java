@@ -6,7 +6,6 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import lifecycle.InstanceManager;
-import user_interface.singleton.Events;
 import user_interface.utils.NodeUtil;
 import user_interface.utils.SizeUtil;
 import user_interface.utils.StyleUtil;
@@ -21,9 +20,9 @@ public class MainScene {
     }
 
     private Scene create() {
-        HBox mainHBox = NodeUtil.getHBox(ColorType.DEF, InstanceManager.getFilterPane(), InstanceManager.getGalleryPane(), InstanceManager.getSelectPane());
+        HBox mainHBox = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF, InstanceManager.getFilterPane(), InstanceManager.getGalleryPane(), InstanceManager.getSelectPane());
         panes = mainHBox.getChildren();
-        return new Scene(NodeUtil.getVBox(ColorType.DEF, InstanceManager.getToolbarPane(), mainHBox));
+        return new Scene(NodeUtil.getVBox(ColorType.DEF, ColorType.DEF, InstanceManager.getToolbarPane(), mainHBox));
     }
     public void show() {
         InstanceManager.getMainStage().setOpacity(0);
@@ -37,11 +36,11 @@ public class MainScene {
 
         Platform.runLater(() -> InstanceManager.getMainStage().setOpacity(1));
 
-        Events.init();
+        InstanceManager.createInstancesEvents();
 
         StyleUtil.applyScrollbarStyle(InstanceManager.getGalleryPane());
-        StyleUtil.applyScrollbarStyle(InstanceManager.getFilterPane().getTagListScrollPane());
-        StyleUtil.applyScrollbarStyle(InstanceManager.getSelectPane().getTagListScrollPane());
+        StyleUtil.applyScrollbarStyle(InstanceManager.getFilterPane().getScrollPane());
+        StyleUtil.applyScrollbarStyle(InstanceManager.getSelectPane().getScrollPane());
     }
 
     public ObservableList<Node> getPanes() {

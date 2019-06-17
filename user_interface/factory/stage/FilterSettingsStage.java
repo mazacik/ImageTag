@@ -25,13 +25,15 @@ public class FilterSettingsStage extends Stage {
     CheckBoxNode cbImages = new CheckBoxNode("Images");
     CheckBoxNode cbGifs = new CheckBoxNode("Gifs");
     CheckBoxNode cbVideos = new CheckBoxNode("Videos");
+
+
     CheckBoxNode cbSession = new CheckBoxNode("Session");
     CheckBoxNode cbLimit = new CheckBoxNode("Limit");
     EditNode tfLimit = new EditNode("", EditNodeType.NUMERIC_POSITIVE);
 
     public FilterSettingsStage() {
         double spacing = SizeUtil.getGlobalSpacing();
-        VBox vBox = NodeUtil.getVBox(ColorType.DEF);
+        VBox vBox = NodeUtil.getVBox(ColorType.DEF, ColorType.DEF);
         vBox.setPadding(new Insets(spacing));
         vBox.setSpacing(spacing);
 
@@ -76,7 +78,7 @@ public class FilterSettingsStage extends Stage {
                 this.hide();
             }
         });
-        HBox hBoxOkCancel = NodeUtil.getHBox(ColorType.DEF, lblOK, lblCancel);
+        HBox hBoxOkCancel = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF, lblOK, lblCancel);
         hBoxOkCancel.setAlignment(Pos.CENTER);
 
         BorderPane borderPane = new BorderPane();

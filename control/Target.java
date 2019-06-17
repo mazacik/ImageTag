@@ -106,6 +106,9 @@ public class Target {
     }
 
     public DataObject getCurrentTarget() {
+        if (currentTarget == null) {
+            currentTarget = InstanceManager.getObjectListMain().get(0);
+        }
         return currentTarget;
     }
 }

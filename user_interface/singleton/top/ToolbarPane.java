@@ -4,17 +4,17 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import lifecycle.InstanceManager;
-import utils.enums.Direction;
-import user_interface.utils.NodeUtil;
+import user_interface.factory.ColorData;
 import user_interface.factory.base.Separator;
 import user_interface.factory.base.TextNode;
 import user_interface.factory.buttons.ButtonFactory;
 import user_interface.factory.buttons.ButtonTemplates;
 import user_interface.factory.menu.ClickMenuLeft;
-import user_interface.factory.ColorData;
-import user_interface.utils.enums.ColorType;
 import user_interface.singleton.NodeBase;
+import user_interface.utils.NodeUtil;
 import user_interface.utils.SizeUtil;
+import user_interface.utils.enums.ColorType;
+import utils.enums.Direction;
 
 public class ToolbarPane extends BorderPane implements NodeBase {
     private final TextNode nodeSave;
@@ -41,7 +41,7 @@ public class ToolbarPane extends BorderPane implements NodeBase {
 
         nodeRandom = new TextNode("Random", colorData);
         nodeFullview = new TextNode("MediaPane", colorData);
-        HBox hBoxTools = NodeUtil.getHBox(ColorType.DEF, nodeRandom, nodeFullview);
+        HBox hBoxTools = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF, nodeRandom, nodeFullview);
         hBoxTools.setBorder(NodeUtil.getBorder(0, 1, 0, 1));
         NodeUtil.addToManager(hBoxTools, ColorType.DEF);
 
@@ -64,7 +64,7 @@ public class ToolbarPane extends BorderPane implements NodeBase {
                 nodeDeleteTarget
         );
 
-        HBox hBoxMain = NodeUtil.getHBox(ColorType.DEF);
+        HBox hBoxMain = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF);
         hBoxMain.getChildren().add(nodeFile);
         hBoxMain.getChildren().add(hBoxTools);
         NodeUtil.addToManager(hBoxMain, ColorType.DEF);

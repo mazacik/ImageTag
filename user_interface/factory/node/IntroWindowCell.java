@@ -5,8 +5,8 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import user_interface.factory.base.TextNode;
 import user_interface.factory.ColorData;
+import user_interface.factory.base.TextNode;
 import user_interface.utils.enums.ColorType;
 
 import java.io.File;
@@ -25,7 +25,6 @@ public class IntroWindowCell extends BorderPane {
 
         String projectNameWithExtension = projectFile.substring(projectFile.lastIndexOf(File.separatorChar) + 1);
         String projectNameWithoutExtension = projectNameWithExtension.substring(0, projectNameWithExtension.lastIndexOf('.'));
-
 
         TextNode nodeProjectFile = new TextNode(projectNameWithoutExtension, colorData);
         TextNode nodeWorkingDirectory = new TextNode(workingDirectory, colorData);

@@ -58,7 +58,7 @@ public class NumberInputStage extends Stage {
         hBox.setAlignment(Pos.CENTER);
         hBox.setSpacing(padding);
 
-        VBox vBoxMain = NodeUtil.getVBox(ColorType.DEF);
+        VBox vBoxMain = NodeUtil.getVBox(ColorType.DEF, ColorType.DEF);
         vBoxMain.setAlignment(Pos.CENTER);
         vBoxMain.setSpacing(padding);
         vBoxMain.setBorder(NodeUtil.getBorder(1, 1, 1, 1));

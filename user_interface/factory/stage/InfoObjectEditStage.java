@@ -69,14 +69,14 @@ public class InfoObjectEditStage extends Stage {
             }
         });
 
-        HBox hBoxGroup = NodeUtil.getHBox(ColorType.DEF, nodeGroup, nodeGroupEdit);
-        HBox hBoxName = NodeUtil.getHBox(ColorType.DEF, nodeName, nodeNameEdit);
-        VBox vBoxHelper = NodeUtil.getVBox(ColorType.DEF, hBoxGroup, hBoxName, nodeAddToSelection);
+        HBox hBoxGroup = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF, nodeGroup, nodeGroupEdit);
+        HBox hBoxName = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF, nodeName, nodeNameEdit);
+        VBox vBoxHelper = NodeUtil.getVBox(ColorType.DEF, ColorType.DEF, hBoxGroup, hBoxName, nodeAddToSelection);
         double padding = SizeUtil.getGlobalSpacing();
         vBoxHelper.setPadding(new Insets(padding, padding, 0, 0));
         vBoxHelper.setSpacing(padding);
 
-        HBox hBoxBottom = NodeUtil.getHBox(ColorType.DEF, nodeCancel, nodeOK);
+        HBox hBoxBottom = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF, nodeCancel, nodeOK);
 
         Scene scene = new Scene(borderPane);
         if (tagObject != null) {

@@ -1,13 +1,14 @@
 package user_interface.singleton.side;
 
+import control.Filter;
 import control.Reload;
+import control.Select;
+import control.Target;
 import database.object.DataObject;
 import database.object.TagObject;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import lifecycle.InstanceManager;
@@ -26,18 +27,18 @@ import utils.enums.Direction;
 
 import java.util.ArrayList;
 
-public class SelectPane extends VBox implements NodeBase {
+public class SelectPane extends VBox implements NodeBase, SidePane {
     private final TextNode nodeTitle;
+    private final ScrollPane scrollPane;
+
     private final EditNode tfSearch;
     private String actualText = "";
+
+    private final VBox tagNodes;
 
     private final TextNode nodeSelectAll;
     private final TextNode nodeSelectNone;
     private final TextNode nodeSelectMerge;
-
-    private final VBox tagListBox;
-    private final ScrollPane tagListScrollPane;
-    private final ArrayList<String> expandedGroupsList;
 
     public SelectPane() {
         ColorData colorDataSimple = new ColorData(ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
@@ -54,130 +55,163 @@ public class SelectPane extends VBox implements NodeBase {
         nodeSelectMerge = new TextNode("Merge Selection", colorDataSimple);
         ClickMenuLeft.install(nodeTitle, Direction.LEFT, nodeSelectAll, nodeSelectNone, new Separator(), nodeSelectMerge);
 
-        tagListBox = NodeUtil.getVBox(ColorType.DEF);
-        tagListScrollPane = new ScrollPane();
-        tagListScrollPane.setContent(tagListBox);
-        tagListScrollPane.setFitToWidth(true);
-        tagListScrollPane.setFitToHeight(true);
-        tagListScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        tagListScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        NodeUtil.addToManager(tagListScrollPane, ColorType.DEF);
-
-        expandedGroupsList = new ArrayList<>();
+        tagNodes = NodeUtil.getVBox(ColorType.DEF, ColorType.DEF);
+        scrollPane = new ScrollPane();
+        scrollPane.setContent(tagNodes);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        NodeUtil.addToManager(scrollPane, ColorType.DEF);
 
         this.setPrefWidth(SizeUtil.getUsableScreenWidth());
         this.setMinWidth(SizeUtil.getMinWidthSideLists());
-        this.getChildren().addAll(nodeTitle, tfSearch, tagListScrollPane);
+        this.getChildren().addAll(nodeTitle, tfSearch, scrollPane);
     }
 
     public boolean reload() {
-        tagListBox.getChildren().clear();
-        int hiddenTilesCount = 0;
-        for (DataObject dataObject : InstanceManager.getSelect()) {
-            if (!InstanceManager.getFilter().contains(dataObject)) {
-                hiddenTilesCount++;
-            }
-        }
+        Select select = InstanceManager.getSelect();
+        Target target = InstanceManager.getTarget();
 
-        String text = "Selection: " + InstanceManager.getSelect().size() + " file(s)";
-        if (hiddenTilesCount > 0) {
-            text += ", " + hiddenTilesCount + " filtered out";
-        }
+        refreshTitle();
 
-        nodeTitle.setText(text);
-        this.actuallyReload();
-        StyleUtil.applyStyle(tagListBox);
-        return true;
-    }
-    private void actuallyReload() {
         Color textColorDefault = ColorUtil.getTextColorDef();
         Color textColorPositive = ColorUtil.getTextColorPos();
         Color textColorShare = ColorUtil.getTextColorShr();
 
         ArrayList<String> groupsInter;
         ArrayList<String> groupsShare;
-        if (InstanceManager.getSelect().size() == 0) {
-            if (InstanceManager.getTarget().getCurrentTarget() != null) {
-                groupsInter = InstanceManager.getTarget().getCurrentTarget().getTagList().getGroups();
+        if (select.size() == 0) {
+            if (target.getCurrentTarget() != null) {
+                groupsInter = target.getCurrentTarget().getTagList().getGroups();
                 groupsShare = new ArrayList<>();
             } else {
-                return;
+                return false;
             }
         } else {
-            groupsInter = InstanceManager.getSelect().getIntersectingTags().getGroups();
-            groupsShare = InstanceManager.getSelect().getSharedTags().getGroups();
+            groupsInter = select.getIntersectingTags().getGroups();
+            groupsShare = select.getSharedTags().getGroups();
         }
 
-        for (String group : InstanceManager.getTagListMain().getGroups()) {
-            GroupNode groupNode;
-            if (groupsInter.contains(group)) {
-                groupNode = NodeUtil.getGroupNode(this, group, textColorPositive);
-            } else if (groupsShare.contains(group)) {
-                groupNode = NodeUtil.getGroupNode(this, group, textColorShare);
-            } else {
-                groupNode = NodeUtil.getGroupNode(this, group, textColorDefault);
-            }
+        initGroups();
+        for (Node node : tagNodes.getChildren()) {
+            if (node instanceof TagNode) {
+                TagNode tagNode = (TagNode) node;
+                String group = tagNode.getGroup();
 
-            ArrayList<String> namesInter;
-            ArrayList<String> namesShare;
-            if (InstanceManager.getSelect().size() == 0) {
-                namesInter = InstanceManager.getTarget().getCurrentTarget().getTagList().getNames(group);
-                namesShare = new ArrayList<>();
-            } else {
-                namesInter = InstanceManager.getSelect().getIntersectingTags().getNames(group);
-                namesShare = InstanceManager.getSelect().getSharedTags().getNames(group);
-            }
-
-            for (String name : InstanceManager.getTagListMain().getNames(group)) {
-                if (namesInter.contains(name)) {
-                    groupNode.getNameNodes().add(this.createNameNode(name, textColorPositive, groupNode));
-                } else if (namesShare.contains(name)) {
-                    groupNode.getNameNodes().add(this.createNameNode(name, textColorShare, groupNode));
+                if (groupsInter.contains(group)) {
+                    tagNode.setTextFill(textColorPositive);
+                } else if (groupsShare.contains(group)) {
+                    tagNode.setTextFill(textColorShare);
                 } else {
-                    groupNode.getNameNodes().add(this.createNameNode(name, textColorDefault, groupNode));
+                    tagNode.setTextFill(textColorDefault);
+                }
+                ArrayList<String> namesInter;
+                ArrayList<String> namesShare;
+                if (select.size() == 0) {
+                    namesInter = target.getCurrentTarget().getTagList().getNames(group);
+                    namesShare = new ArrayList<>();
+                } else {
+                    namesInter = select.getIntersectingTags().getNames(group);
+                    namesShare = select.getSharedTags().getNames(group);
+                }
+                for (TextNode nameNode : tagNode.getNameNodes()) {
+                    String name = nameNode.getText();
+
+                    if (namesInter.contains(name)) {
+                        nameNode.setTextFill(textColorPositive);
+                    } else if (namesShare.contains(name)) {
+                        nameNode.setTextFill(textColorShare);
+                    } else {
+                        nameNode.setTextFill(textColorDefault);
+                    }
                 }
             }
+        }
+        return true;
+    }
+    private void initGroups() {
+        //this only ADDs groups from InstanceManager.getTagListMain() to tagNodes.getChildren()
+        //it also should REMOVE orphans and be renamed to checkGroups() for future use (complete reload,..)
 
-            tagListBox.getChildren().add(groupNode);
+        ArrayList<String> groupsHere = new ArrayList<>();
+        for (Node node : tagNodes.getChildren()) {
+            if (node instanceof TagNode) {
+                TagNode tagNode = (TagNode) node;
+                String group = tagNode.getGroup();
+                if (!groupsHere.contains(group)) {
+                    groupsHere.add(group);
+                }
+            }
+        }
+        ArrayList<String> groupsThere = new ArrayList<>();
+        for (TagObject tagObject : InstanceManager.getTagListMain()) {
+            String group = tagObject.getGroup();
+            if (!groupsThere.contains(group)) {
+                groupsThere.add(group);
+            }
+        }
+        if (groupsHere.size() != groupsThere.size()) {
+            for (String groupThere : groupsThere) {
+                if (!groupsHere.contains(groupThere)) {
+                    TagNode tagNode = new TagNode(this, groupThere);
+                    tagNodes.getChildren().add(tagNode);
+                }
+            }
+            StyleUtil.applyStyle(tagNodes);
+        }
+    }
 
-            if (expandedGroupsList.contains(group)) {
-                groupNode.setArrowExpanded(true);
-                tagListBox.getChildren().addAll(groupNode.getNameNodes());
+    public void expandAll() {
+        for (Node node : tagNodes.getChildren()) {
+            if (node instanceof TagNode) {
+                TagNode tagNode = (TagNode) node;
+                tagNode.showNameNodes();
             }
         }
     }
-    private TextNode createNameNode(String name, Color textColor, GroupNode groupNode) {
-        TextNode nameNode = new TextNode(name, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
-
-        nameNode.setTextFill(textColor);
-        nameNode.setAlignment(Pos.CENTER_LEFT);
-        nameNode.prefWidthProperty().bind(tagListBox.widthProperty());
-        nameNode.setPadding(new Insets(0, 0, 0, 50));
-        nameNode.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY) {
-                changeNodeState(groupNode, nameNode);
-            } else if (event.getButton() == MouseButton.SECONDARY) {
-                InstanceManager.getClickMenuInfo().setGroup(groupNode.getText());
-                InstanceManager.getClickMenuInfo().setName(nameNode.getText());
-                InstanceManager.getClickMenuInfo().show(nameNode, event);
+    public void collapseAll() {
+        for (Node node : tagNodes.getChildren()) {
+            if (node instanceof TagNode) {
+                TagNode tagNode = (TagNode) node;
+                tagNode.hideNameNodes();
             }
-        });
-
-        return nameNode;
+        }
     }
 
-    public void changeNodeState(GroupNode groupNode, TextNode nameNode) {
-        TagObject tagObject = InstanceManager.getTagListMain().getTagObject(groupNode.getText(), nameNode.getText());
-        if (nameNode.getTextFill().equals(ColorUtil.getTextColorPos()) || nameNode.getTextFill().equals(ColorUtil.getTextColorShr())) {
-            nameNode.setTextFill(ColorUtil.getTextColorDef());
-            this.removeTagObjectFromSelection(tagObject);
-        } else {
-            nameNode.setTextFill(ColorUtil.getTextColorPos());
-            this.addTagObjectToSelection(tagObject);
+    private void refreshTitle() {
+        Filter filter = InstanceManager.getFilter();
+        Select select = InstanceManager.getSelect();
+
+        int hiddenTilesCount = 0;
+        for (DataObject dataObject : select) {
+            if (!filter.contains(dataObject)) {
+                hiddenTilesCount++;
+            }
         }
 
-        InstanceManager.getReload().flag(Reload.Control.INFO);
-        InstanceManager.getReload().doReload();
+        String text = "Selection: " + select.size() + " file(s)";
+        if (hiddenTilesCount > 0) {
+            text += ", " + hiddenTilesCount + " hidden by filter";
+        }
+
+        nodeTitle.setText(text);
+    }
+
+    public void changeNodeState(TagNode tagNode, TextNode nameNode) {
+        if (nameNode != null) {
+            TagObject tagObject = InstanceManager.getTagListMain().getTagObject(tagNode.getGroup(), nameNode.getText());
+            if (nameNode.getTextFill().equals(ColorUtil.getTextColorPos()) || nameNode.getTextFill().equals(ColorUtil.getTextColorShr())) {
+                nameNode.setTextFill(ColorUtil.getTextColorDef());
+                this.removeTagObjectFromSelection(tagObject);
+            } else {
+                nameNode.setTextFill(ColorUtil.getTextColorPos());
+                this.addTagObjectToSelection(tagObject);
+            }
+
+            InstanceManager.getReload().flag(Reload.Control.INFO);
+            InstanceManager.getReload().doReload();
+        }
     }
     public void addTagObjectToSelection(TagObject tagObject) {
         if (InstanceManager.getSelect().size() < 1) {
@@ -200,9 +234,6 @@ public class SelectPane extends VBox implements NodeBase {
         }
     }
 
-    public ScrollPane getTagListScrollPane() {
-        return tagListScrollPane;
-    }
     public TextField getTfSearch() {
         return tfSearch;
     }
@@ -212,8 +243,13 @@ public class SelectPane extends VBox implements NodeBase {
     public void setActualText(String actualText) {
         this.actualText = actualText;
     }
-    public ArrayList<String> getExpandedGroupsList() {
-        return expandedGroupsList;
+
+    public ScrollPane getScrollPane() {
+        return scrollPane;
+    }
+
+    public VBox getTagNodes() {
+        return tagNodes;
     }
 
     public TextNode getNodeSelectAll() {
@@ -224,8 +260,5 @@ public class SelectPane extends VBox implements NodeBase {
     }
     public TextNode getNodeSelectMerge() {
         return nodeSelectMerge;
-    }
-    public VBox getTagListBox() {
-        return tagListBox;
     }
 }

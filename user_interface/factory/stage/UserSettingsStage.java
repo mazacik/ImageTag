@@ -22,7 +22,7 @@ public class UserSettingsStage extends Stage {
     public UserSettingsStage() {
         //todo finish this
         double spacing = SizeUtil.getGlobalSpacing();
-        VBox vBox = NodeUtil.getVBox(ColorType.DEF);
+        VBox vBox = NodeUtil.getVBox(ColorType.DEF, ColorType.DEF);
         vBox.setPadding(new Insets(spacing));
         vBox.setSpacing(spacing);
         ArrayList<TextNode> labels = new ArrayList<>();
@@ -34,7 +34,7 @@ public class UserSettingsStage extends Stage {
             textField.setFont(StyleUtil.getFont());
             textField.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
             NodeUtil.addToManager(textField, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
-            HBox hBox = NodeUtil.getHBox(ColorType.DEF, label, textField);
+            HBox hBox = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF, label, textField);
             vBox.getChildren().add(hBox);
         });
 
@@ -51,7 +51,7 @@ public class UserSettingsStage extends Stage {
                 this.close();
             }
         });
-        HBox hBox = NodeUtil.getHBox(ColorType.DEF, lblCancel, lblOK);
+        HBox hBox = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF, lblCancel, lblOK);
 
         BorderPane borderPane = new BorderPane();
         Scene scene = new Scene(borderPane);

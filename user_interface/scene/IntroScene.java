@@ -33,17 +33,17 @@ public class IntroScene {
     }
 
     private Scene create() {
-        VBox vBoxRecentProjects = NodeUtil.getVBox(ColorType.ALT);
+        VBox vBoxRecentProjects = NodeUtil.getVBox(ColorType.ALT, ColorType.ALT);
         vBoxRecentProjects.setMinWidth(300);
         vBoxRecentProjects.setPadding(new Insets(5));
 
-        VBox vBoxStartMenu = NodeUtil.getVBox(ColorType.DEF);
+        VBox vBoxStartMenu = NodeUtil.getVBox(ColorType.DEF, ColorType.DEF);
         vBoxStartMenu.setSpacing(10);
         vBoxStartMenu.setMinWidth(350);
         vBoxStartMenu.setAlignment(Pos.CENTER);
         vBoxStartMenu.setPrefWidth(SizeUtil.getUsableScreenWidth());
 
-        HBox hBoxLayoutHelper = NodeUtil.getHBox(ColorType.DEF, vBoxRecentProjects, vBoxStartMenu);
+        HBox hBoxLayoutHelper = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF, vBoxRecentProjects, vBoxStartMenu);
         VBox.setVgrow(hBoxLayoutHelper, Priority.ALWAYS);
 
         TextNode btnOpenProject = new TextNode("Open Project", ColorType.DEF, ColorType.DEF, ColorType.DEF, ColorType.ALT);
@@ -96,7 +96,7 @@ public class IntroScene {
             });
         }
 
-        Scene introScene = new Scene(NodeUtil.getVBox(ColorType.DEF, hBoxLayoutHelper));
+        Scene introScene = new Scene(NodeUtil.getVBox(ColorType.DEF, ColorType.DEF, hBoxLayoutHelper));
         introScene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 if (!InstanceManager.getSettings().getRecentProjects().isEmpty()) {
