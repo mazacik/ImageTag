@@ -3,8 +3,8 @@ package utils;
 import database.list.ObjectList;
 import database.object.DataObject;
 import javafx.scene.Scene;
+import javafx.stage.DirectoryChooser;
 import lifecycle.InstanceManager;
-import user_interface.factory.stage.DirectoryChooserStage;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,15 +50,19 @@ public abstract class FileUtil {
 
     public static String directoryChooser(Scene ownerScene, String initialDirectory) {
         if (ownerScene == null || ownerScene.getWindow() == null) throw new NullPointerException();
-
-        String resultValue = new DirectoryChooserStage(ownerScene.getWindow(), "Choose a Directory", initialDirectory).getResultValue();
-        if (!resultValue.isEmpty()) {
-            char lastchar = resultValue.charAt(resultValue.length() - 1);
-            char separatorChar = File.separatorChar;
-            if (lastchar != separatorChar) resultValue += separatorChar;
-            return resultValue;
-        }
-        return "";
+	
+		DirectoryChooser directoryChooser = new DirectoryChooser();
+		directoryChooser.setTitle("Choose a Directory");
+		directoryChooser.setInitialDirectory(new File(initialDirectory));
+		File directory = directoryChooser.showDialog(ownerScene.getWindow());
+		String result = directory.getAbsolutePath();
+		if (!result.isEmpty()) {
+			char lastChar = result.charAt(result.length() - 1);
+			if (lastChar != File.separatorChar) result += File.separatorChar;
+			return result;
+		} else {
+			return "";
+		}
     }
     public static String directoryChooser(Scene ownerScene) {
         return directoryChooser(ownerScene, System.getProperty("user.dir"));

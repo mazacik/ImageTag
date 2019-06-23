@@ -11,13 +11,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import lifecycle.InstanceManager;
 import lifecycle.LifeCycleManager;
-import user_interface.factory.base.CheckBoxNode;
-import user_interface.factory.base.EditNode;
-import user_interface.factory.base.TextNode;
-import user_interface.utils.NodeUtil;
-import user_interface.utils.SceneUtil;
-import user_interface.utils.SizeUtil;
-import user_interface.utils.enums.ColorType;
+import user_interface.nodes.NodeUtil;
+import user_interface.nodes.base.EditNode;
+import user_interface.nodes.base.TextNode;
+import user_interface.style.SizeUtil;
+import user_interface.style.StyleUtil;
+import user_interface.style.enums.ColorType;
 import utils.FileUtil;
 
 public class ProjectScene {
@@ -58,9 +57,6 @@ public class ProjectScene {
         hBoxProjectDirectory.setSpacing(5 * SizeUtil.getGlobalSpacing());
         hBoxWorkingDirectory.setSpacing(5 * SizeUtil.getGlobalSpacing());
 
-        CheckBoxNode cbSubdirs = new CheckBoxNode("Search in subdirectories ?");
-        cbSubdirs.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> cbSubdirs.setSelected(!cbSubdirs.isSelected()));
-
         TextNode btnCreateProject = new TextNode("Create Project", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
         TextNode btnCancel = new TextNode("Cancel", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
 
@@ -87,7 +83,6 @@ public class ProjectScene {
                 hBoxProjectName,
                 hBoxProjectDirectory,
                 hBoxWorkingDirectory,
-                cbSubdirs,
                 hBoxCreateCancel
         );
         vBoxMain.setSpacing(5 * SizeUtil.getGlobalSpacing());
@@ -113,5 +108,6 @@ public class ProjectScene {
 
     public void show() {
         InstanceManager.getMainStage().setScene(scene);
+		StyleUtil.applyStyle();
     }
 }

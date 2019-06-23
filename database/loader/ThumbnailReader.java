@@ -17,8 +17,8 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import lifecycle.InstanceManager;
-import user_interface.singleton.center.BaseTile;
-import user_interface.utils.SizeUtil;
+import user_interface.main.center.BaseTile;
+import user_interface.style.SizeUtil;
 
 import java.io.File;
 import java.util.ArrayList;

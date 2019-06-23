@@ -6,8 +6,7 @@ import control.Target;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.input.KeyEvent;
 import lifecycle.InstanceManager;
-import user_interface.singleton.center.BaseTileEvent;
-import user_interface.utils.SceneUtil;
+import user_interface.main.center.BaseTileEvent;
 
 public class MainStageEvent {
     private SimpleBooleanProperty shiftDown = new SimpleBooleanProperty(false);
@@ -18,6 +17,8 @@ public class MainStageEvent {
     }
     private void onKeyPress() {
         InstanceManager.getMainStage().getScene().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+			if (InstanceManager.getSelectPane().getTfSearch().isFocused()) return;
+
             Select select = InstanceManager.getSelect();
             Reload reload = InstanceManager.getReload();
             Target target = InstanceManager.getTarget();
@@ -26,10 +27,7 @@ public class MainStageEvent {
                 case ESCAPE:
                     if (SceneUtil.isFullView()) {
                         SceneUtil.swapViewMode();
-                    } else if (InstanceManager.getSelectPane().getTfSearch().isFocused()) {
-                        InstanceManager.getToolbarPane().requestFocus();
                     }
-
                     break;
                 case E:
                     BaseTileEvent.onGroupButtonPress(target.getCurrentTarget());

@@ -4,10 +4,10 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import lifecycle.InstanceManager;
-import user_interface.factory.base.TextNode;
-import user_interface.utils.NodeUtil;
-import user_interface.utils.SizeUtil;
-import user_interface.utils.enums.ColorType;
+import user_interface.nodes.NodeUtil;
+import user_interface.nodes.base.TextNode;
+import user_interface.style.SizeUtil;
+import user_interface.style.enums.ColorType;
 
 public class LoadingScene {
     private final Scene loadingScene;

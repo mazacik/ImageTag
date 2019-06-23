@@ -2,12 +2,13 @@ package database.list;
 
 import com.google.gson.reflect.TypeToken;
 import control.Reload;
-import utils.FileUtil;
 import database.object.DataObject;
 import database.object.TagObject;
 import lifecycle.InstanceManager;
+import user_interface.stage.StageUtil;
+import user_interface.stage.Stages;
+import utils.FileUtil;
 import utils.JsonUtil;
-import user_interface.factory.stage.InfoObjectEditStage;
 
 import java.lang.reflect.Type;
 
@@ -63,7 +64,7 @@ public class TagListMain extends TagList {
     }
     public boolean edit(TagObject tagObject) {
         if (tagObject == null) return false;
-        TagObject newTagObject = new InfoObjectEditStage(tagObject).getResult();
+		TagObject newTagObject = (TagObject) StageUtil.show(Stages.STAGE_TAG_EDITOR, tagObject.getGroup(), tagObject.getName());
         if (newTagObject != null) {
             tagObject.setFull(newTagObject.getGroup(), newTagObject.getName());
             super.sort();

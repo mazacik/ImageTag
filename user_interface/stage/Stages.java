@@ -1,0 +1,10 @@
+package user_interface.stage;
+
+public enum Stages {
+	STAGE_ERROR,
+	STAGE_FILTER_SETTINGS,
+	STAGE_GROUP_EDITOR,
+	STAGE_OK_CANCEL,
+	STAGE_SETTINGS,
+	STAGE_TAG_EDITOR,
+}

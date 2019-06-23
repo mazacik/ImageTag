@@ -1,7 +1,7 @@
 package control;
 
 import lifecycle.InstanceManager;
-import user_interface.singleton.NodeBase;
+import user_interface.main.NodeBase;
 
 import java.util.ArrayList;
 

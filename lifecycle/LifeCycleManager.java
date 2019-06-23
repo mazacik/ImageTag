@@ -1,11 +1,11 @@
 package lifecycle;
 
-import utils.FileUtil;
 import database.loader.LoaderThread;
 import database.loader.Project;
 import javafx.application.Platform;
-import user_interface.utils.SceneUtil;
-import user_interface.singleton.center.VideoPlayer;
+import user_interface.main.center.VideoPlayer;
+import user_interface.scene.SceneUtil;
+import utils.FileUtil;
 
 import java.io.File;
 
