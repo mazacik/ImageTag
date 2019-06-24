@@ -11,6 +11,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Pair;
 import lifecycle.InstanceManager;
 import user_interface.nodes.NodeUtil;
 import user_interface.nodes.base.CheckBoxNode;
@@ -22,64 +23,64 @@ import user_interface.style.enums.ColorType;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class EditorTag extends Stage implements StageBase {
-    private final TextField nodeGroupEdit = new TextField();
-    private final TextField nodeNameEdit = new TextField();
-    private final TextNode nodeGroup = new TextNode("Group", ColorType.DEF, ColorType.DEF);
-    private final TextNode nodeName = new TextNode("Name", ColorType.DEF, ColorType.DEF);
-    private final TextNode nodeOK = new TextNode("OK", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
-    private final TextNode nodeCancel = new TextNode("Cancel", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+	private final TextField nodeGroupEdit = new TextField();
+	private final TextField nodeNameEdit = new TextField();
+	private final TextNode nodeGroup = new TextNode("Group", ColorType.DEF, ColorType.DEF);
+	private final TextNode nodeName = new TextNode("Name", ColorType.DEF, ColorType.DEF);
+	private final TextNode nodeOK = new TextNode("OK", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+	private final TextNode nodeCancel = new TextNode("Cancel", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
 	private final CheckBoxNode nodeAddToSelection = new CheckBoxNode("Apply to selection?"); //todo implement me
-
-    private TagObject tagObject = null;
+	
+	private TagObject tagObject = null;
 	private TitleBar titleBar;
 	
 	EditorTag() {
-        nodeGroup.setPrefWidth(60);
-        nodeGroupEdit.setPrefWidth(200);
-        nodeName.setPrefWidth(60);
-        nodeNameEdit.setPrefWidth(200);
-
-        nodeGroupEdit.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
-        nodeNameEdit.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
-
-        nodeGroupEdit.setFont(StyleUtil.getFont());
-        nodeNameEdit.setFont(StyleUtil.getFont());
-
-        NodeUtil.addToManager(nodeGroupEdit, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
-        NodeUtil.addToManager(nodeNameEdit, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
-
-        nodeOK.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY) {
+		nodeGroup.setPrefWidth(60);
+		nodeGroupEdit.setPrefWidth(200);
+		nodeName.setPrefWidth(60);
+		nodeNameEdit.setPrefWidth(200);
+		
+		nodeGroupEdit.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
+		nodeNameEdit.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
+		
+		nodeGroupEdit.setFont(StyleUtil.getFont());
+		nodeNameEdit.setFont(StyleUtil.getFont());
+		
+		NodeUtil.addToManager(nodeGroupEdit, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+		NodeUtil.addToManager(nodeNameEdit, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+		
+		nodeOK.setOnMouseClicked(event -> {
+			if (event.getButton() == MouseButton.PRIMARY) {
 				String group = nodeGroupEdit.getText();
 				String name = nodeNameEdit.getText();
 				if (!group.isEmpty() && !name.isEmpty()) {
 					tagObject = new TagObject(group, name);
 				}
-                this.close();
-            }
-        });
-        nodeCancel.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY) {
-                this.close();
-            }
-        });
-
-        HBox hBoxGroup = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF, nodeGroup, nodeGroupEdit);
-        HBox hBoxName = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF, nodeName, nodeNameEdit);
-        VBox vBoxHelper = NodeUtil.getVBox(ColorType.DEF, ColorType.DEF, hBoxGroup, hBoxName, nodeAddToSelection);
-        double padding = SizeUtil.getGlobalSpacing();
-        vBoxHelper.setPadding(new Insets(padding, padding, 0, 0));
-        vBoxHelper.setSpacing(padding);
-
-        HBox hBoxBottom = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF, nodeCancel, nodeOK);
+				this.close();
+			}
+		});
+		nodeCancel.setOnMouseClicked(event -> {
+			if (event.getButton() == MouseButton.PRIMARY) {
+				this.close();
+			}
+		});
+		
+		HBox hBoxGroup = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF, nodeGroup, nodeGroupEdit);
+		HBox hBoxName = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF, nodeName, nodeNameEdit);
+		VBox vBoxHelper = NodeUtil.getVBox(ColorType.DEF, ColorType.DEF, hBoxGroup, hBoxName, nodeAddToSelection);
+		double padding = SizeUtil.getGlobalSpacing();
+		vBoxHelper.setPadding(new Insets(padding, padding, 0, 0));
+		vBoxHelper.setSpacing(padding);
+		
+		HBox hBoxBottom = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF, nodeCancel, nodeOK);
 		
 		BorderPane borderPane = new BorderPane();
-        Scene scene = new Scene(borderPane);
+		Scene scene = new Scene(borderPane);
 		titleBar = new TitleBar(this.getScene(), "");
 		
 		borderPane.setTop(titleBar);
-        borderPane.setCenter(vBoxHelper);
-        borderPane.setBottom(hBoxBottom);
+		borderPane.setCenter(vBoxHelper);
+		borderPane.setBottom(hBoxBottom);
 		borderPane.setOnKeyPressed(event -> {
 			if (event.getCode() == KeyCode.ENTER) {
 				String group = nodeGroupEdit.getText();
@@ -101,8 +102,9 @@ public class EditorTag extends Stage implements StageBase {
 	}
 	
 	@Override
-	public TagObject _show(String... args) {
+	public Pair<TagObject, Boolean> _show(String... args) {
 		nodeGroupEdit.requestFocus();
+		nodeAddToSelection.setSelected(false);
 		
 		if (args.length == 2) {
 			titleBar.setTitle("Edit Tag");
@@ -118,6 +120,6 @@ public class EditorTag extends Stage implements StageBase {
 		
 		this.showAndWait();
 		
-		return tagObject;
-    }
+		return new Pair<>(tagObject, nodeAddToSelection.isSelected());
+	}
 }

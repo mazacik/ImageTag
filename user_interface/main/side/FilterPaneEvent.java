@@ -4,7 +4,6 @@ import javafx.scene.input.MouseButton;
 import lifecycle.InstanceManager;
 import user_interface.nodes.menu.ClickMenuLeft;
 import user_interface.stage.StageUtil;
-import user_interface.stage.Stages;
 
 public class FilterPaneEvent {
 	public FilterPaneEvent() {
@@ -31,7 +30,7 @@ public class FilterPaneEvent {
     private void onAction_menuSettings() {
         InstanceManager.getFilterPane().getNodeSettings().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-				StageUtil.show(Stages.STAGE_FILTER_SETTINGS);
+				StageUtil.showStageFilterOptions();
                 ClickMenuLeft.hideAll();
             }
         });

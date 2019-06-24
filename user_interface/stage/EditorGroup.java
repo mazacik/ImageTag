@@ -44,7 +44,7 @@ public class EditorGroup extends Stage implements StageBase {
                     result = newGroup;
                     this.close();
                 } else {
-                    StageUtil.show(Stages.STAGE_ERROR, "tag group cannot contain the following character sequence: \" - \"");
+					StageUtil.showStageError("tag group cannot contain the following character sequence: \" - \"");
                 }
             }
         });
@@ -69,7 +69,7 @@ public class EditorGroup extends Stage implements StageBase {
                     result = newGroup;
                     this.close();
                 } else {
-                    StageUtil.show(Stages.STAGE_ERROR, "tag group cannot contain the following character sequence: \" - \"");
+					StageUtil.showStageError("tag group cannot contain the following character sequence: \" - \"");
                 }
             } else if (event.getCode() == KeyCode.ESCAPE) {
                 this.close();

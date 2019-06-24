@@ -7,6 +7,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.util.Pair;
 import lifecycle.InstanceManager;
 import user_interface.main.NodeBase;
 import user_interface.nodes.ColorData;
@@ -14,7 +15,6 @@ import user_interface.nodes.NodeUtil;
 import user_interface.nodes.base.TextNode;
 import user_interface.nodes.menu.ClickMenuLeft;
 import user_interface.stage.StageUtil;
-import user_interface.stage.Stages;
 import user_interface.style.ColorUtil;
 import user_interface.style.SizeUtil;
 import user_interface.style.StyleUtil;
@@ -51,7 +51,9 @@ public class FilterPane extends VBox implements NodeBase, SidePane {
 		btnNew.prefWidthProperty().bind(this.widthProperty());
 		btnNew.setOnMouseClicked(event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
-				InstanceManager.getTagListMain().add((TagObject) StageUtil.show(Stages.STAGE_TAG_EDITOR));
+				Pair<TagObject, Boolean> result = StageUtil.showStageEditorTag();
+				InstanceManager.getTagListMain().add(result.getKey());
+				if (result.getValue()) InstanceManager.getSelect().addTagObject(result.getKey());
 				InstanceManager.getTagListMain().sort();
 				InstanceManager.getReload().doReload();
 			}

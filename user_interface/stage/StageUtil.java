@@ -1,5 +1,8 @@
 package user_interface.stage;
 
+import database.object.TagObject;
+import javafx.util.Pair;
+
 public abstract class StageUtil {
 	private static boolean init = false;
 	
@@ -10,25 +13,29 @@ public abstract class StageUtil {
 	private static StageSettings stageSettings;
 	private static StageFilterOptions stageFilterOptions;
 	
-	public static Object show(Stages stage, String... args) {
+	public static Object showStageError(String... args) {
 		if (!init) init();
-		
-		switch (stage) {
-			case STAGE_ERROR:
-				return stageError._show(args);
-			case STAGE_FILTER_SETTINGS:
-				return stageFilterOptions._show(args);
-			case STAGE_GROUP_EDITOR:
-				return stageEditorGroup._show(args);
-			case STAGE_OK_CANCEL:
-				return stageOkCancel._show(args);
-			case STAGE_SETTINGS:
-				return stageSettings._show(args);
-			case STAGE_TAG_EDITOR:
-				return stageEditorTag._show(args);
-			default:
-				return null;
-		}
+		return stageError._show(args);
+	}
+	public static Pair<TagObject, Boolean> showStageEditorTag(String... args) {
+		if (!init) init();
+		return stageEditorTag._show(args);
+	}
+	public static String showStageEditorGroup(String... args) {
+		if (!init) init();
+		return stageEditorGroup._show(args);
+	}
+	public static boolean showStageOkCancel(String... args) {
+		if (!init) init();
+		return stageOkCancel._show(args);
+	}
+	public static Object showStageSettings(String... args) {
+		if (!init) init();
+		return stageSettings._show(args);
+	}
+	public static Object showStageFilterOptions(String... args) {
+		if (!init) init();
+		return stageFilterOptions._show(args);
 	}
 	
 	private static void init() {

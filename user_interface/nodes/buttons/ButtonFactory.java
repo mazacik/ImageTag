@@ -11,7 +11,6 @@ import user_interface.nodes.ColorData;
 import user_interface.nodes.base.TextNode;
 import user_interface.nodes.menu.ClickMenuBase;
 import user_interface.stage.StageUtil;
-import user_interface.stage.Stages;
 import user_interface.style.enums.ColorType;
 import utils.ClipboardUtil;
 
@@ -153,7 +152,7 @@ public class ButtonFactory {
 					}
                 } else {
                     String oldGroup = InstanceManager.getClickMenuInfo().getGroup();
-					String newGroup = WordUtils.capitalize(((String) StageUtil.show(Stages.STAGE_GROUP_EDITOR, oldGroup)).toLowerCase());
+					String newGroup = WordUtils.capitalize(StageUtil.showStageEditorGroup(oldGroup).toLowerCase());
                     if (newGroup.isEmpty()) return;
 
                     InstanceManager.getTagListMain().forEach(tagObject -> {
@@ -222,7 +221,7 @@ public class ButtonFactory {
             }
         });
 	
-		if ((boolean) StageUtil.show(Stages.STAGE_OK_CANCEL, "Delete " + dataObjectsToDelete.size() + " file(s)?")) {
+		if (StageUtil.showStageOkCancel("Delete " + dataObjectsToDelete.size() + " file(s)?")) {
             InstanceManager.getTarget().storePosition();
             dataObjectsToDelete.forEach(this::deleteDataObject);
             InstanceManager.getTarget().restorePosition();
@@ -235,14 +234,14 @@ public class ButtonFactory {
         DataObject currentTarget = InstanceManager.getTarget().getCurrentTarget();
         if (currentTarget.getMergeID() != 0) {
             if (!InstanceManager.getGalleryPane().getExpandedGroups().contains(currentTarget.getMergeID())) {
-				if ((boolean) StageUtil.show(Stages.STAGE_OK_CANCEL, "Delete " + currentTarget.getMergeGroup().size() + " file(s)?")) {
+				if (StageUtil.showStageOkCancel("Delete " + currentTarget.getMergeGroup().size() + " file(s)?")) {
                     currentTarget.getMergeGroup().forEach(this::deleteDataObject);
                     InstanceManager.getReload().doReload();
                 }
             }
         } else {
             String sourcePath = InstanceManager.getTarget().getCurrentTarget().getPath();
-			if ((boolean) StageUtil.show(Stages.STAGE_OK_CANCEL, "Delete file: " + sourcePath + "?")) {
+			if (StageUtil.showStageOkCancel("Delete file: " + sourcePath + "?")) {
                 InstanceManager.getTarget().storePosition();
                 this.deleteDataObject(currentTarget);
                 InstanceManager.getTarget().restorePosition();
