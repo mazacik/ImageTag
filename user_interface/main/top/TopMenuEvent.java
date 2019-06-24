@@ -7,6 +7,7 @@ import user_interface.nodes.menu.ClickMenuLeft;
 import user_interface.scene.SceneUtil;
 import user_interface.stage.StageUtil;
 import user_interface.stage.Stages;
+import utils.FileUtil;
 
 public class TopMenuEvent {
     public TopMenuEvent() {
@@ -40,7 +41,7 @@ public class TopMenuEvent {
         ToolbarPane toolbarPane = InstanceManager.getToolbarPane();
         toolbarPane.getNodeImport().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                //FileUtil.importFiles();
+				FileUtil.importFiles();
                 ClickMenuLeft.hideAll();
             }
         });

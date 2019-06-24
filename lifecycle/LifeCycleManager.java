@@ -10,6 +10,8 @@ import utils.FileUtil;
 import java.io.File;
 
 public abstract class LifeCycleManager {
+	private static Project project;
+    
     public static void initialize() {
         VideoPlayer.checkLibs();
 
@@ -25,6 +27,8 @@ public abstract class LifeCycleManager {
         });
     }
     public static void startLoading(Project project) {
+		LifeCycleManager.project = project;
+        
         String projectFilePath = project.getProjectFilePath();
         String projectDirectory = projectFilePath.substring(0, projectFilePath.lastIndexOf(File.separatorChar));
         String sourceDirectory = project.getSourceDirectoryList().get(0);
@@ -34,4 +38,8 @@ public abstract class LifeCycleManager {
         SceneUtil.showMainScene();
         SceneUtil.stageLayoutMain();
     }
+	
+	public static Project getProject() {
+		return project;
+	}
 }

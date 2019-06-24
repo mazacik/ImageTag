@@ -14,7 +14,7 @@ import user_interface.nodes.NodeUtil;
 import user_interface.nodes.base.CheckBoxNode;
 import user_interface.nodes.base.EditNode;
 import user_interface.nodes.base.TextNode;
-import user_interface.nodes.node.IntroWindowCell;
+import user_interface.nodes.node.IntroStageNode;
 import user_interface.style.enums.ColorType;
 
 import java.util.ArrayList;
@@ -100,18 +100,18 @@ public abstract class StyleUtil {
                         //label.setCursor(Cursor.HAND);
                     });
                 }
-            } else if (colorData.getRegion() instanceof IntroWindowCell) {
-                IntroWindowCell introWindowCell = ((IntroWindowCell) colorData.getRegion());
-                introWindowCell.setBackground(ColorUtil.getBackgroundDef(colorData));
-                introWindowCell.setOnMouseEntered(event -> {
-                    introWindowCell.setBackground(ColorUtil.getBackgroundAlt(colorData));
-                    introWindowCell.setCursor(Cursor.HAND);
-                    introWindowCell.getNodeRemove().setVisible(true);
+			} else if (colorData.getRegion() instanceof IntroStageNode) {
+				IntroStageNode introStageNode = ((IntroStageNode) colorData.getRegion());
+				introStageNode.setBackground(ColorUtil.getBackgroundDef(colorData));
+				introStageNode.setOnMouseEntered(event -> {
+					introStageNode.setBackground(ColorUtil.getBackgroundAlt(colorData));
+					introStageNode.setCursor(Cursor.HAND);
+					introStageNode.getNodeRemove().setVisible(true);
                 });
-                introWindowCell.setOnMouseExited(event -> {
-                    introWindowCell.setBackground(ColorUtil.getBackgroundDef(colorData));
-                    introWindowCell.setCursor(Cursor.DEFAULT);
-                    introWindowCell.getNodeRemove().setVisible(false);
+				introStageNode.setOnMouseExited(event -> {
+					introStageNode.setBackground(ColorUtil.getBackgroundDef(colorData));
+					introStageNode.setCursor(Cursor.DEFAULT);
+					introStageNode.getNodeRemove().setVisible(false);
                 });
 			} else if (colorData.getRegion() instanceof EditNode) {
 				EditNode editNode = ((EditNode) colorData.getRegion());

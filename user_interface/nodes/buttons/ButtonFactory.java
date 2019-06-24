@@ -191,11 +191,11 @@ public class ButtonFactory {
             DataObject currentTarget = InstanceManager.getTarget().getCurrentTarget();
             String sourcePath = currentTarget.getPath();
             String cachePath = currentTarget.getCacheFile();
-
-            FileUtils fo = FileUtils.getInstance();
-            if (fo.hasTrash()) {
+	
+			FileUtils fileUtils = FileUtils.getInstance();
+			if (fileUtils.hasTrash()) {
                 try {
-                    fo.moveToTrash(new File[]{new File(sourcePath), new File(cachePath)});
+					fileUtils.moveToTrash(new File[]{new File(sourcePath), new File(cachePath)});
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

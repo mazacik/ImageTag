@@ -6,7 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.*;
 import javafx.stage.Window;
-import user_interface.nodes.node.IntroWindowCell;
+import user_interface.nodes.node.IntroStageNode;
 import user_interface.style.ColorUtil;
 import user_interface.style.StyleUtil;
 import user_interface.style.enums.ColorType;
@@ -37,11 +37,11 @@ public abstract class NodeUtil {
     public static ArrayList<ColorData> getNodeList() {
         return nodeList;
     }
-
-    public static IntroWindowCell getIntroWindowCell(String projectFile, String workingDirectory) {
-        IntroWindowCell introWindowCell = new IntroWindowCell(projectFile, workingDirectory);
-        addToManager(introWindowCell, ColorType.ALT, ColorType.DEF, ColorType.NULL, ColorType.NULL);
-        return introWindowCell;
+	
+	public static IntroStageNode getIntroWindowCell(String projectFile, String workingDirectory) {
+		IntroStageNode introStageNode = new IntroStageNode(projectFile, workingDirectory);
+		addToManager(introStageNode, ColorType.ALT, ColorType.DEF, ColorType.NULL, ColorType.NULL);
+		return introStageNode;
     }
 
     public static HBox getHBox(ColorType backgroundDef, ColorType backgroundAlt, Node... children) {

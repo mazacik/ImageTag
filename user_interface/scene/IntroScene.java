@@ -16,8 +16,8 @@ import lifecycle.InstanceManager;
 import lifecycle.LifeCycleManager;
 import user_interface.nodes.NodeUtil;
 import user_interface.nodes.base.TextNode;
-import user_interface.nodes.node.ColorModeNode;
-import user_interface.nodes.node.IntroWindowCell;
+import user_interface.nodes.node.ColorModeSwitchNode;
+import user_interface.nodes.node.IntroStageNode;
 import user_interface.style.SizeUtil;
 import user_interface.style.enums.ColorType;
 
@@ -71,7 +71,7 @@ public class IntroScene {
 
         vBoxStartMenu.getChildren().add(btnOpenProject);
         vBoxStartMenu.getChildren().add(btnNewProject);
-		vBoxStartMenu.getChildren().add(new ColorModeNode());
+		vBoxStartMenu.getChildren().add(new ColorModeSwitchNode());
 
         if (InstanceManager.getSettings().getRecentProjects().size() == 0) {
             vBoxRecentProjects.getChildren().add(new TextNode("No recent directories", ColorType.ALT, ColorType.DEF));
@@ -80,19 +80,19 @@ public class IntroScene {
                 File projectFile = new File(recentProject);
                 if (projectFile.exists()) {
                     Project project = Project.readFromDisk(recentProject);
-
-                    IntroWindowCell introWindowCell = NodeUtil.getIntroWindowCell(recentProject, project.getSourceDirectoryList().get(0));
-                    introWindowCell.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+	
+					IntroStageNode introStageNode = NodeUtil.getIntroWindowCell(recentProject, project.getSourceDirectoryList().get(0));
+					introStageNode.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
                         if (event.getButton() == MouseButton.PRIMARY) {
-                            if (event.getPickResult().getIntersectedNode().getParent().equals(introWindowCell.getNodeRemove())) {
-                                InstanceManager.getSettings().getRecentProjects().remove(introWindowCell.getWorkingDirectory());
-                                vBoxRecentProjects.getChildren().remove(introWindowCell);
+							if (event.getPickResult().getIntersectedNode().getParent().equals(introStageNode.getNodeRemove())) {
+								InstanceManager.getSettings().getRecentProjects().remove(introStageNode.getWorkingDirectory());
+								vBoxRecentProjects.getChildren().remove(introStageNode);
                             } else {
                                 LifeCycleManager.startLoading(project);
                             }
                         }
                     });
-                    vBoxRecentProjects.getChildren().add(introWindowCell);
+					vBoxRecentProjects.getChildren().add(introStageNode);
                 } else {
                     InstanceManager.getLogger().debug(recentProject + " not found, removing it from recent projects");
                     InstanceManager.getSettings().getRecentProjects().remove(recentProject);

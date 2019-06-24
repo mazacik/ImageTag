@@ -11,13 +11,13 @@ import user_interface.style.enums.ColorType;
 
 import java.io.File;
 
-public class IntroWindowCell extends BorderPane {
+public class IntroStageNode extends BorderPane {
     private String projectDirectory;
     private String workingDirectory;
 
     private TextNode nodeRemove;
-
-    public IntroWindowCell(String projectFile, String workingDirectory) {
+	
+	public IntroStageNode(String projectFile, String workingDirectory) {
         ColorData colorData = new ColorData(ColorType.NULL, ColorType.NULL, ColorType.DEF, ColorType.DEF);
 
         this.projectDirectory = new File(projectFile).getParentFile().getAbsolutePath();

@@ -5,8 +5,8 @@ import javafx.scene.input.MouseEvent;
 import user_interface.nodes.NodeUtil;
 import user_interface.style.ColorUtil;
 
-public class ColorModeNode extends SwitchNode {
-	public ColorModeNode() {
+public class ColorModeSwitchNode extends SwitchNode {
+	public ColorModeSwitchNode() {
 		super("Default", "Dark", 140);
 		
 		node1.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {

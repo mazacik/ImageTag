@@ -19,8 +19,8 @@ import user_interface.nodes.base.CheckBoxNode;
 import user_interface.nodes.base.EditNode;
 import user_interface.nodes.base.EditNodeType;
 import user_interface.nodes.base.TextNode;
+import user_interface.nodes.node.SwitchNodeWithTitle;
 import user_interface.nodes.node.TitleBar;
-import user_interface.nodes.node.TitleSwitchNode;
 import user_interface.style.SizeUtil;
 import user_interface.style.enums.ColorType;
 
@@ -33,8 +33,8 @@ public class StageFilterOptions extends Stage implements StageBase {
 	CheckBoxNode cbLimit = new CheckBoxNode("Limit");
 	EditNode tfLimit = new EditNode("", EditNodeType.NUMERIC_POSITIVE);
 	
-	TitleSwitchNode whitelistModeNode = new TitleSwitchNode("Whitelist Mode", "All", "Any", 100);
-	TitleSwitchNode blacklistModeNode = new TitleSwitchNode("Blacklist Mode", "All", "Any", 100);
+	SwitchNodeWithTitle whitelistModeNode = new SwitchNodeWithTitle("Whitelist Mode", "All", "Any", 100);
+	SwitchNodeWithTitle blacklistModeNode = new SwitchNodeWithTitle("Blacklist Mode", "All", "Any", 100);
 	
 	StageFilterOptions() {
 		Filter filter = InstanceManager.getFilter();
