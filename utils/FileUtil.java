@@ -144,6 +144,7 @@ public abstract class FileUtil {
 		ThumbnailReader.readThumbnails(newDataObjects);
 		InstanceManager.getObjectListMain().addAll(newDataObjects);
 		InstanceManager.getObjectListMain().sort();
+		InstanceManager.getFilter().getCurrentSessionObjects().addAll(newDataObjects);
 		InstanceManager.getFilter().refresh();
 		InstanceManager.getReload().doReload();
 	}

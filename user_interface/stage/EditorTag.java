@@ -28,7 +28,7 @@ public class EditorTag extends Stage implements StageBase {
     private final TextNode nodeName = new TextNode("Name", ColorType.DEF, ColorType.DEF);
     private final TextNode nodeOK = new TextNode("OK", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
     private final TextNode nodeCancel = new TextNode("Cancel", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
-    private final CheckBoxNode nodeAddToSelection = new CheckBoxNode("Apply to selection?");
+	private final CheckBoxNode nodeAddToSelection = new CheckBoxNode("Apply to selection?"); //todo implement me
 
     private TagObject tagObject = null;
 	private TitleBar titleBar;

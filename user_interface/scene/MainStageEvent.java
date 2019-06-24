@@ -52,7 +52,8 @@ public class MainStageEvent {
                     target.move(event.getCode());
 
                     if (event.isShiftDown()) select.shiftSelectTo(target.getCurrentTarget());
-                    else select.set(target.getCurrentTarget());
+					else if (event.isControlDown()) select.add(target.getCurrentTarget());
+					else select.set(target.getCurrentTarget());
 
                     InstanceManager.getReload().doReload();
                     break;

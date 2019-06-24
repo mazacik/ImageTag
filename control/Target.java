@@ -38,7 +38,7 @@ public class Target {
 		if (currentTarget == null) return;
 		
 		int columnCount = InstanceManager.getGalleryPane().getColumnCount();
-		int dataCountFilter = InstanceManager.getGalleryPane().getVisibleTiles().size();
+		int visibleTilesCount = InstanceManager.getGalleryPane().getVisibleTiles().size();
 		
 		int currentTargetPosition;
 		if (currentTarget.getMergeID() == 0) {
@@ -60,15 +60,13 @@ public class Target {
 				if (newTargetPosition > 0) newTargetPosition -= 1;
 				break;
 			case DOWN:
-				if (currentTargetPosition < dataCountFilter - (columnCount - (InstanceManager.getGalleryPane().getRowCount() * columnCount - dataCountFilter))) {
-					newTargetPosition += columnCount;
-					if (newTargetPosition > dataCountFilter - 1) {
-						newTargetPosition = dataCountFilter - 1;
-					}
+				newTargetPosition += columnCount;
+				if (newTargetPosition > visibleTilesCount - 1) {
+					newTargetPosition = visibleTilesCount - 1;
 				}
 				break;
 			case RIGHT:
-				if (newTargetPosition < dataCountFilter - 1) newTargetPosition += 1;
+				if (newTargetPosition < visibleTilesCount - 1) newTargetPosition += 1;
 				break;
 		}
 		

@@ -10,9 +10,9 @@ import user_interface.main.center.MediaPane;
 import user_interface.main.center.MediaViewEvent;
 import user_interface.main.center.TileViewEvent;
 import user_interface.main.side.FilterPane;
+import user_interface.main.side.FilterPaneEvent;
 import user_interface.main.side.SelectPane;
-import user_interface.main.side.TagListViewLEvent;
-import user_interface.main.side.TagListViewREvent;
+import user_interface.main.side.SelectPaneEvent;
 import user_interface.main.top.ToolbarPane;
 import user_interface.main.top.TopMenuEvent;
 import user_interface.nodes.menu.ClickMenuData;
@@ -43,8 +43,8 @@ public abstract class InstanceManager {
 
     private static MainStageEvent mainStageEvent;
     private static TopMenuEvent topMenuEvent;
-    private static TagListViewLEvent tagListViewLEvent;
-    private static TagListViewREvent tagListViewREvent;
+	private static FilterPaneEvent filterPaneEvent;
+	private static SelectPaneEvent selectPaneEvent;
     private static TileViewEvent tileViewEvent;
     private static MediaViewEvent mediaViewEvent;
 
@@ -88,8 +88,8 @@ public abstract class InstanceManager {
     public static void createInstancesEvents() {
         mainStageEvent = new MainStageEvent();
         topMenuEvent = new TopMenuEvent();
-        tagListViewLEvent = new TagListViewLEvent();
-        tagListViewREvent = new TagListViewREvent();
+		filterPaneEvent = new FilterPaneEvent();
+		selectPaneEvent = new SelectPaneEvent();
         tileViewEvent = new TileViewEvent();
         mediaViewEvent = new MediaViewEvent();
     }
@@ -149,11 +149,11 @@ public abstract class InstanceManager {
     public static TopMenuEvent getTopMenuEvent() {
         return topMenuEvent;
     }
-    public static TagListViewLEvent getTagListViewLEvent() {
-        return tagListViewLEvent;
+	public static FilterPaneEvent getFilterPaneEvent() {
+		return filterPaneEvent;
     }
-    public static TagListViewREvent getTagListViewREvent() {
-        return tagListViewREvent;
+	public static SelectPaneEvent getSelectPaneEvent() {
+		return selectPaneEvent;
     }
     public static TileViewEvent getTileViewEvent() {
         return tileViewEvent;

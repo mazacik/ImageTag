@@ -29,7 +29,6 @@ public abstract class SceneUtil {
     public static void stageLayoutIntro() {
         Stage mainStage = InstanceManager.getMainStage();
         mainStage.setTitle("Welcome");
-        mainStage.show();
         double width = SizeUtil.getUsableScreenWidth() / 2.5;
         double height = SizeUtil.getUsableScreenHeight() / 2;
         mainStage.setWidth(width);
@@ -37,7 +36,8 @@ public abstract class SceneUtil {
         mainStage.setMinWidth(width);
         mainStage.setMinHeight(height);
         mainStage.centerOnScreen();
-    }
+	
+	}
     public static void stageLayoutMain() {
         Stage mainStage = InstanceManager.getMainStage();
         mainStage.setMinWidth(100 + SizeUtil.getMinWidthSideLists() * 2 + SizeUtil.getGalleryIconSize());

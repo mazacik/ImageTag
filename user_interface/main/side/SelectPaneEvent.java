@@ -11,8 +11,8 @@ import user_interface.nodes.menu.ClickMenuLeft;
 
 import java.util.ArrayList;
 
-public class TagListViewREvent {
-    public TagListViewREvent() {
+public class SelectPaneEvent {
+	public SelectPaneEvent() {
         onMouseClick();
 
         tfSearchEvents();
