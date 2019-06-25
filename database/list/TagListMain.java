@@ -48,7 +48,7 @@ public class TagListMain extends TagList {
 	public boolean add(TagObject tagObject) {
 		if (tagObject == null) return false;
 		if (super.add(tagObject)) {
-			InstanceManager.getReload().flag(Reload.Control.INFO);
+			InstanceManager.getReload().flag(Reload.Control.TAG);
 			return true;
 		}
 		return false;
@@ -57,7 +57,7 @@ public class TagListMain extends TagList {
 		if (tagObject == null) return false;
 		if (super.remove(tagObject)) {
 			//InstanceManager.getFilter().refresh();
-			InstanceManager.getReload().flag(Reload.Control.INFO);
+			InstanceManager.getReload().flag(Reload.Control.TAG);
 			return true;
 		}
 		return false;
@@ -72,7 +72,7 @@ public class TagListMain extends TagList {
 			tagObjectOld.setFull(tagObjectNew.getGroup(), tagObjectNew.getName());
 			super.sort();
 			if (result.getValue()) InstanceManager.getSelect().addTagObject(tagObjectOld);
-			InstanceManager.getReload().flag(Reload.Control.INFO);
+			InstanceManager.getReload().flag(Reload.Control.TAG);
 			return true;
 		}
 		return false;

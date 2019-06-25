@@ -19,6 +19,7 @@ public class ClickMenuData extends ClickMenuRight {
         TextNode nodeCopyName = buttonFactory.get(ButtonTemplates.OBJ_COPY_NAME);
         TextNode nodeCopyPath = buttonFactory.get(ButtonTemplates.OBJ_COPY_PATH);
         TextNode nodeDeleteTarget = buttonFactory.get(ButtonTemplates.OBJ_DELETE);
+		TextNode nodeMergeSelection = buttonFactory.get(ButtonTemplates.SEL_MERGE);
         TextNode nodeDeleteSelection = buttonFactory.get(ButtonTemplates.SEL_DELETE);
 
         TextNode nodeObject = new TextNode("Object >", colorData);
@@ -35,6 +36,7 @@ public class ClickMenuData extends ClickMenuRight {
 
         TextNode nodeSelection = new TextNode("Selection >", colorData);
         ClickMenuLeft.install(this, nodeSelection, Direction.RIGHT,
+				nodeMergeSelection,
                 nodeDeleteSelection
         );
 

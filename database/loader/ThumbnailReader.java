@@ -58,7 +58,7 @@ public abstract class ThumbnailReader {
 			}
 		}
 		
-		InstanceManager.getReload().flag(Reload.Control.DATA);
+		InstanceManager.getReload().flag(Reload.Control.OBJ);
 	}
 	public static Image readThumbnail(DataObject dataObject) {
 		File cacheFile = new File(dataObject.getCacheFile());

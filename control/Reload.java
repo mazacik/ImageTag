@@ -15,17 +15,17 @@ public class Reload {
 				, Control.TARGET
 		);
 		this.subscribe(InstanceManager.getFilterPane()
-				, Control.INFO
+				, Control.TAG
 				, Control.FILTER
 		);
 		this.subscribe(InstanceManager.getSelectPane()
-				, Control.INFO
+				, Control.TAG
 				, Control.FILTER
 				, Control.TARGET
 				, Control.SELECT
 		);
 		this.subscribe(InstanceManager.getGalleryPane()
-				, Control.DATA
+				, Control.OBJ
 				, Control.FILTER
 				, Control.SELECT
 		);
@@ -55,8 +55,8 @@ public class Reload {
 	}
 	
 	public enum Control {
-		DATA,
-		INFO,
+		OBJ,
+		TAG,
 		FILTER,
 		TARGET,
 		SELECT,

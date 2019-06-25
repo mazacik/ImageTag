@@ -65,7 +65,7 @@ public class BaseTileEvent {
         for (DataObject dataObject1 : dataObject.getMergeGroup()) {
             dataObject1.generateTileEffect();
         }
-        InstanceManager.getReload().flag(Reload.Control.DATA);
+		InstanceManager.getReload().flag(Reload.Control.OBJ);
     }
 
     private void onMouseClick(BaseTile baseTile) {

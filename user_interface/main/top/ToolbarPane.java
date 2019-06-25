@@ -53,6 +53,7 @@ public class ToolbarPane extends BorderPane implements NodeBase {
         TextNode nodeEdit = buttonFactory.get(ButtonTemplates.OBJ_EDIT);
         TextNode nodeCopyName = buttonFactory.get(ButtonTemplates.OBJ_COPY_NAME);
         TextNode nodeCopyPath = buttonFactory.get(ButtonTemplates.OBJ_COPY_PATH);
+		TextNode nodeUnmergeGroup = buttonFactory.get(ButtonTemplates.GRP_UNMERGE);
         TextNode nodeDeleteTarget = buttonFactory.get(ButtonTemplates.OBJ_DELETE);
         nodeTarget = new TextNode("", colorData);
         ClickMenuLeft.install(nodeTarget, Direction.DOWN,
@@ -61,6 +62,7 @@ public class ToolbarPane extends BorderPane implements NodeBase {
                 nodeEdit,
                 nodeCopyName,
                 nodeCopyPath,
+				nodeUnmergeGroup,
                 nodeDeleteTarget
         );
 
