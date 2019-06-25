@@ -1,14 +1,15 @@
 package user_interface.stage;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import user_interface.nodes.NodeUtil;
 import user_interface.nodes.base.TextNode;
+import user_interface.nodes.buttons.ButtonFactory;
+import user_interface.nodes.buttons.ButtonTemplates;
 import user_interface.nodes.node.TitleBar;
 import user_interface.style.ColorUtil;
 import user_interface.style.SizeUtil;
@@ -19,12 +20,7 @@ public class StageError extends Stage implements StageBase {
 	private TextNode labelContent;
 	
 	StageError() {
-        TextNode buttonPositive = new TextNode("OK", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
-		buttonPositive.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-            if (event.getButton() == MouseButton.PRIMARY) {
-                this.close();
-            }
-        });
+		TextNode buttonPositive = ButtonFactory.getInstance().get(ButtonTemplates.STAGE_OK);
 
         double padding = SizeUtil.getGlobalSpacing();
 		labelContent = new TextNode("", ColorType.DEF, ColorType.DEF);
@@ -34,6 +30,7 @@ public class StageError extends Stage implements StageBase {
 
         VBox vBox = NodeUtil.getVBox(ColorType.DEF, ColorType.DEF);
         Scene scene = new Scene(vBox);
+		vBox.setAlignment(Pos.CENTER);
         vBox.getChildren().add(new TitleBar(scene, "Error"));
         vBox.getChildren().add(labelContent);
         vBox.getChildren().add(buttonPositive);

@@ -5,6 +5,9 @@ import control.Reload;
 import database.object.DataObject;
 import database.object.TagObject;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 import lifecycle.InstanceManager;
 import org.apache.commons.text.WordUtils;
 import user_interface.nodes.ColorData;
@@ -59,9 +62,27 @@ public class ButtonFactory {
 				return tagEdit();
 			case TAG_REMOVE:
 				return tagRemove();
+			case SEL_ALL:
+				return selectAll();
+			case SEL_NONE:
+				return selectNone();
+			case STAGE_OK:
+				return stageOK();
+			default:
+				return null;
 		}
-		
-		return objectSimilar();
+	}
+	
+	private TextNode stageOK() {
+		TextNode textNode = new TextNode("OK", colorData);
+		textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+			if (event.getButton() == MouseButton.PRIMARY) {
+				Window window = textNode.getScene().getWindow();
+				if (window instanceof Stage) ((Stage) window).close();
+				else window.hide();
+			}
+		});
+		return textNode;
 	}
 	
 	private TextNode objectOpen() {

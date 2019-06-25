@@ -23,7 +23,7 @@ public class Settings implements Serializable {
         settingsList = new ArrayList<>();
         settingsList.add(new Setting(SettingsEnum.THUMBSIZE, 200));
         settingsList.add(new Setting(SettingsEnum.COLORMODE, 0));
-        settingsList.add(new Setting(SettingsEnum.FONTSIZE, 14));
+		settingsList.add(new Setting(SettingsEnum.FONTSIZE, 16));
 
         recentProjects = new ArrayList<>();
     }

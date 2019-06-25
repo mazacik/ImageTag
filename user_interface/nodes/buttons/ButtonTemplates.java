@@ -17,4 +17,6 @@ public enum ButtonTemplates {
 	TAG_REMOVE,
 	
 	GRP_UNMERGE,
+	
+	STAGE_OK,
 }

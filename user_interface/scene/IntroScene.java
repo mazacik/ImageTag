@@ -18,6 +18,7 @@ import user_interface.nodes.NodeUtil;
 import user_interface.nodes.base.TextNode;
 import user_interface.nodes.node.ColorModeSwitchNode;
 import user_interface.nodes.node.IntroStageNode;
+import user_interface.stage.StageUtil;
 import user_interface.style.SizeUtil;
 import user_interface.style.enums.ColorType;
 
@@ -72,9 +73,7 @@ public class IntroScene {
 		vBoxStartMenu.getChildren().add(btnNewProject);
 		vBoxStartMenu.getChildren().add(new ColorModeSwitchNode());
 		
-		if (InstanceManager.getSettings().getRecentProjects().size() == 0) {
-			vBoxRecentProjects.getChildren().add(new TextNode("No recent directories", ColorType.ALT, ColorType.DEF));
-		} else {
+		if (InstanceManager.getSettings().getRecentProjects().size() != 0) {
 			new ArrayList<>(InstanceManager.getSettings().getRecentProjects()).forEach(recentProject -> {
 				File projectFile = new File(recentProject);
 				if (projectFile.exists()) {
@@ -87,14 +86,15 @@ public class IntroScene {
 								InstanceManager.getSettings().getRecentProjects().remove(introStageNode.getWorkingDirectory());
 								vBoxRecentProjects.getChildren().remove(introStageNode);
 							} else {
-								LifeCycleManager.startLoading(project);
+								if (new File(project.getSourceDirectoryList().get(0)).exists()) {
+									LifeCycleManager.startLoading(project);
+								} else {
+									StageUtil.showStageError("The working directory of this project could not be found.");
+								}
 							}
 						}
 					});
 					vBoxRecentProjects.getChildren().add(introStageNode);
-				} else {
-					InstanceManager.getLogger().debug(recentProject + " not found, removing it from recent projects");
-					InstanceManager.getSettings().getRecentProjects().remove(recentProject);
 				}
 			});
 		}

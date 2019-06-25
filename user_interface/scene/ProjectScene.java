@@ -73,8 +73,8 @@ public class ProjectScene {
                 edtWorkingDirectory.setText(FileUtil.directoryChooser(scene));
             }
         });
-
-        btnCreateProject.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> createProject(edtProjectDirectory.getText(), edtProjectName.getText()));
+    
+        btnCreateProject.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> createProject(edtProjectName.getText(), edtProjectDirectory.getText(), edtWorkingDirectory.getText()));
         btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> SceneUtil.showIntroScene());
 
         HBox hBoxCreateCancel = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF, btnCreateProject, btnCancel);
@@ -91,16 +91,16 @@ public class ProjectScene {
         Scene projectScene = new Scene(vBoxMain);
         projectScene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
-                createProject(edtProjectDirectory.getText(), edtProjectName.getText());
+                createProject(edtProjectName.getText(), edtProjectDirectory.getText(), edtWorkingDirectory.getText());
             }
         });
 
         return projectScene;
     }
-
-    private void createProject(String projectDirectory, String projectName) {
+    
+    private void createProject(String projectName, String projectDirectory, String workingDirectory) {
         String projectFile = projectDirectory + projectName + ".json";
-        Project project = new Project(projectFile, projectDirectory);
+        Project project = new Project(projectFile, workingDirectory);
         project.writeToDisk();
         InstanceManager.getSettings().addProjectPath(projectFile);
         LifeCycleManager.startLoading(project);
