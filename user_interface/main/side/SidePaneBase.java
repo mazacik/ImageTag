@@ -5,7 +5,7 @@ import database.object.TagObject;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import user_interface.main.NodeBase;
 import user_interface.nodes.base.TextNode;
 import user_interface.style.StyleUtil;

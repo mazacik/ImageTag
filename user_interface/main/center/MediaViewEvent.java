@@ -1,7 +1,7 @@
 package user_interface.main.center;
 
 import javafx.beans.value.ChangeListener;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 
 public class MediaViewEvent {
     public MediaViewEvent() {

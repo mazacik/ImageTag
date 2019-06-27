@@ -15,7 +15,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import user_interface.main.NodeBase;
 import user_interface.nodes.NodeUtil;
 import user_interface.scene.SceneUtil;

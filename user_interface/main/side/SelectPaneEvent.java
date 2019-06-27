@@ -5,7 +5,7 @@ import database.object.TagObject;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 
 import java.util.ArrayList;
 

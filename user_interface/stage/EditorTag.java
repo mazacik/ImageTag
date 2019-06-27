@@ -12,7 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Pair;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import user_interface.nodes.NodeUtil;
 import user_interface.nodes.base.CheckBoxNode;
 import user_interface.nodes.base.TextNode;

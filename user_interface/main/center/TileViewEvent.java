@@ -1,6 +1,6 @@
 package user_interface.main.center;
 
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 
 public class TileViewEvent {
     public TileViewEvent() {

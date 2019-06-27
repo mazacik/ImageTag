@@ -8,7 +8,7 @@ import javafx.scene.layout.Border;
 import javafx.scene.layout.Region;
 import javafx.stage.Popup;
 import javafx.stage.Window;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import user_interface.nodes.NodeUtil;
 import user_interface.nodes.base.TextNode;
 import utils.enums.Direction;

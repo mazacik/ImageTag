@@ -3,7 +3,7 @@ package user_interface.main.top;
 import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import user_interface.main.NodeBase;
 import user_interface.nodes.ColorData;
 import user_interface.nodes.NodeUtil;

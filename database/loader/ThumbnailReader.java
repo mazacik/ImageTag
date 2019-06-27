@@ -16,7 +16,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import user_interface.main.center.BaseTile;
 import user_interface.style.SizeUtil;
 
@@ -25,8 +25,10 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
+@SuppressWarnings("FieldCanBeLocal")
 public abstract class ThumbnailReader {
 	private static Image placeholder = null;
+	private static boolean alwaysUsePlaceholder = true;
 	
 	public static void readThumbnails(ObjectList dataObjects) {
 		InstanceManager.getLogger().debug("loading image cache");
@@ -70,7 +72,7 @@ public abstract class ThumbnailReader {
 			image = ThumbnailCreator.createThumbnail(dataObject, cacheFile);
 		}
 		
-		if (image == null) {
+		if (image == null || alwaysUsePlaceholder) {
 			if (placeholder == null) {
 				final FutureTask<Image> query = new FutureTask<>(ThumbnailReader::createPlaceholder);
 				Platform.runLater(query);

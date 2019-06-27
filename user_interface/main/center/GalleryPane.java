@@ -7,7 +7,7 @@ import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.TilePane;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import user_interface.main.NodeBase;
 import user_interface.nodes.NodeUtil;
 import user_interface.scene.SceneUtil;

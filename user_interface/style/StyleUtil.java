@@ -7,7 +7,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import settings.SettingsEnum;
 import user_interface.nodes.ColorData;
 import user_interface.nodes.NodeUtil;

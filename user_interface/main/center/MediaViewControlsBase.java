@@ -11,7 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import user_interface.nodes.NodeUtil;
 import user_interface.nodes.base.TextNode;
 import user_interface.style.ColorUtil;

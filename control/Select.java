@@ -4,7 +4,7 @@ import database.list.ObjectList;
 import database.list.TagList;
 import database.object.DataObject;
 import database.object.TagObject;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 
 import java.util.ArrayList;
 import java.util.Random;

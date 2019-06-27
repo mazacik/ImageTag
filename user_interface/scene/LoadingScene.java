@@ -3,7 +3,7 @@ package user_interface.scene;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import user_interface.nodes.NodeUtil;
 import user_interface.nodes.base.TextNode;
 import user_interface.style.SizeUtil;

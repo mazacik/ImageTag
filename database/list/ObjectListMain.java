@@ -1,8 +1,8 @@
 package database.list;
 
-import utils.FileUtil;
 import database.object.DataObject;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
+import utils.FileUtil;
 import utils.JsonUtil;
 
 import java.lang.reflect.Type;

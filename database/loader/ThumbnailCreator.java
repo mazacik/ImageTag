@@ -3,7 +3,7 @@ package database.loader;
 import database.object.DataObject;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import settings.SettingsEnum;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;

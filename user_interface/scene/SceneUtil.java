@@ -12,7 +12,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import user_interface.main.center.GalleryPane;
 import user_interface.main.center.MediaPane;
 import user_interface.main.center.MediaViewControls;

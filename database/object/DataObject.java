@@ -2,7 +2,7 @@ package database.object;
 
 import database.list.TagList;
 import database.loader.ThumbnailCreator;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import user_interface.main.center.BaseTile;
 import utils.FileUtil;
 import utils.enums.FileType;

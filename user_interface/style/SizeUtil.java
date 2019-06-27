@@ -2,7 +2,7 @@ package user_interface.style;
 
 import javafx.scene.layout.TilePane;
 import javafx.scene.text.Text;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import settings.SettingsEnum;
 import user_interface.main.center.GalleryPane;
 import user_interface.main.center.MediaPane;

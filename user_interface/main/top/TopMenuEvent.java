@@ -2,7 +2,7 @@ package user_interface.main.top;
 
 import javafx.scene.input.MouseButton;
 import javafx.stage.WindowEvent;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import user_interface.nodes.menu.ClickMenuLeft;
 import user_interface.scene.SceneUtil;
 import user_interface.stage.StageUtil;

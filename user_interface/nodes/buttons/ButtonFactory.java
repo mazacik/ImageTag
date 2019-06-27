@@ -8,7 +8,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import org.apache.commons.text.WordUtils;
 import user_interface.nodes.ColorData;
 import user_interface.nodes.base.TextNode;

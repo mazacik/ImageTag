@@ -2,7 +2,7 @@ package control;
 
 import database.object.DataObject;
 import javafx.scene.input.KeyCode;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import utils.enums.Direction;
 
 import java.util.ArrayList;

@@ -4,7 +4,7 @@ import database.list.ObjectList;
 import database.list.TagList;
 import database.object.DataObject;
 import database.object.TagObject;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 
 import java.util.ArrayList;
 
@@ -12,8 +12,8 @@ public class Filter extends ObjectList {
 	private final TagList infoListWhite;
 	private final TagList infoListBlack;
 	
-	private FilterMode whitelistMode;
-	private FilterMode blacklistMode;
+	private double whitelistFactor;
+	private double blacklistFactor;
 	
 	private boolean showImages = true;
 	private boolean showGifs = true;
@@ -26,8 +26,8 @@ public class Filter extends ObjectList {
 		infoListWhite = new TagList();
 		infoListBlack = new TagList();
 		
-		whitelistMode = FilterMode.All;
-		blacklistMode = FilterMode.Any;
+		whitelistFactor = 1.00;
+		blacklistFactor = 0.01;
 	}
 	
 	public void reset() {
@@ -164,34 +164,24 @@ public class Filter extends ObjectList {
 	}
 	
 	private boolean isWhitelistOk(TagList tagList) {
-		FilterMode whitelistMode = InstanceManager.getFilter().getWhitelistMode();
-		if (InstanceManager.getFilter().getInfoListWhite().isEmpty()) {
+		if (infoListWhite.isEmpty()) {
 			return true;
-		} else if (whitelistMode.equals(FilterMode.All) && tagList.containsAll(InstanceManager.getFilter().getInfoListWhite())) {
-			return true;
-		} else if (whitelistMode.equals(FilterMode.Any)) {
-			for (TagObject tagObject : InstanceManager.getFilter().getInfoListWhite()) {
-				if (tagList.contains(tagObject)) {
-					return true;
-				}
-			}
+		} else {
+			ArrayList<TagObject> commonTags = new ArrayList<>(tagList);
+			commonTags.retainAll(infoListWhite);
+			double factor = (double) commonTags.size() / (double) infoListWhite.size();
+			return factor >= whitelistFactor;
 		}
-		return false;
 	}
 	private boolean isBlacklistOk(TagList tagList) {
-		FilterMode blacklistMode = InstanceManager.getFilter().getBlacklistMode();
-		if (InstanceManager.getFilter().getInfoListBlack().isEmpty()) {
+		if (infoListBlack.isEmpty()) {
 			return true;
-		} else if (blacklistMode.equals(FilterMode.All) && tagList.containsAll(InstanceManager.getFilter().getInfoListBlack())) {
-			return false;
-		} else if (blacklistMode.equals(FilterMode.Any)) {
-			for (TagObject tagObject : InstanceManager.getFilter().getInfoListBlack()) {
-				if (tagList.contains(tagObject)) {
-					return false;
-				}
-			}
+		} else {
+			ArrayList<TagObject> commonTags = new ArrayList<>(tagList);
+			commonTags.retainAll(infoListBlack);
+			double factor = (double) commonTags.size() / (double) infoListBlack.size();
+			return factor <= blacklistFactor;
 		}
-		return true;
 	}
 	
 	public boolean isWhitelisted(String group) {
@@ -273,21 +263,16 @@ public class Filter extends ObjectList {
 		this.limit = limit;
 	}
 	
-	public FilterMode getWhitelistMode() {
-		return whitelistMode;
+	public double getWhitelistFactor() {
+		return whitelistFactor;
 	}
-	public void setWhitelistMode(FilterMode whitelistMode) {
-		this.whitelistMode = whitelistMode;
+	public void setWhitelistFactor(double whitelistFactor) {
+		this.whitelistFactor = whitelistFactor;
 	}
-	public FilterMode getBlacklistMode() {
-		return blacklistMode;
+	public double getBlacklistFactor() {
+		return blacklistFactor;
 	}
-	public void setBlacklistMode(FilterMode blacklistMode) {
-		this.blacklistMode = blacklistMode;
-	}
-	
-	public enum FilterMode {
-		Any,
-		All
+	public void setBlacklistFactor(double blacklistFactor) {
+		this.blacklistFactor = blacklistFactor;
 	}
 }

@@ -1,4 +1,4 @@
-package lifecycle;
+package main;
 
 import database.loader.LoaderThread;
 import database.loader.Project;

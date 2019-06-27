@@ -6,8 +6,8 @@ import database.loader.ThumbnailReader;
 import database.object.DataObject;
 import javafx.scene.Scene;
 import javafx.stage.DirectoryChooser;
-import lifecycle.InstanceManager;
-import lifecycle.LifeCycleManager;
+import main.InstanceManager;
+import main.LifeCycleManager;
 
 import java.io.File;
 import java.nio.file.Files;

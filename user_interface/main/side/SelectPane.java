@@ -10,7 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import user_interface.nodes.ColorData;
 import user_interface.nodes.NodeUtil;
 import user_interface.nodes.base.EditNode;

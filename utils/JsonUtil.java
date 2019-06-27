@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import database.list.ObjectListMain;
 import database.loader.Project;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import settings.Settings;
 
 import java.io.BufferedWriter;

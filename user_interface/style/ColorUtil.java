@@ -2,7 +2,7 @@ package user_interface.style;
 
 import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import settings.SettingsEnum;
 import user_interface.nodes.ColorData;
 import user_interface.style.enums.BackgroundEnum;

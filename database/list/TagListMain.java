@@ -5,7 +5,7 @@ import control.Reload;
 import database.object.DataObject;
 import database.object.TagObject;
 import javafx.util.Pair;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import user_interface.stage.StageUtil;
 import utils.FileUtil;
 import utils.JsonUtil;

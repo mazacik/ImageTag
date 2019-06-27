@@ -3,7 +3,7 @@ package user_interface.main.center;
 import control.Reload;
 import database.object.DataObject;
 import javafx.scene.input.MouseEvent;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import settings.SettingsEnum;
 
 public class BaseTileEvent {

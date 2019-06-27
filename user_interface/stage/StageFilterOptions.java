@@ -12,7 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import user_interface.nodes.ColorData;
 import user_interface.nodes.NodeUtil;
 import user_interface.nodes.base.CheckBoxNode;
@@ -69,46 +69,30 @@ public class StageFilterOptions extends Stage implements StageBase {
 		TextNode blacklistNode1 = blacklistModeNode.getSwitchNode().getNode1();
 		TextNode blacklistNode2 = blacklistModeNode.getSwitchNode().getNode2();
 		
-		if (filter.getWhitelistMode() == Filter.FilterMode.All) {
-			whitelistNode1.setBorder(border);
-			whitelistNode2.setBorder(null);
-		} else {
-			whitelistNode1.setBorder(null);
-			whitelistNode2.setBorder(border);
-		}
-		
-		if (filter.getBlacklistMode() == Filter.FilterMode.All) {
-			blacklistNode2.setBorder(border);
-			blacklistNode2.setBorder(null);
-		} else {
-			blacklistNode1.setBorder(null);
-			blacklistNode2.setBorder(border);
-		}
-		
 		whitelistNode1.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
-				filter.setWhitelistMode(Filter.FilterMode.All);
+				filter.setWhitelistFactor(1.00);
 				whitelistNode1.setBorder(border);
 				whitelistNode2.setBorder(null);
 			}
 		});
 		whitelistNode2.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
-				filter.setWhitelistMode(Filter.FilterMode.Any);
+				filter.setWhitelistFactor(0.01);
 				whitelistNode1.setBorder(null);
 				whitelistNode2.setBorder(border);
 			}
 		});
 		blacklistNode1.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
-				filter.setBlacklistMode(Filter.FilterMode.All);
+				filter.setBlacklistFactor(1.00);
 				blacklistNode1.setBorder(border);
 				blacklistNode2.setBorder(null);
 			}
 		});
 		blacklistNode2.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
-				filter.setBlacklistMode(Filter.FilterMode.Any);
+				filter.setBlacklistFactor(0.01);
 				blacklistNode1.setBorder(null);
 				blacklistNode2.setBorder(border);
 			}

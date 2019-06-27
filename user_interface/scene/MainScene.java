@@ -4,7 +4,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import user_interface.nodes.NodeUtil;
 import user_interface.style.SizeUtil;
 import user_interface.style.StyleUtil;

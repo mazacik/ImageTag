@@ -9,7 +9,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.image.WritablePixelFormat;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Affine;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.factory.discovery.NativeDiscovery;
 import uk.co.caprica.vlcj.player.base.ControlsApi;

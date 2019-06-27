@@ -1,6 +1,6 @@
 package control;
 
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import user_interface.main.NodeBase;
 
 import java.util.ArrayList;

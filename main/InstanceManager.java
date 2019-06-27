@@ -1,4 +1,4 @@
-package lifecycle;
+package main;
 
 import control.*;
 import database.list.ObjectListMain;

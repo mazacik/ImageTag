@@ -12,8 +12,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import lifecycle.InstanceManager;
-import lifecycle.LifeCycleManager;
+import main.InstanceManager;
+import main.LifeCycleManager;
+import settings.Settings;
 import user_interface.nodes.NodeUtil;
 import user_interface.nodes.base.TextNode;
 import user_interface.nodes.node.ColorModeSwitchNode;
@@ -33,6 +34,8 @@ public class IntroScene {
 	}
 	
 	private Scene create() {
+		Settings settings = InstanceManager.getSettings();
+		
 		VBox vBoxRecentProjects = NodeUtil.getVBox(ColorType.ALT, ColorType.ALT);
 		vBoxRecentProjects.setMinWidth(300);
 		vBoxRecentProjects.setPadding(new Insets(5));
@@ -55,7 +58,7 @@ public class IntroScene {
 				File file = fileChooser.showOpenDialog(InstanceManager.getMainStage());
 				if (file != null) {
 					String projectFilePath = file.getAbsolutePath();
-					InstanceManager.getSettings().addProjectPath(projectFilePath);
+					settings.addProjectPath(projectFilePath);
 					Project project = Project.readFromDisk(projectFilePath);
 					LifeCycleManager.startLoading(project);
 				}
@@ -73,20 +76,21 @@ public class IntroScene {
 		vBoxStartMenu.getChildren().add(btnNewProject);
 		vBoxStartMenu.getChildren().add(new ColorModeSwitchNode());
 		
-		if (InstanceManager.getSettings().getRecentProjects().size() != 0) {
-			new ArrayList<>(InstanceManager.getSettings().getRecentProjects()).forEach(recentProject -> {
+		ArrayList<String> recentProjects = settings.getRecentProjects();
+		if (recentProjects.size() != 0) {
+			for (String recentProject : new ArrayList<>(recentProjects)) {
 				File projectFile = new File(recentProject);
 				if (projectFile.exists()) {
 					Project project = Project.readFromDisk(recentProject);
-					
 					IntroStageNode introStageNode = NodeUtil.getIntroStageNode(recentProject, project.getSourceDirectoryList().get(0));
 					introStageNode.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 						if (event.getButton() == MouseButton.PRIMARY) {
 							if (event.getPickResult().getIntersectedNode().getParent().equals(introStageNode.getNodeRemove())) {
-								InstanceManager.getSettings().getRecentProjects().remove(introStageNode.getWorkingDirectory());
+								recentProjects.remove(introStageNode.getWorkingDirectory());
 								vBoxRecentProjects.getChildren().remove(introStageNode);
 							} else {
 								if (new File(project.getSourceDirectoryList().get(0)).exists()) {
+									settings.addProjectPath(recentProject);
 									LifeCycleManager.startLoading(project);
 								} else {
 									StageUtil.showStageError("The working directory of this project could not be found.");
@@ -96,7 +100,7 @@ public class IntroScene {
 					});
 					vBoxRecentProjects.getChildren().add(introStageNode);
 				}
-			});
+			}
 		}
 		
 		Scene introScene = new Scene(NodeUtil.getVBox(ColorType.DEF, ColorType.DEF, hBoxLayoutHelper));

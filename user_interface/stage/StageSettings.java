@@ -8,7 +8,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import user_interface.nodes.ColorData;
 import user_interface.nodes.NodeUtil;
 import user_interface.nodes.base.TextNode;

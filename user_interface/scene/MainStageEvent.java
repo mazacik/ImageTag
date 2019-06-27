@@ -5,7 +5,7 @@ import control.Select;
 import control.Target;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.input.KeyEvent;
-import lifecycle.InstanceManager;
+import main.InstanceManager;
 import user_interface.main.center.BaseTileEvent;
 
 public class MainStageEvent {
