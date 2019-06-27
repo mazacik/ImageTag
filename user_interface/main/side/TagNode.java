@@ -27,9 +27,9 @@ public class TagNode extends VBox {
 	private final HBox groupNode;
 	private final ArrayList<TextNode> nameNodes;
 	
-	private final SidePane owner;
+	private final SidePaneBase owner;
 	
-	public TagNode(SidePane owner, String group) {
+	public TagNode(SidePaneBase owner, String group) {
 		this.owner = owner;
 		
 		labelArrow = new TextNode("+ ");

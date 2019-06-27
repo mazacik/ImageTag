@@ -7,12 +7,13 @@ import user_interface.style.ColorUtil;
 
 public class ColorModeSwitchNode extends SwitchNode {
 	public ColorModeSwitchNode() {
-		super("Default", "Dark", 140);
+		super("Default", "Dark", 150);
 		
 		node1.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
 				if (ColorUtil.isNightMode()) {
 					ColorUtil.setNightMode(false);
+					node1.setBackground(ColorUtil.getBackgroundAlt());
 					node1.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
 					node2.setBorder(null);
 				}
@@ -24,6 +25,7 @@ public class ColorModeSwitchNode extends SwitchNode {
 					ColorUtil.setNightMode(true);
 					node1.setBorder(null);
 					node2.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
+					node2.setBackground(ColorUtil.getBackgroundAlt());
 				}
 			}
 		});

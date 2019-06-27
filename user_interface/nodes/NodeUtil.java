@@ -37,8 +37,8 @@ public abstract class NodeUtil {
     public static ArrayList<ColorData> getNodeList() {
         return nodeList;
     }
-	
-	public static IntroStageNode getIntroWindowCell(String projectFile, String workingDirectory) {
+    
+    public static IntroStageNode getIntroStageNode(String projectFile, String workingDirectory) {
 		IntroStageNode introStageNode = new IntroStageNode(projectFile, workingDirectory);
 		addToManager(introStageNode, ColorType.ALT, ColorType.DEF, ColorType.NULL, ColorType.NULL);
 		return introStageNode;

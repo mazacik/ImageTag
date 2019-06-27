@@ -73,8 +73,11 @@ public class ProjectScene {
                 edtWorkingDirectory.setText(FileUtil.directoryChooser(scene));
             }
         });
-    
-        btnCreateProject.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> createProject(edtProjectName.getText(), edtProjectDirectory.getText(), edtWorkingDirectory.getText()));
+	
+		btnCreateProject.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+			//todo check values, if invalid, show error
+			createProject(edtProjectName.getText(), edtProjectDirectory.getText(), edtWorkingDirectory.getText());
+		});
         btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> SceneUtil.showIntroScene());
 
         HBox hBoxCreateCancel = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF, btnCreateProject, btnCancel);

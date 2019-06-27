@@ -79,7 +79,7 @@ public class IntroScene {
 				if (projectFile.exists()) {
 					Project project = Project.readFromDisk(recentProject);
 					
-					IntroStageNode introStageNode = NodeUtil.getIntroWindowCell(recentProject, project.getSourceDirectoryList().get(0));
+					IntroStageNode introStageNode = NodeUtil.getIntroStageNode(recentProject, project.getSourceDirectoryList().get(0));
 					introStageNode.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 						if (event.getButton() == MouseButton.PRIMARY) {
 							if (event.getPickResult().getIntersectedNode().getParent().equals(introStageNode.getNodeRemove())) {
