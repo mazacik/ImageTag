@@ -3,8 +3,8 @@ package main;
 import database.loader.LoaderThread;
 import database.loader.Project;
 import javafx.application.Platform;
-import user_interface.main.center.VideoPlayer;
-import user_interface.scene.SceneUtil;
+import userinterface.main.center.VideoPlayer;
+import userinterface.scene.SceneUtil;
 import utils.FileUtil;
 
 import java.io.File;

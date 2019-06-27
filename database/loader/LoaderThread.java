@@ -5,8 +5,8 @@ import database.list.ObjectListMain;
 import database.object.DataObject;
 import javafx.application.Platform;
 import main.InstanceManager;
-import user_interface.main.side.FilterPane;
-import user_interface.main.side.SelectPane;
+import userinterface.main.side.FilterPane;
+import userinterface.main.side.SelectPane;
 import utils.FileUtil;
 
 import java.io.File;

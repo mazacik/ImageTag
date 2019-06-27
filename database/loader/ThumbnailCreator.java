@@ -8,7 +8,7 @@ import settings.SettingsEnum;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
-import user_interface.main.center.VideoPlayer;
+import userinterface.main.center.VideoPlayer;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

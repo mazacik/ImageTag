@@ -6,7 +6,7 @@ import database.object.DataObject;
 import database.object.TagObject;
 import javafx.util.Pair;
 import main.InstanceManager;
-import user_interface.stage.StageUtil;
+import userinterface.stage.StageUtil;
 import utils.FileUtil;
 import utils.JsonUtil;
 

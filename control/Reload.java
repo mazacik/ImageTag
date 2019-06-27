@@ -1,7 +1,7 @@
 package control;
 
 import main.InstanceManager;
-import user_interface.main.NodeBase;
+import userinterface.main.NodeBase;
 
 import java.util.ArrayList;
 

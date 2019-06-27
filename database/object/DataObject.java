@@ -3,7 +3,7 @@ package database.object;
 import database.list.TagList;
 import database.loader.ThumbnailCreator;
 import main.InstanceManager;
-import user_interface.main.center.BaseTile;
+import userinterface.main.center.BaseTile;
 import utils.FileUtil;
 import utils.enums.FileType;
 
