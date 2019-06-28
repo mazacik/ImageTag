@@ -16,7 +16,7 @@ public class Filter extends ObjectList {
 	private double blacklistFactor;
 	
 	private boolean showImages = true;
-	private boolean showGifs = true;
+	private boolean showGifs = false;
 	private boolean showVideos = false;
 	private boolean sessionOnly = false;
 	private boolean enableLimit = false;

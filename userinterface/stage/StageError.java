@@ -31,7 +31,7 @@ public class StageError extends Stage implements StageBase {
         VBox vBox = NodeUtil.getVBox(ColorType.DEF, ColorType.DEF);
         Scene scene = new Scene(vBox);
 		vBox.setAlignment(Pos.CENTER);
-        vBox.getChildren().add(new TitleBar(scene, "Error"));
+		vBox.getChildren().add(new TitleBar("Error"));
         vBox.getChildren().add(labelContent);
         vBox.getChildren().add(buttonPositive);
         vBox.setBackground(ColorUtil.getBackgroundDef());

@@ -124,7 +124,7 @@ public class StageFilterOptions extends Stage implements StageBase {
 		
 		BorderPane borderPane = new BorderPane();
 		Scene scene = new Scene(borderPane);
-		borderPane.setTop(new TitleBar(scene, "Filter Settings"));
+		borderPane.setTop(new TitleBar("Filter Settings"));
 		borderPane.setLeft(vBoxLeft);
 		borderPane.setRight(vBoxRight);
 		borderPane.setBottom(hBoxOkCancel);

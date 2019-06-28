@@ -60,9 +60,8 @@ public class Target {
 				if (newTargetPosition > 0) newTargetPosition -= 1;
 				break;
 			case DOWN:
-				newTargetPosition += columnCount;
-				if (newTargetPosition > visibleTilesCount - 1) {
-					newTargetPosition = visibleTilesCount - 1;
+				if (newTargetPosition + columnCount <= visibleTilesCount - 1) {
+					newTargetPosition += columnCount;
 				}
 				break;
 			case RIGHT:
@@ -105,7 +104,6 @@ public class Target {
 			if (!visibleObjects.isEmpty()) {
 				DataObject dataObject = visibleObjects.get(0);
 				this.set(dataObject);
-				if (select.isEmpty()) select.set(dataObject);
 			} else {
 				this.set(null);
 				if (select.isEmpty()) select.set(null);

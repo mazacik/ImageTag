@@ -37,6 +37,7 @@ public abstract class LifeCycleManager {
         new LoaderThread().start();
         SceneUtil.showMainScene();
         SceneUtil.stageLayoutMain();
+		InstanceManager.createInstancesEvents();
     }
 	
 	public static Project getProject() {

@@ -12,7 +12,7 @@ import java.awt.*;
 public abstract class SizeUtil {
     private static final double GLOBAL_SPACING = 2;
     private static final double PREF_HEIGHT_TOPMENU = 30;
-    private static final double MIN_WIDTH_SIDELISTS = 200;
+	private static final double MIN_WIDTH_SIDELISTS = 250;
     private static final double GALLERY_ICON_SIZE = InstanceManager.getSettings().intValueOf(SettingsEnum.THUMBSIZE);
 
     public static double getUsableScreenWidth() {

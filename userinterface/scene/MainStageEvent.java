@@ -4,6 +4,7 @@ import control.Reload;
 import control.Select;
 import control.Target;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import main.InstanceManager;
 import userinterface.main.center.BaseTileEvent;
@@ -17,7 +18,14 @@ public class MainStageEvent {
     }
     private void onKeyPress() {
         InstanceManager.getMainStage().getScene().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-			if (InstanceManager.getSelectPane().getTfSearch().isFocused()) return;
+			event.consume();
+	
+			if (InstanceManager.getSelectPane().getTfSearch().isFocused()) {
+				if (event.getCode() == KeyCode.ESCAPE) {
+					InstanceManager.getGalleryPane().requestFocus();
+					return;
+				}
+			}
 
             Select select = InstanceManager.getSelect();
             Reload reload = InstanceManager.getReload();

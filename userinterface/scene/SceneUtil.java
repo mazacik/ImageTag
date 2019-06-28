@@ -42,6 +42,8 @@ public abstract class SceneUtil {
         Stage mainStage = InstanceManager.getMainStage();
         mainStage.setMinWidth(100 + SizeUtil.getMinWidthSideLists() * 2 + SizeUtil.getGalleryIconSize());
         mainStage.setMinHeight(100 + SizeUtil.getPrefHeightTopMenu() + SizeUtil.getGalleryIconSize());
+        mainStage.setWidth(SizeUtil.getUsableScreenWidth());
+        mainStage.setHeight(SizeUtil.getUsableScreenHeight());
         mainStage.setMaximized(true);
     }
 

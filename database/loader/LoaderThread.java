@@ -7,22 +7,21 @@ import javafx.application.Platform;
 import main.InstanceManager;
 import userinterface.main.side.FilterPane;
 import userinterface.main.side.SelectPane;
+import userinterface.stage.StageUtil;
 import utils.FileUtil;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LoaderThread extends Thread {
 	public void run() {
 		ArrayList<File> fileList = FileUtil.getSupportedFiles(FileUtil.getDirSource());
-		
-		try {
-			InstanceManager.getObjectListMain().addAll(ObjectListMain.readFromDisk());
-		} catch (Exception e) {
-			InstanceManager.getLogger().debug("existing database failed to load or does not exist");
-			createDatabase(fileList);
-		}
+		boolean readSuccess = InstanceManager.getObjectListMain().addAll(ObjectListMain.readFromDisk());
+		if (!readSuccess || !checkIntegrity()) createDatabase(fileList);
 		
 		checkDatabase(fileList);
 		FileUtil.initDataObjectPaths(fileList);
@@ -50,9 +49,36 @@ public class LoaderThread extends Thread {
 		ThumbnailReader.readThumbnails(InstanceManager.getObjectListMain());
 	}
 	
+	private boolean checkIntegrity() {
+		for (DataObject dataObject : InstanceManager.getObjectListMain()) {
+			if (dataObject.getName() == null || dataObject.getTagList() == null) {
+				//the database is (most likely) corrupted or outdated
+				AtomicBoolean createNew = new AtomicBoolean(false);
+				FutureTask futureTask = new FutureTask<Boolean>(() -> {
+					InstanceManager.getLogger().debug("Database failed to load.");
+					createNew.set(StageUtil.showStageOkCancel("Database failed to load. Create a new database?"));
+				}, null);
+				Platform.runLater(futureTask);
+				try {
+					futureTask.get();
+				} catch (InterruptedException | ExecutionException ex) {
+					ex.printStackTrace();
+				}
+				if (createNew.get()) {
+					return false;
+				} else {
+					System.exit(1);
+				}
+			}
+		}
+		return true;
+	}
+	
 	private void createDatabase(ArrayList<File> fileList) {
+		ObjectListMain objectListMain = InstanceManager.getObjectListMain();
+		objectListMain.clear();
 		for (File file : fileList) {
-			InstanceManager.getObjectListMain().add(new DataObject(file));
+			objectListMain.add(new DataObject(file));
 		}
 	}
 	private void checkDatabase(ArrayList<File> fileList) {

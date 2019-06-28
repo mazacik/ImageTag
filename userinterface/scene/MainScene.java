@@ -21,18 +21,17 @@ public class MainScene {
 	private Scene create() {
 		HBox mainHBox = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF, InstanceManager.getFilterPane(), InstanceManager.getGalleryPane(), InstanceManager.getSelectPane());
 		panes = mainHBox.getChildren();
-		return new Scene(NodeUtil.getVBox(ColorType.DEF, ColorType.DEF, InstanceManager.getToolbarPane(), mainHBox));
+		
+		Scene scene = new Scene(NodeUtil.getVBox(ColorType.DEF, ColorType.DEF, InstanceManager.getToolbarPane(), mainHBox));
+		
+		scene.widthProperty().addListener((observable, oldValue, newValue) -> SizeUtil.stageWidthChangeHandler());
+		scene.heightProperty().addListener((observable, oldValue, newValue) -> SizeUtil.stageHeightChangehandler());
+		
+		return scene;
 	}
 	public void show() {
 		InstanceManager.getMainStage().setScene(mainScene);
 		InstanceManager.getGalleryPane().requestFocus();
-		
-		SizeUtil.stageWidthChangeHandler();
-		SizeUtil.stageHeightChangehandler();
-		mainScene.widthProperty().addListener((observable, oldValue, newValue) -> SizeUtil.stageWidthChangeHandler());
-		mainScene.heightProperty().addListener((observable, oldValue, newValue) -> SizeUtil.stageHeightChangehandler());
-		
-		InstanceManager.createInstancesEvents();
 		
 		StyleUtil.applyScrollbarStyle(InstanceManager.getGalleryPane());
 		StyleUtil.applyScrollbarStyle(InstanceManager.getFilterPane().getScrollPane());

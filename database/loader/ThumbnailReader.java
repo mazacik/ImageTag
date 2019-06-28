@@ -28,7 +28,7 @@ import java.util.concurrent.FutureTask;
 @SuppressWarnings("FieldCanBeLocal")
 public abstract class ThumbnailReader {
 	private static Image placeholder = null;
-	private static boolean alwaysUsePlaceholder = true;
+	private static boolean alwaysUsePlaceholder = false;
 	
 	public static void readThumbnails(ObjectList dataObjects) {
 		InstanceManager.getLogger().debug("loading image cache");
