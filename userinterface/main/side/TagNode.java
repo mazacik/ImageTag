@@ -13,7 +13,7 @@ import javafx.scene.text.Font;
 import main.InstanceManager;
 import userinterface.nodes.NodeUtil;
 import userinterface.nodes.base.TextNode;
-import userinterface.nodes.menu.ClickMenuInfo;
+import userinterface.nodes.menu.ClickMenuTag;
 import userinterface.style.ColorUtil;
 import userinterface.style.enums.ColorType;
 
@@ -119,10 +119,10 @@ public class TagNode extends VBox {
 						InstanceManager.getReload().doReload();
 						break;
 					case SECONDARY:
-						ClickMenuInfo clickMenuInfo = InstanceManager.getClickMenuInfo();
-						clickMenuInfo.setGroup(labelText.getText());
-						clickMenuInfo.setName("");
-						clickMenuInfo.show(groupNode, event);
+						ClickMenuTag clickMenuTag = InstanceManager.getClickMenuTag();
+						clickMenuTag.setGroup(labelText.getText());
+						clickMenuTag.setName("");
+						clickMenuTag.show(groupNode, event);
 						break;
 				}
 			}
@@ -147,10 +147,10 @@ public class TagNode extends VBox {
 					InstanceManager.getReload().doReload();
 					break;
 				case SECONDARY:
-					ClickMenuInfo clickMenuInfo = InstanceManager.getClickMenuInfo();
-					clickMenuInfo.setGroup(getGroup());
-					clickMenuInfo.setName(nameNode.getText());
-					clickMenuInfo.show(nameNode, event);
+					ClickMenuTag clickMenuTag = InstanceManager.getClickMenuTag();
+					clickMenuTag.setGroup(getGroup());
+					clickMenuTag.setName(nameNode.getText());
+					clickMenuTag.show(nameNode, event);
 					break;
 			}
 		});

@@ -3,7 +3,7 @@ package userinterface.nodes.buttons;
 import com.sun.jna.platform.FileUtils;
 import control.Reload;
 import database.list.DataObjectList;
-import database.list.TagList;
+import database.list.TagListMain;
 import database.object.DataObject;
 import database.object.TagObject;
 import javafx.scene.input.MouseButton;
@@ -17,8 +17,8 @@ import userinterface.main.side.SelectPane;
 import userinterface.nodes.ColorData;
 import userinterface.nodes.base.TextNode;
 import userinterface.nodes.menu.ClickMenuBase;
-import userinterface.nodes.menu.ClickMenuInfo;
 import userinterface.nodes.menu.ClickMenuLeft;
+import userinterface.nodes.menu.ClickMenuTag;
 import userinterface.stage.StageUtil;
 import userinterface.style.enums.ColorType;
 import utils.ClipboardUtil;
@@ -213,9 +213,9 @@ public class ButtonFactory {
 		TextNode textNode = new TextNode("Edit", colorData);
 		textNode.setOnMouseClicked(event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
-				if (!InstanceManager.getClickMenuInfo().getName().isEmpty()) {
-					String group = InstanceManager.getClickMenuInfo().getGroup();
-					String oldName = InstanceManager.getClickMenuInfo().getName();
+				if (!InstanceManager.getClickMenuTag().getName().isEmpty()) {
+					String group = InstanceManager.getClickMenuTag().getGroup();
+					String oldName = InstanceManager.getClickMenuTag().getName();
 					TagObject tagObject = InstanceManager.getTagListMain().getTagObject(group, oldName);
 					InstanceManager.getTagListMain().edit(tagObject);
 					if (!oldName.equals(tagObject.getName())) {
@@ -223,7 +223,7 @@ public class ButtonFactory {
 						InstanceManager.getSelectPane().updateNameNode(group, oldName, tagObject.getName());
 					}
 				} else {
-					String oldGroup = InstanceManager.getClickMenuInfo().getGroup();
+					String oldGroup = InstanceManager.getClickMenuTag().getGroup();
 					String newGroup = WordUtils.capitalize(StageUtil.showStageEditorGroup(oldGroup).toLowerCase());
 					if (newGroup.isEmpty()) return;
 					
@@ -245,21 +245,22 @@ public class ButtonFactory {
 	private TextNode tagRemove() {
 		TextNode textNode = new TextNode("Remove", colorData);
 		textNode.setOnMouseClicked(event -> {
-			TagList tagListMain = InstanceManager.getTagListMain();
 			DataObjectList dataObjectListMain = InstanceManager.getObjectListMain();
-			ClickMenuInfo clickMenuInfo = InstanceManager.getClickMenuInfo();
+			ClickMenuTag clickMenuTag = InstanceManager.getClickMenuTag();
 			FilterPane filterPane = InstanceManager.getFilterPane();
 			SelectPane selectPane = InstanceManager.getSelectPane();
+			TagListMain tagListMain = InstanceManager.getTagListMain();
 			
 			if (event.getButton() == MouseButton.PRIMARY) {
-				String group = clickMenuInfo.getGroup();
-				String name = clickMenuInfo.getName();
+				String group = clickMenuTag.getGroup();
+				String name = clickMenuTag.getName();
 				if (name.isEmpty()) {
-					for (String name1 : tagListMain.getNames(group)) {
-						dataObjectListMain.forEach(dataObject -> dataObject.getTagList().remove(tagListMain.getTagObject(group, name1)));
-						tagListMain.remove(tagListMain.getTagObject(group, name1));
-						filterPane.removeNameNode(group, name1);
-						selectPane.removeNameNode(group, name1);
+					for (String n : tagListMain.getNames(group)) {
+						TagObject tagObject = tagListMain.getTagObject(group, n);
+						dataObjectListMain.forEach(dataObject -> dataObject.getTagList().remove(tagObject));
+						tagListMain.remove(tagObject);
+						filterPane.removeNameNode(group, n);
+						selectPane.removeNameNode(group, n);
 					}
 				} else {
 					TagObject tagObject = tagListMain.getTagObject(group, name);

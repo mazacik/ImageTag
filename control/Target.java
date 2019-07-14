@@ -27,11 +27,10 @@ public class Target {
 			currentTarget.generateTileEffect();
 			
 			/* remove old target effect */
-			if (previousTarget != null)
-				previousTarget.generateTileEffect();
+			if (previousTarget != null) previousTarget.generateTileEffect();
 			
-			InstanceManager.getGalleryPane().adjustViewportToCurrentTarget();
 			InstanceManager.getReload().flag(Reload.Control.TARGET);
+			InstanceManager.getGalleryPane().adjustViewportToCurrentTarget();
 		}
 	}
 	public void move(Direction direction) {
@@ -93,7 +92,6 @@ public class Target {
 		this.storePos = InstanceManager.getGalleryPane().getVisibleDataObjects().indexOf(currentTarget);
 	}
 	public void restorePosition() {
-		
 		Select select = InstanceManager.getSelect();
 		ArrayList<DataObject> visibleObjects = InstanceManager.getGalleryPane().getVisibleDataObjects();
 		if (visibleObjects.size() < 1) return;

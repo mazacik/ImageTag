@@ -3,7 +3,6 @@ package userinterface.main.center;
 import database.list.CustomList;
 import database.loader.ThumbnailReader;
 import database.object.DataObject;
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
@@ -88,21 +87,20 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 	}
 	
 	public void loadViewportCache() {
-		Platform.runLater(() -> {
-			ArrayList<BaseTile> tilesInViewport = getTilesInViewport(getVisibleTiles());
-			for (Node node : tilePane.getChildren()) {
-				if (node instanceof BaseTile) {
-					BaseTile baseTile = (BaseTile) node;
-					if (tilesInViewport.contains(baseTile)) {
-						if (baseTile.getImage() == null) {
-							baseTile.setImage(ThumbnailReader.readThumbnail(baseTile.getParentObject()));
-						}
-					} else {
-						baseTile.setImage(null);
+		tilePane.layout(); //	force tilepane layout to update its viewport
+		ArrayList<BaseTile> tilesInViewport = getTilesInViewport(getVisibleTiles());
+		for (Node node : tilePane.getChildren()) {
+			if (node instanceof BaseTile) {
+				BaseTile baseTile = (BaseTile) node;
+				if (tilesInViewport.contains(baseTile)) {
+					if (baseTile.getImage() == null) {
+						baseTile.setImage(ThumbnailReader.readThumbnail(baseTile.getParentObject()));
 					}
+				} else {
+					baseTile.setImage(null);
 				}
 			}
-		});
+		}
 	}
 	
 	public ArrayList<BaseTile> getTilesInViewport(ArrayList<BaseTile> tiles) {

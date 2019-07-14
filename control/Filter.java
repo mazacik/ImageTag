@@ -38,12 +38,9 @@ public class Filter extends DataObjectList {
 			return false;
 		}
 	}
-	public boolean setAll(DataObjectList dataObjects) {
+	public void setAll(DataObjectList dataObjects) {
 		if (super.setAll(dataObjects)) {
 			InstanceManager.getReload().flag(Reload.Control.FILTER);
-			return true;
-		} else {
-			return false;
 		}
 	}
 	public void clear() {

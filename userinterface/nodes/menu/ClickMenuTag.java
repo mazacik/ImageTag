@@ -4,11 +4,11 @@ import userinterface.nodes.base.TextNode;
 import userinterface.nodes.buttons.ButtonFactory;
 import userinterface.nodes.buttons.ButtonTemplates;
 
-public class ClickMenuInfo extends ClickMenuRight {
+public class ClickMenuTag extends ClickMenuRight {
     private String group;
     private String name;
-
-    public ClickMenuInfo() {
+	
+	public ClickMenuTag() {
         ButtonFactory buttonFactory = ButtonFactory.getInstance();
         TextNode nodeEdit = buttonFactory.get(ButtonTemplates.TAG_EDIT);
         TextNode nodeRemove = buttonFactory.get(ButtonTemplates.TAG_REMOVE);

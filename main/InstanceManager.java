@@ -16,7 +16,7 @@ import userinterface.main.side.SelectPaneEvent;
 import userinterface.main.top.ToolbarPane;
 import userinterface.main.top.TopMenuEvent;
 import userinterface.nodes.menu.ClickMenuData;
-import userinterface.nodes.menu.ClickMenuInfo;
+import userinterface.nodes.menu.ClickMenuTag;
 import userinterface.scene.MainStageEvent;
 
 public abstract class InstanceManager {
@@ -39,7 +39,7 @@ public abstract class InstanceManager {
     private static GalleryPane galleryPane;
 
     private static ClickMenuData clickMenuData;
-    private static ClickMenuInfo clickMenuInfo;
+	private static ClickMenuTag clickMenuTag;
 
     private static MainStageEvent mainStageEvent;
     private static TopMenuEvent topMenuEvent;
@@ -78,7 +78,7 @@ public abstract class InstanceManager {
         selectPane = new SelectPane();      /* needs Settings */
 
         clickMenuData = new ClickMenuData();
-        clickMenuInfo = new ClickMenuInfo();
+		clickMenuTag = new ClickMenuTag();
     }
     private static void createInstancesBackend() {
         filter = new Filter();
@@ -140,8 +140,8 @@ public abstract class InstanceManager {
     public static ClickMenuData getClickMenuData() {
         return clickMenuData;
     }
-    public static ClickMenuInfo getClickMenuInfo() {
-        return clickMenuInfo;
+	public static ClickMenuTag getClickMenuTag() {
+		return clickMenuTag;
     }
 
     public static MainStageEvent getMainStageEvent() {

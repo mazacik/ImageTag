@@ -1,6 +1,6 @@
 package userinterface.main.side;
 
-import database.list.TagList;
+import database.list.TagListMain;
 import database.object.TagObject;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
@@ -19,7 +19,7 @@ public abstract class SidePaneBase extends VBox implements NodeBase {
 	protected VBox tagNodesBox;
 	
 	public void refresh() {
-		TagList tagListMain = InstanceManager.getTagListMain();
+		TagListMain tagListMain = InstanceManager.getTagListMain();
 		
 		//	primary helpers
 		ArrayList<String> groupsHere = new ArrayList<>();
