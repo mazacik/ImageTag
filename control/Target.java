@@ -93,13 +93,21 @@ public class Target {
 		this.storePos = InstanceManager.getGalleryPane().getVisibleDataObjects().indexOf(currentTarget);
 	}
 	public void restorePosition() {
+		
 		Select select = InstanceManager.getSelect();
 		ArrayList<DataObject> visibleObjects = InstanceManager.getGalleryPane().getVisibleDataObjects();
+		if (visibleObjects.size() < 1) return;
 		
-		if (storePos >= 0 && storePos < visibleObjects.size()) {
-			DataObject dataObject = visibleObjects.get(storePos);
-			this.set(dataObject);
-			if (select.isEmpty()) select.set(dataObject);
+		if (storePos >= 0) {
+			if (storePos < visibleObjects.size() - 1) {
+				DataObject dataObject = visibleObjects.get(storePos);
+				this.set(dataObject);
+				if (select.isEmpty()) select.set(dataObject);
+			} else {
+				DataObject dataObject = visibleObjects.get(visibleObjects.size() - 1);
+				this.set(dataObject);
+				if (select.isEmpty()) select.set(dataObject);
+			}
 		} else {
 			if (!visibleObjects.isEmpty()) {
 				DataObject dataObject = visibleObjects.get(0);

@@ -31,7 +31,7 @@ public abstract class LifeCycleManager {
         
         String projectFilePath = project.getProjectFilePath();
         String projectDirectory = projectFilePath.substring(0, projectFilePath.lastIndexOf(File.separatorChar));
-        String sourceDirectory = project.getSourceDirectoryList().get(0);
+		String sourceDirectory = project.getSourceDirectory();
 
         FileUtil.initialize(projectDirectory, sourceDirectory);
         new LoaderThread().start();

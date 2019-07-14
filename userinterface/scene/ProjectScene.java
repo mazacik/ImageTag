@@ -75,7 +75,7 @@ public class ProjectScene {
 		});
 		
 		btnCreateProject.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-			//todo check values, if invalid, show error
+			//todo checkValues values, if invalid, show error
 			createProject(edtProjectName.getText(), edtProjectDirectory.getText(), edtWorkingDirectory.getText());
 		});
 		btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> SceneUtil.showIntroScene());
@@ -106,6 +106,7 @@ public class ProjectScene {
 		Project project = new Project(projectFile, workingDirectory);
 		project.writeToDisk();
 		InstanceManager.getSettings().addProjectPath(projectFile);
+		InstanceManager.getSettings().writeToDisk();
 		LifeCycleManager.startLoading(project);
 	}
 	

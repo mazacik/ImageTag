@@ -1,41 +1,54 @@
 package control;
 
-import database.list.ObjectList;
+import database.list.CustomList;
+import database.list.DataObjectList;
 import database.list.TagList;
 import database.object.DataObject;
 import database.object.TagObject;
 import main.InstanceManager;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Random;
 
-public class Select extends ObjectList {
+public class Select extends DataObjectList {
 	private DataObject shiftStart = null;
-	
-	public Select() {
-	
-	}
 	
 	public boolean add(DataObject dataObject) {
 		if (dataObject == null) return false;
-		if (dataObject.getMergeID() != 0 && !InstanceManager.getGalleryPane().getExpandedGroups().contains(dataObject.getMergeID())) {
-			return this.addAll(dataObject.getMergeGroup());
-		}
+		
+		ArrayList<Integer> expandedGroups = InstanceManager.getGalleryPane().getExpandedGroups();
+		int mergeID = dataObject.getMergeID();
+		if (mergeID != 0 && !expandedGroups.contains(mergeID)) return super.addAll(dataObject.getMergeGroup());
+		
 		if (super.add(dataObject)) {
-			dataObject.generateTileEffect();
 			InstanceManager.getReload().flag(Reload.Control.SELECT);
 			return true;
 		}
+		
 		return false;
 	}
-	public boolean addAll(ArrayList<DataObject> arrayList) {
-		if (arrayList == null) return false;
-		if (super.addAll(arrayList)) {
-			arrayList.forEach(DataObject::generateTileEffect);
-			InstanceManager.getReload().flag(Reload.Control.SELECT);
-			return true;
+	public boolean addAll(Collection<? extends DataObject> c) {
+		if (c == null || c.isEmpty()) return false;
+		
+		ArrayList<Integer> expandedGroups = InstanceManager.getGalleryPane().getExpandedGroups();
+		
+		for (DataObject dataObject : c) {
+			if (dataObject == null || this.contains(dataObject)) continue;
+			
+			int mergeID = dataObject.getMergeID();
+			if (mergeID == 0 || expandedGroups.contains(mergeID)) {
+				super.add(dataObject);
+				dataObject.generateTileEffect();
+			} else {
+				CustomList<DataObject> mergeGroup = dataObject.getMergeGroup();
+				super.addAll(mergeGroup);
+				mergeGroup.getFirst().generateTileEffect();
+			}
 		}
-		return false;
+		
+		InstanceManager.getReload().flag(Reload.Control.SELECT);
+		return true;
 	}
 	public boolean remove(DataObject dataObject) {
 		if (dataObject == null) return false;
@@ -68,15 +81,20 @@ public class Select extends ObjectList {
 		this.addAll(dataObjects);
 	}
 	public void setRandom() {
-		DataObject dataObject = ObjectList.getRandom(InstanceManager.getGalleryPane().getVisibleDataObjects());
+		DataObject dataObject = getRandom(InstanceManager.getGalleryPane().getVisibleDataObjects());
 		InstanceManager.getSelect().set(dataObject);
 		InstanceManager.getTarget().set(dataObject);
 	}
 	public void clear() {
-		ObjectList helper = new ObjectList();
+		DataObjectList helper = new DataObjectList();
 		helper.addAll(this);
 		super.clear();
-		helper.forEach(DataObject::generateTileEffect);
+		ArrayList<DataObject> visibleTiles = InstanceManager.getGalleryPane().getVisibleDataObjects();
+		helper.forEach(dataObject -> {
+			if (visibleTiles.contains(dataObject)) {
+				dataObject.generateTileEffect();
+			}
+		});
 		InstanceManager.getReload().flag(Reload.Control.SELECT);
 	}
 	public void swapState(DataObject dataObject) {
@@ -96,11 +114,17 @@ public class Select extends ObjectList {
 			}
 		}
 		
-		int mergeID = new Random().nextInt();
+		CustomList<Integer> mergeIDs = InstanceManager.getObjectListMain().getMergeIDs();
+		int mergeID;
+		do mergeID = new Random().nextInt();
+		while (mergeIDs.contains(mergeID));
+		
 		for (DataObject dataObject : this) {
 			dataObject.setMergeID(mergeID);
 			dataObject.setTagList(tagList);
 		}
+		
+		InstanceManager.getTarget().set(this.getFirst());
 		
 		InstanceManager.getReload().flag(Reload.Control.OBJ, Reload.Control.TAG);
 	}
@@ -116,10 +140,10 @@ public class Select extends ObjectList {
 	}
 	
 	public void shiftSelectTo(DataObject shiftCurrent) {
-		Filter filter = InstanceManager.getFilter();
+		CustomList<DataObject> dataObjects = InstanceManager.getGalleryPane().getVisibleDataObjects();
 		
-		int indexFrom = filter.indexOf(shiftStart);
-		int indexTo = filter.indexOf(shiftCurrent);
+		int indexFrom = dataObjects.indexOf(shiftStart);
+		int indexTo = dataObjects.indexOf(shiftCurrent);
 		
 		int indexLower;
 		int indexHigher;
@@ -132,7 +156,7 @@ public class Select extends ObjectList {
 			indexHigher = indexTo;
 		}
 		
-		this.setAll(new ArrayList<>(filter.subList(indexLower, indexHigher + 1)));
+		this.addAll(dataObjects.subList(indexLower, indexHigher + 1));
 	}
 	
 	public void addTagObject(TagObject tagObject) {
@@ -141,7 +165,7 @@ public class Select extends ObjectList {
 				InstanceManager.getTagListMain().add(tagObject);
 			}
 			
-			ObjectList selectHelper = new ObjectList();
+			DataObjectList selectHelper = new DataObjectList();
 			selectHelper.addAll(InstanceManager.getSelect());
 			
 			TagList tagList;

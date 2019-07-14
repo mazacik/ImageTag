@@ -1,6 +1,6 @@
 package control;
 
-import database.list.ObjectList;
+import database.list.DataObjectList;
 import database.list.TagList;
 import database.object.DataObject;
 import database.object.TagObject;
@@ -8,7 +8,7 @@ import main.InstanceManager;
 
 import java.util.ArrayList;
 
-public class Filter extends ObjectList {
+public class Filter extends DataObjectList {
 	private final TagList infoListWhite;
 	private final TagList infoListBlack;
 	
@@ -28,6 +28,27 @@ public class Filter extends ObjectList {
 		
 		whitelistFactor = 1.00;
 		blacklistFactor = 0.01;
+	}
+	
+	public boolean add(DataObject dataObject) {
+		if (super.add(dataObject)) {
+			InstanceManager.getReload().flag(Reload.Control.FILTER);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public boolean setAll(DataObjectList dataObjects) {
+		if (super.setAll(dataObjects)) {
+			InstanceManager.getReload().flag(Reload.Control.FILTER);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public void clear() {
+		super.clear();
+		InstanceManager.getReload().flag(Reload.Control.FILTER);
 	}
 	
 	public void reset() {
@@ -125,8 +146,8 @@ public class Filter extends ObjectList {
 		}
 	}
 	
-	private final ObjectList currentSessionObjects = new ObjectList();
-	public ObjectList getCurrentSessionObjects() {
+	private final DataObjectList currentSessionObjects = new DataObjectList();
+	public DataObjectList getCurrentSessionObjects() {
 		return currentSessionObjects;
 	}
 	

@@ -50,10 +50,10 @@ public abstract class SidePaneBase extends VBox implements NodeBase {
 			}
 		}
 		
-		//	check whether any changes are necessary (add)
+		//	checkValues whether any changes are necessary (add)
 		if (!tagsHere.containsAll(tagsMain)) {
 			for (TagObject tagObject : tagsToAdd) {
-				//	check if the TagNode exists, if not, add it
+				//	checkValues if the TagNode exists, if not, add it
 				int index;
 				if (!groupsHere.contains(tagObject.getGroup())) {
 					groupsHere.add(tagObject.getGroup());
@@ -75,7 +75,7 @@ public abstract class SidePaneBase extends VBox implements NodeBase {
 			StyleUtil.applyStyle(tagNodesBox);
 		}
 		
-		//	check whether any changes are necessary (remove)
+		//	checkValues whether any changes are necessary (remove)
 		if (!tagsMain.containsAll(tagsHere)) {
 			for (TagObject tagObject : tagsToRemove) {
 				//	use helper to find the TagNode

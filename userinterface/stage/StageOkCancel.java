@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import userinterface.nodes.NodeUtil;
 import userinterface.nodes.base.TextNode;
+import userinterface.nodes.node.TitleBar;
 import userinterface.style.ColorUtil;
 import userinterface.style.SizeUtil;
 import userinterface.style.StyleUtil;
@@ -51,6 +52,7 @@ public class StageOkCancel extends Stage implements StageBase {
 
         VBox vBox = NodeUtil.getVBox(ColorType.DEF, ColorType.DEF);
         Scene scene = new Scene(vBox);
+		vBox.getChildren().add(new TitleBar("Error"));
         vBox.getChildren().add(labelContent);
         vBox.getChildren().add(hBox);
         vBox.setBackground(ColorUtil.getBackgroundDef());

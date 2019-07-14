@@ -40,7 +40,7 @@ public class BaseTileEvent {
             if (event.isControlDown()) {
                 InstanceManager.getSelect().swapState(dataObject);
             } else if (event.isShiftDown()) {
-                InstanceManager.getSelect().shiftSelectTo(InstanceManager.getTarget().getCurrentTarget());
+				InstanceManager.getSelect().shiftSelectTo(dataObject);
             } else {
                 InstanceManager.getSelect().set(dataObject);
                 //InstanceManager.getSelect().setShiftStart(baseTile.getParentObject());
@@ -61,9 +61,6 @@ public class BaseTileEvent {
         } else {
             //noinspection RedundantCollectionOperation
             InstanceManager.getGalleryPane().getExpandedGroups().remove(InstanceManager.getGalleryPane().getExpandedGroups().indexOf(dataObject.getMergeID()));
-        }
-        for (DataObject dataObject1 : dataObject.getMergeGroup()) {
-            dataObject1.generateTileEffect();
         }
 		InstanceManager.getReload().flag(Reload.Control.OBJ);
     }

@@ -27,7 +27,6 @@ public class Reload {
 		this.subscribe(InstanceManager.getGalleryPane()
 				, Control.OBJ
 				, Control.FILTER
-				, Control.SELECT
 		);
 		this.subscribe(InstanceManager.getToolbarPane()
 				, Control.TARGET

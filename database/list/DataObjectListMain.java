@@ -7,23 +7,19 @@ import utils.JsonUtil;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Comparator;
 
-public class ObjectListMain extends ObjectList {
-    public ObjectListMain() {
+public class DataObjectListMain extends DataObjectList {
+	public DataObjectListMain() {
 
     }
-
-    public static ObjectListMain readFromDisk() {
+	
+	public static DataObjectListMain readFromDisk() {
         Type typeToken = JsonUtil.TypeTokenEnum.MAINDATALIST.getValue();
         String path = FileUtil.getFileData();
-        return (ObjectListMain) JsonUtil.read(typeToken, path);
+		return (DataObjectListMain) JsonUtil.read(typeToken, path);
     }
-
-    public void sort() {
-        super.sort(Comparator.comparing(DataObject::getName));
-    }
-    public void writeToDisk() {
+	
+	public void writeToDisk() {
         Type typeToken = JsonUtil.TypeTokenEnum.MAINDATALIST.getValue();
         String path = FileUtil.getFileData();
         JsonUtil.write(InstanceManager.getObjectListMain(), typeToken, path);

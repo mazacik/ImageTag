@@ -65,12 +65,12 @@ public abstract class SceneUtil {
     }
     public static void showMainScene() {
         InstanceManager.getMainStage().setOnCloseRequest(event -> {
+			InstanceManager.getLogger().debug("application exit");
             VideoPlayer videoPlayer = InstanceManager.getMediaPane().getVideoPlayer();
             if (videoPlayer != null) videoPlayer.dispose();
             InstanceManager.getSettings().writeToDisk();
             InstanceManager.getObjectListMain().writeToDisk();
             InstanceManager.getTagListMain().writeDummyToDisk();
-            InstanceManager.getLogger().debug("application exit");
         });
         mainScene.show();
     }
@@ -115,8 +115,6 @@ public abstract class SceneUtil {
         }
     }
     public static boolean isFullView() {
-        MediaPane mediaPane = InstanceManager.getMediaPane();
-        ObservableList<Node> panes = mainScene.getPanes();
-        return panes.contains(mediaPane);
+		return mainScene.getPanes().contains(InstanceManager.getMediaPane());
     }
 }

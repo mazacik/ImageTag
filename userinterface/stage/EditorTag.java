@@ -114,14 +114,14 @@ public class EditorTag extends Stage implements StageBase {
 		
 		if (args.length == 2) {
 			titleBar.setTitle("Edit Tag");
+			tagObject = InstanceManager.getTagListMain().getTagObject(args[0], args[1]);
 			nodeGroupEdit.setText(tagObject.getGroup());
 			nodeNameEdit.setText(tagObject.getName());
-			tagObject = InstanceManager.getTagListMain().getTagObject(args[0], args[1]);
 		} else {
 			titleBar.setTitle("Create Tag");
+			tagObject = null;
 			nodeGroupEdit.setText("");
 			nodeNameEdit.setText("");
-			tagObject = null;
 		}
 		
 		this.showAndWait();

@@ -126,6 +126,7 @@ public class VideoPlayer {
         }
     }
     public void dispose() {
+		//todo try to fix the 4-line error on application exit, probably originates here
         if (hasMedia()) {
             playing = false;
             frameTimer.stop();

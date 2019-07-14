@@ -1,7 +1,7 @@
 package main;
 
 import control.*;
-import database.list.ObjectListMain;
+import database.list.DataObjectListMain;
 import database.list.TagListMain;
 import javafx.stage.Stage;
 import settings.Settings;
@@ -29,7 +29,7 @@ public abstract class InstanceManager {
     private static Reload reload;
 
     private static TagListMain tagListMain;
-    private static ObjectListMain objectListMain;
+	private static DataObjectListMain objectListMain;
 
     private static Stage mainStage;
     private static MediaPane mediaPane;
@@ -61,10 +61,11 @@ public abstract class InstanceManager {
 
     private static void createInstancesSystem() {
         logger = new Logger();
-        settings = new Settings();
+		settings = Settings.readFromDisk();
+		settings.checkValues();
     }
     private static void createInstancesDatabase() {
-        objectListMain = new ObjectListMain();
+		objectListMain = new DataObjectListMain();
         tagListMain = new TagListMain();
     }
     private static void createInstancesFrontend() {
@@ -112,7 +113,7 @@ public abstract class InstanceManager {
     public static Reload getReload() {
         return reload;
     }
-    public static ObjectListMain getObjectListMain() {
+	public static DataObjectListMain getObjectListMain() {
         return objectListMain;
     }
     public static TagListMain getTagListMain() {

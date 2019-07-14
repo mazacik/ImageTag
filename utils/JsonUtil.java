@@ -3,7 +3,7 @@ package utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import database.list.ObjectListMain;
+import database.list.DataObjectListMain;
 import database.loader.Project;
 import main.InstanceManager;
 import settings.Settings;
@@ -46,7 +46,7 @@ public abstract class JsonUtil {
     }
 
     public enum TypeTokenEnum {
-        MAINDATALIST(new TypeToken<ObjectListMain>() {}.getType()),
+		MAINDATALIST(new TypeToken<DataObjectListMain>() {}.getType()),
         SETTINGS(new TypeToken<Settings>() {}.getType()),
         PROJECT(new TypeToken<Project>() {}.getType()),
         ;

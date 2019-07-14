@@ -1,19 +1,21 @@
 package utils;
 
-import database.list.ObjectList;
-import database.loader.Project;
-import database.loader.ThumbnailReader;
+import control.Filter;
+import control.Select;
+import control.Target;
+import database.list.DataObjectList;
 import database.object.DataObject;
 import javafx.scene.Scene;
 import javafx.stage.DirectoryChooser;
 import main.InstanceManager;
-import main.LifeCycleManager;
+import userinterface.main.center.BaseTile;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Objects;
 
 public abstract class FileUtil {
@@ -88,27 +90,49 @@ public abstract class FileUtil {
 		return allFiles;
 	}
 	public static ArrayList<File> getSupportedFiles(String directory) {
+		return getSupportedFiles(new File(directory));
+	}
+	public static ArrayList<File> getSupportedFiles(File directory) {
 		ArrayList<String> validExtensions = new ArrayList<>();
 		validExtensions.addAll(Arrays.asList(getImageExtensions()));
 		validExtensions.addAll(Arrays.asList(getGifExtensions()));
 		validExtensions.addAll(Arrays.asList(getVideoExtensions()));
 		
 		ArrayList<File> validFiles = new ArrayList<>();
-		for (File file : getAllFiles(new File(directory))) {
+		for (File file : getAllFiles(directory)) {
 			String fileName = file.getName();
 			for (String ext : validExtensions) {
-				if (fileName.endsWith(ext)) {
+				if (fileName.toLowerCase().endsWith(ext)) {
 					validFiles.add(file);
 					break;
 				}
 			}
 		}
-		
 		return validFiles;
+	}
+	public static ArrayList<File> getSupportedFiles2(String directory) {
+		/*
+		todo
+		ArrayList<String> resultList = new ArrayList(256);
+		IOFileFilter includeSubdirectories = TrueFileFilter.INSTANCE;
+		if (!descendIntoSubDirectories) {
+			includeSubdirectories = null;
+		}
+		
+		Iterator fileIterator = org.apache.commons.io.FileUtils.iterateFiles(directory, fileFilter, includeSubdirectories);
+		
+		while(fileIterator.hasNext()) {
+			File next = (File)fileIterator.next();
+			resultList.add(next.getCanonicalPath());
+		}
+		
+		return resultList.size() > 0 ? resultList : null;
+		*/
+		return null;
 	}
 	
 	public static void initDataObjectPaths(ArrayList<File> fileList) {
-		ObjectList dataObjects = InstanceManager.getObjectListMain();
+		DataObjectList dataObjects = InstanceManager.getObjectListMain();
 		if (dataObjects.size() == fileList.size()) {
 			for (int i = 0; i < dataObjects.size(); i++) {
 				DataObject dataObject = dataObjects.get(i);
@@ -123,30 +147,105 @@ public abstract class FileUtil {
 	}
 	
 	public static void importFiles() {
-		Project project = LifeCycleManager.getProject();
-		String sourceDirectory = project.getSourceDirectoryList().get(0);
+		ArrayList<File> sourceDirFiles = getSupportedFiles(dirSource);
+		fixDuplicateFileNames(sourceDirFiles);
+		ArrayList<String> sourceDirFileNames = new ArrayList<>();
+		sourceDirFiles.forEach(file -> sourceDirFileNames.add(file.getName()));
 		
-		ObjectList newDataObjects = new ObjectList();
+		DirectoryChooser directoryChooser = new DirectoryChooser();
+		directoryChooser.setTitle("Select a directory to import");
+		directoryChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+		File directory = directoryChooser.showDialog(InstanceManager.getMainStage());
 		
-		for (String dir : LifeCycleManager.getProject().getImportDirectoryList()) {
-			for (File file : getSupportedFiles(dir)) {
+		DataObjectList newDataObjects = new DataObjectList();
+		if (directory != null && directory.isDirectory()) {
+			for (File file : getSupportedFiles(directory)) {
+				String oldPath = file.getAbsolutePath();
+				String newPath = dirSource + file.getName();
+				if (sourceDirFileNames.contains(file.getName())) {
+					String name = getFileNameWithoutExtension(file);
+					String extension = getExtension(file).toLowerCase();
+					int k = 1;
+					String newFileName;
+					do {
+						newFileName = name + "_" + k++ + extension;
+						newPath = dirSource + newFileName;
+					}
+					while (sourceDirFileNames.contains(newFileName));
+				}
 				try {
-					String oldPath = file.getAbsolutePath();
-					String newPath = sourceDirectory + file.getName();
 					Files.move(Paths.get(oldPath), Paths.get(newPath));
-					newDataObjects.add(new DataObject(new File(newPath)));
+					sourceDirFileNames.add(new File(newPath).getName());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				newDataObjects.add(new DataObject(new File(newPath)));
 			}
 		}
 		
-		ThumbnailReader.readThumbnails(newDataObjects);
-		InstanceManager.getObjectListMain().addAll(newDataObjects);
-		InstanceManager.getObjectListMain().sort();
-		InstanceManager.getFilter().getCurrentSessionObjects().addAll(newDataObjects);
-		InstanceManager.getFilter().refresh();
-		InstanceManager.getReload().doReload();
+		if (!newDataObjects.isEmpty()) {
+			DataObjectList dataObjectListMain = InstanceManager.getObjectListMain();
+			Filter filter = InstanceManager.getFilter();
+			Select select = InstanceManager.getSelect();
+			Target target = InstanceManager.getTarget();
+			
+			for (DataObject dataObject : newDataObjects) dataObject.setBaseTile(new BaseTile(dataObject, null));
+			dataObjectListMain.addAll(newDataObjects);
+			dataObjectListMain.sort();
+			
+			filter.getCurrentSessionObjects().addAll(newDataObjects);
+			
+			//todo show stage to check if show only the imported files
+			filter.setAll(newDataObjects);
+			select.set(filter.getFirst());
+			target.set(filter.getFirst());
+			
+			InstanceManager.getReload().doReload();
+		}
+	}
+	
+	public static void fixDuplicateFileNames(ArrayList<File> fileList) {
+		fileList.sort(Comparator.comparing(File::getName));
+		File file1;
+		File file2;
+		int j;
+		int sameName;
+		for (int i = 0; i < fileList.size() - 1; i++) {
+			sameName = 0;
+			j = i + 1;
+			file1 = fileList.get(i);
+			file2 = fileList.get(j);
+			while (file1.getName().equals(file2.getName())) {
+				String path = getAbsulatePathWithoutExtension(file2);
+				String extension = getExtension(file2).toLowerCase();
+				int k = 1;
+				File newFile;
+				do {
+					newFile = new File(path + "_" + k + extension);
+					k++;
+				} while (newFile.exists());
+				InstanceManager.getLogger().debug("Renaming " + file2.getAbsolutePath() + " to " + newFile.getAbsolutePath());
+				file2.renameTo(newFile);
+				sameName++;
+				file2 = fileList.get(++j);
+			}
+			i += sameName;
+		}
+	}
+	public static String getAbsulatePathWithoutExtension(File file) {
+		String absolutePath = file.getAbsolutePath();
+		int index = absolutePath.lastIndexOf('.');
+		return absolutePath.substring(0, index);
+	}
+	public static String getFileNameWithoutExtension(File file) {
+		String fileName = file.getName();
+		int index = fileName.lastIndexOf('.');
+		return fileName.substring(0, index);
+	}
+	public static String getExtension(File file) {
+		String fileName = file.getName();
+		int index = fileName.lastIndexOf('.');
+		return fileName.substring(index);
 	}
 	
 	public static String getDirSource() {

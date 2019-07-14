@@ -4,20 +4,14 @@ import utils.JsonUtil;
 
 import java.io.File;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 
 public class Project {
 	private transient String projectFile;
-	private ArrayList<String> sourceDirectoryList;
-	private ArrayList<String> importDirectoryList;
+	private String sourceDirectory;
 	
-	public Project(String projectFile, String dirSource) {
+	public Project(String projectFile, String sourceDirectory) {
 		this.projectFile = projectFile;
-		
-		sourceDirectoryList = new ArrayList<>();
-		importDirectoryList = new ArrayList<>();
-		
-		sourceDirectoryList.add(dirSource);
+		this.sourceDirectory = sourceDirectory;
 	}
 	public static Project readFromDisk(String projectFile) {
 		Type typeToken = JsonUtil.TypeTokenEnum.PROJECT.getValue();
@@ -36,10 +30,7 @@ public class Project {
 	public String getProjectFilePath() {
 		return projectFile;
 	}
-	public ArrayList<String> getSourceDirectoryList() {
-		return sourceDirectoryList;
-	}
-	public ArrayList<String> getImportDirectoryList() {
-		return importDirectoryList;
+	public String getSourceDirectory() {
+		return sourceDirectory;
 	}
 }

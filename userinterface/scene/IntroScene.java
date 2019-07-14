@@ -82,14 +82,14 @@ public class IntroScene {
 				File projectFile = new File(recentProject);
 				if (projectFile.exists()) {
 					Project project = Project.readFromDisk(recentProject);
-					IntroStageNode introStageNode = NodeUtil.getIntroStageNode(recentProject, project.getSourceDirectoryList().get(0));
+					IntroStageNode introStageNode = NodeUtil.getIntroStageNode(recentProject, project.getSourceDirectory());
 					introStageNode.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 						if (event.getButton() == MouseButton.PRIMARY) {
 							if (event.getPickResult().getIntersectedNode().getParent().equals(introStageNode.getNodeRemove())) {
 								recentProjects.remove(introStageNode.getWorkingDirectory());
 								vBoxRecentProjects.getChildren().remove(introStageNode);
 							} else {
-								if (new File(project.getSourceDirectoryList().get(0)).exists()) {
+								if (new File(project.getSourceDirectory()).exists()) {
 									settings.addProjectPath(recentProject);
 									LifeCycleManager.startLoading(project);
 								} else {

@@ -55,12 +55,16 @@ public class BaseTile extends ImageView {
 			effectGroupSize = (int) imageText.getWidth() + 10;
 		}
 		
-		Blend helperEffect = new Blend();
-		for (Effect effect : effectList) {
-			helperEffect = new Blend(BlendMode.SRC_ATOP, helperEffect, effect);
+		if (effectList.isEmpty()) {
+			this.setEffect(null);
+		} else {
+			Blend helperEffect = new Blend();
+			for (Effect effect : effectList) {
+				helperEffect = new Blend(BlendMode.SRC_ATOP, helperEffect, effect);
+			}
+			
+			this.setEffect(helperEffect);
 		}
-		
-		this.setEffect(helperEffect);
 	}
 	
 	private static InnerShadow createEffectSelect() {
