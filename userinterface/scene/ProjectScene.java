@@ -75,7 +75,7 @@ public class ProjectScene {
 		});
 		
 		btnCreateProject.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-			//todo checkValues values, if invalid, show error
+			//checkValues values, if invalid, show error
 			createProject(edtProjectName.getText(), edtProjectDirectory.getText(), edtWorkingDirectory.getText());
 		});
 		btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> SceneUtil.showIntroScene());

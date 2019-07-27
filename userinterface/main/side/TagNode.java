@@ -15,6 +15,7 @@ import userinterface.nodes.NodeUtil;
 import userinterface.nodes.base.TextNode;
 import userinterface.nodes.menu.ClickMenuTag;
 import userinterface.style.ColorUtil;
+import userinterface.style.StyleUtil;
 import userinterface.style.enums.ColorType;
 
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class TagNode extends VBox {
 		initNameNodes();
 		initEvents();
 		
-		NodeUtil.addToManager(this, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
+		StyleUtil.addToManager(this, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
 	}
 	private void initNameNodes() {
 		for (String name : InstanceManager.getTagListMain().getNames(getGroup())) {

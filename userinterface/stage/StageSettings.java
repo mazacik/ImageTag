@@ -32,7 +32,7 @@ public class StageSettings extends Stage implements StageBase {
             TextField textField = new TextField(String.valueOf(setting.getValue()));
             textField.setFont(StyleUtil.getFont());
             textField.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
-            NodeUtil.addToManager(textField, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+			StyleUtil.addToManager(textField, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
             HBox hBox = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF, label, textField);
             vBox.getChildren().add(hBox);
         });

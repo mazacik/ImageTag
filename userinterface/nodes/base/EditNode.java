@@ -39,8 +39,8 @@ public class EditNode extends TextField {
                 });
                 break;
         }
-
-        NodeUtil.addToManager(this, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+    
+        StyleUtil.addToManager(this, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
     }
     public EditNode(String promptText) {
         this(promptText, EditNodeType.DEFAULT);

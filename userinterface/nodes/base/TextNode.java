@@ -5,7 +5,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.text.TextAlignment;
 import userinterface.nodes.ColorData;
-import userinterface.nodes.NodeUtil;
 import userinterface.style.StyleUtil;
 import userinterface.style.enums.ColorType;
 
@@ -25,7 +24,7 @@ public class TextNode extends Label {
         this.setFont(StyleUtil.getFont());
         this.setAlignment(Pos.CENTER);
         this.setPadding(new Insets(5, 10, 5, 10));
-
-        NodeUtil.addToManager(this, background, backgroundHover, textFill, textFillHover);
+    
+        StyleUtil.addToManager(this, background, backgroundHover, textFill, textFillHover);
     }
 }

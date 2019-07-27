@@ -15,6 +15,7 @@ import userinterface.nodes.menu.ClickMenuLeft;
 import userinterface.stage.StageUtil;
 import userinterface.style.ColorUtil;
 import userinterface.style.SizeUtil;
+import userinterface.style.StyleUtil;
 import userinterface.style.enums.ColorType;
 import utils.enums.Direction;
 
@@ -55,7 +56,7 @@ public class FilterPane extends SidePaneBase {
 		scrollPane.setFitToHeight(true);
 		scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 		scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-		NodeUtil.addToManager(scrollPane, ColorType.DEF);
+		StyleUtil.addToManager(scrollPane, ColorType.DEF);
 		
 		this.setPrefWidth(SizeUtil.getUsableScreenWidth());
 		this.setMinWidth(SizeUtil.getMinWidthSideLists());

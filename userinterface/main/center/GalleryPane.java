@@ -15,6 +15,7 @@ import userinterface.main.NodeBase;
 import userinterface.nodes.NodeUtil;
 import userinterface.scene.SceneUtil;
 import userinterface.style.SizeUtil;
+import userinterface.style.StyleUtil;
 import userinterface.style.enums.ColorType;
 
 import java.util.ArrayList;
@@ -54,8 +55,8 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 		this.setPrefViewportHeight(SizeUtil.getUsableScreenHeight());
 		this.setBorder(NodeUtil.getBorder(0, 1, 0, 1));
 		
-		NodeUtil.addToManager(this, ColorType.DEF);
-		NodeUtil.addToManager(tilePane, ColorType.DEF);
+		StyleUtil.addToManager(this, ColorType.DEF);
+		StyleUtil.addToManager(tilePane, ColorType.DEF);
 	}
 	
 	public boolean reload() {

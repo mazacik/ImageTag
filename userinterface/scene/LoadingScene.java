@@ -7,6 +7,7 @@ import main.InstanceManager;
 import userinterface.nodes.NodeUtil;
 import userinterface.nodes.base.TextNode;
 import userinterface.style.SizeUtil;
+import userinterface.style.StyleUtil;
 import userinterface.style.enums.ColorType;
 
 public class LoadingScene {
@@ -23,7 +24,7 @@ public class LoadingScene {
         borderPane.setCenter(progressTextNode);
         borderPane.setPrefWidth(300);
         borderPane.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
-        NodeUtil.addToManager(borderPane, ColorType.DEF);
+		StyleUtil.addToManager(borderPane, ColorType.DEF);
 
         return new Scene(borderPane);
     }

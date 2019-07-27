@@ -49,8 +49,8 @@ public class EditorTag extends Stage implements StageBase {
 		nodeGroupEdit.setFont(StyleUtil.getFont());
 		nodeNameEdit.setFont(StyleUtil.getFont());
 		
-		NodeUtil.addToManager(nodeGroupEdit, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
-		NodeUtil.addToManager(nodeNameEdit, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+		StyleUtil.addToManager(nodeGroupEdit, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+		StyleUtil.addToManager(nodeNameEdit, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
 		
 		nodeOK.setOnMouseClicked(event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {

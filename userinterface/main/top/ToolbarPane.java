@@ -13,6 +13,7 @@ import userinterface.nodes.buttons.ButtonFactory;
 import userinterface.nodes.buttons.ButtonTemplates;
 import userinterface.nodes.menu.ClickMenuLeft;
 import userinterface.style.SizeUtil;
+import userinterface.style.StyleUtil;
 import userinterface.style.enums.ColorType;
 import utils.enums.Direction;
 
@@ -43,7 +44,7 @@ public class ToolbarPane extends BorderPane implements NodeBase {
         nodeFullview = new TextNode("MediaPane", colorData);
         HBox hBoxTools = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF, nodeRandom, nodeFullview);
         hBoxTools.setBorder(NodeUtil.getBorder(0, 1, 0, 1));
-        NodeUtil.addToManager(hBoxTools, ColorType.DEF);
+        StyleUtil.addToManager(hBoxTools, ColorType.DEF);
 
         nodeInfo = new TextNode("", ColorType.DEF, ColorType.DEF);
 
@@ -69,7 +70,7 @@ public class ToolbarPane extends BorderPane implements NodeBase {
         HBox hBoxMain = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF);
         hBoxMain.getChildren().add(nodeFile);
         hBoxMain.getChildren().add(hBoxTools);
-        NodeUtil.addToManager(hBoxMain, ColorType.DEF);
+        StyleUtil.addToManager(hBoxMain, ColorType.DEF);
 
         this.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
         this.setPrefHeight(SizeUtil.getPrefHeightTopMenu());
@@ -77,7 +78,7 @@ public class ToolbarPane extends BorderPane implements NodeBase {
         this.setCenter(nodeInfo);
         BorderPane.setAlignment(nodeInfo, Pos.CENTER);
         this.setRight(nodeTarget);
-        NodeUtil.addToManager(this, ColorType.DEF);
+        StyleUtil.addToManager(this, ColorType.DEF);
     }
 
     public boolean reload() {

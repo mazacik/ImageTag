@@ -110,26 +110,6 @@ public abstract class FileUtil {
 		}
 		return validFiles;
 	}
-	public static ArrayList<File> getSupportedFiles2(String directory) {
-		/*
-		todo
-		ArrayList<String> resultList = new ArrayList(256);
-		IOFileFilter includeSubdirectories = TrueFileFilter.INSTANCE;
-		if (!descendIntoSubDirectories) {
-			includeSubdirectories = null;
-		}
-		
-		Iterator fileIterator = org.apache.commons.io.FileUtils.iterateFiles(directory, fileFilter, includeSubdirectories);
-		
-		while(fileIterator.hasNext()) {
-			File next = (File)fileIterator.next();
-			resultList.add(next.getCanonicalPath());
-		}
-		
-		return resultList.size() > 0 ? resultList : null;
-		*/
-		return null;
-	}
 	
 	public static void initDataObjectPaths(ArrayList<File> fileList) {
 		DataObjectList dataObjects = InstanceManager.getObjectListMain();
@@ -145,7 +125,6 @@ public abstract class FileUtil {
 			InstanceManager.getLogger().error(error);
 		}
 	}
-	
 	public static void importFiles() {
 		ArrayList<File> sourceDirFiles = getSupportedFiles(dirSource);
 		fixDuplicateFileNames(sourceDirFiles);

@@ -40,7 +40,7 @@ public class TitleBar extends BorderPane {
 		this.setLeft(labelTitle);
 		this.setRight(btnExit);
 		this.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
-		NodeUtil.addToManager(this, ColorType.DEF);
+		StyleUtil.addToManager(this, ColorType.DEF);
 		
 		if (movement) {
 			final double[] xOffset = {0};

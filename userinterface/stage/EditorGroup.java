@@ -34,7 +34,7 @@ public class EditorGroup extends Stage implements StageBase {
         nodeGroupEdit.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
         nodeGroupEdit.setFont(StyleUtil.getFont());
         nodeGroupEdit.requestFocus();
-        NodeUtil.addToManager(nodeGroupEdit, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+		StyleUtil.addToManager(nodeGroupEdit, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
 
         nodeOK = new TextNode("OK", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
         nodeOK.setOnMouseClicked(event -> {

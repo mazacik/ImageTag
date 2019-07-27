@@ -12,14 +12,12 @@ import userinterface.style.enums.ColorType;
 
 public class Tooltip extends Popup {
 	private Timeline timeline;
-	
 	private double eventX;
 	private double eventY;
 	
 	public Tooltip(String text, long delay) {
 		TextNode textNode = new TextNode(text, ColorType.DEF, ColorType.DEF);
 		this.getContent().add(textNode);
-		//this.setAutoHide(true);
 		
 		timeline = new Timeline();
 		timeline.getKeyFrames().add(new KeyFrame(new Duration(delay), event -> {
