@@ -4,7 +4,7 @@ public class Logger {
 	//	0 = OFF
 	//	1 = ERROR
 	//	2 = DEBUG
-	private static final int LEVEL = 0;
+	private static final int LEVEL = 2;
 	
 	public Logger() {
 	

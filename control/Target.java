@@ -1,74 +1,71 @@
 package control;
 
+import database.list.CustomList;
+import database.list.DataObjectList;
 import database.object.DataObject;
 import javafx.scene.input.KeyCode;
 import main.InstanceManager;
+import userinterface.main.center.GalleryPane;
 import utils.enums.Direction;
 
-import java.util.ArrayList;
-
 public class Target {
-	private DataObject currentTarget;
-	private DataObject previousTarget;
-	
 	public Target() {
-		currentTarget = null;
-		previousTarget = null;
-		storePos = -1;
+	
+	}
+	
+	private DataObject currentTarget = null;
+	public DataObject getCurrentTarget() {
+		if (currentTarget == null && !InstanceManager.getObjectListMain().isEmpty()) {
+			currentTarget = InstanceManager.getObjectListMain().get(0);
+		}
+		return currentTarget;
 	}
 	
 	public void set(DataObject dataObject) {
-		if (dataObject != null) {
-			/* store old target position */
-			previousTarget = currentTarget;
-			
-			/* refresh new target effect */
-			currentTarget = dataObject;
-			currentTarget.generateTileEffect();
-			
-			/* remove old target effect */
-			if (previousTarget != null) previousTarget.generateTileEffect();
-			
-			InstanceManager.getReload().flag(Reload.Control.TARGET);
-			InstanceManager.getGalleryPane().adjustViewportToCurrentTarget();
-		}
+		if (dataObject == null || dataObject == currentTarget) return;
+		
+		DataObject helper = currentTarget;
+		currentTarget = dataObject;
+		currentTarget.generateTileEffect();
+		if (helper != null) helper.generateTileEffect();
+		
+		InstanceManager.getGalleryPane().adjustViewportToCurrentTarget();
+		InstanceManager.getReload().notify(Reload.Control.TARGET);
+		InstanceManager.getLogger().debug("Target set to " + dataObject.getName());
 	}
 	public void move(Direction direction) {
 		if (currentTarget == null) return;
 		
-		int columnCount = InstanceManager.getGalleryPane().getColumnCount();
-		int visibleTilesCount = InstanceManager.getGalleryPane().getVisibleTiles().size();
+		GalleryPane galleryPane = InstanceManager.getGalleryPane();
+		int columnCount = galleryPane.getColumnCount();
+		int visibleTilesCount = galleryPane.getVisibleTiles().size();
 		
-		int currentTargetPosition;
+		int currentTargetIndex;
 		if (currentTarget.getMergeID() == 0) {
-			currentTargetPosition = InstanceManager.getGalleryPane().getVisibleDataObjects().indexOf(currentTarget);
+			currentTargetIndex = galleryPane.getVisibleDataObjects().indexOf(currentTarget);
 		} else {
-			if (InstanceManager.getGalleryPane().getExpandedGroups().contains(currentTarget.getMergeID())) {
-				currentTargetPosition = InstanceManager.getGalleryPane().getVisibleDataObjects().indexOf(currentTarget);
+			if (galleryPane.getExpandedGroups().contains(currentTarget.getMergeID())) {
+				currentTargetIndex = galleryPane.getVisibleDataObjects().indexOf(currentTarget);
 			} else {
-				currentTargetPosition = InstanceManager.getGalleryPane().getVisibleDataObjects().indexOf(currentTarget.getMergeGroup().get(0));
+				currentTargetIndex = galleryPane.getVisibleDataObjects().indexOf(currentTarget.getMergeGroup().getFirst());
 			}
 		}
-		int newTargetPosition = currentTargetPosition;
-		
+		int newTargetIndex = currentTargetIndex;
 		switch (direction) {
 			case UP:
-				if (currentTargetPosition >= columnCount) newTargetPosition -= columnCount;
+				if (currentTargetIndex >= columnCount) newTargetIndex -= columnCount;
 				break;
 			case LEFT:
-				if (newTargetPosition > 0) newTargetPosition -= 1;
+				if (newTargetIndex > 0) newTargetIndex -= 1;
 				break;
 			case DOWN:
-				if (newTargetPosition + columnCount <= visibleTilesCount - 1) {
-					newTargetPosition += columnCount;
-				}
+				if (newTargetIndex + columnCount <= visibleTilesCount - 1) newTargetIndex += columnCount;
 				break;
 			case RIGHT:
-				if (newTargetPosition < visibleTilesCount - 1) newTargetPosition += 1;
+				if (newTargetIndex < visibleTilesCount - 1) newTargetIndex += 1;
 				break;
 		}
-		
-		this.set(InstanceManager.getGalleryPane().getVisibleDataObjects().get(newTargetPosition));
+		this.set(galleryPane.getVisibleDataObjects().get(newTargetIndex));
 	}
 	public void move(KeyCode keyCode) {
 		switch (keyCode) {
@@ -87,40 +84,27 @@ public class Target {
 		}
 	}
 	
-	private int storePos;
+	private int storePos = -1;
 	public void storePosition() {
-		this.storePos = InstanceManager.getGalleryPane().getVisibleDataObjects().indexOf(currentTarget);
+		CustomList<Integer> expandedMergeGroups = InstanceManager.getGalleryPane().getExpandedGroups();
+		CustomList<DataObject> visibleDataObjects = InstanceManager.getGalleryPane().getVisibleDataObjects();
+		
+		if (currentTarget.getMergeID() == 0) {
+			storePos = visibleDataObjects.indexOf(currentTarget);
+		} else {
+			if (expandedMergeGroups.contains(currentTarget.getMergeID())) {
+				storePos = visibleDataObjects.indexOf(currentTarget);
+			} else {
+				storePos = visibleDataObjects.indexOf(currentTarget.getMergeGroup().getFirst());
+			}
+		}
 	}
 	public void restorePosition() {
-		Select select = InstanceManager.getSelect();
-		ArrayList<DataObject> visibleObjects = InstanceManager.getGalleryPane().getVisibleDataObjects();
-		if (visibleObjects.size() < 1) return;
-		
-		if (storePos >= 0) {
-			if (storePos < visibleObjects.size() - 1) {
-				DataObject dataObject = visibleObjects.get(storePos);
-				this.set(dataObject);
-				if (select.isEmpty()) select.set(dataObject);
-			} else {
-				DataObject dataObject = visibleObjects.get(visibleObjects.size() - 1);
-				this.set(dataObject);
-				if (select.isEmpty()) select.set(dataObject);
-			}
-		} else {
-			if (!visibleObjects.isEmpty()) {
-				DataObject dataObject = visibleObjects.get(0);
-				this.set(dataObject);
-			} else {
-				this.set(null);
-				if (select.isEmpty()) select.set(null);
-			}
+		if (storePos < 0) return;
+		DataObjectList visibleObjects = InstanceManager.getGalleryPane().getVisibleDataObjects();
+		if (!visibleObjects.isEmpty()) {
+			if (storePos <= visibleObjects.size() - 1) this.set(visibleObjects.get(storePos));
+			else this.set(visibleObjects.getLast());
 		}
-	}
-	
-	public DataObject getCurrentTarget() {
-		if (currentTarget == null && !InstanceManager.getObjectListMain().isEmpty()) {
-			currentTarget = InstanceManager.getObjectListMain().get(0);
-		}
-		return currentTarget;
 	}
 }

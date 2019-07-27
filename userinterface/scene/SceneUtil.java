@@ -35,8 +35,8 @@ public abstract class SceneUtil {
         mainStage.setHeight(height);
         mainStage.setMinWidth(width);
         mainStage.setMinHeight(height);
+		mainStage.setResizable(false);
         mainStage.centerOnScreen();
-	
 	}
     public static void stageLayoutMain() {
         Stage mainStage = InstanceManager.getMainStage();
@@ -44,6 +44,7 @@ public abstract class SceneUtil {
         mainStage.setMinHeight(100 + SizeUtil.getPrefHeightTopMenu() + SizeUtil.getGalleryIconSize());
         mainStage.setWidth(SizeUtil.getUsableScreenWidth());
         mainStage.setHeight(SizeUtil.getUsableScreenHeight());
+		mainStage.setResizable(true);
         mainStage.setMaximized(true);
     }
 

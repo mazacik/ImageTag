@@ -43,16 +43,16 @@ public class VideoPlayer {
         }
     };
     private boolean playing;
-
-    private static boolean hasLibs = false;
+	
+	private static boolean bLibsExist = false;
 
     @SuppressWarnings("UnusedReturnValue")
     public static boolean checkLibs() {
-        hasLibs = new NativeDiscovery().discover();
-        return hasLibs;
+		bLibsExist = new NativeDiscovery().discover();
+		return bLibsExist;
     }
-    public static boolean hasLibs() {
-        return hasLibs;
+	public static boolean doLibsExist() {
+		return bLibsExist;
     }
 
     private VideoPlayer(Canvas canvas) {
@@ -102,7 +102,7 @@ public class VideoPlayer {
         });
     }
     public static VideoPlayer create(Canvas canvas) {
-        if (hasLibs) return new VideoPlayer(canvas);
+		if (bLibsExist) return new VideoPlayer(canvas);
         else return null;
     }
 
@@ -126,7 +126,6 @@ public class VideoPlayer {
         }
     }
     public void dispose() {
-		//todo try to fix the 4-line error on application exit, probably originates here
         if (hasMedia()) {
             playing = false;
             frameTimer.stop();

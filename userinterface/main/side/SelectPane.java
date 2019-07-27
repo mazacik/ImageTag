@@ -151,7 +151,7 @@ public class SelectPane extends SidePaneBase {
 				this.addTagObjectToSelection(tagObject);
 			}
 			
-			InstanceManager.getReload().flag(Reload.Control.TAG);
+			InstanceManager.getReload().notify(Reload.Control.TAG);
 			InstanceManager.getReload().doReload();
 		}
 	}

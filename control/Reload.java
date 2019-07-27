@@ -1,5 +1,6 @@
 package control;
 
+import database.list.CustomList;
 import main.InstanceManager;
 import userinterface.main.NodeBase;
 
@@ -33,24 +34,21 @@ public class Reload {
 		);
 	}
 	
-	public void flag(Control... controls) {
+	public void doReload() {
+		CustomList<NodeBase> reloaded = new CustomList<>();
+		for (NodeBase node : queue) if (node.reload()) reloaded.add(node);
+		queue.removeAll(reloaded);
+	}
+	
+	public void notify(Control... controls) {
 		for (Control control : controls) queue(control.getSubscribers());
 	}
-	public void doReload() {
-		ArrayList<NodeBase> newQueue = new ArrayList<>(queue);
-		
-		InstanceManager.getTarget().storePosition();
-		for (NodeBase node : queue) if (node.reload()) newQueue.remove(node);
-		InstanceManager.getTarget().restorePosition();
-		
-		queue = newQueue;
+	private void queue(ArrayList<NodeBase> nodes) {
+		for (NodeBase node : nodes) if (!queue.contains(node)) queue.add(node);
 	}
 	
 	private void subscribe(NodeBase node, Control... controls) {
 		for (Control control : controls) control.getSubscribers().add(node);
-	}
-	private void queue(ArrayList<NodeBase> nodes) {
-		for (NodeBase node : nodes) if (!queue.contains(node)) queue.add(node);
 	}
 	
 	public enum Control {

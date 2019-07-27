@@ -1,7 +1,9 @@
 package database.list;
 
+import control.Filter;
 import database.object.DataObject;
 import database.object.TagObject;
+import main.InstanceManager;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -59,8 +61,15 @@ public class DataObjectList extends CustomList<DataObject> {
 		DataObject dataObject = super.getRandom(arrayList);
 		if (dataObject != null) {
 			if (dataObject.getMergeID() == 0) return dataObject;
-			else
-				return super.getRandom(dataObject.getMergeGroup()); // run getRandom again in case of a group-hidden object being chosen
+			else {
+				//todo use sort-into-comparison algorithm if this is too slow or if too bored
+				Filter filter = InstanceManager.getFilter();
+				CustomList<DataObject> mergeGroupObjectsThatAlsoPassFilter = new CustomList<>();
+				for (DataObject mergeObject : dataObject.getMergeGroup()) {
+					if (filter.contains(mergeObject)) mergeGroupObjectsThatAlsoPassFilter.add(mergeObject);
+				}
+				return super.getRandom(mergeGroupObjectsThatAlsoPassFilter); // run again in case of a group-hidden object being chosen
+			}
 		} else return null;
 	}
 }

@@ -100,7 +100,7 @@ public class SelectPaneEvent {
 					InstanceManager.getSelectPane().addTagObjectToSelection(tagObject);
 					InstanceManager.getSelectPane().setActualText("");
 					tfSearch.clear();
-					InstanceManager.getReload().flag(Reload.Control.TAG);
+					InstanceManager.getReload().notify(Reload.Control.TAG);
 					InstanceManager.getReload().doReload();
 				}
 			}

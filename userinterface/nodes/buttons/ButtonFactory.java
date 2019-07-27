@@ -234,7 +234,7 @@ public class ButtonFactory {
 					});
 					InstanceManager.getFilterPane().refresh();
 					InstanceManager.getSelectPane().refresh();
-					InstanceManager.getReload().flag(Reload.Control.TAG);
+					InstanceManager.getReload().notify(Reload.Control.TAG);
 				}
 				ClickMenuBase.hideAll();
 				InstanceManager.getReload().doReload();
@@ -329,20 +329,18 @@ public class ButtonFactory {
 			dataObjectsToDelete.forEach(this::deleteDataObject);
 			InstanceManager.getTarget().restorePosition();
 			
-			InstanceManager.getReload().flag(Reload.Control.FILTER, Reload.Control.TARGET);
+			InstanceManager.getReload().notify(Reload.Control.FILTER, Reload.Control.TARGET);
 			InstanceManager.getReload().doReload();
 		}
 	}
 	private void deleteCurrentTarget() {
 		DataObject currentTarget = InstanceManager.getTarget().getCurrentTarget();
-		if (currentTarget.getMergeID() != 0) {
-			if (!InstanceManager.getGalleryPane().getExpandedGroups().contains(currentTarget.getMergeID())) {
-				if (StageUtil.showStageOkCancel("Delete " + currentTarget.getMergeGroup().size() + " file(s)?")) {
-					InstanceManager.getTarget().storePosition();
-					currentTarget.getMergeGroup().forEach(this::deleteDataObject);
-					InstanceManager.getTarget().restorePosition();
-					InstanceManager.getReload().doReload();
-				}
+		if (currentTarget.getMergeID() != 0 && !InstanceManager.getGalleryPane().getExpandedGroups().contains(currentTarget.getMergeID())) {
+			if (StageUtil.showStageOkCancel("Delete " + currentTarget.getMergeGroup().size() + " file(s)?")) {
+				InstanceManager.getTarget().storePosition();
+				currentTarget.getMergeGroup().forEach(this::deleteDataObject);
+				InstanceManager.getTarget().restorePosition();
+				InstanceManager.getReload().doReload();
 			}
 		} else {
 			String sourcePath = InstanceManager.getTarget().getCurrentTarget().getPath();
@@ -351,7 +349,7 @@ public class ButtonFactory {
 				this.deleteDataObject(currentTarget);
 				InstanceManager.getTarget().restorePosition();
 				
-				InstanceManager.getReload().flag(Reload.Control.FILTER, Reload.Control.TARGET);
+				InstanceManager.getReload().notify(Reload.Control.FILTER, Reload.Control.TARGET);
 				InstanceManager.getReload().doReload();
 			}
 		}

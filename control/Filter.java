@@ -32,7 +32,7 @@ public class Filter extends DataObjectList {
 	
 	public boolean add(DataObject dataObject) {
 		if (super.add(dataObject)) {
-			InstanceManager.getReload().flag(Reload.Control.FILTER);
+			InstanceManager.getReload().notify(Reload.Control.FILTER);
 			return true;
 		} else {
 			return false;
@@ -40,12 +40,12 @@ public class Filter extends DataObjectList {
 	}
 	public void setAll(DataObjectList dataObjects) {
 		if (super.setAll(dataObjects)) {
-			InstanceManager.getReload().flag(Reload.Control.FILTER);
+			InstanceManager.getReload().notify(Reload.Control.FILTER);
 		}
 	}
 	public void clear() {
 		super.clear();
-		InstanceManager.getReload().flag(Reload.Control.FILTER);
+		InstanceManager.getReload().notify(Reload.Control.FILTER);
 	}
 	
 	public void reset() {

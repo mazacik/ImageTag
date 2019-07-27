@@ -10,6 +10,7 @@ public abstract class StageUtil {
 	private static EditorTag stageEditorTag;
 	private static EditorGroup stageEditorGroup;
 	private static StageOkCancel stageOkCancel;
+	private static StageYesNo stageYesNo;
 	private static StageSettings stageSettings;
 	private static StageFilterOptions stageFilterOptions;
 	
@@ -29,6 +30,10 @@ public abstract class StageUtil {
 		if (!init) init();
 		return stageOkCancel._show(args);
 	}
+	public static boolean showStageYesNo(String... args) {
+		if (!init) init();
+		return stageYesNo._show(args);
+	}
 	public static Object showStageSettings(String... args) {
 		if (!init) init();
 		return stageSettings._show(args);
@@ -44,6 +49,7 @@ public abstract class StageUtil {
 		stageEditorTag = new EditorTag();
 		stageEditorGroup = new EditorGroup();
 		stageOkCancel = new StageOkCancel();
+		stageYesNo = new StageYesNo();
 		stageSettings = new StageSettings();
 		stageFilterOptions = new StageFilterOptions();
 	}

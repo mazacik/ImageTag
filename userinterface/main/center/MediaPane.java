@@ -124,8 +124,8 @@ public class MediaPane extends BorderPane implements NodeBase {
     }
     private void reloadAsVideo(DataObject currentTarget) {
         if (this.getCenter() != canvas) this.setCenter(canvas);
-
-        if (VideoPlayer.hasLibs()) {
+	
+		if (VideoPlayer.doLibsExist()) {
             controls.setVideoMode(true);
 
             if (currentCache == null || !currentCache.equals(currentTarget)) {

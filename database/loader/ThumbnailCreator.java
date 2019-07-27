@@ -73,7 +73,7 @@ public abstract class ThumbnailCreator {
 		}
 	}
 	private static Image createThumbnailFromVideo(DataObject dataObject, int thumbSize, File cacheFile) {
-		if (VideoPlayer.hasLibs()) {
+		if (VideoPlayer.doLibsExist()) {
 			String[] vlcArgs = {
 					"--intf", "dummy",          /* no interface */
 					"--vout", "dummy",          /* we don't want video (output) */

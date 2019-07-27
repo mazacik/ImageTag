@@ -1,6 +1,7 @@
 package userinterface.main.center;
 
 import database.list.CustomList;
+import database.list.DataObjectList;
 import database.loader.ThumbnailReader;
 import database.object.DataObject;
 import javafx.collections.ObservableList;
@@ -20,11 +21,11 @@ import java.util.ArrayList;
 
 public class GalleryPane extends ScrollPane implements NodeBase {
 	private final TilePane tilePane;
-	private final ArrayList<Integer> expandedGroups;
+	private final CustomList<Integer> expandedGroups;
 	
 	public GalleryPane() {
 		tilePane = new TilePane(1, 1);
-		expandedGroups = new ArrayList<>();
+		expandedGroups = new CustomList<>();
 		
 		tilePane.setPrefTileWidth(SizeUtil.getGalleryIconSize());
 		tilePane.setPrefTileHeight(SizeUtil.getGalleryIconSize());
@@ -58,6 +59,7 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 	}
 	
 	public boolean reload() {
+		InstanceManager.getTarget().storePosition();
 		double scrollbarValue = this.getVvalue();
 		ObservableList<Node> tilePaneItems = tilePane.getChildren();
 		tilePaneItems.clear();
@@ -82,7 +84,9 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 				}
 			}
 		}
+		InstanceManager.getTarget().restorePosition();
 		this.setVvalue(scrollbarValue);
+		//todo if target not in viewport, adjust viewport to target
 		return true;
 	}
 	
@@ -135,6 +139,9 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 	public void adjustViewportToCurrentTarget() {
 		DataObject currentTarget = InstanceManager.getTarget().getCurrentTarget();
 		if (SceneUtil.isFullView() || currentTarget == null) return;
+		if (currentTarget.getMergeID() != 0 && !expandedGroups.contains(currentTarget.getMergeID())) {
+			currentTarget = currentTarget.getMergeGroup().getFirst();
+		}
 		int targetIndex = this.getVisibleDataObjects().indexOf(currentTarget);
 		if (targetIndex < 0) return;
 		
@@ -181,8 +188,8 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 		tilePane.getChildren().forEach(tile -> arrayList.add((BaseTile) tile));
 		return arrayList;
 	}
-	public CustomList<DataObject> getVisibleDataObjects() {
-		CustomList<DataObject> dataObjects = new CustomList<>();
+	public DataObjectList getVisibleDataObjects() {
+		DataObjectList dataObjects = new DataObjectList();
 		tilePane.getChildren().forEach(tile -> dataObjects.add(((BaseTile) tile).getParentObject()));
 		return dataObjects;
 	}
@@ -190,7 +197,7 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 	public TilePane getTilePane() {
 		return tilePane;
 	}
-	public ArrayList<Integer> getExpandedGroups() {
+	public CustomList<Integer> getExpandedGroups() {
 		return expandedGroups;
 	}
 }

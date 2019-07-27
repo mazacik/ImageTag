@@ -6,6 +6,7 @@ import database.list.TagList;
 import database.object.DataObject;
 import database.object.TagObject;
 import main.InstanceManager;
+import userinterface.stage.StageUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,7 +23,7 @@ public class Select extends DataObjectList {
 		if (mergeID != 0 && !expandedGroups.contains(mergeID)) return super.addAll(dataObject.getMergeGroup());
 		
 		if (super.add(dataObject)) {
-			InstanceManager.getReload().flag(Reload.Control.SELECT);
+			InstanceManager.getReload().notify(Reload.Control.SELECT);
 			return true;
 		}
 		
@@ -47,7 +48,7 @@ public class Select extends DataObjectList {
 			}
 		}
 		
-		InstanceManager.getReload().flag(Reload.Control.SELECT);
+		InstanceManager.getReload().notify(Reload.Control.SELECT);
 		return true;
 	}
 	public boolean remove(DataObject dataObject) {
@@ -57,7 +58,7 @@ public class Select extends DataObjectList {
 		}
 		if (super.remove(dataObject)) {
 			dataObject.generateTileEffect();
-			InstanceManager.getReload().flag(Reload.Control.SELECT);
+			InstanceManager.getReload().notify(Reload.Control.SELECT);
 			return true;
 		}
 		return false;
@@ -66,15 +67,21 @@ public class Select extends DataObjectList {
 		if (arrayList == null) return false;
 		if (super.removeAll(arrayList)) {
 			arrayList.forEach(DataObject::generateTileEffect);
-			InstanceManager.getReload().flag(Reload.Control.SELECT);
+			InstanceManager.getReload().notify(Reload.Control.SELECT);
 			return true;
 		}
 		return false;
 	}
 	
 	public void set(DataObject dataObject) {
+		CustomList<DataObject> needsEffect = new CustomList<>();
+		needsEffect.addAll(this);
+		
 		this.clear();
 		this.add(dataObject);
+		
+		needsEffect.add(dataObject);
+		needsEffect.forEach(DataObject::generateTileEffect);
 	}
 	public void setAll(ArrayList<DataObject> dataObjects) {
 		this.clear();
@@ -82,7 +89,13 @@ public class Select extends DataObjectList {
 	}
 	public void setRandom() {
 		DataObject dataObject = getRandom(InstanceManager.getGalleryPane().getVisibleDataObjects());
-		InstanceManager.getSelect().set(dataObject);
+		
+		if (dataObject.getMergeID() == 0) {
+			this.set(dataObject);
+		} else {
+			this.setAll(dataObject.getMergeGroup());
+		}
+		
 		InstanceManager.getTarget().set(dataObject);
 	}
 	public void clear() {
@@ -95,7 +108,7 @@ public class Select extends DataObjectList {
 				dataObject.generateTileEffect();
 			}
 		});
-		InstanceManager.getReload().flag(Reload.Control.SELECT);
+		InstanceManager.getReload().notify(Reload.Control.SELECT);
 	}
 	public void swapState(DataObject dataObject) {
 		if (super.contains(dataObject)) {
@@ -105,28 +118,30 @@ public class Select extends DataObjectList {
 		}
 	}
 	public void merge() {
-		TagList tagList = new TagList();
-		for (DataObject dataObject : this) {
-			for (TagObject tagObject : dataObject.getTagList()) {
-				if (!tagList.contains(tagObject)) {
-					tagList.add(tagObject);
-				}
-			}
-		}
-		
 		CustomList<Integer> mergeIDs = InstanceManager.getObjectListMain().getMergeIDs();
 		int mergeID;
 		do mergeID = new Random().nextInt();
 		while (mergeIDs.contains(mergeID));
 		
-		for (DataObject dataObject : this) {
-			dataObject.setMergeID(mergeID);
-			dataObject.setTagList(tagList);
+		boolean bMergeTags = StageUtil.showStageYesNo("Do you also want to merge the tags of these items?");
+		if (bMergeTags) {
+			TagList tagList = new TagList();
+			for (DataObject dataObject : this) {
+				for (TagObject tagObject : dataObject.getTagList()) {
+					if (!tagList.contains(tagObject)) {
+						tagList.add(tagObject);
+					}
+				}
+			}
+			for (DataObject dataObject : this) {
+				dataObject.setMergeID(mergeID);
+				dataObject.setTagList(tagList);
+			}
 		}
 		
 		InstanceManager.getTarget().set(this.getFirst());
 		
-		InstanceManager.getReload().flag(Reload.Control.OBJ, Reload.Control.TAG);
+		InstanceManager.getReload().notify(Reload.Control.OBJ, Reload.Control.TAG);
 	}
 	public void unmerge() {
 		DataObject dataObject = InstanceManager.getTarget().getCurrentTarget();
@@ -136,7 +151,7 @@ public class Select extends DataObjectList {
 				mergeObject.setMergeID(0);
 			}
 		}
-		InstanceManager.getReload().flag(Reload.Control.OBJ, Reload.Control.TAG);
+		InstanceManager.getReload().notify(Reload.Control.OBJ, Reload.Control.TAG);
 	}
 	
 	public void shiftSelectTo(DataObject shiftCurrent) {

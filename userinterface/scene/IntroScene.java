@@ -19,6 +19,7 @@ import userinterface.nodes.NodeUtil;
 import userinterface.nodes.base.TextNode;
 import userinterface.nodes.node.ColorModeSwitchNode;
 import userinterface.nodes.node.IntroStageNode;
+import userinterface.nodes.node.Tooltip;
 import userinterface.stage.StageUtil;
 import userinterface.style.SizeUtil;
 import userinterface.style.enums.ColorType;
@@ -98,6 +99,8 @@ public class IntroScene {
 							}
 						}
 					});
+					Tooltip t = new Tooltip(project.getSourceDirectory(), 200);
+					Tooltip.install(introStageNode, t);
 					vBoxRecentProjects.getChildren().add(introStageNode);
 				}
 			}
