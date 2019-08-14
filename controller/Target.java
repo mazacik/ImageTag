@@ -67,7 +67,8 @@ public class Target {
 				if (newTargetIndex < visibleTilesCount - 1) newTargetIndex += 1;
 				break;
 		}
-		this.set(galleryPane.getDataObjectsOfTiles().get(newTargetIndex));
+		if (galleryPane.getDataObjectsOfTiles().size() > newTargetIndex)
+			this.set(galleryPane.getDataObjectsOfTiles().get(newTargetIndex));
 	}
 	public void move(KeyCode keyCode) {
 		switch (keyCode) {
@@ -106,8 +107,13 @@ public class Target {
 		if (storePos < 0) return;
 		DataObjectList visibleObjects = Instances.getGalleryPane().getDataObjectsOfTiles();
 		if (!visibleObjects.isEmpty()) {
-			if (storePos <= visibleObjects.size() - 1) this.set(visibleObjects.get(storePos));
-			else this.set(visibleObjects.getLast());
+			DataObject newTarget;
+			
+			if (storePos <= visibleObjects.size() - 1) newTarget = visibleObjects.get(storePos);
+			else newTarget = visibleObjects.getLast();
+			
+			this.set(newTarget);
+			if (Instances.getSelect().isEmpty()) Instances.getSelect().set(newTarget);
 		}
 	}
 }

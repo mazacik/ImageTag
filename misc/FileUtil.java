@@ -6,7 +6,7 @@ import application.controller.Target;
 import application.database.list.DataObjectList;
 import application.database.object.DataObject;
 import application.gui.panes.center.GalleryTile;
-import application.gui.stage.StageUtil;
+import application.gui.stage.Stages;
 import application.main.Instances;
 import javafx.scene.Scene;
 import javafx.stage.DirectoryChooser;
@@ -64,14 +64,13 @@ public abstract class FileUtil {
 		directoryChooser.setTitle("Choose a Directory");
 		directoryChooser.setInitialDirectory(new File(initialDirectory));
 		File directory = directoryChooser.showDialog(ownerScene.getWindow());
+		
+		if (directory == null) return "";
+		
 		String result = directory.getAbsolutePath();
-		if (!result.isEmpty()) {
-			char lastChar = result.charAt(result.length() - 1);
-			if (lastChar != File.separatorChar) result += File.separatorChar;
-			return result;
-		} else {
-			return "";
-		}
+		char lastChar = result.charAt(result.length() - 1);
+		if (lastChar != File.separatorChar) result += File.separatorChar;
+		return result;
 	}
 	public static String directoryChooser(Scene ownerScene) {
 		return directoryChooser(ownerScene, System.getProperty("user.dir"));
@@ -136,7 +135,7 @@ public abstract class FileUtil {
 		DirectoryChooser directoryChooser = new DirectoryChooser();
 		directoryChooser.setTitle("Select a directory to import");
 		directoryChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-		File directory = directoryChooser.showDialog(Instances.getMainStage());
+		File directory = directoryChooser.showDialog(Stages.getMainStage());
 		
 		DataObjectList newDataObjects = new DataObjectList();
 		if (directory != null && directory.isDirectory()) {
@@ -176,7 +175,7 @@ public abstract class FileUtil {
 			
 			filter.getCurrentSessionObjects().addAll(newDataObjects);
 			
-			if (StageUtil.showStageYesNo("Do you wish to show the imported files?")) {
+			if (Stages.getYesNoStage()._show("Do you wish to show the imported files?")) {
 				filter.setAll(newDataObjects);
 				select.set(filter.getFirst());
 				target.set(filter.getFirst());

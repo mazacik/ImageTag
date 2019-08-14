@@ -5,7 +5,7 @@ import application.database.list.DataObjectList;
 import application.database.list.TagList;
 import application.database.object.DataObject;
 import application.database.object.TagObject;
-import application.gui.stage.StageUtil;
+import application.gui.stage.Stages;
 import application.main.Instances;
 
 import java.util.ArrayList;
@@ -123,7 +123,7 @@ public class Select extends DataObjectList {
 		do mergeID = new Random().nextInt();
 		while (mergeIDs.contains(mergeID));
 		
-		boolean bMergeTags = StageUtil.showStageYesNo("Do you also want to merge the tags of these items?");
+		boolean bMergeTags = Stages.getYesNoStage()._show("Do you also want to merge the tags of these items?");
 		if (bMergeTags) {
 			TagList tagList = new TagList();
 			for (DataObject dataObject : this) {

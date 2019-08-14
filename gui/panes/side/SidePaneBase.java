@@ -2,7 +2,6 @@ package application.gui.panes.side;
 
 import application.database.list.TagListMain;
 import application.database.object.TagObject;
-import application.gui.decorator.Decorator;
 import application.gui.nodes.simple.TextNode;
 import application.gui.panes.NodeBase;
 import application.main.Instances;
@@ -13,7 +12,7 @@ import javafx.scene.layout.VBox;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public abstract class SidePaneBase extends VBox implements NodeBase {
+public abstract class SidePaneBase extends VBox implements NodeBase, SidePaneBaseInterface {
 	protected TextNode nodeTitle;
 	protected ScrollPane scrollPane;
 	protected VBox tagNodesBox;
@@ -69,10 +68,9 @@ public abstract class SidePaneBase extends VBox implements NodeBase {
 				if (node instanceof TagNode) {
 					TagNode tagNode = (TagNode) node;
 					tagNode.addNameNode(tagObject.getName());
-					tagNode.sortNameNodes();
+					tagNode.sortNameNodes(); //todo this only has to be done once at the end
 				}
 			}
-			Decorator.applyStyle(tagNodesBox);
 		}
 		
 		//	checkValues whether any changes are necessary (remove)
@@ -135,9 +133,6 @@ public abstract class SidePaneBase extends VBox implements NodeBase {
 			}
 		}
 		tagNodesBox.getChildren().removeAll(emptyNodes);
-	}
-	public void changeNodeState(TagNode tagNode, TextNode nameNode) {
-	
 	}
 	
 	public void expandAll() {

@@ -4,18 +4,17 @@ import application.database.list.CustomList;
 import application.database.list.DataObjectList;
 import application.database.loader.utils.ThumbnailReader;
 import application.database.object.DataObject;
-import application.gui.decorator.Decorator;
 import application.gui.decorator.SizeUtil;
-import application.gui.decorator.enums.ColorType;
 import application.gui.nodes.NodeUtil;
 import application.gui.panes.NodeBase;
-import application.gui.scene.SceneUtil;
+import application.gui.stage.Stages;
 import application.main.Instances;
 import javafx.collections.ObservableList;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.TilePane;
 
 import java.util.ArrayList;
@@ -50,15 +49,13 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 			}
 		});
 		
+		this.setBackground(Background.EMPTY);
 		this.setMaxWidth(1);
 		this.setContent(tilePane);
 		this.setHbarPolicy(ScrollBarPolicy.NEVER);
 		this.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
 		this.setPrefViewportHeight(SizeUtil.getUsableScreenHeight());
 		this.setBorder(NodeUtil.getBorder(0, 1, 0, 1));
-		
-		Decorator.manage(this, ColorType.DEF);
-		Decorator.manage(tilePane, ColorType.DEF);
 	}
 	
 	public boolean reload() {
@@ -97,7 +94,7 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 	
 	public void adjustViewportToCurrentTarget() {
 		DataObject currentTarget = Instances.getTarget().getCurrentTarget();
-		if (SceneUtil.isFullView() || currentTarget == null) return;
+		if (Stages.getMainStage().isFullView() || currentTarget == null) return;
 		if (currentTarget.getMergeID() != 0 && !expandedGroups.contains(currentTarget.getMergeID())) {
 			currentTarget = currentTarget.getMergeGroup().getFirst();
 		}

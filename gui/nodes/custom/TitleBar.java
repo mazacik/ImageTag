@@ -1,69 +1,82 @@
 package application.gui.nodes.custom;
 
-import application.gui.decorator.Decorator;
-import application.gui.decorator.enums.ColorType;
+import application.gui.decorator.ColorUtil;
 import application.gui.nodes.NodeUtil;
 import application.gui.nodes.simple.TextNode;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+
 public class TitleBar extends BorderPane {
-	private final TextNode labelTitle;
+	private final TextNode lblTitle = new TextNode("", false, false, false, true);
+	private final TextNode btnMinimize = new TextNode("⚊", true, true, false, true);
+	private final TextNode btnExit = new TextNode("✕", true, true, false, true);
 	
 	public TitleBar() {
-		this("", true);
-	}
-	public TitleBar(boolean movement) {
-		this("", movement);
+		this("");
 	}
 	public TitleBar(String title) {
-		this(title, true);
-	}
-	public TitleBar(String title, boolean movement) {
-		labelTitle = new TextNode(title, ColorType.DEF, ColorType.DEF);
-		labelTitle.setFont(Decorator.getFont());
-		labelTitle.setPadding(new Insets(1, 5, 1, 5));
-		BorderPane.setAlignment(labelTitle, Pos.CENTER_LEFT);
+		lblTitle.setText(title);
+		BorderPane.setAlignment(lblTitle, Pos.CENTER_LEFT);
 		
-		TextNode btnExit = new TextNode("✕", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.ALT);
-		btnExit.setPadding(new Insets(1, 5, 1, 5));
+		btnMinimize.setOnMouseClicked(event -> {
+			if (event.getButton() == MouseButton.PRIMARY) {
+				btnMinimize.setBackground(Background.EMPTY);
+				btnMinimize.setTextFill(ColorUtil.getTextColorDef());
+				btnMinimize.applyCss();
+				((Stage) this.getScene().getWindow()).setIconified(true);
+			}
+		});
+		BorderPane.setAlignment(btnMinimize, Pos.CENTER);
+		
 		btnExit.setOnMouseClicked(event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
-				btnExit.fireEvent(new WindowEvent(this.getScene().getWindow(), WindowEvent.WINDOW_CLOSE_REQUEST));
+				this.fireEvent(new WindowEvent(null, WindowEvent.WINDOW_CLOSE_REQUEST));
 			}
 		});
 		BorderPane.setAlignment(btnExit, Pos.CENTER);
 		
-		this.setLeft(labelTitle);
-		this.setRight(btnExit);
+		this.setLeft(lblTitle);
+		this.setRight(new HBox(btnMinimize, btnExit));
 		this.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
-		Decorator.manage(this, ColorType.DEF);
 		
-		if (movement) {
-			final double[] xOffset = {0};
-			final double[] yOffset = {0};
-			final boolean[] clickOnExit = {false};
-			this.setOnMousePressed(event -> {
-				if (event.getPickResult().getIntersectedNode().getParent().equals(btnExit)) {
-					clickOnExit[0] = true;
-				}
-				xOffset[0] = this.getScene().getWindow().getX() - event.getScreenX();
-				yOffset[0] = this.getScene().getWindow().getY() - event.getScreenY();
-			});
-			this.setOnMouseDragged(event -> {
-				if (!clickOnExit[0]) {
-					this.getScene().getWindow().setX(event.getScreenX() + xOffset[0]);
-					this.getScene().getWindow().setY(event.getScreenY() + yOffset[0]);
-				}
-			});
-			this.setOnMouseReleased(event -> clickOnExit[0] = false);
-		}
+		initDragEvents();
+	}
+	
+	private void initDragEvents() {
+		AtomicBoolean clickOnButton = new AtomicBoolean(false);
+		AtomicReference<Double> xOffset = new AtomicReference<>((double) 0);
+		AtomicReference<Double> yOffset = new AtomicReference<>((double) 0);
+		
+		this.setOnMousePressed(event -> {
+			Parent parent = event.getPickResult().getIntersectedNode().getParent();
+			clickOnButton.set(parent == btnExit || parent == btnMinimize);
+			xOffset.set(this.getScene().getWindow().getX() - event.getScreenX());
+			yOffset.set(this.getScene().getWindow().getY() - event.getScreenY());
+		});
+		this.setOnMouseDragged(event -> {
+			if (!clickOnButton.get()) {
+				this.getScene().getWindow().setX(event.getScreenX() + xOffset.get());
+				this.getScene().getWindow().setY(event.getScreenY() + yOffset.get());
+			}
+		});
+		this.setOnMouseReleased(event -> {
+			if (event.getScreenY() == 0 || this.localToScreen(this.getBoundsInLocal()).getMinY() < 0) {
+				this.getScene().getWindow().centerOnScreen();
+			}
+			clickOnButton.set(false);
+		});
 	}
 	
 	public void setTitle(String title) {
-		labelTitle.setText(title);
+		lblTitle.setText(title);
 	}
 }

@@ -1,8 +1,7 @@
 package application.gui.nodes.popup;
 
 import application.gui.nodes.NodeUtil;
-import application.gui.nodes.simple.TextNode;
-import application.main.Instances;
+import application.gui.stage.Stages;
 import application.misc.enums.Direction;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
@@ -14,7 +13,7 @@ import javafx.stage.Popup;
 import javafx.stage.Window;
 
 public class ClickMenuLeft extends ClickMenuBase {
-    private ClickMenuLeft(Window owner, TextNode root, Direction direction, Region... children) {
+    private ClickMenuLeft(Window owner, Region root, Direction direction, Region... children) {
         super(children);
 
         root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
@@ -41,13 +40,13 @@ public class ClickMenuLeft extends ClickMenuBase {
         this.setHideOnEscape(true);
         instanceList.add(this);
     }
-    public static void install(TextNode root, Direction direction, Region... labels) {
+    public static void install(Region root, Direction direction, Region... labels) {
         new ClickMenuLeft(null, root, direction, labels);
     }
-    public static void install(Window window, TextNode root, Direction direction, Region... labels) {
+    public static void install(Window window, Region root, Direction direction, Region... labels) {
         new ClickMenuLeft(window, root, direction, labels);
     }
-    private void show(Window owner, TextNode root, Direction direction) {
+    private void show(Window owner, Region root, Direction direction) {
         double x;
         double y;
 
@@ -72,7 +71,7 @@ public class ClickMenuLeft extends ClickMenuBase {
                     }
                     y -= rootBorder.getInsets().getTop();
                 }
-				this.show(Instances.getMainStage(), x, y);
+                this.show(Stages.getMainStage(), x, y);
                 this.setAnchorX(this.getAnchorX() - this.getWidth());
                 break;
             case RIGHT:
@@ -84,7 +83,7 @@ public class ClickMenuLeft extends ClickMenuBase {
                     }
                     y -= rootBorder.getInsets().getTop();
                 }
-				this.show(Instances.getMainStage(), x, y);
+                this.show(Stages.getMainStage(), x, y);
                 break;
             case DOWN:
                 x = rootBounds.getMinX();
@@ -92,7 +91,7 @@ public class ClickMenuLeft extends ClickMenuBase {
                 if (rootBorder != null) {
                     y -= rootBorder.getInsets().getBottom();
                 }
-				this.show(Instances.getMainStage(), x, y);
+                this.show(Stages.getMainStage(), x, y);
                 break;
         }
     }

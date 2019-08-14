@@ -2,6 +2,7 @@ package application.gui.decorator;
 
 import application.gui.panes.center.GalleryPane;
 import application.gui.panes.center.MediaPane;
+import application.gui.stage.Stages;
 import application.main.Instances;
 import javafx.scene.layout.TilePane;
 import javafx.scene.text.Text;
@@ -9,7 +10,6 @@ import javafx.scene.text.Text;
 import java.awt.*;
 
 public abstract class SizeUtil {
-	private static final double GLOBAL_SPACING = 2;
 	private static final double PREF_HEIGHT_TOPMENU = 30;
 	private static final double MIN_WIDTH_SIDELISTS = 250;
 	private static final double GALLERY_ICON_SIZE = Instances.getSettings().getGalleryTileSize();
@@ -26,7 +26,7 @@ public abstract class SizeUtil {
 		MediaPane mediaPane = Instances.getMediaPane();
 		TilePane tilePane = galleryPane.getTilePane();
 		
-		double sceneWidth = Instances.getMainStage().getScene().getWidth();
+		double sceneWidth = Stages.getMainStage().getScene().getWidth();
 		
 		int availableWidth = (int) (sceneWidth - 2 * SizeUtil.getMinWidthSideLists());
 		int prefColumnsNew = (int) (availableWidth / tilePane.getPrefTileWidth());
@@ -44,7 +44,7 @@ public abstract class SizeUtil {
 		}
 	}
 	public static void stageHeightChangehandler() {
-		Instances.getMediaPane().getCanvas().setHeight(Instances.getMainStage().getScene().getHeight() - Instances.getToolbarPane().getPrefHeight() - Instances.getToolbarPane().getPadding().getBottom() - Instances.getToolbarPane().getBorder().getInsets().getBottom());
+		Instances.getMediaPane().getCanvas().setHeight(Stages.getMainStage().getScene().getHeight() - Instances.getToolbarPane().getPrefHeight());
 	}
 	
 	public static double getStringWidth(String s) {
@@ -53,9 +53,6 @@ public abstract class SizeUtil {
 		return t.getLayoutBounds().getWidth();
 	}
 	
-	public static double getGlobalSpacing() {
-		return GLOBAL_SPACING;
-	}
 	public static double getPrefHeightTopMenu() {
 		return PREF_HEIGHT_TOPMENU;
 	}

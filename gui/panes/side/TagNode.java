@@ -1,18 +1,17 @@
 package application.gui.panes.side;
 
 import application.gui.decorator.ColorUtil;
-import application.gui.decorator.Decorator;
-import application.gui.decorator.enums.ColorType;
-import application.gui.nodes.NodeUtil;
 import application.gui.nodes.popup.ClickMenuTag;
 import application.gui.nodes.simple.TextNode;
+import application.gui.stage.Stages;
 import application.main.Instances;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Labeled;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -22,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 public class TagNode extends VBox {
+	//todo split between their panes
 	private final TextNode labelArrow;
 	private final TextNode labelText;
 	
@@ -39,15 +39,13 @@ public class TagNode extends VBox {
 		labelText.setPadding(new Insets(0, 15, 0, 5));
 		labelArrow.setTextFill(ColorUtil.getTextColorDef());
 		
-		groupNode = NodeUtil.getHBox(ColorType.DEF, ColorType.ALT, labelArrow, labelText);
+		groupNode = new HBox(labelArrow, labelText);
 		getChildren().add(groupNode);
 		
 		nameNodes = new ArrayList<>();
 		
 		initNameNodes();
 		initEvents();
-		
-		Decorator.manage(this, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
 	}
 	private void initNameNodes() {
 		for (String name : Instances.getTagListMain().getNames(getGroup())) {
@@ -73,7 +71,7 @@ public class TagNode extends VBox {
 			}
 		};
 		labelArrow.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
-			Instances.getMainStageEvent().shiftDownProperty().addListener(shiftChangeListener);
+			Stages.getMainStage().shiftDownProperty().addListener(shiftChangeListener);
 			if (event.isShiftDown()) {
 				for (Node node : owner.getTagNodesBox().getChildren()) {
 					if (node instanceof TagNode) {
@@ -86,7 +84,7 @@ public class TagNode extends VBox {
 			}
 		});
 		labelArrow.addEventFilter(MouseEvent.MOUSE_EXITED, event -> {
-			Instances.getMainStageEvent().shiftDownProperty().removeListener(shiftChangeListener);
+			Stages.getMainStage().shiftDownProperty().removeListener(shiftChangeListener);
 			if (event.isShiftDown()) {
 				for (Node node : owner.getTagNodesBox().getChildren()) {
 					if (node instanceof TagNode) {
@@ -98,6 +96,8 @@ public class TagNode extends VBox {
 				labelArrow.setTextFill(ColorUtil.getTextColorDef());
 			}
 		});
+		groupNode.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> this.setBackground(ColorUtil.getBackgroundAlt()));
+		groupNode.addEventFilter(MouseEvent.MOUSE_EXITED, event -> this.setBackground(Background.EMPTY));
 		groupNode.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 			if (event.getPickResult().getIntersectedNode().getParent().equals(labelArrow)) {
 				if (!isExpanded()) {
@@ -137,7 +137,7 @@ public class TagNode extends VBox {
 			}
 		}
 		
-		TextNode nameNode = new TextNode(name, ColorType.DEF, ColorType.ALT, ColorType.NULL, ColorType.NULL);
+		TextNode nameNode = new TextNode(name, true, false, false, false);
 		nameNode.setAlignment(Pos.CENTER_LEFT);
 		nameNode.prefWidthProperty().bind(this.widthProperty());
 		nameNode.setPadding(new Insets(0, 0, 0, 50));
@@ -159,14 +159,14 @@ public class TagNode extends VBox {
 		nameNodes.add(nameNode);
 	}
 	public void removeNameNode(String name) {
-		TextNode textNode = null;
+		TextNode TextNode = null;
 		for (TextNode nameNode : nameNodes) {
 			if (nameNode.getText().equals(name)) {
-				textNode = nameNode;
+				TextNode = nameNode;
 				break;
 			}
 		}
-		nameNodes.remove(textNode);
+		nameNodes.remove(TextNode);
 	}
 	
 	public void showNameNodes() {
@@ -181,7 +181,7 @@ public class TagNode extends VBox {
 		labelArrow.setText("+ ");
 	}
 	public void sortNameNodes() {
-		nameNodes.sort(Comparator.comparing(Labeled::getText));
+		nameNodes.sort(Comparator.comparing(Label::getText));
 		showNameNodes();
 	}
 	public boolean isExpanded() {

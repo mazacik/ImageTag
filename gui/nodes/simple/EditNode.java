@@ -2,27 +2,21 @@ package application.gui.nodes.simple;
 
 import application.gui.decorator.ColorUtil;
 import application.gui.decorator.Decorator;
-import application.gui.decorator.enums.ColorType;
 import application.gui.nodes.NodeUtil;
 import javafx.scene.control.TextField;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.Background;
 
 public class EditNode extends TextField {
 	public EditNode(String promptText, EditNodeType type) {
 		this.setFont(Decorator.getFont());
 		this.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
 		this.setPromptText(promptText);
-		this.skinProperty().addListener((observable, oldValue, newValue) -> {
-			Color color = ColorUtil.getTextColorDef();
-			String colorString = String.format("#%02X%02X%02X",
-					(int) (color.getRed() * 255),
-					(int) (color.getGreen() * 255),
-					(int) (color.getBlue() * 255));
-			setStyle("-fx-text-fill: " + colorString + "; -fx-prompt-text-fill: gray;");
-		});
+		//this.skinProperty().addListener((observable, oldValue, newValue) -> setStyle("-fx-text-fill: " + Decorator.getColorAsStringForCss(ColorUtil.getTextColorDef()) + "; -fx-prompt-text-fill: gray;"));
+		this.setBackground(Background.EMPTY);
+		this.setStyle("-fx-text-fill: " + Decorator.getColorAsStringForCss(ColorUtil.getTextColorDef()) + ";");
 		
 		switch (type) {
-			case DEFAULT:
+			case ANY_CHARACTERS:
 				break;
 			case NUMERIC:
 				this.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -39,14 +33,12 @@ public class EditNode extends TextField {
 				});
 				break;
 		}
-		
-		Decorator.manage(this, ColorType.ALT, ColorType.ALT, ColorType.DEF, ColorType.DEF);
 	}
 	public EditNode(String promptText) {
-		this(promptText, EditNodeType.DEFAULT);
+		this(promptText, EditNodeType.ANY_CHARACTERS);
 	}
 	public EditNode() {
-		this("", EditNodeType.DEFAULT);
+		this("", EditNodeType.ANY_CHARACTERS);
 	}
 	
 	public boolean isInteger(String str) {
@@ -78,7 +70,7 @@ public class EditNode extends TextField {
 	}
 	
 	public enum EditNodeType {
-		DEFAULT,
+		ANY_CHARACTERS,
 		NUMERIC,
 		NUMERIC_POSITIVE,
 	}

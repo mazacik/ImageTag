@@ -2,10 +2,8 @@ package application.gui.panes.center;
 
 import application.database.loader.utils.ThumbnailReader;
 import application.database.object.DataObject;
-import application.gui.decorator.Decorator;
+import application.gui.decorator.ColorUtil;
 import application.gui.decorator.SizeUtil;
-import application.gui.decorator.enums.ColorType;
-import application.gui.nodes.NodeUtil;
 import application.gui.nodes.simple.TextNode;
 import application.main.Instances;
 import application.misc.ConverterUtil;
@@ -17,6 +15,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
@@ -47,90 +46,79 @@ public class MediaPaneControlsBase extends BorderPane {
 		progressBar.setProgress(0);
 		progressBar.skinProperty().addListener((observable, oldValue, newValue) -> progressBar.lookup(".bar").setStyle("-fx-background-insets: 1 1 1 1; -fx-padding: 0.25em;"));
 		
-		btnSkipBackward = new TextNode("SkipBackward", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
-		btnSkipBackward5s = new TextNode("SkipBackward5s", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
-		btnPlayPause = new TextNode("PlayPause", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
-		btnSkipForward = new TextNode("SkipForward", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
-		btnSkipForward5s = new TextNode("SkipForward5s", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
-		btnMute = new TextNode("Mute", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
-		btnSnapshot = new TextNode("Snapshot", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+		btnSkipBackward = new TextNode("SkipBackward", true, true, false, true);
+		btnSkipBackward5s = new TextNode("SkipBackward5s", true, true, false, true);
+		btnPlayPause = new TextNode("PlayPause", true, true, false, true);
+		btnSkipForward = new TextNode("SkipForward", true, true, false, true);
+		btnSkipForward5s = new TextNode("SkipForward5s", true, true, false, true);
+		btnMute = new TextNode("Mute", true, true, false, true);
+		btnSnapshot = new TextNode("Snapshot", true, true, false, true);
 		
-		btnPrevious = new TextNode("Previous", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
-		btnNext = new TextNode("Next", ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
+		btnPrevious = new TextNode("Previous", true, true, false, true);
+		btnNext = new TextNode("Next", true, true, false, true);
 		
-		lblTimeCurrent = new TextNode("00:00:00", ColorType.DEF, ColorType.DEF, ColorType.DEF, ColorType.DEF);
-		lblTimeTotal = new TextNode("23:59:59", ColorType.DEF, ColorType.DEF, ColorType.DEF, ColorType.DEF);
+		lblTimeCurrent = new TextNode("00:00:00", true, true, false, true);
+		lblTimeTotal = new TextNode("23:59:59", true, true, false, true);
+		
+		this.setBackground(ColorUtil.getBackgroundDef());
 		
 		initEvents(videoPlayer);
-		
-		Decorator.manage(this, ColorType.DEF);
 	}
-	
 	private void initEvents(VideoPlayer videoPlayer) {
 		if (videoPlayer != null) {
-			btnPlayPause.setOnMouseClicked(event -> {
-				if (event.getButton() == MouseButton.PRIMARY) {
-					if (videoPlayer.hasMedia()) {
-						if (videoPlayer.isPlaying()) {
-							videoPlayer.pause();
-						} else {
-							videoPlayer.resume();
-						}
+			btnPlayPause.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				if (videoPlayer.hasMedia()) {
+					if (videoPlayer.isPlaying()) {
+						videoPlayer.pause();
+					} else {
+						videoPlayer.resume();
 					}
 				}
 			});
 			
 			long timeDelta = 5000; // time in milliseconds
-			btnSkipBackward5s.setOnMouseClicked(event -> {
-				if (event.getButton() == MouseButton.PRIMARY) {
-					if (videoPlayer.hasMedia()) {
-						videoPlayer.getControls().skipTime(-timeDelta);
-						if (!videoPlayer.isPlaying()) {
-							videoPlayer.renderFrame();
-							float position = videoPlayer.getPosition();
-							setVideoProgress(progressBar.getProgress() - position);
-						}
+			btnSkipBackward5s.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				if (videoPlayer.hasMedia()) {
+					videoPlayer.getControls().skipTime(-timeDelta);
+					if (!videoPlayer.isPlaying()) {
+						videoPlayer.renderFrame();
+						float position = videoPlayer.getPosition();
+						setVideoProgress(progressBar.getProgress() - position);
 					}
 				}
 			});
-			btnSkipForward5s.setOnMouseClicked(event -> {
-				if (event.getButton() == MouseButton.PRIMARY) {
-					if (videoPlayer.hasMedia()) {
-						videoPlayer.getControls().skipPosition(+timeDelta);
-						if (!videoPlayer.isPlaying()) {
-							videoPlayer.renderFrame();
-							float position = videoPlayer.getPosition();
-							setVideoProgress(progressBar.getProgress() + position);
-						}
+			btnSkipForward5s.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				if (videoPlayer.hasMedia()) {
+					videoPlayer.getControls().skipPosition(+timeDelta);
+					if (!videoPlayer.isPlaying()) {
+						videoPlayer.renderFrame();
+						float position = videoPlayer.getPosition();
+						setVideoProgress(progressBar.getProgress() + position);
 					}
 				}
 			});
 			
 			float skipDelta = 0.05f; // 0.01f = 1% of media length
-			btnSkipBackward.setOnMouseClicked(event -> {
-				if (event.getButton() == MouseButton.PRIMARY) {
-					if (videoPlayer.hasMedia()) {
-						videoPlayer.getControls().skipPosition(-skipDelta);
-						if (!videoPlayer.isPlaying()) {
-							videoPlayer.renderFrame();
-							setVideoProgress(progressBar.getProgress() - skipDelta);
-						}
+			btnSkipBackward.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				if (videoPlayer.hasMedia()) {
+					videoPlayer.getControls().skipPosition(-skipDelta);
+					if (!videoPlayer.isPlaying()) {
+						videoPlayer.renderFrame();
+						setVideoProgress(progressBar.getProgress() - skipDelta);
 					}
 				}
 			});
-			btnSkipForward.setOnMouseClicked(event -> {
-				if (event.getButton() == MouseButton.PRIMARY) {
-					if (videoPlayer.hasMedia()) {
-						videoPlayer.getControls().skipPosition(+skipDelta);
-						if (!videoPlayer.isPlaying()) {
-							videoPlayer.renderFrame();
-							setVideoProgress(progressBar.getProgress() + skipDelta);
-						}
+			btnSkipForward.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				if (videoPlayer.hasMedia()) {
+					videoPlayer.getControls().skipPosition(+skipDelta);
+					if (!videoPlayer.isPlaying()) {
+						videoPlayer.renderFrame();
+						setVideoProgress(progressBar.getProgress() + skipDelta);
 					}
 				}
 			});
 			
-			progressBar.setOnMouseClicked(event -> {
+			progressBar.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 				if (event.getButton() == MouseButton.PRIMARY) {
 					if (videoPlayer.hasMedia()) {
 						double eventX = event.getX();
@@ -144,52 +132,42 @@ public class MediaPaneControlsBase extends BorderPane {
 				}
 			});
 			
-			btnMute.setOnMouseClicked(event -> {
-				if (event.getButton() == MouseButton.PRIMARY) {
-					videoPlayer.swapMute();
-				}
-			});
-			btnSnapshot.setOnMouseClicked(event -> {
-				if (event.getButton() == MouseButton.PRIMARY) {
-					DataObject dataObject = Instances.getTarget().getCurrentTarget();
-					File cacheFile = new File(dataObject.getCacheFile());
-					int thumbSize = (int) SizeUtil.getGalleryIconSize();
-					Instances.getMediaPane().getVideoPlayer().snapshot(cacheFile, thumbSize, thumbSize);
-					Image thumbnail = ThumbnailReader.readThumbnail(dataObject);
-					
-					ObservableList<Node> visibleTiles = Instances.getGalleryPane().getTilePane().getChildren();
-					if (visibleTiles.contains(dataObject.getGalleryTile())) {
-						int galleryPosition = Instances.getGalleryPane().getTilePane().getChildren().indexOf(dataObject.getGalleryTile());
-						dataObject.setGalleryTile(new GalleryTile(dataObject, thumbnail));
-						visibleTiles.set(galleryPosition, dataObject.getGalleryTile());
-					} else {
-						dataObject.setGalleryTile(new GalleryTile(dataObject, thumbnail));
-					}
+			btnMute.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, videoPlayer::swapMute);
+			btnSnapshot.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				DataObject dataObject = Instances.getTarget().getCurrentTarget();
+				File cacheFile = new File(dataObject.getCacheFile());
+				int thumbSize = (int) SizeUtil.getGalleryIconSize();
+				Instances.getMediaPane().getVideoPlayer().snapshot(cacheFile, thumbSize, thumbSize);
+				Image thumbnail = ThumbnailReader.readThumbnail(dataObject);
+				
+				ObservableList<Node> visibleTiles = Instances.getGalleryPane().getTilePane().getChildren();
+				if (visibleTiles.contains(dataObject.getGalleryTile())) {
+					int galleryPosition = Instances.getGalleryPane().getTilePane().getChildren().indexOf(dataObject.getGalleryTile());
+					dataObject.setGalleryTile(new GalleryTile(dataObject, thumbnail));
+					visibleTiles.set(galleryPosition, dataObject.getGalleryTile());
+				} else {
+					dataObject.setGalleryTile(new GalleryTile(dataObject, thumbnail));
 				}
 			});
 		}
 		
-		btnPrevious.setOnMouseClicked(event -> {
-			if (event.getButton() == MouseButton.PRIMARY) {
-				Instances.getTarget().move(Direction.LEFT);
-				Instances.getReload().doReload();
-			}
+		btnPrevious.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+			Instances.getTarget().move(Direction.LEFT);
+			Instances.getReload().doReload();
 		});
-		btnNext.setOnMouseClicked(event -> {
-			if (event.getButton() == MouseButton.PRIMARY) {
-				Instances.getTarget().move(Direction.RIGHT);
-				Instances.getReload().doReload();
-			}
+		btnNext.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+			Instances.getTarget().move(Direction.RIGHT);
+			Instances.getReload().doReload();
 		});
 	}
 	
 	public void setVideoMode(boolean enabled) {
 		if (enabled) {
-			HBox hBoxLeft = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF);
+			HBox hBoxLeft = new HBox();
 			hBoxLeft.getChildren().add(btnPrevious);
 			hBoxLeft.getChildren().add(lblTimeCurrent);
 			
-			HBox hBoxCenter = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF);
+			HBox hBoxCenter = new HBox();
 			hBoxCenter.getChildren().add(btnSkipBackward5s);
 			hBoxCenter.getChildren().add(btnSkipBackward);
 			hBoxCenter.getChildren().add(btnPlayPause);
@@ -198,7 +176,7 @@ public class MediaPaneControlsBase extends BorderPane {
 			hBoxCenter.getChildren().add(btnMute);
 			hBoxCenter.setAlignment(Pos.CENTER);
 			
-			HBox hBoxRight = NodeUtil.getHBox(ColorType.DEF, ColorType.DEF);
+			HBox hBoxRight = new HBox();
 			hBoxRight.getChildren().add(lblTimeTotal);
 			hBoxRight.getChildren().add(btnNext);
 			
@@ -215,8 +193,6 @@ public class MediaPaneControlsBase extends BorderPane {
 			this.setCenter(null);
 			this.setBottom(null);
 		}
-		
-		Decorator.applyStyle(this);
 	}
 	public void setVideoProgress(double value) {
 		if (value > 0 && value <= 1) Platform.runLater(() -> progressBar.setProgress(value));

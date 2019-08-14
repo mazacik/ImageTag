@@ -9,18 +9,11 @@ import application.database.list.TagListMain;
 import application.gui.nodes.popup.ClickMenuData;
 import application.gui.nodes.popup.ClickMenuTag;
 import application.gui.panes.center.GalleryPane;
-import application.gui.panes.center.GalleryPaneEvent;
 import application.gui.panes.center.MediaPane;
-import application.gui.panes.center.MediaPaneEvent;
 import application.gui.panes.side.FilterPane;
-import application.gui.panes.side.FilterPaneEvent;
 import application.gui.panes.side.SelectPane;
-import application.gui.panes.side.SelectPaneEvent;
 import application.gui.panes.top.ToolbarPane;
-import application.gui.panes.top.ToolbarPaneEvent;
-import application.gui.scene.MainStageEvent;
 import application.settings.Settings;
-import javafx.stage.Stage;
 
 public abstract class Instances {
 	private static Settings settings;
@@ -33,7 +26,6 @@ public abstract class Instances {
 	private static TagListMain tagListMain;
 	private static DataObjectListMain objectListMain;
 	
-	private static Stage mainStage;
 	private static MediaPane mediaPane;
 	private static FilterPane filterPane;
 	private static SelectPane selectPane;
@@ -43,8 +35,6 @@ public abstract class Instances {
 	private static ClickMenuData clickMenuData;
 	private static ClickMenuTag clickMenuTag;
 	
-	private static MainStageEvent mainStageEvent;
-	
 	public static void createInstances() {
 		System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %2$s: %5$s%n");
 		
@@ -52,19 +42,17 @@ public abstract class Instances {
 		if (settings == null) settings = new Settings();
 		settings.getRecentProjects().setMaxSize(10);
 		
-		createInstancesDatabase();
+		createDatabaseInstances();
 		
-		createInstancesFrontend();
+		createFrontendInstances();
 		
-		createInstancesBackend();
+		createBackendInstances();
 	}
-	private static void createInstancesDatabase() {
+	private static void createDatabaseInstances() {
 		objectListMain = new DataObjectListMain();
 		tagListMain = new TagListMain();
 	}
-	private static void createInstancesFrontend() {
-		mainStage = new Stage();
-		
+	private static void createFrontendInstances() {
 		toolbarPane = new ToolbarPane();    /* needs Settings */
 		galleryPane = new GalleryPane();    /* needs Settings */
 		mediaPane = new MediaPane();        /* needs Settings, GalleryPane */
@@ -74,19 +62,11 @@ public abstract class Instances {
 		clickMenuData = new ClickMenuData();
 		clickMenuTag = new ClickMenuTag();
 	}
-	private static void createInstancesBackend() {
+	private static void createBackendInstances() {
 		filter = new Filter();
 		target = new Target();
 		select = new Select();
 		reload = new Reload();  /* needs Frontend */
-	}
-	public static void createInstancesEvents() {
-		mainStageEvent = new MainStageEvent();
-		new ToolbarPaneEvent();
-		new FilterPaneEvent();
-		new SelectPaneEvent();
-		new GalleryPaneEvent();
-		new MediaPaneEvent();
 	}
 	
 	public static Settings getSettings() {
@@ -110,9 +90,6 @@ public abstract class Instances {
 	public static TagListMain getTagListMain() {
 		return tagListMain;
 	}
-	public static Stage getMainStage() {
-		return mainStage;
-	}
 	public static ToolbarPane getToolbarPane() {
 		return toolbarPane;
 	}
@@ -133,9 +110,5 @@ public abstract class Instances {
 	}
 	public static ClickMenuTag getClickMenuTag() {
 		return clickMenuTag;
-	}
-	
-	public static MainStageEvent getMainStageEvent() {
-		return mainStageEvent;
 	}
 }

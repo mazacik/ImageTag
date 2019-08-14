@@ -2,12 +2,20 @@ package application.gui.panes.center;
 
 import application.database.list.CustomList;
 import application.database.object.DataObject;
-import application.gui.scene.SceneUtil;
+import application.gui.decorator.Decorator;
+import application.gui.nodes.simple.TextNode;
 import application.main.Instances;
+import javafx.geometry.Insets;
+import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.effect.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 
 public class GalleryTile extends ImageView {
 	private static final InnerShadow effectSelect = createEffectSelect();
@@ -52,7 +60,7 @@ public class GalleryTile extends ImageView {
 				groupIconText = "[" + middle + "]";
 			}
 			int tileSize = Instances.getSettings().getGalleryTileSize();
-			Image imageText = SceneUtil.textToImage(groupIconText);
+			Image imageText = textToImage(groupIconText);
 			effectList.add(new ImageInput(imageText, tileSize - imageText.getWidth() - 5, 1));
 			effectGroupSize = (int) imageText.getWidth() + 10;
 		}
@@ -82,6 +90,26 @@ public class GalleryTile extends ImageView {
 		int markSize = 6;
 		int markPositionInTile = (Instances.getSettings().getGalleryTileSize() - markSize) / 2;
 		return new ColorInput(markPositionInTile, markPositionInTile, markSize, markSize, Color.RED);
+	}
+	
+	public static Image textToImage(String text) {
+		TextNode label = new TextNode(text);
+		label.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, null, null)));
+		label.setTextFill(Color.RED);
+		label.setWrapText(true);
+		label.setFont(Decorator.getFont());
+		label.setPadding(new Insets(0, 0, 0, 0));
+		
+		Text theText = new Text(label.getText());
+		theText.setFont(label.getFont());
+		int width = (int) theText.getBoundsInLocal().getWidth();
+		int height = (int) theText.getBoundsInLocal().getHeight();
+		
+		WritableImage img = new WritableImage(width, height);
+		Scene scene = new Scene(new Group(label));
+		scene.setFill(Color.TRANSPARENT);
+		scene.snapshot(img);
+		return img;
 	}
 	
 	public static int getEffectGroupSize() {

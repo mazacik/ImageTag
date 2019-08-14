@@ -3,7 +3,7 @@ package application.database.list;
 import application.controller.Reload;
 import application.database.object.DataObject;
 import application.database.object.TagObject;
-import application.gui.stage.StageUtil;
+import application.gui.stage.Stages;
 import application.main.Instances;
 import application.misc.FileUtil;
 import application.misc.JsonUtil;
@@ -65,7 +65,7 @@ public class TagListMain extends TagList {
 	public boolean edit(TagObject tagObjectOld) {
 		if (tagObjectOld == null) return false;
 		
-		Pair<TagObject, Boolean> result = StageUtil.showStageEditorTag(tagObjectOld.getGroup(), tagObjectOld.getName());
+		Pair<TagObject, Boolean> result = Stages.getTagEditStage()._show(tagObjectOld.getGroup(), tagObjectOld.getName());
 		TagObject tagObjectNew = result.getKey();
 		
 		if (tagObjectNew != null) {

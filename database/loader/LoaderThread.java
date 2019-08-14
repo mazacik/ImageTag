@@ -6,7 +6,7 @@ import application.database.object.DataObject;
 import application.gui.panes.center.GalleryTile;
 import application.gui.panes.side.FilterPane;
 import application.gui.panes.side.SelectPane;
-import application.gui.stage.StageUtil;
+import application.gui.stage.Stages;
 import application.main.Instances;
 import application.misc.FileUtil;
 import javafx.application.Platform;
@@ -67,7 +67,7 @@ public class LoaderThread extends Thread {
 				AtomicBoolean createNew = new AtomicBoolean(false);
 				FutureTask futureTask = new FutureTask<Boolean>(() -> {
 					Logger.getGlobal().info("Database failed to load.");
-					createNew.set(StageUtil.showStageOkCancel("Database failed to load.\nCreate a new application.database?\nA backup will be created."));
+					createNew.set(Stages.getOkCancelStage()._show("Database failed to load.\nCreate a new application.database?\nA backup will be created."));
 				}, null);
 				Platform.runLater(futureTask);
 				try {

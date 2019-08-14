@@ -2,6 +2,7 @@ package application.gui.decorator.enums;
 
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 public enum BackgroundEnum {
@@ -9,6 +10,7 @@ public enum BackgroundEnum {
     DAYALT(new Background(new BackgroundFill(Paint.valueOf("#CCCDDD"), null, null))),
     NIGHTDEF(new Background(new BackgroundFill(Paint.valueOf("#3C3F41"), null, null))),
     NIGHTALT(new Background(new BackgroundFill(Paint.valueOf("#313335"), null, null))),
+	TRANSPARENT(new Background(new BackgroundFill(Color.TRANSPARENT, null, null))),
     ;
 
     private Background value;

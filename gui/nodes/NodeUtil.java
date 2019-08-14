@@ -1,9 +1,6 @@
 package application.gui.nodes;
 
 import application.gui.decorator.ColorUtil;
-import application.gui.decorator.Decorator;
-import application.gui.decorator.enums.ColorType;
-import application.gui.nodes.custom.IntroStageNode;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.layout.*;
@@ -31,26 +28,10 @@ public abstract class NodeUtil {
 		}
 	}
 	
-	public static IntroStageNode getIntroStageNode(String projectFile, String workingDirectory) {
-		IntroStageNode introStageNode = new IntroStageNode(projectFile, workingDirectory);
-		Decorator.manage(introStageNode, ColorType.ALT, ColorType.DEF, ColorType.NULL, ColorType.NULL);
-		return introStageNode;
-	}
-	
-	public static HBox getHBox(ColorType backgroundDef, ColorType backgroundAlt, Node... children) {
-		HBox hBox = new HBox(children);
-		Decorator.manage(hBox, backgroundDef, backgroundAlt, ColorType.NULL, ColorType.NULL);
-		return hBox;
-	}
-	public static VBox getVBox(ColorType backgroundDef, ColorType backgroundAlt, Node... children) {
-		VBox vBox = new VBox(children);
-		Decorator.manage(vBox, backgroundDef, backgroundAlt, ColorType.NULL, ColorType.NULL);
-		return vBox;
-	}
 	public static Border getBorder(int top, int right, int bottom, int left) {
 		return new Border(new BorderStroke(ColorUtil.getBorderColor(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(top, right, bottom, left)));
 	}
 	public static Border getBorder(int border) {
-		return getBorder(1, 1, 1, 1);
+		return getBorder(border, border, border, border);
 	}
 }

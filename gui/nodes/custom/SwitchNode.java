@@ -1,10 +1,10 @@
 package application.gui.nodes.custom;
 
-import application.gui.decorator.enums.ColorType;
-import application.gui.nodes.ColorData;
 import application.gui.nodes.NodeUtil;
 import application.gui.nodes.simple.TextNode;
 import javafx.geometry.Pos;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 
 public class SwitchNode extends HBox {
@@ -18,18 +18,17 @@ public class SwitchNode extends HBox {
 		this(text1, text2, -1);
 	}
 	public SwitchNode(String text1, String text2, double prefWidth) {
-		ColorData colorData = new ColorData(ColorType.DEF, ColorType.ALT, ColorType.DEF, ColorType.DEF);
-		
-		node1 = new TextNode(text1, colorData);
-		node2 = new TextNode(text2, colorData);
-		
-		node1.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
+		node1 = new TextNode(text1, true, false, true, true);
+		node2 = new TextNode(text2, true, false, true, true);
 		
 		if (prefWidth >= 0) {
 			node1.setPrefWidth(prefWidth / 2);
 			node2.setPrefWidth(prefWidth / 2);
 			this.setMaxWidth(prefWidth);
 		}
+		
+		node1.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> setSelectedNode(SwitchNodeEnum.LEFT));
+		node2.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> setSelectedNode(SwitchNodeEnum.RIGHT));
 		
 		this.getChildren().add(node1);
 		this.getChildren().add(node2);
@@ -41,5 +40,20 @@ public class SwitchNode extends HBox {
 	}
 	public TextNode getNode2() {
 		return node2;
+	}
+	
+	public void setSelectedNode(SwitchNodeEnum node) {
+		if (node == SwitchNodeEnum.LEFT) {
+			node1.setBorder(NodeUtil.getBorder(1));
+			node2.setBorder(null);
+		} else {
+			node1.setBorder(null);
+			node2.setBorder(NodeUtil.getBorder(1));
+		}
+	}
+	
+	public enum SwitchNodeEnum {
+		LEFT,
+		RIGHT
 	}
 }

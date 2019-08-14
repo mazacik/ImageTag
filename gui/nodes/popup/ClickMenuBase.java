@@ -1,7 +1,6 @@
 package application.gui.nodes.popup;
 
-import application.gui.decorator.Decorator;
-import application.gui.decorator.enums.ColorType;
+import application.gui.decorator.ColorUtil;
 import application.gui.nodes.NodeUtil;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -14,15 +13,15 @@ import java.util.ArrayList;
 
 public class ClickMenuBase extends Popup {
     protected static final ArrayList<ClickMenuBase> instanceList = new ArrayList<>();
-
-    private VBox vBox = NodeUtil.getVBox(ColorType.DEF, ColorType.DEF);
+	
+	private VBox vBox;
 
     public ClickMenuBase(Region... children) {
+		vBox = new VBox();
         vBox.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
         vBox.getChildren().setAll(children);
-	
-		Decorator.applyStyle(vBox);
-
+		vBox.setBackground(ColorUtil.getBackgroundDef());
+        
         this.addEventFilter(WindowEvent.WINDOW_SHOWN, event -> NodeUtil.equalizeWidth(vBox.getChildren()));
         this.getContent().setAll(vBox);
         this.setAutoHide(true);

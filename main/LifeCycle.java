@@ -3,44 +3,26 @@ package application.main;
 import application.database.loader.LoaderThread;
 import application.database.loader.Project;
 import application.gui.panes.center.VideoPlayer;
-import application.gui.scene.SceneUtil;
+import application.gui.stage.Stages;
 import application.misc.FileUtil;
-import javafx.application.Platform;
 
 import java.io.File;
 
 public abstract class LifeCycle {
-	private static Project project;
-    
-    public static void initialize() {
-        VideoPlayer.checkLibs();
-	
+	public static void initialize() {
+		VideoPlayer.checkLibs();
 		Instances.createInstances();
-
-        SceneUtil.createIntroScene();
-        SceneUtil.stageLayoutIntro();
-        SceneUtil.showIntroScene();
-
-        Platform.runLater(() -> {
-            SceneUtil.createProjectScene();
-            SceneUtil.createMainScene();
-        });
-    }
-    public static void startLoading(Project project) {
-		LifeCycle.project = project;
-        
-        String projectFilePath = project.getProjectFilePath();
-        String projectDirectory = projectFilePath.substring(0, projectFilePath.lastIndexOf(File.separatorChar));
+		Stages.getIntroStage()._show();
+	}
+	public static void startLoading(Project project) {
+		Stages.getIntroStage().close();
+		Stages.getProjectStage().close();
+		String projectFilePath = project.getProjectFilePath();
+		String projectDirectory = projectFilePath.substring(0, projectFilePath.lastIndexOf(File.separatorChar));
 		String sourceDirectory = project.getSourceDirectory();
-
-        FileUtil.initialize(projectDirectory, sourceDirectory);
-        new LoaderThread().start();
-        SceneUtil.showMainScene();
-        SceneUtil.stageLayoutMain();
-		Instances.createInstancesEvents();
-    }
-	
-	public static Project getProject() {
-		return project;
+		
+		FileUtil.initialize(projectDirectory, sourceDirectory);
+		new LoaderThread().start();
+		Stages.getMainStage()._show();
 	}
 }

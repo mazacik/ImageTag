@@ -1,8 +1,7 @@
 package application.gui.nodes.custom;
 
-import application.gui.decorator.enums.ColorType;
 import application.gui.nodes.simple.TextNode;
-import application.main.Instances;
+import application.gui.stage.Stages;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Node;
@@ -16,12 +15,12 @@ public class Tooltip extends Popup {
 	private double eventY;
 	
 	public Tooltip(String text, long delay) {
-		TextNode textNode = new TextNode(text, ColorType.DEF, ColorType.DEF);
-		this.getContent().add(textNode);
+		TextNode TextNode = new TextNode(text);
+		this.getContent().add(TextNode);
 		
 		timeline = new Timeline();
 		timeline.getKeyFrames().add(new KeyFrame(new Duration(delay), event -> {
-			this.show(Instances.getMainStage());
+			this.show(Stages.getMainStage());
 			//todo off-screen checks
 			this.setAnchorX(eventX - this.getWidth() / 2);
 			this.setAnchorY(eventY + this.getHeight());

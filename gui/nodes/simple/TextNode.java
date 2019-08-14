@@ -1,30 +1,66 @@
 package application.gui.nodes.simple;
 
+import application.gui.decorator.ColorUtil;
 import application.gui.decorator.Decorator;
-import application.gui.decorator.enums.ColorType;
-import application.gui.nodes.ColorData;
+import javafx.event.Event;
+import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
 import javafx.scene.text.TextAlignment;
 
 public class TextNode extends Label {
-    public TextNode(String text) {
-        this(text, ColorType.NULL, ColorType.NULL, ColorType.NULL, ColorType.NULL);
-    }
-    public TextNode(String text, ColorData colorData) {
-        this(text, colorData.getBackgroundDef(), colorData.getBackgroundAlt(), colorData.getTextFillDef(), colorData.getTextFillAlt());
-    }
-    public TextNode(String text, ColorType background, ColorType textFill) {
-        this(text, background, ColorType.NULL, textFill, ColorType.NULL);
-    }
-    public TextNode(String text, ColorType background, ColorType backgroundHover, ColorType textFill, ColorType textFillHover) {
-        super(text);
-        this.setTextAlignment(TextAlignment.CENTER);
+	public TextNode() {
+		this("");
+	}
+	public TextNode(String text) {
+		this(text, false, false, false);
+	}
+	public TextNode(String text, boolean hoverBackground, boolean hoverText, boolean hoverCursor) {
+		this(text, hoverBackground, hoverText, hoverCursor, false);
+	}
+	public TextNode(String text, boolean hoverBackground, boolean hoverText, boolean hoverCursor, boolean defaultPadding) {
+		super(text);
+		this.setAlignment(Pos.CENTER);
 		this.setFont(Decorator.getFont());
-        this.setAlignment(Pos.CENTER);
-        this.setPadding(new Insets(5, 10, 5, 10));
+		this.setBackground(Background.EMPTY);
+		this.setTextAlignment(TextAlignment.CENTER);
+		this.setTextFill(ColorUtil.getTextColorDef());
+		this.minWidthProperty().bind(this.heightProperty());
+		
+		if (defaultPadding) this.setPadding(new Insets(5, 10, 5, 10));
+		
+		this.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
+			if (hoverBackground && hoverText) {
+				this.setBackground(ColorUtil.getBackgroundAlt());
+				this.setTextFill(ColorUtil.getTextColorAlt());
+			} else if (hoverBackground) {
+				this.setBackground(ColorUtil.getBackgroundAlt());
+			} else if (hoverText) {
+				this.setTextFill(ColorUtil.getTextColorAlt());
+			}
+			
+			if (hoverCursor) this.setCursor(Cursor.HAND);
+		});
+		this.addEventFilter(MouseEvent.MOUSE_EXITED, event -> {
+			if (hoverBackground) this.setBackground(Background.EMPTY);
+			if (hoverText) this.setTextFill(ColorUtil.getTextColorDef());
+			if (hoverCursor) this.setCursor(Cursor.DEFAULT);
+		});
+	}
 	
-		Decorator.manage(this, background, backgroundHover, textFill, textFillHover);
-    }
+	public <T extends Event> void addEventFilter(final EventType<T> eventType, MouseButton mouseButton, Runnable runnable) {
+		this.addEventFilter(eventType, event -> {
+			if (event instanceof MouseEvent) {
+				MouseEvent mouseEvent = (MouseEvent) event;
+				if (mouseEvent.getButton() == mouseButton) {
+					runnable.run();
+				}
+			}
+		});
+	}
 }

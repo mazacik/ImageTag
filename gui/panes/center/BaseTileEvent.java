@@ -2,7 +2,7 @@ package application.gui.panes.center;
 
 import application.controller.Reload;
 import application.database.object.DataObject;
-import application.gui.scene.SceneUtil;
+import application.gui.stage.Stages;
 import application.main.Instances;
 import javafx.scene.input.MouseEvent;
 
@@ -52,7 +52,7 @@ public class BaseTileEvent {
 	}
 	private void onLeftDoubleClick(MouseEvent event) {
 		if (!isOnGroupButton(event)) {
-			SceneUtil.swapViewMode();
+			Stages.getMainStage().swapViewMode();
 			Instances.getReload().doReload();
 		}
 	}
