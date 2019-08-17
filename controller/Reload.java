@@ -15,14 +15,21 @@ public class Reload {
 	
 	public Reload() {
 		mainPanes = new CustomList<>();
-		mainPanes.add(Instances.getFilterPane());
-		mainPanes.add(Instances.getSelectPane());
+		mainPanes.add(Instances.getToolbarPane());
 		mainPanes.add(Instances.getGalleryPane());
 		mainPanes.add(Instances.getMediaPane());
-		mainPanes.add(Instances.getToolbarPane());
+		mainPanes.add(Instances.getFilterPane());
+		mainPanes.add(Instances.getSelectPane());
 		
 		needsTileEffect = new CustomList<>();
 		
+		this.subscribe(Instances.getToolbarPane()
+				, Control.TARGET
+		);
+		this.subscribe(Instances.getGalleryPane()
+				, Control.OBJ
+				, Control.FILTER
+		);
 		this.subscribe(Instances.getMediaPane()
 				, Control.TARGET
 		);
@@ -31,17 +38,11 @@ public class Reload {
 				, Control.FILTER
 		);
 		this.subscribe(Instances.getSelectPane()
+				, Control.OBJ
 				, Control.TAG
 				, Control.FILTER
 				, Control.TARGET
 				, Control.SELECT
-		);
-		this.subscribe(Instances.getGalleryPane()
-				, Control.OBJ
-				, Control.FILTER
-		);
-		this.subscribe(Instances.getToolbarPane()
-				, Control.TARGET
 		);
 	}
 	
@@ -71,6 +72,9 @@ public class Reload {
 				node.setNeedsReload(true);
 			}
 		}
+	}
+	public void request(NodeBase pane) {
+		pane.setNeedsReload(true);
 	}
 	
 	public void requestTileEffect(GalleryTile galleryTile) {
