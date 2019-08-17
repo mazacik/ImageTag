@@ -8,7 +8,6 @@ import application.gui.decorator.SizeUtil;
 import application.gui.panes.NodeBase;
 import application.gui.stage.Stages;
 import application.main.Instances;
-import javafx.collections.ObservableList;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
@@ -57,44 +56,52 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 	}
 	
 	public boolean reload() {
+		//	var init
+		CustomList<Integer> mergeIDs = new CustomList<>();
+		CustomList<GalleryTile> tiles = new CustomList<>();
 		Instances.getTarget().storePosition();
-		double vValue = this.getVvalue();
-		DataObject helperTarget = Instances.getTarget().getCurrentTarget();
-		ObservableList<Node> tilePaneItems = tilePane.getChildren();
-		tilePaneItems.clear();
-		ArrayList<Integer> mergeIDs = new ArrayList<>();
+		
+		//	main loop
 		for (DataObject dataObject : Instances.getFilter()) {
-			if (dataObject.getGalleryTile() != null) {
-				if (dataObject.getMergeID() == 0 && !tilePaneItems.contains(dataObject.getGalleryTile())) {
-					tilePaneItems.add(dataObject.getGalleryTile());
-				} else if (!mergeIDs.contains(dataObject.getMergeID())) {
-					if (!expandedGroups.contains(dataObject.getMergeID()) && !tilePaneItems.contains(dataObject.getGalleryTile())) {
-						tilePaneItems.add(dataObject.getGalleryTile());
-						Instances.getReload().requestTileEffect(dataObject);
-					} else {
-						dataObject.getMergeGroup().forEach(dataObjectInMergeGroup -> {
-							if (!tilePaneItems.contains(dataObjectInMergeGroup.getGalleryTile())) {
-								tilePaneItems.add(dataObjectInMergeGroup.getGalleryTile());
-								Instances.getReload().requestTileEffect(dataObjectInMergeGroup);
-							}
-						});
+			GalleryTile galleryTile = dataObject.getGalleryTile();
+			int mergeID = dataObject.getMergeID();
+			
+			if (mergeID == 0) {
+				tiles.add(galleryTile);
+			} else if (!mergeIDs.contains(mergeID)) {
+				//	only one object in the merge group needs to be processed
+				mergeIDs.add(mergeID);
+				if (expandedGroups.contains(mergeID)) {
+					for (DataObject mergeObject : dataObject.getMergeGroup()) {
+						//	instead of letting the main loop take care of all objects in the merge group
+						//	the merge group gets processed in a separate loop to keep its objects together
+						//	however, each object needs to be checked for Filter validity an additional time
+						if (Instances.getFilter().contains(mergeObject)) {
+							tiles.add(mergeObject.getGalleryTile());
+							Instances.getReload().requestTileEffect(mergeObject);
+						}
 					}
-					mergeIDs.add(dataObject.getMergeID());
+				} else {
+					tiles.add(galleryTile);
+					Instances.getReload().requestTileEffect(dataObject);
 				}
 			}
 		}
-		if (helperTarget != Instances.getTarget().getCurrentTarget() || !getDataObjectsOfTiles().contains(helperTarget)) {
-			this.setVvalue(vValue);
-			Instances.getTarget().restorePosition();
-			if (Instances.getTarget().getCurrentTarget().getMergeID() != 0) {
-				if (!expandedGroups.contains(Instances.getTarget().getCurrentTarget().getMergeID())) {
-					if (Instances.getSelect().containsAny(Instances.getTarget().getCurrentTarget().getMergeGroup())) {
-						Instances.getSelect().addAll(Instances.getTarget().getCurrentTarget().getMergeGroup());
-					}
+		
+		//	apply changes to the actual TilePane
+		tilePane.getChildren().setAll(tiles);
+		
+		DataObject currentTarget = Instances.getTarget().restorePosition();
+		this.adjustViewportToCurrentTarget();
+		
+		if (currentTarget.getMergeID() != 0) {
+			if (!expandedGroups.contains(currentTarget.getMergeID())) {
+				if (Instances.getSelect().containsAny(currentTarget.getMergeGroup())) {
+					Instances.getSelect().addAll(currentTarget.getMergeGroup());
 				}
 			}
 		}
-		loadCacheOfTilesInViewport();
+		
 		return true;
 	}
 	
@@ -135,7 +142,6 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 		
 		loadCacheOfTilesInViewport();
 	}
-	
 	public void loadCacheOfTilesInViewport() {
 		tilePane.layout(); //	force tilepane layout to update its viewport
 		ArrayList<GalleryTile> tilesInViewport = getTilesInViewport(getTiles());
@@ -194,11 +200,9 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 	}
 	
 	private boolean needsReload;
-	@Override
 	public boolean getNeedsReload() {
 		return needsReload;
 	}
-	@Override
 	public void setNeedsReload(boolean needsReload) {
 		this.needsReload = needsReload;
 	}
