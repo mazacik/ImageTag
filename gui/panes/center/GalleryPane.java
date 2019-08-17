@@ -55,7 +55,6 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 		this.setHbarPolicy(ScrollBarPolicy.NEVER);
 		this.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
 		this.setPrefViewportHeight(SizeUtil.getUsableScreenHeight());
-		this.setBorder(NodeUtil.getBorder(0, 1, 0, 1));
 	}
 	
 	public boolean reload() {

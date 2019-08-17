@@ -1,7 +1,6 @@
 package application.gui.panes.center;
 
 import application.database.object.DataObject;
-import application.gui.nodes.NodeUtil;
 import application.gui.panes.NodeBase;
 import application.gui.stage.Stages;
 import application.main.Instances;
@@ -46,7 +45,6 @@ public class MediaPane extends BorderPane implements NodeBase {
 		gifPlayer.fitWidthProperty().bind(galleryPane.widthProperty());
 		gifPlayer.fitHeightProperty().bind(galleryPane.heightProperty());
 		
-		this.setBorder(NodeUtil.getBorder(0, 1, 0, 1));
 		this.setCenter(canvas);
 		
 		initEvents();
@@ -173,6 +171,9 @@ public class MediaPane extends BorderPane implements NodeBase {
 	}
 	
 	private void initEvents() {
+		canvas.widthProperty().bind(Instances.getGalleryPane().widthProperty());
+		canvas.heightProperty().bind(Instances.getGalleryPane().heightProperty());
+		
 		canvas.widthProperty().addListener((observable, oldValue, newValue) -> reload());
 		canvas.heightProperty().addListener((observable, oldValue, newValue) -> reload());
 		
