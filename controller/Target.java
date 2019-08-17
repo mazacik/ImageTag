@@ -39,36 +39,41 @@ public class Target {
 		if (currentTarget == null) return;
 		
 		GalleryPane galleryPane = Instances.getGalleryPane();
-		int columnCount = galleryPane.getColumnCount();
-		int visibleTilesCount = galleryPane.getTiles().size();
+		DataObjectList dataObjects = galleryPane.getDataObjectsOfTiles();
 		
 		int currentTargetIndex;
 		if (currentTarget.getMergeID() == 0) {
-			currentTargetIndex = galleryPane.getDataObjectsOfTiles().indexOf(currentTarget);
+			currentTargetIndex = dataObjects.indexOf(currentTarget);
 		} else {
 			if (galleryPane.getExpandedGroups().contains(currentTarget.getMergeID())) {
-				currentTargetIndex = galleryPane.getDataObjectsOfTiles().indexOf(currentTarget);
+				currentTargetIndex = dataObjects.indexOf(currentTarget);
 			} else {
-				currentTargetIndex = galleryPane.getDataObjectsOfTiles().indexOf(currentTarget.getMergeGroup().getFirst());
+				currentTargetIndex = dataObjects.indexOf(currentTarget.getMergeGroup().getFirst());
 			}
 		}
+		
+		int columnCount = galleryPane.getColumnCount();
+		
 		int newTargetIndex = currentTargetIndex;
 		switch (direction) {
 			case UP:
-				if (currentTargetIndex >= columnCount) newTargetIndex -= columnCount;
+				newTargetIndex -= columnCount;
 				break;
 			case LEFT:
-				if (newTargetIndex > 0) newTargetIndex -= 1;
+				newTargetIndex -= 1;
 				break;
 			case DOWN:
-				if (newTargetIndex + columnCount <= visibleTilesCount - 1) newTargetIndex += columnCount;
+				newTargetIndex += columnCount;
 				break;
 			case RIGHT:
-				if (newTargetIndex < visibleTilesCount - 1) newTargetIndex += 1;
+				newTargetIndex += 1;
 				break;
 		}
-		if (galleryPane.getDataObjectsOfTiles().size() > newTargetIndex)
-			this.set(galleryPane.getDataObjectsOfTiles().get(newTargetIndex));
+		
+		if (newTargetIndex < 0) newTargetIndex = 0;
+		if (newTargetIndex >= dataObjects.size()) newTargetIndex = dataObjects.size() - 1;
+		
+		this.set(dataObjects.get(newTargetIndex));
 	}
 	public void move(KeyCode keyCode) {
 		switch (keyCode) {
