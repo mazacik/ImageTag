@@ -41,6 +41,8 @@ public class Target {
 		GalleryPane galleryPane = Instances.getGalleryPane();
 		DataObjectList dataObjects = galleryPane.getDataObjectsOfTiles();
 		
+		if (dataObjects.isEmpty()) return;
+		
 		int currentTargetIndex;
 		if (currentTarget.getMergeID() == 0) {
 			currentTargetIndex = dataObjects.indexOf(currentTarget);
@@ -92,7 +94,6 @@ public class Target {
 		}
 	}
 	
-	//todo does this need to be in merging?
 	private int storePos = -1;
 	public void storePosition() {
 		CustomList<Integer> expandedMergeGroups = Instances.getGalleryPane().getExpandedGroups();
