@@ -37,6 +37,7 @@ public class MainStage extends StageBase {
 		mainHBox = new HBox(Instances.getFilterPane(), Instances.getGalleryPane(), Instances.getSelectPane());
 		this.setRoot(mainHBox);
 		
+		this.setBorder(null);
 		this.setAlwaysOnTop(false);
 		
 		this.getScene().widthProperty().addListener((observable, oldValue, newValue) -> SizeUtil.stageWidthChangeHandler());

@@ -1,9 +1,11 @@
 package application.gui.stage;
 
 import application.gui.decorator.ColorUtil;
+import application.gui.nodes.NodeUtil;
 import application.gui.nodes.custom.TitleBar;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -28,6 +30,7 @@ public abstract class StageBase extends Stage implements StageBaseInterface {
 		vBoxMain = new VBox();
 		vBoxMain.setAlignment(Pos.CENTER);
 		vBoxMain.setBackground(ColorUtil.getBackgroundDef());
+		vBoxMain.setBorder(NodeUtil.getBorder(1));
 		
 		this.setScene(new Scene(vBoxMain));
 		this.initStyle(StageStyle.UNDECORATED);
@@ -40,6 +43,9 @@ public abstract class StageBase extends Stage implements StageBaseInterface {
 		vBoxMain.getChildren().clear();
 		vBoxMain.getChildren().add(titleBar);
 		vBoxMain.getChildren().add(root);
+	}
+	public void setBorder(Border border) {
+		vBoxMain.setBorder(border);
 	}
 	
 	@Override
