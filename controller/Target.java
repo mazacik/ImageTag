@@ -109,8 +109,8 @@ public class Target {
 			}
 		}
 	}
-	public void restorePosition() {
-		if (storePos < 0) return;
+	public DataObject restorePosition() {
+		if (storePos < 0) return null;
 		DataObjectList visibleObjects = Instances.getGalleryPane().getDataObjectsOfTiles();
 		if (!visibleObjects.isEmpty()) {
 			DataObject newTarget;
@@ -119,6 +119,8 @@ public class Target {
 			else newTarget = visibleObjects.getLast();
 			
 			this.set(newTarget);
+			return newTarget;
 		}
+		return null;
 	}
 }
