@@ -60,7 +60,7 @@ public class BaseTileEvent {
 		DataObject dataObject = sender.getParentDataObject();
 		
 		if (!Instances.getSelect().contains(dataObject)) {
-			Instances.getSelect().add(dataObject);
+			Instances.getSelect().set(dataObject);
 		}
 		
 		Instances.getTarget().set(dataObject);
