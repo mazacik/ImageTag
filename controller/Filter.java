@@ -1,5 +1,6 @@
 package application.controller;
 
+import application.database.list.CustomList;
 import application.database.list.DataObjectList;
 import application.database.list.TagList;
 import application.database.object.DataObject;
@@ -55,6 +56,7 @@ public class Filter extends DataObjectList {
 	}
 	public void refresh() {
 		Instances.getFilter().clear();
+		
 		for (DataObject dataObject : Instances.getObjectListMain()) {
 			switch (dataObject.getFileType()) {
 				case IMAGE:
@@ -77,46 +79,15 @@ public class Filter extends DataObjectList {
 				this.add(dataObject);
 			}
 		}
-	}
-	public boolean refreshObject(DataObject dataObject) {
-		switch (dataObject.getFileType()) {
-			case IMAGE:
-				if (!showImages) {
-					this.remove(dataObject);
-					return false;
-				}
-				break;
-			case VIDEO:
-				if (!showVideos) {
-					this.remove(dataObject);
-					return false;
-				}
-				break;
-			case GIF:
-				if (!showGifs) {
-					this.remove(dataObject);
-					return false;
-				}
-				break;
-		}
 		
-		if (sessionOnly && !currentSessionObjects.contains(dataObject)) {
-			this.remove(dataObject);
-			return false;
-		}
+		if (!this.contains(Instances.getTarget().getCurrentTarget())) Instances.getTarget().set(this.getFirst());
 		
-		TagList tagList = dataObject.getTagList();
-		if (enableLimit && tagList.size() > limit) {
-			this.remove(dataObject);
-			return false;
+		CustomList<DataObject> selectHelper = new CustomList<>();
+		for (DataObject dataObject : Instances.getSelect()) {
+			if (!this.contains(dataObject)) selectHelper.add(dataObject);
 		}
-		
-		if (isWhitelistOk(tagList) && isBlacklistOk(tagList)) {
-			this.add(dataObject);
-			return true;
-		}
-		
-		return false;
+		Instances.getSelect().removeAll(selectHelper);
+		if (Instances.getSelect().isEmpty()) Instances.getSelect().set(Instances.getTarget().getCurrentTarget());
 	}
 	
 	@SuppressWarnings("FieldCanBeLocal")
