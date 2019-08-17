@@ -55,12 +55,14 @@ public class Reload {
 		}
 		
 		DataObjectList visibleObjects = Instances.getGalleryPane().getDataObjectsOfTiles();
+		DataObjectList helper = new DataObjectList();
 		for (DataObject dataObject : needsTileEffect) {
 			if (visibleObjects.contains(dataObject)) {
 				dataObject.getGalleryTile().generateEffect();
+				helper.add(dataObject);
 			}
 		}
-		needsTileEffect.clear();
+		needsTileEffect.removeAll(helper);
 	}
 	
 	public void notify(Control... controls) {
