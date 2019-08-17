@@ -7,7 +7,6 @@ import application.database.object.DataObject;
 import application.database.object.TagObject;
 import application.gui.nodes.popup.ClickMenuBase;
 import application.gui.nodes.popup.ClickMenuLeft;
-import application.gui.nodes.popup.ClickMenuTag;
 import application.gui.nodes.simple.TextNode;
 import application.gui.panes.side.FilterPane;
 import application.gui.panes.side.SelectPane;
@@ -193,15 +192,14 @@ public enum ButtonTemplates {
 	TAG_REMOVE {
 		public TextNode get() {
 			DataObjectList dataObjectListMain = Instances.getObjectListMain();
-			ClickMenuTag clickMenuTag = Instances.getClickMenuTag();
 			FilterPane filterPane = Instances.getFilterPane();
 			SelectPane selectPane = Instances.getSelectPane();
 			TagListMain tagListMain = Instances.getTagListMain();
 			
 			TextNode textNode = new TextNode("Remove", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				String group = clickMenuTag.getGroup();
-				String name = clickMenuTag.getName();
+				String group = Instances.getClickMenuTag().getGroup();
+				String name = Instances.getClickMenuTag().getName();
 				if (name.isEmpty()) {
 					if (Stages.getOkCancelStage()._show("Remove \"" + group + " \" and all of its tags?")) {
 						for (String n : tagListMain.getNames(group)) {
@@ -311,7 +309,7 @@ public enum ButtonTemplates {
 			}
 		});
 		
-		if (Stages.getOkCancelStage()._show("Delete " + dataObjectsToDelete.size() + " file(s)?")) {
+		if (Stages.getYesNoStage()._show("Delete " + dataObjectsToDelete.size() + " file(s)?")) {
 			Instances.getTarget().storePosition();
 			dataObjectsToDelete.forEach(this::deleteDataObject);
 			Instances.getTarget().restorePosition();
@@ -323,7 +321,7 @@ public enum ButtonTemplates {
 	private void deleteCurrentTarget() {
 		DataObject currentTarget = Instances.getTarget().getCurrentTarget();
 		if (currentTarget.getMergeID() != 0 && !Instances.getGalleryPane().getExpandedGroups().contains(currentTarget.getMergeID())) {
-			if (Stages.getOkCancelStage()._show("Delete " + currentTarget.getMergeGroup().size() + " file(s)?")) {
+			if (Stages.getYesNoStage()._show("Delete " + currentTarget.getMergeGroup().size() + " file(s)?")) {
 				Instances.getTarget().storePosition();
 				currentTarget.getMergeGroup().forEach(this::deleteDataObject);
 				Instances.getTarget().restorePosition();
@@ -331,7 +329,7 @@ public enum ButtonTemplates {
 			}
 		} else {
 			String sourcePath = Instances.getTarget().getCurrentTarget().getPath();
-			if (Stages.getOkCancelStage()._show("Delete file: " + sourcePath + "?")) {
+			if (Stages.getYesNoStage()._show("Delete file: " + sourcePath + "?")) {
 				Instances.getTarget().storePosition();
 				this.deleteDataObject(currentTarget);
 				Instances.getTarget().restorePosition();
