@@ -22,7 +22,7 @@ public class YesNoStage extends StageBase {
 			result = true;
 			this.close();
 		});
-		TextNode buttonNegative = new TextNode("No");
+		TextNode buttonNegative = new TextNode("No", true, true, false, true);
 		buttonNegative.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			result = false;
 			this.close();
@@ -35,6 +35,7 @@ public class YesNoStage extends StageBase {
 		VBox vBoxMain = new VBox(labelContent, hBox);
 		vBoxMain.setSpacing(5);
 		vBoxMain.setPadding(new Insets(5));
+		vBoxMain.setAlignment(Pos.CENTER);
 		
 		setRoot(vBoxMain);
 	}
