@@ -7,7 +7,6 @@ import application.controller.Target;
 import application.database.object.DataObject;
 import application.database.object.TagObject;
 import application.gui.decorator.ColorUtil;
-import application.gui.decorator.SizeUtil;
 import application.gui.nodes.NodeUtil;
 import application.gui.nodes.buttons.ButtonTemplates;
 import application.gui.nodes.popup.ClickMenuLeft;
@@ -19,12 +18,9 @@ import application.misc.CompareUtil;
 import application.misc.enums.Direction;
 import javafx.event.Event;
 import javafx.scene.Node;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
@@ -33,11 +29,7 @@ public class SelectPane extends SidePaneBase {
 	private final EditNode tfSearch;
 	private String actualText = "";
 	
-	private boolean needsReload;
-	
 	public SelectPane() {
-		needsReload = false;
-		
 		nodeTitle = new TextNode("", true, true, false, true);
 		nodeTitle.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
 		nodeTitle.prefWidthProperty().bind(this.widthProperty());
@@ -50,18 +42,6 @@ public class SelectPane extends SidePaneBase {
 		TextNode nodeSelectMerge = ButtonTemplates.SELECTION_MERGE.get();
 		ClickMenuLeft.install(nodeTitle, Direction.LEFT, nodeSelectAll, nodeSelectNone, new SeparatorNode(), nodeSelectMerge);
 		
-		groupNodes = new VBox();
-		
-		scrollPane = new ScrollPane();
-		scrollPane.setContent(groupNodes);
-		scrollPane.setFitToWidth(true);
-		scrollPane.setFitToHeight(true);
-		scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-		scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-		scrollPane.setBackground(Background.EMPTY);
-		
-		this.setPrefWidth(SizeUtil.getUsableScreenWidth());
-		this.setMinWidth(SizeUtil.getMinWidthSideLists());
 		this.getChildren().addAll(nodeTitle, tfSearch, scrollPane);
 		
 		tfSearchEvents();
@@ -107,7 +87,8 @@ public class SelectPane extends SidePaneBase {
 			groupsShare = select.getSharedTags().getGroups();
 		}
 		
-		refresh();
+		updateNodes();
+		
 		for (Node node : groupNodes.getChildren()) {
 			if (node instanceof GroupNode) {
 				GroupNode groupNode = (GroupNode) node;
@@ -227,7 +208,6 @@ public class SelectPane extends SidePaneBase {
 		});
 	}
 	
-	@Override
 	public void changeNodeState(GroupNode groupNode, TextNode nameNode) {
 		if (nameNode == null) {
 			if (groupNode.isExpanded()) {
@@ -268,15 +248,6 @@ public class SelectPane extends SidePaneBase {
 		} else {
 			Instances.getSelect().removeTagObject(tagObject);
 		}
-	}
-	
-	@Override
-	public boolean getNeedsReload() {
-		return needsReload;
-	}
-	@Override
-	public void setNeedsReload(boolean needsReload) {
-		this.needsReload = needsReload;
 	}
 	
 	public TextField getTfSearch() {

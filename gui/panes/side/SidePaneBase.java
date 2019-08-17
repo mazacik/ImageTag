@@ -1,12 +1,14 @@
 package application.gui.panes.side;
 
-import application.database.list.TagListMain;
+import application.database.list.CustomList;
 import application.database.object.TagObject;
+import application.gui.decorator.SizeUtil;
 import application.gui.nodes.simple.TextNode;
 import application.gui.panes.NodeBase;
 import application.main.Instances;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
@@ -14,75 +16,93 @@ import java.util.Comparator;
 
 public abstract class SidePaneBase extends VBox implements NodeBase, SidePaneBaseInterface {
 	protected TextNode nodeTitle;
-	protected ScrollPane scrollPane;
 	protected VBox groupNodes;
+	protected ScrollPane scrollPane;
 	
-	public void refresh() {
-		TagListMain tagListMain = Instances.getTagListMain();
+	protected boolean needsReload;
+	
+	public SidePaneBase() {
+		groupNodes = new VBox();
 		
-		//	primary helpers
-		ArrayList<String> groupsHere = new ArrayList<>();
-		ArrayList<TagObject> tagsMain = new ArrayList<>(Instances.getTagListMain());
-		ArrayList<TagObject> tagsHere = new ArrayList<>();
+		scrollPane = new ScrollPane();
+		scrollPane.setContent(groupNodes);
+		scrollPane.setFitToWidth(true);
+		scrollPane.setFitToHeight(true);
+		scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+		scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+		scrollPane.setBackground(Background.EMPTY);
+		
+		needsReload = false;
+		
+		this.setPrefWidth(SizeUtil.getUsableScreenWidth());
+		this.setMinWidth(SizeUtil.getMinWidthSideLists());
+	}
+	
+	public void updateNodes() {
+		//	populate primary helpers
+		CustomList<String> groupsCurrent = new CustomList<>();
+		CustomList<TagObject> tagsMain = new CustomList<>(Instances.getTagListMain());
+		CustomList<TagObject> tagsCurrent = new CustomList<>();
+		
 		for (Node node : groupNodes.getChildren()) {
 			if (node instanceof GroupNode) {
 				GroupNode groupNode = (GroupNode) node;
-				if (!groupsHere.contains(groupNode.getGroup())) groupsHere.add(groupNode.getGroup());
+				groupsCurrent.add(groupNode.getGroup());
 				for (TextNode nameNode : groupNode.getNameNodes()) {
-					TagObject tagObject = tagListMain.getTagObject(groupNode.getGroup(), nameNode.getText());
-					if (!tagsHere.contains(tagObject)) tagsHere.add(tagObject);
+					tagsCurrent.add(Instances.getTagListMain().getTagObject(groupNode.getGroup(), nameNode.getText()));
 				}
 			}
 		}
 		
-		//	secondary helpers
-		ArrayList<TagObject> tagsToAdd = new ArrayList<>();
+		//	populate secondary helpers
+		CustomList<TagObject> tagsToAdd = new CustomList<>();
 		for (TagObject tagMain : tagsMain) {
-			if (!tagsHere.contains(tagMain)) {
+			if (!tagsCurrent.contains(tagMain)) {
 				tagsToAdd.add(tagMain);
 			}
 		}
 		ArrayList<TagObject> tagsToRemove = new ArrayList<>();
-		for (TagObject tagHere : tagsHere) {
-			if (!tagsMain.contains(tagHere)) {
-				tagsToRemove.add(tagHere);
+		for (TagObject tagCurrent : tagsCurrent) {
+			if (!tagsMain.contains(tagCurrent)) {
+				tagsToRemove.add(tagCurrent);
 			}
 		}
 		
-		//	checkValues whether any changes are necessary (add)
-		if (!tagsHere.containsAll(tagsMain)) {
+		//	check if any changes are necessary (add)
+		if (!tagsCurrent.containsAll(tagsMain)) {
 			for (TagObject tagObject : tagsToAdd) {
-				//	checkValues if the TagNode exists, if not, add it
+				//	check if the GroupNode exists, if not, add it
+				String group = tagObject.getGroup();
 				int index;
-				if (!groupsHere.contains(tagObject.getGroup())) {
-					groupsHere.add(tagObject.getGroup());
-					groupsHere.sort(Comparator.naturalOrder());
-					index = groupsHere.indexOf(tagObject.getGroup());
-					GroupNode groupNode = new GroupNode(this, tagObject.getGroup());
+				if (!groupsCurrent.contains(group)) {
+					groupsCurrent.add(group);
+					groupsCurrent.sort(Comparator.naturalOrder());
+					index = groupsCurrent.indexOf(group);
+					GroupNode groupNode = new GroupNode(this, group);
 					groupNodes.getChildren().add(index, groupNode);
 				} else {
-					index = groupsHere.indexOf(tagObject.getGroup());
+					index = groupsCurrent.indexOf(group);
 				}
-				//	add NameNode to the respective TagNode and sort
+				//	add NameNode to the respective GroupNode and sort
 				Node node = groupNodes.getChildren().get(index);
 				if (node instanceof GroupNode) {
 					GroupNode groupNode = (GroupNode) node;
 					groupNode.addNameNode(tagObject.getName());
-					groupNode.sortNameNodes(); //todo this only has to be done once at the end
+					groupNode.sortNameNodes();
 				}
 			}
 		}
 		
-		//	checkValues whether any changes are necessary (remove)
-		if (!tagsMain.containsAll(tagsHere)) {
+		//	check if any changes are necessary (remove)
+		if (!tagsMain.containsAll(tagsCurrent)) {
 			for (TagObject tagObject : tagsToRemove) {
-				//	use helper to find the TagNode
-				//	remove NameNode from the TagNode
-				Node node = groupNodes.getChildren().get(groupsHere.indexOf(tagObject.getGroup()));
+				//	use helper to find the GroupNode
+				//	remove NameNode from the GroupNode
+				Node node = groupNodes.getChildren().get(groupsCurrent.indexOf(tagObject.getGroup()));
 				if (node instanceof GroupNode) {
 					GroupNode groupNode = (GroupNode) node;
 					groupNode.removeNameNode(tagObject.getName());
-					//	if TagNode is empty, remove it
+					//	if GroupNode is empty, remove it
 					if (groupNode.getNameNodes().isEmpty()) groupNodes.getChildren().remove(groupNode);
 				}
 			}
@@ -95,6 +115,7 @@ public abstract class SidePaneBase extends VBox implements NodeBase, SidePaneBas
 				GroupNode groupNode = (GroupNode) node;
 				if (groupNode.getGroup().equals(oldGroup)) {
 					groupNode.setGroup(newGroup);
+					break;
 				}
 			}
 		}
@@ -105,11 +126,8 @@ public abstract class SidePaneBase extends VBox implements NodeBase, SidePaneBas
 			if (node instanceof GroupNode) {
 				GroupNode groupNode = (GroupNode) node;
 				if (groupNode.getGroup().equals(group)) {
-					for (TextNode nameNode : groupNode.getNameNodes()) {
-						if (nameNode.getText().equals(oldName)) {
-							nameNode.setText(newName);
-						}
-					}
+					groupNode.updateNameNode(oldName, newName);
+					break;
 				}
 			}
 		}
@@ -150,5 +168,12 @@ public abstract class SidePaneBase extends VBox implements NodeBase, SidePaneBas
 	}
 	public VBox getGroupNodes() {
 		return groupNodes;
+	}
+	
+	public boolean getNeedsReload() {
+		return needsReload;
+	}
+	public void setNeedsReload(boolean needsReload) {
+		this.needsReload = needsReload;
 	}
 }

@@ -5,6 +5,13 @@ import java.util.Collection;
 import java.util.Random;
 
 public class CustomList<T> extends ArrayList<T> {
+	public CustomList() {
+		super();
+	}
+	public CustomList(Collection<? extends T> c) {
+		super(c);
+	}
+	
 	public boolean add(T t) {
 		return _add(t);
 	}

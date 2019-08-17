@@ -62,7 +62,7 @@ public class ProjectStage extends StageBase {
 		
 		TextNode btnCreateProject = new TextNode("Create Project", true, true, true, true);
 		btnCreateProject.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-			//checkValues values, if invalid, show error
+			//check values, if invalid, show error
 			createProject(edtProjectName.getText(), edtProjectDirectory.getText(), edtWorkingDirectory.getText());
 		});
 		TextNode btnCancel = new TextNode("Cancel", true, true, true, true);

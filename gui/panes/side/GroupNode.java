@@ -170,6 +170,15 @@ public class GroupNode extends VBox {
 		nameNodes.remove(TextNode);
 	}
 	
+	public void updateNameNode(String oldName, String newName) {
+		for (TextNode nameNode : nameNodes) {
+			if (nameNode.getText().equals(oldName)) {
+				nameNode.setText(newName);
+				break;
+			}
+		}
+	}
+	
 	public void showNameNodes() {
 		this.getChildren().clear();
 		this.getChildren().add(groupNode);

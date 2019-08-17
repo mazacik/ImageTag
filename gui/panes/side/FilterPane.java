@@ -3,28 +3,19 @@ package application.gui.panes.side;
 import application.controller.Filter;
 import application.database.object.TagObject;
 import application.gui.decorator.ColorUtil;
-import application.gui.decorator.SizeUtil;
 import application.gui.nodes.NodeUtil;
 import application.gui.nodes.simple.TextNode;
 import application.gui.stage.Stages;
 import application.main.Instances;
 import javafx.scene.Node;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
 
 public class FilterPane extends SidePaneBase {
-	
-	private boolean needsReload;
-	
 	public FilterPane() {
-		needsReload = false;
-		
 		nodeTitle = new TextNode("", false, false, false, true);
 		
 		TextNode btnCreateNewTag = new TextNode("Create New Tag", true, true, false, true);
@@ -32,21 +23,12 @@ public class FilterPane extends SidePaneBase {
 		btnCreateNewTag.prefWidthProperty().bind(this.widthProperty());
 		btnCreateNewTag.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			Pair<TagObject, Boolean> result = Stages.getTagEditStage()._show();
-				Instances.getTagListMain().add(result.getKey());
-				Instances.getTagListMain().sort();
+			Instances.getTagListMain().add(result.getKey());
+			Instances.getTagListMain().sort();
 			if (result.getValue())
 				Instances.getSelect().addTagObject(result.getKey());
-				Instances.getReload().doReload();
+			Instances.getReload().doReload();
 		});
-		
-		groupNodes = new VBox();
-		scrollPane = new ScrollPane();
-		scrollPane.setContent(groupNodes);
-		scrollPane.setFitToWidth(true);
-		scrollPane.setFitToHeight(true);
-		scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-		scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-		scrollPane.setBackground(Background.EMPTY);
 		
 		TextNode btnReload = new TextNode("⟲", true, true, false, true);
 		btnReload.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
@@ -61,8 +43,6 @@ public class FilterPane extends SidePaneBase {
 		hBoxTitle.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
 		nodeTitle.prefWidthProperty().bind(this.widthProperty());
 		
-		this.setPrefWidth(SizeUtil.getUsableScreenWidth());
-		this.setMinWidth(SizeUtil.getMinWidthSideLists());
 		this.getChildren().addAll(hBoxTitle, btnCreateNewTag, scrollPane);
 	}
 	
@@ -75,7 +55,7 @@ public class FilterPane extends SidePaneBase {
 		Color textColorPositive = ColorUtil.getTextColorPos();
 		Color textColorNegative = ColorUtil.getTextColorNeg();
 		
-		refresh();
+		updateNodes();
 		
 		for (Node node : groupNodes.getChildren()) {
 			if (node instanceof GroupNode) {
@@ -105,7 +85,6 @@ public class FilterPane extends SidePaneBase {
 		return true;
 	}
 	
-	@Override
 	public void changeNodeState(GroupNode groupNode, TextNode nameNode) {
 		if (nameNode == null) {
 			String groupName = groupNode.getGroup();
@@ -147,13 +126,5 @@ public class FilterPane extends SidePaneBase {
 			}
 		}
 		Instances.getFilter().refresh();
-	}
-	@Override
-	public boolean getNeedsReload() {
-		return needsReload;
-	}
-	@Override
-	public void setNeedsReload(boolean needsReload) {
-		this.needsReload = needsReload;
 	}
 }
