@@ -5,7 +5,6 @@ import application.database.list.DataObjectList;
 import application.database.loader.utils.ThumbnailReader;
 import application.database.object.DataObject;
 import application.gui.decorator.SizeUtil;
-import application.gui.nodes.NodeUtil;
 import application.gui.panes.NodeBase;
 import application.gui.stage.Stages;
 import application.main.Instances;
@@ -87,7 +86,15 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 		if (helperTarget != Instances.getTarget().getCurrentTarget() || !getDataObjectsOfTiles().contains(helperTarget)) {
 			this.setVvalue(vValue);
 			Instances.getTarget().restorePosition();
+			if (Instances.getTarget().getCurrentTarget().getMergeID() != 0) {
+				if (!expandedGroups.contains(Instances.getTarget().getCurrentTarget().getMergeID())) {
+					if (Instances.getSelect().containsAny(Instances.getTarget().getCurrentTarget().getMergeGroup())) {
+						Instances.getSelect().addAll(Instances.getTarget().getCurrentTarget().getMergeGroup());
+					}
+				}
+			}
 		}
+		loadCacheOfTilesInViewport();
 		return true;
 	}
 	
