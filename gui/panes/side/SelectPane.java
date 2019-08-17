@@ -59,7 +59,7 @@ public class SelectPane extends SidePaneBase {
 		}
 		
 		String text = "Selection: " + select.size();
-		if (hiddenTilesCount > 0) text += "(+" + hiddenTilesCount + " hidden)";
+		if (hiddenTilesCount > 0) text += " (" + hiddenTilesCount + " hidden)";
 		
 		nodeTitle.setText(text);
 	}

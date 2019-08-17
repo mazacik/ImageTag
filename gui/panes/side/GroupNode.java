@@ -7,6 +7,7 @@ import application.gui.nodes.simple.TextNode;
 import application.gui.stage.Stages;
 import application.main.Instances;
 import javafx.beans.value.ChangeListener;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -16,38 +17,36 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 
 public class GroupNode extends VBox {
-	//todo split between their panes
-	private final TextNode labelArrow;
-	private final TextNode labelText;
+	private final TextNode nodeExpCol;
+	private final TextNode nodeTitle;
 	
-	private final HBox groupNode;
+	private final HBox hBoxGroup;
 	private final CustomList<TextNode> nameNodes;
 	
-	private final SidePaneBase owner;
+	private final SidePaneBase ownerPane;
 	
-	public GroupNode(SidePaneBase owner, String group) {
-		this.owner = owner;
+	public GroupNode(SidePaneBase ownerPane, String group) {
+		this.ownerPane = ownerPane;
 		
-		labelArrow = new TextNode("+ ", false, false, false, false);
-		labelText = new TextNode(group, false, false, false, false);
-		labelArrow.setPadding(new Insets(0, 5, 0, 15));
-		labelText.setPadding(new Insets(0, 15, 0, 5));
-		labelArrow.setTextFill(ColorUtil.getTextColorDef());
+		nodeExpCol = new TextNode("+ ", false, false, false, false);
+		nodeTitle = new TextNode(group, false, false, false, false);
+		nodeExpCol.setPadding(new Insets(0, 5, 0, 15));
+		nodeTitle.setPadding(new Insets(0, 15, 0, 5));
 		
-		groupNode = new HBox(labelArrow, labelText);
-		getChildren().add(groupNode);
+		hBoxGroup = new HBox(nodeExpCol, nodeTitle);
+		getChildren().add(hBoxGroup);
 		
 		nameNodes = new CustomList<>();
 		
 		initNameNodes();
 		initEvents();
 	}
+	
 	private void initNameNodes() {
 		for (String name : Instances.getTagListMain().getNames(getGroup())) {
 			addNameNode(name);
@@ -56,14 +55,14 @@ public class GroupNode extends VBox {
 	private void initEvents() {
 		ChangeListener<Boolean> shiftChangeListener = (observable, oldValue, newValue) -> {
 			if (newValue) {
-				for (Node node : owner.getGroupNodes().getChildren()) {
+				for (Node node : ownerPane.getGroupNodes().getChildren()) {
 					if (node instanceof GroupNode) {
 						GroupNode groupNode = (GroupNode) node;
 						groupNode.setArrowFill(ColorUtil.getTextColorAlt());
 					}
 				}
 			} else {
-				for (Node node : owner.getGroupNodes().getChildren()) {
+				for (Node node : ownerPane.getGroupNodes().getChildren()) {
 					if (node instanceof GroupNode) {
 						GroupNode groupNode = (GroupNode) node;
 						groupNode.setArrowFill(ColorUtil.getTextColorDef());
@@ -71,45 +70,46 @@ public class GroupNode extends VBox {
 				}
 			}
 		};
-		labelArrow.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
+		nodeExpCol.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
 			Stages.getMainStage().shiftDownProperty().addListener(shiftChangeListener);
 			if (event.isShiftDown()) {
-				for (Node node : owner.getGroupNodes().getChildren()) {
+				for (Node node : ownerPane.getGroupNodes().getChildren()) {
 					if (node instanceof GroupNode) {
 						GroupNode groupNode = (GroupNode) node;
 						groupNode.setArrowFill(ColorUtil.getTextColorAlt());
 					}
 				}
 			} else {
-				labelArrow.setTextFill(ColorUtil.getTextColorAlt());
+				nodeExpCol.setTextFill(ColorUtil.getTextColorAlt());
 			}
 		});
-		labelArrow.addEventFilter(MouseEvent.MOUSE_EXITED, event -> {
+		nodeExpCol.addEventFilter(MouseEvent.MOUSE_EXITED, event -> {
 			Stages.getMainStage().shiftDownProperty().removeListener(shiftChangeListener);
 			if (event.isShiftDown()) {
-				for (Node node : owner.getGroupNodes().getChildren()) {
+				for (Node node : ownerPane.getGroupNodes().getChildren()) {
 					if (node instanceof GroupNode) {
 						GroupNode groupNode = (GroupNode) node;
 						groupNode.setArrowFill(ColorUtil.getTextColorDef());
 					}
 				}
 			} else {
-				labelArrow.setTextFill(ColorUtil.getTextColorDef());
+				nodeExpCol.setTextFill(ColorUtil.getTextColorDef());
 			}
 		});
-		groupNode.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> this.setBackground(ColorUtil.getBackgroundAlt()));
-		groupNode.addEventFilter(MouseEvent.MOUSE_EXITED, event -> this.setBackground(Background.EMPTY));
-		groupNode.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-			if (event.getPickResult().getIntersectedNode().getParent().equals(labelArrow)) {
+		hBoxGroup.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> this.setBackground(ColorUtil.getBackgroundAlt()));
+		hBoxGroup.addEventFilter(MouseEvent.MOUSE_EXITED, event -> this.setBackground(Background.EMPTY));
+		hBoxGroup.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+			Bounds boundsExpCol = nodeExpCol.getBoundsInLocal();
+			if (event.getX() <= boundsExpCol.getWidth() && event.getY() <= boundsExpCol.getHeight()) {
 				if (!isExpanded()) {
 					if (event.isShiftDown()) {
-						owner.expandAll();
+						ownerPane.expandAll();
 					} else {
 						showNameNodes();
 					}
 				} else {
 					if (event.isShiftDown()) {
-						owner.collapseAll();
+						ownerPane.collapseAll();
 					} else {
 						hideNameNodes();
 					}
@@ -117,14 +117,14 @@ public class GroupNode extends VBox {
 			} else {
 				switch (event.getButton()) {
 					case PRIMARY:
-						owner.changeNodeState(this, null);
+						ownerPane.changeNodeState(this, null);
 						Instances.getReload().doReload();
 						break;
 					case SECONDARY:
 						ClickMenuTag clickMenuTag = Instances.getClickMenuTag();
-						clickMenuTag.setGroup(labelText.getText());
+						clickMenuTag.setGroup(nodeTitle.getText());
 						clickMenuTag.setName("");
-						clickMenuTag.show(groupNode, event);
+						clickMenuTag.show(hBoxGroup, event);
 						break;
 				}
 			}
@@ -145,7 +145,7 @@ public class GroupNode extends VBox {
 		nameNode.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 			switch (event.getButton()) {
 				case PRIMARY:
-					owner.changeNodeState(this, nameNode);
+					ownerPane.changeNodeState(this, nameNode);
 					Instances.getReload().doReload();
 					break;
 				case SECONDARY:
@@ -181,14 +181,14 @@ public class GroupNode extends VBox {
 	
 	public void showNameNodes() {
 		this.getChildren().clear();
-		this.getChildren().add(groupNode);
+		this.getChildren().add(hBoxGroup);
 		this.getChildren().addAll(nameNodes);
-		labelArrow.setText("− ");
+		nodeExpCol.setText("− ");
 	}
 	public void hideNameNodes() {
 		this.getChildren().clear();
-		this.getChildren().add(groupNode);
-		labelArrow.setText("+ ");
+		this.getChildren().add(hBoxGroup);
+		nodeExpCol.setText("+ ");
 	}
 	public void sortNameNodes() {
 		nameNodes.sort(Comparator.comparing(Label::getText));
@@ -202,20 +202,16 @@ public class GroupNode extends VBox {
 		return nameNodes;
 	}
 	public String getGroup() {
-		return labelText.getText();
+		return nodeTitle.getText();
 	}
 	
 	public void setGroup(String group) {
-		labelText.setText(group);
+		nodeTitle.setText(group);
 	}
 	public void setArrowFill(Color fill) {
-		labelArrow.setTextFill(fill);
+		nodeExpCol.setTextFill(fill);
 	}
 	public void setTextFill(Color fill) {
-		labelText.setTextFill(fill);
-	}
-	public void setFont(Font font) {
-		labelArrow.setFont(font);
-		labelText.setFont(font);
+		nodeTitle.setTextFill(fill);
 	}
 }
