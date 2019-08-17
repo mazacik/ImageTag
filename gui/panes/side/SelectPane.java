@@ -50,10 +50,10 @@ public class SelectPane extends SidePaneBase {
 		TextNode nodeSelectMerge = ButtonTemplates.SELECTION_MERGE.get();
 		ClickMenuLeft.install(nodeTitle, Direction.LEFT, nodeSelectAll, nodeSelectNone, new SeparatorNode(), nodeSelectMerge);
 		
-		tagNodesBox = new VBox();
+		groupNodes = new VBox();
 		
 		scrollPane = new ScrollPane();
-		scrollPane.setContent(tagNodesBox);
+		scrollPane.setContent(groupNodes);
 		scrollPane.setFitToWidth(true);
 		scrollPane.setFitToHeight(true);
 		scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -108,17 +108,17 @@ public class SelectPane extends SidePaneBase {
 		}
 		
 		refresh();
-		for (Node node : tagNodesBox.getChildren()) {
-			if (node instanceof TagNode) {
-				TagNode tagNode = (TagNode) node;
-				String group = tagNode.getGroup();
+		for (Node node : groupNodes.getChildren()) {
+			if (node instanceof GroupNode) {
+				GroupNode groupNode = (GroupNode) node;
+				String group = groupNode.getGroup();
 				
 				if (groupsInter.contains(group)) {
-					tagNode.setTextFill(textColorPositive);
+					groupNode.setTextFill(textColorPositive);
 				} else if (groupsShare.contains(group)) {
-					tagNode.setTextFill(textColorShare);
+					groupNode.setTextFill(textColorShare);
 				} else {
-					tagNode.setTextFill(textColorDefault);
+					groupNode.setTextFill(textColorDefault);
 				}
 				ArrayList<String> namesInter;
 				ArrayList<String> namesShare;
@@ -129,7 +129,7 @@ public class SelectPane extends SidePaneBase {
 					namesInter = select.getIntersectingTags().getNames(group);
 					namesShare = select.getSharedTags().getNames(group);
 				}
-				for (TextNode nameNode : tagNode.getNameNodes()) {
+				for (TextNode nameNode : groupNode.getNameNodes()) {
 					String name = nameNode.getText();
 					
 					if (namesInter.contains(name)) {
@@ -228,15 +228,15 @@ public class SelectPane extends SidePaneBase {
 	}
 	
 	@Override
-	public void changeNodeState(TagNode tagNode, TextNode nameNode) {
+	public void changeNodeState(GroupNode groupNode, TextNode nameNode) {
 		if (nameNode == null) {
-			if (tagNode.isExpanded()) {
-				tagNode.hideNameNodes();
+			if (groupNode.isExpanded()) {
+				groupNode.hideNameNodes();
 			} else {
-				tagNode.showNameNodes();
+				groupNode.showNameNodes();
 			}
 		} else {
-			TagObject tagObject = Instances.getTagListMain().getTagObject(tagNode.getGroup(), nameNode.getText());
+			TagObject tagObject = Instances.getTagListMain().getTagObject(groupNode.getGroup(), nameNode.getText());
 			if (nameNode.getTextFill().equals(ColorUtil.getTextColorPos()) || nameNode.getTextFill().equals(ColorUtil.getTextColorShr())) {
 				nameNode.setTextFill(ColorUtil.getTextColorDef());
 				this.removeTagObjectFromSelection(tagObject);

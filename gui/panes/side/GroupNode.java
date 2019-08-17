@@ -1,5 +1,6 @@
 package application.gui.panes.side;
 
+import application.database.list.CustomList;
 import application.gui.decorator.ColorUtil;
 import application.gui.nodes.popup.ClickMenuTag;
 import application.gui.nodes.simple.TextNode;
@@ -20,21 +21,21 @@ import javafx.scene.text.Font;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class TagNode extends VBox {
+public class GroupNode extends VBox {
 	//todo split between their panes
 	private final TextNode labelArrow;
 	private final TextNode labelText;
 	
 	private final HBox groupNode;
-	private final ArrayList<TextNode> nameNodes;
+	private final CustomList<TextNode> nameNodes;
 	
 	private final SidePaneBase owner;
 	
-	public TagNode(SidePaneBase owner, String group) {
+	public GroupNode(SidePaneBase owner, String group) {
 		this.owner = owner;
 		
-		labelArrow = new TextNode("+ ");
-		labelText = new TextNode(group);
+		labelArrow = new TextNode("+ ", false, false, false, false);
+		labelText = new TextNode(group, false, false, false, false);
 		labelArrow.setPadding(new Insets(0, 5, 0, 15));
 		labelText.setPadding(new Insets(0, 15, 0, 5));
 		labelArrow.setTextFill(ColorUtil.getTextColorDef());
@@ -42,7 +43,7 @@ public class TagNode extends VBox {
 		groupNode = new HBox(labelArrow, labelText);
 		getChildren().add(groupNode);
 		
-		nameNodes = new ArrayList<>();
+		nameNodes = new CustomList<>();
 		
 		initNameNodes();
 		initEvents();
@@ -55,17 +56,17 @@ public class TagNode extends VBox {
 	private void initEvents() {
 		ChangeListener<Boolean> shiftChangeListener = (observable, oldValue, newValue) -> {
 			if (newValue) {
-				for (Node node : owner.getTagNodesBox().getChildren()) {
-					if (node instanceof TagNode) {
-						TagNode tagNode = (TagNode) node;
-						tagNode.setArrowFill(ColorUtil.getTextColorAlt());
+				for (Node node : owner.getGroupNodes().getChildren()) {
+					if (node instanceof GroupNode) {
+						GroupNode groupNode = (GroupNode) node;
+						groupNode.setArrowFill(ColorUtil.getTextColorAlt());
 					}
 				}
 			} else {
-				for (Node node : owner.getTagNodesBox().getChildren()) {
-					if (node instanceof TagNode) {
-						TagNode tagNode = (TagNode) node;
-						tagNode.setArrowFill(ColorUtil.getTextColorDef());
+				for (Node node : owner.getGroupNodes().getChildren()) {
+					if (node instanceof GroupNode) {
+						GroupNode groupNode = (GroupNode) node;
+						groupNode.setArrowFill(ColorUtil.getTextColorDef());
 					}
 				}
 			}
@@ -73,10 +74,10 @@ public class TagNode extends VBox {
 		labelArrow.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
 			Stages.getMainStage().shiftDownProperty().addListener(shiftChangeListener);
 			if (event.isShiftDown()) {
-				for (Node node : owner.getTagNodesBox().getChildren()) {
-					if (node instanceof TagNode) {
-						TagNode tagNode = (TagNode) node;
-						tagNode.setArrowFill(ColorUtil.getTextColorAlt());
+				for (Node node : owner.getGroupNodes().getChildren()) {
+					if (node instanceof GroupNode) {
+						GroupNode groupNode = (GroupNode) node;
+						groupNode.setArrowFill(ColorUtil.getTextColorAlt());
 					}
 				}
 			} else {
@@ -86,10 +87,10 @@ public class TagNode extends VBox {
 		labelArrow.addEventFilter(MouseEvent.MOUSE_EXITED, event -> {
 			Stages.getMainStage().shiftDownProperty().removeListener(shiftChangeListener);
 			if (event.isShiftDown()) {
-				for (Node node : owner.getTagNodesBox().getChildren()) {
-					if (node instanceof TagNode) {
-						TagNode tagNode = (TagNode) node;
-						tagNode.setArrowFill(ColorUtil.getTextColorDef());
+				for (Node node : owner.getGroupNodes().getChildren()) {
+					if (node instanceof GroupNode) {
+						GroupNode groupNode = (GroupNode) node;
+						groupNode.setArrowFill(ColorUtil.getTextColorDef());
 					}
 				}
 			} else {

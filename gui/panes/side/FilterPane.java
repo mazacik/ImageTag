@@ -39,9 +39,9 @@ public class FilterPane extends SidePaneBase {
 				Instances.getReload().doReload();
 		});
 		
-		tagNodesBox = new VBox();
+		groupNodes = new VBox();
 		scrollPane = new ScrollPane();
-		scrollPane.setContent(tagNodesBox);
+		scrollPane.setContent(groupNodes);
 		scrollPane.setFitToWidth(true);
 		scrollPane.setFitToHeight(true);
 		scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -77,19 +77,19 @@ public class FilterPane extends SidePaneBase {
 		
 		refresh();
 		
-		for (Node node : tagNodesBox.getChildren()) {
-			if (node instanceof TagNode) {
-				TagNode tagNode = (TagNode) node;
-				String group = tagNode.getGroup();
+		for (Node node : groupNodes.getChildren()) {
+			if (node instanceof GroupNode) {
+				GroupNode groupNode = (GroupNode) node;
+				String group = groupNode.getGroup();
 				
 				if (filter.isWhitelisted(group)) {
-					tagNode.setTextFill(textColorPositive);
+					groupNode.setTextFill(textColorPositive);
 				} else if (filter.isBlacklisted(group)) {
-					tagNode.setTextFill(textColorNegative);
+					groupNode.setTextFill(textColorNegative);
 				} else {
-					tagNode.setTextFill(textColorDefault);
+					groupNode.setTextFill(textColorDefault);
 				}
-				for (TextNode nameNode : tagNode.getNameNodes()) {
+				for (TextNode nameNode : groupNode.getNameNodes()) {
 					String name = nameNode.getText();
 					
 					if (filter.isWhitelisted(group, name)) {
@@ -106,9 +106,9 @@ public class FilterPane extends SidePaneBase {
 	}
 	
 	@Override
-	public void changeNodeState(TagNode tagNode, TextNode nameNode) {
+	public void changeNodeState(GroupNode groupNode, TextNode nameNode) {
 		if (nameNode == null) {
-			String groupName = tagNode.getGroup();
+			String groupName = groupNode.getGroup();
 			Color textColor;
 			if (Instances.getFilter().isWhitelisted(groupName)) {
 				Instances.getFilter().blacklist(groupName);
@@ -120,28 +120,28 @@ public class FilterPane extends SidePaneBase {
 				Instances.getFilter().whitelist(groupName);
 				textColor = ColorUtil.getTextColorPos();
 			}
-			tagNode.setTextFill(textColor);
-			tagNode.getNameNodes().forEach(node -> node.setTextFill(textColor));
+			groupNode.setTextFill(textColor);
+			groupNode.getNameNodes().forEach(node -> node.setTextFill(textColor));
 		} else {
-			TagObject tagObject = Instances.getTagListMain().getTagObject(tagNode.getGroup(), nameNode.getText());
+			TagObject tagObject = Instances.getTagListMain().getTagObject(groupNode.getGroup(), nameNode.getText());
 			if (Instances.getFilter().isWhitelisted(tagObject)) {
 				Instances.getFilter().blacklist(tagObject);
 				if (Instances.getFilter().isBlacklisted(tagObject.getGroup())) {
-					tagNode.setTextFill(ColorUtil.getTextColorNeg());
+					groupNode.setTextFill(ColorUtil.getTextColorNeg());
 				} else if (!Instances.getFilter().isWhitelisted(tagObject.getGroup())) {
-					tagNode.setTextFill(ColorUtil.getTextColorDef());
+					groupNode.setTextFill(ColorUtil.getTextColorDef());
 				}
 				nameNode.setTextFill(ColorUtil.getTextColorNeg());
 			} else if (Instances.getFilter().isBlacklisted(tagObject)) {
 				Instances.getFilter().unlist(tagObject);
 				if (!Instances.getFilter().isWhitelisted(tagObject.getGroup()) && !Instances.getFilter().isBlacklisted(tagObject.getGroup())) {
-					tagNode.setTextFill(ColorUtil.getTextColorDef());
+					groupNode.setTextFill(ColorUtil.getTextColorDef());
 				}
 				nameNode.setTextFill(ColorUtil.getTextColorDef());
 			} else {
 				Instances.getFilter().whitelist(tagObject);
 				if (Instances.getFilter().isWhitelisted(tagObject.getGroup())) {
-					tagNode.setTextFill(ColorUtil.getTextColorPos());
+					groupNode.setTextFill(ColorUtil.getTextColorPos());
 				}
 				nameNode.setTextFill(ColorUtil.getTextColorPos());
 			}
