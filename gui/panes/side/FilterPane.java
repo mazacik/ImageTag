@@ -30,8 +30,8 @@ public class FilterPane extends SidePaneBase {
 			Instances.getReload().doReload();
 		});
 		
-		TextNode btnReload = new TextNode("⟲", true, true, false, true);
-		btnReload.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		TextNode btnReset = new TextNode("⟲", true, true, false, true);
+		btnReset.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			Instances.getFilter().reset();
 			Instances.getReload().doReload();
 		});
@@ -39,10 +39,11 @@ public class FilterPane extends SidePaneBase {
 		TextNode btnSettings = new TextNode("⁝", true, true, false, true);
 		btnSettings.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Stages.getFilterSettingsStage()._show());
 		
-		HBox hBoxTitle = new HBox(btnReload, nodeTitle, btnSettings);
+		HBox hBoxTitle = new HBox(btnReset, nodeTitle, btnSettings);
 		hBoxTitle.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
 		nodeTitle.prefWidthProperty().bind(this.widthProperty());
 		
+		this.setBorder(NodeUtil.getBorder(0, 1, 0, 0));
 		this.getChildren().addAll(hBoxTitle, btnCreateNewTag, scrollPane);
 	}
 	

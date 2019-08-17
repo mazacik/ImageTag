@@ -119,7 +119,6 @@ public class Target {
 			else newTarget = visibleObjects.getLast();
 			
 			this.set(newTarget);
-			if (Instances.getSelect().isEmpty()) Instances.getSelect().set(newTarget);
 		}
 	}
 }

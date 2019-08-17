@@ -80,8 +80,10 @@ public class BaseTileEvent {
 			//noinspection RedundantCollectionOperation
 			Instances.getGalleryPane().getExpandedGroups().remove(Instances.getGalleryPane().getExpandedGroups().indexOf(dataObject.getMergeID()));
 		}
-		if (!dataObject.getMergeGroup().contains(Instances.getTarget().getCurrentTarget()))
+		if (!dataObject.getMergeGroup().contains(Instances.getTarget().getCurrentTarget())) {
 			Instances.getTarget().set(dataObject.getMergeGroup().getFirst());
+		}
+		
 		Instances.getReload().notify(Reload.Control.OBJ);
 	}
 }

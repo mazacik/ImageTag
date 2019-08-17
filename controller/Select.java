@@ -70,20 +70,7 @@ public class Select extends DataObjectList {
 	public boolean removeAll(ArrayList<DataObject> arrayList) {
 		if (arrayList == null) return false;
 		if (super.removeAll(arrayList)) {
-			ArrayList<Integer> expandedGroups = Instances.getGalleryPane().getExpandedGroups();
-			for (DataObject dataObject : arrayList) {
-				if (dataObject == null || this.contains(dataObject)) continue;
-				
-				int mergeID = dataObject.getMergeID();
-				if (mergeID == 0 || expandedGroups.contains(mergeID)) {
-					super.add(dataObject);
-					Instances.getReload().requestTileEffect(dataObject);
-				} else {
-					DataObjectList mergeGroup = dataObject.getMergeGroup();
-					super.addAll(mergeGroup);
-					Instances.getReload().requestTileEffect(mergeGroup);
-				}
-			}
+			for (DataObject dataObject : arrayList) Instances.getReload().requestTileEffect(dataObject);
 			Instances.getReload().notify(Reload.Control.SELECT);
 			return true;
 		}
@@ -91,8 +78,6 @@ public class Select extends DataObjectList {
 	}
 	
 	public void set(DataObject dataObject) {
-		Instances.getReload().requestTileEffect(this);
-		Instances.getReload().requestTileEffect(dataObject);
 		this.clear();
 		this.add(dataObject);
 	}
@@ -123,15 +108,10 @@ public class Select extends DataObjectList {
 		do mergeID = new Random().nextInt();
 		while (mergeIDs.contains(mergeID));
 		
-		boolean bMergeTags = Stages.getYesNoStage()._show("Do you also want to merge the tags of these items?");
-		if (bMergeTags) {
+		if (Stages.getYesNoStage()._show("Do you also want to merge the tags of these items?")) {
 			TagList tagList = new TagList();
 			for (DataObject dataObject : this) {
-				for (TagObject tagObject : dataObject.getTagList()) {
-					if (!tagList.contains(tagObject)) {
-						tagList.add(tagObject);
-					}
-				}
+				tagList.addAll(dataObject.getTagList());
 			}
 			for (DataObject dataObject : this) {
 				dataObject.setMergeID(mergeID);
@@ -140,7 +120,6 @@ public class Select extends DataObjectList {
 		}
 		
 		Instances.getTarget().set(this.getFirst());
-		
 		Instances.getReload().notify(Reload.Control.OBJ, Reload.Control.TAG);
 	}
 	public void unmerge() {
@@ -175,21 +154,8 @@ public class Select extends DataObjectList {
 	}
 	
 	public void addTagObject(TagObject tagObject) {
-		if (!tagObject.isEmpty()) {
-			if (!Instances.getTagListMain().contains(tagObject)) {
-				Instances.getTagListMain().add(tagObject);
-			}
-			
-			DataObjectList selectHelper = new DataObjectList();
-			selectHelper.addAll(Instances.getSelect());
-			
-			TagList tagList;
-			for (DataObject dataObject : selectHelper) {
-				tagList = dataObject.getTagList();
-				if (!tagList.contains(tagObject)) {
-					tagList.add(tagObject);
-				}
-			}
+		for (DataObject dataObject : this) {
+			dataObject.getTagList().add(tagObject);
 		}
 	}
 	public void removeTagObject(TagObject tagObject) {

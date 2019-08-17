@@ -1,7 +1,6 @@
 package application.gui.decorator;
 
 import application.gui.panes.center.GalleryPane;
-import application.gui.panes.center.MediaPane;
 import application.gui.stage.Stages;
 import application.main.Instances;
 import javafx.scene.layout.TilePane;
@@ -23,7 +22,6 @@ public abstract class SizeUtil {
 	
 	public static void stageWidthChangeHandler() {
 		GalleryPane galleryPane = Instances.getGalleryPane();
-		MediaPane mediaPane = Instances.getMediaPane();
 		TilePane tilePane = galleryPane.getTilePane();
 		
 		double sceneWidth = Stages.getMainStage().getScene().getWidth();
@@ -39,12 +37,7 @@ public abstract class SizeUtil {
 			
 			galleryPane.setMinViewportWidth(width);
 			galleryPane.setPrefViewportWidth(width);
-			
-			mediaPane.getCanvas().setWidth(availableWidth - 10);
 		}
-	}
-	public static void stageHeightChangehandler() {
-		Instances.getMediaPane().getCanvas().setHeight(Stages.getMainStage().getScene().getHeight() - Instances.getToolbarPane().getPrefHeight());
 	}
 	
 	public static double getStringWidth(String s) {

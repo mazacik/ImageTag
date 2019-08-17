@@ -40,7 +40,6 @@ public class MainStage extends StageBase {
 		this.setAlwaysOnTop(false);
 		
 		this.getScene().widthProperty().addListener((observable, oldValue, newValue) -> SizeUtil.stageWidthChangeHandler());
-		this.getScene().heightProperty().addListener((observable, oldValue, newValue) -> SizeUtil.stageHeightChangehandler());
 		
 		onKeyPress();
 		onKeyRelease();
@@ -63,6 +62,7 @@ public class MainStage extends StageBase {
 			galleryPane.requestFocus();
 		} else if (panes.contains(galleryPane)) {
 			panes.set(panes.indexOf(galleryPane), mediaPane);
+			Instances.getReload().request(mediaPane);
 			mediaPane.requestFocus();
 		}
 	}
@@ -86,11 +86,11 @@ public class MainStage extends StageBase {
 			switch (event.getCode()) {
 				case ESCAPE:
 					if (isFullView()) swapViewMode();
+					reload.doReload();
 					break;
 				case E:
 					BaseTileEvent.onGroupButtonPress(target.getCurrentTarget());
 					reload.doReload();
-					Instances.getGalleryPane().loadCacheOfTilesInViewport();
 					break;
 				case R:
 					select.setRandom();
@@ -115,6 +115,12 @@ public class MainStage extends StageBase {
 					else select.set(target.getCurrentTarget());
 					
 					Instances.getReload().doReload();
+					break;
+				case T:
+					System.out.println("gallery width: " + Instances.getGalleryPane().getWidth());
+					System.out.println("canvas width: " + Instances.getMediaPane().getCanvas().getWidth());
+					System.out.println("gallery height: " + Instances.getGalleryPane().getHeight());
+					System.out.println("canvas height: " + Instances.getMediaPane().getCanvas().getHeight());
 					break;
 				default:
 					break;

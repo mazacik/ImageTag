@@ -42,6 +42,7 @@ public class SelectPane extends SidePaneBase {
 		TextNode nodeSelectMerge = ButtonTemplates.SELECTION_MERGE.get();
 		ClickMenuLeft.install(nodeTitle, Direction.LEFT, nodeSelectAll, nodeSelectNone, new SeparatorNode(), nodeSelectMerge);
 		
+		this.setBorder(NodeUtil.getBorder(0, 0, 0, 1));
 		this.getChildren().addAll(nodeTitle, tfSearch, scrollPane);
 		
 		tfSearchEvents();
@@ -198,7 +199,7 @@ public class SelectPane extends SidePaneBase {
 			if (!Instances.getSelect().isEmpty()) {
 				TagObject tagObject = Instances.getTagListMain().getTagObject(tfSearch.getText());
 				if (tagObject != null) {
-					addTagObjectToSelection(tagObject);
+					Instances.getSelect().addTagObject(tagObject);
 					actualText = "";
 					tfSearch.clear();
 					Instances.getReload().notify(Reload.Control.TAG);
@@ -219,34 +220,14 @@ public class SelectPane extends SidePaneBase {
 			TagObject tagObject = Instances.getTagListMain().getTagObject(groupNode.getGroup(), nameNode.getText());
 			if (nameNode.getTextFill().equals(ColorUtil.getTextColorPos()) || nameNode.getTextFill().equals(ColorUtil.getTextColorShr())) {
 				nameNode.setTextFill(ColorUtil.getTextColorDef());
-				this.removeTagObjectFromSelection(tagObject);
+				Instances.getSelect().removeTagObject(tagObject);
 			} else {
 				nameNode.setTextFill(ColorUtil.getTextColorPos());
-				this.addTagObjectToSelection(tagObject);
+				Instances.getSelect().addTagObject(tagObject);
 			}
 			
 			Instances.getReload().notify(Reload.Control.TAG);
 			Instances.getReload().doReload();
-		}
-	}
-	public void addTagObjectToSelection(TagObject tagObject) {
-		if (Instances.getSelect().size() < 1) {
-			DataObject currentTargetedItem = Instances.getTarget().getCurrentTarget();
-			if (currentTargetedItem != null) {
-				currentTargetedItem.getTagList().add(tagObject);
-			}
-		} else {
-			Instances.getSelect().addTagObject(tagObject);
-		}
-	}
-	public void removeTagObjectFromSelection(TagObject tagObject) {
-		if (Instances.getSelect().size() < 1) {
-			DataObject currentTargetedItem = Instances.getTarget().getCurrentTarget();
-			if (currentTargetedItem != null) {
-				currentTargetedItem.getTagList().remove(tagObject);
-			}
-		} else {
-			Instances.getSelect().removeTagObject(tagObject);
 		}
 	}
 	
