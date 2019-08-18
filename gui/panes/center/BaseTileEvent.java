@@ -17,7 +17,7 @@ public class BaseTileEvent {
 			switch (event.getButton()) {
 				case PRIMARY:
 					if (event.getClickCount() % 2 != 0) onLeftClick(galleryTile, event);
-					else onLeftDoubleClick(event);
+					else onLeftDoubleClick(event, galleryTile);
 					break;
 				case SECONDARY:
 					onRightClick(galleryTile, event);
@@ -30,7 +30,7 @@ public class BaseTileEvent {
 	private void onLeftClick(GalleryTile galleryTile, MouseEvent event) {
 		DataObject dataObject = galleryTile.getParentDataObject();
 		
-		if (isOnGroupButton(event)) {
+		if (isOnGroupButton(event, galleryTile)) {
 			onGroupButtonPress(dataObject);
 			Instances.getReload().doReload();
 			Instances.getGalleryPane().loadCacheOfTilesInViewport();
@@ -50,8 +50,8 @@ public class BaseTileEvent {
 		
 		Instances.getClickMenuData().hide();
 	}
-	private void onLeftDoubleClick(MouseEvent event) {
-		if (!isOnGroupButton(event)) {
+	private void onLeftDoubleClick(MouseEvent event, GalleryTile galleryTile) {
+		if (!isOnGroupButton(event, galleryTile)) {
 			Stages.getMainStage().swapViewMode();
 			Instances.getReload().doReload();
 		}
@@ -68,9 +68,9 @@ public class BaseTileEvent {
 		Instances.getClickMenuData().show(sender, event);
 	}
 	
-	private boolean isOnGroupButton(MouseEvent event) {
+	private boolean isOnGroupButton(MouseEvent event, GalleryTile galleryTile) {
 		int tileSize = Instances.getSettings().getGalleryTileSize();
-		return event.getX() > tileSize - GalleryTile.getEffectGroupSize() && event.getY() < GalleryTile.getEffectGroupSize();
+		return event.getX() >= tileSize - galleryTile.getGroupEffectWidth() - 5 && event.getY() <= galleryTile.getGroupEffectHeight();
 	}
 	public static void onGroupButtonPress(DataObject dataObject) {
 		if (dataObject.getMergeID() == 0) return;

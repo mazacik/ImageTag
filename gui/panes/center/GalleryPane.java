@@ -91,13 +91,15 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 		//	apply changes to the actual TilePane
 		tilePane.getChildren().setAll(tiles);
 		
+		//	Target and Select adjustments
 		DataObject currentTarget = Instances.getTarget().restorePosition();
-		this.adjustViewportToCurrentTarget();
-		
-		if (currentTarget.getMergeID() != 0) {
-			if (!expandedGroups.contains(currentTarget.getMergeID())) {
-				if (Instances.getSelect().containsAny(currentTarget.getMergeGroup())) {
-					Instances.getSelect().addAll(currentTarget.getMergeGroup());
+		if (currentTarget != null) {
+			this.adjustViewportToCurrentTarget();
+			if (currentTarget.getMergeID() != 0) {
+				if (!expandedGroups.contains(currentTarget.getMergeID())) {
+					if (Instances.getSelect().containsAny(currentTarget.getMergeGroup())) {
+						Instances.getSelect().addAll(currentTarget.getMergeGroup());
+					}
 				}
 			}
 		}
