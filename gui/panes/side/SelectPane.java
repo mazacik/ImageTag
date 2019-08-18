@@ -1,7 +1,6 @@
 package application.gui.panes.side;
 
 import application.controller.Filter;
-import application.controller.Reload;
 import application.controller.Select;
 import application.controller.Target;
 import application.database.object.DataObject;
@@ -16,26 +15,29 @@ import application.gui.nodes.simple.TextNode;
 import application.main.Instances;
 import application.misc.CompareUtil;
 import application.misc.enums.Direction;
-import javafx.event.Event;
+import javafx.beans.value.ChangeListener;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
-import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 
 public class SelectPane extends SidePaneBase {
-	private final EditNode tfSearch;
-	private String actualText = "";
+	private final EditNode nodeSearch;
 	
 	public SelectPane() {
 		nodeTitle = new TextNode("", true, true, false, true);
 		nodeTitle.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
 		nodeTitle.prefWidthProperty().bind(this.widthProperty());
 		
-		tfSearch = new EditNode("Search tags to add to selection");
-		tfSearch.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
+		nodeSearch = new EditNode("Quick Search");
+		nodeSearch.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
+		nodeSearch.prefWidthProperty().bind(this.widthProperty());
+		nodeSearch.textProperty().addListener(getSearchTextListener());
+		nodeSearch.setOnAction(getSearchOnAction());
 		
 		TextNode nodeSelectAll = ButtonTemplates.SELECTION_SET_ALL.get();
 		TextNode nodeSelectNone = ButtonTemplates.SELECTION_SET_NONE.get();
@@ -43,9 +45,7 @@ public class SelectPane extends SidePaneBase {
 		ClickMenuLeft.install(nodeTitle, Direction.LEFT, nodeSelectAll, nodeSelectNone, new SeparatorNode(), nodeSelectMerge);
 		
 		this.setBorder(NodeUtil.getBorder(0, 0, 0, 1));
-		this.getChildren().addAll(nodeTitle, tfSearch, scrollPane);
-		
-		tfSearchEvents();
+		this.getChildren().addAll(nodeTitle, nodeSearch, scrollPane);
 	}
 	
 	private void refreshTitle() {
@@ -127,88 +127,6 @@ public class SelectPane extends SidePaneBase {
 		return true;
 	}
 	
-	private void tfSearchEvents() {
-		tfSearch.addEventFilter(KeyEvent.KEY_TYPED, Event::consume);
-		tfSearch.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-			/* first update the actualText variable */
-			if (event.getCode().isLetterKey()) {
-				actualText += event.getText().toLowerCase();
-			} else if (event.getCode() == KeyCode.BACK_SPACE) {
-				//todo only delete selected text (if there is any)
-				if (!actualText.isEmpty()) {
-					actualText = actualText.substring(0, actualText.length() - 1);
-					event.consume();
-				}
-			} else if (event.getCode() == KeyCode.ESCAPE) {
-				Instances.getGalleryPane().requestFocus();
-			}
-			
-			/* second update the TextField text */
-			if (actualText.isEmpty()) {
-				tfSearch.clear();
-			} else if (actualText.length() < 3) {
-				tfSearch.setText(actualText);
-				tfSearch.positionCaret(tfSearch.getLength());
-			} else if (actualText.length() >= 3) {
-				TagObject bestMatch = null;
-				//tag's name starts with actualtext
-				for (TagObject tagObject : Instances.getTagListMain()) {
-					if (tagObject.getName().toLowerCase().startsWith(actualText)) {
-						bestMatch = tagObject;
-						break;
-					}
-				}
-				if (bestMatch == null) {
-					//tag's name contains actualtext
-					for (TagObject tagObject : Instances.getTagListMain()) {
-						if (tagObject.getName().toLowerCase().contains(actualText)) {
-							bestMatch = tagObject;
-							break;
-						}
-					}
-				}
-				if (bestMatch == null) {
-					//custom string similarity algorithm
-					//todo needs more work (probably)
-					double bestMatchFactor = 0;
-					for (TagObject tagObject : Instances.getTagListMain()) {
-						double currentFactor = CompareUtil.getStringSimilarity(actualText, tagObject.getFull());
-						if (currentFactor > bestMatchFactor) {
-							bestMatchFactor = currentFactor;
-							bestMatch = tagObject;
-						}
-					}
-				}
-				
-				if (bestMatch != null) {
-					String tagFull = bestMatch.getFull();
-					tfSearch.setText(tagFull);
-					int lastIndexOfActualText = tagFull.toLowerCase().lastIndexOf(actualText);
-					if (lastIndexOfActualText == -1) {
-						tfSearch.positionCaret(tfSearch.getText().length());
-					} else {
-						tfSearch.positionCaret(lastIndexOfActualText + actualText.length());
-					}
-				} else {
-					tfSearch.setText(actualText);
-					tfSearch.positionCaret(tfSearch.getLength());
-				}
-			}
-		});
-		tfSearch.setOnAction(event -> {
-			if (!Instances.getSelect().isEmpty()) {
-				TagObject tagObject = Instances.getTagListMain().getTagObject(tfSearch.getText());
-				if (tagObject != null) {
-					Instances.getSelect().addTagObject(tagObject);
-					actualText = "";
-					tfSearch.clear();
-					Instances.getReload().notify(Reload.Control.TAG);
-					Instances.getReload().doReload();
-				}
-			}
-		});
-	}
-	
 	public void changeNodeState(GroupNode groupNode, TextNode nameNode) {
 		if (nameNode == null) {
 			if (groupNode.isExpanded()) {
@@ -226,12 +144,83 @@ public class SelectPane extends SidePaneBase {
 				Instances.getSelect().addTagObject(tagObject);
 			}
 			
-			Instances.getReload().notify(Reload.Control.TAG);
 			Instances.getReload().doReload();
 		}
 	}
 	
-	public TextField getTfSearch() {
-		return tfSearch;
+	private TagObject bestMatch = null;
+	private TextNode previousMatchNameNode = null;
+	private GroupNode previousMatchGroupNode = null;
+	private boolean wasPreviousGroupNodeExpanded = true;
+	
+	private ChangeListener<? super String> getSearchTextListener() {
+		return (ChangeListener<String>) (observable, oldValue, newValue) -> {
+			bestMatch = this.getBestMatch(newValue);
+			if (bestMatch != null) {
+				getGroupNodes().forEach(groupNode -> {
+					if (groupNode.getGroup().equals(bestMatch.getGroup())) {
+						if (previousMatchGroupNode != groupNode) {
+							if (!wasPreviousGroupNodeExpanded) {
+								previousMatchGroupNode.hideNameNodes();
+							}
+							
+							if (previousMatchNameNode != null) {
+								previousMatchNameNode.fireEvent(new MouseEvent(MouseEvent.MOUSE_EXITED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
+							}
+							
+							previousMatchGroupNode = groupNode;
+							wasPreviousGroupNodeExpanded = groupNode.isExpanded();
+							
+							if (!groupNode.isExpanded()) {
+								groupNode.showNameNodes();
+							}
+							
+							for (TextNode nameNode : groupNode.getNameNodes()) {
+								if (nameNode.getText().equals(bestMatch.getName())) {
+									previousMatchNameNode = nameNode;
+									nameNode.fireEvent(new MouseEvent(MouseEvent.MOUSE_ENTERED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
+								}
+							}
+						}
+					}
+				});
+			}
+		};
+	}
+	private EventHandler<ActionEvent> getSearchOnAction() {
+		return event -> {
+			if (previousMatchGroupNode != null && !wasPreviousGroupNodeExpanded) {
+				previousMatchGroupNode.hideNameNodes();
+			}
+			
+			if (previousMatchNameNode != null) {
+				previousMatchNameNode.fireEvent(new MouseEvent(MouseEvent.MOUSE_EXITED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
+			}
+			
+			nodeSearch.clear();
+			Instances.getSelect().addTagObject(bestMatch);
+			Instances.getReload().doReload();
+		};
+	}
+	private TagObject getBestMatch(String query) {
+		//	simple check if any the name of any tag starts with query
+		for (TagObject tagObject : Instances.getTagListMain()) {
+			if (tagObject.getName().toLowerCase().startsWith(query)) {
+				return tagObject;
+			}
+		}
+		
+		//	more complex check for string similarity
+		//	todo needs more work
+		double bestMatchFactor = 0;
+		TagObject bestMatch = null;
+		for (TagObject tagObject : Instances.getTagListMain()) {
+			double currentFactor = CompareUtil.getStringSimilarity(query, tagObject.getFull());
+			if (currentFactor > bestMatchFactor) {
+				bestMatch = tagObject;
+				bestMatchFactor = currentFactor;
+			}
+		}
+		return bestMatch;
 	}
 }
