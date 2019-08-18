@@ -2,27 +2,23 @@ package application.gui.panes.center;
 
 import application.database.list.CustomList;
 import application.database.object.DataObject;
-import application.gui.decorator.Decorator;
 import application.gui.nodes.simple.TextNode;
 import application.main.Instances;
-import javafx.geometry.Insets;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.effect.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 public class GalleryTile extends ImageView {
 	private static final InnerShadow effectSelect = createEffectSelect();
 	private static final ColorInput effectTarget = createEffectTarget();
-	private static int effectGroupSize;
 	
 	private final DataObject parentDataObject;
+	private int groupEffectWidth;
+	private int groupEffectHeight;
 	
 	public GalleryTile(DataObject parentDataObject, Image image) {
 		super(image);
@@ -61,8 +57,9 @@ public class GalleryTile extends ImageView {
 			}
 			int tileSize = Instances.getSettings().getGalleryTileSize();
 			Image imageText = textToImage(groupIconText);
-			effectList.add(new ImageInput(imageText, tileSize - imageText.getWidth() - 5, 1));
-			effectGroupSize = (int) imageText.getWidth() + 10;
+			effectList.add(new ImageInput(imageText, tileSize - imageText.getWidth() - 5, 0));
+			groupEffectWidth = (int) imageText.getWidth() + 5;
+			groupEffectHeight = (int) imageText.getHeight();
 		}
 		
 		if (effectList.size() == 0) {
@@ -93,27 +90,26 @@ public class GalleryTile extends ImageView {
 	}
 	
 	public static Image textToImage(String text) {
-		TextNode label = new TextNode(text);
-		label.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, null, null)));
-		label.setTextFill(Color.RED);
-		label.setWrapText(true);
-		label.setFont(Decorator.getFont());
-		label.setPadding(new Insets(0, 0, 0, 0));
+		TextNode textNode = new TextNode(text);
+		textNode.setTextFill(Color.RED);
 		
-		Text theText = new Text(label.getText());
-		theText.setFont(label.getFont());
-		int width = (int) theText.getBoundsInLocal().getWidth();
-		int height = (int) theText.getBoundsInLocal().getHeight();
+		Text t = new Text(textNode.getText());
+		t.setFont(textNode.getFont());
+		int width = (int) t.getBoundsInLocal().getWidth();
+		int height = (int) t.getBoundsInLocal().getHeight();
 		
 		WritableImage img = new WritableImage(width, height);
-		Scene scene = new Scene(new Group(label));
+		Scene scene = new Scene(textNode);
 		scene.setFill(Color.TRANSPARENT);
 		scene.snapshot(img);
 		return img;
 	}
 	
-	public static int getEffectGroupSize() {
-		return effectGroupSize;
+	public int getGroupEffectWidth() {
+		return groupEffectWidth;
+	}
+	public int getGroupEffectHeight() {
+		return groupEffectHeight;
 	}
 	public DataObject getParentDataObject() {
 		return parentDataObject;
