@@ -320,14 +320,7 @@ public enum ButtonTemplates {
 	}
 	private void deleteCurrentTarget() {
 		DataObject currentTarget = Instances.getTarget().getCurrentTarget();
-		if (currentTarget.getMergeID() != 0 && !Instances.getGalleryPane().getExpandedGroups().contains(currentTarget.getMergeID())) {
-			if (Stages.getYesNoStage()._show("Delete " + currentTarget.getMergeGroup().size() + " file(s)?")) {
-				Instances.getTarget().storePosition();
-				currentTarget.getMergeGroup().forEach(this::deleteDataObject);
-				Instances.getTarget().restorePosition();
-				Instances.getReload().doReload();
-			}
-		} else {
+		if (currentTarget.getMergeID() == 0 || Instances.getGalleryPane().getExpandedGroups().contains(currentTarget.getMergeID())) {
 			String sourcePath = Instances.getTarget().getCurrentTarget().getPath();
 			if (Stages.getYesNoStage()._show("Delete file: " + sourcePath + "?")) {
 				Instances.getTarget().storePosition();
@@ -335,6 +328,13 @@ public enum ButtonTemplates {
 				Instances.getTarget().restorePosition();
 				
 				Instances.getReload().notify(Reload.Control.FILTER, Reload.Control.TARGET);
+				Instances.getReload().doReload();
+			}
+		} else {
+			if (Stages.getYesNoStage()._show("Delete " + currentTarget.getMergeGroup().size() + " file(s)?")) {
+				Instances.getTarget().storePosition();
+				currentTarget.getMergeGroup().forEach(this::deleteDataObject);
+				Instances.getTarget().restorePosition();
 				Instances.getReload().doReload();
 			}
 		}
