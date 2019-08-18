@@ -189,10 +189,6 @@ public class SelectPane extends SidePaneBase {
 	}
 	private EventHandler<ActionEvent> getSearchOnAction() {
 		return event -> {
-			if (previousMatchGroupNode != null && !wasPreviousGroupNodeExpanded) {
-				previousMatchGroupNode.hideNameNodes();
-			}
-			
 			if (previousMatchNameNode != null) {
 				previousMatchNameNode.fireEvent(new MouseEvent(MouseEvent.MOUSE_EXITED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
 			}
