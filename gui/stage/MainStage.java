@@ -13,6 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 
 import java.util.logging.Logger;
@@ -43,6 +44,15 @@ public class MainStage extends StageBase {
 		this.setAlwaysOnTop(false);
 		
 		this.getScene().widthProperty().addListener((observable, oldValue, newValue) -> SizeUtil.stageWidthChangeHandler());
+		
+		this.getScene().addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+			Node node = event.getPickResult().getIntersectedNode();
+			if (node instanceof EditNode) {
+				event.consume();
+			} else {
+				node.requestFocus();
+			}
+		});
 		
 		onKeyPress();
 		onKeyRelease();
