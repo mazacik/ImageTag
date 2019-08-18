@@ -57,12 +57,21 @@ public class Select extends DataObjectList {
 	}
 	public boolean remove(DataObject dataObject) {
 		if (dataObject == null) return false;
-		if (dataObject.getMergeID() != 0 && !Instances.getGalleryPane().getExpandedGroups().contains(dataObject.getMergeID())) {
-			return this.removeAll(dataObject.getMergeGroup());
-		}
-		if (super.remove(dataObject)) {
+		
+		int size = this.size();
+		if (dataObject.getMergeID() == 0 || Instances.getGalleryPane().getExpandedGroups().contains(dataObject.getMergeID())) {
 			Instances.getReload().requestTileEffect(dataObject);
+			super.remove(dataObject);
+		} else {
+			Instances.getReload().requestTileEffect(dataObject.getMergeGroup());
+			this.removeAll(dataObject.getMergeGroup());
+		}
+		
+		if (size != this.size()) {
 			Instances.getReload().notify(Reload.Control.SELECT);
+			if (this.isEmpty()) {
+				this.add(Instances.getTarget().getCurrentTarget());
+			}
 			return true;
 		}
 		return false;
@@ -116,6 +125,10 @@ public class Select extends DataObjectList {
 			for (DataObject dataObject : this) {
 				dataObject.setMergeID(mergeID);
 				dataObject.setTagList(tagList);
+			}
+		} else {
+			for (DataObject dataObject : this) {
+				dataObject.setMergeID(mergeID);
 			}
 		}
 		
