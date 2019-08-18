@@ -5,11 +5,13 @@ import application.controller.Select;
 import application.controller.Target;
 import application.gui.decorator.Decorator;
 import application.gui.decorator.SizeUtil;
+import application.gui.nodes.simple.EditNode;
 import application.gui.panes.center.*;
 import application.main.Instances;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 
@@ -78,53 +80,52 @@ public class MainStage extends StageBase {
 	
 	private void onKeyPress() {
 		getScene().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-			if (Instances.getSelectPane().getTfSearch().isFocused()) return;
-			
-			Select select = Instances.getSelect();
-			Reload reload = Instances.getReload();
-			Target target = Instances.getTarget();
-			
-			switch (event.getCode()) {
-				case ESCAPE:
-					if (isFullView()) swapViewMode();
-					reload.doReload();
-					break;
-				case E:
-					BaseTileEvent.onGroupButtonPress(target.getCurrentTarget());
-					reload.doReload();
-					break;
-				case R:
-					select.setRandom();
-					reload.doReload();
-					break;
-				case F:
-					swapViewMode();
-					reload.doReload();
-					break;
-				case SHIFT:
+			if (getScene().getFocusOwner() instanceof EditNode) {
+				if (event.getCode() == KeyCode.ESCAPE) {
+					Instances.getGalleryPane().requestFocus();
+				} else if (event.getCode() == KeyCode.SHIFT) {
 					shiftDown.setValue(true);
-					Instances.getSelect().setShiftStart(target.getCurrentTarget());
-					break;
-				case W:
-				case A:
-				case S:
-				case D:
-					target.move(event.getCode());
-					
-					if (event.isShiftDown()) select.shiftSelectTo(target.getCurrentTarget());
-					else if (event.isControlDown()) select.add(target.getCurrentTarget());
-					else select.set(target.getCurrentTarget());
-					
-					Instances.getReload().doReload();
-					break;
-				case T:
-					System.out.println("gallery width: " + Instances.getGalleryPane().getWidth());
-					System.out.println("canvas width: " + Instances.getMediaPane().getCanvas().getWidth());
-					System.out.println("gallery height: " + Instances.getGalleryPane().getHeight());
-					System.out.println("canvas height: " + Instances.getMediaPane().getCanvas().getHeight());
-					break;
-				default:
-					break;
+					Instances.getSelect().setShiftStart(Instances.getTarget().getCurrentTarget());
+				}
+			} else {
+				Select select = Instances.getSelect();
+				Reload reload = Instances.getReload();
+				Target target = Instances.getTarget();
+				
+				switch (event.getCode()) {
+					case ESCAPE:
+						if (isFullView()) swapViewMode();
+						reload.doReload();
+						break;
+					case E:
+						BaseTileEvent.onGroupButtonPress(target.getCurrentTarget());
+						reload.doReload();
+						break;
+					case R:
+						select.setRandom();
+						reload.doReload();
+						break;
+					case F:
+						swapViewMode();
+						reload.doReload();
+						break;
+					case SHIFT:
+						shiftDown.setValue(true);
+						Instances.getSelect().setShiftStart(target.getCurrentTarget());
+						break;
+					case W:
+					case A:
+					case S:
+					case D:
+						target.move(event.getCode());
+						
+						if (event.isShiftDown()) select.shiftSelectTo(target.getCurrentTarget());
+						else if (event.isControlDown()) select.add(target.getCurrentTarget());
+						else select.set(target.getCurrentTarget());
+						
+						Instances.getReload().doReload();
+						break;
+				}
 			}
 		});
 	}
