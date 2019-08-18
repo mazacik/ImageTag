@@ -72,7 +72,6 @@ public class TagListMain extends TagList {
 			tagObjectOld.setFull(tagObjectNew.getGroup(), tagObjectNew.getName());
 			super.sort();
 			if (result.getValue()) Instances.getSelect().addTagObject(tagObjectOld);
-			Instances.getReload().notify(Reload.Control.TAG);
 			return true;
 		}
 		return false;

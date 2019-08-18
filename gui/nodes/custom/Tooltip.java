@@ -21,7 +21,7 @@ public class Tooltip extends Popup {
 		timeline = new Timeline();
 		timeline.getKeyFrames().add(new KeyFrame(new Duration(delay), event -> {
 			this.show(Stages.getMainStage());
-			//todo off-screen checks
+			//needs off-screen checks
 			this.setAnchorX(eventX - this.getWidth() / 2);
 			this.setAnchorY(eventY + this.getHeight());
 		}));

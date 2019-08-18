@@ -167,14 +167,12 @@ public class Select extends DataObjectList {
 	}
 	
 	public void addTagObject(TagObject tagObject) {
-		for (DataObject dataObject : this) {
-			dataObject.getTagList().add(tagObject);
-		}
+		this.forEach(dataObject -> dataObject.getTagList().add(tagObject));
+		Instances.getReload().notify(Reload.Control.TAG);
 	}
 	public void removeTagObject(TagObject tagObject) {
-		for (DataObject dataObject : this) {
-			dataObject.getTagList().remove(tagObject);
-		}
+		this.forEach(dataObject -> dataObject.getTagList().remove(tagObject));
+		Instances.getReload().notify(Reload.Control.TAG);
 	}
 	
 	public void setShiftStart(DataObject shiftStart) {

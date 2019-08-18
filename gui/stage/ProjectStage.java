@@ -33,7 +33,7 @@ public class ProjectStage extends StageBase {
 		lblProjectDirectory.setAlignment(Pos.CENTER_LEFT);
 		EditNode edtProjectDirectory = new EditNode("");
 		edtProjectDirectory.setPrefWidth(400);
-		TextNode btnProjectDirectory = new TextNode("...", true, true, true, true);    //	todo use an icon instead of "..."
+		TextNode btnProjectDirectory = new TextNode("...", true, true, true, true);
 		btnProjectDirectory.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
 				String projectDirectory = FileUtil.directoryChooser(this.getScene());
