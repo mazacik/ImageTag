@@ -166,8 +166,14 @@ public abstract class SidePaneBase extends VBox implements NodeBase, SidePaneBas
 	public ScrollPane getScrollPane() {
 		return scrollPane;
 	}
-	public VBox getGroupNodes() {
-		return groupNodes;
+	public CustomList<GroupNode> getGroupNodes() {
+		CustomList<GroupNode> customList = new CustomList<>();
+		groupNodes.getChildren().forEach(node -> {
+			if (node instanceof GroupNode) {
+				customList.add((GroupNode) node);
+			}
+		});
+		return customList;
 	}
 	
 	public boolean getNeedsReload() {

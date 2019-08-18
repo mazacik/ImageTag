@@ -10,7 +10,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -55,30 +54,15 @@ public class GroupNode extends VBox {
 	private void initEvents() {
 		ChangeListener<Boolean> shiftChangeListener = (observable, oldValue, newValue) -> {
 			if (newValue) {
-				for (Node node : ownerPane.getGroupNodes().getChildren()) {
-					if (node instanceof GroupNode) {
-						GroupNode groupNode = (GroupNode) node;
-						groupNode.setArrowFill(ColorUtil.getTextColorAlt());
-					}
-				}
+				ownerPane.getGroupNodes().forEach(groupNode -> groupNode.setArrowFill(ColorUtil.getTextColorAlt()));
 			} else {
-				for (Node node : ownerPane.getGroupNodes().getChildren()) {
-					if (node instanceof GroupNode) {
-						GroupNode groupNode = (GroupNode) node;
-						groupNode.setArrowFill(ColorUtil.getTextColorDef());
-					}
-				}
+				ownerPane.getGroupNodes().forEach(groupNode -> groupNode.setArrowFill(ColorUtil.getTextColorDef()));
 			}
 		};
 		nodeExpCol.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
 			Stages.getMainStage().shiftDownProperty().addListener(shiftChangeListener);
 			if (event.isShiftDown()) {
-				for (Node node : ownerPane.getGroupNodes().getChildren()) {
-					if (node instanceof GroupNode) {
-						GroupNode groupNode = (GroupNode) node;
-						groupNode.setArrowFill(ColorUtil.getTextColorAlt());
-					}
-				}
+				ownerPane.getGroupNodes().forEach(groupNode -> groupNode.setArrowFill(ColorUtil.getTextColorAlt()));
 			} else {
 				nodeExpCol.setTextFill(ColorUtil.getTextColorAlt());
 			}
@@ -86,12 +70,7 @@ public class GroupNode extends VBox {
 		nodeExpCol.addEventFilter(MouseEvent.MOUSE_EXITED, event -> {
 			Stages.getMainStage().shiftDownProperty().removeListener(shiftChangeListener);
 			if (event.isShiftDown()) {
-				for (Node node : ownerPane.getGroupNodes().getChildren()) {
-					if (node instanceof GroupNode) {
-						GroupNode groupNode = (GroupNode) node;
-						groupNode.setArrowFill(ColorUtil.getTextColorDef());
-					}
-				}
+				ownerPane.getGroupNodes().forEach(groupNode -> groupNode.setArrowFill(ColorUtil.getTextColorDef()));
 			} else {
 				nodeExpCol.setTextFill(ColorUtil.getTextColorDef());
 			}
