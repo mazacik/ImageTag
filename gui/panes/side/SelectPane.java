@@ -207,7 +207,6 @@ public class SelectPane extends SidePaneBase {
 		}
 		
 		//	more complex check for string similarity
-		//	todo needs more work
 		double bestMatchFactor = 0;
 		TagObject bestMatch = null;
 		for (TagObject tagObject : Instances.getTagListMain()) {
