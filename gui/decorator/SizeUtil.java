@@ -52,7 +52,7 @@ public abstract class SizeUtil {
 	public static double getMinWidthSideLists() {
 		return MIN_WIDTH_SIDELISTS;
 	}
-	public static double getGalleryIconSize() {
+	public static double getGalleryTileSize() {
 		return GALLERY_ICON_SIZE;
 	}
 }

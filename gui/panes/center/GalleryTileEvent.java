@@ -2,16 +2,19 @@ package application.gui.panes.center;
 
 import application.controller.Reload;
 import application.database.object.DataObject;
+import application.gui.nodes.ClickMenu;
 import application.gui.stage.Stages;
 import application.main.Instances;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
-public class BaseTileEvent {
-	public BaseTileEvent(GalleryTile galleryTile) {
+public class GalleryTileEvent {
+	public GalleryTileEvent(GalleryTile galleryTile) {
 		onMouseClick(galleryTile);
 	}
 	
 	private void onMouseClick(GalleryTile galleryTile) {
+		ClickMenu.install(galleryTile, MouseButton.SECONDARY, ClickMenu.StaticInstance.DATA);
 		galleryTile.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			event.consume();
 			switch (event.getButton()) {
@@ -48,7 +51,7 @@ public class BaseTileEvent {
 			Instances.getReload().doReload();
 		}
 		
-		Instances.getClickMenuData().hide();
+		ClickMenu.hideAll();
 	}
 	private void onLeftDoubleClick(MouseEvent event, GalleryTile galleryTile) {
 		if (!isOnGroupButton(event, galleryTile)) {
@@ -65,7 +68,6 @@ public class BaseTileEvent {
 		
 		Instances.getTarget().set(dataObject);
 		Instances.getReload().doReload();
-		Instances.getClickMenuData().show(sender, event);
 	}
 	
 	private boolean isOnGroupButton(MouseEvent event, GalleryTile galleryTile) {
@@ -73,15 +75,15 @@ public class BaseTileEvent {
 		return event.getX() >= tileSize - galleryTile.getGroupEffectWidth() - 5 && event.getY() <= galleryTile.getGroupEffectHeight();
 	}
 	public static void onGroupButtonPress(DataObject dataObject) {
-		if (dataObject.getMergeID() == 0) return;
-		if (!Instances.getGalleryPane().getExpandedGroups().contains(dataObject.getMergeID())) {
-			Instances.getGalleryPane().getExpandedGroups().add(dataObject.getMergeID());
+		if (dataObject.getJointID() == 0) return;
+		if (!Instances.getGalleryPane().getExpandedGroups().contains(dataObject.getJointID())) {
+			Instances.getGalleryPane().getExpandedGroups().add(dataObject.getJointID());
 		} else {
 			//noinspection RedundantCollectionOperation
-			Instances.getGalleryPane().getExpandedGroups().remove(Instances.getGalleryPane().getExpandedGroups().indexOf(dataObject.getMergeID()));
+			Instances.getGalleryPane().getExpandedGroups().remove(Instances.getGalleryPane().getExpandedGroups().indexOf(dataObject.getJointID()));
 		}
-		if (!dataObject.getMergeGroup().contains(Instances.getTarget().getCurrentTarget())) {
-			Instances.getTarget().set(dataObject.getMergeGroup().getFirst());
+		if (!dataObject.getJointObjects().contains(Instances.getTarget().getCurrentTarget())) {
+			Instances.getTarget().set(dataObject.getJointObjects().getFirst());
 		}
 		
 		Instances.getReload().notify(Reload.Control.OBJ);

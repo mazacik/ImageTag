@@ -7,6 +7,7 @@ import application.database.list.DataObjectList;
 import application.database.object.DataObject;
 import application.gui.panes.center.GalleryTile;
 import application.gui.stage.Stages;
+import application.gui.stage.YesNoCancelStage;
 import application.main.Instances;
 import javafx.scene.Scene;
 import javafx.stage.DirectoryChooser;
@@ -25,10 +26,10 @@ public abstract class FileUtil {
 			".jpg",
 			".jpeg",
 			".png",
-	};
+			};
 	private static final String[] gifExtensions = new String[]{
 			".gif",
-	};
+			};
 	private static final String[] videoExtensions = new String[]{
 			".mp4",
 			".m4v",
@@ -36,7 +37,7 @@ public abstract class FileUtil {
 			".wmv",
 			".avi",
 			".webm",
-	};
+			};
 	private static String dirSource;
 	private static String fileData;
 	private static String fileTags;
@@ -163,7 +164,9 @@ public abstract class FileUtil {
 			}
 		}
 		
-		if (!newDataObjects.isEmpty()) {
+		if (newDataObjects.isEmpty()) {
+			Stages.getErrorStage()._show("No valid files found.");
+		} else {
 			DataObjectList dataObjectListMain = Instances.getObjectListMain();
 			Filter filter = Instances.getFilter();
 			Select select = Instances.getSelect();
@@ -175,7 +178,9 @@ public abstract class FileUtil {
 			
 			filter.getCurrentSessionObjects().addAll(newDataObjects);
 			
-			if (Stages.getYesNoStage()._show("Do you wish to show the imported files?")) {
+			String msg = "Imported " + newDataObjects.size() + " files.\nWould you like to display the new files?";
+			YesNoCancelStage.Result result = Stages.getYesNoCancelStage()._show(msg);
+			if (result == YesNoCancelStage.Result.YES) {
 				filter.setAll(newDataObjects);
 				select.set(filter.getFirst());
 				target.set(filter.getFirst());

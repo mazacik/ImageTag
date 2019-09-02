@@ -25,7 +25,7 @@ public abstract class ThumbnailCreator {
 	}
 	
 	public static Image createThumbnail(DataObject dataObject, File cacheFile) {
-		Logger.getGlobal().info("generating thumbnail for " + dataObject.getName());
+		Logger.getGlobal().info(dataObject.getName());
 		
 		int thumbSize = Instances.getSettings().getGalleryTileSize();
 		
@@ -73,7 +73,7 @@ public abstract class ThumbnailCreator {
 		}
 	}
 	private static Image createThumbnailFromVideo(DataObject dataObject, int thumbSize, File cacheFile) {
-		if (VideoPlayer.doLibsExist()) {
+		if (VideoPlayer.doVLCLibsExist()) {
 			String[] vlcArgs = {
 					"--intf", "dummy",          /* no interface */
 					"--vout", "dummy",          /* we don't want video (output) */

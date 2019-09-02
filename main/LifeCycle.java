@@ -10,7 +10,7 @@ import java.io.File;
 
 public abstract class LifeCycle {
 	public static void initialize() {
-		VideoPlayer.checkLibs();
+		VideoPlayer.checkVLCLibs();
 		Instances.createInstances();
 		Stages.getIntroStage()._show();
 	}

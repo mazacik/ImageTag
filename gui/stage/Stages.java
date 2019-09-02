@@ -9,7 +9,7 @@ public abstract class Stages {
 	private static TagEditStage stageTagEditStage;
 	private static GroupEditStage stageGroupEditStage;
 	private static OkCancelStage okCancelStage;
-	private static YesNoStage yesNoStage;
+	private static YesNoCancelStage yesNoCancelStage;
 	private static FilterSettingsStage filterSettingsStage;
 	
 	public static IntroStage getIntroStage() {
@@ -41,9 +41,9 @@ public abstract class Stages {
 		if (okCancelStage == null) okCancelStage = new OkCancelStage();
 		return okCancelStage;
 	}
-	public static YesNoStage getYesNoStage() {
-		if (yesNoStage == null) yesNoStage = new YesNoStage();
-		return yesNoStage;
+	public static YesNoCancelStage getYesNoCancelStage() {
+		if (yesNoCancelStage == null) yesNoCancelStage = new YesNoCancelStage();
+		return yesNoCancelStage;
 	}
 	public static FilterSettingsStage getFilterSettingsStage() {
 		if (filterSettingsStage == null) filterSettingsStage = new FilterSettingsStage();

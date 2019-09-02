@@ -46,7 +46,7 @@ public abstract class ThumbnailReader {
 		label.setFont(new Font(25));
 		label.setAlignment(Pos.CENTER);
 		
-		int size = (int) SizeUtil.getGalleryIconSize();
+		int size = (int) SizeUtil.getGalleryTileSize();
 		label.setMinWidth(size);
 		label.setMinHeight(size);
 		label.setMaxWidth(size);

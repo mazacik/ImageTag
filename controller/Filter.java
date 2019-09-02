@@ -88,6 +88,8 @@ public class Filter extends DataObjectList {
 		}
 		Instances.getSelect().removeAll(selectHelper);
 		if (Instances.getSelect().isEmpty()) Instances.getSelect().set(Instances.getTarget().getCurrentTarget());
+		
+		//Instances.getGalleryPane().adjustViewportToCurrentTarget();
 	}
 	
 	@SuppressWarnings("FieldCanBeLocal")

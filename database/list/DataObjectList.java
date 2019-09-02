@@ -55,28 +55,28 @@ public class DataObjectList extends CustomList<DataObject> {
 		super.sort(Comparator.comparing(DataObject::getName));
 	}
 	
-	public CustomList<Integer> getMergeIDs() {
-		CustomList<Integer> mergeIDs = new CustomList<>();
+	public CustomList<Integer> getJointIDs() {
+		CustomList<Integer> jointIDs = new CustomList<>();
 		for (DataObject dataObject : this) {
-			if (dataObject.getMergeID() != 0) {
-				mergeIDs.add(dataObject.getMergeID());
+			if (dataObject.getJointID() != 0) {
+				jointIDs.add(dataObject.getJointID());
 			}
 		}
-		return mergeIDs;
+		return jointIDs;
 	}
 	
 	public DataObject getRandom(ArrayList<DataObject> arrayList) {
 		DataObject dataObject = super.getRandom(arrayList);
 		if (dataObject != null) {
-			if (dataObject.getMergeID() == 0) return dataObject;
+			if (dataObject.getJointID() == 0) return dataObject;
 			else {
 				//use sort-into-comparison algorithm if this is too slow or if too bored
 				Filter filter = Instances.getFilter();
-				CustomList<DataObject> mergeGroupObjectsThatAlsoPassFilter = new CustomList<>();
-				for (DataObject mergeObject : dataObject.getMergeGroup()) {
-					if (filter.contains(mergeObject)) mergeGroupObjectsThatAlsoPassFilter.add(mergeObject);
+				CustomList<DataObject> jointObjectObjectsThatAlsoPassFilter = new CustomList<>();
+				for (DataObject jointObject : dataObject.getJointObjects()) {
+					if (filter.contains(jointObject)) jointObjectObjectsThatAlsoPassFilter.add(jointObject);
 				}
-				return super.getRandom(mergeGroupObjectsThatAlsoPassFilter); // run again in case of a group-hidden object being chosen
+				return super.getRandom(jointObjectObjectsThatAlsoPassFilter); // run again in case of a group-hidden object being chosen
 			}
 		} else return null;
 	}

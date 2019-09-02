@@ -6,6 +6,7 @@ import application.database.list.TagList;
 import application.database.object.DataObject;
 import application.database.object.TagObject;
 import application.gui.stage.Stages;
+import application.gui.stage.YesNoCancelStage;
 import application.main.Instances;
 
 import java.util.ArrayList;
@@ -17,10 +18,10 @@ public class Select extends DataObjectList {
 	
 	public boolean add(DataObject dataObject) {
 		if (dataObject == null) return false;
-		int mergeID = dataObject.getMergeID();
-		if (mergeID != 0 && !Instances.getGalleryPane().getExpandedGroups().contains(mergeID)) {
-			if (super.addAll(dataObject.getMergeGroup())) {
-				Instances.getReload().requestTileEffect(dataObject.getMergeGroup());
+		int jointID = dataObject.getJointID();
+		if (jointID != 0 && !Instances.getGalleryPane().getExpandedGroups().contains(jointID)) {
+			if (super.addAll(dataObject.getJointObjects())) {
+				Instances.getReload().requestTileEffect(dataObject.getJointObjects());
 				Instances.getReload().notify(Reload.Control.SELECT);
 				return true;
 			}
@@ -41,14 +42,14 @@ public class Select extends DataObjectList {
 		for (DataObject dataObject : c) {
 			if (dataObject == null || this.contains(dataObject)) continue;
 			
-			int mergeID = dataObject.getMergeID();
-			if (mergeID == 0 || expandedGroups.contains(mergeID)) {
+			int jointID = dataObject.getJointID();
+			if (jointID == 0 || expandedGroups.contains(jointID)) {
 				super.add(dataObject);
 				Instances.getReload().requestTileEffect(dataObject);
 			} else {
-				DataObjectList mergeGroup = dataObject.getMergeGroup();
-				super.addAll(mergeGroup);
-				Instances.getReload().requestTileEffect(mergeGroup);
+				DataObjectList jointObject = dataObject.getJointObjects();
+				super.addAll(jointObject);
+				Instances.getReload().requestTileEffect(jointObject);
 			}
 		}
 		
@@ -59,12 +60,12 @@ public class Select extends DataObjectList {
 		if (dataObject == null) return false;
 		
 		int size = this.size();
-		if (dataObject.getMergeID() == 0 || Instances.getGalleryPane().getExpandedGroups().contains(dataObject.getMergeID())) {
+		if (dataObject.getJointID() == 0 || Instances.getGalleryPane().getExpandedGroups().contains(dataObject.getJointID())) {
 			Instances.getReload().requestTileEffect(dataObject);
 			super.remove(dataObject);
 		} else {
-			Instances.getReload().requestTileEffect(dataObject.getMergeGroup());
-			this.removeAll(dataObject.getMergeGroup());
+			Instances.getReload().requestTileEffect(dataObject.getJointObjects());
+			this.removeAll(dataObject.getJointObjects());
 		}
 		
 		if (size != this.size()) {
@@ -111,39 +112,51 @@ public class Select extends DataObjectList {
 			this.add(dataObject);
 		}
 	}
-	public void merge() {
-		CustomList<Integer> mergeIDs = Instances.getObjectListMain().getMergeIDs();
-		int mergeID;
-		do mergeID = new Random().nextInt();
-		while (mergeIDs.contains(mergeID));
+	
+	public void jointObjectCreate() {
+		CustomList<Integer> jointIDs = Instances.getObjectListMain().getJointIDs();
+		int jointID;
+		do jointID = new Random().nextInt();
+		while (jointIDs.contains(jointID));
 		
-		if (Stages.getYesNoStage()._show("Do you also want to merge the tags of these items?")) {
+		YesNoCancelStage.Result result = Stages.getYesNoCancelStage()._show("Merge tags? (" + this.size() + " items selected)");
+		if (result == YesNoCancelStage.Result.YES) {
 			TagList tagList = new TagList();
 			for (DataObject dataObject : this) {
 				tagList.addAll(dataObject.getTagList());
 			}
 			for (DataObject dataObject : this) {
-				dataObject.setMergeID(mergeID);
+				dataObject.setJointID(jointID);
 				dataObject.setTagList(tagList);
 			}
-		} else {
+		} else if (result == YesNoCancelStage.Result.NO) {
 			for (DataObject dataObject : this) {
-				dataObject.setMergeID(mergeID);
+				dataObject.setJointID(jointID);
 			}
-		}
+		} else return;
 		
 		Instances.getTarget().set(this.getFirst());
 		Instances.getReload().notify(Reload.Control.OBJ, Reload.Control.TAG);
 	}
-	public void unmerge() {
+	public void jointObjectDiscard() {
 		DataObject dataObject = Instances.getTarget().getCurrentTarget();
-		if (dataObject.getMergeID() != 0) {
-			ArrayList<DataObject> mergeGroup = dataObject.getMergeGroup();
-			for (DataObject mergeObject : mergeGroup) {
-				mergeObject.setMergeID(0);
+		if (dataObject.getJointID() != 0) {
+			ArrayList<DataObject> jointObjects = dataObject.getJointObjects();
+			for (DataObject jointObject : jointObjects) {
+				jointObject.setJointID(0);
 			}
 		}
 		Instances.getReload().notify(Reload.Control.OBJ, Reload.Control.TAG);
+	}
+	public boolean isSelectJoint() {
+		int jointID = Instances.getTarget().getCurrentTarget().getJointID();
+		if (jointID == 0) return false;
+		for (DataObject dataObject : this) {
+			if (dataObject.getJointID() != jointID) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	public void shiftSelectTo(DataObject shiftCurrent) {

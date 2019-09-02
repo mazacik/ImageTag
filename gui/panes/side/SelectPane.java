@@ -6,11 +6,10 @@ import application.controller.Target;
 import application.database.object.DataObject;
 import application.database.object.TagObject;
 import application.gui.decorator.ColorUtil;
+import application.gui.nodes.ClickMenu;
 import application.gui.nodes.NodeUtil;
 import application.gui.nodes.buttons.ButtonTemplates;
-import application.gui.nodes.popup.ClickMenuLeft;
 import application.gui.nodes.simple.EditNode;
-import application.gui.nodes.simple.SeparatorNode;
 import application.gui.nodes.simple.TextNode;
 import application.main.Instances;
 import application.misc.CompareUtil;
@@ -41,8 +40,7 @@ public class SelectPane extends SidePaneBase {
 		
 		TextNode nodeSelectAll = ButtonTemplates.SELECTION_SET_ALL.get();
 		TextNode nodeSelectNone = ButtonTemplates.SELECTION_SET_NONE.get();
-		TextNode nodeSelectMerge = ButtonTemplates.SELECTION_MERGE.get();
-		ClickMenuLeft.install(nodeTitle, Direction.LEFT, nodeSelectAll, nodeSelectNone, new SeparatorNode(), nodeSelectMerge);
+		ClickMenu.install(nodeTitle, Direction.LEFT, nodeSelectAll, nodeSelectNone);
 		
 		this.setBorder(NodeUtil.getBorder(0, 0, 0, 1));
 		this.getChildren().addAll(nodeTitle, nodeSearch, scrollPane);
@@ -155,6 +153,7 @@ public class SelectPane extends SidePaneBase {
 	
 	private ChangeListener<? super String> getSearchTextListener() {
 		return (ChangeListener<String>) (observable, oldValue, newValue) -> {
+			if (newValue.isEmpty()) return;
 			bestMatch = this.getBestMatch(newValue);
 			if (bestMatch != null) {
 				getGroupNodes().forEach(groupNode -> {

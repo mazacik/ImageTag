@@ -28,8 +28,8 @@ public class DataObjectListMain extends DataObjectList {
 	public ArrayList<Integer> getAllGroups() {
 		ArrayList<Integer> groups = new ArrayList<>();
 		for (DataObject dataObject : this) {
-			if (dataObject.getMergeID() != 0 && !groups.contains(dataObject.getMergeID())) {
-				groups.add(dataObject.getMergeID());
+			if (dataObject.getJointID() != 0 && !groups.contains(dataObject.getJointID())) {
+				groups.add(dataObject.getJointID());
 			}
 		}
 		return groups;

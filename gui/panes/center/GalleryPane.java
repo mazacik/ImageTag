@@ -27,8 +27,8 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 		tilePane = new TilePane(1, 1);
 		expandedGroups = new CustomList<>();
 		
-		tilePane.setPrefTileWidth(SizeUtil.getGalleryIconSize());
-		tilePane.setPrefTileHeight(SizeUtil.getGalleryIconSize());
+		tilePane.setPrefTileWidth(SizeUtil.getGalleryTileSize());
+		tilePane.setPrefTileHeight(SizeUtil.getGalleryTileSize());
 		
 		this.vvalueProperty().addListener((observable, oldValue, newValue) -> loadCacheOfTilesInViewport());
 		
@@ -57,28 +57,28 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 	
 	public boolean reload() {
 		//	var init
-		CustomList<Integer> mergeIDs = new CustomList<>();
+		CustomList<Integer> jointIDs = new CustomList<>();
 		CustomList<GalleryTile> tiles = new CustomList<>();
 		Instances.getTarget().storePosition();
 		
 		//	main loop
 		for (DataObject dataObject : Instances.getFilter()) {
 			GalleryTile galleryTile = dataObject.getGalleryTile();
-			int mergeID = dataObject.getMergeID();
+			int jointID = dataObject.getJointID();
 			
-			if (mergeID == 0) {
+			if (jointID == 0) {
 				tiles.add(galleryTile);
-			} else if (!mergeIDs.contains(mergeID)) {
-				//	only one object in the merge group needs to be processed
-				mergeIDs.add(mergeID);
-				if (expandedGroups.contains(mergeID)) {
-					for (DataObject mergeObject : dataObject.getMergeGroup()) {
-						//	instead of letting the main loop take care of all objects in the merge group
-						//	the merge group gets processed in a separate loop to keep its objects together
+			} else if (!jointIDs.contains(jointID)) {
+				//	only one object in the joint object needs to be processed
+				jointIDs.add(jointID);
+				if (expandedGroups.contains(jointID)) {
+					for (DataObject jointObject : dataObject.getJointObjects()) {
+						//	instead of letting the main loop take care of all objects in the joint object
+						//	the joint object gets processed in a separate loop to keep its objects together
 						//	however, each object needs to be checked for Filter validity an additional time
-						if (Instances.getFilter().contains(mergeObject)) {
-							tiles.add(mergeObject.getGalleryTile());
-							Instances.getReload().requestTileEffect(mergeObject);
+						if (Instances.getFilter().contains(jointObject)) {
+							tiles.add(jointObject.getGalleryTile());
+							Instances.getReload().requestTileEffect(jointObject);
 						}
 					}
 				} else {
@@ -95,10 +95,10 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 		DataObject currentTarget = Instances.getTarget().restorePosition();
 		if (currentTarget != null) {
 			this.adjustViewportToCurrentTarget();
-			if (currentTarget.getMergeID() != 0) {
-				if (!expandedGroups.contains(currentTarget.getMergeID())) {
-					if (Instances.getSelect().containsAny(currentTarget.getMergeGroup())) {
-						Instances.getSelect().addAll(currentTarget.getMergeGroup());
+			if (currentTarget.getJointID() != 0) {
+				if (!expandedGroups.contains(currentTarget.getJointID())) {
+					if (Instances.getSelect().containsAny(currentTarget.getJointObjects())) {
+						Instances.getSelect().addAll(currentTarget.getJointObjects());
 					}
 				}
 			}
@@ -108,10 +108,12 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 	}
 	
 	public void adjustViewportToCurrentTarget() {
+		this.layout();
+		
 		DataObject currentTarget = Instances.getTarget().getCurrentTarget();
 		if (Stages.getMainStage().isFullView() || currentTarget == null) return;
-		if (currentTarget.getMergeID() != 0 && !expandedGroups.contains(currentTarget.getMergeID())) {
-			currentTarget = currentTarget.getMergeGroup().getFirst();
+		if (currentTarget.getJointID() != 0 && !expandedGroups.contains(currentTarget.getJointID())) {
+			currentTarget = currentTarget.getJointObjects().getFirst();
 		}
 		int targetIndex = this.getDataObjectsOfTiles().indexOf(currentTarget);
 		if (targetIndex < 0) return;

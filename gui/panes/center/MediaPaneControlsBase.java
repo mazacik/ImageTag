@@ -136,7 +136,7 @@ public class MediaPaneControlsBase extends BorderPane {
 			btnSnapshot.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				DataObject dataObject = Instances.getTarget().getCurrentTarget();
 				File cacheFile = new File(dataObject.getCacheFile());
-				int thumbSize = (int) SizeUtil.getGalleryIconSize();
+				int thumbSize = (int) SizeUtil.getGalleryTileSize();
 				Instances.getMediaPane().getVideoPlayer().snapshot(cacheFile, thumbSize, thumbSize);
 				Image thumbnail = ThumbnailReader.readThumbnail(dataObject);
 				
@@ -153,10 +153,12 @@ public class MediaPaneControlsBase extends BorderPane {
 		
 		btnPrevious.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			Instances.getTarget().move(Direction.LEFT);
+			Instances.getSelect().set(Instances.getTarget().getCurrentTarget());
 			Instances.getReload().doReload();
 		});
 		btnNext.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			Instances.getTarget().move(Direction.RIGHT);
+			Instances.getSelect().set(Instances.getTarget().getCurrentTarget());
 			Instances.getReload().doReload();
 		});
 	}

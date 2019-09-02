@@ -24,9 +24,9 @@ public abstract class JsonUtil {
             BufferedWriter writer = new BufferedWriter(new FileWriter(path, false));
             writer.write(JSON);
             writer.close();
-			Logger.getGlobal().info("serializing " + path + " .. ok");
+			Logger.getGlobal().info("\"" + path + "\" .. ok");
         } catch (IOException e) {
-			Logger.getGlobal().info("serializing " + path + " .. fail");
+			Logger.getGlobal().info("\"" + path + "\" .. fail");
             e.printStackTrace();
         }
     }
@@ -37,10 +37,10 @@ public abstract class JsonUtil {
         try {
             String JSON = new String(Files.readAllBytes(Paths.get(path)));
             Object fromJson = GSON.fromJson(JSON, type);
-			Logger.getGlobal().info("reading " + path + " .. ok");
+			Logger.getGlobal().info("\"" + path + "\" .. ok");
             return fromJson;
         } catch (Exception e) {
-			Logger.getGlobal().info("reading " + path + " .. fail");
+			Logger.getGlobal().info("\"" + path + "\" .. fail");
             return null;
         }
     }

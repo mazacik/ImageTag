@@ -5,12 +5,12 @@ import application.database.list.DataObjectList;
 import application.database.list.TagListMain;
 import application.database.object.DataObject;
 import application.database.object.TagObject;
-import application.gui.nodes.popup.ClickMenuBase;
-import application.gui.nodes.popup.ClickMenuLeft;
+import application.gui.nodes.ClickMenu;
 import application.gui.nodes.simple.TextNode;
 import application.gui.panes.side.FilterPane;
 import application.gui.panes.side.SelectPane;
 import application.gui.stage.Stages;
+import application.gui.stage.YesNoCancelStage;
 import application.main.Instances;
 import application.misc.ClipboardUtil;
 import application.misc.FileUtil;
@@ -37,7 +37,7 @@ public enum ButtonTemplates {
 				} catch (IOException e) {
 					e.printStackTrace();
 				} finally {
-					ClickMenuBase.hideAll();
+					ClickMenu.hideAll();
 				}
 			});
 			return textNode;
@@ -53,7 +53,7 @@ public enum ButtonTemplates {
 				} catch (IOException e) {
 					e.printStackTrace();
 				} finally {
-					ClickMenuBase.hideAll();
+					ClickMenu.hideAll();
 				}
 			});
 			return textNode;
@@ -61,30 +61,30 @@ public enum ButtonTemplates {
 	},
 	OBJECT_COPY_NAME {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Copy Name", true, true, false, true);
+			TextNode textNode = new TextNode("Copy File Name", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClipboardUtil.setClipboardContent(Instances.getTarget().getCurrentTarget().getName());
-				ClickMenuBase.hideAll();
+				ClickMenu.hideAll();
 			});
 			return textNode;
 		}
 	},
 	OBJECT_COPY_PATH {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Copy Path", true, true, false, true);
+			TextNode textNode = new TextNode("Copy File Path", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClipboardUtil.setClipboardContent(Instances.getTarget().getCurrentTarget().getPath());
-				ClickMenuBase.hideAll();
+				ClickMenu.hideAll();
 			});
 			return textNode;
 		}
 	},
 	OBJECT_DELETE {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Delete", true, true, false, true);
+			TextNode textNode = new TextNode("Delete File", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				super.deleteCurrentTarget();
-				ClickMenuBase.hideAll();
+				ClickMenu.hideAll();
 			});
 			return textNode;
 		}
@@ -92,11 +92,11 @@ public enum ButtonTemplates {
 	
 	FILTER_SIMILAR {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Show Similar", true, true, false, true);
+			TextNode textNode = new TextNode("Show Similar Files", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				Instances.getFilter().showSimilar(Instances.getTarget().getCurrentTarget());
 				Instances.getReload().doReload();
-				ClickMenuBase.hideAll();
+				ClickMenu.hideAll();
 			});
 			return textNode;
 		}
@@ -118,7 +118,7 @@ public enum ButtonTemplates {
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				Instances.getSelect().setAll(Instances.getFilter());
 				Instances.getReload().doReload();
-				ClickMenuLeft.hideAll();
+				ClickMenu.hideAll();
 			});
 			return textNode;
 		}
@@ -129,29 +129,17 @@ public enum ButtonTemplates {
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				Instances.getSelect().clear();
 				Instances.getReload().doReload();
-				ClickMenuLeft.hideAll();
-			});
-			return textNode;
-		}
-	},
-	SELECTION_MERGE {
-		public TextNode get() {
-			TextNode textNode = new TextNode("Merge Selection", true, true, false, true);
-			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				Instances.getSelect().merge();
-				Instances.getReload().doReload();
-				Instances.getGalleryPane().loadCacheOfTilesInViewport();
-				ClickMenuBase.hideAll();
+				ClickMenu.hideAll();
 			});
 			return textNode;
 		}
 	},
 	SELECTION_DELETE {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Delete", true, true, false, true);
+			TextNode textNode = new TextNode("Delete Selection", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				super.deleteSelection();
-				ClickMenuBase.hideAll();
+				ClickMenu.hideAll();
 			});
 			return textNode;
 		}
@@ -161,9 +149,9 @@ public enum ButtonTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Edit", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				if (!Instances.getClickMenuTag().getName().isEmpty()) {
-					String group = Instances.getClickMenuTag().getGroup();
-					String oldName = Instances.getClickMenuTag().getName();
+				if (!ClickMenu.getName().isEmpty()) {
+					String group = ClickMenu.getGroup();
+					String oldName = ClickMenu.getName();
 					TagObject tagObject = Instances.getTagListMain().getTagObject(group, oldName);
 					Instances.getTagListMain().edit(tagObject);
 					if (!oldName.equals(tagObject.getName())) {
@@ -171,7 +159,7 @@ public enum ButtonTemplates {
 						Instances.getSelectPane().updateNameNode(group, oldName, tagObject.getName());
 					}
 				} else {
-					String oldGroup = Instances.getClickMenuTag().getGroup();
+					String oldGroup = ClickMenu.getGroup();
 					String newGroup = WordUtils.capitalize(Stages.getGroupEditStage()._show(oldGroup).toLowerCase());
 					if (!newGroup.isEmpty()) {
 						Instances.getTagListMain().forEach(tagObject -> {
@@ -183,7 +171,7 @@ public enum ButtonTemplates {
 						});
 					}
 				}
-				ClickMenuBase.hideAll();
+				ClickMenu.hideAll();
 				Instances.getReload().doReload();
 			});
 			return textNode;
@@ -198,8 +186,8 @@ public enum ButtonTemplates {
 			
 			TextNode textNode = new TextNode("Remove", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				String group = Instances.getClickMenuTag().getGroup();
-				String name = Instances.getClickMenuTag().getName();
+				String group = ClickMenu.getGroup();
+				String name = ClickMenu.getName();
 				if (name.isEmpty()) {
 					if (Stages.getOkCancelStage()._show("Remove \"" + group + " \" and all of its tags?")) {
 						for (String n : tagListMain.getNames(group)) {
@@ -221,19 +209,31 @@ public enum ButtonTemplates {
 				}
 				
 				Instances.getReload().doReload();
-				ClickMenuBase.hideAll();
+				ClickMenu.hideAll();
 			});
 			return textNode;
 		}
 	},
 	
-	GROUP_UNMERGE {
+	JOINT_OBJECT_CREATE {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Unmerge Group", true, true, false, true);
+			TextNode textNode = new TextNode("Create Joint Object", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				Instances.getSelect().unmerge();
+				Instances.getSelect().jointObjectCreate();
 				Instances.getReload().doReload();
-				ClickMenuBase.hideAll();
+				Instances.getGalleryPane().loadCacheOfTilesInViewport();
+				ClickMenu.hideAll();
+			});
+			return textNode;
+		}
+	},
+	JOINT_OBJECT_DISCARD {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Discard Joint Object", true, true, false, true);
+			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				Instances.getSelect().jointObjectDiscard();
+				Instances.getReload().doReload();
+				ClickMenu.hideAll();
 			});
 			return textNode;
 		}
@@ -245,7 +245,7 @@ public enum ButtonTemplates {
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				Instances.getObjectListMain().writeToDisk();
 				Instances.getTagListMain().writeDummyToDisk();
-				ClickMenuLeft.hideAll();
+				ClickMenu.hideAll();
 			});
 			return textNode;
 		}
@@ -255,7 +255,7 @@ public enum ButtonTemplates {
 			TextNode textNode = new TextNode("Import", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				FileUtil.importFiles();
-				ClickMenuLeft.hideAll();
+				ClickMenu.hideAll();
 			});
 			return textNode;
 		}
@@ -302,14 +302,15 @@ public enum ButtonTemplates {
 		
 		ArrayList<DataObject> dataObjectsToDelete = new ArrayList<>();
 		Instances.getSelect().forEach(dataObject -> {
-			if (dataObject.getMergeID() != 0 && !Instances.getGalleryPane().getExpandedGroups().contains(dataObject.getMergeID())) {
-				dataObjectsToDelete.addAll(dataObject.getMergeGroup());
+			if (dataObject.getJointID() != 0 && !Instances.getGalleryPane().getExpandedGroups().contains(dataObject.getJointID())) {
+				dataObjectsToDelete.addAll(dataObject.getJointObjects());
 			} else {
 				dataObjectsToDelete.add(dataObject);
 			}
 		});
 		
-		if (Stages.getYesNoStage()._show("Delete " + dataObjectsToDelete.size() + " file(s)?")) {
+		YesNoCancelStage.Result result = Stages.getYesNoCancelStage()._show("Delete " + dataObjectsToDelete.size() + " file(s)?");
+		if (result == YesNoCancelStage.Result.YES) {
 			Instances.getTarget().storePosition();
 			dataObjectsToDelete.forEach(this::deleteDataObject);
 			Instances.getTarget().restorePosition();
@@ -320,9 +321,10 @@ public enum ButtonTemplates {
 	}
 	private void deleteCurrentTarget() {
 		DataObject currentTarget = Instances.getTarget().getCurrentTarget();
-		if (currentTarget.getMergeID() == 0 || Instances.getGalleryPane().getExpandedGroups().contains(currentTarget.getMergeID())) {
+		if (currentTarget.getJointID() == 0 || Instances.getGalleryPane().getExpandedGroups().contains(currentTarget.getJointID())) {
 			String sourcePath = Instances.getTarget().getCurrentTarget().getPath();
-			if (Stages.getYesNoStage()._show("Delete file: " + sourcePath + "?")) {
+			YesNoCancelStage.Result result = Stages.getYesNoCancelStage()._show("Delete file: " + sourcePath + "?");
+			if (result == YesNoCancelStage.Result.YES) {
 				Instances.getTarget().storePosition();
 				this.deleteDataObject(currentTarget);
 				Instances.getTarget().restorePosition();
@@ -331,9 +333,11 @@ public enum ButtonTemplates {
 				Instances.getReload().doReload();
 			}
 		} else {
-			if (Stages.getYesNoStage()._show("Delete " + currentTarget.getMergeGroup().size() + " file(s)?")) {
+			YesNoCancelStage.Result result = Stages.getYesNoCancelStage()._show("Delete " + currentTarget.getJointObjects().size() + " file(s)?");
+			if (result == YesNoCancelStage.Result.YES) {
+				
 				Instances.getTarget().storePosition();
-				currentTarget.getMergeGroup().forEach(this::deleteDataObject);
+				currentTarget.getJointObjects().forEach(this::deleteDataObject);
 				Instances.getTarget().restorePosition();
 				Instances.getReload().doReload();
 			}

@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 public class DataObject implements Serializable {
 	private String name;
 	private long size;
-	private int mergeID;
+	private int jointID;
 	private TagList tagList;
 	
 	private transient String path;
@@ -24,7 +24,7 @@ public class DataObject implements Serializable {
 	public DataObject(File file) {
 		this.name = file.getName();
 		this.size = file.length();
-		this.mergeID = 0;
+		this.jointID = 0;
 		this.tagList = new TagList();
 		
 		this.path = file.getAbsolutePath();
@@ -33,17 +33,17 @@ public class DataObject implements Serializable {
 	public void requestTileEffect() {
 		Instances.getReload().requestTileEffect(this);
 	}
-	public DataObjectList getMergeGroup() {
-		if (mergeID == 0) {
+	public DataObjectList getJointObjects() {
+		if (jointID == 0) {
 			return new DataObjectList();
 		} else {
-			DataObjectList mergedObjects = new DataObjectList();
+			DataObjectList jointObjects = new DataObjectList();
 			for (DataObject dataObject : Instances.getObjectListMain()) {
-				if (dataObject.getMergeID() == mergeID) {
-					mergedObjects.add(dataObject);
+				if (dataObject.getJointID() == jointID) {
+					jointObjects.add(dataObject);
 				}
 			}
-			return mergedObjects;
+			return jointObjects;
 		}
 	}
 	public FileType getFileType() {
@@ -75,8 +75,8 @@ public class DataObject implements Serializable {
 	public String getPath() {
 		return path;
 	}
-	public int getMergeID() {
-		return mergeID;
+	public int getJointID() {
+		return jointID;
 	}
 	public TagList getTagList() {
 		return tagList;
@@ -103,7 +103,7 @@ public class DataObject implements Serializable {
 	public void setTagList(TagList tagList) {
 		this.tagList = tagList;
 	}
-	public void setMergeID(int mergeID) {
-		this.mergeID = mergeID;
+	public void setJointID(int jointID) {
+		this.jointID = jointID;
 	}
 }

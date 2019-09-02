@@ -44,15 +44,15 @@ public class VideoPlayer {
 	};
 	private boolean playing;
 	
-	private static boolean bLibsExist = false;
+	private static boolean bVLCLibsExist = false;
 	
 	@SuppressWarnings("UnusedReturnValue")
-	public static boolean checkLibs() {
-		bLibsExist = new NativeDiscovery().discover();
-		return bLibsExist;
+	public static boolean checkVLCLibs() {
+		bVLCLibsExist = new NativeDiscovery().discover();
+		return bVLCLibsExist;
 	}
-	public static boolean doLibsExist() {
-		return bLibsExist;
+	public static boolean doVLCLibsExist() {
+		return bVLCLibsExist;
 	}
 	
 	private VideoPlayer(Canvas canvas) {
@@ -102,7 +102,7 @@ public class VideoPlayer {
 		});
 	}
 	public static VideoPlayer create(Canvas canvas) {
-		if (bLibsExist) return new VideoPlayer(canvas);
+		if (bVLCLibsExist) return new VideoPlayer(canvas);
 		else return null;
 	}
 	
@@ -180,10 +180,7 @@ public class VideoPlayer {
 			
 			Affine ax = g.getTransform();
 			
-			g.translate(
-					(width - scaledW) / 2,
-					(height - scaledH) / 2
-			);
+			g.translate((width - scaledW) / 2, (height - scaledH) / 2);
 			
 			if (sf != 1.0) {
 				g.scale(sf, sf);

@@ -24,8 +24,8 @@ public class MainStage extends StageBase {
 	public MainStage() {
 		super(Instances.getToolbarPane());
 		
-		this.setMinWidth(100 + SizeUtil.getMinWidthSideLists() * 2 + SizeUtil.getGalleryIconSize());
-		this.setMinHeight(100 + SizeUtil.getPrefHeightTopMenu() + SizeUtil.getGalleryIconSize());
+		this.setMinWidth(100 + SizeUtil.getMinWidthSideLists() * 2 + SizeUtil.getGalleryTileSize());
+		this.setMinHeight(100 + SizeUtil.getPrefHeightTopMenu() + SizeUtil.getGalleryTileSize());
 		this.setWidth(SizeUtil.getUsableScreenWidth());
 		this.setHeight(SizeUtil.getUsableScreenHeight());
 		this.setOnCloseRequest(event -> {
@@ -92,7 +92,7 @@ public class MainStage extends StageBase {
 		getScene().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
 			if (getScene().getFocusOwner() instanceof EditNode) {
 				if (event.getCode() == KeyCode.ESCAPE) {
-					Instances.getGalleryPane().requestFocus();
+					getScene().getRoot().requestFocus();
 				} else if (event.getCode() == KeyCode.SHIFT) {
 					shiftDown.setValue(true);
 					Instances.getSelect().setShiftStart(Instances.getTarget().getCurrentTarget());
@@ -108,7 +108,7 @@ public class MainStage extends StageBase {
 						reload.doReload();
 						break;
 					case E:
-						BaseTileEvent.onGroupButtonPress(target.getCurrentTarget());
+						GalleryTileEvent.onGroupButtonPress(target.getCurrentTarget());
 						reload.doReload();
 						break;
 					case R:
