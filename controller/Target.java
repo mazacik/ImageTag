@@ -33,7 +33,7 @@ public class Target {
 		
 		Instances.getGalleryPane().adjustViewportToCurrentTarget();
 		Instances.getReload().notify(Reload.Control.TARGET);
-		Logger.getGlobal().info("Target set to " + dataObject.getName());
+		Logger.getGlobal().info(dataObject.getName());
 	}
 	public void move(Direction direction) {
 		if (currentTarget == null) return;
@@ -44,13 +44,18 @@ public class Target {
 		if (dataObjects.isEmpty()) return;
 		
 		int currentTargetIndex;
-		if (currentTarget.getMergeID() == 0) {
+		if (currentTarget.getJointID() == 0) {
 			currentTargetIndex = dataObjects.indexOf(currentTarget);
 		} else {
-			if (galleryPane.getExpandedGroups().contains(currentTarget.getMergeID())) {
+			if (galleryPane.getExpandedGroups().contains(currentTarget.getJointID())) {
 				currentTargetIndex = dataObjects.indexOf(currentTarget);
 			} else {
-				currentTargetIndex = dataObjects.indexOf(currentTarget.getMergeGroup().getFirst());
+				DataObject groupFirst = currentTarget.getJointObjects().getFirst();
+				if (dataObjects.contains(groupFirst)) {
+					currentTargetIndex = dataObjects.indexOf(groupFirst);
+				} else {
+					currentTargetIndex = dataObjects.indexOf(currentTarget);
+				}
 			}
 		}
 		
@@ -94,32 +99,40 @@ public class Target {
 		}
 	}
 	
+	private DataObject storeObject = null;
 	private int storePos = -1;
 	public void storePosition() {
-		CustomList<Integer> expandedMergeGroups = Instances.getGalleryPane().getExpandedGroups();
+		CustomList<Integer> expandedJointObjects = Instances.getGalleryPane().getExpandedGroups();
 		CustomList<DataObject> visibleDataObjects = Instances.getGalleryPane().getDataObjectsOfTiles();
 		
-		if (currentTarget.getMergeID() == 0) {
+		if (currentTarget.getJointID() == 0) {
+			storeObject = currentTarget;
 			storePos = visibleDataObjects.indexOf(currentTarget);
 		} else {
-			if (expandedMergeGroups.contains(currentTarget.getMergeID())) {
+			if (expandedJointObjects.contains(currentTarget.getJointID())) {
+				storeObject = currentTarget;
 				storePos = visibleDataObjects.indexOf(currentTarget);
 			} else {
-				storePos = visibleDataObjects.indexOf(currentTarget.getMergeGroup().getFirst());
+				storeObject = currentTarget.getJointObjects().getFirst();
+				storePos = visibleDataObjects.indexOf(storeObject);
 			}
 		}
 	}
 	public DataObject restorePosition() {
-		if (storePos < 0) return null;
 		DataObjectList visibleObjects = Instances.getGalleryPane().getDataObjectsOfTiles();
 		if (!visibleObjects.isEmpty()) {
-			DataObject newTarget;
-			
-			if (storePos <= visibleObjects.size() - 1) newTarget = visibleObjects.get(storePos);
-			else newTarget = visibleObjects.getLast();
-			
-			this.set(newTarget);
-			return newTarget;
+			if (storeObject != null && visibleObjects.contains(storeObject)) {
+				this.set(storeObject);
+				return storeObject;
+			} else if (storePos >= 0) {
+				DataObject newTarget;
+				
+				if (storePos <= visibleObjects.size() - 1) newTarget = visibleObjects.get(storePos);
+				else newTarget = visibleObjects.getLast();
+				
+				this.set(newTarget);
+				return newTarget;
+			}
 		}
 		return null;
 	}
