@@ -1,9 +1,11 @@
 package application.gui.panes.center;
 
 import application.database.object.DataObject;
+import application.gui.nodes.ClickMenu;
 import application.gui.panes.NodeBase;
 import application.gui.stage.Stages;
 import application.main.Instances;
+import application.misc.enums.Direction;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -13,6 +15,8 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -129,7 +133,7 @@ public class MediaPane extends BorderPane implements NodeBase {
 	private void reloadAsVideo(DataObject currentTarget) {
 		if (this.getCenter() != canvas) this.setCenter(canvas);
 		
-		if (VideoPlayer.doLibsExist()) {
+		if (VideoPlayer.doVLCLibsExist()) {
 			controls.setVideoMode(true);
 			
 			if (currentCache == null || !currentCache.equals(currentTarget)) {
@@ -177,20 +181,16 @@ public class MediaPane extends BorderPane implements NodeBase {
 		canvas.widthProperty().addListener((observable, oldValue, newValue) -> reload());
 		canvas.heightProperty().addListener((observable, oldValue, newValue) -> reload());
 		
-		this.setOnMouseClicked(event -> {
-			switch (event.getButton()) {
-				case PRIMARY:
-					if (event.getClickCount() % 2 != 0) {
-						requestFocus();
-					} else {
-						Stages.getMainStage().swapViewMode();
-						Instances.getReload().doReload();
-					}
-					Instances.getClickMenuData().hide();
-					break;
-				case SECONDARY:
-					Instances.getClickMenuData().show(this, event.getScreenX(), event.getScreenY());
-					break;
+		ClickMenu.install(this, Direction.MOUSE, MouseButton.SECONDARY, ClickMenu.StaticInstance.DATA);
+		this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+			if (event.getButton() == MouseButton.PRIMARY) {
+				if (event.getClickCount() % 2 != 0) {
+					requestFocus();
+				} else {
+					Stages.getMainStage().swapViewMode();
+					Instances.getReload().doReload();
+				}
+				ClickMenu.hideAll();
 			}
 		});
 	}

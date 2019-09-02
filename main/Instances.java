@@ -6,8 +6,6 @@ import application.controller.Select;
 import application.controller.Target;
 import application.database.list.DataObjectListMain;
 import application.database.list.TagListMain;
-import application.gui.nodes.popup.ClickMenuData;
-import application.gui.nodes.popup.ClickMenuTag;
 import application.gui.panes.center.GalleryPane;
 import application.gui.panes.center.MediaPane;
 import application.gui.panes.side.FilterPane;
@@ -32,9 +30,6 @@ public abstract class Instances {
 	private static ToolbarPane toolbarPane;
 	private static GalleryPane galleryPane;
 	
-	private static ClickMenuData clickMenuData;
-	private static ClickMenuTag clickMenuTag;
-	
 	public static void createInstances() {
 		System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %2$s: %5$s%n");
 		
@@ -58,9 +53,6 @@ public abstract class Instances {
 		mediaPane = new MediaPane();        /* needs Settings, GalleryPane */
 		filterPane = new FilterPane();      /* needs Settings */
 		selectPane = new SelectPane();      /* needs Settings */
-		
-		clickMenuData = new ClickMenuData();
-		clickMenuTag = new ClickMenuTag();
 	}
 	private static void createBackendInstances() {
 		filter = new Filter();
@@ -104,11 +96,5 @@ public abstract class Instances {
 	}
 	public static SelectPane getSelectPane() {
 		return selectPane;
-	}
-	public static ClickMenuData getClickMenuData() {
-		return clickMenuData;
-	}
-	public static ClickMenuTag getClickMenuTag() {
-		return clickMenuTag;
 	}
 }

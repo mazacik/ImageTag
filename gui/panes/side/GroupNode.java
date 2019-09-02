@@ -2,15 +2,17 @@ package application.gui.panes.side;
 
 import application.database.list.CustomList;
 import application.gui.decorator.ColorUtil;
-import application.gui.nodes.popup.ClickMenuTag;
+import application.gui.nodes.ClickMenu;
 import application.gui.nodes.simple.TextNode;
 import application.gui.stage.Stages;
 import application.main.Instances;
+import application.misc.enums.Direction;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
@@ -100,14 +102,13 @@ public class GroupNode extends VBox {
 						Instances.getReload().doReload();
 						break;
 					case SECONDARY:
-						ClickMenuTag clickMenuTag = Instances.getClickMenuTag();
-						clickMenuTag.setGroup(nodeTitle.getText());
-						clickMenuTag.setName("");
-						clickMenuTag.show(hBoxGroup, event);
+						ClickMenu.setGroup(getGroup());
+						ClickMenu.setName("");
 						break;
 				}
 			}
 		});
+		ClickMenu.install(hBoxGroup, Direction.MOUSE, MouseButton.SECONDARY, ClickMenu.StaticInstance.TAGS);
 	}
 	
 	public void addNameNode(String name) {
@@ -128,13 +129,12 @@ public class GroupNode extends VBox {
 					Instances.getReload().doReload();
 					break;
 				case SECONDARY:
-					ClickMenuTag clickMenuTag = Instances.getClickMenuTag();
-					clickMenuTag.setGroup(getGroup());
-					clickMenuTag.setName(nameNode.getText());
-					clickMenuTag.show(nameNode, event);
+					ClickMenu.setGroup(getGroup());
+					ClickMenu.setName(nameNode.getText());
 					break;
 			}
 		});
+		ClickMenu.install(nameNode, Direction.MOUSE, MouseButton.SECONDARY, ClickMenu.StaticInstance.TAGS);
 		
 		nameNodes.add(nameNode);
 	}
@@ -175,7 +175,7 @@ public class GroupNode extends VBox {
 		showNameNodes();
 	}
 	public boolean isExpanded() {
-		return this.getChildren().size() != 1;
+		return this.getChildren().size() > 1;
 	}
 	
 	public ArrayList<TextNode> getNameNodes() {
