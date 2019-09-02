@@ -8,27 +8,32 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-public class YesNoStage extends StageBase {
+public class YesNoCancelStage extends StageBase {
 	private TextNode labelContent;
-	private boolean result;
+	private Result result;
 	
-	YesNoStage() {
+	YesNoCancelStage() {
 		super("Confirmation");
 		
-		labelContent = new TextNode("Content", false, false, false, true);
+		labelContent = new TextNode("CONTENT_STRING", false, false, false, true);
 		
 		TextNode buttonPositive = new TextNode("Yes", true, true, false, true);
 		buttonPositive.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-			result = true;
+			result = Result.YES;
 			this.close();
 		});
 		TextNode buttonNegative = new TextNode("No", true, true, false, true);
 		buttonNegative.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-			result = false;
+			result = Result.NO;
+			this.close();
+		});
+		TextNode buttonCancel = new TextNode("Cancel", true, true, false, true);
+		buttonCancel.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+			result = Result.CANCEL;
 			this.close();
 		});
 		
-		HBox hBox = new HBox(buttonPositive, buttonNegative);
+		HBox hBox = new HBox(buttonPositive, buttonNegative, buttonCancel);
 		hBox.setAlignment(Pos.CENTER);
 		hBox.setSpacing(2);
 		
@@ -41,10 +46,16 @@ public class YesNoStage extends StageBase {
 	}
 	
 	@Override
-	public Boolean _show(String... args) {
-		result = false;
+	public Result _show(String... args) {
+		result = Result.CANCEL;
 		labelContent.setText(args[0]);
 		this.showAndWait();
 		return result;
+	}
+	
+	public enum Result {
+		YES,
+		NO,
+		CANCEL
 	}
 }
