@@ -24,20 +24,29 @@ public abstract class SizeUtil {
 		GalleryPane galleryPane = Instances.getGalleryPane();
 		TilePane tilePane = galleryPane.getTilePane();
 		
+		double galleryTileSize = tilePane.getPrefTileWidth();
 		double sceneWidth = Stages.getMainStage().getScene().getWidth();
 		
-		int availableWidth = (int) (sceneWidth - 2 * SizeUtil.getMinWidthSideLists());
-		int prefColumnsNew = (int) (availableWidth / tilePane.getPrefTileWidth());
+		double availableWidth = sceneWidth - 2 * SizeUtil.getMinWidthSideLists();
+		double width = getWidth(availableWidth, galleryTileSize, tilePane.getHgap());
+		int prefColumnsNew = (int) (width / galleryTileSize);
 		int prefColumnsOld = tilePane.getPrefColumns();
 		
 		if (prefColumnsNew != prefColumnsOld) {
 			tilePane.setPrefColumns(prefColumnsNew);
 			
-			double width = tilePane.getPrefColumns() * tilePane.getPrefTileWidth() + (tilePane.getPrefColumns() - 1) * tilePane.getHgap();
-			
 			galleryPane.setMinViewportWidth(width);
 			galleryPane.setPrefViewportWidth(width);
 		}
+	}
+	private static double getWidth(double availableWidth, double galleryTileSize, double tileHgap) {
+		double result = 0;
+		double increment = galleryTileSize + tileHgap;
+		
+		while (result + increment <= availableWidth) {
+			result += increment;
+		}
+		return result;
 	}
 	
 	public static double getStringWidth(String s) {
