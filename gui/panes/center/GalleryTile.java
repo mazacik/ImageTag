@@ -2,52 +2,74 @@ package application.gui.panes.center;
 
 import application.database.list.CustomList;
 import application.database.object.DataObject;
-import application.gui.decorator.SizeUtil;
+import application.gui.nodes.ClickMenu;
 import application.gui.nodes.simple.TextNode;
 import application.main.Instances;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.effect.*;
+import javafx.scene.effect.Blend;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.effect.ImageInput;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
-public class GalleryTile extends ImageView {
-	private static final ColorInput effectOverlay = createEffectOverlay();
-	private static final InnerShadow effectBorder = createEffectBorder();
-	
+public class GalleryTile extends Pane {
 	private final DataObject parentDataObject;
 	private int groupEffectWidth;
 	private int groupEffectHeight;
 	
+	private ImageView imageView;
+	private BorderPane imageViewHelper;
+	
 	public GalleryTile(DataObject parentDataObject, Image image) {
-		super(image);
+		imageView = new ImageView(image);
+		imageViewHelper = new BorderPane(imageView);
+		imageViewHelper.setPadding(new Insets(10));
+		
+		this.getChildren().add(imageViewHelper);
 		this.parentDataObject = parentDataObject;
 		new GalleryTileEvent(this);
-	}
-	
-	public void requestEffect() {
-		Instances.getReload().requestTileEffect(this);
+		
+		ClickMenu.install(imageView, MouseButton.SECONDARY, ClickMenu.StaticInstance.DATA);
+		
+		this.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
+			if (Instances.getSelect().contains(parentDataObject)) {
+				imageViewHelper.setBackground(new Background(new BackgroundFill(Color.rgb(150, 150, 150), null, null)));
+			} else {
+				imageViewHelper.setBackground(new Background(new BackgroundFill(Color.rgb(90, 90, 90), null, null)));
+			}
+		});
+		this.addEventFilter(MouseEvent.MOUSE_EXITED, event -> {
+			if (Instances.getSelect().contains(parentDataObject)) {
+				imageViewHelper.setBackground(new Background(new BackgroundFill(Color.rgb(120, 120, 120), null, null)));
+			} else {
+				imageViewHelper.setBackground(null);
+			}
+		});
 	}
 	public void generateEffect() {
 		if (parentDataObject == null) return;
 		
-		Blend effect = null;
-		
 		if (Instances.getSelect().contains(parentDataObject)) {
-			effect = new Blend(BlendMode.SRC_OVER, effect, effectOverlay);
-			effect = new Blend(BlendMode.DARKEN, effect, effectBorder);
+			imageViewHelper.setBackground(new Background(new BackgroundFill(Color.rgb(120, 120, 120), null, null)));
+		} else {
+			imageViewHelper.setBackground(null);
 		}
 		
 		if (parentDataObject.getJointID() != 0) {
-			effect = new Blend(BlendMode.SRC_OVER, effect, this.createEffectJointObject(parentDataObject));
+			imageView.setEffect(this.createEffectJointObject(parentDataObject));
 		}
-		
-		this.setEffect(effect);
 	}
-	
-	private ImageInput createEffectJointObject(DataObject dataObject) {
+	private Blend createEffectJointObject(DataObject dataObject) {
 		String middle;
 		CustomList<DataObject> jointObject = dataObject.getJointObjects();
 		if (Instances.getGalleryPane().getExpandedGroups().contains(dataObject.getJointID())) {
@@ -56,36 +78,11 @@ public class GalleryTile extends ImageView {
 			middle = String.valueOf(jointObject.size());
 		}
 		
-		String groupIconText;
-		if (Instances.getObjectListMain().getAllGroups().indexOf(dataObject.getJointID()) % 2 == 0) {
-			groupIconText = "(" + middle + ")";
-		} else {
-			groupIconText = "[" + middle + "]";
-		}
+		Image imageText = textToImage("[" + middle + "]");
+		groupEffectWidth = (int) imageText.getWidth();
+		groupEffectHeight = (int) imageText.getHeight() + 10; //helper insets
 		int tileSize = Instances.getSettings().getGalleryTileSize();
-		Image imageText = textToImage(groupIconText);
-		groupEffectWidth = (int) imageText.getWidth() + 5;
-		groupEffectHeight = (int) imageText.getHeight();
-		return new ImageInput(imageText, tileSize - imageText.getWidth() - 5, 0);
-	}
-	private static ColorInput createEffectOverlay() {
-		double tileSize = SizeUtil.getGalleryTileSize();
-		Color opacityFull = Color.DARKBLUE;
-		Color opacityLess = new Color(opacityFull.getRed(), opacityFull.getGreen(), opacityFull.getBlue(), 0.3);
-		return new ColorInput(0, 0, tileSize, tileSize, opacityLess);
-	}
-	private static InnerShadow createEffectBorder() {
-		Color opacityFull = Color.DARKBLUE;
-		Color opacityLess = new Color(opacityFull.getRed(), opacityFull.getGreen(), opacityFull.getBlue(), 0.8);
-		
-		InnerShadow innerShadow = new InnerShadow();
-		innerShadow.setColor(opacityLess);
-		innerShadow.setOffsetX(0);
-		innerShadow.setOffsetY(0);
-		innerShadow.setWidth(5);
-		innerShadow.setHeight(5);
-		innerShadow.setChoke(1);
-		return innerShadow;
+		return new Blend(BlendMode.SRC_OVER, null, new ImageInput(imageText, tileSize - imageText.getWidth() - 5, 0));
 	}
 	public static Image textToImage(String text) {
 		TextNode textNode = new TextNode(text);
@@ -111,5 +108,15 @@ public class GalleryTile extends ImageView {
 	}
 	public DataObject getParentDataObject() {
 		return parentDataObject;
+	}
+	public ImageView getImageView() {
+		return imageView;
+	}
+	
+	public Image getImage() {
+		return imageView.getImage();
+	}
+	public void setImage(Image image) {
+		imageView.setImage(image);
 	}
 }
