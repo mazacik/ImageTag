@@ -31,7 +31,7 @@ public class Target {
 		
 		currentTarget = dataObject;
 		
-		Instances.getGalleryPane().adjustViewportToCurrentTarget();
+		Instances.getGalleryPane().adjustViewportToTarget();
 		Instances.getReload().notify(Reload.Control.TARGET);
 		Logger.getGlobal().info(dataObject.getName());
 	}

@@ -74,7 +74,7 @@ public class FilterSettingsStage extends StageBase {
 			filter.setLimit(Integer.parseInt(tfLimit.getText()));
 			filter.refresh();
 			Instances.getReload().doReload();
-			Instances.getGalleryPane().loadCacheOfTilesInViewport();
+			Instances.getGalleryPane().updateViewportTilesVisibility();
 			this.hide();
 		});
 		TextNode btnCancel = new TextNode("Cancel", true, true, false, true);

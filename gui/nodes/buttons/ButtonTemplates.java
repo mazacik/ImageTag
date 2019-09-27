@@ -221,7 +221,7 @@ public enum ButtonTemplates {
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				Instances.getSelect().jointObjectCreate();
 				Instances.getReload().doReload();
-				Instances.getGalleryPane().loadCacheOfTilesInViewport();
+				Instances.getGalleryPane().updateViewportTilesVisibility();
 				ClickMenu.hideAll();
 			});
 			return textNode;

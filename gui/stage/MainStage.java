@@ -71,7 +71,7 @@ public class MainStage extends StageBase {
 			if (videoPlayer != null && videoPlayer.isPlaying()) videoPlayer.pause();
 			
 			panes.set(panes.indexOf(mediaPane), galleryPane);
-			galleryPane.adjustViewportToCurrentTarget();
+			galleryPane.adjustViewportToTarget();
 			galleryPane.requestFocus();
 		} else if (panes.contains(galleryPane)) {
 			panes.set(panes.indexOf(galleryPane), mediaPane);
@@ -86,6 +86,9 @@ public class MainStage extends StageBase {
 	private SimpleBooleanProperty shiftDown = new SimpleBooleanProperty(false);
 	public SimpleBooleanProperty shiftDownProperty() {
 		return shiftDown;
+	}
+	public boolean isShiftDown() {
+		return shiftDownProperty().get();
 	}
 	
 	private void onKeyPress() {

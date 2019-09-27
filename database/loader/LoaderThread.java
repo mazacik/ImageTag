@@ -56,7 +56,7 @@ public class LoaderThread extends Thread {
 			Instances.getToolbarPane().reload();
 			
 			Instances.getReload().doReload();
-			Instances.getGalleryPane().loadCacheOfTilesInViewport();
+			Instances.getGalleryPane().updateViewportTilesVisibility();
 		});
 	}
 	

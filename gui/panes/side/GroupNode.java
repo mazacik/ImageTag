@@ -6,7 +6,6 @@ import application.gui.nodes.ClickMenu;
 import application.gui.nodes.simple.TextNode;
 import application.gui.stage.Stages;
 import application.main.Instances;
-import application.misc.enums.Direction;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -108,7 +107,7 @@ public class GroupNode extends VBox {
 				}
 			}
 		});
-		ClickMenu.install(hBoxGroup, Direction.MOUSE, MouseButton.SECONDARY, ClickMenu.StaticInstance.TAGS);
+		ClickMenu.install(hBoxGroup, MouseButton.SECONDARY, ClickMenu.StaticInstance.TAGS);
 	}
 	
 	public void addNameNode(String name) {
@@ -134,7 +133,7 @@ public class GroupNode extends VBox {
 					break;
 			}
 		});
-		ClickMenu.install(nameNode, Direction.MOUSE, MouseButton.SECONDARY, ClickMenu.StaticInstance.TAGS);
+		ClickMenu.install(nameNode, MouseButton.SECONDARY, ClickMenu.StaticInstance.TAGS);
 		
 		nameNodes.add(nameNode);
 	}

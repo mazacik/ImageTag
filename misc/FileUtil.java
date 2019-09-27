@@ -187,7 +187,7 @@ public abstract class FileUtil {
 			}
 			
 			Instances.getReload().doReload();
-			Instances.getGalleryPane().loadCacheOfTilesInViewport();
+			Instances.getGalleryPane().updateViewportTilesVisibility();
 		}
 	}
 	

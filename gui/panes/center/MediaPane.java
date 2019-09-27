@@ -5,7 +5,6 @@ import application.gui.nodes.ClickMenu;
 import application.gui.panes.NodeBase;
 import application.gui.stage.Stages;
 import application.main.Instances;
-import application.misc.enums.Direction;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -181,7 +180,7 @@ public class MediaPane extends BorderPane implements NodeBase {
 		canvas.widthProperty().addListener((observable, oldValue, newValue) -> reload());
 		canvas.heightProperty().addListener((observable, oldValue, newValue) -> reload());
 		
-		ClickMenu.install(this, Direction.MOUSE, MouseButton.SECONDARY, ClickMenu.StaticInstance.DATA);
+		ClickMenu.install(this, MouseButton.SECONDARY, ClickMenu.StaticInstance.DATA);
 		this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
 				if (event.getClickCount() % 2 != 0) {

@@ -70,9 +70,6 @@ public class Select extends DataObjectList {
 		
 		if (size != this.size()) {
 			Instances.getReload().notify(Reload.Control.SELECT);
-			if (this.isEmpty()) {
-				this.add(Instances.getTarget().getCurrentTarget());
-			}
 			return true;
 		}
 		return false;
