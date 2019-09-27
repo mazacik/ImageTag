@@ -74,6 +74,8 @@ public class ClickMenu extends Popup {
 	
 	private static ClickMenu clickMenuTags = new ClickMenu(ButtonTemplates.TAG_EDIT.get(), ButtonTemplates.TAG_REMOVE.get());
 	
+	private static ClickMenu clickMenuSelect = new ClickMenu(ButtonTemplates.SELECTION_SET_ALL.get(), ButtonTemplates.SELECTION_SET_NONE.get());
+	
 	public static void install(Region root, Direction direction, Region... labels) {
 		new ClickMenu(root, direction, labels);
 	}
@@ -81,15 +83,22 @@ public class ClickMenu extends Popup {
 		switch (staticInstance) {
 			case DATA:
 				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-					if (event.getButton() == mouseButton) {
+					if (event.getButton() == mouseButton && event.getPickResult().getIntersectedNode() == root) {
 						clickMenuData.show(root, direction);
 					}
 				});
 				break;
 			case TAGS:
 				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-					if (event.getButton() == mouseButton) {
+					if (event.getButton() == mouseButton && event.getPickResult().getIntersectedNode() == root) {
 						clickMenuTags.show(root, direction);
+					}
+				});
+				break;
+			case SELECT:
+				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+					if (event.getButton() == mouseButton && event.getPickResult().getIntersectedNode() == root) {
+						clickMenuSelect.show(root, direction);
 					}
 				});
 				break;
@@ -99,15 +108,22 @@ public class ClickMenu extends Popup {
 		switch (staticInstance) {
 			case DATA:
 				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-					if (event.getButton() == mouseButton) {
+					if (event.getButton() == mouseButton && event.getSource() == root) {
 						clickMenuData.show(root, event);
 					}
 				});
 				break;
 			case TAGS:
 				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-					if (event.getButton() == mouseButton) {
+					if (event.getButton() == mouseButton && event.getSource() == root) {
 						clickMenuTags.show(root, event);
+					}
+				});
+				break;
+			case SELECT:
+				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+					if (event.getButton() == mouseButton && event.getSource() == root) {
+						clickMenuSelect.show(root, event);
 					}
 				});
 				break;
@@ -131,28 +147,22 @@ public class ClickMenu extends Popup {
 		vBox.setBackground(ColorUtil.getBackgroundDef());
 		
 		if (root != null) {
-			if (direction == Direction.MOUSE) {
-				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-					this.show(root, event);
-				});
-			} else {
-				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-					if (event.getButton() == MouseButton.PRIMARY) {
-						this.show(root, direction);
-					}
-				});
-				root.addEventFilter(MouseEvent.MOUSE_MOVED, event -> {
-					if (!this.isShowing()) {
-						for (ClickMenu clickMenu : instanceList) {
-							if (/*clickMenu instanceof ClickMenuLeft && */clickMenu.isShowing()) {
-								clickMenu.hide();
-								show(root, direction);
-								break;
-							}
+			root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+				if (event.getButton() == MouseButton.PRIMARY && event.getPickResult().getIntersectedNode() == root) {
+					this.show(root, direction);
+				}
+			});
+			root.addEventFilter(MouseEvent.MOUSE_MOVED, event -> {
+				if (!this.isShowing()) {
+					for (ClickMenu clickMenu : instanceList) {
+						if (/*clickMenu instanceof ClickMenuLeft && */clickMenu.isShowing()) {
+							clickMenu.hide();
+							show(root, direction);
+							break;
 						}
 					}
-				});
-			}
+				}
+			});
 			
 			EventHandler<WindowEvent> eventHandler = event -> {
 				root.getScene().getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, event1 -> hideAll());
@@ -221,9 +231,25 @@ public class ClickMenu extends Popup {
 	public void show(Node anchor, MouseEvent event) {
 		super.show(anchor, event.getScreenX(), event.getScreenY());
 	}
+	public static void show(Node anchor, MouseEvent event, StaticInstance staticInstance) {
+		if (event.getPickResult().getIntersectedNode() == anchor) {
+			switch (staticInstance) {
+				case DATA:
+					clickMenuData.show(anchor, event.getScreenX(), event.getScreenY());
+					break;
+				case TAGS:
+					clickMenuTags.show(anchor, event.getScreenX(), event.getScreenY());
+					break;
+				case SELECT:
+					clickMenuSelect.show(anchor, event.getScreenX(), event.getScreenY());
+					break;
+			}
+		}
+	}
 	
 	public enum StaticInstance {
 		DATA,
-		TAGS
+		TAGS,
+		SELECT
 	}
 }
