@@ -13,6 +13,7 @@ public class Stack<T> extends CustomList<T> {
 	}
 	
 	public void push(T t) {
+		super.remove(t);
 		super.add(0, t);
 		if (this.size() > maxSize) this.removeRange(maxSize, this.size());
 	}

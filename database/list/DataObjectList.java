@@ -6,12 +6,16 @@ import application.database.object.TagObject;
 import application.main.Instances;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 
 public class DataObjectList extends CustomList<DataObject> {
 	public DataObjectList() {
 	
+	}
+	public DataObjectList(DataObject... dataObjects) {
+		this.addAll(Arrays.asList(dataObjects));
 	}
 	public DataObjectList(Collection<? extends DataObject> c) {
 		super(c);

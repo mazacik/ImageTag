@@ -133,7 +133,7 @@ public class Select extends DataObjectList {
 		} else return;
 		
 		Instances.getTarget().set(this.getFirst());
-		Instances.getReload().notify(Reload.Control.OBJ, Reload.Control.TAG);
+		Instances.getReload().notify(Reload.Control.DATA, Reload.Control.TAGS);
 	}
 	public void jointObjectDiscard() {
 		DataObject dataObject = Instances.getTarget().getCurrentTarget();
@@ -143,7 +143,7 @@ public class Select extends DataObjectList {
 				jointObject.setJointID(0);
 			}
 		}
-		Instances.getReload().notify(Reload.Control.OBJ, Reload.Control.TAG);
+		Instances.getReload().notify(Reload.Control.DATA, Reload.Control.TAGS);
 	}
 	public boolean isSelectJoint() {
 		int jointID = Instances.getTarget().getCurrentTarget().getJointID();
@@ -178,11 +178,11 @@ public class Select extends DataObjectList {
 	
 	public void addTagObject(TagObject tagObject) {
 		this.forEach(dataObject -> dataObject.getTagList().add(tagObject));
-		Instances.getReload().notify(Reload.Control.TAG);
+		Instances.getReload().notify(Reload.Control.TAGS);
 	}
 	public void removeTagObject(TagObject tagObject) {
 		this.forEach(dataObject -> dataObject.getTagList().remove(tagObject));
-		Instances.getReload().notify(Reload.Control.TAG);
+		Instances.getReload().notify(Reload.Control.TAGS);
 	}
 	
 	public void setShiftStart(DataObject shiftStart) {

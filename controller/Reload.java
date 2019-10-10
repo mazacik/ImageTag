@@ -27,19 +27,19 @@ public class Reload {
 				, Control.TARGET
 		);
 		this.subscribe(Instances.getGalleryPane()
-				, Control.OBJ
+				, Control.DATA
 				, Control.FILTER
 		);
 		this.subscribe(Instances.getMediaPane()
 				, Control.TARGET
 		);
 		this.subscribe(Instances.getFilterPane()
-				, Control.TAG
+				, Control.TAGS
 				, Control.FILTER
 		);
 		this.subscribe(Instances.getSelectPane()
-				, Control.OBJ
-				, Control.TAG
+				, Control.DATA
+				, Control.TAGS
 				, Control.FILTER
 				, Control.TARGET
 				, Control.SELECT
@@ -92,8 +92,8 @@ public class Reload {
 	}
 	
 	public enum Control {
-		OBJ,
-		TAG,
+		DATA,
+		TAGS,
 		FILTER,
 		TARGET,
 		SELECT,

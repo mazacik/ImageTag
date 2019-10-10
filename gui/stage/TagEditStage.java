@@ -96,7 +96,7 @@ public class TagEditStage extends StageBase {
 			edtGroup.setText(result.getGroup());
 			edtName.setText(result.getName());
 		} else {
-			setTitle("Create New Tag");
+			setTitle("Create a New Tag");
 			result = null;
 			edtGroup.setText("");
 			edtName.setText("");

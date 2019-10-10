@@ -18,7 +18,7 @@ public class FilterPane extends SidePaneBase {
 	public FilterPane() {
 		nodeTitle = new TextNode("", false, false, false, true);
 		
-		TextNode btnCreateNewTag = new TextNode("Create New Tag", true, true, false, true);
+		TextNode btnCreateNewTag = new TextNode("Create a New Tag", true, true, false, true);
 		btnCreateNewTag.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
 		btnCreateNewTag.prefWidthProperty().bind(this.widthProperty());
 		btnCreateNewTag.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {

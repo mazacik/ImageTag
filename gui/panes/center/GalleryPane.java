@@ -51,7 +51,6 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 		tilePane.addEventFilter(MouseEvent.MOUSE_PRESSED, this::onMousePress);
 		tilePane.addEventFilter(MouseEvent.MOUSE_DRAGGED, this::onMouseDrag);
 		tilePane.addEventFilter(MouseEvent.MOUSE_RELEASED, this::onMouseRelease);
-		tilePane.addEventFilter(MouseEvent.MOUSE_RELEASED, this::onMouseRelease);
 		tilePane.addEventFilter(ScrollEvent.SCROLL, this::onScroll);
 		
 		expandedGroups = new CustomList<>();

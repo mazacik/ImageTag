@@ -153,36 +153,46 @@ public class SelectPane extends SidePaneBase {
 	
 	private ChangeListener<? super String> getSearchTextListener() {
 		return (ChangeListener<String>) (observable, oldValue, newValue) -> {
-			if (newValue.isEmpty()) return;
-			bestMatch = this.getBestMatch(newValue);
-			if (bestMatch != null) {
-				getGroupNodes().forEach(groupNode -> {
-					if (groupNode.getGroup().equals(bestMatch.getGroup())) {
-						if (previousMatchGroupNode != groupNode) {
-							if (!wasPreviousGroupNodeExpanded) {
-								previousMatchGroupNode.hideNameNodes();
-							}
-							
-							if (previousMatchNameNode != null) {
-								previousMatchNameNode.fireEvent(new MouseEvent(MouseEvent.MOUSE_EXITED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
-							}
-							
-							previousMatchGroupNode = groupNode;
-							wasPreviousGroupNodeExpanded = groupNode.isExpanded();
-							
-							if (!groupNode.isExpanded()) {
-								groupNode.showNameNodes();
-							}
-							
-							for (TextNode nameNode : groupNode.getNameNodes()) {
-								if (nameNode.getText().equals(bestMatch.getName())) {
-									previousMatchNameNode = nameNode;
-									nameNode.fireEvent(new MouseEvent(MouseEvent.MOUSE_ENTERED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
+			if (newValue.length() < 3) {
+				if (!wasPreviousGroupNodeExpanded) {
+					previousMatchGroupNode.hideNameNodes();
+					wasPreviousGroupNodeExpanded = true;
+				}
+				if (previousMatchNameNode != null) {
+					previousMatchNameNode.fireEvent(new MouseEvent(MouseEvent.MOUSE_EXITED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
+					previousMatchNameNode = null;
+				}
+			} else {
+				bestMatch = this.getBestMatch(newValue);
+				if (bestMatch != null) {
+					getGroupNodes().forEach(groupNode -> {
+						if (groupNode.getGroup().equals(bestMatch.getGroup())) {
+							if (previousMatchGroupNode != groupNode) {
+								if (!wasPreviousGroupNodeExpanded) {
+									previousMatchGroupNode.hideNameNodes();
+								}
+								
+								if (previousMatchNameNode != null) {
+									previousMatchNameNode.fireEvent(new MouseEvent(MouseEvent.MOUSE_EXITED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
+								}
+								
+								previousMatchGroupNode = groupNode;
+								wasPreviousGroupNodeExpanded = groupNode.isExpanded();
+								
+								if (!groupNode.isExpanded()) {
+									groupNode.showNameNodes();
+								}
+								
+								for (TextNode nameNode : groupNode.getNameNodes()) {
+									if (nameNode.getText().equals(bestMatch.getName())) {
+										previousMatchNameNode = nameNode;
+										nameNode.fireEvent(new MouseEvent(MouseEvent.MOUSE_ENTERED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
+									}
 								}
 							}
 						}
-					}
-				});
+					});
+				}
 			}
 		};
 	}

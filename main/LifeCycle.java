@@ -16,10 +16,9 @@ public abstract class LifeCycle {
 	}
 	public static void startLoading(Project project) {
 		Stages.getIntroStage().close();
-		Stages.getProjectStage().close();
-		String projectFilePath = project.getProjectFilePath();
+		String projectFilePath = project.getProjectFullPath();
 		String projectDirectory = projectFilePath.substring(0, projectFilePath.lastIndexOf(File.separatorChar));
-		String sourceDirectory = project.getSourceDirectory();
+		String sourceDirectory = project.getWorkingDirectory();
 		
 		FileUtil.initialize(projectDirectory, sourceDirectory);
 		new LoaderThread().start();

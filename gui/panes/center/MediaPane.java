@@ -41,7 +41,7 @@ public class MediaPane extends BorderPane implements NodeBase {
 		canvas = new Canvas();
 		gifPlayer = new ImageView();
 		videoPlayer = VideoPlayer.create(canvas);
-		controls = new MediaPaneControls(canvas, videoPlayer);
+		controls = new MediaPaneControls(this, videoPlayer);
 		
 		GalleryPane galleryPane = Instances.getGalleryPane();
 		
@@ -203,9 +203,6 @@ public class MediaPane extends BorderPane implements NodeBase {
 		this.needsReload = needsReload;
 	}
 	
-	public Canvas getCanvas() {
-		return canvas;
-	}
 	public VideoPlayer getVideoPlayer() {
 		return videoPlayer;
 	}
