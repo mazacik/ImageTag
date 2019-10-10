@@ -2,7 +2,6 @@ package application.gui.stage;
 
 public abstract class Stages {
 	private static IntroStage introStage;
-	private static ProjectStage projectStage;
 	private static MainStage mainStage;
 	
 	private static ErrorStage errorStage;
@@ -15,10 +14,6 @@ public abstract class Stages {
 	public static IntroStage getIntroStage() {
 		if (introStage == null) introStage = new IntroStage();
 		return introStage;
-	}
-	public static ProjectStage getProjectStage() {
-		if (projectStage == null) projectStage = new ProjectStage();
-		return projectStage;
 	}
 	public static MainStage getMainStage() {
 		if (mainStage == null) mainStage = new MainStage();

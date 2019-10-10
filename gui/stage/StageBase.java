@@ -18,17 +18,14 @@ public abstract class StageBase extends Stage implements StageBaseInterface {
 	public StageBase() {
 		this("");
 	}
+	public StageBase(String title) {
+		this(new TitleBar(title));
+	}
 	public StageBase(TitleBar titleBar) {
 		this.titleBar = titleBar;
-		init();
-	}
-	public StageBase(String title) {
-		titleBar = new TitleBar(title);
-		init();
-	}
-	private void init() {
+		
 		vBoxMain = new VBox();
-		vBoxMain.setAlignment(Pos.CENTER);
+		vBoxMain.setAlignment(Pos.TOP_CENTER);
 		vBoxMain.setBackground(ColorUtil.getBackgroundDef());
 		vBoxMain.setBorder(NodeUtil.getBorder(1));
 		
