@@ -6,13 +6,17 @@ import application.controller.Target;
 import application.gui.decorator.Decorator;
 import application.gui.decorator.SizeUtil;
 import application.gui.nodes.simple.EditNode;
-import application.gui.panes.center.*;
+import application.gui.panes.center.GalleryPane;
+import application.gui.panes.center.MediaPane;
+import application.gui.panes.center.MediaPaneControls;
+import application.gui.panes.center.VideoPlayer;
 import application.main.Instances;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 
@@ -77,6 +81,7 @@ public class MainStage extends StageBase {
 			panes.set(panes.indexOf(galleryPane), mediaPane);
 			Instances.getReload().request(mediaPane);
 			mediaPane.requestFocus();
+			mediaPane.fireEvent(new MouseEvent(MouseEvent.MOUSE_MOVED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
 		}
 	}
 	public boolean isFullView() {
@@ -111,11 +116,15 @@ public class MainStage extends StageBase {
 						reload.doReload();
 						break;
 					case E:
-						GalleryTileEvent.onGroupButtonPress(target.getCurrentTarget());
+						target.getCurrentTarget().getGalleryTile().onGroupButtonPress();
 						reload.doReload();
 						break;
 					case R:
 						select.setRandom();
+						reload.doReload();
+						break;
+					case G:
+						select.setRandomFromJointGroup();
 						reload.doReload();
 						break;
 					case F:

@@ -97,6 +97,12 @@ public class Select extends DataObjectList {
 		this.set(dataObject);
 		Instances.getTarget().set(dataObject);
 	}
+	public void setRandomFromJointGroup() {
+		DataObject target = Instances.getTarget().getCurrentTarget();
+		DataObject dataObject = getRandom(target.getJointObjects());
+		this.set(dataObject);
+		Instances.getTarget().set(dataObject);
+	}
 	public void clear() {
 		Instances.getReload().requestTileEffect(this);
 		super.clear();
