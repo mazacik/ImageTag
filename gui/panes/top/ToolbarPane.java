@@ -1,5 +1,7 @@
 package application.gui.panes.top;
 
+import application.database.list.CustomList;
+import application.database.object.DataObject;
 import application.gui.decorator.SizeUtil;
 import application.gui.nodes.ClickMenu;
 import application.gui.nodes.buttons.ButtonTemplates;
@@ -45,7 +47,15 @@ public class ToolbarPane extends TitleBar implements NodeBase {
 	}
 	
 	public boolean reload() {
-		nodeTarget.setText(Instances.getTarget().getCurrentTarget().getName());
+		DataObject currentTarget = Instances.getTarget().getCurrentTarget();
+		if (currentTarget.getJointID() != 0) {
+			CustomList<DataObject> jointObject = currentTarget.getJointObjects();
+			String jointGroupIndex = (jointObject.indexOf(currentTarget) + 1) + "/" + jointObject.size();
+			nodeTarget.setText("[" + jointGroupIndex + "] " + currentTarget.getName());
+		} else {
+			nodeTarget.setText(currentTarget.getName());
+		}
+		
 		return true;
 	}
 	
