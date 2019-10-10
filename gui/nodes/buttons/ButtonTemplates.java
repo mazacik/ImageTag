@@ -14,6 +14,7 @@ import application.gui.stage.YesNoCancelStage;
 import application.main.Instances;
 import application.misc.ClipboardUtil;
 import application.misc.FileUtil;
+import application.misc.HttpUtil;
 import com.sun.jna.platform.FileUtils;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -84,6 +85,16 @@ public enum ButtonTemplates {
 			TextNode textNode = new TextNode("Delete File", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				super.deleteCurrentTarget();
+				ClickMenu.hideAll();
+			});
+			return textNode;
+		}
+	},
+	OBJECT_REVERSE_IMAGE_SEARCH {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Reverse Image Search", true, true, false, true);
+			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				HttpUtil.googleReverseImageSearch(Instances.getTarget().getCurrentTarget());
 				ClickMenu.hideAll();
 			});
 			return textNode;

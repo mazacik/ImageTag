@@ -1,9 +1,11 @@
 package application.gui.panes.center;
 
+import application.controller.Reload;
 import application.database.list.CustomList;
 import application.database.object.DataObject;
 import application.gui.nodes.ClickMenu;
 import application.gui.nodes.simple.TextNode;
+import application.gui.stage.Stages;
 import application.main.Instances;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -22,6 +24,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
+//todo refactor
 public class GalleryTile extends Pane {
 	private final DataObject parentDataObject;
 	private int groupEffectWidth;
@@ -37,24 +40,9 @@ public class GalleryTile extends Pane {
 		
 		this.getChildren().add(imageViewHelper);
 		this.parentDataObject = parentDataObject;
-		new GalleryTileEvent(this);
+		initEvents();
 		
 		ClickMenu.install(imageView, MouseButton.SECONDARY, ClickMenu.StaticInstance.DATA);
-		
-		this.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
-			if (Instances.getSelect().contains(parentDataObject)) {
-				imageViewHelper.setBackground(new Background(new BackgroundFill(Color.rgb(150, 150, 150), null, null)));
-			} else {
-				imageViewHelper.setBackground(new Background(new BackgroundFill(Color.rgb(90, 90, 90), null, null)));
-			}
-		});
-		this.addEventFilter(MouseEvent.MOUSE_EXITED, event -> {
-			if (Instances.getSelect().contains(parentDataObject)) {
-				imageViewHelper.setBackground(new Background(new BackgroundFill(Color.rgb(120, 120, 120), null, null)));
-			} else {
-				imageViewHelper.setBackground(null);
-			}
-		});
 	}
 	public void generateEffect() {
 		if (parentDataObject == null) return;
@@ -100,22 +88,98 @@ public class GalleryTile extends Pane {
 		return img;
 	}
 	
-	public int getGroupEffectWidth() {
-		return groupEffectWidth;
+	private void initEvents() {
+		this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+			switch (event.getButton()) {
+				case PRIMARY:
+					if (wasClickOnGroupButton(event)) {
+						onGroupButtonPress();
+						Instances.getReload().doReload();
+						Instances.getGalleryPane().updateViewportTilesVisibility();
+					} else {
+						if (event.getClickCount() % 2 != 0) onLeftClick(event);
+						else onLeftDoubleClick(event);
+					}
+					break;
+				case SECONDARY:
+					onRightClick();
+					break;
+			}
+		});
+		this.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
+			if (Instances.getSelect().contains(parentDataObject)) {
+				imageViewHelper.setBackground(new Background(new BackgroundFill(Color.rgb(150, 150, 150), null, null)));
+			} else {
+				imageViewHelper.setBackground(new Background(new BackgroundFill(Color.rgb(90, 90, 90), null, null)));
+			}
+		});
+		this.addEventFilter(MouseEvent.MOUSE_EXITED, event -> {
+			if (Instances.getSelect().contains(parentDataObject)) {
+				imageViewHelper.setBackground(new Background(new BackgroundFill(Color.rgb(120, 120, 120), null, null)));
+			} else {
+				imageViewHelper.setBackground(null);
+			}
+		});
 	}
-	public int getGroupEffectHeight() {
-		return groupEffectHeight;
+	private void onLeftClick(MouseEvent event) {
+		Instances.getTarget().set(parentDataObject);
+		
+		if (event.isControlDown()) {
+			Instances.getSelect().swapState(parentDataObject);
+		} else if (event.isShiftDown()) {
+			Instances.getSelect().shiftSelectTo(parentDataObject);
+		} else {
+			Instances.getSelect().set(parentDataObject);
+		}
+		
+		Instances.getReload().doReload();
+		
+		ClickMenu.hideAll();
 	}
+	private void onLeftDoubleClick(MouseEvent event) {
+		if (!wasClickOnGroupButton(event)) {
+			Stages.getMainStage().swapViewMode();
+			Instances.getReload().doReload();
+		}
+	}
+	private void onRightClick() {
+		if (!Instances.getSelect().contains(parentDataObject)) {
+			Instances.getSelect().set(parentDataObject);
+		}
+		
+		Instances.getTarget().set(parentDataObject);
+		Instances.getReload().doReload();
+	}
+	
+	private boolean wasClickOnGroupButton(MouseEvent event) {
+		int tileSize = Instances.getSettings().getGalleryTileSize();
+		boolean hitWidth = event.getX() >= tileSize - groupEffectWidth - 5;
+		boolean hitHeight = event.getY() <= groupEffectHeight;
+		return hitWidth && hitHeight;
+	}
+	public void onGroupButtonPress() {
+		int jointID = parentDataObject.getJointID();
+		
+		if (jointID != 0) {
+			CustomList<Integer> expandedGroups = Instances.getGalleryPane().getExpandedGroups();
+			if (!expandedGroups.contains(jointID)) {
+				expandedGroups.add(jointID);
+			} else {
+				//noinspection RedundantCollectionOperation
+				expandedGroups.remove(expandedGroups.indexOf(jointID));
+			}
+			
+			Instances.getReload().notify(Reload.Control.DATA);
+		}
+	}
+	
 	public DataObject getParentDataObject() {
 		return parentDataObject;
 	}
-	public ImageView getImageView() {
-		return imageView;
-	}
-	
 	public Image getImage() {
 		return imageView.getImage();
 	}
+	
 	public void setImage(Image image) {
 		imageView.setImage(image);
 	}

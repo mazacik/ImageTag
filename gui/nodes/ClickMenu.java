@@ -40,24 +40,13 @@ public class ClickMenu extends Popup {
 	protected static final ArrayList<ClickMenu> instanceList = new ArrayList<>();
 	protected VBox vBox;
 	
-	private static ClickMenu clickMenuData = new ClickMenu() {
-		@Override
-		public void show(Node anchor, MouseEvent event) {
-			vBox.getChildren().setAll(getValidNodes());
-			super.show(anchor, event);
-		}
-		@Override
-		public void show(Region root, Direction direction) {
-			vBox.getChildren().setAll(getValidNodes());
-			super.show(root, direction);
-		}
-	};
 	protected CustomList<Node> getValidNodes() {
 		CustomList<Node> list = new CustomList<>();
 		
 		list.add(ButtonTemplates.OBJECT_OPEN.get());
 		list.add(ButtonTemplates.OBJECT_EDIT.get());
 		list.add(ButtonTemplates.FILTER_SIMILAR.get());
+		list.add(ButtonTemplates.OBJECT_REVERSE_IMAGE_SEARCH.get());
 		list.add(new SeparatorNode());
 		list.add(ButtonTemplates.OBJECT_COPY_NAME.get());
 		list.add(ButtonTemplates.OBJECT_COPY_PATH.get());
@@ -71,9 +60,19 @@ public class ClickMenu extends Popup {
 		}
 		return list;
 	}
-	
+	private static ClickMenu clickMenuData = new ClickMenu() {
+		@Override
+		public void show(Node anchor, MouseEvent event) {
+			vBox.getChildren().setAll(getValidNodes());
+			super.show(anchor, event);
+		}
+		@Override
+		public void show(Region root, Direction direction) {
+			vBox.getChildren().setAll(getValidNodes());
+			super.show(root, direction);
+		}
+	};
 	private static ClickMenu clickMenuTags = new ClickMenu(ButtonTemplates.TAG_EDIT.get(), ButtonTemplates.TAG_REMOVE.get());
-	
 	private static ClickMenu clickMenuSelect = new ClickMenu(ButtonTemplates.SELECTION_SET_ALL.get(), ButtonTemplates.SELECTION_SET_NONE.get());
 	
 	public static void install(Region root, Direction direction, Region... labels) {
@@ -83,21 +82,21 @@ public class ClickMenu extends Popup {
 		switch (staticInstance) {
 			case DATA:
 				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-					if (event.getButton() == mouseButton && event.getPickResult().getIntersectedNode() == root) {
+					if (event.getButton() == mouseButton && event.getSource() == root) {
 						clickMenuData.show(root, direction);
 					}
 				});
 				break;
 			case TAGS:
 				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-					if (event.getButton() == mouseButton && event.getPickResult().getIntersectedNode() == root) {
+					if (event.getButton() == mouseButton && event.getSource() == root) {
 						clickMenuTags.show(root, direction);
 					}
 				});
 				break;
 			case SELECT:
 				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-					if (event.getButton() == mouseButton && event.getPickResult().getIntersectedNode() == root) {
+					if (event.getButton() == mouseButton && event.getSource() == root) {
 						clickMenuSelect.show(root, direction);
 					}
 				});
@@ -148,14 +147,14 @@ public class ClickMenu extends Popup {
 		
 		if (root != null) {
 			root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-				if (event.getButton() == MouseButton.PRIMARY && event.getPickResult().getIntersectedNode() == root) {
+				if (event.getButton() == MouseButton.PRIMARY && event.getSource() == root) {
 					this.show(root, direction);
 				}
 			});
 			root.addEventFilter(MouseEvent.MOUSE_MOVED, event -> {
 				if (!this.isShowing()) {
 					for (ClickMenu clickMenu : instanceList) {
-						if (/*clickMenu instanceof ClickMenuLeft && */clickMenu.isShowing()) {
+						if (clickMenu.isShowing()) {
 							clickMenu.hide();
 							show(root, direction);
 							break;
@@ -164,10 +163,7 @@ public class ClickMenu extends Popup {
 				}
 			});
 			
-			EventHandler<WindowEvent> eventHandler = event -> {
-				root.getScene().getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, event1 -> hideAll());
-			};
-			
+			EventHandler<WindowEvent> eventHandler = event -> root.getScene().getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, event1 -> hideAll());
 			this.sceneProperty().addListener((observable, oldScene, newScene) -> {
 				if (newScene.getWindow() == null) {
 					newScene.windowProperty().addListener((observable1, oldStage, newStage) -> {
@@ -188,50 +184,39 @@ public class ClickMenu extends Popup {
 	}
 	
 	public void show(Region root, Direction direction) {
+		hideAll();
+		
 		double x;
 		double y;
-		
 		Bounds rootBounds = root.localToScreen(root.getBoundsInLocal());
 		
 		switch (direction) {
 			case LEFT:
 				x = rootBounds.getMinX();
 				y = rootBounds.getMinY();
-				//if (rootBorder != null) {
-				//	x -= rootBorder.getInsets().getLeft();
-				//	if (root.getScene().getWindow() == null) {
-				//		y -= rootBorder.getInsets().getBottom();
-				//	}
-				//	y -= rootBorder.getInsets().getTop();
-				//}
+				if (root.getBorder() != null) y -= root.getBorder().getInsets().getBottom();
 				this.show(Stages.getMainStage(), x, y);
 				this.setAnchorX(this.getAnchorX() - this.getWidth());
 				break;
 			case RIGHT:
 				x = rootBounds.getMaxX();
 				y = rootBounds.getMinY();
-				//if (rootBorder != null) {
-				//	if (root.getScene().getWindow() == null) {
-				//		y -= rootBorder.getInsets().getBottom();
-				//	}
-				//	y -= rootBorder.getInsets().getTop();
-				//}
+				if (root.getBorder() != null) y -= root.getBorder().getInsets().getBottom();
 				this.show(Stages.getMainStage(), x, y);
 				break;
 			case DOWN:
 				x = rootBounds.getMinX();
 				y = rootBounds.getMaxY();
-				//if (rootBorder != null) {
-				//	y -= rootBorder.getInsets().getBottom();
-				//}
 				this.show(Stages.getMainStage(), x, y);
 				break;
 		}
 	}
 	public void show(Node anchor, MouseEvent event) {
+		hideAll();
 		super.show(anchor, event.getScreenX(), event.getScreenY());
 	}
 	public static void show(Node anchor, MouseEvent event, StaticInstance staticInstance) {
+		hideAll();
 		if (event.getPickResult().getIntersectedNode() == anchor) {
 			switch (staticInstance) {
 				case DATA:
