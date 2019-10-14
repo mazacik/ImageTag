@@ -46,8 +46,7 @@ public class VideoPlayer {
 	
 	private static boolean bVLCLibsExist = false;
 	
-	@SuppressWarnings("UnusedReturnValue")
-	public static boolean checkVLCLibs() {
+	public static boolean findVLCLibs() {
 		bVLCLibsExist = new NativeDiscovery().discover();
 		return bVLCLibsExist;
 	}
@@ -102,7 +101,7 @@ public class VideoPlayer {
 		});
 	}
 	public static VideoPlayer create(Canvas canvas) {
-		if (bVLCLibsExist) return new VideoPlayer(canvas);
+		if (findVLCLibs()) return new VideoPlayer(canvas);
 		else return null;
 	}
 	

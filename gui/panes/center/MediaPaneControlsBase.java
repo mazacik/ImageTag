@@ -1,7 +1,7 @@
 package application.gui.panes.center;
 
-import application.database.loader.utils.ThumbnailReader;
-import application.database.object.DataObject;
+import application.data.loader.utils.ThumbnailReader;
+import application.data.object.DataObject;
 import application.gui.decorator.ColorUtil;
 import application.gui.decorator.SizeUtil;
 import application.gui.nodes.simple.TextNode;
@@ -134,7 +134,7 @@ public class MediaPaneControlsBase extends BorderPane {
 			
 			btnMute.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, videoPlayer::swapMute);
 			btnSnapshot.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				DataObject dataObject = Instances.getTarget().getCurrentTarget();
+				DataObject dataObject = Instances.getTarget().get();
 				File cacheFile = new File(dataObject.getCacheFile());
 				int thumbSize = (int) SizeUtil.getGalleryTileSize();
 				Instances.getMediaPane().getVideoPlayer().snapshot(cacheFile, thumbSize, thumbSize);
@@ -153,12 +153,12 @@ public class MediaPaneControlsBase extends BorderPane {
 		
 		btnPrevious.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			Instances.getTarget().move(Direction.LEFT);
-			Instances.getSelect().set(Instances.getTarget().getCurrentTarget());
+			Instances.getSelect().set(Instances.getTarget().get());
 			Instances.getReload().doReload();
 		});
 		btnNext.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			Instances.getTarget().move(Direction.RIGHT);
-			Instances.getSelect().set(Instances.getTarget().getCurrentTarget());
+			Instances.getSelect().set(Instances.getTarget().get());
 			Instances.getReload().doReload();
 		});
 	}

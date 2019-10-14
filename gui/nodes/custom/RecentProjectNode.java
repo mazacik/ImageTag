@@ -1,11 +1,11 @@
 package application.gui.nodes.custom;
 
-import application.database.loader.Project;
+import application.data.loader.Project;
 import application.gui.decorator.ColorUtil;
 import application.gui.nodes.simple.TextNode;
 import application.gui.stage.Stages;
+import application.main.AppLifeCycle;
 import application.main.Instances;
-import application.main.LifeCycle;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -57,8 +57,8 @@ public class RecentProjectNode extends BorderPane {
 					Stages.getIntroStage().removeProjectFromRecents(this, project);
 				} else {
 					if (new File(project.getWorkingDirectory()).exists()) {
-						Instances.getSettings().getRecentProjects().push(project.getProjectFullPath());
-						LifeCycle.startLoading(project);
+						Instances.getSettings().getRecentProjects().add(0, project.getProjectFullPath());
+						AppLifeCycle.startLoading(project);
 					} else {
 						Stages.getErrorStage()._show("The working directory of this project could not be found.\nDirectory: " + project.getWorkingDirectory());
 					}

@@ -1,16 +1,16 @@
 package application.gui.stage;
 
-import application.database.loader.Project;
+import application.data.list.CustomList;
+import application.data.loader.Project;
 import application.gui.decorator.SizeUtil;
 import application.gui.nodes.custom.RecentProjectNode;
 import application.gui.nodes.simple.EditNode;
 import application.gui.nodes.simple.SeparatorNode;
 import application.gui.nodes.simple.TextNode;
+import application.main.AppLifeCycle;
 import application.main.Instances;
-import application.main.LifeCycle;
 import application.misc.FileUtil;
 import application.misc.enums.SystemUtil;
-import application.settings.Stack;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
@@ -26,7 +26,6 @@ import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 
 import java.io.File;
-import java.util.ArrayList;
 
 public class IntroStage extends StageBase {
 	private HBox introScene;
@@ -61,9 +60,9 @@ public class IntroStage extends StageBase {
 			File file = fileChooser.showOpenDialog(Stages.getMainStage());
 			if (file != null) {
 				String projectFilePath = file.getAbsolutePath();
-				Instances.getSettings().getRecentProjects().push(projectFilePath);
+				Instances.getSettings().getRecentProjects().add(0, projectFilePath);
 				Project project = Project.readFromDisk(projectFilePath);
-				LifeCycle.startLoading(project);
+				AppLifeCycle.startLoading(project);
 			}
 		});
 		
@@ -94,9 +93,9 @@ public class IntroStage extends StageBase {
 		introScene = new HBox(vBoxRecentProjects, new SeparatorNode(), vBoxStartMenu);
 		introScene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
 			if (event.getCode() == KeyCode.ENTER) {
-				Stack<String> recentProjectFullPaths = Instances.getSettings().getRecentProjects();
+				CustomList<String> recentProjectFullPaths = Instances.getSettings().getRecentProjects();
 				if (!recentProjectFullPaths.isEmpty()) {
-					LifeCycle.startLoading(Project.readFromDisk(recentProjectFullPaths.getFirst()));
+					AppLifeCycle.startLoading(Project.readFromDisk(recentProjectFullPaths.getFirst()));
 				} else {
 					showCreateProjectScene();
 				}
@@ -110,7 +109,7 @@ public class IntroStage extends StageBase {
 		introScene.requestFocus();
 	}
 	public void removeProjectFromRecents(RecentProjectNode recentProjectNode, Project project) {
-		Stack<String> recentProjects = Instances.getSettings().getRecentProjects();
+		CustomList<String> recentProjects = Instances.getSettings().getRecentProjects();
 		recentProjects.remove(project.getProjectFullPath());
 		vBoxRecentProjects.getChildren().remove(recentProjectNode);
 		if (recentProjects.isEmpty()) {
@@ -119,10 +118,10 @@ public class IntroStage extends StageBase {
 		}
 	}
 	public void refreshRecentProjectNodes() {
-		Stack<String> recentProjectFullPaths = Instances.getSettings().getRecentProjects();
+		CustomList<String> recentProjectFullPaths = Instances.getSettings().getRecentProjects();
 		vBoxRecentProjects.getChildren().clear();
 		if (!recentProjectFullPaths.isEmpty()) {
-			for (String recentProjectFullPath : new ArrayList<>(recentProjectFullPaths)) {
+			for (String recentProjectFullPath : new CustomList<>(recentProjectFullPaths)) {
 				File projectFile = new File(recentProjectFullPath);
 				if (projectFile.exists()) {
 					Project project = Project.readFromDisk(recentProjectFullPath);
@@ -220,9 +219,9 @@ public class IntroStage extends StageBase {
 		Project project = new Project(projectDirectory + projectName, workingDirectory);
 		project.writeToDisk();
 		
-		Instances.getSettings().getRecentProjects().push(project.getProjectFullPath());
+		Instances.getSettings().getRecentProjects().add(0, project.getProjectFullPath());
 		Instances.getSettings().writeToDisk();
-		LifeCycle.startLoading(project);
+		AppLifeCycle.startLoading(project);
 	}
 	
 	private EditNode edtProjectName2;
@@ -325,7 +324,7 @@ public class IntroStage extends StageBase {
 		project.writeToDisk();
 		
 		Instances.getSettings().getRecentProjects().remove(projectFullPathBeforeEdit);
-		Instances.getSettings().getRecentProjects().push(project.getProjectFullPath());
+		Instances.getSettings().getRecentProjects().add(0, project.getProjectFullPath());
 		Instances.getSettings().writeToDisk();
 	}
 	

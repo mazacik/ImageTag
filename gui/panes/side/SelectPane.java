@@ -1,10 +1,10 @@
 package application.gui.panes.side;
 
-import application.controller.Filter;
-import application.controller.Select;
-import application.controller.Target;
-import application.database.object.DataObject;
-import application.database.object.TagObject;
+import application.control.Filter;
+import application.control.Select;
+import application.control.Target;
+import application.data.object.DataObject;
+import application.data.object.TagObject;
 import application.gui.decorator.ColorUtil;
 import application.gui.nodes.ClickMenu;
 import application.gui.nodes.NodeUtil;
@@ -75,8 +75,8 @@ public class SelectPane extends SidePaneBase {
 		ArrayList<String> groupsInter;
 		ArrayList<String> groupsShare;
 		if (select.size() == 0) {
-			if (target.getCurrentTarget() != null) {
-				groupsInter = target.getCurrentTarget().getTagList().getGroups();
+			if (target.get() != null) {
+				groupsInter = target.get().getTagList().getGroups();
 				groupsShare = new ArrayList<>();
 			} else {
 				return false;
@@ -103,7 +103,7 @@ public class SelectPane extends SidePaneBase {
 				ArrayList<String> namesInter;
 				ArrayList<String> namesShare;
 				if (select.size() == 0) {
-					namesInter = target.getCurrentTarget().getTagList().getNames(group);
+					namesInter = target.get().getTagList().getNames(group);
 					namesShare = new ArrayList<>();
 				} else {
 					namesInter = select.getIntersectingTags().getNames(group);

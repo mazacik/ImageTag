@@ -1,6 +1,6 @@
 package application.gui.panes.center;
 
-import application.database.object.DataObject;
+import application.data.object.DataObject;
 import application.gui.nodes.ClickMenu;
 import application.gui.panes.NodeBase;
 import application.gui.stage.Stages;
@@ -54,7 +54,7 @@ public class MediaPane extends BorderPane implements NodeBase {
 	}
 	
 	public boolean reload() {
-		DataObject currentTarget = Instances.getTarget().getCurrentTarget();
+		DataObject currentTarget = Instances.getTarget().get();
 		if (Stages.getMainStage().isFullView() && currentTarget != null) {
 			switch (currentTarget.getFileType()) {
 				case IMAGE:

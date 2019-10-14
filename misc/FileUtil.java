@@ -1,10 +1,10 @@
 package application.misc;
 
-import application.controller.Filter;
-import application.controller.Select;
-import application.controller.Target;
-import application.database.list.DataObjectList;
-import application.database.object.DataObject;
+import application.control.Filter;
+import application.control.Select;
+import application.control.Target;
+import application.data.list.DataList;
+import application.data.object.DataObject;
 import application.gui.panes.center.GalleryTile;
 import application.gui.stage.Stages;
 import application.gui.stage.YesNoCancelStage;
@@ -114,7 +114,7 @@ public abstract class FileUtil {
 	}
 	
 	public static void initDataObjectPaths(ArrayList<File> fileList) {
-		DataObjectList dataObjects = Instances.getObjectListMain();
+		DataList dataObjects = Instances.getDataListMain();
 		if (dataObjects.size() == fileList.size()) {
 			for (int i = 0; i < dataObjects.size(); i++) {
 				DataObject dataObject = dataObjects.get(i);
@@ -138,7 +138,7 @@ public abstract class FileUtil {
 		directoryChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
 		File directory = directoryChooser.showDialog(Stages.getMainStage());
 		
-		DataObjectList newDataObjects = new DataObjectList();
+		DataList newDataObjects = new DataList();
 		if (directory != null && directory.isDirectory()) {
 			for (File file : getSupportedFiles(directory)) {
 				String oldPath = file.getAbsolutePath();
@@ -167,14 +167,14 @@ public abstract class FileUtil {
 		if (newDataObjects.isEmpty()) {
 			Stages.getErrorStage()._show("No valid files found.");
 		} else {
-			DataObjectList dataObjectListMain = Instances.getObjectListMain();
+			DataList dataListMain = Instances.getDataListMain();
 			Filter filter = Instances.getFilter();
 			Select select = Instances.getSelect();
 			Target target = Instances.getTarget();
 			
 			for (DataObject dataObject : newDataObjects) dataObject.setGalleryTile(new GalleryTile(dataObject, null));
-			dataObjectListMain.addAll(newDataObjects);
-			dataObjectListMain.sort();
+			dataListMain.addAll(newDataObjects);
+			dataListMain.sort();
 			
 			filter.getCurrentSessionObjects().addAll(newDataObjects);
 			

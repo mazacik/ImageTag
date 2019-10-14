@@ -1,10 +1,10 @@
-package application.controller;
+package application.control;
 
-import application.database.list.CustomList;
-import application.database.list.DataObjectList;
-import application.database.list.TagList;
-import application.database.object.DataObject;
-import application.database.object.TagObject;
+import application.data.list.CustomList;
+import application.data.list.DataList;
+import application.data.list.TagList;
+import application.data.object.DataObject;
+import application.data.object.TagObject;
 import application.gui.stage.Stages;
 import application.gui.stage.YesNoCancelStage;
 import application.main.Instances;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 
-public class Select extends DataObjectList {
+public class Select extends DataList {
 	private DataObject shiftStart = null;
 	
 	public boolean add(DataObject dataObject) {
@@ -47,7 +47,7 @@ public class Select extends DataObjectList {
 				super.add(dataObject);
 				Instances.getReload().requestTileEffect(dataObject);
 			} else {
-				DataObjectList jointObject = dataObject.getJointObjects();
+				DataList jointObject = dataObject.getJointObjects();
 				super.addAll(jointObject);
 				Instances.getReload().requestTileEffect(jointObject);
 			}
@@ -93,12 +93,12 @@ public class Select extends DataObjectList {
 		this.addAll(dataObjects);
 	}
 	public void setRandom() {
-		DataObject dataObject = getRandom(Instances.getGalleryPane().getDataObjectsOfTiles());
+		DataObject dataObject = Instances.getGalleryPane().getDataObjectsOfTiles().getRandom();
 		this.set(dataObject);
 		Instances.getTarget().set(dataObject);
 	}
 	public void setRandomFromJointGroup() {
-		DataObject target = Instances.getTarget().getCurrentTarget();
+		DataObject target = Instances.getTarget().get();
 		DataObject dataObject = getRandom(target.getJointObjects());
 		this.set(dataObject);
 		Instances.getTarget().set(dataObject);
@@ -117,7 +117,7 @@ public class Select extends DataObjectList {
 	}
 	
 	public void jointObjectCreate() {
-		CustomList<Integer> jointIDs = Instances.getObjectListMain().getJointIDs();
+		CustomList<Integer> jointIDs = Instances.getDataListMain().getJointIDs();
 		int jointID;
 		do jointID = new Random().nextInt();
 		while (jointIDs.contains(jointID));
@@ -142,7 +142,7 @@ public class Select extends DataObjectList {
 		Instances.getReload().notify(Reload.Control.DATA, Reload.Control.TAGS);
 	}
 	public void jointObjectDiscard() {
-		DataObject dataObject = Instances.getTarget().getCurrentTarget();
+		DataObject dataObject = Instances.getTarget().get();
 		if (dataObject.getJointID() != 0) {
 			ArrayList<DataObject> jointObjects = dataObject.getJointObjects();
 			for (DataObject jointObject : jointObjects) {
@@ -152,7 +152,7 @@ public class Select extends DataObjectList {
 		Instances.getReload().notify(Reload.Control.DATA, Reload.Control.TAGS);
 	}
 	public boolean isSelectJoint() {
-		int jointID = Instances.getTarget().getCurrentTarget().getJointID();
+		int jointID = Instances.getTarget().get().getJointID();
 		if (jointID == 0) return false;
 		for (DataObject dataObject : this) {
 			if (dataObject.getJointID() != jointID) {

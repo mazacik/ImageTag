@@ -1,6 +1,6 @@
-package application.database.loader.utils;
+package application.data.loader.utils;
 
-import application.database.object.DataObject;
+import application.data.object.DataObject;
 import application.gui.decorator.SizeUtil;
 import javafx.geometry.Pos;
 import javafx.scene.Group;

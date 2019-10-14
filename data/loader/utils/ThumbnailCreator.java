@@ -1,6 +1,6 @@
-package application.database.loader.utils;
+package application.data.loader.utils;
 
-import application.database.object.DataObject;
+import application.data.object.DataObject;
 import application.gui.panes.center.VideoPlayer;
 import application.main.Instances;
 import javafx.embed.swing.SwingFXUtils;

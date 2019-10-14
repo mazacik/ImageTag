@@ -1,11 +1,11 @@
 package application.main;
 
-import application.controller.Filter;
-import application.controller.Reload;
-import application.controller.Select;
-import application.controller.Target;
-import application.database.list.DataObjectListMain;
-import application.database.list.TagListMain;
+import application.control.Filter;
+import application.control.Reload;
+import application.control.Select;
+import application.control.Target;
+import application.data.list.DataListMain;
+import application.data.list.TagListMain;
 import application.gui.panes.center.GalleryPane;
 import application.gui.panes.center.MediaPane;
 import application.gui.panes.side.FilterPane;
@@ -16,13 +16,8 @@ import application.settings.Settings;
 public abstract class Instances {
 	private static Settings settings;
 	
-	private static Filter filter;
-	private static Target target;
-	private static Select select;
-	private static Reload reload;
-	
+	private static DataListMain dataListMain;
 	private static TagListMain tagListMain;
-	private static DataObjectListMain objectListMain;
 	
 	private static MediaPane mediaPane;
 	private static FilterPane filterPane;
@@ -30,58 +25,40 @@ public abstract class Instances {
 	private static ToolbarPane toolbarPane;
 	private static GalleryPane galleryPane;
 	
-	public static void createInstances() {
-		System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %2$s: %5$s%n");
-		
+	private static Filter filter;
+	private static Target target;
+	private static Select select;
+	private static Reload reload;
+	
+	public static void init() {
 		settings = Settings.readFromDisk();
-		if (settings == null) settings = new Settings();
-		settings.getRecentProjects().setMaxSize(10);
 		
-		createDatabaseInstances();
-		
-		createFrontendInstances();
-		
-		createBackendInstances();
-	}
-	private static void createDatabaseInstances() {
-		objectListMain = new DataObjectListMain();
+		dataListMain = new DataListMain();
 		tagListMain = new TagListMain();
-	}
-	private static void createFrontendInstances() {
+		
 		toolbarPane = new ToolbarPane();    /* needs Settings */
 		galleryPane = new GalleryPane();    /* needs Settings */
 		mediaPane = new MediaPane();        /* needs Settings, GalleryPane */
 		filterPane = new FilterPane();      /* needs Settings */
 		selectPane = new SelectPane();      /* needs Settings */
-	}
-	private static void createBackendInstances() {
+		
 		filter = new Filter();
 		target = new Target();
 		select = new Select();
-		reload = new Reload();  /* needs Frontend */
+		reload = new Reload();              /* needs everything */
 	}
 	
 	public static Settings getSettings() {
 		return settings;
 	}
-	public static Filter getFilter() {
-		return filter;
-	}
-	public static Target getTarget() {
-		return target;
-	}
-	public static Select getSelect() {
-		return select;
-	}
-	public static Reload getReload() {
-		return reload;
-	}
-	public static DataObjectListMain getObjectListMain() {
-		return objectListMain;
+	
+	public static DataListMain getDataListMain() {
+		return dataListMain;
 	}
 	public static TagListMain getTagListMain() {
 		return tagListMain;
 	}
+	
 	public static ToolbarPane getToolbarPane() {
 		return toolbarPane;
 	}
@@ -96,5 +73,18 @@ public abstract class Instances {
 	}
 	public static SelectPane getSelectPane() {
 		return selectPane;
+	}
+	
+	public static Filter getFilter() {
+		return filter;
+	}
+	public static Target getTarget() {
+		return target;
+	}
+	public static Select getSelect() {
+		return select;
+	}
+	public static Reload getReload() {
+		return reload;
 	}
 }

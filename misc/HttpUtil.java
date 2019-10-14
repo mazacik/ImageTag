@@ -1,6 +1,6 @@
 package application.misc;
 
-import application.database.object.DataObject;
+import application.data.object.DataObject;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntityBuilder;

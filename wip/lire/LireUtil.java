@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 public class LireUtil {
 	private static IndexReader ir;
 	
-	public static void index(String directory) throws IOException {
+	public static void index(String directory) {
 		File f = new File(directory);
 		if (!f.exists() || !f.isDirectory()) {
 			Logger.getGlobal().warning(directory + " not a directory");
@@ -31,8 +31,8 @@ public class LireUtil {
 	
 	public static void moveDuplicates(double similarity) throws IOException {
 		if (ir == null) ir = DirectoryReader.open(FSDirectory.open(Paths.get("index")));
-		for (int i = 0; i < Instances.getObjectListMain().size(); i++) {
-			Logger.getGlobal().info("Removing duplicates... " + i + "/" + Instances.getObjectListMain().size());
+		for (int i = 0; i < Instances.getDataListMain().size(); i++) {
+			Logger.getGlobal().info("Removing duplicates... " + i + "/" + Instances.getDataListMain().size());
 			Document document = ir.document(i);
 			ArrayList<String> matches = null;
 			try {

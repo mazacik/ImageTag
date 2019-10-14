@@ -1,8 +1,8 @@
-package application.database.loader;
+package application.data.loader;
 
-import application.database.list.DataObjectList;
-import application.database.list.DataObjectListMain;
-import application.database.object.DataObject;
+import application.data.list.DataList;
+import application.data.list.DataListMain;
+import application.data.object.DataObject;
 import application.gui.panes.center.GalleryTile;
 import application.gui.panes.side.FilterPane;
 import application.gui.panes.side.SelectPane;
@@ -24,7 +24,7 @@ public class LoaderThread extends Thread {
 		ArrayList<File> fileList = FileUtil.getSupportedFiles(FileUtil.getDirSource());
 		FileUtil.fixDuplicateFileNames(fileList);
 		
-		boolean readSuccess = Instances.getObjectListMain().addAll(DataObjectListMain.readFromDisk());
+		boolean readSuccess = Instances.getDataListMain().addAll(DataListMain.readFromDisk());
 		if (!readSuccess || !checkIntegrity()) {
 			createBackup();
 			createDatabase(fileList);
@@ -32,15 +32,15 @@ public class LoaderThread extends Thread {
 		
 		checkFileDifference(fileList);
 		FileUtil.initDataObjectPaths(fileList);
-		Instances.getObjectListMain().sort();
+		Instances.getDataListMain().sort();
 		Instances.getTagListMain().initialize();
-		Instances.getObjectListMain().writeToDisk();
+		Instances.getDataListMain().writeToDisk();
 		Instances.getTagListMain().writeDummyToDisk();
 		Instances.getFilter().refresh();
 		Instances.getTarget().set(Instances.getFilter().get(0));
 		Instances.getSelect().set(Instances.getFilter().get(0));
 		
-		for (DataObject dataObject : Instances.getObjectListMain()) {
+		for (DataObject dataObject : Instances.getDataListMain()) {
 			dataObject.setGalleryTile(new GalleryTile(dataObject, null));
 		}
 		
@@ -61,7 +61,7 @@ public class LoaderThread extends Thread {
 	}
 	
 	private boolean checkIntegrity() {
-		for (DataObject dataObject : Instances.getObjectListMain()) {
+		for (DataObject dataObject : Instances.getDataListMain()) {
 			if (dataObject.getName() == null || dataObject.getTagList() == null) {
 				//the application.database is (most likely) corrupted or outdated
 				AtomicBoolean createNew = new AtomicBoolean(false);
@@ -88,20 +88,20 @@ public class LoaderThread extends Thread {
 		new File(FileUtil.getFileData()).renameTo(new File(FileUtil.getFileData() + "_backup"));
 	}
 	private void createDatabase(ArrayList<File> fileList) {
-		DataObjectListMain objectListMain = Instances.getObjectListMain();
+		DataListMain objectListMain = Instances.getDataListMain();
 		objectListMain.clear();
 		for (File file : fileList) {
 			objectListMain.add(new DataObject(file));
 		}
 	}
 	private void checkFileDifference(ArrayList<File> fileList) {
-		DataObjectList dataObjectList = Instances.getObjectListMain();
-		dataObjectList.sort(Comparator.comparing(DataObject::getName));
+		DataList dataList = Instances.getDataListMain();
+		dataList.sort(Comparator.comparing(DataObject::getName));
 		fileList.sort(Comparator.comparing(File::getName));
-		ArrayList<DataObject> orphanObjects = new ArrayList<>(dataObjectList);
+		ArrayList<DataObject> orphanObjects = new ArrayList<>(dataList);
 		ArrayList<File> newFiles = new ArrayList<>(fileList);
 		/* compare files in the working directory with knwon objects in the application.database */
-		for (DataObject dataObject : dataObjectList) {
+		for (DataObject dataObject : dataList) {
 			for (int j = 0; j < newFiles.size(); j++) {
 				File file = newFiles.get(j);
 				if (dataObject.getName().equals(file.getName())) {
@@ -132,13 +132,13 @@ public class LoaderThread extends Thread {
 		/* add unrecognized objects */
 		for (File file : newFiles) {
 			DataObject dataObject = new DataObject(file);
-			dataObjectList.add(dataObject);
+			dataList.add(dataObject);
 			Instances.getFilter().getCurrentSessionObjects().add(dataObject);
 		}
 		/* discard orphan objects */
 		for (DataObject dataObject : orphanObjects) {
-			dataObjectList.remove(dataObject);
+			dataList.remove(dataObject);
 		}
-		dataObjectList.sort(Comparator.comparing(DataObject::getName));
+		dataList.sort(Comparator.comparing(DataObject::getName));
 	}
 }

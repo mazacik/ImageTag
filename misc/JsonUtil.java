@@ -1,7 +1,7 @@
 package application.misc;
 
-import application.database.list.DataObjectListMain;
-import application.database.loader.Project;
+import application.data.list.DataListMain;
+import application.data.loader.Project;
 import application.settings.Settings;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -46,7 +46,7 @@ public abstract class JsonUtil {
     }
 
     public enum TypeTokenEnum {
-		MAINDATALIST(new TypeToken<DataObjectListMain>() {}.getType()),
+        MAINDATALIST(new TypeToken<DataListMain>() {}.getType()),
         SETTINGS(new TypeToken<Settings>() {}.getType()),
         PROJECT(new TypeToken<Project>() {}.getType()),
         ;

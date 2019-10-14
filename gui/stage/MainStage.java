@@ -1,8 +1,8 @@
 package application.gui.stage;
 
-import application.controller.Reload;
-import application.controller.Select;
-import application.controller.Target;
+import application.control.Reload;
+import application.control.Select;
+import application.control.Target;
 import application.gui.decorator.Decorator;
 import application.gui.decorator.SizeUtil;
 import application.gui.nodes.simple.EditNode;
@@ -37,7 +37,7 @@ public class MainStage extends StageBase {
 			VideoPlayer videoPlayer = Instances.getMediaPane().getVideoPlayer();
 			if (videoPlayer != null) videoPlayer.dispose();
 			Instances.getSettings().writeToDisk();
-			Instances.getObjectListMain().writeToDisk();
+			Instances.getDataListMain().writeToDisk();
 			Instances.getTagListMain().writeDummyToDisk();
 		});
 		
@@ -103,7 +103,7 @@ public class MainStage extends StageBase {
 					getScene().getRoot().requestFocus();
 				} else if (event.getCode() == KeyCode.SHIFT) {
 					shiftDown.setValue(true);
-					Instances.getSelect().setShiftStart(Instances.getTarget().getCurrentTarget());
+					Instances.getSelect().setShiftStart(Instances.getTarget().get());
 				}
 			} else {
 				Select select = Instances.getSelect();
@@ -116,7 +116,7 @@ public class MainStage extends StageBase {
 						reload.doReload();
 						break;
 					case E:
-						target.getCurrentTarget().getGalleryTile().onGroupButtonPress();
+						target.get().getGalleryTile().onGroupButtonPress();
 						reload.doReload();
 						break;
 					case R:
@@ -133,7 +133,7 @@ public class MainStage extends StageBase {
 						break;
 					case SHIFT:
 						shiftDown.setValue(true);
-						Instances.getSelect().setShiftStart(target.getCurrentTarget());
+						Instances.getSelect().setShiftStart(target.get());
 						break;
 					case W:
 					case A:
@@ -141,9 +141,9 @@ public class MainStage extends StageBase {
 					case D:
 						target.move(event.getCode());
 						
-						if (event.isShiftDown()) select.shiftSelectTo(target.getCurrentTarget());
-						else if (event.isControlDown()) select.add(target.getCurrentTarget());
-						else select.set(target.getCurrentTarget());
+						if (event.isShiftDown()) select.shiftSelectTo(target.get());
+						else if (event.isControlDown()) select.add(target.get());
+						else select.set(target.get());
 						
 						Instances.getReload().doReload();
 						break;

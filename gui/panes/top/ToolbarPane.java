@@ -1,7 +1,7 @@
 package application.gui.panes.top;
 
-import application.database.list.CustomList;
-import application.database.object.DataObject;
+import application.data.list.CustomList;
+import application.data.object.DataObject;
 import application.gui.decorator.SizeUtil;
 import application.gui.nodes.ClickMenu;
 import application.gui.nodes.buttons.ButtonTemplates;
@@ -47,7 +47,7 @@ public class ToolbarPane extends TitleBar implements NodeBase {
 	}
 	
 	public boolean reload() {
-		DataObject currentTarget = Instances.getTarget().getCurrentTarget();
+		DataObject currentTarget = Instances.getTarget().get();
 		if (currentTarget.getJointID() != 0) {
 			CustomList<DataObject> jointObject = currentTarget.getJointObjects();
 			String jointGroupIndex = (jointObject.indexOf(currentTarget) + 1) + "/" + jointObject.size();

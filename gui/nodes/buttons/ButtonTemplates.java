@@ -1,10 +1,10 @@
 package application.gui.nodes.buttons;
 
-import application.controller.Reload;
-import application.database.list.DataObjectList;
-import application.database.list.TagListMain;
-import application.database.object.DataObject;
-import application.database.object.TagObject;
+import application.control.Reload;
+import application.data.list.DataList;
+import application.data.list.TagListMain;
+import application.data.object.DataObject;
+import application.data.object.TagObject;
 import application.gui.nodes.ClickMenu;
 import application.gui.nodes.simple.TextNode;
 import application.gui.panes.side.FilterPane;
@@ -32,7 +32,7 @@ public enum ButtonTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Open", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				String fullPath = Instances.getTarget().getCurrentTarget().getPath();
+				String fullPath = Instances.getTarget().get().getPath();
 				try {
 					Desktop.getDesktop().open(new File(fullPath));
 				} catch (IOException e) {
@@ -48,7 +48,7 @@ public enum ButtonTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Edit", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				String fullPath = Instances.getTarget().getCurrentTarget().getPath();
+				String fullPath = Instances.getTarget().get().getPath();
 				try {
 					Runtime.getRuntime().exec("mspaint.exe " + fullPath);
 				} catch (IOException e) {
@@ -64,7 +64,7 @@ public enum ButtonTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Copy File Name", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClipboardUtil.setClipboardContent(Instances.getTarget().getCurrentTarget().getName());
+				ClipboardUtil.setClipboardContent(Instances.getTarget().get().getName());
 				ClickMenu.hideAll();
 			});
 			return textNode;
@@ -74,7 +74,7 @@ public enum ButtonTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Copy File Path", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClipboardUtil.setClipboardContent(Instances.getTarget().getCurrentTarget().getPath());
+				ClipboardUtil.setClipboardContent(Instances.getTarget().get().getPath());
 				ClickMenu.hideAll();
 			});
 			return textNode;
@@ -94,7 +94,7 @@ public enum ButtonTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Reverse Image Search", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				HttpUtil.googleReverseImageSearch(Instances.getTarget().getCurrentTarget());
+				HttpUtil.googleReverseImageSearch(Instances.getTarget().get());
 				ClickMenu.hideAll();
 			});
 			return textNode;
@@ -105,7 +105,7 @@ public enum ButtonTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Show Similar Files", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				Instances.getFilter().showSimilar(Instances.getTarget().getCurrentTarget());
+				Instances.getFilter().showSimilar(Instances.getTarget().get());
 				Instances.getReload().doReload();
 				ClickMenu.hideAll();
 			});
@@ -190,10 +190,10 @@ public enum ButtonTemplates {
 	},
 	TAG_REMOVE {
 		public TextNode get() {
-			DataObjectList dataObjectListMain = Instances.getObjectListMain();
+			DataList dataListMain = Instances.getDataListMain();
 			FilterPane filterPane = Instances.getFilterPane();
 			SelectPane selectPane = Instances.getSelectPane();
-			TagListMain tagListMain = Instances.getTagListMain();
+			TagListMain tagsListMain = Instances.getTagListMain();
 			
 			TextNode textNode = new TextNode("Remove", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
@@ -201,19 +201,19 @@ public enum ButtonTemplates {
 				String name = ClickMenu.getName();
 				if (name.isEmpty()) {
 					if (Stages.getOkCancelStage()._show("Remove \"" + group + " \" and all of its tags?")) {
-						for (String n : tagListMain.getNames(group)) {
-							TagObject tagObject = tagListMain.getTagObject(group, n);
-							dataObjectListMain.forEach(dataObject -> dataObject.getTagList().remove(tagObject));
-							tagListMain.remove(tagObject);
+						for (String n : tagsListMain.getNames(group)) {
+							TagObject tagObject = tagsListMain.getTagObject(group, n);
+							dataListMain.forEach(dataObject -> dataObject.getTagList().remove(tagObject));
+							tagsListMain.remove(tagObject);
 							filterPane.removeNameNode(group, n);
 							selectPane.removeNameNode(group, n);
 						}
 					}
 				} else {
-					TagObject tagObject = tagListMain.getTagObject(group, name);
+					TagObject tagObject = tagsListMain.getTagObject(group, name);
 					if (Stages.getOkCancelStage()._show("Remove \"" + tagObject.getFull() + "\" ?")) {
-						dataObjectListMain.forEach(dataObject -> dataObject.getTagList().remove(tagObject));
-						tagListMain.remove(tagObject);
+						dataListMain.forEach(dataObject -> dataObject.getTagList().remove(tagObject));
+						tagsListMain.remove(tagObject);
 						filterPane.removeNameNode(group, name);
 						selectPane.removeNameNode(group, name);
 					}
@@ -254,7 +254,7 @@ public enum ButtonTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Save", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				Instances.getObjectListMain().writeToDisk();
+				Instances.getDataListMain().writeToDisk();
 				Instances.getTagListMain().writeDummyToDisk();
 				ClickMenu.hideAll();
 			});
@@ -302,7 +302,7 @@ public enum ButtonTemplates {
 			Instances.getGalleryPane().getTilePane().getChildren().remove(dataObject.getGalleryTile());
 			Instances.getSelect().remove(dataObject);
 			Instances.getFilter().remove(dataObject);
-			Instances.getObjectListMain().remove(dataObject);
+			Instances.getDataListMain().remove(dataObject);
 		}
 	}
 	private void deleteSelection() {
@@ -331,9 +331,9 @@ public enum ButtonTemplates {
 		}
 	}
 	private void deleteCurrentTarget() {
-		DataObject currentTarget = Instances.getTarget().getCurrentTarget();
+		DataObject currentTarget = Instances.getTarget().get();
 		if (currentTarget.getJointID() == 0 || Instances.getGalleryPane().getExpandedGroups().contains(currentTarget.getJointID())) {
-			String sourcePath = Instances.getTarget().getCurrentTarget().getPath();
+			String sourcePath = Instances.getTarget().get().getPath();
 			YesNoCancelStage.Result result = Stages.getYesNoCancelStage()._show("Delete file: " + sourcePath + "?");
 			if (result == YesNoCancelStage.Result.YES) {
 				Instances.getTarget().storePosition();

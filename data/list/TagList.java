@@ -1,6 +1,6 @@
-package application.database.list;
+package application.data.list;
 
-import application.database.object.TagObject;
+import application.data.object.TagObject;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -17,7 +17,7 @@ public class TagList extends CustomList<TagObject> {
 		return false;
 	}
 	public void sort() {
-		super.sort(TagObject.getComparator());
+		super.sort(Comparator.comparing(TagObject::getFull));
 	}
 	
 	public ArrayList<String> getGroups() {
@@ -55,13 +55,6 @@ public class TagList extends CustomList<TagObject> {
 	public TagObject getTagObject(TagObject tagObject) {
 		String tagObjectGroup = tagObject.getGroup();
 		String tagObjectName = tagObject.getName();
-		return getTagObject(tagObjectGroup, tagObjectName);
-	}
-	public TagObject getTagObject(String groupAndName) {
-		if (!groupAndName.contains(" - ")) return null;
-		String[] split = groupAndName.split(" - ");
-		String tagObjectGroup = split[0].trim();
-		String tagObjectName = split[1].trim();
 		return getTagObject(tagObjectGroup, tagObjectName);
 	}
 }

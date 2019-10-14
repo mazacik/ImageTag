@@ -1,8 +1,8 @@
-package application.controller;
+package application.control;
 
-import application.database.list.CustomList;
-import application.database.list.DataObjectList;
-import application.database.object.DataObject;
+import application.data.list.CustomList;
+import application.data.list.DataList;
+import application.data.object.DataObject;
 import application.gui.panes.NodeBase;
 import application.gui.panes.center.GalleryTile;
 import application.main.Instances;
@@ -55,8 +55,8 @@ public class Reload {
 			}
 		}
 		
-		DataObjectList visibleObjects = Instances.getGalleryPane().getDataObjectsOfTiles();
-		DataObjectList helper = new DataObjectList();
+		DataList visibleObjects = Instances.getGalleryPane().getDataObjectsOfTiles();
+		DataList helper = new DataList();
 		for (DataObject dataObject : needsTileEffect) {
 			if (visibleObjects.contains(dataObject)) {
 				dataObject.getGalleryTile().generateEffect();
@@ -80,8 +80,8 @@ public class Reload {
 	public void requestTileEffect(GalleryTile galleryTile) {
 		needsTileEffect.add(galleryTile.getParentDataObject());
 	}
-	public void requestTileEffect(DataObjectList dataObjectList) {
-		needsTileEffect.addAll(dataObjectList);
+	public void requestTileEffect(DataList dataList) {
+		needsTileEffect.addAll(dataList);
 	}
 	public void requestTileEffect(DataObject dataObject) {
 		needsTileEffect.add(dataObject);

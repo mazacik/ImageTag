@@ -1,23 +1,22 @@
-package application.database.list;
+package application.data.list;
 
-import application.controller.Filter;
-import application.database.object.DataObject;
-import application.database.object.TagObject;
+import application.control.Filter;
+import application.data.object.DataObject;
+import application.data.object.TagObject;
 import application.main.Instances;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 
-public class DataObjectList extends CustomList<DataObject> {
-	public DataObjectList() {
+public class DataList extends CustomList<DataObject> {
+	public DataList() {
 	
 	}
-	public DataObjectList(DataObject... dataObjects) {
+	public DataList(DataObject... dataObjects) {
 		this.addAll(Arrays.asList(dataObjects));
 	}
-	public DataObjectList(Collection<? extends DataObject> c) {
+	public DataList(Collection<? extends DataObject> c) {
 		super(c);
 	}
 	
@@ -69,18 +68,18 @@ public class DataObjectList extends CustomList<DataObject> {
 		return jointIDs;
 	}
 	
-	public DataObject getRandom(ArrayList<DataObject> arrayList) {
-		DataObject dataObject = super.getRandom(arrayList);
+	public DataObject getRandom(CustomList<DataObject> customList) {
+		DataObject dataObject = customList.getRandom();
 		if (dataObject != null) {
 			if (dataObject.getJointID() == 0) return dataObject;
 			else {
 				//use sort-into-comparison algorithm if this is too slow or if too bored
 				Filter filter = Instances.getFilter();
-				CustomList<DataObject> jointObjectObjectsThatAlsoPassFilter = new CustomList<>();
+				CustomList<DataObject> jointObjectsThatAlsoPassFilter = new CustomList<>();
 				for (DataObject jointObject : dataObject.getJointObjects()) {
-					if (filter.contains(jointObject)) jointObjectObjectsThatAlsoPassFilter.add(jointObject);
+					if (filter.contains(jointObject)) jointObjectsThatAlsoPassFilter.add(jointObject);
 				}
-				return super.getRandom(jointObjectObjectsThatAlsoPassFilter); // run again in case of a group-hidden object being chosen
+				return jointObjectsThatAlsoPassFilter.getRandom(); // run again in case of a group-hidden object being chosen
 			}
 		} else return null;
 	}

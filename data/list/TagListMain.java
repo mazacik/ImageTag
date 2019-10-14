@@ -1,8 +1,8 @@
-package application.database.list;
+package application.data.list;
 
-import application.controller.Reload;
-import application.database.object.DataObject;
-import application.database.object.TagObject;
+import application.control.Reload;
+import application.data.object.DataObject;
+import application.data.object.TagObject;
 import application.gui.stage.Stages;
 import application.main.Instances;
 import application.misc.FileUtil;
@@ -14,7 +14,7 @@ import java.lang.reflect.Type;
 
 public class TagListMain extends TagList {
 	public void initialize() {
-		for (DataObject dataIterator : Instances.getObjectListMain()) {
+		for (DataObject dataIterator : Instances.getDataListMain()) {
 			TagList tagList = dataIterator.getTagList();
 			for (TagObject tagIterator : tagList) {
 				if (this.contains(tagIterator)) {

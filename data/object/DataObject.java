@@ -1,8 +1,8 @@
-package application.database.object;
+package application.data.object;
 
-import application.database.list.DataObjectList;
-import application.database.list.TagList;
-import application.database.loader.utils.ThumbnailCreator;
+import application.data.list.DataList;
+import application.data.list.TagList;
+import application.data.loader.utils.ThumbnailCreator;
 import application.gui.panes.center.GalleryTile;
 import application.main.Instances;
 import application.misc.FileUtil;
@@ -21,6 +21,10 @@ public class DataObject implements Serializable {
 	private transient String path;
 	private transient GalleryTile galleryTile;
 	
+	protected DataObject() {
+	
+	}
+	
 	public DataObject(File file) {
 		this.name = file.getName();
 		this.size = file.length();
@@ -33,12 +37,12 @@ public class DataObject implements Serializable {
 	public void requestTileEffect() {
 		Instances.getReload().requestTileEffect(this);
 	}
-	public DataObjectList getJointObjects() {
+	public DataList getJointObjects() {
 		if (jointID == 0) {
-			return new DataObjectList();
+			return new DataList();
 		} else {
-			DataObjectList jointObjects = new DataObjectList();
-			for (DataObject dataObject : Instances.getObjectListMain()) {
+			DataList jointObjects = new DataList();
+			for (DataObject dataObject : Instances.getDataListMain()) {
 				if (dataObject.getJointID() == jointID) {
 					jointObjects.add(dataObject);
 				}

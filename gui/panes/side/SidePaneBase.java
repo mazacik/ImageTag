@@ -1,7 +1,7 @@
 package application.gui.panes.side;
 
-import application.database.list.CustomList;
-import application.database.object.TagObject;
+import application.data.list.CustomList;
+import application.data.object.TagObject;
 import application.gui.decorator.SizeUtil;
 import application.gui.nodes.simple.TextNode;
 import application.gui.panes.NodeBase;

@@ -1,15 +1,15 @@
-package application.controller;
+package application.control;
 
-import application.database.list.CustomList;
-import application.database.list.DataObjectList;
-import application.database.list.TagList;
-import application.database.object.DataObject;
-import application.database.object.TagObject;
+import application.data.list.CustomList;
+import application.data.list.DataList;
+import application.data.list.TagList;
+import application.data.object.DataObject;
+import application.data.object.TagObject;
 import application.main.Instances;
 
 import java.util.ArrayList;
 
-public class Filter extends DataObjectList {
+public class Filter extends DataList {
 	private final TagList infoListWhite;
 	private final TagList infoListBlack;
 	
@@ -39,7 +39,7 @@ public class Filter extends DataObjectList {
 			return false;
 		}
 	}
-	public void setAll(DataObjectList dataObjects) {
+	public void setAll(DataList dataObjects) {
 		if (super.setAll(dataObjects)) {
 			Instances.getReload().notify(Reload.Control.FILTER);
 		}
@@ -57,7 +57,7 @@ public class Filter extends DataObjectList {
 	public void refresh() {
 		Instances.getFilter().clear();
 		
-		for (DataObject dataObject : Instances.getObjectListMain()) {
+		for (DataObject dataObject : Instances.getDataListMain()) {
 			switch (dataObject.getFileType()) {
 				case IMAGE:
 					if (!showImages) continue;
@@ -80,14 +80,14 @@ public class Filter extends DataObjectList {
 			}
 		}
 		
-		if (!this.contains(Instances.getTarget().getCurrentTarget())) Instances.getTarget().set(this.getFirst());
+		if (!this.contains(Instances.getTarget().get())) Instances.getTarget().set(this.getFirst());
 		
 		CustomList<DataObject> selectHelper = new CustomList<>();
 		for (DataObject dataObject : Instances.getSelect()) {
 			if (!this.contains(dataObject)) selectHelper.add(dataObject);
 		}
 		Instances.getSelect().removeAll(selectHelper);
-		if (Instances.getSelect().isEmpty()) Instances.getSelect().set(Instances.getTarget().getCurrentTarget());
+		if (Instances.getSelect().isEmpty()) Instances.getSelect().set(Instances.getTarget().get());
 		
 		//Instances.getGalleryPane().adjustViewportToCurrentTarget();
 	}
@@ -100,7 +100,7 @@ public class Filter extends DataObjectList {
 		Instances.getFilter().clear();
 		
 		TagList query = dataObject.getTagList();
-		for (DataObject iterator : Instances.getObjectListMain()) {
+		for (DataObject iterator : Instances.getDataListMain()) {
 			if (iterator.getTagList().size() != 0) {
 				ArrayList<TagObject> sameTags = new ArrayList<>(query);
 				sameTags.retainAll(iterator.getTagList());
@@ -115,8 +115,8 @@ public class Filter extends DataObjectList {
 		}
 	}
 	
-	private final DataObjectList currentSessionObjects = new DataObjectList();
-	public DataObjectList getCurrentSessionObjects() {
+	private final DataList currentSessionObjects = new DataList();
+	public DataList getCurrentSessionObjects() {
 		return currentSessionObjects;
 	}
 	

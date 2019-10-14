@@ -1,8 +1,8 @@
-package application.controller;
+package application.control;
 
-import application.database.list.CustomList;
-import application.database.list.DataObjectList;
-import application.database.object.DataObject;
+import application.data.list.CustomList;
+import application.data.list.DataList;
+import application.data.object.DataObject;
 import application.gui.panes.center.GalleryPane;
 import application.main.Instances;
 import application.misc.enums.Direction;
@@ -15,46 +15,46 @@ public class Target {
 	
 	}
 	
-	private DataObject currentTarget = null;
-	public DataObject getCurrentTarget() {
-		if (currentTarget == null && !Instances.getObjectListMain().isEmpty()) {
-			currentTarget = Instances.getObjectListMain().get(0);
+	private DataObject dataObject = null;
+	public DataObject get() {
+		if (dataObject == null && !Instances.getDataListMain().isEmpty()) {
+			dataObject = Instances.getDataListMain().get(0);
 		}
-		return currentTarget;
+		return dataObject;
 	}
 	
 	public void set(DataObject dataObject) {
-		if (dataObject == null || dataObject == currentTarget) return;
+		if (dataObject == null || dataObject == this.dataObject) return;
 		
-		Instances.getReload().requestTileEffect(currentTarget);
+		Instances.getReload().requestTileEffect(this.dataObject);
 		Instances.getReload().requestTileEffect(dataObject);
 		
-		currentTarget = dataObject;
+		this.dataObject = dataObject;
 		
 		Instances.getGalleryPane().adjustViewportToTarget();
 		Instances.getReload().notify(Reload.Control.TARGET);
 		Logger.getGlobal().info(dataObject.getName());
 	}
 	public void move(Direction direction) {
-		if (currentTarget == null) return;
+		if (dataObject == null) return;
 		
 		GalleryPane galleryPane = Instances.getGalleryPane();
-		DataObjectList dataObjects = galleryPane.getDataObjectsOfTiles();
+		DataList dataObjects = galleryPane.getDataObjectsOfTiles();
 		
 		if (dataObjects.isEmpty()) return;
 		
 		int currentTargetIndex;
-		if (currentTarget.getJointID() == 0) {
-			currentTargetIndex = dataObjects.indexOf(currentTarget);
+		if (dataObject.getJointID() == 0) {
+			currentTargetIndex = dataObjects.indexOf(dataObject);
 		} else {
-			if (galleryPane.getExpandedGroups().contains(currentTarget.getJointID())) {
-				currentTargetIndex = dataObjects.indexOf(currentTarget);
+			if (galleryPane.getExpandedGroups().contains(dataObject.getJointID())) {
+				currentTargetIndex = dataObjects.indexOf(dataObject);
 			} else {
-				DataObject groupFirst = currentTarget.getJointObjects().getFirst();
+				DataObject groupFirst = dataObject.getJointObjects().getFirst();
 				if (dataObjects.contains(groupFirst)) {
 					currentTargetIndex = dataObjects.indexOf(groupFirst);
 				} else {
-					currentTargetIndex = dataObjects.indexOf(currentTarget);
+					currentTargetIndex = dataObjects.indexOf(dataObject);
 				}
 			}
 		}
@@ -105,21 +105,21 @@ public class Target {
 		CustomList<Integer> expandedJointObjects = Instances.getGalleryPane().getExpandedGroups();
 		CustomList<DataObject> visibleDataObjects = Instances.getGalleryPane().getDataObjectsOfTiles();
 		
-		if (currentTarget.getJointID() == 0) {
-			storeObject = currentTarget;
-			storePos = visibleDataObjects.indexOf(currentTarget);
+		if (dataObject.getJointID() == 0) {
+			storeObject = dataObject;
+			storePos = visibleDataObjects.indexOf(dataObject);
 		} else {
-			if (expandedJointObjects.contains(currentTarget.getJointID())) {
-				storeObject = currentTarget;
-				storePos = visibleDataObjects.indexOf(currentTarget);
+			if (expandedJointObjects.contains(dataObject.getJointID())) {
+				storeObject = dataObject;
+				storePos = visibleDataObjects.indexOf(dataObject);
 			} else {
-				storeObject = currentTarget.getJointObjects().getFirst();
+				storeObject = dataObject.getJointObjects().getFirst();
 				storePos = visibleDataObjects.indexOf(storeObject);
 			}
 		}
 	}
 	public DataObject restorePosition() {
-		DataObjectList visibleObjects = Instances.getGalleryPane().getDataObjectsOfTiles();
+		DataList visibleObjects = Instances.getGalleryPane().getDataObjectsOfTiles();
 		if (!visibleObjects.isEmpty()) {
 			if (storeObject != null && visibleObjects.contains(storeObject)) {
 				this.set(storeObject);

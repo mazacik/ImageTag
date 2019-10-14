@@ -1,6 +1,6 @@
 package application.gui.stage;
 
-import application.database.object.TagObject;
+import application.data.object.TagObject;
 import application.gui.nodes.NodeUtil;
 import application.gui.nodes.simple.CheckboxNode;
 import application.gui.nodes.simple.EditNode;

@@ -1,6 +1,6 @@
 package application.gui.stage;
 
-import application.controller.Filter;
+import application.control.Filter;
 import application.gui.nodes.custom.SwitchNode;
 import application.gui.nodes.custom.SwitchNodeWithTitle;
 import application.gui.nodes.simple.CheckboxNode;

@@ -1,4 +1,4 @@
-package application.database.loader;
+package application.data.loader;
 
 import application.misc.JsonUtil;
 

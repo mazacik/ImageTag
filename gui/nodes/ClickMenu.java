@@ -1,6 +1,6 @@
 package application.gui.nodes;
 
-import application.database.list.CustomList;
+import application.data.list.CustomList;
 import application.gui.decorator.ColorUtil;
 import application.gui.nodes.buttons.ButtonTemplates;
 import application.gui.nodes.simple.SeparatorNode;

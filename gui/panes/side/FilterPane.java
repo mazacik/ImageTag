@@ -1,7 +1,7 @@
 package application.gui.panes.side;
 
-import application.controller.Filter;
-import application.database.object.TagObject;
+import application.control.Filter;
+import application.data.object.TagObject;
 import application.gui.decorator.ColorUtil;
 import application.gui.nodes.NodeUtil;
 import application.gui.nodes.simple.TextNode;

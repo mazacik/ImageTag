@@ -1,6 +1,6 @@
 package application.gui.panes.side;
 
-import application.database.list.CustomList;
+import application.data.list.CustomList;
 import application.gui.decorator.ColorUtil;
 import application.gui.nodes.ClickMenu;
 import application.gui.nodes.simple.TextNode;

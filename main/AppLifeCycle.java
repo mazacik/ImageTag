@@ -1,19 +1,26 @@
 package application.main;
 
-import application.database.loader.LoaderThread;
-import application.database.loader.Project;
-import application.gui.panes.center.VideoPlayer;
+import application.data.loader.LoaderThread;
+import application.data.loader.Project;
 import application.gui.stage.Stages;
 import application.misc.FileUtil;
 
 import java.io.File;
 
-public abstract class LifeCycle {
-	public static void initialize() {
-		VideoPlayer.checkVLCLibs();
-		Instances.createInstances();
+public abstract class AppLifeCycle {
+	public static void init() {
+		setSystemProperties();
+		Instances.init();
+		showGUI();
+	}
+	
+	private static void setSystemProperties() {
+		System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %2$s: %5$s%n");
+	}
+	private static void showGUI() {
 		Stages.getIntroStage()._show();
 	}
+	
 	public static void startLoading(Project project) {
 		Stages.getIntroStage().close();
 		String projectFilePath = project.getProjectFullPath();

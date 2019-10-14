@@ -1,4 +1,4 @@
-package application.database.list;
+package application.data.list;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +15,7 @@ public class CustomList<T> extends ArrayList<T> {
 	/*
 	 * Local method addAll() is using the local method add().
 	 * However, for some reason, in classes extending this one,
-	 * the LOCAL addAll() was being directed at THEIR add() method
+	 * their addAll() was being directed at THEIR add() method
 	 * instead of the local add(), often creating an unwanted loop.
 	 * _add is a workaround to this issue.
 	 */
@@ -27,10 +27,13 @@ public class CustomList<T> extends ArrayList<T> {
 	public boolean add(T t) {
 		return _add(t);
 	}
+	public void add(int index, T t) {
+		if (t != null && !super.contains(t)) super.add(index, t);
+	}
 	public boolean addAll(Collection<? extends T> c) {
-		int n = c.size();
-		for (T t : c) _add(t);
-		return n == c.size();
+		int size = this.size();
+		for (T t : c) this._add(t);
+		return size != c.size();
 	}
 	public boolean setAll(Collection<? extends T> c) {
 		this.clear();
@@ -44,20 +47,16 @@ public class CustomList<T> extends ArrayList<T> {
 	}
 	
 	public T getFirst() {
-		if (this == null || this.isEmpty()) return null;
-		else return this.get(0);
+		if (this.isEmpty()) return null;
+		return this.get(0);
 	}
 	public T getLast() {
-		if (this == null || this.isEmpty()) return null;
-		else return this.get(this.size() - 1);
+		if (this.isEmpty()) return null;
+		return this.get(this.size() - 1);
 	}
 	public T getRandom() {
-		return this.getRandom(this);
-	}
-	public T getRandom(ArrayList<T> arrayList) {
-		if (arrayList != null && !arrayList.isEmpty()) {
-			int index = new Random().nextInt(arrayList.size());
-			return arrayList.get(index);
-		} else return null;
+		if (this.isEmpty()) return null;
+		int index = new Random().nextInt(this.size());
+		return this.get(index);
 	}
 }

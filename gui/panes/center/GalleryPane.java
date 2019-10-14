@@ -1,9 +1,9 @@
 package application.gui.panes.center;
 
-import application.database.list.CustomList;
-import application.database.list.DataObjectList;
-import application.database.loader.utils.ThumbnailReader;
-import application.database.object.DataObject;
+import application.data.list.CustomList;
+import application.data.list.DataList;
+import application.data.loader.utils.ThumbnailReader;
+import application.data.object.DataObject;
 import application.gui.decorator.SizeUtil;
 import application.gui.nodes.ClickMenu;
 import application.gui.panes.NodeBase;
@@ -160,7 +160,7 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 	public void adjustViewportToTarget() {
 		this.layout();
 		
-		DataObject currentTarget = Instances.getTarget().getCurrentTarget();
+		DataObject currentTarget = Instances.getTarget().get();
 		if (Stages.getMainStage().isFullView() || currentTarget == null) return;
 		if (currentTarget.getJointID() != 0 && !expandedGroups.contains(currentTarget.getJointID())) {
 			currentTarget = currentTarget.getJointObjects().getFirst();
@@ -213,8 +213,8 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 			}
 		}
 	}
-	public DataObjectList getDataObjectsOfTiles() {
-		DataObjectList dataObjects = new DataObjectList();
+	public DataList getDataObjectsOfTiles() {
+		DataList dataObjects = new DataList();
 		tilePane.getChildren().forEach(tile -> dataObjects.add(((GalleryTile) tile).getParentDataObject()));
 		return dataObjects;
 	}
@@ -258,8 +258,8 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 		selectRectangle.setX(Math.min(selectRectangleX, eventX));
 		selectRectangle.setY(Math.min(selectRectangleY, eventY));
 	}
-	private DataObjectList getSelectRectangleTiles() {
-		DataObjectList intersectingTiles = new DataObjectList();
+	private DataList getSelectRectangleTiles() {
+		DataList intersectingTiles = new DataList();
 		
 		Bounds rectBounds = selectRectangle.localToScene(selectRectangle.getBoundsInLocal());
 		for (GalleryTile galleryTile : getTilesInViewport()) {
