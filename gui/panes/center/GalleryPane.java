@@ -27,21 +27,16 @@ import java.util.ArrayList;
 public class GalleryPane extends ScrollPane implements NodeBase {
 	private final TilePane tilePane;
 	private final CustomList<Integer> expandedGroups;
+	
 	private final Rectangle selectRectangle;
 	private double selectRectangleX;
 	private double selectRectangleY;
 	private boolean selectRectangleVisible;
+	private double lastCursorPositionX;
+	private double lastCursorPositionY;
 	
 	public GalleryPane() {
 		needsReload = false;
-		
-		selectRectangle = new Rectangle(0, 0, Color.GRAY);
-		selectRectangle.setStroke(Color.BLACK);
-		selectRectangle.setStrokeWidth(1);
-		selectRectangle.setOpacity(0.5);
-		selectRectangleX = 0;
-		selectRectangleY = 0;
-		selectRectangleVisible = false;
 		
 		tilePane = new TilePane(30, 30);
 		tilePane.setPadding(new Insets(5, 5, 25, 5));
@@ -51,11 +46,19 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 		tilePane.addEventFilter(MouseEvent.MOUSE_PRESSED, this::onMousePress);
 		tilePane.addEventFilter(MouseEvent.MOUSE_DRAGGED, this::onMouseDrag);
 		tilePane.addEventFilter(MouseEvent.MOUSE_RELEASED, this::onMouseRelease);
-		tilePane.addEventFilter(ScrollEvent.SCROLL, this::onScroll);
 		
 		expandedGroups = new CustomList<>();
 		
-		this.vvalueProperty().addListener((observable, oldValue, newValue) -> updateViewportTilesVisibility());
+		selectRectangle = new Rectangle(0, 0, Color.GRAY);
+		selectRectangle.setStroke(Color.BLACK);
+		selectRectangle.setStrokeWidth(1);
+		selectRectangle.setOpacity(0.5);
+		selectRectangleX = 0;
+		selectRectangleY = 0;
+		selectRectangleVisible = false;
+		lastCursorPositionX = 0;
+		lastCursorPositionY = 0;
+		
 		this.setBackground(Background.EMPTY);
 		this.setMaxWidth(1);
 		this.getChildren().add(tilePane);
@@ -63,6 +66,8 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 		this.setHbarPolicy(ScrollBarPolicy.NEVER);
 		this.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
 		this.setPrefViewportHeight(SizeUtil.getUsableScreenHeight());
+		this.addEventFilter(ScrollEvent.SCROLL, this::onScroll);
+		this.vvalueProperty().addListener((observable, oldValue, newValue) -> updateViewportTilesVisibility());
 	}
 	
 	private void onMouseClick(MouseEvent event) {
@@ -79,8 +84,10 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 		switch (event.getButton()) {
 			case PRIMARY:
 				ClickMenu.hideAll();
+				lastCursorPositionX = event.getX();
+				lastCursorPositionY = this.getContentY(event);
 				selectRectangleX = event.getX();
-				selectRectangleY = this.sceneToLocal(tilePane.localToScene(event.getX(), event.getY())).getY();
+				selectRectangleY = this.getContentY(event);
 				break;
 			case SECONDARY:
 				break;
@@ -88,20 +95,27 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 	}
 	private void onMouseDrag(MouseEvent event) {
 		if (event.getButton() == MouseButton.PRIMARY) {
-			double eventY = this.sceneToLocal(tilePane.localToScene(event.getX(), event.getY())).getY();
-			double width = Math.abs(event.getX() - selectRectangleX);
-			double height = Math.abs(eventY - selectRectangleY);
+			lastCursorPositionX = event.getX();
+			lastCursorPositionY = this.getContentY(event);
+			double width = Math.abs(lastCursorPositionX - selectRectangleX);
+			double height = Math.abs(lastCursorPositionY - selectRectangleY);
 			
 			if (!selectRectangleVisible) {
 				if (width >= 5 || height >= 5) {
 					selectRectangleVisible = true;
 					this.getChildren().add(selectRectangle);
-					updateSelectRectangle(event.getX(), eventY, width, height);
+					selectRectangle.setWidth(width);
+					selectRectangle.setHeight(height);
+					selectRectangle.setX(Math.min(selectRectangleX, lastCursorPositionX));
+					selectRectangle.setY(Math.min(selectRectangleY, lastCursorPositionY));
 				}
 			} else {
-				updateSelectRectangle(event.getX(), eventY, width, height);
+				selectRectangle.setWidth(width);
+				selectRectangle.setHeight(height);
+				selectRectangle.setX(Math.min(selectRectangleX, lastCursorPositionX));
+				selectRectangle.setY(Math.min(selectRectangleY, lastCursorPositionY));
 				
-				//todo add a cooldown timer if necessary
+				//add a cooldown timer if necessary
 				CustomList<DataObject> intersectingTiles = getSelectRectangleTiles();
 				
 				if (Stages.getMainStage().isShiftDown()) {
@@ -128,33 +142,79 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 		}
 	}
 	private void onScroll(ScrollEvent event) {
-		double paddingFix = (tilePane.getPadding().getTop() + tilePane.getPadding().getBottom()) / 2;
-		double contentHeight = tilePane.getHeight() - paddingFix;
-		double rowHeight = tilePane.getPrefTileHeight() + tilePane.getVgap() - paddingFix;
-		double rowToContentRatio = rowHeight / contentHeight;
+		//todo fix rectangle direction change
 		
-		//todo fix a bug when the box is "changing direction"
+		event.consume();
+		
+		//if something broke after changing tilePane padding or tilePane vGap, change paddingFix
+		double paddingFix = (tilePane.getPadding().getTop() + tilePane.getPadding().getBottom()) / 2;
+		double rowHeight = tilePane.getHeight() / getRowCount();
+		double contentHeight = tilePane.getHeight() - paddingFix;
+		double rowToContentRatio = (rowHeight + 25) / contentHeight;
+		double currentVvalue = this.getVvalue();
+		
 		if (event.getDeltaY() > 0) {
-			//scroll-up
-			this.setVvalue(this.getVvalue() - rowToContentRatio);
+			//mouse-scroll-up
+			this.setVvalue(currentVvalue - rowToContentRatio);
 			
-			double actualRowHeight = tilePane.getPrefTileHeight() + tilePane.getVgap();
-			double rectHeight = selectRectangle.getHeight() - actualRowHeight;
-			selectRectangleY += actualRowHeight;
+			//top-of-content fix
+			if (currentVvalue == 0) return;
 			
-			selectRectangle.setHeight(rectHeight);
-			selectRectangle.setY(selectRectangleY);
+			double minY = Math.abs(this.getViewportBounds().getMinY());
+			double pxChange = rowHeight;
+			if (minY - rowHeight < 0) {
+				pxChange = minY;
+			}
+			//top-of-content fixed
+			
+			if (lastCursorPositionY > selectRectangleY) {
+				//cursor y below rect y
+				double rectHeight = selectRectangle.getHeight() - pxChange;
+				selectRectangleY += pxChange;
+				selectRectangle.setHeight(rectHeight);
+				selectRectangle.setY(selectRectangleY);
+			} else {
+				//cursor y above rect y
+				double rectHeight = selectRectangle.getHeight() + pxChange;
+				selectRectangleY += pxChange;
+				selectRectangle.setHeight(rectHeight);
+			}
 		} else {
-			//scroll-down
-			this.setVvalue(this.getVvalue() + rowToContentRatio);
+			//mouse-scroll-down
+			this.setVvalue(currentVvalue + rowToContentRatio);
 			
-			double actualRowHeight = tilePane.getPrefTileHeight() + tilePane.getVgap();
-			double rectHeight = selectRectangle.getHeight() + actualRowHeight;
-			selectRectangleY -= actualRowHeight;
+			//bottom-of-content fix
+			if (currentVvalue == 1) return;
 			
-			selectRectangle.setHeight(rectHeight);
-			selectRectangle.setY(selectRectangleY);
+			double viewportHeight = this.getViewportBounds().getHeight();
+			double viewportMinY = Math.abs(this.getViewportBounds().getMaxY());
+			
+			double viewportPositionAfterChange = viewportMinY + viewportHeight + rowHeight;
+			double contentPosition = contentHeight - viewportHeight;
+			
+			double pxChange = rowHeight;
+			if (viewportPositionAfterChange > contentPosition) {
+				pxChange = rowHeight - (viewportPositionAfterChange - contentPosition) + paddingFix;
+			}
+			//bottom-of-content fixed
+			
+			if (lastCursorPositionY > selectRectangleY) {
+				//cursor y below rect y
+				double rectHeight = selectRectangle.getHeight() + pxChange;
+				selectRectangleY -= pxChange;
+				selectRectangle.setHeight(rectHeight);
+				selectRectangle.setY(selectRectangleY);
+			} else {
+				//cursor y above rect y
+				double rectHeight = selectRectangle.getHeight() - pxChange;
+				selectRectangleY -= pxChange;
+				selectRectangle.setHeight(rectHeight);
+			}
 		}
+	}
+	
+	private double getContentY(MouseEvent event) {
+		return this.sceneToLocal(tilePane.localToScene(event.getX(), event.getY())).getY();
 	}
 	
 	public void adjustViewportToTarget() {
@@ -204,7 +264,7 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 				GalleryTile galleryTile = (GalleryTile) node;
 				if (tilesInViewport.contains(galleryTile)) {
 					if (galleryTile.getImage() == null) {
-						galleryTile.setImage(ThumbnailReader.readThumbnail(galleryTile.getParentDataObject()));
+						galleryTile.setImage(ThumbnailReader.readThumbnail(galleryTile.getDataObject()));
 					}
 					galleryTile.setVisible(true);
 				} else {
@@ -215,7 +275,7 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 	}
 	public DataList getDataObjectsOfTiles() {
 		DataList dataObjects = new DataList();
-		tilePane.getChildren().forEach(tile -> dataObjects.add(((GalleryTile) tile).getParentDataObject()));
+		tilePane.getChildren().forEach(tile -> dataObjects.add(((GalleryTile) tile).getDataObject()));
 		return dataObjects;
 	}
 	
@@ -252,12 +312,6 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 		
 		return tilesInViewport;
 	}
-	private void updateSelectRectangle(double eventX, double eventY, double width, double height) {
-		selectRectangle.setWidth(width);
-		selectRectangle.setHeight(height);
-		selectRectangle.setX(Math.min(selectRectangleX, eventX));
-		selectRectangle.setY(Math.min(selectRectangleY, eventY));
-	}
 	private DataList getSelectRectangleTiles() {
 		DataList intersectingTiles = new DataList();
 		
@@ -265,7 +319,7 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 		for (GalleryTile galleryTile : getTilesInViewport()) {
 			Bounds tileBounds = galleryTile.localToScene(galleryTile.getBoundsInLocal());
 			if (rectBounds.intersects(tileBounds)) {
-				intersectingTiles.add(galleryTile.getParentDataObject());
+				intersectingTiles.add(galleryTile.getDataObject());
 			}
 		}
 		
@@ -333,6 +387,9 @@ public class GalleryPane extends ScrollPane implements NodeBase {
 	
 	public int getColumnCount() {
 		return tilePane.getPrefColumns();
+	}
+	public int getRowCount() {
+		return (int) Math.ceil((double) this.getTiles().size() / (double) this.getColumnCount());
 	}
 	public TilePane getTilePane() {
 		return tilePane;
