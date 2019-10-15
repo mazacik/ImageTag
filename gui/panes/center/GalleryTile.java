@@ -24,40 +24,39 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
-//todo refactor
 public class GalleryTile extends Pane {
-	private final DataObject parentDataObject;
+	private final DataObject dataObject;
 	private int groupEffectWidth;
 	private int groupEffectHeight;
 	
 	private ImageView imageView;
-	private BorderPane imageViewHelper;
+	private BorderPane selectHelper;
 	
-	public GalleryTile(DataObject parentDataObject, Image image) {
+	public GalleryTile(DataObject dataObject, Image image) {
+		this.dataObject = dataObject;
+		
 		imageView = new ImageView(image);
-		imageViewHelper = new BorderPane(imageView);
-		imageViewHelper.setPadding(new Insets(10));
+		selectHelper = new BorderPane(imageView);
+		selectHelper.setPadding(new Insets(10));
 		
-		this.getChildren().add(imageViewHelper);
-		this.parentDataObject = parentDataObject;
+		this.getChildren().add(selectHelper);
+		
 		initEvents();
-		
 		ClickMenu.install(imageView, MouseButton.SECONDARY, ClickMenu.StaticInstance.DATA);
 	}
+	
 	public void generateEffect() {
-		if (parentDataObject == null) return;
-		
-		if (Instances.getSelect().contains(parentDataObject)) {
-			imageViewHelper.setBackground(new Background(new BackgroundFill(Color.rgb(120, 120, 120), null, null)));
+		if (Instances.getSelect().contains(dataObject)) {
+			selectHelper.setBackground(new Background(new BackgroundFill(Color.rgb(120, 120, 120), null, null)));
 		} else {
-			imageViewHelper.setBackground(null);
+			selectHelper.setBackground(null);
 		}
 		
-		if (parentDataObject.getJointID() != 0) {
-			imageView.setEffect(this.createEffectJointObject(parentDataObject));
+		if (dataObject.getJointID() != 0) {
+			imageView.setEffect(this.createJointObjectEffect(dataObject));
 		}
 	}
-	private Blend createEffectJointObject(DataObject dataObject) {
+	private Blend createJointObjectEffect(DataObject dataObject) {
 		String middle;
 		CustomList<DataObject> jointObject = dataObject.getJointObjects();
 		if (Instances.getGalleryPane().getExpandedGroups().contains(dataObject.getJointID())) {
@@ -72,7 +71,7 @@ public class GalleryTile extends Pane {
 		int tileSize = Instances.getSettings().getGalleryTileSize();
 		return new Blend(BlendMode.SRC_OVER, null, new ImageInput(imageText, tileSize - imageText.getWidth() - 5, 0));
 	}
-	public static Image textToImage(String text) {
+	public Image textToImage(String text) {
 		TextNode textNode = new TextNode(text);
 		textNode.setTextFill(Color.RED);
 		
@@ -92,8 +91,8 @@ public class GalleryTile extends Pane {
 		this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			switch (event.getButton()) {
 				case PRIMARY:
-					if (wasClickOnGroupButton(event)) {
-						onGroupButtonPress();
+					if (isClickOnGroupEffect(event)) {
+						onGroupEffectClick();
 						Instances.getReload().doReload();
 						Instances.getGalleryPane().updateViewportTilesVisibility();
 					} else {
@@ -107,29 +106,29 @@ public class GalleryTile extends Pane {
 			}
 		});
 		this.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
-			if (Instances.getSelect().contains(parentDataObject)) {
-				imageViewHelper.setBackground(new Background(new BackgroundFill(Color.rgb(150, 150, 150), null, null)));
+			if (Instances.getSelect().contains(dataObject)) {
+				selectHelper.setBackground(new Background(new BackgroundFill(Color.rgb(150, 150, 150), null, null)));
 			} else {
-				imageViewHelper.setBackground(new Background(new BackgroundFill(Color.rgb(90, 90, 90), null, null)));
+				selectHelper.setBackground(new Background(new BackgroundFill(Color.rgb(90, 90, 90), null, null)));
 			}
 		});
 		this.addEventFilter(MouseEvent.MOUSE_EXITED, event -> {
-			if (Instances.getSelect().contains(parentDataObject)) {
-				imageViewHelper.setBackground(new Background(new BackgroundFill(Color.rgb(120, 120, 120), null, null)));
+			if (Instances.getSelect().contains(dataObject)) {
+				selectHelper.setBackground(new Background(new BackgroundFill(Color.rgb(120, 120, 120), null, null)));
 			} else {
-				imageViewHelper.setBackground(null);
+				selectHelper.setBackground(null);
 			}
 		});
 	}
 	private void onLeftClick(MouseEvent event) {
-		Instances.getTarget().set(parentDataObject);
+		Instances.getTarget().set(dataObject);
 		
 		if (event.isControlDown()) {
-			Instances.getSelect().swapState(parentDataObject);
+			Instances.getSelect().swapState(dataObject);
 		} else if (event.isShiftDown()) {
-			Instances.getSelect().shiftSelectTo(parentDataObject);
+			Instances.getSelect().shiftSelectTo(dataObject);
 		} else {
-			Instances.getSelect().set(parentDataObject);
+			Instances.getSelect().set(dataObject);
 		}
 		
 		Instances.getReload().doReload();
@@ -137,28 +136,27 @@ public class GalleryTile extends Pane {
 		ClickMenu.hideAll();
 	}
 	private void onLeftDoubleClick(MouseEvent event) {
-		if (!wasClickOnGroupButton(event)) {
+		if (!isClickOnGroupEffect(event)) {
 			Stages.getMainStage().swapViewMode();
 			Instances.getReload().doReload();
 		}
 	}
 	private void onRightClick() {
-		if (!Instances.getSelect().contains(parentDataObject)) {
-			Instances.getSelect().set(parentDataObject);
+		if (!Instances.getSelect().contains(dataObject)) {
+			Instances.getSelect().set(dataObject);
 		}
 		
-		Instances.getTarget().set(parentDataObject);
+		Instances.getTarget().set(dataObject);
 		Instances.getReload().doReload();
 	}
-	
-	private boolean wasClickOnGroupButton(MouseEvent event) {
+	private boolean isClickOnGroupEffect(MouseEvent event) {
 		int tileSize = Instances.getSettings().getGalleryTileSize();
 		boolean hitWidth = event.getX() >= tileSize - groupEffectWidth - 5;
 		boolean hitHeight = event.getY() <= groupEffectHeight;
 		return hitWidth && hitHeight;
 	}
-	public void onGroupButtonPress() {
-		int jointID = parentDataObject.getJointID();
+	public void onGroupEffectClick() {
+		int jointID = dataObject.getJointID();
 		
 		if (jointID != 0) {
 			CustomList<Integer> expandedGroups = Instances.getGalleryPane().getExpandedGroups();
@@ -173,13 +171,12 @@ public class GalleryTile extends Pane {
 		}
 	}
 	
-	public DataObject getParentDataObject() {
-		return parentDataObject;
+	public DataObject getDataObject() {
+		return dataObject;
 	}
 	public Image getImage() {
 		return imageView.getImage();
 	}
-	
 	public void setImage(Image image) {
 		imageView.setImage(image);
 	}

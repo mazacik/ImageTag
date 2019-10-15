@@ -4,7 +4,6 @@ import application.data.list.CustomList;
 import application.data.list.DataList;
 import application.data.object.DataObject;
 import application.gui.panes.NodeBase;
-import application.gui.panes.center.GalleryTile;
 import application.main.Instances;
 
 import java.util.ArrayList;
@@ -77,9 +76,6 @@ public class Reload {
 		pane.setNeedsReload(true);
 	}
 	
-	public void requestTileEffect(GalleryTile galleryTile) {
-		needsTileEffect.add(galleryTile.getParentDataObject());
-	}
 	public void requestTileEffect(DataList dataList) {
 		needsTileEffect.addAll(dataList);
 	}

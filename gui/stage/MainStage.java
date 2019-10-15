@@ -116,7 +116,7 @@ public class MainStage extends StageBase {
 						reload.doReload();
 						break;
 					case E:
-						target.get().getGalleryTile().onGroupButtonPress();
+						target.get().getGalleryTile().onGroupEffectClick();
 						reload.doReload();
 						break;
 					case R:
