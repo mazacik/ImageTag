@@ -1,0 +1,406 @@
+package application.frontend.pane.center;
+
+import application.backend.base.CustomList;
+import application.backend.base.entity.Entity;
+import application.backend.base.entity.EntityList;
+import application.backend.base.loader.cache.CacheReader;
+import application.backend.util.JointGroupUtil;
+import application.frontend.component.ClickMenu;
+import application.frontend.decorator.SizeUtil;
+import application.frontend.pane.PaneInterface;
+import application.frontend.stage.StageManager;
+import application.main.InstanceCollector;
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.TilePane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+
+public class GalleryPane extends ScrollPane implements PaneInterface, InstanceCollector {
+	private TilePane tilePane;
+	private CustomList<Integer> expandedGroups;
+	
+	private Rectangle selectRectangle;
+	private double selectRectangleX;
+	private double selectRectangleY;
+	private boolean selectRectangleVisible;
+	private double lastCursorPositionX;
+	private double lastCursorPositionY;
+	
+	public GalleryPane() {
+	
+	}
+	
+	public void init() {
+		needsReload = false;
+		
+		tilePane = new TilePane(30, 30);
+		tilePane.setPadding(new Insets(5, 5, 25, 5));
+		tilePane.setPrefTileWidth(SizeUtil.getGalleryTileSize());
+		tilePane.setPrefTileHeight(SizeUtil.getGalleryTileSize());
+		tilePane.addEventFilter(MouseEvent.MOUSE_CLICKED, this::onMouseClick);
+		tilePane.addEventFilter(MouseEvent.MOUSE_PRESSED, this::onMousePress);
+		tilePane.addEventFilter(MouseEvent.MOUSE_DRAGGED, this::onMouseDrag);
+		tilePane.addEventFilter(MouseEvent.MOUSE_RELEASED, this::onMouseRelease);
+		
+		expandedGroups = new CustomList<>();
+		
+		selectRectangle = new Rectangle(0, 0, Color.GRAY);
+		selectRectangle.setStroke(Color.BLACK);
+		selectRectangle.setStrokeWidth(1);
+		selectRectangle.setOpacity(0.5);
+		selectRectangleX = 0;
+		selectRectangleY = 0;
+		selectRectangleVisible = false;
+		lastCursorPositionX = 0;
+		lastCursorPositionY = 0;
+		
+		this.setBackground(Background.EMPTY);
+		this.setMaxWidth(1);
+		this.getChildren().add(tilePane);
+		this.setContent(tilePane);
+		this.setHbarPolicy(ScrollBarPolicy.NEVER);
+		this.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+		this.setPrefViewportHeight(SizeUtil.getUsableScreenHeight());
+		this.addEventFilter(ScrollEvent.SCROLL, this::onScroll);
+		this.vvalueProperty().addListener((observable, oldValue, newValue) -> updateViewportTilesVisibility());
+		
+	}
+	
+	private void onMouseClick(MouseEvent event) {
+		switch (event.getButton()) {
+			case PRIMARY:
+				ClickMenu.hideAll();
+				break;
+			case SECONDARY:
+				ClickMenu.show(tilePane, event, ClickMenu.StaticInstance.SELECT);
+				break;
+		}
+	}
+	private void onMousePress(MouseEvent event) {
+		switch (event.getButton()) {
+			case PRIMARY:
+				ClickMenu.hideAll();
+				lastCursorPositionX = event.getX();
+				lastCursorPositionY = this.getContentY(event);
+				selectRectangleX = event.getX();
+				selectRectangleY = this.getContentY(event);
+				break;
+			case SECONDARY:
+				break;
+		}
+	}
+	private void onMouseDrag(MouseEvent event) {
+		if (event.getButton() == MouseButton.PRIMARY) {
+			lastCursorPositionX = event.getX();
+			lastCursorPositionY = this.getContentY(event);
+			double width = Math.abs(lastCursorPositionX - selectRectangleX);
+			double height = Math.abs(lastCursorPositionY - selectRectangleY);
+			
+			if (!selectRectangleVisible) {
+				if (width >= 5 || height >= 5) {
+					selectRectangleVisible = true;
+					this.getChildren().add(selectRectangle);
+					selectRectangle.setWidth(width);
+					selectRectangle.setHeight(height);
+					selectRectangle.setX(Math.min(selectRectangleX, lastCursorPositionX));
+					selectRectangle.setY(Math.min(selectRectangleY, lastCursorPositionY));
+				}
+			} else {
+				selectRectangle.setWidth(width);
+				selectRectangle.setHeight(height);
+				selectRectangle.setX(Math.min(selectRectangleX, lastCursorPositionX));
+				selectRectangle.setY(Math.min(selectRectangleY, lastCursorPositionY));
+				
+				//add a cooldown timer if necessary
+				CustomList<Entity> intersectingTiles = getSelectRectangleTiles();
+				
+				if (StageManager.getMainStage().isShiftDown()) {
+					select.addAll(intersectingTiles);
+				} else {
+					select.setAll(intersectingTiles);
+				}
+				
+				reload.doReload();
+			}
+		}
+	}
+	private void onMouseRelease(MouseEvent event) {
+		if (selectRectangleVisible && event.getButton() == MouseButton.PRIMARY) {
+			selectRectangle.setWidth(0);
+			selectRectangle.setHeight(0);
+			selectRectangle.setX(0);
+			selectRectangle.setY(0);
+			
+			selectRectangleVisible = false;
+			this.getChildren().remove(selectRectangle);
+			
+			reload.doReload();
+		}
+	}
+	private void onScroll(ScrollEvent event) {
+		//todo fix rectangle direction change
+		
+		event.consume();
+		
+		//if something broke after changing tilePane padding or tilePane vGap, change paddingFix
+		double paddingFix = (tilePane.getPadding().getTop() + tilePane.getPadding().getBottom()) / 2;
+		double rowHeight = tilePane.getHeight() / getRowCount();
+		double contentHeight = tilePane.getHeight() - paddingFix;
+		double rowToContentRatio = (rowHeight + 25) / contentHeight;
+		double currentVvalue = this.getVvalue();
+		
+		if (event.getDeltaY() > 0) {
+			//mouse-scroll-up
+			this.setVvalue(currentVvalue - rowToContentRatio);
+			
+			//top-of-content fix
+			if (currentVvalue == 0) return;
+			
+			double minY = Math.abs(this.getViewportBounds().getMinY());
+			double pxChange = rowHeight;
+			if (minY - rowHeight < 0) {
+				pxChange = minY;
+			}
+			//top-of-content fixed
+			
+			if (lastCursorPositionY > selectRectangleY) {
+				//cursor y below rect y
+				double rectHeight = selectRectangle.getHeight() - pxChange;
+				selectRectangleY += pxChange;
+				selectRectangle.setHeight(rectHeight);
+				selectRectangle.setY(selectRectangleY);
+			} else {
+				//cursor y above rect y
+				double rectHeight = selectRectangle.getHeight() + pxChange;
+				selectRectangleY += pxChange;
+				selectRectangle.setHeight(rectHeight);
+			}
+		} else {
+			//mouse-scroll-down
+			this.setVvalue(currentVvalue + rowToContentRatio);
+			
+			//bottom-of-content fix
+			if (currentVvalue == 1) return;
+			
+			double viewportHeight = this.getViewportBounds().getHeight();
+			double viewportMinY = Math.abs(this.getViewportBounds().getMaxY());
+			
+			double viewportPositionAfterChange = viewportMinY + viewportHeight + rowHeight;
+			double contentPosition = contentHeight - viewportHeight;
+			
+			double pxChange = rowHeight;
+			if (viewportPositionAfterChange > contentPosition) {
+				pxChange = rowHeight - (viewportPositionAfterChange - contentPosition) + paddingFix;
+			}
+			//bottom-of-content fixed
+			
+			if (lastCursorPositionY > selectRectangleY) {
+				//cursor y below rect y
+				double rectHeight = selectRectangle.getHeight() + pxChange;
+				selectRectangleY -= pxChange;
+				selectRectangle.setHeight(rectHeight);
+				selectRectangle.setY(selectRectangleY);
+			} else {
+				//cursor y above rect y
+				double rectHeight = selectRectangle.getHeight() - pxChange;
+				selectRectangleY -= pxChange;
+				selectRectangle.setHeight(rectHeight);
+			}
+		}
+	}
+	
+	private double getContentY(MouseEvent event) {
+		return this.sceneToLocal(tilePane.localToScene(event.getX(), event.getY())).getY();
+	}
+	
+	public void adjustViewportToTarget() {
+		this.layout();
+		
+		Entity currentTarget = target.get();
+		if (StageManager.getMainStage().isFullView() || currentTarget == null) return;
+		if (currentTarget.getJointID() != 0 && !expandedGroups.contains(currentTarget.getJointID())) {
+			currentTarget = JointGroupUtil.getJointObjects(currentTarget).getFirst();
+		}
+		int targetIndex = this.getDataObjectsOfTiles().indexOf(currentTarget);
+		if (targetIndex < 0) return;
+		
+		int columnCount = this.getColumnCount();
+		int targetRow = targetIndex / columnCount;
+		
+		Bounds buggyBounds = this.getViewportBounds();
+		Bounds correctBounds = new BoundingBox(0, 0, 0, buggyBounds.getWidth(), buggyBounds.getHeight(), buggyBounds.getDepth());
+		Bounds viewportBoundsTransform = tilePane.sceneToLocal(this.localToScene(correctBounds));
+		Bounds currentTargetTileBounds = tilePane.getChildren().get(targetIndex).getBoundsInParent();
+		
+		double viewportHeight = viewportBoundsTransform.getHeight();
+		double contentHeight = tilePane.getHeight() - viewportHeight;
+		double rowHeight = tilePane.getPrefTileHeight() + tilePane.getVgap();
+		
+		double rowToContentRatio = rowHeight / contentHeight;
+		double viewportToContentRatio = viewportHeight / contentHeight;
+		
+		double viewportTop = viewportBoundsTransform.getMinY();
+		double viewportBottom = viewportBoundsTransform.getMinY() + viewportBoundsTransform.getHeight();
+		double tileTop = currentTargetTileBounds.getMinY();
+		double tileBottom = currentTargetTileBounds.getMaxY();
+		
+		if (tileBottom > viewportBottom) {
+			this.setVvalue((targetRow + 1) * rowToContentRatio - viewportToContentRatio);
+		} else if (tileTop < viewportTop) {
+			this.setVvalue(targetRow * rowToContentRatio);
+		}
+		
+		updateViewportTilesVisibility();
+	}
+	public void updateViewportTilesVisibility() {
+		tilePane.layout(); //	force tilepane layout to update its viewport
+		
+		CustomList<GalleryTile> tilesInViewport = getTilesInViewport();
+		CustomList<GalleryTile> tilesNotInViewport = getTiles();
+		tilesNotInViewport.removeAll(tilesInViewport);
+		
+		for (GalleryTile galleryTile : tilesInViewport) {
+			if (galleryTile.getImage() == null) {
+				galleryTile.setImage(CacheReader.get(galleryTile.getEntity()));
+			}
+			galleryTile.setVisible(true);
+		}
+		
+		for (GalleryTile galleryTile : tilesNotInViewport) {
+			galleryTile.setVisible(false);
+		}
+	}
+	public EntityList getDataObjectsOfTiles() {
+		EntityList dataObjects = new EntityList();
+		tilePane.getChildren().forEach(tile -> dataObjects.add(((GalleryTile) tile).getEntity()));
+		return dataObjects;
+	}
+	
+	private CustomList<GalleryTile> getTiles() {
+		CustomList<GalleryTile> tiles = new CustomList<>();
+		tilePane.getChildren().forEach(tile -> tiles.add((GalleryTile) tile));
+		return tiles;
+	}
+	private CustomList<GalleryTile> getTilesInViewport() {
+		Bounds buggyBounds = this.getViewportBounds();
+		Bounds correctBounds = new BoundingBox(0, 0, 0, buggyBounds.getWidth(), buggyBounds.getHeight(), buggyBounds.getDepth());
+		Bounds viewportBoundsTransform = tilePane.sceneToLocal(this.localToScene(correctBounds));
+		double viewportTop = viewportBoundsTransform.getMinY();
+		double viewportBottom = viewportBoundsTransform.getMaxY();
+		double tileSize = tilePane.getPrefTileWidth();
+		
+		CustomList<GalleryTile> visibleTiles = getTiles();
+		CustomList<GalleryTile> tilesInViewport = new CustomList<>();
+		
+		int objectIndex;
+		Bounds tileBounds;
+		double tileTop;
+		double tileBottom;
+		
+		for (GalleryTile dataObject : getTiles()) {
+			objectIndex = visibleTiles.indexOf(dataObject);
+			tileBounds = visibleTiles.get(objectIndex).getBoundsInParent();
+			tileTop = tileBounds.getMinY();
+			tileBottom = tileBounds.getMaxY();
+			if (tileTop <= viewportBottom + tileSize && tileBottom >= viewportTop - tileSize) {
+				tilesInViewport.add(dataObject);
+			}
+		}
+		
+		return tilesInViewport;
+	}
+	private EntityList getSelectRectangleTiles() {
+		EntityList intersectingTiles = new EntityList();
+		
+		Bounds rectBounds = selectRectangle.localToScene(selectRectangle.getBoundsInLocal());
+		for (GalleryTile galleryTile : getTilesInViewport()) {
+			Bounds tileBounds = galleryTile.localToScene(galleryTile.getBoundsInLocal());
+			if (rectBounds.intersects(tileBounds)) {
+				intersectingTiles.add(galleryTile.getEntity());
+			}
+		}
+		
+		return intersectingTiles;
+	}
+	
+	private boolean needsReload;
+	public boolean reload() {
+		//	var init
+		CustomList<Integer> jointIDs = new CustomList<>();
+		CustomList<GalleryTile> tiles = new CustomList<>();
+		target.storePosition();
+		
+		//	main loop
+		for (Entity entity : filter) {
+			GalleryTile galleryTile = entity.getGalleryTile();
+			int jointID = entity.getJointID();
+			
+			if (jointID == 0) {
+				tiles.add(galleryTile);
+			} else if (!jointIDs.contains(jointID)) {
+				//	only one object in the joint object needs to be processed
+				jointIDs.add(jointID);
+				if (expandedGroups.contains(jointID)) {
+					for (Entity jointObject : JointGroupUtil.getJointObjects(entity)) {
+						//	instead of letting the main loop take care of all objects in the joint object
+						//	the joint object gets processed in a separate loop to keep its objects together
+						//	however, each object needs to be checked for Filter validity an additional time
+						if (filter.contains(jointObject)) {
+							tiles.add(jointObject.getGalleryTile());
+							reload.requestTileEffect(jointObject);
+						}
+					}
+				} else {
+					tiles.add(galleryTile);
+					reload.requestTileEffect(entity);
+				}
+			}
+		}
+		
+		//	apply changes to the actual TilePane
+		tilePane.getChildren().setAll(tiles);
+		
+		updateViewportTilesVisibility();
+		
+		//	Target and Select adjustments
+		Entity currentTarget = target.restorePosition();
+		if (currentTarget != null) {
+			this.adjustViewportToTarget();
+			if (currentTarget.getJointID() != 0) {
+				if (!expandedGroups.contains(currentTarget.getJointID())) {
+					if (select.containsAny(JointGroupUtil.getJointObjects(currentTarget))) {
+						select.addAll(JointGroupUtil.getJointObjects(currentTarget));
+					}
+				}
+			}
+		}
+		
+		return true;
+	}
+	public boolean getNeedsReload() {
+		return needsReload;
+	}
+	public void setNeedsReload(boolean needsReload) {
+		this.needsReload = needsReload;
+	}
+	
+	public int getColumnCount() {
+		return tilePane.getPrefColumns();
+	}
+	public int getRowCount() {
+		return (int) Math.ceil((double) this.getTiles().size() / (double) this.getColumnCount());
+	}
+	public TilePane getTilePane() {
+		return tilePane;
+	}
+	public CustomList<Integer> getExpandedGroups() {
+		return expandedGroups;
+	}
+}
