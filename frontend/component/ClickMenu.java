@@ -55,8 +55,8 @@ public class ClickMenu extends Popup implements InstanceCollector {
 		if (select.size() > 1) {
 			list.add(ButtonTemplates.SELECTION_DELETE.get());
 			list.add(new SeparatorNode());
-			if (select.isSelectJoint()) list.add(ButtonTemplates.JOINT_OBJECT_DISCARD.get());
-			else list.add(ButtonTemplates.JOINT_OBJECT_CREATE.get());
+			if (select.isSelectGrouped()) list.add(ButtonTemplates.ENTITY_GROUP_DISCARD.get());
+			else list.add(ButtonTemplates.ENTITY_GROUP_CREATE.get());
 		}
 		return list;
 	}

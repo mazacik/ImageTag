@@ -5,7 +5,7 @@ import application.backend.base.entity.Entity;
 import application.backend.base.entity.EntityList;
 import application.backend.base.tag.Tag;
 import application.backend.base.tag.TagList;
-import application.backend.util.JointGroupUtil;
+import application.backend.util.EntityGroupUtil;
 import application.frontend.stage.StageManager;
 import application.frontend.stage.template.YesNoCancelStage;
 import application.main.InstanceCollector;
@@ -27,10 +27,10 @@ public class Select extends EntityList implements InstanceCollector {
 	
 	public boolean add(Entity entity) {
 		if (entity == null) return false;
-		int jointID = entity.getJointID();
-		if (jointID != 0 && !galleryPane.getExpandedGroups().contains(jointID)) {
-			if (super.addAll(JointGroupUtil.getJointObjects(entity))) {
-				reload.requestTileEffect(JointGroupUtil.getJointObjects(entity));
+		int entityGroupID = entity.getEntityGroupID();
+		if (entityGroupID != 0 && !galleryPane.getExpandedGroups().contains(entityGroupID)) {
+			if (super.addAll(EntityGroupUtil.getEntityGroup(entity))) {
+				reload.requestTileEffect(EntityGroupUtil.getEntityGroup(entity));
 				reload.notify(Reload.Control.SELECT);
 				return true;
 			}
@@ -51,14 +51,14 @@ public class Select extends EntityList implements InstanceCollector {
 		for (Entity entity : c) {
 			if (entity == null || this.contains(entity)) continue;
 			
-			int jointID = entity.getJointID();
-			if (jointID == 0 || expandedGroups.contains(jointID)) {
+			int entityGroupID = entity.getEntityGroupID();
+			if (entityGroupID == 0 || expandedGroups.contains(entityGroupID)) {
 				super.add(entity);
 				reload.requestTileEffect(entity);
 			} else {
-				EntityList jointObject = JointGroupUtil.getJointObjects(entity);
-				super.addAll(jointObject);
-				reload.requestTileEffect(jointObject);
+				EntityList entityGroup = EntityGroupUtil.getEntityGroup(entity);
+				super.addAll(entityGroup);
+				reload.requestTileEffect(entityGroup);
 			}
 		}
 		
@@ -69,12 +69,12 @@ public class Select extends EntityList implements InstanceCollector {
 		if (entity == null) return false;
 		
 		int size = this.size();
-		if (entity.getJointID() == 0 || galleryPane.getExpandedGroups().contains(entity.getJointID())) {
+		if (entity.getEntityGroupID() == 0 || galleryPane.getExpandedGroups().contains(entity.getEntityGroupID())) {
 			reload.requestTileEffect(entity);
 			super.remove(entity);
 		} else {
-			reload.requestTileEffect(JointGroupUtil.getJointObjects(entity));
-			this.removeAll(JointGroupUtil.getJointObjects(entity));
+			reload.requestTileEffect(EntityGroupUtil.getEntityGroup(entity));
+			this.removeAll(EntityGroupUtil.getEntityGroup(entity));
 		}
 		
 		if (size != this.size()) {
@@ -106,8 +106,8 @@ public class Select extends EntityList implements InstanceCollector {
 		this.set(entity);
 		target.set(entity);
 	}
-	public void setRandomFromJointGroup() {
-		Entity entity = getRandom(JointGroupUtil.getJointObjects(target.get()));
+	public void setRandomFromEntityGroup() {
+		Entity entity = getRandom(EntityGroupUtil.getEntityGroup(target.get()));
 		this.set(entity);
 		target.set(entity);
 	}
@@ -124,11 +124,11 @@ public class Select extends EntityList implements InstanceCollector {
 		}
 	}
 	
-	public void jointObjectCreate() {
-		CustomList<Integer> jointIDs = entityListMain.getJointIDs();
-		int jointID;
-		do jointID = new Random().nextInt();
-		while (jointIDs.contains(jointID));
+	public void entityGroupCreate() {
+		CustomList<Integer> entityGroupIDs = entityListMain.getEntityGroupIDs();
+		int entityGroupID;
+		do entityGroupID = new Random().nextInt();
+		while (entityGroupIDs.contains(entityGroupID));
 		
 		YesNoCancelStage.Result result = StageManager.getYesNoCancelStage()._show("Merge tags? (" + this.size() + " items selected)");
 		if (result == YesNoCancelStage.Result.YES) {
@@ -137,33 +137,33 @@ public class Select extends EntityList implements InstanceCollector {
 				tagList.addAll(entity.getTagList());
 			}
 			for (Entity entity : this) {
-				entity.setJointID(jointID);
+				entity.setEntityGroupID(entityGroupID);
 				entity.setTagList(tagList);
 			}
 		} else if (result == YesNoCancelStage.Result.NO) {
 			for (Entity entity : this) {
-				entity.setJointID(jointID);
+				entity.setEntityGroupID(entityGroupID);
 			}
 		} else return;
 		
 		target.set(this.getFirst());
 		reload.notify(Reload.Control.DATA, Reload.Control.TAGS);
 	}
-	public void jointObjectDiscard() {
-		Entity entity = target.get();
-		if (entity.getJointID() != 0) {
-			ArrayList<Entity> jointObjects = JointGroupUtil.getJointObjects(entity);
-			for (Entity jointObject : jointObjects) {
-				jointObject.setJointID(0);
+	public void entityGroupDiscard() {
+		Entity target = InstanceCollector.target.get();
+		if (target.getEntityGroupID() != 0) {
+			EntityList entityGroup = EntityGroupUtil.getEntityGroup(target);
+			for (Entity entity : entityGroup) {
+				entity.setEntityGroupID(0);
 			}
 		}
 		reload.notify(Reload.Control.DATA, Reload.Control.TAGS);
 	}
-	public boolean isSelectJoint() {
-		int jointID = target.get().getJointID();
-		if (jointID == 0) return false;
+	public boolean isSelectGrouped() {
+		int entityGroupID = target.get().getEntityGroupID();
+		if (entityGroupID == 0) return false;
 		for (Entity entity : this) {
-			if (entity.getJointID() != jointID) {
+			if (entity.getEntityGroupID() != entityGroupID) {
 				return false;
 			}
 		}

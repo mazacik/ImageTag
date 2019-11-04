@@ -3,7 +3,7 @@ package application.backend.control;
 import application.backend.base.CustomList;
 import application.backend.base.entity.Entity;
 import application.backend.base.entity.EntityList;
-import application.backend.util.JointGroupUtil;
+import application.backend.util.EntityGroupUtil;
 import application.backend.util.enums.Direction;
 import application.main.InstanceCollector;
 import javafx.scene.input.KeyCode;
@@ -46,13 +46,13 @@ public class Target implements InstanceCollector {
 		if (dataObjects.isEmpty()) return;
 		
 		int currentTargetIndex;
-		if (entity.getJointID() == 0) {
+		if (entity.getEntityGroupID() == 0) {
 			currentTargetIndex = dataObjects.indexOf(entity);
 		} else {
-			if (galleryPane.getExpandedGroups().contains(entity.getJointID())) {
+			if (galleryPane.getExpandedGroups().contains(entity.getEntityGroupID())) {
 				currentTargetIndex = dataObjects.indexOf(entity);
 			} else {
-				Entity groupFirst = JointGroupUtil.getJointObjects(entity).getFirst();
+				Entity groupFirst = EntityGroupUtil.getEntityGroup(entity).getFirst();
 				if (dataObjects.contains(groupFirst)) {
 					currentTargetIndex = dataObjects.indexOf(groupFirst);
 				} else {
@@ -104,18 +104,18 @@ public class Target implements InstanceCollector {
 	private Entity storeObject = null;
 	private int storePos = -1;
 	public void storePosition() {
-		CustomList<Integer> expandedJointObjects = galleryPane.getExpandedGroups();
+		CustomList<Integer> expandedentityGroup = galleryPane.getExpandedGroups();
 		CustomList<Entity> visibleEntities = galleryPane.getDataObjectsOfTiles();
 		
-		if (entity.getJointID() == 0) {
+		if (entity.getEntityGroupID() == 0) {
 			storeObject = entity;
 			storePos = visibleEntities.indexOf(entity);
 		} else {
-			if (expandedJointObjects.contains(entity.getJointID())) {
+			if (expandedentityGroup.contains(entity.getEntityGroupID())) {
 				storeObject = entity;
 				storePos = visibleEntities.indexOf(entity);
 			} else {
-				storeObject = JointGroupUtil.getJointObjects(entity).getFirst();
+				storeObject = EntityGroupUtil.getEntityGroup(entity).getFirst();
 				storePos = visibleEntities.indexOf(storeObject);
 			}
 		}

@@ -3,7 +3,7 @@ package application.backend.base.entity;
 import application.backend.base.CustomList;
 import application.backend.base.tag.Tag;
 import application.backend.base.tag.TagList;
-import application.backend.util.JointGroupUtil;
+import application.backend.util.EntityGroupUtil;
 import application.main.InstanceCollector;
 
 import java.util.Arrays;
@@ -64,23 +64,23 @@ public class EntityList extends CustomList<Entity> implements InstanceCollector 
 		}
 	}
 	
-	public CustomList<Integer> getJointIDs() {
-		CustomList<Integer> jointIDs = new CustomList<>();
+	public CustomList<Integer> getEntityGroupIDs() {
+		CustomList<Integer> entityGroupIDs = new CustomList<>();
 		for (Entity entity : this) {
-			if (entity.getJointID() != 0) {
-				jointIDs.add(entity.getJointID());
+			if (entity.getEntityGroupID() != 0) {
+				entityGroupIDs.add(entity.getEntityGroupID());
 			}
 		}
-		return jointIDs;
+		return entityGroupIDs;
 	}
 	
 	public Entity getRandom(CustomList<Entity> customList) {
 		Entity entity = customList.getRandom();
 		if (entity != null) {
-			if (entity.getJointID() == 0) {
+			if (entity.getEntityGroupID() == 0) {
 				return entity;
 			} else {
-				return filter.checkList(JointGroupUtil.getJointObjects(entity)).getRandom();
+				return filter.checkList(EntityGroupUtil.getEntityGroup(entity)).getRandom();
 			}
 		} else return null;
 	}

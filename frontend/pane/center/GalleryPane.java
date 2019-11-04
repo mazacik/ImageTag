@@ -4,7 +4,7 @@ import application.backend.base.CustomList;
 import application.backend.base.entity.Entity;
 import application.backend.base.entity.EntityList;
 import application.backend.base.loader.cache.CacheReader;
-import application.backend.util.JointGroupUtil;
+import application.backend.util.EntityGroupUtil;
 import application.frontend.component.ClickMenu;
 import application.frontend.decorator.SizeUtil;
 import application.frontend.pane.PaneInterface;
@@ -225,8 +225,8 @@ public class GalleryPane extends ScrollPane implements PaneInterface, InstanceCo
 		
 		Entity currentTarget = target.get();
 		if (StageManager.getMainStage().isFullView() || currentTarget == null) return;
-		if (currentTarget.getJointID() != 0 && !expandedGroups.contains(currentTarget.getJointID())) {
-			currentTarget = JointGroupUtil.getJointObjects(currentTarget).getFirst();
+		if (currentTarget.getEntityGroupID() != 0 && !expandedGroups.contains(currentTarget.getEntityGroupID())) {
+			currentTarget = EntityGroupUtil.getEntityGroup(currentTarget).getFirst();
 		}
 		int targetIndex = this.getDataObjectsOfTiles().indexOf(currentTarget);
 		if (targetIndex < 0) return;
@@ -333,28 +333,28 @@ public class GalleryPane extends ScrollPane implements PaneInterface, InstanceCo
 	private boolean needsReload;
 	public boolean reload() {
 		//	var init
-		CustomList<Integer> jointIDs = new CustomList<>();
+		CustomList<Integer> entityGroupIDs = new CustomList<>();
 		CustomList<GalleryTile> tiles = new CustomList<>();
 		target.storePosition();
 		
 		//	main loop
 		for (Entity entity : filter) {
 			GalleryTile galleryTile = entity.getGalleryTile();
-			int jointID = entity.getJointID();
+			int entityGroupID = entity.getEntityGroupID();
 			
-			if (jointID == 0) {
+			if (entityGroupID == 0) {
 				tiles.add(galleryTile);
-			} else if (!jointIDs.contains(jointID)) {
-				//	only one object in the joint object needs to be processed
-				jointIDs.add(jointID);
-				if (expandedGroups.contains(jointID)) {
-					for (Entity jointObject : JointGroupUtil.getJointObjects(entity)) {
-						//	instead of letting the main loop take care of all objects in the joint object
-						//	the joint object gets processed in a separate loop to keep its objects together
+			} else if (!entityGroupIDs.contains(entityGroupID)) {
+				//	only one object in the entity group needs to be processed
+				entityGroupIDs.add(entityGroupID);
+				if (expandedGroups.contains(entityGroupID)) {
+					for (Entity entityGroup : EntityGroupUtil.getEntityGroup(entity)) {
+						//	instead of letting the main loop take care of all objects in the entity group
+						//	the entity group gets processed in a separate loop to keep its objects together
 						//	however, each object needs to be checked for Filter validity an additional time
-						if (filter.contains(jointObject)) {
-							tiles.add(jointObject.getGalleryTile());
-							reload.requestTileEffect(jointObject);
+						if (filter.contains(entityGroup)) {
+							tiles.add(entityGroup.getGalleryTile());
+							reload.requestTileEffect(entityGroup);
 						}
 					}
 				} else {
@@ -373,10 +373,10 @@ public class GalleryPane extends ScrollPane implements PaneInterface, InstanceCo
 		Entity currentTarget = target.restorePosition();
 		if (currentTarget != null) {
 			this.adjustViewportToTarget();
-			if (currentTarget.getJointID() != 0) {
-				if (!expandedGroups.contains(currentTarget.getJointID())) {
-					if (select.containsAny(JointGroupUtil.getJointObjects(currentTarget))) {
-						select.addAll(JointGroupUtil.getJointObjects(currentTarget));
+			if (currentTarget.getEntityGroupID() != 0) {
+				if (!expandedGroups.contains(currentTarget.getEntityGroupID())) {
+					if (select.containsAny(EntityGroupUtil.getEntityGroup(currentTarget))) {
+						select.addAll(EntityGroupUtil.getEntityGroup(currentTarget));
 					}
 				}
 			}

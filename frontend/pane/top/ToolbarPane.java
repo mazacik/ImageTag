@@ -2,7 +2,7 @@ package application.frontend.pane.top;
 
 import application.backend.base.CustomList;
 import application.backend.base.entity.Entity;
-import application.backend.util.JointGroupUtil;
+import application.backend.util.EntityGroupUtil;
 import application.backend.util.enums.Direction;
 import application.frontend.component.ClickMenu;
 import application.frontend.component.buttons.ButtonTemplates;
@@ -53,10 +53,10 @@ public class ToolbarPane extends TitleBar implements PaneInterface, InstanceColl
 	
 	public boolean reload() {
 		Entity currentTarget = target.get();
-		if (currentTarget.getJointID() != 0) {
-			CustomList<Entity> jointObject = JointGroupUtil.getJointObjects(currentTarget);
-			String jointGroupIndex = (jointObject.indexOf(currentTarget) + 1) + "/" + jointObject.size();
-			nodeTarget.setText("[" + jointGroupIndex + "] " + currentTarget.getName());
+		if (currentTarget.getEntityGroupID() != 0) {
+			CustomList<Entity> entityGroup = EntityGroupUtil.getEntityGroup(currentTarget);
+			String entityGroupIndex = (entityGroup.indexOf(currentTarget) + 1) + "/" + entityGroup.size();
+			nodeTarget.setText("[" + entityGroupIndex + "] " + currentTarget.getName());
 		} else {
 			nodeTarget.setText(currentTarget.getName());
 		}

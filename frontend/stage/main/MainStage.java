@@ -114,7 +114,7 @@ public class MainStage extends StageBase implements InstanceCollector {
 						reload.doReload();
 						break;
 					case G:
-						select.setRandomFromJointGroup();
+						select.setRandomFromEntityGroup();
 						reload.doReload();
 						break;
 					case F:

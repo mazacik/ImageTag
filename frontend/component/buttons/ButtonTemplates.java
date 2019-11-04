@@ -4,9 +4,9 @@ import application.backend.base.entity.Entity;
 import application.backend.base.tag.Tag;
 import application.backend.control.Reload;
 import application.backend.util.ClipboardUtil;
+import application.backend.util.EntityGroupUtil;
 import application.backend.util.FileUtil;
 import application.backend.util.HttpUtil;
-import application.backend.util.JointGroupUtil;
 import application.frontend.component.ClickMenu;
 import application.frontend.component.simple.TextNode;
 import application.frontend.stage.StageManager;
@@ -220,11 +220,11 @@ public enum ButtonTemplates implements InstanceCollector {
 		}
 	},
 	
-	JOINT_OBJECT_CREATE {
+	ENTITY_GROUP_CREATE {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Create Joint Object", true, true, false, true);
+			TextNode textNode = new TextNode("Create Entity Group", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				select.jointObjectCreate();
+				select.entityGroupCreate();
 				reload.doReload();
 				galleryPane.updateViewportTilesVisibility();
 				ClickMenu.hideAll();
@@ -232,11 +232,11 @@ public enum ButtonTemplates implements InstanceCollector {
 			return textNode;
 		}
 	},
-	JOINT_OBJECT_DISCARD {
+	ENTITY_GROUP_DISCARD {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Discard Joint Object", true, true, false, true);
+			TextNode textNode = new TextNode("Discard Entity Group", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				select.jointObjectDiscard();
+				select.entityGroupDiscard();
 				reload.doReload();
 				ClickMenu.hideAll();
 			});
@@ -307,8 +307,8 @@ public enum ButtonTemplates implements InstanceCollector {
 		
 		ArrayList<Entity> dataObjectsToDelete = new ArrayList<>();
 		select.forEach(entity -> {
-			if (entity.getJointID() != 0 && !galleryPane.getExpandedGroups().contains(entity.getJointID())) {
-				dataObjectsToDelete.addAll(JointGroupUtil.getJointObjects(entity));
+			if (entity.getEntityGroupID() != 0 && !galleryPane.getExpandedGroups().contains(entity.getEntityGroupID())) {
+				dataObjectsToDelete.addAll(EntityGroupUtil.getEntityGroup(entity));
 			} else {
 				dataObjectsToDelete.add(entity);
 			}
@@ -326,7 +326,7 @@ public enum ButtonTemplates implements InstanceCollector {
 	}
 	private void deleteCurrentTarget() {
 		Entity currentTarget = target.get();
-		if (currentTarget.getJointID() == 0 || galleryPane.getExpandedGroups().contains(currentTarget.getJointID())) {
+		if (currentTarget.getEntityGroupID() == 0 || galleryPane.getExpandedGroups().contains(currentTarget.getEntityGroupID())) {
 			String sourcePath = target.get().getPath();
 			YesNoCancelStage.Result result = StageManager.getYesNoCancelStage()._show("Delete file: " + sourcePath + "?");
 			if (result == YesNoCancelStage.Result.YES) {
@@ -338,11 +338,11 @@ public enum ButtonTemplates implements InstanceCollector {
 				reload.doReload();
 			}
 		} else {
-			YesNoCancelStage.Result result = StageManager.getYesNoCancelStage()._show("Delete " + JointGroupUtil.getJointObjects(currentTarget).size() + " file(s)?");
+			YesNoCancelStage.Result result = StageManager.getYesNoCancelStage()._show("Delete " + EntityGroupUtil.getEntityGroup(currentTarget).size() + " file(s)?");
 			if (result == YesNoCancelStage.Result.YES) {
 				
 				target.storePosition();
-				JointGroupUtil.getJointObjects(currentTarget).forEach(this::deleteDataObject);
+				EntityGroupUtil.getEntityGroup(currentTarget).forEach(this::deleteDataObject);
 				target.restorePosition();
 				reload.doReload();
 			}

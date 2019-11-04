@@ -3,7 +3,7 @@ package application.frontend.pane.center;
 import application.backend.base.CustomList;
 import application.backend.base.entity.Entity;
 import application.backend.control.Reload;
-import application.backend.util.JointGroupUtil;
+import application.backend.util.EntityGroupUtil;
 import application.frontend.component.ClickMenu;
 import application.frontend.component.simple.TextNode;
 import application.frontend.stage.StageManager;
@@ -54,17 +54,17 @@ public class GalleryTile extends Pane implements InstanceCollector {
 			selectBorder.setBackground(null);
 		}
 		
-		if (entity.getJointID() != 0) {
-			imageView.setEffect(this.createJointObjectEffect(entity));
+		if (entity.getEntityGroupID() != 0) {
+			imageView.setEffect(this.createentityGroupEffect(entity));
 		}
 	}
-	private Blend createJointObjectEffect(Entity entity) {
+	private Blend createentityGroupEffect(Entity entity) {
 		String middle;
-		CustomList<Entity> jointObject = JointGroupUtil.getJointObjects(entity);
-		if (galleryPane.getExpandedGroups().contains(entity.getJointID())) {
-			middle = (jointObject.indexOf(entity) + 1) + "/" + jointObject.size();
+		CustomList<Entity> entityGroup = EntityGroupUtil.getEntityGroup(entity);
+		if (galleryPane.getExpandedGroups().contains(entity.getEntityGroupID())) {
+			middle = (entityGroup.indexOf(entity) + 1) + "/" + entityGroup.size();
 		} else {
-			middle = String.valueOf(jointObject.size());
+			middle = String.valueOf(entityGroup.size());
 		}
 		
 		Image imageText = textToImage("[" + middle + "]");
@@ -158,15 +158,15 @@ public class GalleryTile extends Pane implements InstanceCollector {
 		return hitWidth && hitHeight;
 	}
 	public void onGroupEffectClick() {
-		int jointID = entity.getJointID();
+		int entityGroupID = entity.getEntityGroupID();
 		
-		if (jointID != 0) {
+		if (entityGroupID != 0) {
 			CustomList<Integer> expandedGroups = galleryPane.getExpandedGroups();
-			if (!expandedGroups.contains(jointID)) {
-				expandedGroups.add(jointID);
+			if (!expandedGroups.contains(entityGroupID)) {
+				expandedGroups.add(entityGroupID);
 			} else {
 				//noinspection RedundantCollectionOperation
-				expandedGroups.remove(expandedGroups.indexOf(jointID));
+				expandedGroups.remove(expandedGroups.indexOf(entityGroupID));
 			}
 			
 			reload.notify(Reload.Control.DATA);
