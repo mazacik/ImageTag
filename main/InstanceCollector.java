@@ -2,7 +2,11 @@ package application.main;
 
 import application.backend.base.entity.EntityListMain;
 import application.backend.base.tag.TagListMain;
-import application.backend.control.*;
+import application.backend.control.Filter;
+import application.backend.control.Select;
+import application.backend.control.Settings;
+import application.backend.control.Target;
+import application.backend.control.reload.Reload;
 import application.frontend.pane.center.GalleryPane;
 import application.frontend.pane.center.MediaPane;
 import application.frontend.pane.side.left.FilterPane;

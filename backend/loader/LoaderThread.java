@@ -1,5 +1,6 @@
-package application.backend.base.loader;
+package application.backend.loader;
 
+import application.backend.base.CustomList;
 import application.backend.base.entity.Entity;
 import application.backend.base.entity.EntityList;
 import application.backend.base.entity.EntityListMain;
@@ -9,7 +10,6 @@ import application.main.InstanceCollector;
 import javafx.application.Platform;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 
 public class LoaderThread extends Thread implements InstanceCollector {
 	public void run() {
-		ArrayList<File> fileList = FileUtil.getSupportedFiles(FileUtil.getDirSource());
+		CustomList<File> fileList = FileUtil.getSupportedFiles(FileUtil.getProjectDirSource());
 		FileUtil.fixDuplicateFileNames(fileList);
 		
 		boolean readSuccess = entityListMain.addAll(EntityListMain.readFromDisk());
@@ -28,7 +28,7 @@ public class LoaderThread extends Thread implements InstanceCollector {
 		}
 		
 		checkFileDifference(fileList);
-		FileUtil.initDataObjectPaths(fileList);
+		FileUtil.initEntityPaths(fileList);
 		entityListMain.sort();
 		tagListMain.initialize();
 		entityListMain.writeToDisk();
@@ -38,15 +38,11 @@ public class LoaderThread extends Thread implements InstanceCollector {
 		select.set(filter.get(0));
 		
 		Platform.runLater(() -> {
-			filterPane.reload();
-			filterPane.collapseAll();
+			reload.doReload();
 			
-			selectPane.reload();
+			filterPane.collapseAll();
 			selectPane.collapseAll();
 			
-			toolbarPane.reload();
-			
-			reload.doReload();
 			galleryPane.updateViewportTilesVisibility();
 		});
 	}
@@ -77,40 +73,39 @@ public class LoaderThread extends Thread implements InstanceCollector {
 	}
 	
 	private void createBackup() {
-		new File(FileUtil.getFileData()).renameTo(new File(FileUtil.getFileData() + "_backup"));
+		new File(FileUtil.getProjectFileData()).renameTo(new File(FileUtil.getProjectFileData() + "_backup"));
 	}
 	
-	private void createDatabase(ArrayList<File> fileList) {
-		EntityListMain objectListMain = entityListMain;
-		objectListMain.clear();
+	private void createDatabase(CustomList<File> fileList) {
+		entityListMain.clear();
 		for (File file : fileList) {
-			objectListMain.add(new Entity(file));
+			entityListMain.add(new Entity(file));
 		}
 	}
 	
-	private void checkFileDifference(ArrayList<File> fileList) {
+	private void checkFileDifference(CustomList<File> fileList) {
 		EntityList entityList = entityListMain;
 		entityList.sort(Comparator.comparing(Entity::getName));
 		fileList.sort(Comparator.comparing(File::getName));
-		ArrayList<Entity> orphanObjects = new ArrayList<>(entityList);
-		ArrayList<File> newFiles = new ArrayList<>(fileList);
+		EntityList orphanEntities = new EntityList(entityList);
+		CustomList<File> newFiles = new CustomList<>(fileList);
 		/* compare files in the working directory with knwon objects in the application.database */
 		for (Entity entity : entityList) {
 			for (int j = 0; j < newFiles.size(); j++) {
 				File file = newFiles.get(j);
 				if (entity.getName().equals(file.getName())) {
-					orphanObjects.remove(entity);
+					orphanEntities.remove(entity);
 					newFiles.remove(file);
 					break;
 				}
 			}
 		}
 		/* match files with the exact same size, these were probably renamed outside of the application */
-		for (File file : new ArrayList<>(newFiles)) {
-			for (Entity entity : new ArrayList<>(orphanObjects)) {
+		for (File file : new CustomList<>(newFiles)) {
+			for (Entity entity : new CustomList<>(orphanEntities)) {
 				if (file.length() == entity.getLength()) {
 					newFiles.remove(file);
-					orphanObjects.remove(entity);
+					orphanEntities.remove(entity);
 					
 					/* rename the object and cache file */
 					File oldCacheFile = new File(FileUtil.getCacheFilePath(entity));
@@ -127,10 +122,10 @@ public class LoaderThread extends Thread implements InstanceCollector {
 		for (File file : newFiles) {
 			Entity entity = new Entity(file);
 			entityList.add(entity);
-			filter.getCurrentSessionObjects().add(entity);
+			filter.getCurrentSessionEntities().add(entity);
 		}
 		/* discard orphan objects */
-		for (Entity entity : orphanObjects) {
+		for (Entity entity : orphanEntities) {
 			entityList.remove(entity);
 		}
 		entityList.sort(Comparator.comparing(Entity::getName));

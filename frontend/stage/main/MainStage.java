@@ -69,11 +69,11 @@ public class MainStage extends StageBase implements InstanceCollector {
 			if (videoPlayer != null && videoPlayer.isPlaying()) videoPlayer.pause();
 			
 			panes.set(panes.indexOf(mediaPane), galleryPane);
-			galleryPane.adjustViewportToTarget();
+			galleryPane.moveViewportToTarget();
 			galleryPane.requestFocus();
 		} else if (panes.contains(galleryPane)) {
 			panes.set(panes.indexOf(galleryPane), mediaPane);
-			reload.request(mediaPane);
+			reload.request(mediaPane, "reload");
 			mediaPane.requestFocus();
 			mediaPane.fireEvent(new MouseEvent(MouseEvent.MOUSE_MOVED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
 		}

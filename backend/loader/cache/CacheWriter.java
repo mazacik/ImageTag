@@ -1,7 +1,7 @@
-package application.backend.base.loader.cache;
+package application.backend.loader.cache;
 
 import application.backend.base.entity.Entity;
-import application.backend.base.loader.GifDecoder;
+import application.backend.loader.GifDecoder;
 import application.backend.util.FileUtil;
 import application.frontend.pane.center.VideoPlayer;
 import application.main.InstanceCollector;

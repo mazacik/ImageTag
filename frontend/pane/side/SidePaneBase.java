@@ -2,26 +2,27 @@ package application.frontend.pane.side;
 
 import application.backend.base.CustomList;
 import application.backend.base.tag.Tag;
+import application.backend.base.tag.TagList;
+import application.backend.control.reload.Reloadable;
 import application.frontend.component.simple.TextNode;
 import application.frontend.decorator.SizeUtil;
-import application.frontend.pane.PaneInterface;
 import application.main.InstanceCollector;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.VBox;
 
-import java.util.ArrayList;
+import java.lang.reflect.Method;
 import java.util.Comparator;
 
-public abstract class SidePaneBase extends VBox implements PaneInterface, SidePaneBaseInterface, InstanceCollector {
+public abstract class SidePaneBase extends VBox implements Reloadable, SidePaneBaseInterface, InstanceCollector {
 	protected TextNode nodeTitle;
 	protected VBox groupNodes;
 	protected ScrollPane scrollPane;
 	
-	protected boolean needsReload;
-	
 	public SidePaneBase() {
+		methodsToInvokeOnNextReload = new CustomList<>();
+		
 		groupNodes = new VBox();
 		
 		scrollPane = new ScrollPane();
@@ -32,14 +33,16 @@ public abstract class SidePaneBase extends VBox implements PaneInterface, SidePa
 		scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 		scrollPane.setBackground(Background.EMPTY);
 		
-		needsReload = false;
-		
 		this.setPrefWidth(SizeUtil.getUsableScreenWidth());
 		this.setMinWidth(SizeUtil.getMinWidthSideLists());
 	}
 	
-	//todo this doesn't need to be called every time a side pane is reloaded
-	public void updateNodes() {
+	private CustomList<Method> methodsToInvokeOnNextReload;
+	@Override
+	public CustomList<Method> getMethodsToInvokeOnNextReload() {
+		return methodsToInvokeOnNextReload;
+	}
+	public boolean reload() {
 		//	populate primary helpers
 		CustomList<String> groupsCurrent = new CustomList<>();
 		CustomList<Tag> tagsMain = new CustomList<>(tagListMain);
@@ -62,7 +65,7 @@ public abstract class SidePaneBase extends VBox implements PaneInterface, SidePa
 				tagsToAdd.add(tagMain);
 			}
 		}
-		ArrayList<Tag> tagsToRemove = new ArrayList<>();
+		TagList tagsToRemove = new TagList();
 		for (Tag tagCurrent : tagsCurrent) {
 			if (!tagsMain.contains(tagCurrent)) {
 				tagsToRemove.add(tagCurrent);
@@ -108,6 +111,8 @@ public abstract class SidePaneBase extends VBox implements PaneInterface, SidePa
 				}
 			}
 		}
+		
+		return true;
 	}
 	
 	public void updateGroupNode(String oldGroup, String newGroup) {
@@ -175,12 +180,5 @@ public abstract class SidePaneBase extends VBox implements PaneInterface, SidePa
 			}
 		});
 		return customList;
-	}
-	
-	public boolean getNeedsReload() {
-		return needsReload;
-	}
-	public void setNeedsReload(boolean needsReload) {
-		this.needsReload = needsReload;
 	}
 }

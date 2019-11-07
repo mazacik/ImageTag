@@ -1,23 +1,23 @@
 package application.frontend.component;
 
+import application.backend.base.CustomList;
 import application.frontend.decorator.ColorUtil;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.layout.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public abstract class NodeUtil {
 	public static void equalizeWidth(Region... regions) {
-		equalizeWidth(new ArrayList<>(Arrays.asList(regions)));
+		equalizeWidth(new CustomList<>(Arrays.asList(regions)));
 	}
 	public static void equalizeWidth(ObservableList<Node> nodes) {
-		ArrayList<Region> regions = new ArrayList<>();
+		CustomList<Region> regions = new CustomList<>();
 		for (Node node : nodes) regions.add((Region) node);
 		equalizeWidth(regions);
 	}
-	public static void equalizeWidth(ArrayList<Region> regions) {
+	public static void equalizeWidth(CustomList<Region> regions) {
 		double width = 0;
 		for (Region region : regions) {
 			if (width < region.getWidth()) width = region.getWidth();

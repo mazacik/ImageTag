@@ -1,5 +1,6 @@
 package application.frontend.pane.side.right;
 
+import application.backend.base.CustomList;
 import application.backend.base.entity.Entity;
 import application.backend.base.tag.Tag;
 import application.backend.util.enums.Direction;
@@ -23,7 +24,7 @@ import net.ricecode.similarity.SimilarityStrategy;
 import net.ricecode.similarity.StringSimilarityService;
 import net.ricecode.similarity.StringSimilarityServiceImpl;
 
-import java.util.ArrayList;
+import java.util.logging.Logger;
 
 public class SelectPane extends SidePaneBase {
 	private EditNode nodeSearch;
@@ -53,19 +54,22 @@ public class SelectPane extends SidePaneBase {
 		collapseAll();
 	}
 	
-	public boolean reload() {
+	public boolean refresh() {
+		Logger.getGlobal().info(this.toString());
+		
 		refreshTitle();
 		
 		Color textColorDefault = ColorUtil.getTextColorDef();
 		Color textColorPositive = ColorUtil.getTextColorPos();
 		Color textColorShare = ColorUtil.getTextColorShr();
 		
-		ArrayList<String> groupsInter;
-		ArrayList<String> groupsShare;
+		CustomList<String> groupsInter;
+		CustomList<String> groupsShare;
+		
 		if (select.size() == 0) {
 			if (target.get() != null) {
 				groupsInter = target.get().getTagList().getGroups();
-				groupsShare = new ArrayList<>();
+				groupsShare = new CustomList<>();
 			} else {
 				return false;
 			}
@@ -73,8 +77,6 @@ public class SelectPane extends SidePaneBase {
 			groupsInter = select.getTagsIntersect().getGroups();
 			groupsShare = select.getTagsAll().getGroups();
 		}
-		
-		updateNodes();
 		
 		for (Node node : groupNodes.getChildren()) {
 			if (node instanceof GroupNode) {
@@ -88,11 +90,11 @@ public class SelectPane extends SidePaneBase {
 				} else {
 					groupNode.setTextFill(textColorDefault);
 				}
-				ArrayList<String> namesInter;
-				ArrayList<String> namesShare;
+				CustomList<String> namesInter;
+				CustomList<String> namesShare;
 				if (select.size() == 0) {
 					namesInter = target.get().getTagList().getNames(group);
-					namesShare = new ArrayList<>();
+					namesShare = new CustomList<>();
 				} else {
 					namesInter = select.getTagsIntersect().getNames(group);
 					namesShare = select.getTagsAll().getNames(group);
@@ -110,6 +112,7 @@ public class SelectPane extends SidePaneBase {
 				}
 			}
 		}
+		
 		return true;
 	}
 	private void refreshTitle() {
@@ -137,10 +140,10 @@ public class SelectPane extends SidePaneBase {
 			Tag tag = tagListMain.getTag(groupNode.getGroup(), nameNode.getText());
 			if (nameNode.getTextFill().equals(ColorUtil.getTextColorPos()) || nameNode.getTextFill().equals(ColorUtil.getTextColorShr())) {
 				nameNode.setTextFill(ColorUtil.getTextColorDef());
-				select.removeTagObject(tag);
+				select.removeTag(tag);
 			} else {
 				nameNode.setTextFill(ColorUtil.getTextColorPos());
-				select.addTagObject(tag);
+				select.addTag(tag);
 			}
 			
 			reload.doReload();
@@ -207,7 +210,7 @@ public class SelectPane extends SidePaneBase {
 			}
 			
 			nodeSearch.clear();
-			select.addTagObject(bestMatch);
+			select.addTag(bestMatch);
 			reload.doReload();
 		};
 	}

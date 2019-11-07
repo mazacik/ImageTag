@@ -1,4 +1,4 @@
-package application.backend.base.loader;
+package application.backend.loader;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

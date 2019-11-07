@@ -3,11 +3,11 @@ package application.frontend.pane.center;
 import application.backend.base.CustomList;
 import application.backend.base.entity.Entity;
 import application.backend.base.entity.EntityList;
-import application.backend.base.loader.cache.CacheReader;
+import application.backend.control.reload.Reloadable;
+import application.backend.loader.cache.CacheReader;
 import application.backend.util.EntityGroupUtil;
 import application.frontend.component.ClickMenu;
 import application.frontend.decorator.SizeUtil;
-import application.frontend.pane.PaneInterface;
 import application.frontend.stage.StageManager;
 import application.main.InstanceCollector;
 import javafx.geometry.BoundingBox;
@@ -22,7 +22,10 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class GalleryPane extends ScrollPane implements PaneInterface, InstanceCollector {
+import java.lang.reflect.Method;
+import java.util.logging.Logger;
+
+public class GalleryPane extends ScrollPane implements InstanceCollector, Reloadable {
 	private TilePane tilePane;
 	private CustomList<Integer> expandedGroups;
 	
@@ -38,7 +41,7 @@ public class GalleryPane extends ScrollPane implements PaneInterface, InstanceCo
 	}
 	
 	public void init() {
-		needsReload = false;
+		methodsToInvokeOnNextReload = new CustomList<>();
 		
 		tilePane = new TilePane(30, 30);
 		tilePane.setPadding(new Insets(5, 5, 25, 5));
@@ -220,7 +223,7 @@ public class GalleryPane extends ScrollPane implements PaneInterface, InstanceCo
 		return this.sceneToLocal(tilePane.localToScene(event.getX(), event.getY())).getY();
 	}
 	
-	public void adjustViewportToTarget() {
+	public void moveViewportToTarget() {
 		this.layout();
 		
 		Entity currentTarget = target.get();
@@ -228,7 +231,7 @@ public class GalleryPane extends ScrollPane implements PaneInterface, InstanceCo
 		if (currentTarget.getEntityGroupID() != 0 && !expandedGroups.contains(currentTarget.getEntityGroupID())) {
 			currentTarget = EntityGroupUtil.getEntityGroup(currentTarget).getFirst();
 		}
-		int targetIndex = this.getDataObjectsOfTiles().indexOf(currentTarget);
+		int targetIndex = this.getEntitiesOfTiles().indexOf(currentTarget);
 		if (targetIndex < 0) return;
 		
 		int columnCount = this.getColumnCount();
@@ -277,10 +280,10 @@ public class GalleryPane extends ScrollPane implements PaneInterface, InstanceCo
 			galleryTile.setVisible(false);
 		}
 	}
-	public EntityList getDataObjectsOfTiles() {
-		EntityList dataObjects = new EntityList();
-		tilePane.getChildren().forEach(tile -> dataObjects.add(((GalleryTile) tile).getEntity()));
-		return dataObjects;
+	public EntityList getEntitiesOfTiles() {
+		EntityList entities = new EntityList();
+		tilePane.getChildren().forEach(tile -> entities.add(((GalleryTile) tile).getEntity()));
+		return entities;
 	}
 	
 	private CustomList<GalleryTile> getTiles() {
@@ -299,18 +302,18 @@ public class GalleryPane extends ScrollPane implements PaneInterface, InstanceCo
 		CustomList<GalleryTile> visibleTiles = getTiles();
 		CustomList<GalleryTile> tilesInViewport = new CustomList<>();
 		
-		int objectIndex;
+		int entityIndex;
 		Bounds tileBounds;
 		double tileTop;
 		double tileBottom;
 		
-		for (GalleryTile dataObject : getTiles()) {
-			objectIndex = visibleTiles.indexOf(dataObject);
-			tileBounds = visibleTiles.get(objectIndex).getBoundsInParent();
+		for (GalleryTile entity : getTiles()) {
+			entityIndex = visibleTiles.indexOf(entity);
+			tileBounds = visibleTiles.get(entityIndex).getBoundsInParent();
 			tileTop = tileBounds.getMinY();
 			tileBottom = tileBounds.getMaxY();
 			if (tileTop <= viewportBottom + tileSize && tileBottom >= viewportTop - tileSize) {
-				tilesInViewport.add(dataObject);
+				tilesInViewport.add(entity);
 			}
 		}
 		
@@ -330,8 +333,14 @@ public class GalleryPane extends ScrollPane implements PaneInterface, InstanceCo
 		return intersectingTiles;
 	}
 	
-	private boolean needsReload;
+	private CustomList<Method> methodsToInvokeOnNextReload;
+	@Override
+	public CustomList<Method> getMethodsToInvokeOnNextReload() {
+		return methodsToInvokeOnNextReload;
+	}
 	public boolean reload() {
+		Logger.getGlobal().info(this.toString());
+		
 		//	var init
 		CustomList<Integer> entityGroupIDs = new CustomList<>();
 		CustomList<GalleryTile> tiles = new CustomList<>();
@@ -372,7 +381,7 @@ public class GalleryPane extends ScrollPane implements PaneInterface, InstanceCo
 		//	Target and Select adjustments
 		Entity currentTarget = target.restorePosition();
 		if (currentTarget != null) {
-			this.adjustViewportToTarget();
+			this.moveViewportToTarget();
 			if (currentTarget.getEntityGroupID() != 0) {
 				if (!expandedGroups.contains(currentTarget.getEntityGroupID())) {
 					if (select.containsAny(EntityGroupUtil.getEntityGroup(currentTarget))) {
@@ -383,12 +392,6 @@ public class GalleryPane extends ScrollPane implements PaneInterface, InstanceCo
 		}
 		
 		return true;
-	}
-	public boolean getNeedsReload() {
-		return needsReload;
-	}
-	public void setNeedsReload(boolean needsReload) {
-		this.needsReload = needsReload;
 	}
 	
 	public int getColumnCount() {

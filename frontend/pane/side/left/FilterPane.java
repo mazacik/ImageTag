@@ -14,6 +14,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
 
+import java.util.logging.Logger;
+
 public class FilterPane extends SidePaneBase {
 	public FilterPane() {
 	
@@ -30,7 +32,7 @@ public class FilterPane extends SidePaneBase {
 			tagListMain.add(result.getKey());
 			tagListMain.sort();
 			if (result.getValue())
-				select.addTagObject(result.getKey());
+				select.addTag(result.getKey());
 			reload.doReload();
 		});
 		
@@ -51,14 +53,14 @@ public class FilterPane extends SidePaneBase {
 		this.getChildren().addAll(hBoxTitle, btnCreateNewTag, scrollPane);
 	}
 	
-	public boolean reload() {
+	public boolean refresh() {
+		Logger.getGlobal().info(this.toString());
+		
 		nodeTitle.setText("Filter: " + filter.size());
 		
 		Color textColorDefault = ColorUtil.getTextColorDef();
 		Color textColorPositive = ColorUtil.getTextColorPos();
 		Color textColorNegative = ColorUtil.getTextColorNeg();
-		
-		updateNodes();
 		
 		for (Node node : groupNodes.getChildren()) {
 			if (node instanceof GroupNode) {
@@ -85,6 +87,7 @@ public class FilterPane extends SidePaneBase {
 				}
 			}
 		}
+		
 		return true;
 	}
 	

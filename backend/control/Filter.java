@@ -5,10 +5,9 @@ import application.backend.base.entity.Entity;
 import application.backend.base.entity.EntityList;
 import application.backend.base.tag.Tag;
 import application.backend.base.tag.TagList;
+import application.backend.control.reload.ChangeIn;
 import application.backend.util.FileUtil;
 import application.main.InstanceCollector;
-
-import java.util.ArrayList;
 
 public class Filter extends EntityList implements InstanceCollector {
 	private TagList infoListWhite;
@@ -45,20 +44,20 @@ public class Filter extends EntityList implements InstanceCollector {
 	
 	public boolean add(Entity entity) {
 		if (super.add(entity)) {
-			reload.notify(Reload.Control.FILTER);
+			reload.notify(ChangeIn.FILTER);
 			return true;
 		} else {
 			return false;
 		}
 	}
-	public void setAll(EntityList dataObjects) {
-		if (super.setAll(dataObjects)) {
-			reload.notify(Reload.Control.FILTER);
+	public void setAll(EntityList entities) {
+		if (super.setAll(entities)) {
+			reload.notify(ChangeIn.FILTER);
 		}
 	}
 	public void clear() {
 		super.clear();
-		reload.notify(Reload.Control.FILTER);
+		reload.notify(ChangeIn.FILTER);
 	}
 	
 	public void reset() {
@@ -82,7 +81,7 @@ public class Filter extends EntityList implements InstanceCollector {
 					break;
 			}
 			
-			if (sessionOnly && !currentSessionObjects.contains(entity)) {
+			if (sessionOnly && !currentSessionEntities.contains(entity)) {
 				continue;
 			}
 			
@@ -120,7 +119,7 @@ public class Filter extends EntityList implements InstanceCollector {
 		TagList query = entity.getTagList();
 		for (Entity iterator : entityListMain) {
 			if (iterator.getTagList().size() != 0) {
-				ArrayList<Tag> sameTags = new ArrayList<>(query);
+				TagList sameTags = new TagList(query);
 				sameTags.retainAll(iterator.getTagList());
 				
 				if (!sameTags.isEmpty()) {
@@ -133,16 +132,16 @@ public class Filter extends EntityList implements InstanceCollector {
 		}
 	}
 	
-	private final EntityList currentSessionObjects = new EntityList();
-	public EntityList getCurrentSessionObjects() {
-		return currentSessionObjects;
+	private final EntityList currentSessionEntities = new EntityList();
+	public EntityList getCurrentSessionEntities() {
+		return currentSessionEntities;
 	}
 	
 	public EntityList checkList(EntityList listBefore) {
 		EntityList listAfter = new EntityList();
-		listBefore.forEach(dataObject -> {
-			if (this.contains(dataObject)) {
-				listAfter.add(dataObject);
+		listBefore.forEach(entity -> {
+			if (this.contains(entity)) {
+				listAfter.add(entity);
 			}
 		});
 		return listAfter;
@@ -185,7 +184,7 @@ public class Filter extends EntityList implements InstanceCollector {
 		if (infoListWhite.isEmpty()) {
 			return true;
 		} else {
-			ArrayList<Tag> commonTags = new ArrayList<>(tagList);
+			TagList commonTags = new TagList(tagList);
 			commonTags.retainAll(infoListWhite);
 			double factor = (double) commonTags.size() / (double) infoListWhite.size();
 			return factor >= whitelistFactor;
@@ -195,7 +194,7 @@ public class Filter extends EntityList implements InstanceCollector {
 		if (infoListBlack.isEmpty()) {
 			return true;
 		} else {
-			ArrayList<Tag> commonTags = new ArrayList<>(tagList);
+			TagList commonTags = new TagList(tagList);
 			commonTags.retainAll(infoListBlack);
 			double factor = (double) commonTags.size() / (double) infoListBlack.size();
 			return factor <= blacklistFactor;
@@ -224,16 +223,16 @@ public class Filter extends EntityList implements InstanceCollector {
 	}
 	
 	public boolean isWhitelisted(Tag tag) {
-		return infoListWhite.containsEqual(tag);
+		return infoListWhite.containsEqualTo(tag);
 	}
 	public boolean isWhitelisted(String group, String name) {
-		return infoListWhite.containsEqual(tagListMain.getTag(group, name));
+		return infoListWhite.containsEqualTo(tagListMain.getTag(group, name));
 	}
 	public boolean isBlacklisted(Tag tag) {
-		return infoListBlack.containsEqual(tag);
+		return infoListBlack.containsEqualTo(tag);
 	}
 	public boolean isBlacklisted(String group, String name) {
-		return infoListBlack.containsEqual(tagListMain.getTag(group, name));
+		return infoListBlack.containsEqualTo(tagListMain.getTag(group, name));
 	}
 	
 	public TagList getInfoListWhite() {

@@ -14,9 +14,9 @@ public class EntityListMain extends EntityList {
 	}
 	
 	public static EntityListMain readFromDisk() {
-		return (EntityListMain) JsonUtil.read(typeToken, FileUtil.getFileData());
+		return (EntityListMain) JsonUtil.read(typeToken, FileUtil.getProjectFileData());
 	}
 	public void writeToDisk() {
-		JsonUtil.write(entityListMain, typeToken, FileUtil.getFileData());
+		JsonUtil.write(entityListMain, typeToken, FileUtil.getProjectFileData());
 	}
 }

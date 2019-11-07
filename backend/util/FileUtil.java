@@ -1,8 +1,9 @@
 package application.backend.util;
 
+import application.backend.base.CustomList;
 import application.backend.base.entity.Entity;
 import application.backend.base.entity.EntityList;
-import application.backend.base.loader.cache.CacheWriter;
+import application.backend.loader.cache.CacheWriter;
 import application.backend.util.enums.FileType;
 import application.frontend.stage.StageManager;
 import application.frontend.stage.template.YesNoCancelStage;
@@ -13,7 +14,6 @@ import javafx.stage.DirectoryChooser;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
@@ -36,23 +36,23 @@ public abstract class FileUtil implements InstanceCollector {
 			".avi",
 			".webm",
 			};
-	private static String dirSource;
-	private static String fileData;
-	private static String fileTags;
-	private static String dirCache;
+	private static String projectDirSource;
+	private static String projectFileData;
+	private static String projectFileTags;
+	private static String projectDirCache;
 	
 	public static void initialize(String dirProject, String dirSource) {
 		String separator = File.separator;
 		if (!dirProject.endsWith(separator)) dirProject += separator;
 		if (!dirSource.endsWith(separator)) dirSource += separator;
 		
-		FileUtil.dirSource = dirSource;
+		FileUtil.projectDirSource = dirSource;
 		
-		fileData = dirProject + "data.json";
-		fileTags = dirProject + "tags.json";
-		dirCache = dirProject + "cache" + separator;
+		projectFileData = dirProject + "data.json";
+		projectFileTags = dirProject + "tags.json";
+		projectDirCache = dirProject + "cache" + separator;
 		
-		File _dirCache = new File(dirCache);
+		File _dirCache = new File(projectDirCache);
 		if (!_dirCache.exists()) _dirCache.mkdir();
 	}
 	
@@ -75,9 +75,9 @@ public abstract class FileUtil implements InstanceCollector {
 		return directoryChooser(ownerScene, System.getProperty("user.dir"));
 	}
 	
-	public static ArrayList<File> getAllFiles(File directory) {
-		ArrayList<File> allFiles = new ArrayList<>();
-		ArrayList<File> currentDir = new ArrayList<>(Arrays.asList(Objects.requireNonNull(directory.listFiles())));
+	public static CustomList<File> getAllFiles(File directory) {
+		CustomList<File> allFiles = new CustomList<>();
+		CustomList<File> currentDir = new CustomList<>(Arrays.asList(Objects.requireNonNull(directory.listFiles())));
 		
 		for (File abstractFile : currentDir) {
 			if (abstractFile.isDirectory()) {
@@ -89,16 +89,16 @@ public abstract class FileUtil implements InstanceCollector {
 		
 		return allFiles;
 	}
-	public static ArrayList<File> getSupportedFiles(String directory) {
+	public static CustomList<File> getSupportedFiles(String directory) {
 		return getSupportedFiles(new File(directory));
 	}
-	public static ArrayList<File> getSupportedFiles(File directory) {
-		ArrayList<String> validExtensions = new ArrayList<>();
+	public static CustomList<File> getSupportedFiles(File directory) {
+		CustomList<String> validExtensions = new CustomList<>();
 		validExtensions.addAll(Arrays.asList(getImageExtensions()));
 		validExtensions.addAll(Arrays.asList(getGifExtensions()));
 		validExtensions.addAll(Arrays.asList(getVideoExtensions()));
 		
-		ArrayList<File> validFiles = new ArrayList<>();
+		CustomList<File> validFiles = new CustomList<>();
 		for (File file : getAllFiles(directory)) {
 			String fileName = file.getName();
 			for (String ext : validExtensions) {
@@ -111,24 +111,24 @@ public abstract class FileUtil implements InstanceCollector {
 		return validFiles;
 	}
 	
-	public static void initDataObjectPaths(ArrayList<File> fileList) {
-		EntityList dataObjects = entityListMain;
-		if (dataObjects.size() == fileList.size()) {
-			for (int i = 0; i < dataObjects.size(); i++) {
-				Entity entity = dataObjects.get(i);
+	public static void initEntityPaths(CustomList<File> fileList) {
+		EntityList entities = entityListMain;
+		if (entities.size() == fileList.size()) {
+			for (int i = 0; i < entities.size(); i++) {
+				Entity entity = entities.get(i);
 				File sourceFile = fileList.get(i);
 				entity.setPath(sourceFile.getAbsolutePath());
 				entity.setLength(sourceFile.length());
 			}
 		} else {
-			String error = "dataObjects.size() != fileList.size()";
+			String error = "entities.size() != fileList.size()";
 			Logger.getGlobal().warning(error);
 		}
 	}
 	public static void importFiles() {
-		ArrayList<File> sourceDirFiles = getSupportedFiles(dirSource);
+		CustomList<File> sourceDirFiles = getSupportedFiles(projectDirSource);
 		fixDuplicateFileNames(sourceDirFiles);
-		ArrayList<String> sourceDirFileNames = new ArrayList<>();
+		CustomList<String> sourceDirFileNames = new CustomList<>();
 		sourceDirFiles.forEach(file -> sourceDirFileNames.add(file.getName()));
 		
 		DirectoryChooser directoryChooser = new DirectoryChooser();
@@ -136,11 +136,11 @@ public abstract class FileUtil implements InstanceCollector {
 		directoryChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
 		File directory = directoryChooser.showDialog(StageManager.getMainStage());
 		
-		EntityList newDataObjects = new EntityList();
+		EntityList newEntities = new EntityList();
 		if (directory != null && directory.isDirectory()) {
 			for (File file : getSupportedFiles(directory)) {
 				String oldPath = file.getAbsolutePath();
-				String newPath = dirSource + file.getName();
+				String newPath = projectDirSource + file.getName();
 				if (sourceDirFileNames.contains(file.getName())) {
 					String name = getFileNameWithoutExtension(file);
 					String extension = getExtension(file).toLowerCase();
@@ -148,7 +148,7 @@ public abstract class FileUtil implements InstanceCollector {
 					String newFileName;
 					do {
 						newFileName = name + "_" + k++ + extension;
-						newPath = dirSource + newFileName;
+						newPath = projectDirSource + newFileName;
 					}
 					while (sourceDirFileNames.contains(newFileName));
 				}
@@ -158,22 +158,22 @@ public abstract class FileUtil implements InstanceCollector {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				newDataObjects.add(new Entity(new File(newPath)));
+				newEntities.add(new Entity(new File(newPath)));
 			}
 		}
 		
-		if (newDataObjects.isEmpty()) {
+		if (newEntities.isEmpty()) {
 			StageManager.getErrorStage()._show("No valid files found.");
 		} else {
-			entityListMain.addAll(newDataObjects);
+			entityListMain.addAll(newEntities);
 			entityListMain.sort();
 			
-			filter.getCurrentSessionObjects().addAll(newDataObjects);
+			filter.getCurrentSessionEntities().addAll(newEntities);
 			
-			String msg = "Imported " + newDataObjects.size() + " files.\nWould you like to view the new files?";
+			String msg = "Imported " + newEntities.size() + " files.\nWould you like to view the new files?";
 			YesNoCancelStage.Result result = StageManager.getYesNoCancelStage()._show(msg);
 			if (result == YesNoCancelStage.Result.YES) {
-				filter.setAll(newDataObjects);
+				filter.setAll(newEntities);
 				select.set(filter.getFirst());
 				target.set(filter.getFirst());
 			} else {
@@ -185,7 +185,7 @@ public abstract class FileUtil implements InstanceCollector {
 		}
 	}
 	
-	public static void fixDuplicateFileNames(ArrayList<File> fileList) {
+	public static void fixDuplicateFileNames(CustomList<File> fileList) {
 		fileList.sort(Comparator.comparing(File::getName));
 		File file1;
 		File file2;
@@ -251,20 +251,20 @@ public abstract class FileUtil implements InstanceCollector {
 		throw new RuntimeException("FileType " + ext.toUpperCase() + " is not supported");
 	}
 	public static String getCacheFilePath(Entity entity) {
-		return FileUtil.getDirCache() + entity.getName() + "-" + entity.getLength() + CacheWriter.getCacheExtension();
+		return FileUtil.getProjectDirCache() + entity.getName() + "-" + entity.getLength() + CacheWriter.getCacheExtension();
 	}
 	
-	public static String getDirSource() {
-		return dirSource;
+	public static String getProjectDirSource() {
+		return projectDirSource;
 	}
-	public static String getFileData() {
-		return fileData;
+	public static String getProjectFileData() {
+		return projectFileData;
 	}
-	public static String getFileTags() {
-		return fileTags;
+	public static String getProjectFileTags() {
+		return projectFileTags;
 	}
-	public static String getDirCache() {
-		return dirCache;
+	public static String getProjectDirCache() {
+		return projectDirCache;
 	}
 	
 	public static String[] getImageExtensions() {

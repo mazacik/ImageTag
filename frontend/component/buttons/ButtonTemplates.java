@@ -1,8 +1,9 @@
 package application.frontend.component.buttons;
 
 import application.backend.base.entity.Entity;
+import application.backend.base.entity.EntityList;
 import application.backend.base.tag.Tag;
-import application.backend.control.Reload;
+import application.backend.control.reload.ChangeIn;
 import application.backend.util.ClipboardUtil;
 import application.backend.util.EntityGroupUtil;
 import application.backend.util.FileUtil;
@@ -21,11 +22,10 @@ import org.apache.commons.text.WordUtils;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
 public enum ButtonTemplates implements InstanceCollector {
-	OBJECT_OPEN {
+	ENTITY_OPEN {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Open", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
@@ -41,7 +41,7 @@ public enum ButtonTemplates implements InstanceCollector {
 			return textNode;
 		}
 	},
-	OBJECT_EDIT {
+	ENTITY_EDIT {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Edit", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
@@ -57,7 +57,7 @@ public enum ButtonTemplates implements InstanceCollector {
 			return textNode;
 		}
 	},
-	OBJECT_COPY_NAME {
+	ENTITY_COPY_NAME {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Copy File Name", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
@@ -67,7 +67,7 @@ public enum ButtonTemplates implements InstanceCollector {
 			return textNode;
 		}
 	},
-	OBJECT_COPY_PATH {
+	ENTITY_COPY_PATH {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Copy File Path", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
@@ -77,7 +77,7 @@ public enum ButtonTemplates implements InstanceCollector {
 			return textNode;
 		}
 	},
-	OBJECT_DELETE {
+	ENTITY_DELETE {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Delete File", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
@@ -87,7 +87,7 @@ public enum ButtonTemplates implements InstanceCollector {
 			return textNode;
 		}
 	},
-	OBJECT_REVERSE_IMAGE_SEARCH {
+	ENTITY_REVERSE_IMAGE_SEARCH {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Reverse Image Search", true, true, false, true);
 			textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
@@ -170,9 +170,9 @@ public enum ButtonTemplates implements InstanceCollector {
 					String oldGroup = ClickMenu.getGroup();
 					String newGroup = WordUtils.capitalize(StageManager.getGroupEditStage()._show(oldGroup).toLowerCase());
 					if (!newGroup.isEmpty()) {
-						tagListMain.forEach(tagObject -> {
-							if (tagObject.getGroup().equals(oldGroup)) {
-								tagObject.setGroup(newGroup);
+						tagListMain.forEach(tag -> {
+							if (tag.getGroup().equals(oldGroup)) {
+								tag.setGroup(newGroup);
 								filterPane.updateGroupNode(oldGroup, newGroup);
 								selectPane.updateGroupNode(oldGroup, newGroup);
 							}
@@ -197,7 +197,7 @@ public enum ButtonTemplates implements InstanceCollector {
 							filterPane.removeNameNode(group, n);
 							selectPane.removeNameNode(group, n);
 							Tag tag = tagListMain.getTag(group, n);
-							entityListMain.forEach(dataObject -> dataObject.getTagList().remove(tag));
+							entityListMain.forEach(entity -> entity.getTagList().remove(tag));
 							filter.unlist(tag);
 							tagListMain.remove(tag);
 						}
@@ -207,7 +207,7 @@ public enum ButtonTemplates implements InstanceCollector {
 					if (StageManager.getOkCancelStage()._show("Remove \"" + tag.getFull() + "\" ?")) {
 						filterPane.removeNameNode(group, name);
 						selectPane.removeNameNode(group, name);
-						entityListMain.forEach(dataObject -> dataObject.getTagList().remove(tag));
+						entityListMain.forEach(entity -> entity.getTagList().remove(tag));
 						filter.unlist(tag);
 						tagListMain.remove(tag);
 					}
@@ -279,7 +279,7 @@ public enum ButtonTemplates implements InstanceCollector {
 		return null;
 	}
 	
-	private void deleteDataObject(Entity entity) {
+	private void deleteEntity(Entity entity) {
 		if (filter.contains(entity)) {
 			String sourcePath = entity.getPath();
 			String cachePath = FileUtil.getCacheFilePath(entity);
@@ -305,22 +305,22 @@ public enum ButtonTemplates implements InstanceCollector {
 			return;
 		}
 		
-		ArrayList<Entity> dataObjectsToDelete = new ArrayList<>();
+		EntityList entitiesToDelete = new EntityList();
 		select.forEach(entity -> {
 			if (entity.getEntityGroupID() != 0 && !galleryPane.getExpandedGroups().contains(entity.getEntityGroupID())) {
-				dataObjectsToDelete.addAll(EntityGroupUtil.getEntityGroup(entity));
+				entitiesToDelete.addAll(EntityGroupUtil.getEntityGroup(entity));
 			} else {
-				dataObjectsToDelete.add(entity);
+				entitiesToDelete.add(entity);
 			}
 		});
 		
-		YesNoCancelStage.Result result = StageManager.getYesNoCancelStage()._show("Delete " + dataObjectsToDelete.size() + " file(s)?");
+		YesNoCancelStage.Result result = StageManager.getYesNoCancelStage()._show("Delete " + entitiesToDelete.size() + " file(s)?");
 		if (result == YesNoCancelStage.Result.YES) {
 			target.storePosition();
-			dataObjectsToDelete.forEach(this::deleteDataObject);
+			entitiesToDelete.forEach(this::deleteEntity);
 			target.restorePosition();
 			
-			reload.notify(Reload.Control.FILTER, Reload.Control.TARGET);
+			reload.notify(ChangeIn.FILTER, ChangeIn.TARGET);
 			reload.doReload();
 		}
 	}
@@ -331,10 +331,10 @@ public enum ButtonTemplates implements InstanceCollector {
 			YesNoCancelStage.Result result = StageManager.getYesNoCancelStage()._show("Delete file: " + sourcePath + "?");
 			if (result == YesNoCancelStage.Result.YES) {
 				target.storePosition();
-				this.deleteDataObject(currentTarget);
+				this.deleteEntity(currentTarget);
 				target.restorePosition();
 				
-				reload.notify(Reload.Control.FILTER, Reload.Control.TARGET);
+				reload.notify(ChangeIn.FILTER, ChangeIn.TARGET);
 				reload.doReload();
 			}
 		} else {
@@ -342,7 +342,7 @@ public enum ButtonTemplates implements InstanceCollector {
 			if (result == YesNoCancelStage.Result.YES) {
 				
 				target.storePosition();
-				EntityGroupUtil.getEntityGroup(currentTarget).forEach(this::deleteDataObject);
+				EntityGroupUtil.getEntityGroup(currentTarget).forEach(this::deleteEntity);
 				target.restorePosition();
 				reload.doReload();
 			}

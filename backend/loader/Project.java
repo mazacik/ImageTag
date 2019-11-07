@@ -1,4 +1,4 @@
-package application.backend.base.loader;
+package application.backend.loader;
 
 import application.backend.util.JsonUtil;
 import com.google.gson.reflect.TypeToken;

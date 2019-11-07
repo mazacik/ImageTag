@@ -18,7 +18,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 
 public class GroupNode extends VBox implements InstanceCollector {
@@ -107,7 +106,7 @@ public class GroupNode extends VBox implements InstanceCollector {
 				}
 			}
 		});
-		ClickMenu.install(hBoxGroup, MouseButton.SECONDARY, ClickMenu.StaticInstance.TAGS);
+		ClickMenu.install(hBoxGroup, MouseButton.SECONDARY, ClickMenu.StaticInstance.TAG);
 	}
 	
 	public void addNameNode(String name) {
@@ -133,7 +132,7 @@ public class GroupNode extends VBox implements InstanceCollector {
 					break;
 			}
 		});
-		ClickMenu.install(nameNode, MouseButton.SECONDARY, ClickMenu.StaticInstance.TAGS);
+		ClickMenu.install(nameNode, MouseButton.SECONDARY, ClickMenu.StaticInstance.TAG);
 		
 		nameNodes.add(nameNode);
 	}
@@ -177,7 +176,7 @@ public class GroupNode extends VBox implements InstanceCollector {
 		return this.getChildren().size() > 1;
 	}
 	
-	public ArrayList<TextNode> getNameNodes() {
+	public CustomList<TextNode> getNameNodes() {
 		return nameNodes;
 	}
 	public String getGroup() {

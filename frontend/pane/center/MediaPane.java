@@ -1,9 +1,10 @@
 package application.frontend.pane.center;
 
+import application.backend.base.CustomList;
 import application.backend.base.entity.Entity;
+import application.backend.control.reload.Reloadable;
 import application.backend.util.FileUtil;
 import application.frontend.component.ClickMenu;
-import application.frontend.pane.PaneInterface;
 import application.frontend.stage.StageManager;
 import application.main.InstanceCollector;
 import javafx.geometry.Pos;
@@ -23,7 +24,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-public class MediaPane extends BorderPane implements PaneInterface, InstanceCollector {
+import java.lang.reflect.Method;
+import java.util.logging.Logger;
+
+public class MediaPane extends BorderPane implements InstanceCollector, Reloadable {
 	private Canvas canvas;
 	private ImageView gifPlayer;
 	private VideoPlayer videoPlayer;
@@ -34,14 +38,12 @@ public class MediaPane extends BorderPane implements PaneInterface, InstanceColl
 	
 	private Image placeholder = null;
 	
-	private boolean needsReload;
-	
 	public MediaPane() {
 	
 	}
 	
 	public void init() {
-		needsReload = false;
+		methodsToInvokeOnNextReload = new CustomList<>();
 		
 		canvas = new Canvas();
 		gifPlayer = new ImageView();
@@ -56,9 +58,16 @@ public class MediaPane extends BorderPane implements PaneInterface, InstanceColl
 		initEvents();
 	}
 	
+	private CustomList<Method> methodsToInvokeOnNextReload;
+	@Override
+	public CustomList<Method> getMethodsToInvokeOnNextReload() {
+		return methodsToInvokeOnNextReload;
+	}
 	public boolean reload() {
 		Entity currentTarget = target.get();
 		if (StageManager.getMainStage().isFullView() && currentTarget != null) {
+			Logger.getGlobal().info(this.toString());
+			
 			switch (FileUtil.getFileType(currentTarget)) {
 				case IMAGE:
 					reloadAsImage(currentTarget);
@@ -183,7 +192,7 @@ public class MediaPane extends BorderPane implements PaneInterface, InstanceColl
 		canvas.widthProperty().addListener((observable, oldValue, newValue) -> reload());
 		canvas.heightProperty().addListener((observable, oldValue, newValue) -> reload());
 		
-		ClickMenu.install(this, MouseButton.SECONDARY, ClickMenu.StaticInstance.DATA);
+		ClickMenu.install(this, MouseButton.SECONDARY, ClickMenu.StaticInstance.ENTITY);
 		this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
 				if (event.getClickCount() % 2 != 0) {
@@ -195,15 +204,6 @@ public class MediaPane extends BorderPane implements PaneInterface, InstanceColl
 				ClickMenu.hideAll();
 			}
 		});
-	}
-	
-	@Override
-	public boolean getNeedsReload() {
-		return needsReload;
-	}
-	@Override
-	public void setNeedsReload(boolean needsReload) {
-		this.needsReload = needsReload;
 	}
 	
 	public VideoPlayer getVideoPlayer() {

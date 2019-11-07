@@ -1,7 +1,7 @@
 package application.frontend.stage.main;
 
 import application.backend.base.CustomList;
-import application.backend.base.loader.Project;
+import application.backend.loader.Project;
 import application.backend.util.FileUtil;
 import application.backend.util.enums.SystemUtil;
 import application.frontend.component.custom.RecentProjectNode;

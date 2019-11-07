@@ -1,6 +1,6 @@
 package application.frontend.component.custom;
 
-import application.backend.base.loader.Project;
+import application.backend.loader.Project;
 import application.frontend.component.simple.TextNode;
 import application.frontend.decorator.ColorUtil;
 import application.frontend.stage.StageManager;

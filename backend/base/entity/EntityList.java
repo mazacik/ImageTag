@@ -46,7 +46,7 @@ public class EntityList extends CustomList<Entity> implements InstanceCollector 
 			for (Tag tag : this.getFirst().getTagList()) {
 				//check if all objects contain the tag
 				for (Entity entity : this) {
-					if (entity.getTagList().containsEqual(tag)) {
+					if (entity.getTagList().containsEqualTo(tag)) {
 						//if the last object contains the tag, all before do too, add
 						if (entity.equals(this.getLast())) {
 							tagsIntersect.add(tag);
@@ -64,7 +64,7 @@ public class EntityList extends CustomList<Entity> implements InstanceCollector 
 		}
 	}
 	
-	public CustomList<Integer> getEntityGroupIDs() {
+	public CustomList<Integer> getentityGroupIDs() {
 		CustomList<Integer> entityGroupIDs = new CustomList<>();
 		for (Entity entity : this) {
 			if (entity.getEntityGroupID() != 0) {

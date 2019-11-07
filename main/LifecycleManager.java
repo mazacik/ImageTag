@@ -1,7 +1,7 @@
 package application.main;
 
-import application.backend.base.loader.LoaderThread;
-import application.backend.base.loader.Project;
+import application.backend.loader.LoaderThread;
+import application.backend.loader.Project;
 import application.backend.util.FileUtil;
 import application.frontend.stage.StageManager;
 
@@ -9,7 +9,7 @@ import java.io.File;
 
 public abstract class LifecycleManager implements InstanceCollector {
 	public static void init() {
-		//setLoggerFormat();
+		setLoggerFormat();
 		initInstances();
 		showGUI();
 	}

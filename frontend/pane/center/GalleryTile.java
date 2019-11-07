@@ -2,7 +2,7 @@ package application.frontend.pane.center;
 
 import application.backend.base.CustomList;
 import application.backend.base.entity.Entity;
-import application.backend.control.Reload;
+import application.backend.control.reload.ChangeIn;
 import application.backend.util.EntityGroupUtil;
 import application.frontend.component.ClickMenu;
 import application.frontend.component.simple.TextNode;
@@ -44,7 +44,7 @@ public class GalleryTile extends Pane implements InstanceCollector {
 		
 		initEvents();
 		
-		ClickMenu.install(imageView, MouseButton.SECONDARY, ClickMenu.StaticInstance.DATA);
+		ClickMenu.install(imageView, MouseButton.SECONDARY, ClickMenu.StaticInstance.ENTITY);
 	}
 	
 	public void updateSelectBorder() {
@@ -169,7 +169,7 @@ public class GalleryTile extends Pane implements InstanceCollector {
 				expandedGroups.remove(expandedGroups.indexOf(entityGroupID));
 			}
 			
-			reload.notify(Reload.Control.DATA);
+			reload.notify(ChangeIn.ENTITY_LIST_MAIN);
 		}
 	}
 	

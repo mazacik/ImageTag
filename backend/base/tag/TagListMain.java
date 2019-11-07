@@ -1,7 +1,7 @@
 package application.backend.base.tag;
 
 import application.backend.base.entity.Entity;
-import application.backend.control.Reload;
+import application.backend.control.reload.ChangeIn;
 import application.backend.util.FileUtil;
 import application.backend.util.JsonUtil;
 import application.frontend.stage.StageManager;
@@ -24,7 +24,7 @@ public class TagListMain extends TagList implements InstanceCollector {
 			TagList tagList = entity.getTagList();
 			
 			for (Tag tag : tagList) {
-				if (this.containsEqual(tag)) {
+				if (this.containsEqualTo(tag)) {
 					tagList.set(tagList.indexOf(tag), getTag(tag));
 				} else {
 					this.add(tag);
@@ -36,28 +36,24 @@ public class TagListMain extends TagList implements InstanceCollector {
 	}
 	
 	public void writeDummyToDisk() {
-		JsonUtil.write(this, typeToken, FileUtil.getFileTags());
+		JsonUtil.write(this, typeToken, FileUtil.getProjectFileTags());
 	}
 	private TagList readDummyFromDisk() {
-		return (TagList) JsonUtil.read(typeToken, FileUtil.getFileTags());
+		return (TagList) JsonUtil.read(typeToken, FileUtil.getProjectFileTags());
 	}
 	
 	public boolean add(Tag tag) {
 		if (super.add(tag)) {
-			reload.notify(Reload.Control.TAGS);
-			
+			reload.notify(ChangeIn.TAG_LIST_MAIN);
 			return true;
 		}
-		
 		return false;
 	}
 	public boolean remove(Tag tag) {
 		if (super.remove(tag)) {
-			reload.notify(Reload.Control.TAGS);
-			
+			reload.notify(ChangeIn.TAG_LIST_MAIN);
 			return true;
 		}
-		
 		return false;
 	}
 	public boolean edit(Tag tagOld) {
@@ -67,13 +63,10 @@ public class TagListMain extends TagList implements InstanceCollector {
 			
 			if (tagNew != null) {
 				tagOld.set(tagNew.getGroup(), tagNew.getName());
-				
 				super.sort();
-				
 				if (result.getValue()) {
-					select.addTagObject(tagOld);
+					select.addTag(tagOld);
 				}
-				
 				return true;
 			} else {
 				return false;

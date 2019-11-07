@@ -17,8 +17,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.stage.WindowEvent;
 
-import java.util.ArrayList;
-
 public class ClickMenu extends Popup implements InstanceCollector {
 	private static String name;
 	private static String group;
@@ -37,26 +35,29 @@ public class ClickMenu extends Popup implements InstanceCollector {
 		ClickMenu.group = group;
 	}
 	
-	protected static final ArrayList<ClickMenu> instanceList = new ArrayList<>();
+	protected static final CustomList<ClickMenu> instanceList = new CustomList<>();
 	protected VBox vBox;
 	
 	protected CustomList<Node> getValidNodes() {
 		CustomList<Node> list = new CustomList<>();
 		
-		list.add(ButtonTemplates.OBJECT_OPEN.get());
-		list.add(ButtonTemplates.OBJECT_EDIT.get());
+		list.add(ButtonTemplates.ENTITY_OPEN.get());
+		list.add(ButtonTemplates.ENTITY_EDIT.get());
 		list.add(ButtonTemplates.FILTER_SIMILAR.get());
-		list.add(ButtonTemplates.OBJECT_REVERSE_IMAGE_SEARCH.get());
+		list.add(ButtonTemplates.ENTITY_REVERSE_IMAGE_SEARCH.get());
 		list.add(new SeparatorNode());
-		list.add(ButtonTemplates.OBJECT_COPY_NAME.get());
-		list.add(ButtonTemplates.OBJECT_COPY_PATH.get());
+		list.add(ButtonTemplates.ENTITY_COPY_NAME.get());
+		list.add(ButtonTemplates.ENTITY_COPY_PATH.get());
 		list.add(new SeparatorNode());
-		list.add(ButtonTemplates.OBJECT_DELETE.get());
+		list.add(ButtonTemplates.ENTITY_DELETE.get());
 		if (select.size() > 1) {
 			list.add(ButtonTemplates.SELECTION_DELETE.get());
 			list.add(new SeparatorNode());
-			if (select.isSelectGrouped()) list.add(ButtonTemplates.ENTITY_GROUP_DISCARD.get());
-			else list.add(ButtonTemplates.ENTITY_GROUP_CREATE.get());
+			if (select.isSelectGrouped()) {
+				list.add(ButtonTemplates.ENTITY_GROUP_DISCARD.get());
+			} else {
+				list.add(ButtonTemplates.ENTITY_GROUP_CREATE.get());
+			}
 		}
 		return list;
 	}
@@ -80,14 +81,14 @@ public class ClickMenu extends Popup implements InstanceCollector {
 	}
 	public static void install(Region root, Direction direction, MouseButton mouseButton, StaticInstance staticInstance) {
 		switch (staticInstance) {
-			case DATA:
+			case ENTITY:
 				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 					if (event.getButton() == mouseButton && event.getSource() == root) {
 						clickMenuData.show(root, direction);
 					}
 				});
 				break;
-			case TAGS:
+			case TAG:
 				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 					if (event.getButton() == mouseButton && event.getSource() == root) {
 						clickMenuTags.show(root, direction);
@@ -105,14 +106,14 @@ public class ClickMenu extends Popup implements InstanceCollector {
 	}
 	public static void install(Node root, MouseButton mouseButton, StaticInstance staticInstance) {
 		switch (staticInstance) {
-			case DATA:
+			case ENTITY:
 				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 					if (event.getButton() == mouseButton && event.getSource() == root) {
 						clickMenuData.show(root, event);
 					}
 				});
 				break;
-			case TAGS:
+			case TAG:
 				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 					if (event.getButton() == mouseButton && event.getSource() == root) {
 						clickMenuTags.show(root, event);
@@ -219,10 +220,10 @@ public class ClickMenu extends Popup implements InstanceCollector {
 		hideAll();
 		if (event.getPickResult().getIntersectedNode() == anchor) {
 			switch (staticInstance) {
-				case DATA:
+				case ENTITY:
 					clickMenuData.show(anchor, event.getScreenX(), event.getScreenY());
 					break;
-				case TAGS:
+				case TAG:
 					clickMenuTags.show(anchor, event.getScreenX(), event.getScreenY());
 					break;
 				case SELECT:
@@ -233,8 +234,8 @@ public class ClickMenu extends Popup implements InstanceCollector {
 	}
 	
 	public enum StaticInstance {
-		DATA,
-		TAGS,
+		ENTITY,
+		TAG,
 		SELECT
 	}
 }

@@ -45,6 +45,7 @@
 
 package application.backend.wip.lire;
 
+import application.backend.base.CustomList;
 import application.backend.util.FileUtil;
 import net.semanticmetadata.lire.builders.GlobalDocumentBuilder;
 import net.semanticmetadata.lire.imageanalysis.features.global.CEDD;
@@ -60,13 +61,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
 public class LireIndexer {
 	public LireIndexer(String directory) {
-		ArrayList<File> files = FileUtil.getSupportedFiles(directory);
-		ArrayList<String> images = new ArrayList<>();
+		CustomList<File> files = FileUtil.getSupportedFiles(directory);
+		CustomList<String> images = new CustomList<>();
 		files.forEach(file -> {
 			try {
 				images.add(file.getCanonicalPath());

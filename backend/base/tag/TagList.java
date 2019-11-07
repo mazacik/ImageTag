@@ -2,11 +2,18 @@ package application.backend.base.tag;
 
 import application.backend.base.CustomList;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 
 public class TagList extends CustomList<Tag> {
-	public boolean containsEqual(Tag tag) {
+	public TagList() {
+	
+	}
+	public TagList(Collection<? extends Tag> c) {
+		super(c);
+	}
+	
+	public boolean containsEqualTo(Tag tag) {
 		String group = tag.getGroup();
 		String name = tag.getName();
 		
@@ -25,7 +32,7 @@ public class TagList extends CustomList<Tag> {
 		super.sort(Comparator.comparing(Tag::getFull));
 	}
 	
-	public ArrayList<String> getGroups() {
+	public CustomList<String> getGroups() {
 		CustomList<String> groups = new CustomList<>();
 		
 		for (Tag tag : this) {
@@ -36,8 +43,8 @@ public class TagList extends CustomList<Tag> {
 		
 		return groups;
 	}
-	public ArrayList<String> getNames(String group) {
-		ArrayList<String> names = new ArrayList<>();
+	public CustomList<String> getNames(String group) {
+		CustomList<String> names = new CustomList<>();
 		for (Tag tag : this) {
 			if (tag.getGroup().equals(group)) {
 				names.add(tag.getName());
