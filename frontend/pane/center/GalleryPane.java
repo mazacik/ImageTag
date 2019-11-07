@@ -152,7 +152,7 @@ public class GalleryPane extends ScrollPane implements InstanceCollector, Reload
 		
 		event.consume();
 		
-		//if something broke after changing tilePane padding or tilePane vGap, change paddingFix
+		//if something broke after changing tilePane padding or tilePane vGap, look at paddingFix
 		double paddingFix = (tilePane.getPadding().getTop() + tilePane.getPadding().getBottom()) / 2;
 		double rowHeight = tilePane.getHeight() / getRowCount();
 		double contentHeight = tilePane.getHeight() - paddingFix;
@@ -288,7 +288,7 @@ public class GalleryPane extends ScrollPane implements InstanceCollector, Reload
 	
 	private CustomList<GalleryTile> getTiles() {
 		CustomList<GalleryTile> tiles = new CustomList<>();
-		tilePane.getChildren().forEach(tile -> tiles.add((GalleryTile) tile));
+		tilePane.getChildren().forEach(tile -> tiles.add((GalleryTile) tile, true));
 		return tiles;
 	}
 	private CustomList<GalleryTile> getTilesInViewport() {
@@ -307,13 +307,13 @@ public class GalleryPane extends ScrollPane implements InstanceCollector, Reload
 		double tileTop;
 		double tileBottom;
 		
-		for (GalleryTile entity : getTiles()) {
+		for (GalleryTile entity : visibleTiles) {
 			entityIndex = visibleTiles.indexOf(entity);
 			tileBounds = visibleTiles.get(entityIndex).getBoundsInParent();
 			tileTop = tileBounds.getMinY();
 			tileBottom = tileBounds.getMaxY();
 			if (tileTop <= viewportBottom + tileSize && tileBottom >= viewportTop - tileSize) {
-				tilesInViewport.add(entity);
+				tilesInViewport.add(entity, true);
 			}
 		}
 		

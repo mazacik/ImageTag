@@ -21,7 +21,7 @@ public class LoaderThread extends Thread implements InstanceCollector {
 		CustomList<File> fileList = FileUtil.getSupportedFiles(FileUtil.getProjectDirSource());
 		FileUtil.fixDuplicateFileNames(fileList);
 		
-		boolean readSuccess = entityListMain.addAll(EntityListMain.readFromDisk());
+		boolean readSuccess = entityListMain.addAll(EntityListMain.readFromDisk(), true);
 		if (!readSuccess || !isDatabaseOk()) {
 			createBackup();
 			createDatabase(fileList);
@@ -84,13 +84,12 @@ public class LoaderThread extends Thread implements InstanceCollector {
 	}
 	
 	private void checkFileDifference(CustomList<File> fileList) {
-		EntityList entityList = entityListMain;
-		entityList.sort(Comparator.comparing(Entity::getName));
+		entityListMain.sort(Comparator.comparing(Entity::getName));
 		fileList.sort(Comparator.comparing(File::getName));
-		EntityList orphanEntities = new EntityList(entityList);
+		EntityList orphanEntities = new EntityList(entityListMain);
 		CustomList<File> newFiles = new CustomList<>(fileList);
 		/* compare files in the working directory with knwon objects in the application.database */
-		for (Entity entity : entityList) {
+		for (Entity entity : entityListMain) {
 			for (int j = 0; j < newFiles.size(); j++) {
 				File file = newFiles.get(j);
 				if (entity.getName().equals(file.getName())) {
@@ -121,13 +120,13 @@ public class LoaderThread extends Thread implements InstanceCollector {
 		/* add unrecognized objects */
 		for (File file : newFiles) {
 			Entity entity = new Entity(file);
-			entityList.add(entity);
+			entityListMain.add(entity);
 			filter.getCurrentSessionEntities().add(entity);
 		}
 		/* discard orphan objects */
 		for (Entity entity : orphanEntities) {
-			entityList.remove(entity);
+			entityListMain.remove(entity);
 		}
-		entityList.sort(Comparator.comparing(Entity::getName));
+		entityListMain.sort(Comparator.comparing(Entity::getName));
 	}
 }

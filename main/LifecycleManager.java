@@ -41,7 +41,7 @@ public abstract class LifecycleManager implements InstanceCollector {
 		String projectDirectory = projectFilePath.substring(0, projectFilePath.lastIndexOf(File.separatorChar));
 		String sourceDirectory = project.getWorkingDirectory();
 		
-		FileUtil.initialize(projectDirectory, sourceDirectory);
+		FileUtil.init(projectDirectory, sourceDirectory);
 		new LoaderThread().start();
 		StageManager.getMainStage()._show();
 	}

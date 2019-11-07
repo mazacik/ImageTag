@@ -1,6 +1,7 @@
 package application.backend.base;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Random;
 
@@ -8,43 +9,59 @@ public class CustomList<T> extends ArrayList<T> {
 	public CustomList() {
 		super();
 	}
+	public CustomList(T[] c) {
+		super(Arrays.asList(c));
+	}
 	public CustomList(Collection<? extends T> c) {
 		super(c);
 	}
 	
-	/*
-	 * Local method addAll() is using the local method add().
-	 * However in classes extending this one,
-	 * their addAll() redirects at THEIR add() method
-	 * instead of the local add(), often creating an unwanted loop.
-	 * _add is a workaround to this issue.
-	 */
-	private boolean _add(T t) {
-		if (t != null && !super.contains(t)) {
-			return super.add(t);
-		} else {
-			return false;
+	public boolean add(T t) {
+		return add(t, false);
+	}
+	public boolean add(T t, boolean skipDupCheck) {
+		if (t != null) {
+			if (skipDupCheck || !super.contains(t)) {
+				return super.add(t);
+			}
 		}
+		return false;
 	}
 	
-	public boolean add(T t) {
-		return _add(t);
-	}
 	public void add(int index, T t) {
 		if (t != null && !super.contains(t)) {
 			super.add(index, t);
 		}
 	}
+	
 	public boolean addAll(Collection<? extends T> c) {
+		return addAll(c, false);
+	}
+	public boolean addAll(Collection<? extends T> c, boolean skipDupCheck) {
 		int size = this.size();
 		for (T t : c) {
-			this._add(t);
+			this.add(t, skipDupCheck);
 		}
 		return size != this.size();
 	}
+	public boolean addAll(T[] c) {
+		return addAll(c, false);
+	}
+	public boolean addAll(T[] c, boolean skipDupCheck) {
+		int size = this.size();
+		for (T t : c) {
+			this.add(t, skipDupCheck);
+		}
+		return size != this.size();
+	}
+	
 	public boolean setAll(Collection<? extends T> c) {
 		this.clear();
-		return this.addAll(c);
+		return this.addAll(c, true);
+	}
+	public boolean setAll(T[] c) {
+		this.clear();
+		return this.addAll(c, true);
 	}
 	
 	public boolean containsAny(Collection<? extends T> c) {

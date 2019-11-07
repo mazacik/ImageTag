@@ -14,9 +14,7 @@ import javafx.stage.DirectoryChooser;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 public abstract class FileUtil implements InstanceCollector {
@@ -41,19 +39,26 @@ public abstract class FileUtil implements InstanceCollector {
 	private static String projectFileTags;
 	private static String projectDirCache;
 	
-	public static void initialize(String dirProject, String dirSource) {
+	private static CustomList<String> validExtensions = new CustomList<>();
+	
+	public static void init(String dirProject, String dirSource) {
 		String separator = File.separator;
 		if (!dirProject.endsWith(separator)) dirProject += separator;
 		if (!dirSource.endsWith(separator)) dirSource += separator;
 		
-		FileUtil.projectDirSource = dirSource;
-		
+		projectDirSource = dirSource;
 		projectFileData = dirProject + "data.json";
 		projectFileTags = dirProject + "tags.json";
 		projectDirCache = dirProject + "cache" + separator;
 		
-		File _dirCache = new File(projectDirCache);
-		if (!_dirCache.exists()) _dirCache.mkdir();
+		File dirCache = new File(projectDirCache);
+		if (!dirCache.exists()) {
+			dirCache.mkdirs();
+		}
+		
+		validExtensions.addAll(imageExtensions);
+		validExtensions.addAll(gifExtensions);
+		validExtensions.addAll(videoExtensions);
 	}
 	
 	public static String directoryChooser(Scene ownerScene, String initialDirectory) {
@@ -75,40 +80,35 @@ public abstract class FileUtil implements InstanceCollector {
 		return directoryChooser(ownerScene, System.getProperty("user.dir"));
 	}
 	
-	public static CustomList<File> getAllFiles(File directory) {
-		CustomList<File> allFiles = new CustomList<>();
-		CustomList<File> currentDir = new CustomList<>(Arrays.asList(Objects.requireNonNull(directory.listFiles())));
+	public static CustomList<File> getSupportedFiles(File directory) {
+		CustomList<File> result = new CustomList<>();
+		CustomList<File> abstractFiles = new CustomList<>(directory.listFiles(file -> {
+			if (file.isDirectory()) {
+				return true;
+			}
+			
+			String fileName = file.getName().toLowerCase();
+			for (String ext : validExtensions) {
+				if (fileName.endsWith(ext)) {
+					return true;
+				}
+			}
+			
+			return false;
+		}));
 		
-		for (File abstractFile : currentDir) {
+		for (File abstractFile : abstractFiles) {
 			if (abstractFile.isDirectory()) {
-				allFiles.addAll(getAllFiles(abstractFile));
+				result.addAll(FileUtil.getSupportedFiles(abstractFile), true);
 			} else {
-				allFiles.add(abstractFile);
+				result.add(abstractFile, true);
 			}
 		}
 		
-		return allFiles;
+		return result;
 	}
 	public static CustomList<File> getSupportedFiles(String directory) {
 		return getSupportedFiles(new File(directory));
-	}
-	public static CustomList<File> getSupportedFiles(File directory) {
-		CustomList<String> validExtensions = new CustomList<>();
-		validExtensions.addAll(Arrays.asList(getImageExtensions()));
-		validExtensions.addAll(Arrays.asList(getGifExtensions()));
-		validExtensions.addAll(Arrays.asList(getVideoExtensions()));
-		
-		CustomList<File> validFiles = new CustomList<>();
-		for (File file : getAllFiles(directory)) {
-			String fileName = file.getName();
-			for (String ext : validExtensions) {
-				if (fileName.toLowerCase().endsWith(ext)) {
-					validFiles.add(file);
-					break;
-				}
-			}
-		}
-		return validFiles;
 	}
 	
 	public static void initEntityPaths(CustomList<File> fileList) {
@@ -118,7 +118,7 @@ public abstract class FileUtil implements InstanceCollector {
 				Entity entity = entities.get(i);
 				File sourceFile = fileList.get(i);
 				entity.setPath(sourceFile.getAbsolutePath());
-				entity.setLength(sourceFile.length());
+				//entity.setLength(sourceFile.length());
 			}
 		} else {
 			String error = "entities.size() != fileList.size()";

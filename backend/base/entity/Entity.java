@@ -52,9 +52,6 @@ public class Entity implements InstanceCollector, Serializable {
 	public void setTagList(TagList tagList) {
 		this.tagList = tagList;
 	}
-	public void setLength(long length) {
-		this.length = length;
-	}
 	public void setEntityGroupID(int entityGroupID) {
 		this.entityGroupID = entityGroupID;
 	}

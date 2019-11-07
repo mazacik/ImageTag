@@ -91,7 +91,7 @@ public class Filter extends EntityList implements InstanceCollector {
 			}
 			
 			if (isWhitelistOk(tagList) && isBlacklistOk(tagList)) {
-				this.add(entity);
+				this.add(entity, true);
 			}
 		}
 		
@@ -99,11 +99,11 @@ public class Filter extends EntityList implements InstanceCollector {
 			target.set(this.getFirst());
 		}
 		
-		CustomList<Entity> selectHelper = new CustomList<>();
-		for (Entity entity : select) {
-			if (!this.contains(entity)) selectHelper.add(entity);
+		for (Entity entity : new CustomList<>(select)) {
+			if (!this.contains(entity)) {
+				select.remove(entity);
+			}
 		}
-		select.removeAll(selectHelper);
 		if (select.isEmpty()) {
 			select.set(target.get());
 		}
