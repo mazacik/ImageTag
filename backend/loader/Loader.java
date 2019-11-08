@@ -16,12 +16,12 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
-public class LoaderThread extends Thread implements InstanceCollector {
-	public void run() {
+public abstract class Loader implements InstanceCollector {
+	public static void run() {
 		CustomList<File> fileList = FileUtil.getSupportedFiles(FileUtil.getProjectDirSource());
 		FileUtil.fixDuplicateFileNames(fileList);
 		
-		boolean readSuccess = entityListMain.addAll(EntityListMain.readFromDisk(), true);
+		boolean readSuccess = entityListMain.addAll(EntityListMain.readFromDisk());
 		if (!readSuccess || !isDatabaseOk()) {
 			createBackup();
 			createDatabase(fileList);
@@ -47,7 +47,7 @@ public class LoaderThread extends Thread implements InstanceCollector {
 		});
 	}
 	
-	private boolean isDatabaseOk() {
+	private static boolean isDatabaseOk() {
 		for (Entity entity : entityListMain) {
 			if (entity.getName() == null || entity.getTagList() == null) {
 				//the database is (most likely) corrupted or outdated
@@ -72,18 +72,18 @@ public class LoaderThread extends Thread implements InstanceCollector {
 		return true;
 	}
 	
-	private void createBackup() {
+	private static void createBackup() {
 		new File(FileUtil.getProjectFileData()).renameTo(new File(FileUtil.getProjectFileData() + "_backup"));
 	}
 	
-	private void createDatabase(CustomList<File> fileList) {
+	private static void createDatabase(CustomList<File> fileList) {
 		entityListMain.clear();
 		for (File file : fileList) {
 			entityListMain.add(new Entity(file));
 		}
 	}
 	
-	private void checkFileDifference(CustomList<File> fileList) {
+	private static void checkFileDifference(CustomList<File> fileList) {
 		entityListMain.sort(Comparator.comparing(Entity::getName));
 		fileList.sort(Comparator.comparing(File::getName));
 		EntityList orphanEntities = new EntityList(entityListMain);

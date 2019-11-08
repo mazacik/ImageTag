@@ -1,6 +1,6 @@
 package application.main;
 
-import application.backend.loader.LoaderThread;
+import application.backend.loader.Loader;
 import application.backend.loader.Project;
 import application.backend.util.FileUtil;
 import application.frontend.stage.StageManager;
@@ -42,7 +42,7 @@ public abstract class LifecycleManager implements InstanceCollector {
 		String sourceDirectory = project.getWorkingDirectory();
 		
 		FileUtil.init(projectDirectory, sourceDirectory);
-		new LoaderThread().start();
 		StageManager.getMainStage()._show();
+		Loader.run();
 	}
 }
