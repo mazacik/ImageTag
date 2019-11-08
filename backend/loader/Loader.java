@@ -4,6 +4,7 @@ import application.backend.base.CustomList;
 import application.backend.base.entity.Entity;
 import application.backend.base.entity.EntityList;
 import application.backend.base.entity.EntityListMain;
+import application.backend.loader.cache.CacheWriter;
 import application.backend.util.FileUtil;
 import application.frontend.stage.StageManager;
 import application.main.InstanceCollector;
@@ -40,7 +41,7 @@ public abstract class Loader implements InstanceCollector {
 		
 		galleryPane.updateViewportTilesVisibility();
 		
-		new BackgroundCacheLoader().start();
+		CacheWriter.writeAllCacheInBackground();
 	}
 	
 	private static boolean isDatabaseOk() {

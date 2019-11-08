@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 public abstract class CacheWriter implements InstanceCollector {
 	private static final String CACHE_EXTENSION = ".jpg";
 	
-	public static Image write(Entity entity, File cacheFile) {
+	public static synchronized Image write(Entity entity, File cacheFile) {
 		Logger.getGlobal().info(entity.getName());
 		
 		switch (FileUtil.getFileType(entity)) {
@@ -134,6 +134,17 @@ public abstract class CacheWriter implements InstanceCollector {
 		} else {
 			return null;
 		}
+	}
+	
+	public static void writeAllCacheInBackground() {
+		new Thread(() -> {
+			for (Entity entity : entityListMain) {
+				File cacheFile = new File(FileUtil.getCacheFilePath(entity));
+				if (!cacheFile.exists()) {
+					CacheWriter.write(entity, cacheFile);
+				}
+			}
+		}).start();
 	}
 	
 	public static String getCacheExtension() {
