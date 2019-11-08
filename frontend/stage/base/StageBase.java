@@ -44,6 +44,9 @@ public abstract class StageBase extends Stage implements StageBaseInterface {
 	public void setBorder(Border border) {
 		vBoxMain.setBorder(border);
 	}
+	public void setTitleBar(TitleBar titleBar) {
+		this.titleBar = titleBar;
+	}
 	
 	@Override
 	public void showAndWait() {

@@ -93,7 +93,7 @@ public class FilterSettingsStage extends StageBase implements InstanceCollector 
 	}
 	
 	@Override
-	public Object _show(String... args) {
+	public Object show(String... args) {
 		cbImages.setSelected(filter.isShowImages());
 		cbGifs.setSelected(filter.isShowGifs());
 		cbVideos.setSelected(filter.isShowVideos());
@@ -101,7 +101,7 @@ public class FilterSettingsStage extends StageBase implements InstanceCollector 
 		cbLimit.setSelected(filter.isEnableLimit());
 		tfLimit.setText(String.valueOf(filter.getLimit()));
 		
-		this.show();
+		super.show();
 		return null;
 	}
 }

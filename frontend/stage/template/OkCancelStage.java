@@ -45,7 +45,7 @@ public class OkCancelStage extends StageBase {
 	}
 	
 	@Override
-	public Boolean _show(String... args) {
+	public Boolean show(String... args) {
 		result = false;
 		labelContent.setText(args[0]);
 		this.showAndWait();

@@ -11,6 +11,9 @@ public abstract class SizeUtil implements InstanceCollector {
 	private static final double PREF_HEIGHT_TOPMENU = 30;
 	private static final double MIN_WIDTH_SIDELISTS = 250;
 	
+	public static Rectangle getUsableScreenBounds() {
+		return GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+	}
 	public static double getUsableScreenWidth() {
 		return GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getWidth();
 	}

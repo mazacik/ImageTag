@@ -32,17 +32,20 @@ public abstract class LifecycleManager implements InstanceCollector {
 		reload.init();          /* needs everything */
 	}
 	private static void showGUI() {
-		StageManager.getIntroStage()._show();
+		StageManager.getMainStage().init();
+		StageManager.getMainStage().setStagePropertiesIntro();
+		StageManager.getMainStage().showIntroScene();
 	}
 	
 	public static void startLoading(Project project) {
-		StageManager.getIntroStage().close();
 		String projectFilePath = project.getProjectFileFullPath();
 		String projectDirectory = projectFilePath.substring(0, projectFilePath.lastIndexOf(File.separatorChar));
 		String sourceDirectory = project.getWorkingDirectory();
 		
 		FileUtil.init(projectDirectory, sourceDirectory);
-		StageManager.getMainStage()._show();
+		StageManager.getMainStage().setStagePropertiesMain();
+		StageManager.getMainStage().showMainScene();
+		
 		Loader.run();
 	}
 }

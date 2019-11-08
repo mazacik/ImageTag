@@ -52,15 +52,15 @@ public class RecentProjectNode extends BorderPane implements InstanceCollector {
 		this.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
 				if (isClickOnNodeEdit(event)) {
-					StageManager.getIntroStage().showEditProjectScene(project);
+					StageManager.getMainStage().showEditProjectScene(project);
 				} else if (isClickOnNodeRemove(event)) {
-					StageManager.getIntroStage().removeProjectFromRecents(this, project);
+					StageManager.getMainStage().removeProjectFromRecents(this, project);
 				} else {
 					if (new File(project.getWorkingDirectory()).exists()) {
 						settings.getRecentProjects().add(0, project.getProjectFileFullPath());
 						LifecycleManager.startLoading(project);
 					} else {
-						StageManager.getErrorStage()._show("The working directory of this project could not be found.\nDirectory: " + project.getWorkingDirectory());
+						StageManager.getErrorStage().show("The working directory of this project could not be found.\nDirectory: " + project.getWorkingDirectory());
 					}
 				}
 			}

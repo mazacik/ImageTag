@@ -168,7 +168,7 @@ public enum ButtonTemplates implements InstanceCollector {
 					}
 				} else {
 					String oldGroup = ClickMenu.getGroup();
-					String newGroup = WordUtils.capitalize(StageManager.getGroupEditStage()._show(oldGroup).toLowerCase());
+					String newGroup = WordUtils.capitalize(StageManager.getGroupEditStage().show(oldGroup).toLowerCase());
 					if (!newGroup.isEmpty()) {
 						tagListMain.forEach(tag -> {
 							if (tag.getGroup().equals(oldGroup)) {
@@ -192,7 +192,7 @@ public enum ButtonTemplates implements InstanceCollector {
 				String group = ClickMenu.getGroup();
 				String name = ClickMenu.getName();
 				if (name.isEmpty()) {
-					if (StageManager.getOkCancelStage()._show("Remove \"" + group + "\" and all of its tags?")) {
+					if (StageManager.getOkCancelStage().show("Remove \"" + group + "\" and all of its tags?")) {
 						for (String n : tagListMain.getNames(group)) {
 							filterPane.removeNameNode(group, n);
 							selectPane.removeNameNode(group, n);
@@ -204,7 +204,7 @@ public enum ButtonTemplates implements InstanceCollector {
 					}
 				} else {
 					Tag tag = tagListMain.getTag(group, name);
-					if (StageManager.getOkCancelStage()._show("Remove \"" + tag.getFull() + "\" ?")) {
+					if (StageManager.getOkCancelStage().show("Remove \"" + tag.getFull() + "\" ?")) {
 						filterPane.removeNameNode(group, name);
 						selectPane.removeNameNode(group, name);
 						entityListMain.forEach(entity -> entity.getTagList().remove(tag));
@@ -314,7 +314,7 @@ public enum ButtonTemplates implements InstanceCollector {
 			}
 		});
 		
-		YesNoCancelStage.Result result = StageManager.getYesNoCancelStage()._show("Delete " + entitiesToDelete.size() + " file(s)?");
+		YesNoCancelStage.Result result = StageManager.getYesNoCancelStage().show("Delete " + entitiesToDelete.size() + " file(s)?");
 		if (result == YesNoCancelStage.Result.YES) {
 			target.storePosition();
 			entitiesToDelete.forEach(this::deleteEntity);
@@ -328,7 +328,7 @@ public enum ButtonTemplates implements InstanceCollector {
 		Entity currentTarget = target.get();
 		if (currentTarget.getEntityGroupID() == 0 || galleryPane.getExpandedGroups().contains(currentTarget.getEntityGroupID())) {
 			String sourcePath = target.get().getPath();
-			YesNoCancelStage.Result result = StageManager.getYesNoCancelStage()._show("Delete file: " + sourcePath + "?");
+			YesNoCancelStage.Result result = StageManager.getYesNoCancelStage().show("Delete file: " + sourcePath + "?");
 			if (result == YesNoCancelStage.Result.YES) {
 				target.storePosition();
 				this.deleteEntity(currentTarget);
@@ -338,7 +338,7 @@ public enum ButtonTemplates implements InstanceCollector {
 				reload.doReload();
 			}
 		} else {
-			YesNoCancelStage.Result result = StageManager.getYesNoCancelStage()._show("Delete " + EntityGroupUtil.getEntityGroup(currentTarget).size() + " file(s)?");
+			YesNoCancelStage.Result result = StageManager.getYesNoCancelStage().show("Delete " + EntityGroupUtil.getEntityGroup(currentTarget).size() + " file(s)?");
 			if (result == YesNoCancelStage.Result.YES) {
 				
 				target.storePosition();

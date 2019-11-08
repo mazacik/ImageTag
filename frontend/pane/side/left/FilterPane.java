@@ -28,7 +28,7 @@ public class FilterPane extends SidePaneBase {
 		btnCreateNewTag.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
 		btnCreateNewTag.prefWidthProperty().bind(this.widthProperty());
 		btnCreateNewTag.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-			Pair<Tag, Boolean> result = StageManager.getTagEditStage()._show();
+			Pair<Tag, Boolean> result = StageManager.getTagEditStage().show("");
 			tagListMain.add(result.getKey());
 			tagListMain.sort();
 			if (result.getValue())
@@ -43,7 +43,7 @@ public class FilterPane extends SidePaneBase {
 		});
 		
 		TextNode btnSettings = new TextNode("⁝", true, true, false, true);
-		btnSettings.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> StageManager.getFilterSettingsStage()._show());
+		btnSettings.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> StageManager.getFilterSettingsStage().show());
 		
 		HBox hBoxTitle = new HBox(btnReset, nodeTitle, btnSettings);
 		hBoxTitle.setBorder(NodeUtil.getBorder(0, 0, 1, 0));

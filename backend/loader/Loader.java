@@ -54,7 +54,7 @@ public abstract class Loader implements InstanceCollector {
 				AtomicBoolean createNew = new AtomicBoolean(false);
 				FutureTask futureTask = new FutureTask<Boolean>(() -> {
 					Logger.getGlobal().info("Database failed to load.");
-					createNew.set(StageManager.getOkCancelStage()._show("Database failed to load.\nCreate a new application.database?\nA backup will be created."));
+					createNew.set(StageManager.getOkCancelStage().show("Database failed to load.\nCreate a new application.database?\nA backup will be created."));
 				}, null);
 				Platform.runLater(futureTask);
 				try {

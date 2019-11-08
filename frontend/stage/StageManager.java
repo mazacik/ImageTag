@@ -1,11 +1,9 @@
 package application.frontend.stage;
 
-import application.frontend.stage.main.IntroStage;
 import application.frontend.stage.main.MainStage;
 import application.frontend.stage.template.*;
 
 public abstract class StageManager {
-	private static IntroStage introStage;
 	private static MainStage mainStage;
 	
 	private static ErrorStage errorStage;
@@ -15,10 +13,6 @@ public abstract class StageManager {
 	private static YesNoCancelStage yesNoCancelStage;
 	private static FilterSettingsStage filterSettingsStage;
 	
-	public static IntroStage getIntroStage() {
-		if (introStage == null) introStage = new IntroStage();
-		return introStage;
-	}
 	public static MainStage getMainStage() {
 		if (mainStage == null) mainStage = new MainStage();
 		return mainStage;

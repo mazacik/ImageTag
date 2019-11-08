@@ -87,7 +87,7 @@ public class TagEditStage extends StageBase implements InstanceCollector {
 	}
 	
 	@Override
-	public Pair<Tag, Boolean> _show(String... args) {
+	public Pair<Tag, Boolean> show(String... args) {
 		edtGroup.requestFocus();
 		cbApply.setSelected(false);
 		

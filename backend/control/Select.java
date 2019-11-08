@@ -130,7 +130,7 @@ public class Select extends EntityList implements InstanceCollector {
 		do entityGroupID = new Random().nextInt();
 		while (entityGroupIDs.contains(entityGroupID));
 		
-		YesNoCancelStage.Result result = StageManager.getYesNoCancelStage()._show("Merge tags? (" + this.size() + " items selected)");
+		YesNoCancelStage.Result result = StageManager.getYesNoCancelStage().show("Merge tags? (" + this.size() + " items selected)");
 		if (result == YesNoCancelStage.Result.YES) {
 			TagList tagList = new TagList();
 			for (Entity entity : this) {

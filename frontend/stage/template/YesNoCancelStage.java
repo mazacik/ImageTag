@@ -47,7 +47,7 @@ public class YesNoCancelStage extends StageBase {
 	}
 	
 	@Override
-	public Result _show(String... args) {
+	public Result show(String... args) {
 		result = Result.CANCEL;
 		labelContent.setText(args[0]);
 		this.showAndWait();

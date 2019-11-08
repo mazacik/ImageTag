@@ -58,7 +58,7 @@ public class TagListMain extends TagList implements InstanceCollector {
 	}
 	public boolean edit(Tag tagOld) {
 		if (tagOld != null) {
-			Pair<Tag, Boolean> result = StageManager.getTagEditStage()._show(tagOld.getGroup(), tagOld.getName());
+			Pair<Tag, Boolean> result = StageManager.getTagEditStage().show(tagOld.getGroup(), tagOld.getName());
 			Tag tagNew = result.getKey();
 			
 			if (tagNew != null) {

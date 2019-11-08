@@ -39,7 +39,7 @@ public class GroupEditStage extends StageBase {
 				result = newGroup;
 				this.close();
 			} else {
-				StageManager.getErrorStage()._show("Cannot contain the following character sequence: \" - \"");
+				StageManager.getErrorStage().show("Cannot contain the following character sequence: \" - \"");
 			}
 		});
 		
@@ -63,7 +63,7 @@ public class GroupEditStage extends StageBase {
 					result = newGroup;
 					this.close();
 				} else {
-					StageManager.getErrorStage()._show("Cannot contain the following character sequence: \" - \"");
+					StageManager.getErrorStage().show("Cannot contain the following character sequence: \" - \"");
 				}
 			} else if (event.getCode() == KeyCode.ESCAPE) {
 				this.close();
@@ -73,7 +73,7 @@ public class GroupEditStage extends StageBase {
 	}
 	
 	@Override
-	public String _show(String... args) {
+	public String show(String... args) {
 		result = args[0];
 		nodeGroupEdit.setText(result);
 		nodeGroupEdit.requestFocus();

@@ -23,7 +23,7 @@ public class ErrorStage extends StageBase implements StageBaseInterface {
 	}
 	
 	@Override
-	public Object _show(String... args) {
+	public Object show(String... args) {
 		labelContent.setText(args[0]);
 		this.showAndWait();
 		return null;

@@ -163,7 +163,7 @@ public abstract class FileUtil implements InstanceCollector {
 		}
 		
 		if (newEntities.isEmpty()) {
-			StageManager.getErrorStage()._show("No valid files found.");
+			StageManager.getErrorStage().show("No valid files found.");
 		} else {
 			entityListMain.addAll(newEntities);
 			entityListMain.sort();
@@ -171,7 +171,7 @@ public abstract class FileUtil implements InstanceCollector {
 			filter.getCurrentSessionEntities().addAll(newEntities);
 			
 			String msg = "Imported " + newEntities.size() + " files.\nWould you like to view the new files?";
-			YesNoCancelStage.Result result = StageManager.getYesNoCancelStage()._show(msg);
+			YesNoCancelStage.Result result = StageManager.getYesNoCancelStage().show(msg);
 			if (result == YesNoCancelStage.Result.YES) {
 				filter.setAll(newEntities);
 				select.set(filter.getFirst());
