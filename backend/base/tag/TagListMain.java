@@ -17,7 +17,7 @@ public class TagListMain extends TagList implements InstanceCollector {
 	public void initialize() {
 		TagList allTags = readDummyFromDisk();
 		if (allTags != null) {
-			this.addAll(allTags, true);
+			this.addAll(allTags);
 		}
 		
 		for (Entity entity : entityListMain) {
@@ -27,7 +27,7 @@ public class TagListMain extends TagList implements InstanceCollector {
 				if (this.containsEqualTo(tag)) {
 					tagList.set(tagList.indexOf(tag), this.getTag(tag));
 				} else {
-					this.add(tag, true);
+					this.add(tag);
 				}
 			}
 		}

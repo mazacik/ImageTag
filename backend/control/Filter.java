@@ -91,7 +91,7 @@ public class Filter extends EntityList implements InstanceCollector {
 			}
 			
 			if (isWhitelistOk(tagList) && isBlacklistOk(tagList)) {
-				this.add(entity, true);
+				this.add(entity);
 			}
 		}
 		

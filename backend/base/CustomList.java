@@ -17,11 +17,11 @@ public class CustomList<T> extends ArrayList<T> {
 	}
 	
 	public boolean add(T t) {
-		return add(t, false);
+		return this.add(t, false);
 	}
-	public boolean add(T t, boolean skipDupCheck) {
+	public boolean add(T t, boolean checkDuplicates) {
 		if (t != null) {
-			if (skipDupCheck || !super.contains(t)) {
+			if (!checkDuplicates || !super.contains(t)) {
 				return super.add(t);
 			}
 		}
@@ -35,33 +35,34 @@ public class CustomList<T> extends ArrayList<T> {
 	}
 	
 	public boolean addAll(Collection<? extends T> c) {
-		return addAll(c, false);
+		return this.addAll(c, false);
 	}
-	public boolean addAll(Collection<? extends T> c, boolean skipDupCheck) {
+	public boolean addAll(Collection<? extends T> c, boolean checkDuplicates) {
 		int size = this.size();
 		for (T t : c) {
-			this.add(t, skipDupCheck);
+			this.add(t, checkDuplicates);
 		}
 		return size != this.size();
 	}
+	
 	public boolean addAll(T[] c) {
-		return addAll(c, false);
+		return this.addAll(c, false);
 	}
-	public boolean addAll(T[] c, boolean skipDupCheck) {
+	public boolean addAll(T[] c, boolean checkDuplicates) {
 		int size = this.size();
 		for (T t : c) {
-			this.add(t, skipDupCheck);
+			this.add(t, checkDuplicates);
 		}
 		return size != this.size();
 	}
 	
 	public boolean setAll(Collection<? extends T> c) {
 		this.clear();
-		return this.addAll(c, true);
+		return this.addAll(c);
 	}
 	public boolean setAll(T[] c) {
 		this.clear();
-		return this.addAll(c, true);
+		return this.addAll(c);
 	}
 	
 	public boolean containsAny(Collection<? extends T> c) {

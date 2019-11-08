@@ -288,7 +288,7 @@ public class GalleryPane extends ScrollPane implements InstanceCollector, Reload
 	
 	private CustomList<GalleryTile> getTiles() {
 		CustomList<GalleryTile> tiles = new CustomList<>();
-		tilePane.getChildren().forEach(tile -> tiles.add((GalleryTile) tile, true));
+		tilePane.getChildren().forEach(tile -> tiles.add((GalleryTile) tile));
 		return tiles;
 	}
 	private CustomList<GalleryTile> getTilesInViewport() {
@@ -313,7 +313,7 @@ public class GalleryPane extends ScrollPane implements InstanceCollector, Reload
 			tileTop = tileBounds.getMinY();
 			tileBottom = tileBounds.getMaxY();
 			if (tileTop <= viewportBottom + tileSize && tileBottom >= viewportTop - tileSize) {
-				tilesInViewport.add(entity, true);
+				tilesInViewport.add(entity);
 			}
 		}
 		

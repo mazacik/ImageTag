@@ -99,9 +99,9 @@ public abstract class FileUtil implements InstanceCollector {
 		
 		for (File abstractFile : abstractFiles) {
 			if (abstractFile.isDirectory()) {
-				result.addAll(FileUtil.getSupportedFiles(abstractFile), true);
+				result.addAll(FileUtil.getSupportedFiles(abstractFile));
 			} else {
-				result.add(abstractFile, true);
+				result.add(abstractFile);
 			}
 		}
 		

@@ -48,19 +48,19 @@ public class Reload implements InstanceCollector {
 	}
 	
 	private void subscribe(ChangeIn onChangeIn, Reloadable reloadable, Method method) {
-		onChangeIn.getSubscribers().add(new InvokeHelper(reloadable, method));
+		onChangeIn.getSubscribers().add(new InvokeHelper(reloadable, method), true);
 	}
 	
 	public void notify(ChangeIn... changeIns) {
 		for (ChangeIn changeIn : changeIns) {
 			for (InvokeHelper invokeHelper : changeIn.getSubscribers()) {
-				invokeHelper.getInstance().getMethodsToInvokeOnNextReload().add(invokeHelper.getMethod());
+				invokeHelper.getInstance().getMethodsToInvokeOnNextReload().add(invokeHelper.getMethod(), true);
 			}
 		}
 	}
 	public void request(Reloadable reloadable, String method) {
 		try {
-			reloadable.getMethodsToInvokeOnNextReload().add(reloadable.getClass().getMethod(method));
+			reloadable.getMethodsToInvokeOnNextReload().add(reloadable.getClass().getMethod(method), true);
 		} catch (NoSuchMethodException e) {
 			e.printStackTrace();
 		}
@@ -73,7 +73,7 @@ public class Reload implements InstanceCollector {
 			for (Method method : reloadable.getMethodsToInvokeOnNextReload()) {
 				try {
 					if ((boolean) method.invoke(reloadable)) {
-						invokedMethods.add(method);
+						invokedMethods.add(method, true);
 					}
 				} catch (IllegalAccessException | InvocationTargetException e) {
 					e.printStackTrace();
