@@ -7,13 +7,9 @@ import application.backend.base.entity.EntityListMain;
 import application.backend.util.FileUtil;
 import application.frontend.stage.StageManager;
 import application.main.InstanceCollector;
-import javafx.application.Platform;
 
 import java.io.File;
 import java.util.Comparator;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
 public abstract class Loader implements InstanceCollector {
@@ -37,32 +33,23 @@ public abstract class Loader implements InstanceCollector {
 		target.set(filter.get(0));
 		select.set(filter.get(0));
 		
-		Platform.runLater(() -> {
-			reload.doReload();
-			
-			filterPane.collapseAll();
-			selectPane.collapseAll();
-			
-			galleryPane.updateViewportTilesVisibility();
-		});
+		reload.doReload();
+		
+		filterPane.collapseAll();
+		selectPane.collapseAll();
+		
+		galleryPane.updateViewportTilesVisibility();
+		
+		new BackgroundCacheLoader().start();
 	}
 	
 	private static boolean isDatabaseOk() {
+		//todo check, rework, refactor, whatever
 		for (Entity entity : entityListMain) {
 			if (entity.getName() == null || entity.getTagList() == null) {
 				//the database is (most likely) corrupted or outdated
-				AtomicBoolean createNew = new AtomicBoolean(false);
-				FutureTask futureTask = new FutureTask<Boolean>(() -> {
-					Logger.getGlobal().info("Database failed to load.");
-					createNew.set(StageManager.getOkCancelStage().show("Database failed to load.\nCreate a new application.database?\nA backup will be created."));
-				}, null);
-				Platform.runLater(futureTask);
-				try {
-					futureTask.get();
-				} catch (InterruptedException | ExecutionException e) {
-					e.printStackTrace();
-				}
-				if (createNew.get()) {
+				Logger.getGlobal().info("Database failed to load.");
+				if (StageManager.getOkCancelStage().show("Database failed to load.\nCreate a new application.database?\nA backup will be created.")) {
 					return false;
 				} else {
 					System.exit(1);
