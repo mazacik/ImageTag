@@ -308,9 +308,9 @@ public enum ButtonTemplates implements InstanceCollector {
 		EntityList entitiesToDelete = new EntityList();
 		select.forEach(entity -> {
 			if (entity.getEntityGroupID() != 0 && !galleryPane.getExpandedGroups().contains(entity.getEntityGroupID())) {
-				entitiesToDelete.addAll(EntityGroupUtil.getEntityGroup(entity));
+				entitiesToDelete.addAll(EntityGroupUtil.getEntityGroup(entity), true);
 			} else {
-				entitiesToDelete.add(entity);
+				entitiesToDelete.add(entity, true);
 			}
 		});
 		
