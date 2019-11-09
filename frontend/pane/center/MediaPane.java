@@ -24,7 +24,13 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Iterator;
 import java.util.logging.Logger;
 
 public class MediaPane extends BorderPane implements InstanceCollector, Reloadable {
@@ -88,15 +94,12 @@ public class MediaPane extends BorderPane implements InstanceCollector, Reloadab
 	private void reloadAsImage(Entity currentTarget) {
 		controls.setVideoMode(false);
 		
-		if (this.getCenter() != canvas) this.setCenter(canvas);
-		
-		if (currentCache == null || !currentCache.equals(currentTarget)) {
-			currentCache = currentTarget;
-			currentImage = new Image("file:" + currentCache.getPath());
+		if (this.getCenter() != canvas) {
+			this.setCenter(canvas);
 		}
 		
-		double imageWidth = currentImage.getWidth();
-		double imageHeight = currentImage.getHeight();
+		double originWidth = 0;
+		double originHeight = 0;
 		double maxWidth = canvas.getWidth();
 		double maxHeight = canvas.getHeight();
 		
@@ -105,20 +108,49 @@ public class MediaPane extends BorderPane implements InstanceCollector, Reloadab
 		double resultWidth;
 		double resultHeight;
 		
-		//noinspection ConstantConditions
-		if (!upScale && imageWidth < maxWidth && imageHeight < maxHeight) {
-			// image is smaller than canvas, upscaling is off
-			resultWidth = imageWidth;
-			resultHeight = imageHeight;
+		if (currentCache == null || !currentCache.equals(currentTarget)) {
+			currentCache = currentTarget;
+			
+			try {
+				File file = new File(currentCache.getPath());
+				ImageInputStream iis = ImageIO.createImageInputStream(file);
+				Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
+				
+				if (readers.hasNext()) {
+					//Get the first available ImageReader
+					ImageReader reader = readers.next();
+					reader.setInput(iis, true);
+					
+					originWidth = reader.getWidth(0);
+					originHeight = reader.getHeight(0);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			if (originWidth > 2 * maxWidth || originHeight > 2 * maxHeight) {
+				currentImage = new Image("file:" + currentCache.getPath(), canvas.getWidth() * 1.5, canvas.getHeight() * 1.5, true, true);
+			} else {
+				currentImage = new Image("file:" + currentCache.getPath());
+			}
+		} else {
+			originWidth = currentImage.getWidth();
+			originHeight = currentImage.getHeight();
+		}
+		
+		if (!upScale && originWidth < maxWidth && originHeight < maxHeight) {
+			// image is smaller than canvas or upscaling is off
+			resultWidth = originWidth;
+			resultHeight = originHeight;
 		} else {
 			// scale image to fit width
 			resultWidth = maxWidth;
-			resultHeight = imageHeight * maxWidth / imageWidth;
+			resultHeight = originHeight * maxWidth / originWidth;
 			
 			// if scaled image is too tall, scale to fit height instead
 			if (resultHeight > maxHeight) {
 				resultHeight = maxHeight;
-				resultWidth = imageWidth * maxHeight / imageHeight;
+				resultWidth = originWidth * maxHeight / originHeight;
 			}
 		}
 		
@@ -126,7 +158,7 @@ public class MediaPane extends BorderPane implements InstanceCollector, Reloadab
 		double resultY = maxHeight / 2 - resultHeight / 2;
 		
 		GraphicsContext gc = canvas.getGraphicsContext2D();
-		gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+		gc.clearRect(0, 0, maxWidth, maxHeight);
 		gc.drawImage(currentImage, resultX, resultY, resultWidth, resultHeight);
 	}
 	private void reloadAsGif(Entity currentTarget) {
