@@ -6,12 +6,10 @@ import application.backend.base.entity.EntityList;
 import application.backend.base.entity.EntityListMain;
 import application.backend.loader.cache.CacheWriter;
 import application.backend.util.FileUtil;
-import application.frontend.stage.StageManager;
 import application.main.InstanceCollector;
 
 import java.io.File;
 import java.util.Comparator;
-import java.util.logging.Logger;
 
 public abstract class Loader implements InstanceCollector {
 	public static void run() {
@@ -19,8 +17,7 @@ public abstract class Loader implements InstanceCollector {
 		FileUtil.fixDuplicateFileNames(fileList);
 		
 		boolean readSuccess = entityListMain.addAll(EntityListMain.readFromDisk());
-		if (!readSuccess || !isDatabaseOk()) {
-			createBackup();
+		if (!readSuccess) {
 			createDatabase(fileList);
 		}
 		
@@ -42,26 +39,6 @@ public abstract class Loader implements InstanceCollector {
 		galleryPane.updateViewportTilesVisibility();
 		
 		CacheWriter.writeAllCacheInBackground();
-	}
-	
-	private static boolean isDatabaseOk() {
-		//todo check, rework, refactor, whatever
-		for (Entity entity : entityListMain) {
-			if (entity.getName() == null || entity.getTagList() == null) {
-				//the database is (most likely) corrupted or outdated
-				Logger.getGlobal().info("Database failed to load.");
-				if (StageManager.getOkCancelStage().show("Database failed to load.\nCreate a new application.database?\nA backup will be created.")) {
-					return false;
-				} else {
-					System.exit(1);
-				}
-			}
-		}
-		return true;
-	}
-	
-	private static void createBackup() {
-		new File(FileUtil.getProjectFileData()).renameTo(new File(FileUtil.getProjectFileData() + "_backup"));
 	}
 	
 	private static void createDatabase(CustomList<File> fileList) {

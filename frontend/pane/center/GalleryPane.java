@@ -148,8 +148,6 @@ public class GalleryPane extends ScrollPane implements InstanceCollector, Reload
 		}
 	}
 	private void onScroll(ScrollEvent event) {
-		//todo fix rectangle direction change
-		
 		event.consume();
 		
 		//if something broke after changing tilePane padding or tilePane vGap, look at paddingFix
