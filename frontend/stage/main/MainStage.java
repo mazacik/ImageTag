@@ -8,6 +8,7 @@ import application.frontend.component.custom.RecentProjectNode;
 import application.frontend.component.simple.EditNode;
 import application.frontend.component.simple.SeparatorNode;
 import application.frontend.component.simple.TextNode;
+import application.frontend.decorator.ColorUtil;
 import application.frontend.decorator.Decorator;
 import application.frontend.decorator.SizeUtil;
 import application.frontend.pane.center.MediaPaneControls;
@@ -45,11 +46,13 @@ public class MainStage extends StageBase implements InstanceCollector {
 	private EditNode edtProjectNameCPS;
 	private EditNode edtProjectDirectoryCPS;
 	private EditNode edtWorkingDirectoryCPS;
+	private TextNode errorNodeCPS;
 	
 	private VBox editProjectScene;
 	private EditNode edtProjectNameEPS;
 	private EditNode edtProjectDirectoryEPS;
 	private EditNode edtWorkingDirectoryEPS;
+	private TextNode errorNodeEPS;
 	private String projectFullPathBeforeEdit;
 	
 	private HBox mainScene;
@@ -107,16 +110,7 @@ public class MainStage extends StageBase implements InstanceCollector {
 		refreshRecentProjectNodes();
 		
 		introScene = new HBox(vBoxRecentProjects, new SeparatorNode(), vBoxStartMenu);
-		introScene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-			if (event.getCode() == KeyCode.ENTER) {
-				CustomList<String> recentProjectFullPaths = settings.getRecentProjects();
-				if (!recentProjectFullPaths.isEmpty()) {
-					LifecycleManager.startLoading(Project.readFromDisk(recentProjectFullPaths.getFirst()));
-				} else {
-					showCreateProjectScene();
-				}
-			}
-		});
+		introSceneOnKeyPress();
 		VBox.setVgrow(introScene, Priority.ALWAYS);
 	}
 	private void initCreateProjectScene() {
@@ -161,8 +155,15 @@ public class MainStage extends StageBase implements InstanceCollector {
 		hBoxWorkingDirectory.setSpacing(10);
 		hBoxWorkingDirectory.setAlignment(Pos.CENTER);
 		
+		errorNodeCPS = new TextNode("");
+		errorNodeCPS.setTextFill(ColorUtil.getTextColorNeg());
+		
 		TextNode btnCreateProject = new TextNode("Create Project", true, true, true, true);
-		btnCreateProject.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> createProject(edtProjectNameCPS.getText(), edtProjectDirectoryCPS.getText(), edtWorkingDirectoryCPS.getText()));
+		btnCreateProject.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+			if (this.checkEditValidityCPS()) {
+				this.createProject(edtProjectNameCPS.getText(), edtProjectDirectoryCPS.getText(), edtWorkingDirectoryCPS.getText());
+			}
+		});
 		TextNode btnCancel = new TextNode("Cancel", true, true, true, true);
 		btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> showIntroScene());
 		HBox hBoxCreateCancel = new HBox(btnCancel, btnCreateProject);
@@ -172,14 +173,16 @@ public class MainStage extends StageBase implements InstanceCollector {
 		lblProjectDirectory.setPrefWidth(width);
 		lblWorkingDirectory.setPrefWidth(width);
 		
-		createProjectScene = new VBox(hBoxProjectName, hBoxProjectDirectory, hBoxWorkingDirectory, hBoxCreateCancel);
+		createProjectScene = new VBox(hBoxProjectName, hBoxProjectDirectory, hBoxWorkingDirectory, errorNodeCPS, hBoxCreateCancel);
 		createProjectScene.setPadding(new Insets(10));
 		createProjectScene.setSpacing(5);
 		createProjectScene.setAlignment(Pos.CENTER);
 		createProjectScene.setFillWidth(false);
 		createProjectScene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
 			if (event.getCode() == KeyCode.ENTER) {
-				createProject(edtProjectNameCPS.getText(), edtProjectDirectoryCPS.getText(), edtWorkingDirectoryCPS.getText());
+				if (this.checkEditValidityCPS()) {
+					createProject(edtProjectNameCPS.getText(), edtProjectDirectoryCPS.getText(), edtWorkingDirectoryCPS.getText());
+				}
 			} else if (event.getCode() == KeyCode.ESCAPE) {
 				showIntroScene();
 			}
@@ -230,11 +233,16 @@ public class MainStage extends StageBase implements InstanceCollector {
 		hBoxWorkingDirectory.setSpacing(10);
 		hBoxWorkingDirectory.setAlignment(Pos.CENTER);
 		
+		errorNodeEPS = new TextNode("");
+		errorNodeEPS.setTextFill(ColorUtil.getTextColorNeg());
+		
 		TextNode btnApplyChanges = new TextNode("Apply Changes", true, true, true, true);
 		btnApplyChanges.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-			editProject(edtProjectNameEPS.getText(), edtProjectDirectoryEPS.getText(), edtWorkingDirectoryEPS.getText());
-			refreshRecentProjectNodes();
-			showIntroScene();
+			if (this.checkEditValidityEPS()) {
+				this.editProject(edtProjectNameEPS.getText(), edtProjectDirectoryEPS.getText(), edtWorkingDirectoryEPS.getText());
+				this.refreshRecentProjectNodes();
+				this.showIntroScene();
+			}
 		});
 		TextNode btnCancel = new TextNode("Cancel", true, true, true, true);
 		btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> showIntroScene());
@@ -245,16 +253,18 @@ public class MainStage extends StageBase implements InstanceCollector {
 		lblProjectDirectory.setPrefWidth(width);
 		lblWorkingDirectory.setPrefWidth(width);
 		
-		editProjectScene = new VBox(hBoxProjectName, hBoxProjectDirectory, hBoxWorkingDirectory, hBoxCreateCancel);
+		editProjectScene = new VBox(hBoxProjectName, hBoxProjectDirectory, hBoxWorkingDirectory, errorNodeEPS, hBoxCreateCancel);
 		editProjectScene.setPadding(new Insets(10));
 		editProjectScene.setSpacing(5);
 		editProjectScene.setAlignment(Pos.CENTER);
 		editProjectScene.setFillWidth(false);
 		editProjectScene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
 			if (event.getCode() == KeyCode.ENTER) {
-				editProject(edtProjectNameEPS.getText(), edtProjectDirectoryEPS.getText(), edtWorkingDirectoryEPS.getText());
-				refreshRecentProjectNodes();
-				showIntroScene();
+				if (this.checkEditValidityEPS()) {
+					this.editProject(edtProjectNameEPS.getText(), edtProjectDirectoryEPS.getText(), edtWorkingDirectoryEPS.getText());
+					this.refreshRecentProjectNodes();
+					this.showIntroScene();
+				}
 			} else if (event.getCode() == KeyCode.ESCAPE) {
 				showIntroScene();
 			}
@@ -281,7 +291,28 @@ public class MainStage extends StageBase implements InstanceCollector {
 		this.setTitle("Welcome to Tagallery");
 		this.setRoot(introScene);
 		this.centerOnScreen();
+		
+		errorNodeCPS.setText("");
+		errorNodeEPS.setText("");
+		
 		introScene.requestFocus();
+	}
+	
+	private void introSceneOnKeyPress() {
+		introScene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+			switch (event.getCode()) {
+				case ENTER:
+					CustomList<String> recentProjectFullPaths = settings.getRecentProjects();
+					if (!recentProjectFullPaths.isEmpty()) {
+						LifecycleManager.startLoading(Project.readFromDisk(recentProjectFullPaths.getFirst()));
+					} else {
+						showCreateProjectScene();
+					}
+					break;
+				default:
+					break;
+			}
+		});
 	}
 	
 	public void removeProjectFromRecents(RecentProjectNode recentProjectNode, Project project) {
@@ -330,6 +361,34 @@ public class MainStage extends StageBase implements InstanceCollector {
 		settings.writeToDisk();
 		LifecycleManager.startLoading(project);
 	}
+	private boolean checkEditValidityCPS() {
+		if (edtProjectNameCPS.getText().isEmpty()) {
+			errorNodeCPS.setText("Project Name cannot be empty");
+			return false;
+		}
+		if (edtProjectDirectoryCPS.getText().isEmpty()) {
+			errorNodeCPS.setText("Project Directory cannot be empty");
+			return false;
+		}
+		if (edtWorkingDirectoryCPS.getText().isEmpty()) {
+			errorNodeCPS.setText("Working Directory cannot be empty");
+			return false;
+		}
+		
+		File projectDirectory = new File(edtProjectDirectoryCPS.getText());
+		File workingDirectory = new File(edtWorkingDirectoryCPS.getText());
+		
+		if (!projectDirectory.exists() || !projectDirectory.isDirectory()) {
+			errorNodeCPS.setText("Project Directory invalid or not found");
+			return false;
+		}
+		if (!workingDirectory.exists() || !workingDirectory.isDirectory()) {
+			errorNodeCPS.setText("Project Directory invalid or not found");
+			return false;
+		}
+		
+		return true;
+	}
 	
 	//edit
 	public void showEditProjectScene(Project project) {
@@ -355,6 +414,34 @@ public class MainStage extends StageBase implements InstanceCollector {
 		settings.getRecentProjects().remove(projectFullPathBeforeEdit);
 		settings.getRecentProjects().add(0, project.getProjectFileFullPath());
 		settings.writeToDisk();
+	}
+	private boolean checkEditValidityEPS() {
+		if (edtProjectNameEPS.getText().isEmpty()) {
+			errorNodeEPS.setText("Project Name cannot be empty");
+			return false;
+		}
+		if (edtProjectDirectoryEPS.getText().isEmpty()) {
+			errorNodeEPS.setText("Project Directory cannot be empty");
+			return false;
+		}
+		if (edtWorkingDirectoryEPS.getText().isEmpty()) {
+			errorNodeEPS.setText("Working Directory cannot be empty");
+			return false;
+		}
+		
+		File projectDirectory = new File(edtProjectDirectoryEPS.getText());
+		File workingDirectory = new File(edtWorkingDirectoryEPS.getText());
+		
+		if (!projectDirectory.exists() || !projectDirectory.isDirectory()) {
+			errorNodeEPS.setText("Project Directory invalid or not found");
+			return false;
+		}
+		if (!workingDirectory.exists() || !workingDirectory.isDirectory()) {
+			errorNodeEPS.setText("Project Directory invalid or not found");
+			return false;
+		}
+		
+		return true;
 	}
 	
 	//main
@@ -384,8 +471,8 @@ public class MainStage extends StageBase implements InstanceCollector {
 			}
 		});
 		
-		onKeyPress();
-		onKeyRelease();
+		mainSceneOnKeyPress();
+		mainSceneOnKeyRelease();
 	}
 	public void showMainScene() {
 		this.setTitleBar(toolbarPane);
@@ -432,8 +519,8 @@ public class MainStage extends StageBase implements InstanceCollector {
 		return shiftDownProperty().get();
 	}
 	
-	private void onKeyPress() {
-		getScene().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+	private void mainSceneOnKeyPress() {
+		mainScene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
 			if (getScene().getFocusOwner() instanceof EditNode) {
 				if (event.getCode() == KeyCode.ESCAPE) {
 					getScene().getRoot().requestFocus();
@@ -483,8 +570,8 @@ public class MainStage extends StageBase implements InstanceCollector {
 			}
 		});
 	}
-	private void onKeyRelease() {
-		getScene().addEventFilter(KeyEvent.KEY_RELEASED, event -> {
+	private void mainSceneOnKeyRelease() {
+		mainScene.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
 			switch (event.getCode()) {
 				case SHIFT:
 					shiftDown.setValue(false);
