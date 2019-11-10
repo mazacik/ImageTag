@@ -1,17 +1,17 @@
 package application.main;
 
-import application.backend.base.entity.EntityListMain;
-import application.backend.base.tag.TagListMain;
-import application.backend.control.Filter;
-import application.backend.control.Select;
-import application.backend.control.Settings;
-import application.backend.control.Target;
-import application.backend.control.reload.Reload;
-import application.frontend.pane.center.GalleryPane;
-import application.frontend.pane.center.MediaPane;
-import application.frontend.pane.side.left.FilterPane;
-import application.frontend.pane.side.right.SelectPane;
-import application.frontend.pane.top.ToolbarPane;
+import application.base.entity.EntityListMain;
+import application.base.tag.TagListMain;
+import application.control.Filter;
+import application.control.Select;
+import application.control.Settings;
+import application.control.Target;
+import application.control.reload.Reload;
+import application.pane.center.GalleryPane;
+import application.pane.center.MediaPane;
+import application.pane.side.left.FilterPane;
+import application.pane.side.right.SelectPane;
+import application.pane.top.ToolbarPane;
 
 public interface InstanceCollector {
 	Settings settings = new Settings();
