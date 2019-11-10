@@ -1,10 +1,10 @@
-package application.baseobject.entity;
+package baseobject.entity;
 
-import application.baseobject.CustomList;
-import application.baseobject.tag.Tag;
-import application.baseobject.tag.TagList;
-import application.main.InstanceCollector;
-import application.tools.EntityGroupUtil;
+import baseobject.CustomList;
+import baseobject.tag.Tag;
+import baseobject.tag.TagList;
+import main.InstanceCollector;
+import tools.EntityGroupUtil;
 
 import java.util.Arrays;
 import java.util.Collection;

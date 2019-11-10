@@ -1,8 +1,8 @@
-package application.gui.stage.template;
+package gui.stage.template;
 
-import application.gui.component.simple.TextNode;
-import application.gui.stage.base.StageBase;
-import application.gui.stage.base.StageBaseInterface;
+import gui.component.simple.TextNode;
+import gui.stage.base.StageBase;
+import gui.stage.base.StageBaseInterface;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;

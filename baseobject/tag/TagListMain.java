@@ -1,13 +1,13 @@
-package application.baseobject.tag;
+package baseobject.tag;
 
-import application.baseobject.entity.Entity;
-import application.control.reload.ChangeIn;
-import application.gui.stage.StageManager;
-import application.main.InstanceCollector;
-import application.tools.FileUtil;
-import application.tools.JsonUtil;
+import baseobject.entity.Entity;
 import com.google.gson.reflect.TypeToken;
+import control.reload.ChangeIn;
+import gui.stage.StageManager;
 import javafx.util.Pair;
+import main.InstanceCollector;
+import tools.FileUtil;
+import tools.JsonUtil;
 
 import java.lang.reflect.Type;
 

@@ -1,4 +1,4 @@
-package application.tools;
+package tools;
 
 public abstract class Converter {
     public static String msToHMS(long millis) {

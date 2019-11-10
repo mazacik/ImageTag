@@ -1,13 +1,10 @@
-package application.gui.component.clickmenu;
+package gui.component.clickmenu;
 
-import application.baseobject.CustomList;
-import application.gui.component.simple.BoxSeparatorNode;
-import application.gui.component.simple.template.ButtonTemplates;
-import application.gui.decorator.ColorUtil;
-import application.gui.stage.StageManager;
-import application.main.InstanceCollector;
-import application.tools.NodeUtil;
-import application.tools.enums.Direction;
+import baseobject.CustomList;
+import gui.component.simple.BoxSeparatorNode;
+import gui.component.simple.template.ButtonTemplates;
+import gui.decorator.ColorUtil;
+import gui.stage.StageManager;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
@@ -17,6 +14,9 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.stage.WindowEvent;
+import main.InstanceCollector;
+import tools.NodeUtil;
+import tools.enums.Direction;
 
 public class ClickMenu extends Popup implements InstanceCollector {
 	private static String name;

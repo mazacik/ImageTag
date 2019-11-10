@@ -1,14 +1,10 @@
-package application.gui.main.center;
+package gui.main.center;
 
-import application.baseobject.entity.Entity;
-import application.cache.CacheReader;
-import application.gui.component.simple.TextNode;
-import application.gui.decorator.ColorUtil;
-import application.gui.decorator.SizeUtil;
-import application.main.InstanceCollector;
-import application.tools.Converter;
-import application.tools.FileUtil;
-import application.tools.enums.Direction;
+import baseobject.entity.Entity;
+import cache.CacheReader;
+import gui.component.simple.TextNode;
+import gui.decorator.ColorUtil;
+import gui.decorator.SizeUtil;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.ProgressBar;
@@ -17,6 +13,10 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import main.InstanceCollector;
+import tools.Converter;
+import tools.FileUtil;
+import tools.enums.Direction;
 
 import java.io.File;
 

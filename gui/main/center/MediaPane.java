@@ -1,12 +1,10 @@
-package application.gui.main.center;
+package gui.main.center;
 
-import application.baseobject.CustomList;
-import application.baseobject.entity.Entity;
-import application.control.reload.Reloadable;
-import application.gui.component.clickmenu.ClickMenu;
-import application.gui.stage.StageManager;
-import application.main.InstanceCollector;
-import application.tools.FileUtil;
+import baseobject.CustomList;
+import baseobject.entity.Entity;
+import control.reload.Reloadable;
+import gui.component.clickmenu.ClickMenu;
+import gui.stage.StageManager;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -23,6 +21,8 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import main.InstanceCollector;
+import tools.FileUtil;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;

@@ -1,4 +1,4 @@
-package application.control.reload;
+package control.reload;
 
 import java.lang.reflect.Method;
 

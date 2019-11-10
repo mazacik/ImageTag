@@ -1,23 +1,23 @@
-package application.gui.component.simple.template;
+package gui.component.simple.template;
 
-import application.baseobject.entity.Entity;
-import application.baseobject.entity.EntityList;
-import application.baseobject.tag.Tag;
-import application.control.reload.ChangeIn;
-import application.gui.component.clickmenu.ClickMenu;
-import application.gui.component.simple.TextNode;
-import application.gui.stage.StageManager;
-import application.gui.stage.template.YesNoCancelStage;
-import application.main.InstanceCollector;
-import application.tools.EntityGroupUtil;
-import application.tools.FileUtil;
-import application.tools.HttpUtil;
-import application.tools.SystemUtil;
+import baseobject.entity.Entity;
+import baseobject.entity.EntityList;
+import baseobject.tag.Tag;
 import com.sun.jna.platform.FileUtils;
+import control.reload.ChangeIn;
+import gui.component.clickmenu.ClickMenu;
+import gui.component.simple.TextNode;
+import gui.stage.StageManager;
+import gui.stage.template.YesNoCancelStage;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.WindowEvent;
+import main.InstanceCollector;
 import org.apache.commons.text.WordUtils;
+import tools.EntityGroupUtil;
+import tools.FileUtil;
+import tools.HttpUtil;
+import tools.SystemUtil;
 
 import java.awt.*;
 import java.io.File;

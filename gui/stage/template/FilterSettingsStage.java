@@ -1,18 +1,18 @@
-package application.gui.stage.template;
+package gui.stage.template;
 
-import application.gui.component.simple.CheckboxNode;
-import application.gui.component.simple.EditNode;
-import application.gui.component.simple.TextNode;
-import application.gui.component.switchnode.SwitchNode;
-import application.gui.component.switchnode.SwitchNodeWithTitle;
-import application.gui.stage.base.StageBase;
-import application.main.InstanceCollector;
+import gui.component.simple.CheckboxNode;
+import gui.component.simple.EditNode;
+import gui.component.simple.TextNode;
+import gui.component.switchnode.SwitchNode;
+import gui.component.switchnode.SwitchNodeWithTitle;
+import gui.stage.base.StageBase;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import main.InstanceCollector;
 
 public class FilterSettingsStage extends StageBase implements InstanceCollector {
 	CheckboxNode cbImages;

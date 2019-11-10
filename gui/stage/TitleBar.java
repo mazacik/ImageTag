@@ -1,8 +1,7 @@
-package application.gui.stage;
+package gui.stage;
 
-import application.gui.component.simple.TextNode;
-import application.gui.decorator.ColorUtil;
-import application.tools.NodeUtil;
+import gui.component.simple.TextNode;
+import gui.decorator.ColorUtil;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseButton;
@@ -11,6 +10,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import tools.NodeUtil;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;

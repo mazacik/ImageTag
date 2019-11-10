@@ -1,9 +1,9 @@
-package application.gui.decorator;
+package gui.decorator;
 
-import application.gui.stage.StageManager;
-import application.main.InstanceCollector;
+import gui.stage.StageManager;
 import javafx.scene.layout.TilePane;
 import javafx.scene.text.Text;
+import main.InstanceCollector;
 
 import java.awt.*;
 

@@ -1,10 +1,10 @@
-package application.gui.component.simple;
+package gui.component.simple;
 
-import application.gui.decorator.ColorUtil;
-import application.gui.decorator.Decorator;
-import application.tools.NodeUtil;
+import gui.decorator.ColorUtil;
+import gui.decorator.Decorator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
+import tools.NodeUtil;
 
 public class EditNode extends TextField {
 	public EditNode(String promptText, EditNodeType type) {

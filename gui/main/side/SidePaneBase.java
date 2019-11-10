@@ -1,16 +1,16 @@
-package application.gui.main.side;
+package gui.main.side;
 
-import application.baseobject.CustomList;
-import application.baseobject.tag.Tag;
-import application.baseobject.tag.TagList;
-import application.control.reload.Reloadable;
-import application.gui.component.simple.TextNode;
-import application.gui.decorator.SizeUtil;
-import application.main.InstanceCollector;
+import baseobject.CustomList;
+import baseobject.tag.Tag;
+import baseobject.tag.TagList;
+import control.reload.Reloadable;
+import gui.component.simple.TextNode;
+import gui.decorator.SizeUtil;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.VBox;
+import main.InstanceCollector;
 
 import java.lang.reflect.Method;
 import java.util.Comparator;

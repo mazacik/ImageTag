@@ -1,7 +1,7 @@
-package application.baseobject;
+package baseobject;
 
-import application.tools.JsonUtil;
 import com.google.gson.reflect.TypeToken;
+import tools.JsonUtil;
 
 import java.io.File;
 import java.lang.reflect.Type;

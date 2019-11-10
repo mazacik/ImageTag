@@ -1,10 +1,9 @@
-package application.gui.stage.template;
+package gui.stage.template;
 
-import application.gui.component.simple.EditNode;
-import application.gui.component.simple.TextNode;
-import application.gui.stage.StageManager;
-import application.gui.stage.base.StageBase;
-import application.tools.NodeUtil;
+import gui.component.simple.EditNode;
+import gui.component.simple.TextNode;
+import gui.stage.StageManager;
+import gui.stage.base.StageBase;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.input.KeyCode;
@@ -12,6 +11,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import tools.NodeUtil;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class GroupEditStage extends StageBase {

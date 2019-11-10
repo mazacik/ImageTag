@@ -1,9 +1,9 @@
-package application.gui.decorator;
+package gui.decorator;
 
-import application.main.InstanceCollector;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import main.InstanceCollector;
 
 public abstract class Decorator implements InstanceCollector {
 	private static Font font = new Font(settings.getFontSize());

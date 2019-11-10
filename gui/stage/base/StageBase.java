@@ -1,8 +1,7 @@
-package application.gui.stage.base;
+package gui.stage.base;
 
-import application.gui.decorator.ColorUtil;
-import application.gui.stage.TitleBar;
-import application.tools.NodeUtil;
+import gui.decorator.ColorUtil;
+import gui.stage.TitleBar;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.Border;
@@ -10,6 +9,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import tools.NodeUtil;
 
 public abstract class StageBase extends Stage implements StageBaseInterface {
 	private TitleBar titleBar;

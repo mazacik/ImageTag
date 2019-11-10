@@ -1,13 +1,11 @@
-package application.gui.main.center;
+package gui.main.center;
 
-import application.baseobject.CustomList;
-import application.baseobject.entity.Entity;
-import application.control.reload.ChangeIn;
-import application.gui.component.clickmenu.ClickMenu;
-import application.gui.component.simple.TextNode;
-import application.gui.stage.StageManager;
-import application.main.InstanceCollector;
-import application.tools.EntityGroupUtil;
+import baseobject.CustomList;
+import baseobject.entity.Entity;
+import control.reload.ChangeIn;
+import gui.component.clickmenu.ClickMenu;
+import gui.component.simple.TextNode;
+import gui.stage.StageManager;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.effect.Blend;
@@ -24,6 +22,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import main.InstanceCollector;
+import tools.EntityGroupUtil;
 
 public class GalleryTile extends Pane implements InstanceCollector {
 	private final Entity entity;
@@ -55,10 +55,10 @@ public class GalleryTile extends Pane implements InstanceCollector {
 		}
 		
 		if (entity.getEntityGroupID() != 0) {
-			imageView.setEffect(this.createentityGroupEffect(entity));
+			imageView.setEffect(this.createEntityGroupEffect(entity));
 		}
 	}
-	private Blend createentityGroupEffect(Entity entity) {
+	private Blend createEntityGroupEffect(Entity entity) {
 		String middle;
 		CustomList<Entity> entityGroup = EntityGroupUtil.getEntityGroup(entity);
 		if (galleryPane.getExpandedGroups().contains(entity.getEntityGroupID())) {

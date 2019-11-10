@@ -1,4 +1,4 @@
-package application.tools;
+package tools;
 
 import com.sun.jna.platform.FileUtils;
 import javafx.scene.input.Clipboard;

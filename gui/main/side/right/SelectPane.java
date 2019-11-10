@@ -1,17 +1,15 @@
-package application.gui.main.side.right;
+package gui.main.side.right;
 
-import application.baseobject.CustomList;
-import application.baseobject.entity.Entity;
-import application.baseobject.tag.Tag;
-import application.gui.component.clickmenu.ClickMenu;
-import application.gui.component.simple.EditNode;
-import application.gui.component.simple.TextNode;
-import application.gui.component.simple.template.ButtonTemplates;
-import application.gui.decorator.ColorUtil;
-import application.gui.main.side.GroupNode;
-import application.gui.main.side.SidePaneBase;
-import application.tools.NodeUtil;
-import application.tools.enums.Direction;
+import baseobject.CustomList;
+import baseobject.entity.Entity;
+import baseobject.tag.Tag;
+import gui.component.clickmenu.ClickMenu;
+import gui.component.simple.EditNode;
+import gui.component.simple.TextNode;
+import gui.component.simple.template.ButtonTemplates;
+import gui.decorator.ColorUtil;
+import gui.main.side.GroupNode;
+import gui.main.side.SidePaneBase;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -23,6 +21,8 @@ import net.ricecode.similarity.JaroWinklerStrategy;
 import net.ricecode.similarity.SimilarityStrategy;
 import net.ricecode.similarity.StringSimilarityService;
 import net.ricecode.similarity.StringSimilarityServiceImpl;
+import tools.NodeUtil;
+import tools.enums.Direction;
 
 import java.util.logging.Logger;
 

@@ -1,7 +1,7 @@
-package application.tools;
+package tools;
 
-import application.baseobject.CustomList;
-import application.gui.decorator.ColorUtil;
+import baseobject.CustomList;
+import gui.decorator.ColorUtil;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.layout.*;

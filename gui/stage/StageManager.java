@@ -1,7 +1,7 @@
-package application.gui.stage;
+package gui.stage;
 
-import application.gui.stage.main.MainStage;
-import application.gui.stage.template.*;
+import gui.stage.main.MainStage;
+import gui.stage.template.*;
 
 public abstract class StageManager {
 	private static MainStage mainStage;

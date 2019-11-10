@@ -1,8 +1,8 @@
-package application.baseobject.entity;
+package baseobject.entity;
 
-import application.baseobject.tag.TagList;
-import application.gui.main.center.GalleryTile;
-import application.main.InstanceCollector;
+import baseobject.tag.TagList;
+import gui.main.center.GalleryTile;
+import main.InstanceCollector;
 
 import java.io.File;
 import java.io.Serializable;

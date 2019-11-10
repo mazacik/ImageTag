@@ -1,13 +1,10 @@
-package application.gui.stage.template;
+package gui.stage.template;
 
-import application.baseobject.tag.Tag;
-import application.gui.component.simple.CheckboxNode;
-import application.gui.component.simple.EditNode;
-import application.gui.component.simple.TextNode;
-import application.gui.stage.base.StageBase;
-import application.main.InstanceCollector;
-import application.tools.NodeUtil;
-import application.tools.enums.Direction;
+import baseobject.tag.Tag;
+import gui.component.simple.CheckboxNode;
+import gui.component.simple.EditNode;
+import gui.component.simple.TextNode;
+import gui.stage.base.StageBase;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.input.KeyCode;
@@ -16,6 +13,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Pair;
+import main.InstanceCollector;
+import tools.NodeUtil;
+import tools.enums.Direction;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class TagEditStage extends StageBase implements InstanceCollector {

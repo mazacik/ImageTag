@@ -1,6 +1,6 @@
-package application.gui.main.side;
+package gui.main.side;
 
-import application.gui.component.simple.TextNode;
+import gui.component.simple.TextNode;
 
 public interface SidePaneBaseInterface {
 	void changeNodeState(GroupNode groupNode, TextNode nameNode);

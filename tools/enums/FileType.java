@@ -1,4 +1,4 @@
-package application.tools.enums;
+package tools.enums;
 
 public enum FileType {
     IMAGE,

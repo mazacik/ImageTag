@@ -1,4 +1,4 @@
-package application.baseobject;
+package baseobject;
 
 import java.util.ArrayList;
 import java.util.Arrays;

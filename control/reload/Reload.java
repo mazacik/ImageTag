@@ -1,9 +1,9 @@
-package application.control.reload;
+package control.reload;
 
-import application.baseobject.CustomList;
-import application.baseobject.entity.Entity;
-import application.baseobject.entity.EntityList;
-import application.main.InstanceCollector;
+import baseobject.CustomList;
+import baseobject.entity.Entity;
+import baseobject.entity.EntityList;
+import main.InstanceCollector;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

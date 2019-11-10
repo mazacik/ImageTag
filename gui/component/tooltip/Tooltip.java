@@ -1,14 +1,14 @@
-package application.gui.component.tooltip;
+package gui.component.tooltip;
 
-import application.gui.component.simple.TextNode;
-import application.gui.stage.StageManager;
-import application.tools.NodeUtil;
+import gui.component.simple.TextNode;
+import gui.stage.StageManager;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Popup;
 import javafx.util.Duration;
+import tools.NodeUtil;
 
 public class Tooltip extends Popup {
 	private TextNode textNode;

@@ -1,11 +1,11 @@
-package application.gui.component.switchnode;
+package gui.component.switchnode;
 
-import application.gui.component.simple.TextNode;
-import application.tools.NodeUtil;
+import gui.component.simple.TextNode;
 import javafx.geometry.Pos;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import tools.NodeUtil;
 
 public class SwitchNode extends HBox {
 	protected TextNode node1;

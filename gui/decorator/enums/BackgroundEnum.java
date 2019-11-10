@@ -1,4 +1,4 @@
-package application.gui.decorator.enums;
+package gui.decorator.enums;
 
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;

@@ -1,11 +1,10 @@
-package application.gui.main.side;
+package gui.main.side;
 
-import application.baseobject.CustomList;
-import application.gui.component.clickmenu.ClickMenu;
-import application.gui.component.simple.TextNode;
-import application.gui.decorator.ColorUtil;
-import application.gui.stage.StageManager;
-import application.main.InstanceCollector;
+import baseobject.CustomList;
+import gui.component.clickmenu.ClickMenu;
+import gui.component.simple.TextNode;
+import gui.decorator.ColorUtil;
+import gui.stage.StageManager;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -17,6 +16,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import main.InstanceCollector;
 
 import java.util.Comparator;
 

@@ -1,8 +1,8 @@
-package application.tools;
+package tools;
 
-import application.baseobject.entity.Entity;
-import application.baseobject.entity.EntityList;
-import application.main.InstanceCollector;
+import baseobject.entity.Entity;
+import baseobject.entity.EntityList;
+import main.InstanceCollector;
 
 public abstract class EntityGroupUtil implements InstanceCollector {
 	//todo load this into runtime memory on start

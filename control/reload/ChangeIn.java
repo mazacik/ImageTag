@@ -1,6 +1,6 @@
-package application.control.reload;
+package control.reload;
 
-import application.baseobject.CustomList;
+import baseobject.CustomList;
 
 public enum ChangeIn {
 	ENTITY_LIST_MAIN,

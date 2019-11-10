@@ -1,18 +1,18 @@
-package application.gui.main.side.left;
+package gui.main.side.left;
 
-import application.baseobject.tag.Tag;
-import application.gui.component.simple.TextNode;
-import application.gui.decorator.ColorUtil;
-import application.gui.main.side.GroupNode;
-import application.gui.main.side.SidePaneBase;
-import application.gui.stage.StageManager;
-import application.tools.NodeUtil;
+import baseobject.tag.Tag;
+import gui.component.simple.TextNode;
+import gui.decorator.ColorUtil;
+import gui.main.side.GroupNode;
+import gui.main.side.SidePaneBase;
+import gui.stage.StageManager;
 import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
+import tools.NodeUtil;
 
 import java.util.logging.Logger;
 

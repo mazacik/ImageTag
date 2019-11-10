@@ -1,8 +1,7 @@
-package application.cache;
+package cache;
 
-import application.baseobject.entity.Entity;
-import application.gui.decorator.SizeUtil;
-import application.tools.FileUtil;
+import baseobject.entity.Entity;
+import gui.decorator.SizeUtil;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -13,6 +12,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import tools.FileUtil;
 
 import java.io.File;
 

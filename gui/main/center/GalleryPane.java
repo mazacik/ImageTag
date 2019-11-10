@@ -1,15 +1,13 @@
-package application.gui.main.center;
+package gui.main.center;
 
-import application.baseobject.CustomList;
-import application.baseobject.entity.Entity;
-import application.baseobject.entity.EntityList;
-import application.cache.CacheReader;
-import application.control.reload.Reloadable;
-import application.gui.component.clickmenu.ClickMenu;
-import application.gui.decorator.SizeUtil;
-import application.gui.stage.StageManager;
-import application.main.InstanceCollector;
-import application.tools.EntityGroupUtil;
+import baseobject.CustomList;
+import baseobject.entity.Entity;
+import baseobject.entity.EntityList;
+import cache.CacheReader;
+import control.reload.Reloadable;
+import gui.component.clickmenu.ClickMenu;
+import gui.decorator.SizeUtil;
+import gui.stage.StageManager;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -21,6 +19,8 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import main.InstanceCollector;
+import tools.EntityGroupUtil;
 
 import java.lang.reflect.Method;
 import java.util.logging.Logger;

@@ -1,15 +1,15 @@
-package application.tools;
+package tools;
 
-import application.baseobject.CustomList;
-import application.baseobject.entity.Entity;
-import application.baseobject.entity.EntityList;
-import application.cache.CacheWriter;
-import application.gui.stage.StageManager;
-import application.gui.stage.template.YesNoCancelStage;
-import application.main.InstanceCollector;
-import application.tools.enums.FileType;
+import baseobject.CustomList;
+import baseobject.entity.Entity;
+import baseobject.entity.EntityList;
+import cache.CacheWriter;
+import gui.stage.StageManager;
+import gui.stage.template.YesNoCancelStage;
 import javafx.scene.Scene;
 import javafx.stage.DirectoryChooser;
+import main.InstanceCollector;
+import tools.enums.FileType;
 
 import java.io.File;
 import java.nio.file.Files;

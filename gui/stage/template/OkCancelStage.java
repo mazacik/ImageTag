@@ -1,7 +1,7 @@
-package application.gui.stage.template;
+package gui.stage.template;
 
-import application.gui.component.simple.TextNode;
-import application.gui.stage.base.StageBase;
+import gui.component.simple.TextNode;
+import gui.stage.base.StageBase;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.input.MouseButton;

@@ -1,13 +1,13 @@
-package application.control;
+package control;
 
-import application.baseobject.CustomList;
-import application.baseobject.entity.Entity;
-import application.baseobject.entity.EntityList;
-import application.baseobject.tag.Tag;
-import application.baseobject.tag.TagList;
-import application.control.reload.ChangeIn;
-import application.main.InstanceCollector;
-import application.tools.FileUtil;
+import baseobject.CustomList;
+import baseobject.entity.Entity;
+import baseobject.entity.EntityList;
+import baseobject.tag.Tag;
+import baseobject.tag.TagList;
+import control.reload.ChangeIn;
+import main.InstanceCollector;
+import tools.FileUtil;
 
 public class Filter extends EntityList implements InstanceCollector {
 	private TagList infoListWhite;

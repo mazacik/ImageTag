@@ -1,12 +1,12 @@
-package application.gui.component.simple;
+package gui.component.simple;
 
-import application.tools.NodeUtil;
-import application.tools.enums.Direction;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.WindowEvent;
+import tools.NodeUtil;
+import tools.enums.Direction;
 
 public class CheckboxNode extends HBox {
 	private final TextNode nodeMark;

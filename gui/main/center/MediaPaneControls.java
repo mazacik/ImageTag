@@ -1,4 +1,4 @@
-package application.gui.main.center;
+package gui.main.center;
 
 import javafx.animation.PauseTransition;
 import javafx.beans.property.BooleanProperty;

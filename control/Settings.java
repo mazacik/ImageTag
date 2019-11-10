@@ -1,8 +1,8 @@
-package application.control;
+package control;
 
-import application.baseobject.CustomList;
-import application.tools.JsonUtil;
+import baseobject.CustomList;
 import com.google.gson.reflect.TypeToken;
+import tools.JsonUtil;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;

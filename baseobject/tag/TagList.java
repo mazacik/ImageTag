@@ -1,6 +1,6 @@
-package application.baseobject.tag;
+package baseobject.tag;
 
-import application.baseobject.CustomList;
+import baseobject.CustomList;
 
 import java.util.Collection;
 import java.util.Comparator;

@@ -1,13 +1,13 @@
-package application.gui.stage.template;
+package gui.stage.template;
 
-import application.gui.component.tooltip.Tooltip;
-import application.gui.decorator.ColorUtil;
-import application.gui.stage.base.StageBaseInterface;
-import application.main.InstanceCollector;
+import gui.component.tooltip.Tooltip;
+import gui.decorator.ColorUtil;
+import gui.stage.base.StageBaseInterface;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import main.InstanceCollector;
 
 public class CacheCompareStage extends YesNoCancelStage implements StageBaseInterface, InstanceCollector {
 	private ImageView imageView1;
@@ -44,7 +44,7 @@ public class CacheCompareStage extends YesNoCancelStage implements StageBaseInte
 	
 	@Override
 	public Result show(String... args) {
-		labelContent.setText("This file was likely renamed outside of the application.\nAre the pictures identical? If so, the file will keep its properties.");
+		labelContent.setText("This file was likely renamed outside of the \nAre the pictures identical? If so, the file will keep its properties.");
 		
 		tooltip1.getTextNode().setText("File in Database: " + args[0]);
 		tooltip2.getTextNode().setText("New File: " + args[1]);

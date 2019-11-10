@@ -1,11 +1,9 @@
-package application.gui.stage.main;
+package gui.stage.main;
 
-import application.baseobject.Project;
-import application.gui.component.simple.TextNode;
-import application.gui.decorator.ColorUtil;
-import application.gui.stage.StageManager;
-import application.main.InstanceCollector;
-import application.main.LifecycleManager;
+import baseobject.Project;
+import gui.component.simple.TextNode;
+import gui.decorator.ColorUtil;
+import gui.stage.StageManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -15,6 +13,8 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import main.InstanceCollector;
+import main.LifecycleManager;
 
 import java.io.File;
 

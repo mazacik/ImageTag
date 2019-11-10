@@ -1,7 +1,7 @@
-package application.gui.component.simple;
+package gui.component.simple;
 
-import application.gui.decorator.ColorUtil;
-import application.gui.decorator.Decorator;
+import gui.decorator.ColorUtil;
+import gui.decorator.Decorator;
 import javafx.event.Event;
 import javafx.event.EventType;
 import javafx.geometry.Insets;

@@ -1,10 +1,10 @@
-package application.gui.decorator;
+package gui.decorator;
 
-import application.gui.decorator.enums.BackgroundEnum;
-import application.gui.decorator.enums.ColorEnum;
-import application.main.InstanceCollector;
+import gui.decorator.enums.BackgroundEnum;
+import gui.decorator.enums.ColorEnum;
 import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
+import main.InstanceCollector;
 
 public abstract class ColorUtil implements InstanceCollector {
 	private static int nightMode = settings.getGuiColorStyle();

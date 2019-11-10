@@ -1,7 +1,7 @@
-package application.gui.component.simple;
+package gui.component.simple;
 
-import application.tools.NodeUtil;
 import javafx.scene.layout.Region;
+import tools.NodeUtil;
 
 public class BoxSeparatorNode extends Region {
 	public BoxSeparatorNode() {

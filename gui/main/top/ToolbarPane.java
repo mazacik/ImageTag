@@ -1,20 +1,20 @@
-package application.gui.main.top;
+package gui.main.top;
 
-import application.baseobject.CustomList;
-import application.baseobject.entity.Entity;
-import application.control.reload.Reloadable;
-import application.gui.component.clickmenu.ClickMenu;
-import application.gui.component.simple.BoxSeparatorNode;
-import application.gui.component.simple.TextNode;
-import application.gui.component.simple.template.ButtonTemplates;
-import application.gui.decorator.SizeUtil;
-import application.gui.stage.TitleBar;
-import application.main.InstanceCollector;
-import application.tools.EntityGroupUtil;
-import application.tools.enums.Direction;
+import baseobject.CustomList;
+import baseobject.entity.Entity;
+import control.reload.Reloadable;
+import gui.component.clickmenu.ClickMenu;
+import gui.component.simple.BoxSeparatorNode;
+import gui.component.simple.TextNode;
+import gui.component.simple.template.ButtonTemplates;
+import gui.decorator.SizeUtil;
+import gui.stage.TitleBar;
 import javafx.geometry.Pos;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
+import main.InstanceCollector;
+import tools.EntityGroupUtil;
+import tools.enums.Direction;
 
 import java.lang.reflect.Method;
 import java.util.logging.Logger;

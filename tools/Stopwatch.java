@@ -1,4 +1,4 @@
-package application.tools;
+package tools;
 
 public abstract class Stopwatch {
 	private static long startTime;

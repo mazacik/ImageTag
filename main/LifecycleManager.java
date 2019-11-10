@@ -1,14 +1,14 @@
-package application.main;
+package main;
 
-import application.baseobject.CustomList;
-import application.baseobject.Project;
-import application.baseobject.entity.Entity;
-import application.baseobject.entity.EntityList;
-import application.baseobject.entity.EntityListMain;
-import application.cache.CacheWriter;
-import application.gui.stage.StageManager;
-import application.gui.stage.template.YesNoCancelStage;
-import application.tools.FileUtil;
+import baseobject.CustomList;
+import baseobject.Project;
+import baseobject.entity.Entity;
+import baseobject.entity.EntityList;
+import baseobject.entity.EntityListMain;
+import cache.CacheWriter;
+import gui.stage.StageManager;
+import gui.stage.template.YesNoCancelStage;
+import tools.FileUtil;
 
 import java.io.File;
 import java.util.Comparator;

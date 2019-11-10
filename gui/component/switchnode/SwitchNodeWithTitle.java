@@ -1,6 +1,6 @@
-package application.gui.component.switchnode;
+package gui.component.switchnode;
 
-import application.gui.component.simple.TextNode;
+import gui.component.simple.TextNode;
 import javafx.scene.layout.VBox;
 
 public class SwitchNodeWithTitle extends VBox {

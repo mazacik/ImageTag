@@ -1,6 +1,6 @@
-package application.tools;
+package tools;
 
-import application.baseobject.entity.Entity;
+import baseobject.entity.Entity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
