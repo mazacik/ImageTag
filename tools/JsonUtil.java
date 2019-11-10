@@ -14,8 +14,7 @@ import java.util.logging.Logger;
 public abstract class JsonUtil {
 	public static void write(Object object, Type type, String path) {
 		GsonBuilder GSONBuilder = new GsonBuilder();
-		GSONBuilder.setPrettyPrinting().serializeNulls();
-		String JSON = GSONBuilder.create().toJson(object, type);
+		String JSON = GSONBuilder.serializeNulls().create().toJson(object, type);
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(path, false));
 			writer.write(JSON);
@@ -28,8 +27,7 @@ public abstract class JsonUtil {
 	}
 	public static Object read(Type type, String path) {
 		GsonBuilder GSONBuilder = new GsonBuilder();
-		GSONBuilder.setPrettyPrinting().serializeNulls();
-		Gson GSON = GSONBuilder.create();
+		Gson GSON = GSONBuilder.serializeNulls().create();
 		try {
 			String JSON = new String(Files.readAllBytes(Paths.get(path)));
 			Object fromJson = GSON.fromJson(JSON, type);
