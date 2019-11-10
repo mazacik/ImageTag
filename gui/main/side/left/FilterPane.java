@@ -6,12 +6,12 @@ import gui.decorator.ColorUtil;
 import gui.main.side.GroupNode;
 import gui.main.side.SidePaneBase;
 import gui.stage.StageManager;
+import gui.stage.template.tageditstage.TagEditStageResult;
 import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
-import javafx.util.Pair;
 import tools.NodeUtil;
 
 import java.util.logging.Logger;
@@ -28,11 +28,15 @@ public class FilterPane extends SidePaneBase {
 		btnCreateNewTag.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
 		btnCreateNewTag.prefWidthProperty().bind(this.widthProperty());
 		btnCreateNewTag.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-			Pair<Tag, Boolean> result = StageManager.getTagEditStage().show("");
-			tagListMain.add(result.getKey());
+			TagEditStageResult result = StageManager.getTagEditStage().show("");
+			Tag tag = tagListMain.getTag(result.getGroup(), result.getName());
+			tagListMain.add(tag);
 			tagListMain.sort();
-			if (result.getValue())
-				select.addTag(result.getKey());
+			
+			if (result.isAddToSelect()) {
+				select.addTag(tag);
+			}
+			
 			reload.doReload();
 		});
 		

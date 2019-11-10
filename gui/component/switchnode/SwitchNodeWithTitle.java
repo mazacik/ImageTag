@@ -1,6 +1,7 @@
 package gui.component.switchnode;
 
 import gui.component.simple.TextNode;
+import javafx.geometry.Pos;
 import javafx.scene.layout.VBox;
 
 public class SwitchNodeWithTitle extends VBox {
@@ -16,6 +17,8 @@ public class SwitchNodeWithTitle extends VBox {
 		
 		this.getChildren().add(titleNode);
 		this.getChildren().add(switchNode);
+		
+		this.setAlignment(Pos.CENTER);
 	}
 	
 	public void setSelectedNode(SwitchNode.SwitchNodeEnum node) {

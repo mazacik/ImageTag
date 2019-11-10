@@ -47,8 +47,8 @@ public class FilterSettingsStage extends StageBase implements InstanceCollector 
 		
 		VBox vBoxRight = new VBox();
 		vBoxRight.setSpacing(5);
-		whitelistModeNode = new SwitchNodeWithTitle("Whitelist Mode", "AND", "OR", 100);
-		blacklistModeNode = new SwitchNodeWithTitle("Blacklist Mode", "AND", "OR", 100);
+		whitelistModeNode = new SwitchNodeWithTitle("Whitelist Mode", "AND", "OR", 125);
+		blacklistModeNode = new SwitchNodeWithTitle("Blacklist Mode", "AND", "OR", 125);
 		vBoxRight.getChildren().addAll(whitelistModeNode, blacklistModeNode);
 		
 		whitelistModeNode.setSelectedNode(SwitchNode.SwitchNodeEnum.LEFT);
