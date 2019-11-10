@@ -22,29 +22,29 @@ import java.util.logging.Logger;
 public abstract class CacheWriter implements InstanceCollector {
 	private static final String CACHE_EXTENSION = ".jpg";
 	
-	public static synchronized Image write(Entity entity, File cacheFile) {
+	public static synchronized Image write(Entity entity) {
 		Logger.getGlobal().info(entity.getName());
 		
 		switch (FileUtil.getFileType(entity)) {
 			case IMAGE:
-				return createFromImage(entity, cacheFile);
+				return createFromImage(entity);
 			case GIF:
-				return createFromGif(entity, cacheFile);
+				return createFromGif(entity);
 			case VIDEO:
-				return createFromVideo(entity, cacheFile);
+				return createFromVideo(entity);
 			default:
 				return null;
 		}
 	}
 	
-	private static Image createFromImage(Entity entity, File cacheFile) {
+	private static Image createFromImage(Entity entity) {
 		int thumbSize = settings.getGalleryTileSize();
 		Image image = new Image("file:" + entity.getPath(), thumbSize, thumbSize, false, false);
 		BufferedImage buffer = SwingFXUtils.fromFXImage(image, null);
 		
 		if (buffer != null) {
 			try {
-				ImageIO.write(buffer, "jpg", cacheFile);
+				ImageIO.write(buffer, "jpg", new File(FileUtil.getCacheFilePath(entity)));
 			} catch (IOException e) {
 				e.printStackTrace();
 				return null;
@@ -55,7 +55,7 @@ public abstract class CacheWriter implements InstanceCollector {
 		
 		return image;
 	}
-	private static Image createFromGif(Entity entity, File cacheFile) {
+	private static Image createFromGif(Entity entity) {
 		GifDecoder gifDecoder = new GifDecoder();
 		gifDecoder.read(entity.getPath());
 		int thumbSize = settings.getGalleryTileSize();
@@ -69,7 +69,7 @@ public abstract class CacheWriter implements InstanceCollector {
 		graphics.drawImage(frame, 0, 0, thumbSize, thumbSize, null);
 		
 		try {
-			ImageIO.write(buffer, "jpg", cacheFile);
+			ImageIO.write(buffer, "jpg", new File(FileUtil.getCacheFilePath(entity)));
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
@@ -77,7 +77,7 @@ public abstract class CacheWriter implements InstanceCollector {
 		
 		return SwingFXUtils.toFXImage(buffer, null);
 	}
-	private static Image createFromVideo(Entity entity, File cacheFile) {
+	private static Image createFromVideo(Entity entity) {
 		if (VideoPlayer.hasLibs()) {
 			String[] vlcArgs = {
 					"--intf", "dummy",          /* no interface */
@@ -107,6 +107,8 @@ public abstract class CacheWriter implements InstanceCollector {
 					snapshotTakenLatch.countDown();
 				}
 			});
+			
+			File cacheFile = new File(FileUtil.getCacheFilePath(entity));
 			
 			if (mediaPlayer.media().start(entity.getPath())) {
 				try {
@@ -141,7 +143,7 @@ public abstract class CacheWriter implements InstanceCollector {
 			for (Entity entity : entityListMain) {
 				File cacheFile = new File(FileUtil.getCacheFilePath(entity));
 				if (!cacheFile.exists()) {
-					CacheWriter.write(entity, cacheFile);
+					CacheWriter.write(entity);
 				}
 			}
 		}).start();

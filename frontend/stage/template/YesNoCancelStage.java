@@ -10,8 +10,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class YesNoCancelStage extends StageBase {
-	private TextNode labelContent;
-	private Result result;
+	protected TextNode labelContent;
+	protected VBox vBoxMain;
+	protected Result result;
 	
 	public YesNoCancelStage() {
 		super("Confirmation");
@@ -19,26 +20,26 @@ public class YesNoCancelStage extends StageBase {
 		labelContent = new TextNode("CONTENT_STRING", false, false, false, true);
 		
 		TextNode buttonPositive = new TextNode("Yes", true, true, false, true);
-		buttonPositive.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		buttonPositive.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			result = Result.YES;
 			this.close();
 		});
 		TextNode buttonNegative = new TextNode("No", true, true, false, true);
-		buttonNegative.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		buttonNegative.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			result = Result.NO;
 			this.close();
 		});
 		TextNode buttonCancel = new TextNode("Cancel", true, true, false, true);
-		buttonCancel.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		buttonCancel.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			result = Result.CANCEL;
 			this.close();
 		});
 		
-		HBox hBox = new HBox(buttonPositive, buttonNegative, buttonCancel);
-		hBox.setAlignment(Pos.CENTER);
-		hBox.setSpacing(2);
+		HBox hBoxButtons = new HBox(buttonPositive, buttonNegative, buttonCancel);
+		hBoxButtons.setAlignment(Pos.CENTER);
+		hBoxButtons.setSpacing(2);
 		
-		VBox vBoxMain = new VBox(labelContent, hBox);
+		vBoxMain = new VBox(labelContent, hBoxButtons);
 		vBoxMain.setSpacing(5);
 		vBoxMain.setPadding(new Insets(5));
 		vBoxMain.setAlignment(Pos.CENTER);

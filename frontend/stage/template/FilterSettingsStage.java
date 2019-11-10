@@ -54,17 +54,17 @@ public class FilterSettingsStage extends StageBase implements InstanceCollector 
 		whitelistModeNode.setSelectedNode(SwitchNode.SwitchNodeEnum.LEFT);
 		blacklistModeNode.setSelectedNode(SwitchNode.SwitchNodeEnum.RIGHT);
 		
-		whitelistModeNode.getSwitchNode().getNode1().addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () ->
+		whitelistModeNode.getSwitchNode().getNode1().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () ->
 				filter.setWhitelistFactor(1.00));
-		whitelistModeNode.getSwitchNode().getNode2().addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () ->
+		whitelistModeNode.getSwitchNode().getNode2().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () ->
 				filter.setWhitelistFactor(0.01));
-		blacklistModeNode.getSwitchNode().getNode1().addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () ->
+		blacklistModeNode.getSwitchNode().getNode1().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () ->
 				filter.setBlacklistFactor(1.00));
-		blacklistModeNode.getSwitchNode().getNode2().addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () ->
+		blacklistModeNode.getSwitchNode().getNode2().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () ->
 				filter.setBlacklistFactor(0.01));
 		
 		TextNode btnOK = new TextNode("OK", true, true, false, true);
-		btnOK.addEventFilter(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> {
+		btnOK.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> {
 			filter.setShowImages(cbImages.isSelected());
 			filter.setShowGifs(cbGifs.isSelected());
 			filter.setShowVideos(cbVideos.isSelected());
@@ -77,7 +77,7 @@ public class FilterSettingsStage extends StageBase implements InstanceCollector 
 			this.hide();
 		});
 		TextNode btnCancel = new TextNode("Cancel", true, true, false, true);
-		btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, this::hide);
+		btnCancel.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, this::hide);
 		
 		HBox hBoxOkCancel = new HBox(btnOK, btnCancel);
 		hBoxOkCancel.setAlignment(Pos.CENTER);

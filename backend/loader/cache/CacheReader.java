@@ -27,7 +27,7 @@ public abstract class CacheReader {
 		if (cacheFile.exists()) {
 			image = new Image("file:" + cacheFile.getAbsolutePath(), true);
 		} else {
-			image = CacheWriter.write(entity, cacheFile);
+			image = CacheWriter.write(entity);
 		}
 		
 		if (image == null || ALWAYS_USE_PLACEHOLDER) {

@@ -4,6 +4,7 @@ import application.backend.base.CustomList;
 import application.backend.loader.Project;
 import application.backend.util.FileUtil;
 import application.backend.util.enums.SystemUtil;
+import application.frontend.component.custom.ColorModeSwitchNode;
 import application.frontend.component.custom.RecentProjectNode;
 import application.frontend.component.simple.EditNode;
 import application.frontend.component.simple.SeparatorNode;
@@ -72,7 +73,7 @@ public class MainStage extends StageBase implements InstanceCollector {
 	}
 	private void initIntroScene() {
 		TextNode btnOpenProject = new TextNode("Open Project", false, true, true);
-		btnOpenProject.addEventFilter(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> {
+		btnOpenProject.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> {
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.setTitle("Open Project");
 			fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
@@ -86,7 +87,7 @@ public class MainStage extends StageBase implements InstanceCollector {
 		});
 		
 		TextNode btnNewProject = new TextNode("Create a New Project", false, true, true);
-		btnNewProject.addEventFilter(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, this::showCreateProjectScene);
+		btnNewProject.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, this::showCreateProjectScene);
 		
 		TextNode applicationNameNode = new TextNode("Tagallery", false, false, false, false);
 		applicationNameNode.setFont(new Font(48));
@@ -102,7 +103,7 @@ public class MainStage extends StageBase implements InstanceCollector {
 		vBoxStartMenu.getChildren().add(applicationNameNode);
 		vBoxStartMenu.getChildren().add(btnNewProject);
 		vBoxStartMenu.getChildren().add(btnOpenProject);
-		//vBoxStartMenu.getChildren().add(new ColorModeSwitchNode());
+		vBoxStartMenu.getChildren().add(new ColorModeSwitchNode());
 		
 		vBoxRecentProjects = new VBox();
 		vBoxRecentProjects.setMinWidth(400);

@@ -27,7 +27,7 @@ public class FilterPane extends SidePaneBase {
 		TextNode btnCreateNewTag = new TextNode("Create a New Tag", true, true, false, true);
 		btnCreateNewTag.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
 		btnCreateNewTag.prefWidthProperty().bind(this.widthProperty());
-		btnCreateNewTag.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		btnCreateNewTag.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			Pair<Tag, Boolean> result = StageManager.getTagEditStage().show("");
 			tagListMain.add(result.getKey());
 			tagListMain.sort();
@@ -37,13 +37,13 @@ public class FilterPane extends SidePaneBase {
 		});
 		
 		TextNode btnReset = new TextNode("⟲", true, true, false, true);
-		btnReset.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		btnReset.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			filter.reset();
 			reload.doReload();
 		});
 		
 		TextNode btnSettings = new TextNode("⁝", true, true, false, true);
-		btnSettings.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> StageManager.getFilterSettingsStage().show(""));
+		btnSettings.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> StageManager.getFilterSettingsStage().show(""));
 		
 		HBox hBoxTitle = new HBox(btnReset, nodeTitle, btnSettings);
 		hBoxTitle.setBorder(NodeUtil.getBorder(0, 0, 1, 0));

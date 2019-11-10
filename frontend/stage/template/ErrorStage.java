@@ -16,7 +16,7 @@ public class ErrorStage extends StageBase implements StageBaseInterface {
 		labelContent = new TextNode("Error", false, false, false, true);
 		
 		TextNode btnOK = new TextNode("OK", true, true, false, true);
-		btnOK.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, this::close);
+		btnOK.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, this::close);
 		
 		VBox vBoxMain = new VBox(labelContent, btnOK);
 		setRoot(vBoxMain);

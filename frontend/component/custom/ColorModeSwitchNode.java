@@ -8,7 +8,7 @@ import javafx.scene.input.MouseEvent;
 
 public class ColorModeSwitchNode extends SwitchNode {
 	public ColorModeSwitchNode() {
-		node1.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		node1.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			if (ColorUtil.isNightMode()) {
 				ColorUtil.setNightMode(false);
 				node1.setBackground(ColorUtil.getBackgroundAlt());
@@ -18,7 +18,7 @@ public class ColorModeSwitchNode extends SwitchNode {
 				node2.setBorder(null);
 			}
 		});
-		node2.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		node2.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			if (!ColorUtil.isNightMode()) {
 				ColorUtil.setNightMode(true);
 				node1.setBorder(null);

@@ -32,7 +32,9 @@ public class TextNode extends Label {
 		this.setTextFill(ColorUtil.getTextColorDef());
 		this.minWidthProperty().bind(this.heightProperty());
 		
-		if (defaultPadding) this.setPadding(new Insets(5, 10, 5, 10));
+		if (defaultPadding) {
+			this.setPadding(new Insets(5, 10, 5, 10));
+		}
 		
 		this.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
 			if (hoverBackground && hoverText) {
@@ -44,16 +46,24 @@ public class TextNode extends Label {
 				this.setTextFill(ColorUtil.getTextColorAlt());
 			}
 			
-			if (hoverCursor) this.setCursor(Cursor.HAND);
+			if (hoverCursor) {
+				this.setCursor(Cursor.HAND);
+			}
 		});
 		this.addEventFilter(MouseEvent.MOUSE_EXITED, event -> {
-			if (hoverBackground) this.setBackground(Background.EMPTY);
-			if (hoverText) this.setTextFill(ColorUtil.getTextColorDef());
-			if (hoverCursor) this.setCursor(Cursor.DEFAULT);
+			if (hoverBackground) {
+				this.setBackground(Background.EMPTY);
+			}
+			if (hoverText) {
+				this.setTextFill(ColorUtil.getTextColorDef());
+			}
+			if (hoverCursor) {
+				this.setCursor(Cursor.DEFAULT);
+			}
 		});
 	}
 	
-	public <T extends Event> void addEventFilter(final EventType<T> eventType, MouseButton mouseButton, Runnable runnable) {
+	public <T extends Event> void addMouseEvent(final EventType<T> eventType, MouseButton mouseButton, Runnable runnable) {
 		this.addEventFilter(eventType, event -> {
 			if (event instanceof MouseEvent) {
 				MouseEvent mouseEvent = (MouseEvent) event;

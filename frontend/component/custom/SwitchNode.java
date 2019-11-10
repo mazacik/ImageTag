@@ -27,8 +27,8 @@ public class SwitchNode extends HBox {
 			this.setMaxWidth(prefWidth);
 		}
 		
-		node1.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> setSelectedNode(SwitchNodeEnum.LEFT));
-		node2.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> setSelectedNode(SwitchNodeEnum.RIGHT));
+		node1.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> setSelectedNode(SwitchNodeEnum.LEFT));
+		node2.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> setSelectedNode(SwitchNodeEnum.RIGHT));
 		
 		this.getChildren().add(node1);
 		this.getChildren().add(node2);

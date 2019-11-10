@@ -54,7 +54,7 @@ public class TagEditStage extends StageBase implements InstanceCollector {
 			}
 		});
 		btnCancel = new TextNode("Cancel", true, true, false, true);
-		btnCancel.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, this::close);
+		btnCancel.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, this::close);
 		
 		HBox hBoxGroup = new HBox(lblGroup, edtGroup);
 		hBoxGroup.setAlignment(Pos.CENTER);

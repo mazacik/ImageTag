@@ -33,7 +33,7 @@ public class GroupEditStage extends StageBase {
 		nodeGroupEdit.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
 		
 		nodeOK = new TextNode("OK", true, true, false, true);
-		nodeOK.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		nodeOK.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			String newGroup = nodeGroupEdit.getText();
 			if (this.isValid(newGroup)) {
 				result = newGroup;
@@ -44,7 +44,7 @@ public class GroupEditStage extends StageBase {
 		});
 		
 		nodeCancel = new TextNode("Cancel", true, true, false, true);
-		nodeCancel.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, this::close);
+		nodeCancel.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, this::close);
 		
 		HBox hBoxGroup = new HBox(nodeGroup, nodeGroupEdit);
 		hBoxGroup.setAlignment(Pos.CENTER);

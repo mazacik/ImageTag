@@ -65,7 +65,7 @@ public class MediaPaneControlsBase extends BorderPane implements InstanceCollect
 	}
 	private void initEvents(VideoPlayer videoPlayer) {
 		if (videoPlayer != null) {
-			btnPlayPause.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+			btnPlayPause.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				if (videoPlayer.hasMedia()) {
 					if (videoPlayer.isPlaying()) {
 						videoPlayer.pause();
@@ -76,7 +76,7 @@ public class MediaPaneControlsBase extends BorderPane implements InstanceCollect
 			});
 			
 			long timeDelta = 5000; // time in milliseconds
-			btnSkipBackward5s.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+			btnSkipBackward5s.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				if (videoPlayer.hasMedia()) {
 					videoPlayer.getControls().skipTime(-timeDelta);
 					if (!videoPlayer.isPlaying()) {
@@ -86,7 +86,7 @@ public class MediaPaneControlsBase extends BorderPane implements InstanceCollect
 					}
 				}
 			});
-			btnSkipForward5s.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+			btnSkipForward5s.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				if (videoPlayer.hasMedia()) {
 					videoPlayer.getControls().skipPosition(+timeDelta);
 					if (!videoPlayer.isPlaying()) {
@@ -98,7 +98,7 @@ public class MediaPaneControlsBase extends BorderPane implements InstanceCollect
 			});
 			
 			float skipDelta = 0.05f; // 0.01f = 1% of media length
-			btnSkipBackward.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+			btnSkipBackward.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				if (videoPlayer.hasMedia()) {
 					videoPlayer.getControls().skipPosition(-skipDelta);
 					if (!videoPlayer.isPlaying()) {
@@ -107,7 +107,7 @@ public class MediaPaneControlsBase extends BorderPane implements InstanceCollect
 					}
 				}
 			});
-			btnSkipForward.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+			btnSkipForward.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				if (videoPlayer.hasMedia()) {
 					videoPlayer.getControls().skipPosition(+skipDelta);
 					if (!videoPlayer.isPlaying()) {
@@ -131,8 +131,8 @@ public class MediaPaneControlsBase extends BorderPane implements InstanceCollect
 				}
 			});
 			
-			btnMute.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, videoPlayer::swapMute);
-			btnSnapshot.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+			btnMute.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, videoPlayer::swapMute);
+			btnSnapshot.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				Entity entity = target.get();
 				File cacheFile = new File(FileUtil.getCacheFilePath(entity));
 				int thumbSize = (int) SizeUtil.getGalleryTileSize();
@@ -143,12 +143,12 @@ public class MediaPaneControlsBase extends BorderPane implements InstanceCollect
 			});
 		}
 		
-		btnPrevious.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		btnPrevious.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			target.move(Direction.LEFT);
 			select.set(target.get());
 			reload.doReload();
 		});
-		btnNext.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		btnNext.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			target.move(Direction.RIGHT);
 			select.set(target.get());
 			reload.doReload();

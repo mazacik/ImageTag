@@ -23,13 +23,13 @@ public class OkCancelStage extends StageBase {
 		labelContent = new TextNode("Content", false, false, false, true);
 		
 		btnOK = new TextNode("OK", true, true, false, true);
-		btnOK.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		btnOK.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			result = true;
 			this.close();
 		});
 		
 		btnCancel = new TextNode("Cancel", true, true, false, true);
-		btnCancel.addEventFilter(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		btnCancel.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			result = false;
 			this.close();
 		});

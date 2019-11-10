@@ -84,4 +84,12 @@ public class EntityList extends CustomList<Entity> implements InstanceCollector 
 			}
 		} else return null;
 	}
+	public Entity getEntityByName(String name) {
+		for (Entity entity : this) {
+			if (entity.getName().equals(name)) {
+				return entity;
+			}
+		}
+		return null;
+	}
 }

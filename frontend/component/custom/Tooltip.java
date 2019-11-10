@@ -1,5 +1,6 @@
 package application.frontend.component.custom;
 
+import application.frontend.component.NodeUtil;
 import application.frontend.component.simple.TextNode;
 import application.frontend.stage.StageManager;
 import javafx.animation.KeyFrame;
@@ -10,13 +11,16 @@ import javafx.stage.Popup;
 import javafx.util.Duration;
 
 public class Tooltip extends Popup {
+	private TextNode textNode;
+	
 	private Timeline timeline;
 	private double eventX;
 	private double eventY;
 	
 	public Tooltip(String text, long delay) {
-		TextNode TextNode = new TextNode(text);
-		this.getContent().add(TextNode);
+		textNode = new TextNode(text, false, false, false, true);
+		textNode.setBorder(NodeUtil.getBorder(1));
+		this.getContent().add(textNode);
 		
 		timeline = new Timeline();
 		timeline.getKeyFrames().add(new KeyFrame(new Duration(delay), event -> {
@@ -35,11 +39,15 @@ public class Tooltip extends Popup {
 		});
 	}
 	
-	public void startTimeline(MouseEvent event) {
+	private void startTimeline(MouseEvent event) {
 		if (!this.isShowing()) {
 			eventX = event.getScreenX();
 			eventY = event.getScreenY();
 			timeline.playFromStart();
 		}
+	}
+	
+	public TextNode getTextNode() {
+		return textNode;
 	}
 }

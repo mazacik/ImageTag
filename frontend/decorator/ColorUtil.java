@@ -14,12 +14,8 @@ public abstract class ColorUtil implements InstanceCollector {
 	public static void setNightMode(boolean value) {
 		if (!value) {
 			nightMode = 0;
-			//SceneUtil.createIntroScene();
-			//SceneUtil.showIntroScene();
 		} else {
 			nightMode = 1;
-			//SceneUtil.createIntroScene();
-			//SceneUtil.showIntroScene();
 		}
 		settings.setGuiColorStyle(nightMode);
 	}
