@@ -1,15 +1,15 @@
 package application.control;
 
-import application.base.CustomList;
-import application.base.entity.Entity;
-import application.base.entity.EntityList;
-import application.base.tag.Tag;
-import application.base.tag.TagList;
+import application.baseobject.CustomList;
+import application.baseobject.entity.Entity;
+import application.baseobject.entity.EntityList;
+import application.baseobject.tag.Tag;
+import application.baseobject.tag.TagList;
 import application.control.reload.ChangeIn;
+import application.gui.stage.StageManager;
+import application.gui.stage.template.YesNoCancelStage;
 import application.main.InstanceCollector;
-import application.stage.StageManager;
-import application.stage.template.YesNoCancelStage;
-import application.util.EntityGroupUtil;
+import application.tools.EntityGroupUtil;
 
 import java.util.Collection;
 import java.util.Random;

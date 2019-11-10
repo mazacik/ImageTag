@@ -1,6 +1,6 @@
 package application.control.reload;
 
-import application.base.CustomList;
+import application.baseobject.CustomList;
 
 import java.lang.reflect.Method;
 

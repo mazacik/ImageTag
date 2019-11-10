@@ -1,12 +1,12 @@
 package application.control;
 
-import application.base.CustomList;
-import application.base.entity.Entity;
-import application.base.entity.EntityList;
+import application.baseobject.CustomList;
+import application.baseobject.entity.Entity;
+import application.baseobject.entity.EntityList;
 import application.control.reload.ChangeIn;
 import application.main.InstanceCollector;
-import application.util.EntityGroupUtil;
-import application.util.enums.Direction;
+import application.tools.EntityGroupUtil;
+import application.tools.enums.Direction;
 import javafx.scene.input.KeyCode;
 
 import java.util.logging.Logger;

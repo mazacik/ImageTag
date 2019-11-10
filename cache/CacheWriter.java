@@ -1,10 +1,10 @@
 package application.cache;
 
-import application.base.entity.Entity;
+import application.baseobject.entity.Entity;
+import application.gui.main.center.VideoPlayer;
 import application.main.InstanceCollector;
-import application.pane.center.VideoPlayer;
+import application.tools.FileUtil;
 import application.tools.GifDecoder;
-import application.util.FileUtil;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;

@@ -1,8 +1,8 @@
 package application.cache;
 
-import application.base.entity.Entity;
-import application.decorator.SizeUtil;
-import application.util.FileUtil;
+import application.baseobject.entity.Entity;
+import application.gui.decorator.SizeUtil;
+import application.tools.FileUtil;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;

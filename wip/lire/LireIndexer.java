@@ -45,8 +45,8 @@
 
 package application.wip.lire;
 
-import application.base.CustomList;
-import application.util.FileUtil;
+import application.baseobject.CustomList;
+import application.tools.FileUtil;
 import net.semanticmetadata.lire.builders.GlobalDocumentBuilder;
 import net.semanticmetadata.lire.imageanalysis.features.global.CEDD;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
