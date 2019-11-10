@@ -9,6 +9,7 @@ import gui.component.clickmenu.ClickMenu;
 import gui.component.simple.TextNode;
 import gui.stage.StageManager;
 import gui.stage.template.YesNoCancelStage;
+import gui.stage.template.tageditstage.TagEditStageResult;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.WindowEvent;
@@ -158,27 +159,46 @@ public enum ButtonTemplates implements InstanceCollector {
 			TextNode textNode = new TextNode("Edit", true, true, false, true);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				if (!ClickMenu.getName().isEmpty()) {
-					String group = ClickMenu.getGroup();
-					String oldName = ClickMenu.getName();
-					Tag tag = tagListMain.getTag(group, oldName);
-					tagListMain.edit(tag);
-					if (!oldName.equals(tag.getName())) {
-						filterPane.updateNameNode(group, oldName, tag.getName());
-						selectPane.updateNameNode(group, oldName, tag.getName());
+					//  click was on name node
+					String groupBefore = ClickMenu.getGroup();
+					String nameBefore = ClickMenu.getName();
+					Tag tag = tagListMain.getTag(groupBefore, nameBefore);
+					
+					TagEditStageResult result = StageManager.getTagEditStage().show(groupBefore, nameBefore);
+					String groupAfter = WordUtils.capitalize(result.getGroup().toLowerCase());
+					String nameAfter = WordUtils.capitalize(result.getName().toLowerCase());
+					
+					tag.set(groupAfter, nameAfter);
+					tagListMain.sort();
+					
+					if (result.isAddToSelect()) {
+						select.addTag(tag);
+					}
+					
+					if (!groupBefore.equals(groupAfter)) {
+						filterPane.updateGroupNode(groupBefore, groupAfter);
+						selectPane.updateGroupNode(groupBefore, groupAfter);
+					}
+					
+					if (!nameBefore.equals(nameAfter)) {
+						filterPane.updateNameNode(groupAfter, nameBefore, nameAfter);
+						selectPane.updateNameNode(groupAfter, nameBefore, nameAfter);
 					}
 				} else {
-					String oldGroup = ClickMenu.getGroup();
-					String newGroup = WordUtils.capitalize(StageManager.getGroupEditStage().show(oldGroup).toLowerCase());
-					if (!newGroup.isEmpty()) {
-						tagListMain.forEach(tag -> {
-							if (tag.getGroup().equals(oldGroup)) {
-								tag.setGroup(newGroup);
-								filterPane.updateGroupNode(oldGroup, newGroup);
-								selectPane.updateGroupNode(oldGroup, newGroup);
-							}
-						});
-					}
+					//  click on group node
+					String groupBefore = ClickMenu.getGroup();
+					String groupAfter = WordUtils.capitalize(StageManager.getGroupEditStage().show(groupBefore).toLowerCase());
+					
+					tagListMain.forEach(tag -> {
+						if (tag.getGroup().equals(groupBefore)) {
+							tag.setGroup(groupAfter);
+						}
+					});
+					
+					filterPane.updateGroupNode(groupBefore, groupAfter);
+					selectPane.updateGroupNode(groupBefore, groupAfter);
 				}
+				
 				ClickMenu.hideAll();
 				reload.doReload();
 			});

@@ -1,6 +1,5 @@
-package gui.stage.template;
+package gui.stage.template.tageditstage;
 
-import baseobject.tag.Tag;
 import gui.component.simple.CheckboxNode;
 import gui.component.simple.EditNode;
 import gui.component.simple.TextNode;
@@ -12,7 +11,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.util.Pair;
 import main.InstanceCollector;
 import tools.NodeUtil;
 import tools.enums.Direction;
@@ -27,7 +25,8 @@ public class TagEditStage extends StageBase implements InstanceCollector {
 	private final TextNode btnCancel;
 	private final CheckboxNode cbApply;
 	
-	private Tag result = null;
+	private String group;
+	private String name;
 	
 	public TagEditStage() {
 		lblGroup = new TextNode("Group", false, false, false, false);
@@ -45,11 +44,9 @@ public class TagEditStage extends StageBase implements InstanceCollector {
 		btnOK = new TextNode("OK", true, true, false, true);
 		btnOK.setOnMouseClicked(event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
-				String group = edtGroup.getText();
-				String name = edtName.getText();
-				if (!group.isEmpty() && !name.isEmpty()) {
-					result = new Tag(group, name);
-				}
+				//todo field validity checks
+				group = edtGroup.getText();
+				name = edtName.getText();
 				this.close();
 			}
 		});
@@ -73,11 +70,8 @@ public class TagEditStage extends StageBase implements InstanceCollector {
 		vBoxMain.setPadding(new Insets(5));
 		vBoxMain.setOnKeyPressed(event -> {
 			if (event.getCode() == KeyCode.ENTER) {
-				String group = edtGroup.getText();
-				String name = edtName.getText();
-				if (!group.isEmpty() && !name.isEmpty()) {
-					result = new Tag(group, name);
-				}
+				group = edtGroup.getText();
+				name = edtName.getText();
 				close();
 			} else if (event.getCode() == KeyCode.ESCAPE) {
 				close();
@@ -87,24 +81,26 @@ public class TagEditStage extends StageBase implements InstanceCollector {
 	}
 	
 	@Override
-	public Pair<Tag, Boolean> show(String... args) {
+	public TagEditStageResult show(String... args) {
 		edtGroup.requestFocus();
 		cbApply.setSelected(false);
 		
 		if (args.length == 2) {
 			setTitle("Edit Tag");
-			result = tagListMain.getTag(args[0], args[1]);
-			edtGroup.setText(result.getGroup());
-			edtName.setText(result.getName());
+			group = args[0];
+			name = args[1];
+			edtGroup.setText(group);
+			edtName.setText(name);
 		} else {
 			setTitle("Create a New Tag");
-			result = null;
-			edtGroup.setText("");
-			edtName.setText("");
+			group = "";
+			name = "";
+			edtGroup.setText(group);
+			edtName.setText(name);
 		}
 		
 		showAndWait();
 		
-		return new Pair<>(result, cbApply.isSelected());
+		return new TagEditStageResult(group, name, cbApply.isSelected());
 	}
 }

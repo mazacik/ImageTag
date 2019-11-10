@@ -2,6 +2,7 @@ package gui.stage;
 
 import gui.stage.main.MainStage;
 import gui.stage.template.*;
+import gui.stage.template.tageditstage.TagEditStage;
 
 public abstract class StageManager {
 	private static MainStage mainStage;

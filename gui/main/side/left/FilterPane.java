@@ -93,20 +93,26 @@ public class FilterPane extends SidePaneBase {
 	
 	public void changeNodeState(GroupNode groupNode, TextNode nameNode) {
 		if (nameNode == null) {
-			String groupName = groupNode.getGroup();
-			Color textColor;
-			if (filter.isWhitelisted(groupName)) {
-				filter.blacklist(groupName);
-				textColor = ColorUtil.getTextColorNeg();
-			} else if (filter.isBlacklisted(groupName)) {
-				filter.unlist(groupName);
-				textColor = ColorUtil.getTextColorDef();
+			if (groupNode.isExpanded()) {
+				groupNode.hideNameNodes();
 			} else {
-				filter.whitelist(groupName);
-				textColor = ColorUtil.getTextColorPos();
+				groupNode.showNameNodes();
 			}
-			groupNode.setTextFill(textColor);
-			groupNode.getNameNodes().forEach(node -> node.setTextFill(textColor));
+			
+			//			String groupName = groupNode.getGroup();
+			//			Color textColor;
+			//			if (filter.isWhitelisted(groupName)) {
+			//				filter.blacklist(groupName);
+			//				textColor = ColorUtil.getTextColorNeg();
+			//			} else if (filter.isBlacklisted(groupName)) {
+			//				filter.unlist(groupName);
+			//				textColor = ColorUtil.getTextColorDef();
+			//			} else {
+			//				filter.whitelist(groupName);
+			//				textColor = ColorUtil.getTextColorPos();
+			//			}
+			//			groupNode.setTextFill(textColor);
+			//			groupNode.getNameNodes().forEach(node -> node.setTextFill(textColor));
 		} else {
 			Tag tag = tagListMain.getTag(groupNode.getGroup(), nameNode.getText());
 			if (filter.isWhitelisted(tag)) {

@@ -3,8 +3,6 @@ package baseobject.tag;
 import baseobject.entity.Entity;
 import com.google.gson.reflect.TypeToken;
 import control.reload.ChangeIn;
-import gui.stage.StageManager;
-import javafx.util.Pair;
 import main.InstanceCollector;
 import tools.FileUtil;
 import tools.JsonUtil;
@@ -55,24 +53,5 @@ public class TagListMain extends TagList implements InstanceCollector {
 			return true;
 		}
 		return false;
-	}
-	public boolean edit(Tag tagOld) {
-		if (tagOld != null) {
-			Pair<Tag, Boolean> result = StageManager.getTagEditStage().show(tagOld.getGroup(), tagOld.getName());
-			Tag tagNew = result.getKey();
-			
-			if (tagNew != null) {
-				tagOld.set(tagNew.getGroup(), tagNew.getName());
-				super.sort();
-				if (result.getValue()) {
-					select.addTag(tagOld);
-				}
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			return false;
-		}
 	}
 }

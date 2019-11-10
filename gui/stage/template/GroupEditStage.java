@@ -23,6 +23,7 @@ public class GroupEditStage extends StageBase {
 	private String result = "";
 	
 	public GroupEditStage() {
+		//todo field validity checks
 		super("Edit Group");
 		
 		nodeGroup = new TextNode("Group", false, false, false, false);

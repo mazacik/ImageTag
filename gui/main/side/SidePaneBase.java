@@ -115,24 +115,24 @@ public abstract class SidePaneBase extends VBox implements Reloadable, SidePaneB
 		return true;
 	}
 	
-	public void updateGroupNode(String oldGroup, String newGroup) {
+	public void updateGroupNode(String groupBefore, String groupAfter) {
 		for (Node node : groupNodes.getChildren()) {
 			if (node instanceof GroupNode) {
 				GroupNode groupNode = (GroupNode) node;
-				if (groupNode.getGroup().equals(oldGroup)) {
-					groupNode.setGroup(newGroup);
+				if (groupNode.getGroup().equals(groupBefore)) {
+					groupNode.setGroup(groupAfter);
 					break;
 				}
 			}
 		}
 	}
 	
-	public void updateNameNode(String group, String oldName, String newName) {
+	public void updateNameNode(String group, String nameBefore, String nameAfter) {
 		for (Node node : groupNodes.getChildren()) {
 			if (node instanceof GroupNode) {
 				GroupNode groupNode = (GroupNode) node;
 				if (groupNode.getGroup().equals(group)) {
-					groupNode.updateNameNode(oldName, newName);
+					groupNode.updateNameNode(nameBefore, nameAfter);
 					break;
 				}
 			}
