@@ -170,6 +170,8 @@ public class GalleryTile extends Pane implements InstanceCollector {
 				expandedGroups.remove(expandedGroups.indexOf(entityGroupID));
 			}
 			
+			target.set(entity);
+			
 			reload.notify(ChangeIn.ENTITY_LIST_MAIN);
 		}
 	}
