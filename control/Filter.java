@@ -138,6 +138,7 @@ public class Filter extends EntityList implements InstanceCollector {
 	}
 	
 	public EntityList checkList(EntityList listBefore) {
+		//todo try to rename to retainAll()
 		EntityList listAfter = new EntityList();
 		listBefore.forEach(entity -> {
 			if (this.contains(entity)) {

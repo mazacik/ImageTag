@@ -62,7 +62,7 @@ public class ToolbarPane extends TitleBar implements Reloadable, InstanceCollect
 		
 		Entity currentTarget = target.get();
 		if (currentTarget.getEntityGroupID() != 0) {
-			CustomList<Entity> entityGroup = EntityGroupUtil.getEntityGroup(currentTarget);
+			CustomList<Entity> entityGroup = currentTarget.getEntityGroup();
 			String entityGroupIndex = (entityGroup.indexOf(currentTarget) + 1) + "/" + entityGroup.size();
 			nodeTarget.setText("[" + entityGroupIndex + "] " + currentTarget.getName());
 		} else {

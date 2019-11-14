@@ -8,6 +8,7 @@ import baseobject.entity.EntityListMain;
 import cache.CacheWriter;
 import gui.stage.StageManager;
 import gui.stage.template.YesNoCancelStage;
+import tools.EntityGroupUtil;
 import tools.FileUtil;
 
 import java.io.File;
@@ -65,6 +66,7 @@ public abstract class LifecycleManager implements InstanceCollector {
 		checkFileDifference(fileList);
 		
 		FileUtil.initEntityPaths(fileList);
+		EntityGroupUtil.initGroups();
 		entityListMain.sort();
 		tagListMain.initialize();
 		entityListMain.writeToDisk();

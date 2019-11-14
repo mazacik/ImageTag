@@ -2,6 +2,7 @@ package gui.main.center;
 
 import baseobject.CustomList;
 import baseobject.entity.Entity;
+import baseobject.entity.EntityList;
 import control.reload.ChangeIn;
 import gui.component.clickmenu.ClickMenu;
 import gui.component.simple.TextNode;
@@ -60,7 +61,7 @@ public class GalleryTile extends Pane implements InstanceCollector {
 	}
 	private Blend createEntityGroupEffect(Entity entity) {
 		String middle;
-		CustomList<Entity> entityGroup = EntityGroupUtil.getEntityGroup(entity);
+		EntityList entityGroup = entity.getEntityGroup();
 		if (galleryPane.getExpandedGroups().contains(entity.getEntityGroupID())) {
 			middle = (entityGroup.indexOf(entity) + 1) + "/" + entityGroup.size();
 		} else {

@@ -12,8 +12,10 @@ public class Entity implements InstanceCollector, Serializable {
 	private TagList tagList;
 	private long length;
 	private int entityGroupID;
+	
 	private transient String path;
 	private transient GalleryTile galleryTile;
+	private transient EntityList entityGroup;
 	
 	public Entity(File file) {
 		this.name = file.getName();
@@ -22,6 +24,7 @@ public class Entity implements InstanceCollector, Serializable {
 		this.entityGroupID = 0;
 		
 		this.path = file.getAbsolutePath();
+		this.entityGroup = null;
 	}
 	
 	public String getName() {
@@ -45,6 +48,9 @@ public class Entity implements InstanceCollector, Serializable {
 		}
 		return galleryTile;
 	}
+	public EntityList getEntityGroup() {
+		return entityGroup;
+	}
 	
 	public void setName(String name) {
 		this.name = name;
@@ -57,5 +63,8 @@ public class Entity implements InstanceCollector, Serializable {
 	}
 	public void setPath(String path) {
 		this.path = path;
+	}
+	public void setEntityGroup(EntityList entityGroup) {
+		this.entityGroup = entityGroup;
 	}
 }

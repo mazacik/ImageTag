@@ -56,8 +56,18 @@ public class YesNoCancelStage extends StageBase {
 	}
 	
 	public enum Result {
-		YES,
-		NO,
-		CANCEL
+		YES(true),
+		NO(false),
+		CANCEL(false);
+		
+		private boolean booleanValue;
+		
+		Result(boolean booleanValue) {
+			this.booleanValue = booleanValue;
+		}
+		
+		public boolean getBooleanValue() {
+			return booleanValue;
+		}
 	}
 }

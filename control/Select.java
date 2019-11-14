@@ -4,19 +4,13 @@ import baseobject.CustomList;
 import baseobject.entity.Entity;
 import baseobject.entity.EntityList;
 import baseobject.tag.Tag;
-import baseobject.tag.TagList;
 import control.reload.ChangeIn;
-import gui.stage.StageManager;
-import gui.stage.template.YesNoCancelStage;
 import main.InstanceCollector;
 import tools.EntityGroupUtil;
 
 import java.util.Collection;
-import java.util.Random;
 
 public class Select extends EntityList implements InstanceCollector {
-	private Entity shiftStart = null;
-	
 	public Select() {
 	
 	}
@@ -29,8 +23,9 @@ public class Select extends EntityList implements InstanceCollector {
 		if (entity == null) return false;
 		int entityGroupID = entity.getEntityGroupID();
 		if (entityGroupID != 0 && !galleryPane.getExpandedGroups().contains(entityGroupID)) {
-			if (super.addAll(EntityGroupUtil.getEntityGroup(entity))) {
-				reload.requestTileEffect(EntityGroupUtil.getEntityGroup(entity));
+			EntityList entityGroup = entity.getEntityGroup();
+			if (super.addAll(entityGroup)) {
+				reload.requestTileEffect(entityGroup);
 				reload.notify(ChangeIn.SELECT);
 				return true;
 			}
@@ -56,7 +51,7 @@ public class Select extends EntityList implements InstanceCollector {
 				super.add(entity);
 				reload.requestTileEffect(entity);
 			} else {
-				EntityList entityGroup = EntityGroupUtil.getEntityGroup(entity);
+				EntityList entityGroup = entity.getEntityGroup();
 				super.addAll(entityGroup);
 				reload.requestTileEffect(entityGroup);
 			}
@@ -73,8 +68,9 @@ public class Select extends EntityList implements InstanceCollector {
 			reload.requestTileEffect(entity);
 			super.remove(entity);
 		} else {
-			reload.requestTileEffect(EntityGroupUtil.getEntityGroup(entity));
-			this.removeAll(EntityGroupUtil.getEntityGroup(entity));
+			EntityList entityGroup = entity.getEntityGroup();
+			reload.requestTileEffect(entityGroup);
+			this.removeAll(entityGroup);
 		}
 		
 		if (size != this.size()) {
@@ -107,7 +103,7 @@ public class Select extends EntityList implements InstanceCollector {
 		target.set(entity);
 	}
 	public void setRandomFromEntityGroup() {
-		Entity entity = getRandom(EntityGroupUtil.getEntityGroup(target.get()));
+		Entity entity = getRandom(target.get().getEntityGroup());
 		this.set(entity);
 		target.set(entity);
 	}
@@ -124,59 +120,24 @@ public class Select extends EntityList implements InstanceCollector {
 		}
 	}
 	
-	public void entityGroupCreate() {
-		CustomList<Integer> entityGroupIDs = entityListMain.getentityGroupIDs();
-		int entityGroupID;
-		do entityGroupID = new Random().nextInt();
-		while (entityGroupIDs.contains(entityGroupID));
-		
-		YesNoCancelStage.Result result = StageManager.getYesNoCancelStage().show("Merge tags? (" + this.size() + " items selected)");
-		if (result == YesNoCancelStage.Result.YES) {
-			TagList tagList = new TagList();
-			for (Entity entity : this) {
-				tagList.addAll(entity.getTagList());
-			}
-			for (Entity entity : this) {
-				entity.setEntityGroupID(entityGroupID);
-				entity.setTagList(tagList);
-			}
-			
-			reload.notify(ChangeIn.TAGS_OF_SELECT);
-		} else if (result == YesNoCancelStage.Result.NO) {
-			for (Entity entity : this) {
-				entity.setEntityGroupID(entityGroupID);
-			}
-		} else return;  //YesNoCancelStage.Result.CANCEL
-		
-		target.set(this.getFirst());
-		reload.notify(ChangeIn.ENTITY_LIST_MAIN);
+	public void addTag(Tag tag) {
+		this.forEach(entity -> entity.getTagList().add(tag));
+		reload.notify(ChangeIn.TAGS_OF_SELECT);
 	}
-	public void entityGroupDiscard() {
-		Entity target = InstanceCollector.target.get();
-		if (target.getEntityGroupID() != 0) {
-			EntityList entityGroup = EntityGroupUtil.getEntityGroup(target);
-			for (Entity entity : entityGroup) {
-				entity.setEntityGroupID(0);
-			}
-		}
-		reload.notify(ChangeIn.ENTITY_LIST_MAIN, ChangeIn.TAGS_OF_SELECT);
-	}
-	public boolean isSelectGrouped() {
-		int entityGroupID = target.get().getEntityGroupID();
-		if (entityGroupID == 0) return false;
-		for (Entity entity : this) {
-			if (entity.getEntityGroupID() != entityGroupID) {
-				return false;
-			}
-		}
-		return true;
+	public void removeTag(Tag tag) {
+		this.forEach(entity -> entity.getTagList().remove(tag));
+		reload.notify(ChangeIn.TAGS_OF_SELECT);
 	}
 	
-	public void shiftSelectTo(Entity shiftCurrent) {
+	private Entity shiftStart = null;
+	public void shiftSelectFrom(Entity entityFrom) {
+		this.shiftStart = entityFrom;
+	}
+	public void shiftSelectTo(Entity entityTo) {
 		CustomList<Entity> entities = galleryPane.getEntitiesOfTiles();
 		
 		int indexFrom = entities.indexOf(shiftStart);
-		int indexTo = entities.indexOf(shiftCurrent);
+		int indexTo = entities.indexOf(entityTo);
 		
 		int indexLower;
 		int indexHigher;
@@ -190,18 +151,5 @@ public class Select extends EntityList implements InstanceCollector {
 		}
 		
 		this.addAll(entities.subList(indexLower, indexHigher + 1));
-	}
-	
-	public void addTag(Tag tag) {
-		this.forEach(entity -> entity.getTagList().add(tag));
-		reload.notify(ChangeIn.TAGS_OF_SELECT);
-	}
-	public void removeTag(Tag tag) {
-		this.forEach(entity -> entity.getTagList().remove(tag));
-		reload.notify(ChangeIn.TAGS_OF_SELECT);
-	}
-	
-	public void setShiftStart(Entity shiftStart) {
-		this.shiftStart = shiftStart;
 	}
 }

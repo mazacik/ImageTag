@@ -15,6 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.stage.WindowEvent;
 import main.InstanceCollector;
+import tools.EntityGroupUtil;
 import tools.NodeUtil;
 import tools.enums.Direction;
 
@@ -54,7 +55,7 @@ public class ClickMenu extends Popup implements InstanceCollector {
 		if (select.size() > 1) {
 			list.add(ButtonTemplates.SELECTION_DELETE.get());
 			list.add(new BoxSeparatorNode());
-			if (select.isSelectGrouped()) {
+			if (EntityGroupUtil.isGroup(select)) {
 				list.add(ButtonTemplates.ENTITY_GROUP_DISCARD.get());
 			} else {
 				list.add(ButtonTemplates.ENTITY_GROUP_CREATE.get());

@@ -20,7 +20,6 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import main.InstanceCollector;
-import tools.EntityGroupUtil;
 
 import java.lang.reflect.Method;
 import java.util.logging.Logger;
@@ -227,7 +226,7 @@ public class GalleryPane extends ScrollPane implements InstanceCollector, Reload
 		Entity currentTarget = target.get();
 		if (StageManager.getMainStage().isFullView() || currentTarget == null) return;
 		if (currentTarget.getEntityGroupID() != 0 && !expandedGroups.contains(currentTarget.getEntityGroupID())) {
-			currentTarget = EntityGroupUtil.getEntityGroup(currentTarget).getFirst();
+			currentTarget = currentTarget.getEntityGroup().getFirst();
 		}
 		int targetIndex = this.getEntitiesOfTiles().indexOf(currentTarget);
 		if (targetIndex < 0) return;
@@ -355,7 +354,7 @@ public class GalleryPane extends ScrollPane implements InstanceCollector, Reload
 				//	only one object in the entity group needs to be processed
 				entityGroupIDs.add(entityGroupID);
 				if (expandedGroups.contains(entityGroupID)) {
-					for (Entity entityGroup : EntityGroupUtil.getEntityGroup(entity)) {
+					for (Entity entityGroup : entity.getEntityGroup()) {
 						//	instead of letting the main loop take care of all objects in the entity group
 						//	the entity group gets processed in a separate loop to keep its objects together
 						//	however, each object needs to be checked for Filter validity an additional time
@@ -382,8 +381,9 @@ public class GalleryPane extends ScrollPane implements InstanceCollector, Reload
 			this.moveViewportToTarget();
 			if (currentTarget.getEntityGroupID() != 0) {
 				if (!expandedGroups.contains(currentTarget.getEntityGroupID())) {
-					if (select.containsAny(EntityGroupUtil.getEntityGroup(currentTarget))) {
-						select.addAll(EntityGroupUtil.getEntityGroup(currentTarget));
+					EntityList entityGroup = currentTarget.getEntityGroup();
+					if (select.containsAny(entityGroup)) {
+						select.addAll(entityGroup);
 					}
 				}
 			}

@@ -52,7 +52,7 @@ public class Target implements InstanceCollector {
 			if (galleryPane.getExpandedGroups().contains(entity.getEntityGroupID())) {
 				currentTargetIndex = entities.indexOf(entity);
 			} else {
-				Entity groupFirst = EntityGroupUtil.getEntityGroup(entity).getFirst();
+				Entity groupFirst = entity.getEntityGroup().getFirst();
 				if (entities.contains(groupFirst)) {
 					currentTargetIndex = entities.indexOf(groupFirst);
 				} else {
@@ -115,7 +115,7 @@ public class Target implements InstanceCollector {
 				storeEntity = entity;
 				storePos = visibleEntities.indexOf(entity);
 			} else {
-				storeEntity = EntityGroupUtil.getEntityGroup(entity).getFirst();
+				storeEntity = entity.getEntityGroup().getFirst();
 				storePos = visibleEntities.indexOf(storeEntity);
 			}
 		}

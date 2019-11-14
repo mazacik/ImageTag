@@ -64,23 +64,13 @@ public class EntityList extends CustomList<Entity> implements InstanceCollector 
 		}
 	}
 	
-	public CustomList<Integer> getentityGroupIDs() {
-		CustomList<Integer> entityGroupIDs = new CustomList<>();
-		for (Entity entity : this) {
-			if (entity.getEntityGroupID() != 0) {
-				entityGroupIDs.add(entity.getEntityGroupID());
-			}
-		}
-		return entityGroupIDs;
-	}
-	
 	public Entity getRandom(CustomList<Entity> customList) {
 		Entity entity = customList.getRandom();
 		if (entity != null) {
 			if (entity.getEntityGroupID() == 0) {
 				return entity;
 			} else {
-				return filter.checkList(EntityGroupUtil.getEntityGroup(entity)).getRandom();
+				return filter.checkList(entity.getEntityGroup()).getRandom();
 			}
 		} else return null;
 	}

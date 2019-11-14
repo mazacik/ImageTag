@@ -244,7 +244,7 @@ public enum ButtonTemplates implements InstanceCollector {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Create Entity Group", true, true, false, true);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				select.entityGroupCreate();
+				EntityGroupUtil.createGroup(select);
 				reload.doReload();
 				galleryPane.updateViewportTilesVisibility();
 				ClickMenu.hideAll();
@@ -256,7 +256,7 @@ public enum ButtonTemplates implements InstanceCollector {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Discard Entity Group", true, true, false, true);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				select.entityGroupDiscard();
+				EntityGroupUtil.discardGroup(select);
 				reload.doReload();
 				ClickMenu.hideAll();
 			});
@@ -328,7 +328,7 @@ public enum ButtonTemplates implements InstanceCollector {
 		EntityList entitiesToDelete = new EntityList();
 		select.forEach(entity -> {
 			if (entity.getEntityGroupID() != 0 && !galleryPane.getExpandedGroups().contains(entity.getEntityGroupID())) {
-				entitiesToDelete.addAll(EntityGroupUtil.getEntityGroup(entity), true);
+				entitiesToDelete.addAll(entity.getEntityGroup(), true);
 			} else {
 				entitiesToDelete.add(entity, true);
 			}
@@ -358,11 +358,13 @@ public enum ButtonTemplates implements InstanceCollector {
 				reload.doReload();
 			}
 		} else {
-			YesNoCancelStage.Result result = StageManager.getYesNoCancelStage().show("Delete " + EntityGroupUtil.getEntityGroup(currentTarget).size() + " file(s)?");
+			YesNoCancelStage.Result result = StageManager.getYesNoCancelStage().show("Delete " + currentTarget.getEntityGroup().size() + " file(s)?");
 			if (result == YesNoCancelStage.Result.YES) {
 				
 				target.storePosition();
-				EntityGroupUtil.getEntityGroup(currentTarget).forEach(this::deleteEntity);
+				for (Entity entity : currentTarget.getEntityGroup()) {
+					this.deleteEntity(entity);
+				}
 				target.restorePosition();
 				reload.doReload();
 			}

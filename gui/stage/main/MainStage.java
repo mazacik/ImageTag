@@ -526,7 +526,7 @@ public class MainStage extends StageBase implements InstanceCollector {
 					getScene().getRoot().requestFocus();
 				} else if (event.getCode() == KeyCode.SHIFT) {
 					shiftDown.setValue(true);
-					select.setShiftStart(target.get());
+					select.shiftSelectFrom(target.get());
 				}
 			} else {
 				switch (event.getCode()) {
@@ -552,7 +552,7 @@ public class MainStage extends StageBase implements InstanceCollector {
 						break;
 					case SHIFT:
 						shiftDown.setValue(true);
-						select.setShiftStart(target.get());
+						select.shiftSelectFrom(target.get());
 						break;
 					case W:
 					case A:
