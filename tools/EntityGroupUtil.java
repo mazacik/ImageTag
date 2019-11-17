@@ -6,6 +6,7 @@ import baseobject.entity.EntityList;
 import baseobject.tag.TagList;
 import control.reload.ChangeIn;
 import gui.stage.StageManager;
+import gui.stage.template.ButtonBooleanValue;
 import gui.stage.template.YesNoCancelStage;
 import main.InstanceCollector;
 
@@ -36,8 +37,8 @@ public abstract class EntityGroupUtil implements InstanceCollector {
 		}
 	}
 	public static void createGroup(EntityList entityList) {
-		YesNoCancelStage.Result result = StageManager.getYesNoCancelStage().show("Merge tags? (" + entityList.size() + " items selected)");
-		if (result != YesNoCancelStage.Result.CANCEL) {
+		ButtonBooleanValue result = StageManager.getYesNoCancelStage().show("Merge tags? (" + entityList.size() + " items selected)");
+		if (result != ButtonBooleanValue.CANCEL) {
 			int entityGroupID = EntityGroupUtil.getID();
 			
 			if (result.getBooleanValue()) {

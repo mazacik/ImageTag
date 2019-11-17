@@ -5,6 +5,7 @@ import baseobject.entity.Entity;
 import baseobject.entity.EntityList;
 import cache.CacheWriter;
 import gui.stage.StageManager;
+import gui.stage.template.ButtonBooleanValue;
 import gui.stage.template.YesNoCancelStage;
 import javafx.scene.Scene;
 import javafx.stage.DirectoryChooser;
@@ -171,8 +172,8 @@ public abstract class FileUtil implements InstanceCollector {
 			filter.getCurrentSessionEntities().addAll(newEntities);
 			
 			String msg = "Imported " + newEntities.size() + " files.\nWould you like to view the new files?";
-			YesNoCancelStage.Result result = StageManager.getYesNoCancelStage().show(msg);
-			if (result == YesNoCancelStage.Result.YES) {
+			ButtonBooleanValue result = StageManager.getYesNoCancelStage().show(msg);
+			if (result == ButtonBooleanValue.YES) {
 				filter.setAll(newEntities);
 				select.set(filter.getFirst());
 				target.set(filter.getFirst());

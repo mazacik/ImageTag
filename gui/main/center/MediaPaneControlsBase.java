@@ -3,7 +3,7 @@ package gui.main.center;
 import baseobject.entity.Entity;
 import cache.CacheReader;
 import gui.component.simple.TextNode;
-import gui.decorator.ColorUtil;
+import gui.decorator.ColorPreset;
 import gui.decorator.SizeUtil;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
@@ -59,7 +59,7 @@ public class MediaPaneControlsBase extends BorderPane implements InstanceCollect
 		lblTimeCurrent = new TextNode("00:00:00", true, true, false, true);
 		lblTimeTotal = new TextNode("23:59:59", true, true, false, true);
 		
-		this.setBackground(ColorUtil.getBackgroundDef());
+		this.setBackground(ColorPreset.getCurrent().getBackgroundPrimary());
 		
 		initEvents(videoPlayer);
 	}

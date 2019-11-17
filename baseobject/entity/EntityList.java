@@ -4,7 +4,6 @@ import baseobject.CustomList;
 import baseobject.tag.Tag;
 import baseobject.tag.TagList;
 import main.InstanceCollector;
-import tools.EntityGroupUtil;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -70,7 +69,7 @@ public class EntityList extends CustomList<Entity> implements InstanceCollector 
 			if (entity.getEntityGroupID() == 0) {
 				return entity;
 			} else {
-				return filter.checkList(entity.getEntityGroup()).getRandom();
+				return filter.applyTo(entity.getEntityGroup()).getRandom();
 			}
 		} else return null;
 	}

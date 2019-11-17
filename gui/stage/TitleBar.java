@@ -1,7 +1,7 @@
 package gui.stage;
 
 import gui.component.simple.TextNode;
-import gui.decorator.ColorUtil;
+import gui.decorator.ColorPreset;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseButton;
@@ -36,7 +36,7 @@ public class TitleBar extends BorderPane {
 		btnMinimize.setOnMouseClicked(event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
 				btnMinimize.setBackground(Background.EMPTY);
-				btnMinimize.setTextFill(ColorUtil.getTextColorDef());
+				btnMinimize.setTextFill(ColorPreset.getCurrent().getColorPrimary());
 				btnMinimize.applyCss();
 				((Stage) this.getScene().getWindow()).setIconified(true);
 			}

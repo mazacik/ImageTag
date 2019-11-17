@@ -2,7 +2,7 @@ package gui.stage.main;
 
 import baseobject.Project;
 import gui.component.simple.TextNode;
-import gui.decorator.ColorUtil;
+import gui.decorator.ColorPreset;
 import gui.stage.StageManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -38,7 +38,7 @@ public class RecentProjectNode extends BorderPane implements InstanceCollector {
 		vBox.setAlignment(Pos.CENTER_LEFT);
 		
 		this.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
-			this.setBackground(ColorUtil.getBackgroundAlt());
+			this.setBackground(ColorPreset.getCurrent().getBackgroundSecondary());
 			this.setCursor(Cursor.HAND);
 			nodeEdit.setVisible(true);
 			nodeRemove.setVisible(true);

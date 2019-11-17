@@ -2,7 +2,7 @@ package gui.main.side.left;
 
 import baseobject.tag.Tag;
 import gui.component.simple.TextNode;
-import gui.decorator.ColorUtil;
+import gui.decorator.ColorPreset;
 import gui.main.side.GroupNode;
 import gui.main.side.SidePaneBase;
 import gui.stage.StageManager;
@@ -62,9 +62,9 @@ public class FilterPane extends SidePaneBase {
 		
 		nodeTitle.setText("Filter: " + filter.size());
 		
-		Color textColorDefault = ColorUtil.getTextColorDef();
-		Color textColorPositive = ColorUtil.getTextColorPos();
-		Color textColorNegative = ColorUtil.getTextColorNeg();
+		Color textColorDefault = ColorPreset.getCurrent().getColorPrimary();
+		Color textColorPositive = ColorPreset.getCurrent().getColorPositive();
+		Color textColorNegative = ColorPreset.getCurrent().getColorNegative();
 		
 		for (Node node : groupNodes.getChildren()) {
 			if (node instanceof GroupNode) {
@@ -107,13 +107,13 @@ public class FilterPane extends SidePaneBase {
 			//			Color textColor;
 			//			if (filter.isWhitelisted(groupName)) {
 			//				filter.blacklist(groupName);
-			//				textColor = ColorUtil.getTextColorNeg();
+			//				textColor = ColorPreset.getCurrent().getColorNegative();
 			//			} else if (filter.isBlacklisted(groupName)) {
 			//				filter.unlist(groupName);
-			//				textColor = ColorUtil.getTextColorDef();
+			//				textColor = ColorPreset.getCurrent().getColorPrimary();
 			//			} else {
 			//				filter.whitelist(groupName);
-			//				textColor = ColorUtil.getTextColorPos();
+			//				textColor = ColorPreset.getCurrent().getColorPositive();
 			//			}
 			//			groupNode.setTextFill(textColor);
 			//			groupNode.getNameNodes().forEach(node -> node.setTextFill(textColor));
@@ -122,23 +122,23 @@ public class FilterPane extends SidePaneBase {
 			if (filter.isWhitelisted(tag)) {
 				filter.blacklist(tag);
 				if (filter.isBlacklisted(tag.getGroup())) {
-					groupNode.setTextFill(ColorUtil.getTextColorNeg());
+					groupNode.setTextFill(ColorPreset.getCurrent().getColorNegative());
 				} else if (!filter.isWhitelisted(tag.getGroup())) {
-					groupNode.setTextFill(ColorUtil.getTextColorDef());
+					groupNode.setTextFill(ColorPreset.getCurrent().getColorPrimary());
 				}
-				nameNode.setTextFill(ColorUtil.getTextColorNeg());
+				nameNode.setTextFill(ColorPreset.getCurrent().getColorNegative());
 			} else if (filter.isBlacklisted(tag)) {
 				filter.unlist(tag);
 				if (!filter.isWhitelisted(tag.getGroup()) && !filter.isBlacklisted(tag.getGroup())) {
-					groupNode.setTextFill(ColorUtil.getTextColorDef());
+					groupNode.setTextFill(ColorPreset.getCurrent().getColorPrimary());
 				}
-				nameNode.setTextFill(ColorUtil.getTextColorDef());
+				nameNode.setTextFill(ColorPreset.getCurrent().getColorPrimary());
 			} else {
 				filter.whitelist(tag);
 				if (filter.isWhitelisted(tag.getGroup())) {
-					groupNode.setTextFill(ColorUtil.getTextColorPos());
+					groupNode.setTextFill(ColorPreset.getCurrent().getColorPositive());
 				}
-				nameNode.setTextFill(ColorUtil.getTextColorPos());
+				nameNode.setTextFill(ColorPreset.getCurrent().getColorPositive());
 			}
 		}
 		filter.refresh();

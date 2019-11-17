@@ -3,7 +3,7 @@ package gui.component.clickmenu;
 import baseobject.CustomList;
 import gui.component.simple.BoxSeparatorNode;
 import gui.component.simple.template.ButtonTemplates;
-import gui.decorator.ColorUtil;
+import gui.decorator.ColorPreset;
 import gui.stage.StageManager;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
@@ -146,7 +146,7 @@ public class ClickMenu extends Popup implements InstanceCollector {
 		vBox = new VBox();
 		vBox.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
 		vBox.getChildren().setAll(children);
-		vBox.setBackground(ColorUtil.getBackgroundDef());
+		vBox.setBackground(ColorPreset.getCurrent().getBackgroundPrimary());
 		
 		if (root != null) {
 			root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {

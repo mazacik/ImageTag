@@ -1,10 +1,12 @@
 package gui.stage.base;
 
-import gui.decorator.ColorUtil;
+import gui.component.simple.TextNode;
+import gui.decorator.ColorPreset;
 import gui.stage.TitleBar;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.Border;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -12,22 +14,26 @@ import javafx.stage.StageStyle;
 import tools.NodeUtil;
 
 public abstract class StageBase extends Stage implements StageBaseInterface {
-	private TitleBar titleBar;
 	private VBox vBoxMain;
+	
+	private TitleBar titleBar;
+	private TextNode errorNode;
+	private HBox buttonBox;
 	
 	public StageBase() {
 		this("");
 	}
 	public StageBase(String title) {
-		this(new TitleBar(title));
-	}
-	public StageBase(TitleBar titleBar) {
-		this.titleBar = titleBar;
-		
 		vBoxMain = new VBox();
 		vBoxMain.setAlignment(Pos.TOP_CENTER);
-		vBoxMain.setBackground(ColorUtil.getBackgroundDef());
+		vBoxMain.setBackground(ColorPreset.getCurrent().getBackgroundPrimary());
 		vBoxMain.setBorder(NodeUtil.getBorder(1));
+		
+		titleBar = new TitleBar(title);
+		errorNode = new TextNode("", false, false, false, false);
+		errorNode.setTextFill(ColorPreset.getCurrent().getColorNegative());
+		buttonBox = new HBox();
+		buttonBox.setAlignment(Pos.CENTER);
 		
 		this.setScene(new Scene(vBoxMain));
 		this.initStyle(StageStyle.UNDECORATED);
@@ -40,12 +46,22 @@ public abstract class StageBase extends Stage implements StageBaseInterface {
 		vBoxMain.getChildren().clear();
 		vBoxMain.getChildren().add(titleBar);
 		vBoxMain.getChildren().add(root);
-	}
-	public void setBorder(Border border) {
-		vBoxMain.setBorder(border);
+		vBoxMain.getChildren().add(errorNode);
+		vBoxMain.getChildren().add(buttonBox);
 	}
 	public void setTitleBar(TitleBar titleBar) {
 		this.titleBar = titleBar;
+	}
+	public void setErrorMessage(String errorMessage) {
+		errorNode.setText(errorMessage);
+	}
+	public void setButtons(TextNode... buttons) {
+		buttonBox.getChildren().clear();
+		buttonBox.getChildren().addAll(buttons);
+	}
+	
+	public void setBorder(Border border) {
+		vBoxMain.setBorder(border);
 	}
 	
 	@Override

@@ -8,6 +8,7 @@ import control.reload.ChangeIn;
 import gui.component.clickmenu.ClickMenu;
 import gui.component.simple.TextNode;
 import gui.stage.StageManager;
+import gui.stage.template.ButtonBooleanValue;
 import gui.stage.template.YesNoCancelStage;
 import gui.stage.template.tageditstage.TagEditStageResult;
 import javafx.scene.input.MouseButton;
@@ -334,8 +335,8 @@ public enum ButtonTemplates implements InstanceCollector {
 			}
 		});
 		
-		YesNoCancelStage.Result result = StageManager.getYesNoCancelStage().show("Delete " + entitiesToDelete.size() + " file(s)?");
-		if (result == YesNoCancelStage.Result.YES) {
+		ButtonBooleanValue result = StageManager.getYesNoCancelStage().show("Delete " + entitiesToDelete.size() + " file(s)?");
+		if (result == ButtonBooleanValue.YES) {
 			target.storePosition();
 			entitiesToDelete.forEach(this::deleteEntity);
 			target.restorePosition();
@@ -348,8 +349,8 @@ public enum ButtonTemplates implements InstanceCollector {
 		Entity currentTarget = target.get();
 		if (currentTarget.getEntityGroupID() == 0 || galleryPane.getExpandedGroups().contains(currentTarget.getEntityGroupID())) {
 			String sourcePath = target.get().getPath();
-			YesNoCancelStage.Result result = StageManager.getYesNoCancelStage().show("Delete file: " + sourcePath + "?");
-			if (result == YesNoCancelStage.Result.YES) {
+			ButtonBooleanValue result = StageManager.getYesNoCancelStage().show("Delete file: " + sourcePath + "?");
+			if (result == ButtonBooleanValue.YES) {
 				target.storePosition();
 				this.deleteEntity(currentTarget);
 				target.restorePosition();
@@ -358,8 +359,8 @@ public enum ButtonTemplates implements InstanceCollector {
 				reload.doReload();
 			}
 		} else {
-			YesNoCancelStage.Result result = StageManager.getYesNoCancelStage().show("Delete " + currentTarget.getEntityGroup().size() + " file(s)?");
-			if (result == YesNoCancelStage.Result.YES) {
+			ButtonBooleanValue result = StageManager.getYesNoCancelStage().show("Delete " + currentTarget.getEntityGroup().size() + " file(s)?");
+			if (result == ButtonBooleanValue.YES) {
 				
 				target.storePosition();
 				for (Entity entity : currentTarget.getEntityGroup()) {

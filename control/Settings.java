@@ -10,8 +10,8 @@ import java.lang.reflect.Type;
 public class Settings implements Serializable {
 	private transient static final Type typeToken = new TypeToken<Settings>() {}.getType();
 	
-	private Integer galleryTileSize;
-	private Integer guiColorStyle;
+	private Integer tileSize;
+	private Integer colorPreset;
 	private Integer fontSize;
 	
 	private CustomList<String> recentProjects;
@@ -23,13 +23,13 @@ public class Settings implements Serializable {
 	public void readFromDisk() {
 		try {
 			Settings settings = (Settings) JsonUtil.read(typeToken, "settings.json");
-			this.galleryTileSize = settings.galleryTileSize;
-			this.guiColorStyle = settings.guiColorStyle;
+			this.tileSize = settings.tileSize;
+			this.colorPreset = settings.colorPreset;
 			this.fontSize = settings.fontSize;
 			this.recentProjects = settings.recentProjects;
 		} catch (Exception e) {
-			this.galleryTileSize = 200;
-			this.guiColorStyle = 0;
+			this.tileSize = 200;
+			this.colorPreset = 0;
 			this.fontSize = 16;
 			this.recentProjects = new CustomList<>();
 		}
@@ -38,11 +38,11 @@ public class Settings implements Serializable {
 		JsonUtil.write(this, typeToken, "settings.json");
 	}
 	
-	public int getGalleryTileSize() {
-		return galleryTileSize;
+	public int getTileSize() {
+		return tileSize;
 	}
-	public int getGuiColorStyle() {
-		return guiColorStyle;
+	public int getColorPreset() {
+		return colorPreset;
 	}
 	public int getFontSize() {
 		return fontSize;
@@ -51,11 +51,11 @@ public class Settings implements Serializable {
 		return recentProjects;
 	}
 	
-	public void setGalleryTileSize(int galleryTileSize) {
-		this.galleryTileSize = galleryTileSize;
+	public void setTileSize(int tileSize) {
+		this.tileSize = tileSize;
 	}
-	public void setGuiColorStyle(int guiColorStyle) {
-		this.guiColorStyle = guiColorStyle;
+	public void setColorPreset(int colorPreset) {
+		this.colorPreset = colorPreset;
 	}
 	public void setFontSize(int fontSize) {
 		this.fontSize = fontSize;

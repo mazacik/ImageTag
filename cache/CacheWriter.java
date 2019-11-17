@@ -38,7 +38,7 @@ public abstract class CacheWriter implements InstanceCollector {
 	}
 	
 	private static Image createFromImage(Entity entity) {
-		int thumbSize = settings.getGalleryTileSize();
+		int thumbSize = settings.getTileSize();
 		Image image = new Image("file:" + entity.getPath(), thumbSize, thumbSize, false, false);
 		BufferedImage buffer = SwingFXUtils.fromFXImage(image, null);
 		
@@ -58,7 +58,7 @@ public abstract class CacheWriter implements InstanceCollector {
 	private static Image createFromGif(Entity entity) {
 		GifDecoder gifDecoder = new GifDecoder();
 		gifDecoder.read(entity.getPath());
-		int thumbSize = settings.getGalleryTileSize();
+		int thumbSize = settings.getTileSize();
 		
 		java.awt.Image frame = gifDecoder.getFrame(gifDecoder.getFrameCount() / 2).getScaledInstance(thumbSize, thumbSize, java.awt.Image.SCALE_FAST);
 		BufferedImage buffer = new BufferedImage(thumbSize, thumbSize, BufferedImage.TYPE_INT_RGB);
@@ -115,7 +115,7 @@ public abstract class CacheWriter implements InstanceCollector {
 					mediaPlayer.controls().setPosition(mediaPosition);
 					inPositionLatch.await(); // might wait forever if error
 					
-					int thumbSize = settings.getGalleryTileSize();
+					int thumbSize = settings.getTileSize();
 					mediaPlayer.snapshots().save(cacheFile, thumbSize, thumbSize);
 					snapshotTakenLatch.await(); // might wait forever if error
 				} catch (InterruptedException e) {

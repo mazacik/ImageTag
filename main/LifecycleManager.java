@@ -7,6 +7,7 @@ import baseobject.entity.EntityList;
 import baseobject.entity.EntityListMain;
 import cache.CacheWriter;
 import gui.stage.StageManager;
+import gui.stage.template.ButtonBooleanValue;
 import gui.stage.template.YesNoCancelStage;
 import tools.EntityGroupUtil;
 import tools.FileUtil;
@@ -119,7 +120,7 @@ public abstract class LifecycleManager implements InstanceCollector {
 			
 			for (Entity orphanEntity : new CustomList<>(orphanEntities)) {
 				if (newFile.length() == orphanEntity.getLength()) {
-					if (StageManager.getCacheCompareStage().show(orphanEntity.getName(), newFileEntity.getName(), FileUtil.getCacheFilePath(orphanEntity), FileUtil.getCacheFilePath(newFileEntity)).equals(YesNoCancelStage.Result.YES)) {
+					if (StageManager.getCacheCompareStage().show(orphanEntity.getName(), newFileEntity.getName(), FileUtil.getCacheFilePath(orphanEntity), FileUtil.getCacheFilePath(newFileEntity)).equals(ButtonBooleanValue.YES)) {
 						newFiles.remove(newFile);
 						orphanEntities.remove(orphanEntity);
 						

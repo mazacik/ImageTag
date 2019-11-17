@@ -7,7 +7,7 @@ import gui.component.clickmenu.ClickMenu;
 import gui.component.simple.EditNode;
 import gui.component.simple.TextNode;
 import gui.component.simple.template.ButtonTemplates;
-import gui.decorator.ColorUtil;
+import gui.decorator.ColorPreset;
 import gui.main.side.GroupNode;
 import gui.main.side.SidePaneBase;
 import javafx.beans.value.ChangeListener;
@@ -59,9 +59,9 @@ public class SelectPane extends SidePaneBase {
 		
 		refreshTitle();
 		
-		Color textColorDefault = ColorUtil.getTextColorDef();
-		Color textColorPositive = ColorUtil.getTextColorPos();
-		Color textColorShare = ColorUtil.getTextColorShr();
+		Color textColorDefault = ColorPreset.getCurrent().getColorPrimary();
+		Color textColorPositive = ColorPreset.getCurrent().getColorPositive();
+		Color textColorShare = ColorPreset.getCurrent().getColorShare();
 		
 		CustomList<String> groupsInter;
 		CustomList<String> groupsShare;
@@ -138,11 +138,11 @@ public class SelectPane extends SidePaneBase {
 			}
 		} else {
 			Tag tag = tagListMain.getTag(groupNode.getGroup(), nameNode.getText());
-			if (nameNode.getTextFill().equals(ColorUtil.getTextColorPos()) || nameNode.getTextFill().equals(ColorUtil.getTextColorShr())) {
-				nameNode.setTextFill(ColorUtil.getTextColorDef());
+			if (nameNode.getTextFill().equals(ColorPreset.getCurrent().getColorPositive()) || nameNode.getTextFill().equals(ColorPreset.getCurrent().getColorShare())) {
+				nameNode.setTextFill(ColorPreset.getCurrent().getColorPrimary());
 				select.removeTag(tag);
 			} else {
-				nameNode.setTextFill(ColorUtil.getTextColorPos());
+				nameNode.setTextFill(ColorPreset.getCurrent().getColorPositive());
 				select.addTag(tag);
 			}
 			

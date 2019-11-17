@@ -24,7 +24,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import main.InstanceCollector;
-import tools.EntityGroupUtil;
 
 public class GalleryTile extends Pane implements InstanceCollector {
 	private final Entity entity;
@@ -71,7 +70,7 @@ public class GalleryTile extends Pane implements InstanceCollector {
 		Image imageText = textToImage("[" + middle + "]");
 		groupEffectWidth = (int) imageText.getWidth();
 		groupEffectHeight = (int) imageText.getHeight() + 10; //helper insets
-		int tileSize = settings.getGalleryTileSize();
+		int tileSize = settings.getTileSize();
 		return new Blend(BlendMode.SRC_OVER, null, new ImageInput(imageText, tileSize - imageText.getWidth() - 5, 0));
 	}
 	public Image textToImage(String text) {
@@ -153,7 +152,7 @@ public class GalleryTile extends Pane implements InstanceCollector {
 		reload.doReload();
 	}
 	private boolean isClickOnGroupEffect(MouseEvent event) {
-		int tileSize = settings.getGalleryTileSize();
+		int tileSize = settings.getTileSize();
 		boolean hitWidth = event.getX() >= tileSize - groupEffectWidth - 5;
 		boolean hitHeight = event.getY() <= groupEffectHeight;
 		return hitWidth && hitHeight;
