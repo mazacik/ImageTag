@@ -1,6 +1,6 @@
 package gui.component.simple;
 
-import gui.decorator.ColorPreset;
+import gui.decorator.ColorUtil;
 import gui.decorator.Decorator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
@@ -11,9 +11,9 @@ public class EditNode extends TextField {
 		this.setFont(Decorator.getFont());
 		this.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
 		this.setPromptText(promptText);
-		//this.skinProperty().addListener((observable, oldValue, newValue) -> setStyle("-fx-text-fill: " + Decorator.getColorAsStringForCss(ColorPreset.getCurrent().getColorPrimary()) + "; -fx-prompt-text-fill: gray;"));
+		//this.skinProperty().addListener((observable, oldValue, newValue) -> setStyle("-fx-text-fill: " + Decorator.getColorAsStringForCss(ColorUtil.getColorPrimary()) + "; -fx-prompt-text-fill: gray;"));
 		this.setBackground(Background.EMPTY);
-		this.setStyle("-fx-text-fill: " + Decorator.getColorAsStringForCss(ColorPreset.getCurrent().getColorPrimary()) + ";");
+		this.setStyle("-fx-text-fill: " + Decorator.getColorAsStringForCss(ColorUtil.getColorPrimary()) + ";");
 		
 		switch (type) {
 			case ANY_CHARACTERS:

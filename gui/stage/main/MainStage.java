@@ -6,7 +6,7 @@ import gui.component.simple.BoxSeparatorNode;
 import gui.component.simple.EditNode;
 import gui.component.simple.TextNode;
 import gui.component.switchnode.SwitchNodeColorMode;
-import gui.decorator.ColorPreset;
+import gui.decorator.ColorUtil;
 import gui.decorator.Decorator;
 import gui.decorator.SizeUtil;
 import gui.main.center.MediaPaneControls;
@@ -156,7 +156,7 @@ public class MainStage extends StageBase implements InstanceCollector {
 		hBoxWorkingDirectory.setAlignment(Pos.CENTER);
 		
 		errorNodeCPS = new TextNode("");
-		errorNodeCPS.setTextFill(ColorPreset.getCurrent().getColorNegative());
+		errorNodeCPS.setTextFill(ColorUtil.getColorNegative());
 		
 		TextNode btnCreateProject = new TextNode("Create Project", true, true, true, true);
 		btnCreateProject.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
@@ -234,7 +234,7 @@ public class MainStage extends StageBase implements InstanceCollector {
 		hBoxWorkingDirectory.setAlignment(Pos.CENTER);
 		
 		errorNodeEPS = new TextNode("");
-		errorNodeEPS.setTextFill(ColorPreset.getCurrent().getColorNegative());
+		errorNodeEPS.setTextFill(ColorUtil.getColorNegative());
 		
 		TextNode btnApplyChanges = new TextNode("Apply Changes", true, true, true, true);
 		btnApplyChanges.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {

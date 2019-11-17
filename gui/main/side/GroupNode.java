@@ -3,7 +3,7 @@ package gui.main.side;
 import baseobject.CustomList;
 import gui.component.clickmenu.ClickMenu;
 import gui.component.simple.TextNode;
-import gui.decorator.ColorPreset;
+import gui.decorator.ColorUtil;
 import gui.stage.StageManager;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Bounds;
@@ -54,28 +54,28 @@ public class GroupNode extends VBox implements InstanceCollector {
 	private void initEvents() {
 		ChangeListener<Boolean> shiftChangeListener = (observable, oldValue, newValue) -> {
 			if (newValue) {
-				ownerPane.getGroupNodes().forEach(groupNode -> groupNode.setArrowFill(ColorPreset.getCurrent().getColorSecondary()));
+				ownerPane.getGroupNodes().forEach(groupNode -> groupNode.setArrowFill(ColorUtil.getColorSecondary()));
 			} else {
-				ownerPane.getGroupNodes().forEach(groupNode -> groupNode.setArrowFill(ColorPreset.getCurrent().getColorPrimary()));
+				ownerPane.getGroupNodes().forEach(groupNode -> groupNode.setArrowFill(ColorUtil.getColorPrimary()));
 			}
 		};
 		nodeExpCol.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
 			StageManager.getMainStage().shiftDownProperty().addListener(shiftChangeListener);
 			if (event.isShiftDown()) {
-				ownerPane.getGroupNodes().forEach(groupNode -> groupNode.setArrowFill(ColorPreset.getCurrent().getColorSecondary()));
+				ownerPane.getGroupNodes().forEach(groupNode -> groupNode.setArrowFill(ColorUtil.getColorSecondary()));
 			} else {
-				nodeExpCol.setTextFill(ColorPreset.getCurrent().getColorSecondary());
+				nodeExpCol.setTextFill(ColorUtil.getColorSecondary());
 			}
 		});
 		nodeExpCol.addEventFilter(MouseEvent.MOUSE_EXITED, event -> {
 			StageManager.getMainStage().shiftDownProperty().removeListener(shiftChangeListener);
 			if (event.isShiftDown()) {
-				ownerPane.getGroupNodes().forEach(groupNode -> groupNode.setArrowFill(ColorPreset.getCurrent().getColorPrimary()));
+				ownerPane.getGroupNodes().forEach(groupNode -> groupNode.setArrowFill(ColorUtil.getColorPrimary()));
 			} else {
-				nodeExpCol.setTextFill(ColorPreset.getCurrent().getColorPrimary());
+				nodeExpCol.setTextFill(ColorUtil.getColorPrimary());
 			}
 		});
-		hBoxGroup.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> this.setBackground(ColorPreset.getCurrent().getBackgroundSecondary()));
+		hBoxGroup.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> this.setBackground(ColorUtil.getBackgroundSecondary()));
 		hBoxGroup.addEventFilter(MouseEvent.MOUSE_EXITED, event -> this.setBackground(Background.EMPTY));
 		hBoxGroup.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 			Bounds boundsExpCol = nodeExpCol.getBoundsInLocal();

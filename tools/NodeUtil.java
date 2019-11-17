@@ -1,7 +1,7 @@
 package tools;
 
 import baseobject.CustomList;
-import gui.decorator.ColorPreset;
+import gui.decorator.ColorUtil;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.layout.*;
@@ -29,7 +29,7 @@ public abstract class NodeUtil {
 	}
 	
 	public static Border getBorder(int top, int right, int bottom, int left) {
-		return new Border(new BorderStroke(ColorPreset.getCurrent().getColorBorder(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(top, right, bottom, left)));
+		return new Border(new BorderStroke(ColorUtil.getColorBorder(), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(top, right, bottom, left)));
 	}
 	public static Border getBorder(int border) {
 		return getBorder(border, border, border, border);

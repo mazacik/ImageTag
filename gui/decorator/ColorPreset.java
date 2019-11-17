@@ -4,7 +4,6 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import main.InstanceCollector;
 
 public enum ColorPreset {
 	PRESET_BRIGHT(Color.BLACK, Color.DARKORANGE, Color.GREEN, Color.RED, Color.CORNFLOWERBLUE, Color.GRAY, getBackground("#DDDEEE"), getBackground("#CCCDDD")),
@@ -33,15 +32,6 @@ public enum ColorPreset {
 		
 		this.backgroundPrimary = backgroundPrimary;
 		this.backgroundSecondary = backgroundSecondary;
-	}
-	
-	private static ColorPreset current = ColorPreset.values()[InstanceCollector.settings.getColorPreset()];
-	public static ColorPreset getCurrent() {
-		return current;
-	}
-	public static void setCurrent(ColorPreset current) {
-		ColorPreset.current = current;
-		InstanceCollector.settings.setColorPreset(current.ordinal());
 	}
 	
 	private static Background getBackground(String hex) {

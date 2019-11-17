@@ -1,6 +1,6 @@
 package gui.component.simple;
 
-import gui.decorator.ColorPreset;
+import gui.decorator.ColorUtil;
 import gui.decorator.Decorator;
 import javafx.event.Event;
 import javafx.event.EventType;
@@ -29,7 +29,7 @@ public class TextNode extends Label {
 		this.setFont(Decorator.getFont());
 		this.setBackground(Background.EMPTY);
 		this.setTextAlignment(TextAlignment.CENTER);
-		this.setTextFill(ColorPreset.getCurrent().getColorPrimary());
+		this.setTextFill(ColorUtil.getColorPrimary());
 		this.minWidthProperty().bind(this.heightProperty());
 		
 		if (defaultPadding) {
@@ -38,12 +38,12 @@ public class TextNode extends Label {
 		
 		this.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
 			if (hoverBackground && hoverText) {
-				this.setBackground(ColorPreset.getCurrent().getBackgroundSecondary());
-				this.setTextFill(ColorPreset.getCurrent().getColorSecondary());
+				this.setBackground(ColorUtil.getBackgroundSecondary());
+				this.setTextFill(ColorUtil.getColorSecondary());
 			} else if (hoverBackground) {
-				this.setBackground(ColorPreset.getCurrent().getBackgroundSecondary());
+				this.setBackground(ColorUtil.getBackgroundSecondary());
 			} else if (hoverText) {
-				this.setTextFill(ColorPreset.getCurrent().getColorSecondary());
+				this.setTextFill(ColorUtil.getColorSecondary());
 			}
 			
 			if (hoverCursor) {
@@ -55,7 +55,7 @@ public class TextNode extends Label {
 				this.setBackground(Background.EMPTY);
 			}
 			if (hoverText) {
-				this.setTextFill(ColorPreset.getCurrent().getColorPrimary());
+				this.setTextFill(ColorUtil.getColorPrimary());
 			}
 			if (hoverCursor) {
 				this.setCursor(Cursor.DEFAULT);

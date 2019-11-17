@@ -1,7 +1,7 @@
 package gui.component.tooltip;
 
 import gui.component.simple.TextNode;
-import gui.decorator.ColorPreset;
+import gui.decorator.ColorUtil;
 import gui.stage.StageManager;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -21,7 +21,7 @@ public class Tooltip extends Popup {
 	public Tooltip(String text, long delay) {
 		textNode = new TextNode(text, false, false, false, true);
 		textNode.setBorder(NodeUtil.getBorder(1));
-		textNode.setBackground(ColorPreset.getCurrent().getBackgroundPrimary());
+		textNode.setBackground(ColorUtil.getBackgroundPrimary());
 		this.getContent().add(textNode);
 		
 		timeline = new Timeline();

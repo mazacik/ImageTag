@@ -1,7 +1,7 @@
 package gui.stage.base;
 
 import gui.component.simple.TextNode;
-import gui.decorator.ColorPreset;
+import gui.decorator.ColorUtil;
 import gui.stage.TitleBar;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -26,12 +26,12 @@ public abstract class StageBase extends Stage implements StageBaseInterface {
 	public StageBase(String title) {
 		vBoxMain = new VBox();
 		vBoxMain.setAlignment(Pos.TOP_CENTER);
-		vBoxMain.setBackground(ColorPreset.getCurrent().getBackgroundPrimary());
+		vBoxMain.setBackground(ColorUtil.getBackgroundPrimary());
 		vBoxMain.setBorder(NodeUtil.getBorder(1));
 		
 		titleBar = new TitleBar(title);
 		errorNode = new TextNode("", false, false, false, false);
-		errorNode.setTextFill(ColorPreset.getCurrent().getColorNegative());
+		errorNode.setTextFill(ColorUtil.getColorNegative());
 		buttonBox = new HBox();
 		buttonBox.setAlignment(Pos.CENTER);
 		
