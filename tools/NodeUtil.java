@@ -1,30 +1,30 @@
 package tools;
 
-import baseobject.CustomList;
 import gui.decorator.ColorUtil;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
+import javafx.beans.value.ChangeListener;
 import javafx.scene.layout.*;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 public abstract class NodeUtil {
 	public static void equalizeWidth(Region... regions) {
-		equalizeWidth(new CustomList<>(Arrays.asList(regions)));
+		equalizeWidth(Arrays.asList(regions));
 	}
-	public static void equalizeWidth(ObservableList<Node> nodes) {
-		CustomList<Region> regions = new CustomList<>();
-		for (Node node : nodes) regions.add((Region) node);
-		equalizeWidth(regions);
-	}
-	public static void equalizeWidth(CustomList<Region> regions) {
-		double width = 0;
-		for (Region region : regions) {
-			if (width < region.getWidth()) width = region.getWidth();
-			if (width < region.getPrefWidth()) width = region.getPrefWidth();
-		}
-		for (Region region : regions) {
-			region.setPrefWidth(width);
+	public static <T> void equalizeWidth(Collection<? extends T> regions) {
+		final int[] width = {0};
+		
+		ChangeListener<Number> listener = (observable, oldValue, newValue) -> {
+			if (newValue.intValue() > width[0]) {
+				width[0] = newValue.intValue();
+				for (T region : regions) {
+					((Region) region).setPrefWidth(width[0]);
+				}
+			}
+		};
+		
+		for (T region : regions) {
+			((Region) region).widthProperty().addListener(listener);
 		}
 	}
 	
