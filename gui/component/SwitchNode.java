@@ -1,4 +1,4 @@
-package gui.component.switchnode;
+package gui.component;
 
 import gui.component.simple.TextNode;
 import javafx.geometry.Pos;

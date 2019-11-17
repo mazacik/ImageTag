@@ -78,8 +78,8 @@ public class ClickMenu extends Popup implements InstanceCollector {
 	private static ClickMenu clickMenuTags = new ClickMenu(ButtonTemplates.TAG_EDIT.get(), ButtonTemplates.TAG_REMOVE.get());
 	private static ClickMenu clickMenuSelect = new ClickMenu(ButtonTemplates.SELECTION_SET_ALL.get(), ButtonTemplates.SELECTION_SET_NONE.get());
 	
-	public static void install(Region root, Direction direction, Region... labels) {
-		new ClickMenu(root, direction, labels);
+	public static void install(Region root, Direction direction, Region... children) {
+		new ClickMenu(root, direction, children);
 	}
 	public static void install(Region root, Direction direction, MouseButton mouseButton, StaticInstance staticInstance) {
 		switch (staticInstance) {
@@ -131,6 +131,7 @@ public class ClickMenu extends Popup implements InstanceCollector {
 				break;
 		}
 	}
+	
 	public static void hideAll() {
 		instanceList.forEach(leftClickMenu -> {
 			if (leftClickMenu.isShowing()) {
@@ -178,7 +179,7 @@ public class ClickMenu extends Popup implements InstanceCollector {
 			});
 		}
 		
-		this.addEventFilter(WindowEvent.WINDOW_SHOWN, event -> NodeUtil.equalizeWidth(vBox.getChildren()));
+		NodeUtil.equalizeWidth(vBox.getChildren());
 		this.getContent().setAll(vBox);
 		this.setAutoHide(true);
 		this.setHideOnEscape(true);

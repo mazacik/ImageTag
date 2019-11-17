@@ -4,7 +4,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
 import main.InstanceCollector;
 
-public class ColorUtil implements InstanceCollector {
+public abstract class ColorUtil implements InstanceCollector {
 	private static ColorPreset colorPreset = ColorPreset.values()[settings.getColorPreset()];
 	
 	public static ColorPreset getColorPreset() {
