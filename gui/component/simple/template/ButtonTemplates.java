@@ -9,7 +9,6 @@ import gui.component.clickmenu.ClickMenu;
 import gui.component.simple.TextNode;
 import gui.stage.StageManager;
 import gui.stage.template.ButtonBooleanValue;
-import gui.stage.template.YesNoCancelStage;
 import gui.stage.template.tageditstage.TagEditStageResult;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -30,6 +29,7 @@ public enum ButtonTemplates implements InstanceCollector {
 	ENTITY_OPEN {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Open", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				String fullPath = target.get().getPath();
 				try {
@@ -46,6 +46,7 @@ public enum ButtonTemplates implements InstanceCollector {
 	ENTITY_EDIT {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Edit", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				String fullPath = target.get().getPath();
 				try {
@@ -62,6 +63,7 @@ public enum ButtonTemplates implements InstanceCollector {
 	ENTITY_COPY_NAME {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Copy File Name", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				SystemUtil.setClipboardContent(target.get().getName());
 				ClickMenu.hideAll();
@@ -72,6 +74,7 @@ public enum ButtonTemplates implements InstanceCollector {
 	ENTITY_COPY_PATH {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Copy File Path", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				SystemUtil.setClipboardContent(target.get().getPath());
 				ClickMenu.hideAll();
@@ -82,6 +85,7 @@ public enum ButtonTemplates implements InstanceCollector {
 	ENTITY_DELETE {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Delete File", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				super.deleteCurrentTarget();
 				ClickMenu.hideAll();
@@ -92,8 +96,10 @@ public enum ButtonTemplates implements InstanceCollector {
 	ENTITY_REVERSE_IMAGE_SEARCH {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Reverse Image Search", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				HttpUtil.googleReverseImageSearch(target.get());
+				StageManager.getErrorStage().show("Info", "Request sent.");
 				ClickMenu.hideAll();
 			});
 			return textNode;
@@ -103,8 +109,12 @@ public enum ButtonTemplates implements InstanceCollector {
 	FILTER_SIMILAR {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Show Similar Files", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				filter.showSimilar(target.get());
+				if (StageManager.getMainStage().isFullView()) {
+					StageManager.getMainStage().swapViewMode();
+				}
 				reload.doReload();
 				ClickMenu.hideAll();
 			});
@@ -114,6 +124,7 @@ public enum ButtonTemplates implements InstanceCollector {
 	FILTER_RANDOM {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Random", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				select.setRandom();
 				reload.doReload();
@@ -125,6 +136,7 @@ public enum ButtonTemplates implements InstanceCollector {
 	SELECTION_SET_ALL {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Select All", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				select.setAll(filter);
 				reload.doReload();
@@ -136,6 +148,7 @@ public enum ButtonTemplates implements InstanceCollector {
 	SELECTION_SET_NONE {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Select None", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				select.clear();
 				reload.doReload();
@@ -147,6 +160,7 @@ public enum ButtonTemplates implements InstanceCollector {
 	SELECTION_DELETE {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Delete Selection", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				super.deleteSelection();
 				ClickMenu.hideAll();
@@ -158,6 +172,7 @@ public enum ButtonTemplates implements InstanceCollector {
 	TAG_EDIT {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Edit", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				if (!ClickMenu.getName().isEmpty()) {
 					//  click was on name node
@@ -209,6 +224,7 @@ public enum ButtonTemplates implements InstanceCollector {
 	TAG_REMOVE {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Remove", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				String group = ClickMenu.getGroup();
 				String name = ClickMenu.getName();
@@ -244,6 +260,7 @@ public enum ButtonTemplates implements InstanceCollector {
 	ENTITY_GROUP_CREATE {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Create Entity Group", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				EntityGroupUtil.createGroup(select);
 				reload.doReload();
@@ -256,6 +273,7 @@ public enum ButtonTemplates implements InstanceCollector {
 	ENTITY_GROUP_DISCARD {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Discard Entity Group", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				EntityGroupUtil.discardGroup(select);
 				reload.doReload();
@@ -268,6 +286,7 @@ public enum ButtonTemplates implements InstanceCollector {
 	APPLICATION_SAVE {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Save", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				entityListMain.writeToDisk();
 				tagListMain.writeDummyToDisk();
@@ -279,6 +298,7 @@ public enum ButtonTemplates implements InstanceCollector {
 	APPLICATION_IMPORT {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Import", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				FileUtil.importFiles();
 				ClickMenu.hideAll();
@@ -289,6 +309,7 @@ public enum ButtonTemplates implements InstanceCollector {
 	APPLICATION_EXIT {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Exit", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () ->
 					StageManager.getMainStage().fireEvent(new WindowEvent(null, WindowEvent.WINDOW_CLOSE_REQUEST)));
 			return textNode;

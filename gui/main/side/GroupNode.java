@@ -13,8 +13,8 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import gui.component.simple.HBox;
+import gui.component.simple.VBox;
 import javafx.scene.paint.Color;
 import main.InstanceCollector;
 

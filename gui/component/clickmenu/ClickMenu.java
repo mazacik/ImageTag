@@ -2,6 +2,7 @@ package gui.component.clickmenu;
 
 import baseobject.CustomList;
 import gui.component.simple.BoxSeparatorNode;
+import gui.component.simple.VBox;
 import gui.component.simple.template.ButtonTemplates;
 import gui.decorator.ColorUtil;
 import gui.stage.StageManager;
@@ -11,7 +12,6 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.stage.WindowEvent;
 import main.InstanceCollector;
@@ -179,7 +179,10 @@ public class ClickMenu extends Popup implements InstanceCollector {
 			});
 		}
 		
-		NodeUtil.equalizeWidth(vBox.getChildren());
+		for (Node node : vBox.getChildren()) {
+			((Region) node).setMaxWidth(Double.MAX_VALUE);
+		}
+		
 		this.getContent().setAll(vBox);
 		this.setAutoHide(true);
 		this.setHideOnEscape(true);

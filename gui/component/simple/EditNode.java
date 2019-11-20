@@ -14,6 +14,7 @@ public class EditNode extends TextField {
 		//this.skinProperty().addListener((observable, oldValue, newValue) -> setStyle("-fx-text-fill: " + Decorator.getColorAsStringForCss(ColorUtil.getColorPrimary()) + "; -fx-prompt-text-fill: gray;"));
 		this.setBackground(Background.EMPTY);
 		this.setStyle("-fx-text-fill: " + Decorator.getColorAsStringForCss(ColorUtil.getColorPrimary()) + ";");
+		ColorUtil.getNodeList().add(this);
 		
 		switch (type) {
 			case ANY_CHARACTERS:

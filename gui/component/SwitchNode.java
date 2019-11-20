@@ -4,7 +4,7 @@ import gui.component.simple.TextNode;
 import javafx.geometry.Pos;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
+import gui.component.simple.HBox;
 import tools.NodeUtil;
 
 public class SwitchNode extends HBox {

@@ -9,7 +9,7 @@ import gui.decorator.SizeUtil;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.VBox;
+import gui.component.simple.VBox;
 import main.InstanceCollector;
 
 import java.lang.reflect.Method;

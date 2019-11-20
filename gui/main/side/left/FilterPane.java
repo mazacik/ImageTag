@@ -1,6 +1,7 @@
 package gui.main.side.left;
 
 import baseobject.tag.Tag;
+import gui.component.simple.HBox;
 import gui.component.simple.TextNode;
 import gui.decorator.ColorUtil;
 import gui.main.side.GroupNode;
@@ -10,7 +11,6 @@ import gui.stage.template.tageditstage.TagEditStageResult;
 import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import tools.NodeUtil;
 

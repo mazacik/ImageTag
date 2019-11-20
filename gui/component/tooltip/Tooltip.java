@@ -22,6 +22,7 @@ public class Tooltip extends Popup {
 		textNode = new TextNode(text, false, false, false, true);
 		textNode.setBorder(NodeUtil.getBorder(1));
 		textNode.setBackground(ColorUtil.getBackgroundPrimary());
+		ColorUtil.getNodeList().add(textNode);
 		this.getContent().add(textNode);
 		
 		timeline = new Timeline();

@@ -32,6 +32,8 @@ public class TextNode extends Label {
 		this.setTextFill(ColorUtil.getColorPrimary());
 		this.minWidthProperty().bind(this.heightProperty());
 		
+		ColorUtil.getNodeList().add(this);
+		
 		if (defaultPadding) {
 			this.setPadding(new Insets(5, 10, 5, 10));
 		}

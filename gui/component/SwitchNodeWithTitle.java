@@ -2,7 +2,7 @@ package gui.component;
 
 import gui.component.simple.TextNode;
 import javafx.geometry.Pos;
-import javafx.scene.layout.VBox;
+import gui.component.simple.VBox;
 
 public class SwitchNodeWithTitle extends VBox {
 	private TextNode titleNode;

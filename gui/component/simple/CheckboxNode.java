@@ -2,8 +2,8 @@ package gui.component.simple;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.stage.WindowEvent;
 import tools.NodeUtil;
 import tools.enums.Direction;
@@ -26,7 +26,8 @@ public class CheckboxNode extends HBox {
 		nodeMark.setBorder(NodeUtil.getBorder(1));
 		selectedProperty = new SimpleBooleanProperty();
 		setSelected(startSelected);
-		setSpacing(2);
+		setSpacing(3);
+		setAlignment(Pos.CENTER);
 		
 		if (boxPosition == Direction.LEFT) {
 			getChildren().addAll(nodeMark, nodeText);

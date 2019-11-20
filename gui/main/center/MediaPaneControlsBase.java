@@ -12,7 +12,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
+import gui.component.simple.HBox;
 import main.InstanceCollector;
 import tools.Converter;
 import tools.FileUtil;
@@ -60,6 +60,7 @@ public class MediaPaneControlsBase extends BorderPane implements InstanceCollect
 		lblTimeTotal = new TextNode("23:59:59", true, true, false, true);
 		
 		this.setBackground(ColorUtil.getBackgroundPrimary());
+		ColorUtil.getNodeList().add(this);
 		
 		initEvents(videoPlayer);
 	}

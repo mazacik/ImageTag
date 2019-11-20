@@ -11,7 +11,7 @@ import gui.decorator.SizeUtil;
 import gui.stage.TitleBar;
 import javafx.geometry.Pos;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.HBox;
+import gui.component.simple.HBox;
 import main.InstanceCollector;
 import tools.EntityGroupUtil;
 import tools.enums.Direction;
