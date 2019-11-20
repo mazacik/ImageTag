@@ -35,6 +35,8 @@ public class GalleryPane extends ScrollPane implements InstanceCollector, Reload
 	private double lastCursorPositionX;
 	private double lastCursorPositionY;
 	
+	public static final double GAP = 5;
+	
 	public GalleryPane() {
 	
 	}
@@ -42,10 +44,13 @@ public class GalleryPane extends ScrollPane implements InstanceCollector, Reload
 	public void init() {
 		methodsToInvokeOnNextReload = new CustomList<>();
 		
-		tilePane = new TilePane(30, 30);
-		tilePane.setPadding(new Insets(5, 5, 25, 5));
-		tilePane.setPrefTileWidth(SizeUtil.getGalleryTileSize());
-		tilePane.setPrefTileHeight(SizeUtil.getGalleryTileSize());
+		tilePane = new TilePane(GAP, GAP);
+		tilePane.setPadding(new Insets(GAP));
+		
+		double actualTileSize = settings.getTileSize() + 2 * GalleryTile.SELECT_BORDER_PADDING;
+		tilePane.setPrefTileWidth(actualTileSize);
+		tilePane.setPrefTileHeight(actualTileSize);
+		
 		tilePane.addEventFilter(MouseEvent.MOUSE_CLICKED, this::onMouseClick);
 		tilePane.addEventFilter(MouseEvent.MOUSE_PRESSED, this::onMousePress);
 		tilePane.addEventFilter(MouseEvent.MOUSE_DRAGGED, this::onMouseDrag);
@@ -63,16 +68,14 @@ public class GalleryPane extends ScrollPane implements InstanceCollector, Reload
 		lastCursorPositionX = 0;
 		lastCursorPositionY = 0;
 		
-		this.setBackground(Background.EMPTY);
-		this.setMaxWidth(1);
-		this.getChildren().add(tilePane);
 		this.setContent(tilePane);
+		this.getChildren().add(tilePane);
+		this.setBackground(Background.EMPTY);
 		this.setHbarPolicy(ScrollBarPolicy.NEVER);
 		this.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
 		this.setPrefViewportHeight(SizeUtil.getUsableScreenHeight());
 		this.addEventFilter(ScrollEvent.SCROLL, this::onScroll);
 		this.vvalueProperty().addListener((observable, oldValue, newValue) -> updateViewportTilesVisibility());
-		
 	}
 	
 	private void onMouseClick(MouseEvent event) {
@@ -146,14 +149,13 @@ public class GalleryPane extends ScrollPane implements InstanceCollector, Reload
 			reload.doReload();
 		}
 	}
+	
 	private void onScroll(ScrollEvent event) {
 		event.consume();
 		
-		//if something broke after changing tilePane padding or tilePane vGap, look at paddingFix
-		double paddingFix = (tilePane.getPadding().getTop() + tilePane.getPadding().getBottom()) / 2;
-		double rowHeight = tilePane.getHeight() / getRowCount();
-		double contentHeight = tilePane.getHeight() - paddingFix;
-		double rowToContentRatio = (rowHeight + 25) / contentHeight;
+		double rowHeight = tilePane.getPrefTileHeight() + GAP;
+		double contentHeight = tilePane.getHeight() - this.getViewportBounds().getHeight();
+		double rowToContentRatio = rowHeight / contentHeight;
 		double currentVvalue = this.getVvalue();
 		
 		if (event.getDeltaY() > 0) {
@@ -197,7 +199,7 @@ public class GalleryPane extends ScrollPane implements InstanceCollector, Reload
 			
 			double pxChange = rowHeight;
 			if (viewportPositionAfterChange > contentPosition) {
-				pxChange = rowHeight - (viewportPositionAfterChange - contentPosition) + paddingFix;
+				pxChange = rowHeight - (viewportPositionAfterChange - contentPosition);
 			}
 			//bottom-of-content fixed
 			

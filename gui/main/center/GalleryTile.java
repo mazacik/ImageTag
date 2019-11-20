@@ -33,12 +33,14 @@ public class GalleryTile extends Pane implements InstanceCollector {
 	private ImageView imageView;
 	private BorderPane selectBorder;
 	
+	public static final double SELECT_BORDER_PADDING = 10;
+	
 	public GalleryTile(Entity entity) {
 		this.entity = entity;
 		
 		imageView = new ImageView();
 		selectBorder = new BorderPane(imageView);
-		selectBorder.setPadding(new Insets(10));
+		selectBorder.setPadding(new Insets(SELECT_BORDER_PADDING));
 		
 		this.getChildren().add(selectBorder);
 		
