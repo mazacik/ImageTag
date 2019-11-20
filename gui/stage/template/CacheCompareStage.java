@@ -9,8 +9,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import gui.component.simple.HBox;
+import gui.component.simple.VBox;
 import main.InstanceCollector;
 
 public class CacheCompareStage extends StageBase implements InstanceCollector {
@@ -24,7 +24,7 @@ public class CacheCompareStage extends StageBase implements InstanceCollector {
 	private Tooltip tooltip2;
 	
 	public CacheCompareStage() {
-		super("Confirmation");
+		super("Confirmation", false, true, true);
 		
 		labelContent = new TextNode("", false, false, false, false);
 		
@@ -61,8 +61,8 @@ public class CacheCompareStage extends StageBase implements InstanceCollector {
 		vBoxMain.setPadding(new Insets(5));
 		vBoxMain.setSpacing(5);
 		
-		this.setRoot(vBoxMain);
-		this.setButtons(buttonPositive, buttonNegative, buttonCancel);
+		setRoot(vBoxMain);
+		setButtons(buttonPositive, buttonNegative, buttonCancel);
 	}
 	
 	@Override

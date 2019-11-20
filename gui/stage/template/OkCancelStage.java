@@ -1,13 +1,10 @@
 package gui.stage.template;
 
 import gui.component.simple.TextNode;
+import gui.component.simple.template.ButtonTemplates;
 import gui.stage.base.StageBase;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class OkCancelStage extends StageBase {
@@ -18,7 +15,7 @@ public class OkCancelStage extends StageBase {
 	private TextNode btnCancel;
 	
 	public OkCancelStage() {
-		super("Error");
+		super("Error", false, true, true);
 		
 		labelContent = new TextNode("Content", false, false, false, true);
 		
@@ -34,14 +31,8 @@ public class OkCancelStage extends StageBase {
 			this.close();
 		});
 		
-		HBox hBox = new HBox(btnOK, btnCancel);
-		hBox.setAlignment(Pos.CENTER);
-		
-		VBox vBoxMain = new VBox(labelContent, hBox);
-		vBoxMain.setSpacing(5);
-		vBoxMain.setPadding(new Insets(5));
-		
-		setRoot(vBoxMain);
+		setRoot(labelContent);
+		setButtons(btnOK, btnCancel);
 	}
 	
 	@Override

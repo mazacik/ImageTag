@@ -7,7 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
+import gui.component.simple.HBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import tools.NodeUtil;

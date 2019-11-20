@@ -1,17 +1,12 @@
 package gui.stage.template;
 
-import gui.component.simple.CheckboxNode;
-import gui.component.simple.EditNode;
-import gui.component.simple.TextNode;
 import gui.component.SwitchNode;
 import gui.component.SwitchNodeWithTitle;
+import gui.component.simple.*;
 import gui.stage.base.StageBase;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import main.InstanceCollector;
 
 public class FilterSettingsStage extends StageBase implements InstanceCollector {
@@ -27,7 +22,7 @@ public class FilterSettingsStage extends StageBase implements InstanceCollector 
 	SwitchNodeWithTitle blacklistModeNode;
 	
 	public FilterSettingsStage() {
-		super("Filter Settings");
+		super("Filter Settings", false, true, true);
 		
 		cbLimit = new CheckboxNode("Limit");
 		tfLimit = new EditNode("", EditNode.EditNodeType.NUMERIC_POSITIVE);
@@ -74,22 +69,18 @@ public class FilterSettingsStage extends StageBase implements InstanceCollector 
 			filter.refresh();
 			reload.doReload();
 			galleryPane.updateViewportTilesVisibility();
-			this.hide();
+			this.close();
 		});
-		TextNode btnCancel = new TextNode("Cancel", true, true, false, true);
-		btnCancel.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, this::hide);
 		
-		HBox hBoxOkCancel = new HBox(btnOK, btnCancel);
-		hBoxOkCancel.setAlignment(Pos.CENTER);
+		TextNode btnCancel = new TextNode("Cancel", true, true, false, true);
+		btnCancel.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, this::close);
 		
 		HBox hBoxContent = new HBox(vBoxLeft, vBoxRight);
 		hBoxContent.setSpacing(100);
+		hBoxContent.setPadding(new Insets(5));
 		
-		VBox vBoxMain = new VBox(hBoxContent, hBoxOkCancel);
-		vBoxMain.setSpacing(5);
-		vBoxMain.setPadding(new Insets(5));
-		
-		setRoot(vBoxMain);
+		setRoot(hBoxContent);
+		setButtons(btnOK, btnCancel);
 	}
 	
 	@Override

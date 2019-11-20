@@ -2,10 +2,8 @@ package gui.stage.main;
 
 import baseobject.CustomList;
 import baseobject.Project;
-import gui.component.ColorPresetComboBox;
-import gui.component.simple.BoxSeparatorNode;
-import gui.component.simple.EditNode;
-import gui.component.simple.TextNode;
+import gui.component.simple.*;
+import gui.decorator.ColorPreset;
 import gui.decorator.ColorUtil;
 import gui.decorator.Decorator;
 import gui.decorator.SizeUtil;
@@ -13,7 +11,6 @@ import gui.main.center.MediaPaneControls;
 import gui.main.center.VideoPlayer;
 import gui.stage.StageManager;
 import gui.stage.base.StageBase;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -24,15 +21,12 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import main.InstanceCollector;
 import main.LifecycleManager;
 import tools.FileUtil;
-import tools.NodeUtil;
 import tools.SystemUtil;
 
 import java.awt.*;
@@ -59,7 +53,7 @@ public class MainStage extends StageBase implements InstanceCollector {
 	private HBox mainScene;
 	
 	public MainStage() {
-	
+		super("", false, false, false);
 	}
 	
 	//init
@@ -72,7 +66,16 @@ public class MainStage extends StageBase implements InstanceCollector {
 		initMainScene();
 	}
 	private void initIntroScene() {
+		TextNode applicationNameNode = new TextNode("Tagallery", false, false, false, true);
+		applicationNameNode.setFont(new Font(48));
+		applicationNameNode.setPadding(new Insets(-20, 0, 20, 0));
+		
+		TextNode btnNewProject = new TextNode("Create a New Project", true, false, true, true);
+		btnNewProject.setMaxWidth(Double.MAX_VALUE);
+		btnNewProject.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, this::showCreateProjectScene);
+		
 		TextNode btnOpenProject = new TextNode("Open Project", true, false, true, true);
+		btnOpenProject.setMaxWidth(Double.MAX_VALUE);
 		btnOpenProject.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> {
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.setTitle("Open Project");
@@ -86,29 +89,26 @@ public class MainStage extends StageBase implements InstanceCollector {
 			}
 		});
 		
-		TextNode btnNewProject = new TextNode("Create a New Project", true, false, true, true);
-		btnNewProject.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, this::showCreateProjectScene);
-		
-		TextNode applicationNameNode = new TextNode("Tagallery", false, false, false, true);
-		applicationNameNode.setFont(new Font(48));
-		applicationNameNode.setPadding(new Insets(-20, 0, 20, 0));
+		TextNode btnColorPreset = new TextNode("Color Preset: " + ColorUtil.getColorPreset().getDisplayName(), true, false, true, true);
+		btnColorPreset.setMaxWidth(Double.MAX_VALUE);
+		btnColorPreset.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> {
+			int presetIndex = ColorUtil.getColorPreset().ordinal();
+			presetIndex++;
+			if (presetIndex >= ColorPreset.values().length) presetIndex = 0;
+			ColorUtil.setColorPreset(ColorPreset.values()[presetIndex]);
+			btnColorPreset.setText("Color Preset: " + ColorUtil.getColorPreset().getDisplayName());
+		});
 		
 		VBox vBoxStartMenu = new VBox();
-		vBoxStartMenu.setMinWidth(500);
 		vBoxStartMenu.setAlignment(Pos.CENTER);
-		vBoxStartMenu.setPrefWidth(SizeUtil.getUsableScreenWidth());
 		vBoxStartMenu.setPadding(new Insets(-40, 0, 20, 0));
-		
-		ColorPresetComboBox colorPresetComboBox = new ColorPresetComboBox();
+		HBox.setHgrow(vBoxStartMenu, Priority.ALWAYS);
 		
 		vBoxStartMenu.getChildren().add(new ImageView(getClass().getResource("/logo-1.png").toExternalForm()));
 		vBoxStartMenu.getChildren().add(applicationNameNode);
 		vBoxStartMenu.getChildren().add(btnNewProject);
 		vBoxStartMenu.getChildren().add(btnOpenProject);
-		vBoxStartMenu.getChildren().add(colorPresetComboBox);
-		
-		NodeUtil.equalizeWidth(btnNewProject, btnOpenProject, colorPresetComboBox);
-		//Platform.runLater(() -> NodeUtil.equalizeWidth(btnNewProject, btnOpenProject, colorPresetComboBox));
+		vBoxStartMenu.getChildren().add(btnColorPreset);
 		
 		vBoxRecentProjects = new VBox();
 		vBoxRecentProjects.setMinWidth(400);

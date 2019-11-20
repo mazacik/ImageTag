@@ -1,14 +1,15 @@
 package gui.stage.base;
 
+import gui.component.simple.HBox;
 import gui.component.simple.TextNode;
+import gui.component.simple.VBox;
 import gui.decorator.ColorUtil;
 import gui.stage.TitleBar;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.Border;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import tools.NodeUtil;
@@ -17,13 +18,16 @@ public abstract class StageBase extends Stage implements StageBaseInterface {
 	private VBox vBoxMain;
 	
 	private TitleBar titleBar;
-	private TextNode errorNode;
-	private HBox buttonBox;
 	
-	public StageBase() {
-		this("");
-	}
-	public StageBase(String title) {
+	private TextNode errorNode;
+	private boolean showErrorNode;
+	
+	private HBox buttonBox;
+	private boolean showButtonBox;
+	
+	private boolean defaultPadding;
+	
+	public StageBase(String title, boolean showErrorNode, boolean showButtonBox, boolean defaultPadding) {
 		vBoxMain = new VBox();
 		vBoxMain.setAlignment(Pos.TOP_CENTER);
 		vBoxMain.setBackground(ColorUtil.getBackgroundPrimary());
@@ -34,6 +38,11 @@ public abstract class StageBase extends Stage implements StageBaseInterface {
 		errorNode.setTextFill(ColorUtil.getColorNegative());
 		buttonBox = new HBox();
 		buttonBox.setAlignment(Pos.CENTER);
+		
+		this.showErrorNode = showErrorNode;
+		this.showButtonBox = showButtonBox;
+		
+		this.defaultPadding = defaultPadding;
 		
 		this.setScene(new Scene(vBoxMain));
 		this.initStyle(StageStyle.UNDECORATED);
@@ -46,8 +55,12 @@ public abstract class StageBase extends Stage implements StageBaseInterface {
 		vBoxMain.getChildren().clear();
 		vBoxMain.getChildren().add(titleBar);
 		vBoxMain.getChildren().add(root);
-		vBoxMain.getChildren().add(errorNode);
-		vBoxMain.getChildren().add(buttonBox);
+		if (showErrorNode) vBoxMain.getChildren().add(errorNode);
+		if (showButtonBox) vBoxMain.getChildren().add(buttonBox);
+		
+		if (defaultPadding) {
+			root.setPadding(new Insets(5, 5, 5, 5));
+		}
 	}
 	public void setTitleBar(TitleBar titleBar) {
 		this.titleBar = titleBar;

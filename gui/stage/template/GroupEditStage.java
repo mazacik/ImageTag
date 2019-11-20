@@ -8,7 +8,7 @@ import javafx.geometry.Pos;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
+import gui.component.simple.HBox;
 import tools.NodeUtil;
 
 @SuppressWarnings("FieldCanBeLocal")
@@ -21,7 +21,7 @@ public class GroupEditStage extends StageBase {
 	private String result = "";
 	
 	public GroupEditStage() {
-		super("Edit Group");
+		super("Edit Group", true, true, true);
 		
 		nodeGroup = new TextNode("Group", false, false, false, false);
 		nodeGroup.setPrefWidth(80);
@@ -57,8 +57,8 @@ public class GroupEditStage extends StageBase {
 			}
 		});
 		
-		this.setRoot(hBoxMain);
-		this.setButtons(nodeOK, nodeCancel);
+		setRoot(hBoxMain);
+		setButtons(nodeOK, nodeCancel);
 	}
 	
 	public boolean checkFieldValidity(String... fields) {

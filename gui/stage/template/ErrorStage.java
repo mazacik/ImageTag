@@ -5,27 +5,34 @@ import gui.stage.base.StageBase;
 import gui.stage.base.StageBaseInterface;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
 
 public class ErrorStage extends StageBase implements StageBaseInterface {
 	private TextNode labelContent;
 	
 	public ErrorStage() {
-		super("Error");
+		super("", false, true, true);
 		
-		labelContent = new TextNode("Error", false, false, false, true);
+		labelContent = new TextNode("", false, false, false, true);
 		
 		TextNode btnOK = new TextNode("OK", true, true, false, true);
 		btnOK.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, this::close);
 		
-		VBox vBoxMain = new VBox(labelContent, btnOK);
-		setRoot(vBoxMain);
+		setRoot(labelContent);
+		setButtons(btnOK);
 	}
 	
 	@Override
 	public Object show(String... args) {
-		labelContent.setText(args[0]);
-		this.showAndWait();
+		if (args.length > 0) {
+			if (args.length == 1) {
+				setTitle("Error");
+				labelContent.setText(args[0]);
+			} else {
+				setTitle(args[0]);
+				labelContent.setText(args[1]);
+			}
+			this.showAndWait();
+		}
 		return null;
 	}
 }

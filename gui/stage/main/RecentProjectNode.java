@@ -11,7 +11,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
+import gui.component.simple.VBox;
 import javafx.scene.text.Font;
 import main.InstanceCollector;
 import main.LifecycleManager;

@@ -10,7 +10,7 @@ public class YesNoCancelStage extends StageBase {
 	private ButtonBooleanValue result;
 	
 	public YesNoCancelStage() {
-		super("Confirmation");
+		super("Confirmation", false, true, true);
 		
 		labelContent = new TextNode("CONTENT_STRING", false, false, false, false);
 		
@@ -30,8 +30,8 @@ public class YesNoCancelStage extends StageBase {
 			this.close();
 		});
 		
-		this.setRoot(labelContent);
-		this.setButtons(buttonPositive, buttonNegative, buttonCancel);
+		setRoot(labelContent);
+		setButtons(buttonPositive, buttonNegative, buttonCancel);
 	}
 	
 	@Override

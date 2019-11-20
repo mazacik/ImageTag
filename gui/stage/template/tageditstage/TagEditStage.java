@@ -1,16 +1,11 @@
 package gui.stage.template.tageditstage;
 
-import gui.component.simple.CheckboxNode;
-import gui.component.simple.EditNode;
-import gui.component.simple.TextNode;
+import gui.component.simple.*;
 import gui.stage.base.StageBase;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import main.InstanceCollector;
 import tools.NodeUtil;
 import tools.enums.Direction;
@@ -29,6 +24,8 @@ public class TagEditStage extends StageBase implements InstanceCollector {
 	private String name;
 	
 	public TagEditStage() {
+		super("", true, true, true);
+		
 		lblGroup = new TextNode("Group", false, false, false, false);
 		lblGroup.setPrefWidth(80);
 		edtGroup = new EditNode();
@@ -42,14 +39,16 @@ public class TagEditStage extends StageBase implements InstanceCollector {
 		edtName.setBorder(NodeUtil.getBorder(1, 1, 1, 1));
 		
 		btnOK = new TextNode("OK", true, true, false, true);
-		btnOK.setOnMouseClicked(event -> {
-			if (event.getButton() == MouseButton.PRIMARY) {
-				//todo field validity checks
-				group = edtGroup.getText();
-				name = edtName.getText();
+		btnOK.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+			String _group = edtGroup.getText();
+			String _name = edtName.getText();
+			if (this.checkFieldValidity(_group, _name)) {
+				group = _group;
+				name = _name;
 				this.close();
 			}
 		});
+		
 		btnCancel = new TextNode("Cancel", true, true, false, true);
 		btnCancel.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, this::close);
 		
@@ -59,25 +58,45 @@ public class TagEditStage extends StageBase implements InstanceCollector {
 		hBoxName.setAlignment(Pos.CENTER);
 		
 		cbApply = new CheckboxNode("Apply to selection?", Direction.RIGHT);
-		HBox hBoxHelper1 = new HBox(cbApply);
-		hBoxHelper1.setAlignment(Pos.CENTER);
 		
-		HBox hBoxBottom = new HBox(btnCancel, btnOK);
-		hBoxBottom.setAlignment(Pos.CENTER);
-		
-		VBox vBoxMain = new VBox(hBoxGroup, hBoxName, hBoxHelper1, hBoxBottom);
+		VBox vBoxMain = new VBox(hBoxGroup, hBoxName, cbApply);
 		vBoxMain.setSpacing(5);
-		vBoxMain.setPadding(new Insets(5));
 		vBoxMain.setOnKeyPressed(event -> {
 			if (event.getCode() == KeyCode.ENTER) {
-				group = edtGroup.getText();
-				name = edtName.getText();
-				close();
+				String _group = edtGroup.getText();
+				String _name = edtName.getText();
+				if (this.checkFieldValidity(_group, _name)) {
+					group = _group;
+					name = _name;
+					this.close();
+				}
 			} else if (event.getCode() == KeyCode.ESCAPE) {
-				close();
+				this.close();
 			}
 		});
+		
 		setRoot(vBoxMain);
+		setButtons(btnOK, btnCancel);
+	}
+	
+	public boolean checkFieldValidity(String... fields) {
+		if (fields[0].trim().isEmpty()) {
+			this.setErrorMessage("Field \"" + lblGroup.getText() + "\" cannot be empty.");
+			return false;
+		}
+		if (fields[1].trim().isEmpty()) {
+			this.setErrorMessage("Field \"" + lblName.getText() + "\" cannot be empty.");
+			return false;
+		}
+		if (fields[0].contains(" - ")) {
+			this.setErrorMessage("Field \"" + lblGroup.getText() + "\" cannot contain \" - \".");
+			return false;
+		}
+		if (fields[1].contains(" - ")) {
+			this.setErrorMessage("Field \"" + lblName.getText() + "\" cannot contain \" - \".");
+			return false;
+		}
+		return true;
 	}
 	
 	@Override
