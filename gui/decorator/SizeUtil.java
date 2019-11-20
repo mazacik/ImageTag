@@ -61,7 +61,4 @@ public abstract class SizeUtil implements InstanceCollector {
 	public static double getMinWidthSideLists() {
 		return MIN_WIDTH_SIDELISTS;
 	}
-	public static double getGalleryTileSize() {
-		return settings.getTileSize();
-	}
 }

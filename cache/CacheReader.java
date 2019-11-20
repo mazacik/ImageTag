@@ -12,6 +12,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import main.InstanceCollector;
 import tools.FileUtil;
 
 import java.io.File;
@@ -48,7 +49,7 @@ public abstract class CacheReader {
 		label.setFont(new Font(25));
 		label.setAlignment(Pos.CENTER);
 		
-		int size = (int) SizeUtil.getGalleryTileSize();
+		int size = InstanceCollector.settings.getTileSize();
 		label.setMinWidth(size);
 		label.setMinHeight(size);
 		label.setMaxWidth(size);

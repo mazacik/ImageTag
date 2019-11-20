@@ -136,7 +136,7 @@ public class MediaPaneControlsBase extends BorderPane implements InstanceCollect
 			btnSnapshot.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				Entity entity = target.get();
 				File cacheFile = new File(FileUtil.getCacheFilePath(entity));
-				int thumbSize = (int) SizeUtil.getGalleryTileSize();
+				int thumbSize = (int) settings.getTileSize();
 				mediaPane.getVideoPlayer().snapshot(cacheFile, thumbSize, thumbSize);
 				
 				Image cache = CacheReader.get(entity);

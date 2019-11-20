@@ -452,8 +452,8 @@ public class MainStage extends StageBase implements InstanceCollector {
 	
 	//main
 	public void setStagePropertiesMain() {
-		this.setMinWidth(100 + SizeUtil.getMinWidthSideLists() * 2 + SizeUtil.getGalleryTileSize());
-		this.setMinHeight(100 + SizeUtil.getPrefHeightTopMenu() + SizeUtil.getGalleryTileSize());
+		this.setMinWidth(100 + SizeUtil.getMinWidthSideLists() * 2 + settings.getTileSize());
+		this.setMinHeight(100 + SizeUtil.getPrefHeightTopMenu() + settings.getTileSize());
 		this.setWidth(SizeUtil.getUsableScreenWidth());
 		this.setHeight(SizeUtil.getUsableScreenHeight());
 		this.setOnCloseRequest(event -> {
