@@ -83,7 +83,7 @@ public class GifDecoder {
 	protected int delay = 0; // delay in milliseconds
 	protected int transIndex; // transparent color index
 	// max decoder pixel stack size
-	// LZW decoder working arrays
+	// LZW decoder source arrays
 	protected short[] prefix;
 	protected byte[] suffix;
 	protected byte[] pixelStack;

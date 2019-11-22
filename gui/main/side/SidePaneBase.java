@@ -5,14 +5,13 @@ import baseobject.tag.Tag;
 import baseobject.tag.TagList;
 import control.reload.Reloadable;
 import gui.component.simple.TextNode;
+import gui.component.simple.VBox;
 import gui.decorator.SizeUtil;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Background;
-import gui.component.simple.VBox;
 import main.InstanceCollector;
 
-import java.lang.reflect.Method;
 import java.util.Comparator;
 
 public abstract class SidePaneBase extends VBox implements Reloadable, SidePaneBaseInterface, InstanceCollector {
@@ -21,8 +20,6 @@ public abstract class SidePaneBase extends VBox implements Reloadable, SidePaneB
 	protected ScrollPane scrollPane;
 	
 	public SidePaneBase() {
-		methodsToInvokeOnNextReload = new CustomList<>();
-		
 		groupNodes = new VBox();
 		
 		scrollPane = new ScrollPane();
@@ -37,11 +34,6 @@ public abstract class SidePaneBase extends VBox implements Reloadable, SidePaneB
 		this.setMinWidth(SizeUtil.getMinWidthSideLists());
 	}
 	
-	private CustomList<Method> methodsToInvokeOnNextReload;
-	@Override
-	public CustomList<Method> getMethodsToInvokeOnNextReload() {
-		return methodsToInvokeOnNextReload;
-	}
 	public boolean reload() {
 		//	populate primary helpers
 		CustomList<String> groupsCurrent = new CustomList<>();

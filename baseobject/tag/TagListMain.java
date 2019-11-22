@@ -13,7 +13,7 @@ public class TagListMain extends TagList implements InstanceCollector {
 	private static final Type typeToken = new TypeToken<TagListMain>() {}.getType();
 	
 	public void initialize() {
-		TagList allTags = readDummyFromDisk();
+		TagList allTags = readFromDisk();
 		if (allTags != null) {
 			this.addAll(allTags);
 		}
@@ -33,10 +33,10 @@ public class TagListMain extends TagList implements InstanceCollector {
 		this.sort();
 	}
 	
-	public void writeDummyToDisk() {
+	public void writeToDisk() {
 		JsonUtil.write(this, typeToken, FileUtil.getProjectFileTags());
 	}
-	private TagList readDummyFromDisk() {
+	private TagList readFromDisk() {
 		return (TagList) JsonUtil.read(typeToken, FileUtil.getProjectFileTags());
 	}
 	

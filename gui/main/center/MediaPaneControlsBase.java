@@ -1,10 +1,8 @@
 package gui.main.center;
 
 import baseobject.entity.Entity;
-import cache.CacheReader;
 import gui.component.simple.TextNode;
 import gui.decorator.ColorUtil;
-import gui.decorator.SizeUtil;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.ProgressBar;
@@ -14,6 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import gui.component.simple.HBox;
 import main.InstanceCollector;
+import tools.CacheManager;
 import tools.Converter;
 import tools.FileUtil;
 import tools.enums.Direction;
@@ -139,7 +138,7 @@ public class MediaPaneControlsBase extends BorderPane implements InstanceCollect
 				int thumbSize = (int) settings.getTileSize();
 				mediaPane.getVideoPlayer().snapshot(cacheFile, thumbSize, thumbSize);
 				
-				Image cache = CacheReader.get(entity);
+				Image cache = CacheManager.get(entity);
 				entity.getGalleryTile().setImage(cache);
 			});
 		}

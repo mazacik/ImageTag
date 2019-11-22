@@ -5,6 +5,7 @@ import gui.component.SwitchNodeWithTitle;
 import gui.component.simple.*;
 import gui.stage.base.StageBase;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import main.InstanceCollector;
@@ -68,7 +69,6 @@ public class FilterSettingsStage extends StageBase implements InstanceCollector 
 			filter.setLimit(Integer.parseInt(tfLimit.getText()));
 			filter.refresh();
 			reload.doReload();
-			galleryPane.updateViewportTilesVisibility();
 			this.close();
 		});
 		

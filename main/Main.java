@@ -8,6 +8,6 @@ public class Main extends Application {
 		launch(args);
 	}
 	public void start(Stage stage) {
-		LifecycleManager.init();
+		LifecycleManager.startApplication();
 	}
 }

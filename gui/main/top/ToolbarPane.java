@@ -5,18 +5,16 @@ import baseobject.entity.Entity;
 import control.reload.Reloadable;
 import gui.component.clickmenu.ClickMenu;
 import gui.component.simple.BoxSeparatorNode;
+import gui.component.simple.HBox;
 import gui.component.simple.TextNode;
 import gui.component.simple.template.ButtonTemplates;
 import gui.decorator.SizeUtil;
 import gui.stage.TitleBar;
 import javafx.geometry.Pos;
 import javafx.scene.input.MouseButton;
-import gui.component.simple.HBox;
 import main.InstanceCollector;
-import tools.EntityGroupUtil;
 import tools.enums.Direction;
 
-import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
 public class ToolbarPane extends TitleBar implements Reloadable, InstanceCollector {
@@ -28,8 +26,6 @@ public class ToolbarPane extends TitleBar implements Reloadable, InstanceCollect
 	
 	public void init() {
 		super.init("");
-		
-		methodsToInvokeOnNextReload = new CustomList<>();
 		
 		TextNode nodeFile = new TextNode("File", true, true, false, true);
 		TextNode nodeSave = ButtonTemplates.APPLICATION_SAVE.get();
@@ -52,11 +48,6 @@ public class ToolbarPane extends TitleBar implements Reloadable, InstanceCollect
 		this.setCenter(nodeTarget);
 	}
 	
-	private CustomList<Method> methodsToInvokeOnNextReload;
-	@Override
-	public CustomList<Method> getMethodsToInvokeOnNextReload() {
-		return methodsToInvokeOnNextReload;
-	}
 	public boolean reload() {
 		Logger.getGlobal().info(this.toString());
 		

@@ -29,7 +29,8 @@ public class CustomList<T> extends ArrayList<T> {
 	}
 	
 	public void add(int index, T t) {
-		if (t != null && !super.contains(t)) {
+		if (t != null) {
+			super.remove(t);
 			super.add(index, t);
 		}
 	}

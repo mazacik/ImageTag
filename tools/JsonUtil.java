@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -26,6 +27,7 @@ public abstract class JsonUtil {
 		}
 	}
 	public static Object read(Type type, String path) {
+		if (!new File(path).exists()) return null;
 		GsonBuilder GSONBuilder = new GsonBuilder();
 		Gson GSON = GSONBuilder.serializeNulls().create();
 		try {

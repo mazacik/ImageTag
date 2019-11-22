@@ -24,7 +24,7 @@ public class RecentProjectNode extends BorderPane implements InstanceCollector {
 	
 	public RecentProjectNode(Project project) {
 		TextNode nodeProjectFile = new TextNode(project.getProjectFileName(), false, false, false);
-		TextNode nodeWorkingDirectory = new TextNode(project.getWorkingDirectory(), false, false, false);
+		TextNode nodeSourceDirectory = new TextNode(project.getSourceDirectory(), false, false, false);
 		
 		nodeEdit = new TextNode("···", false, true, false);
 		nodeEdit.setFont(new Font(26));
@@ -34,7 +34,7 @@ public class RecentProjectNode extends BorderPane implements InstanceCollector {
 		nodeRemove.setFont(new Font(20));
 		nodeRemove.setVisible(false);
 		
-		VBox vBox = new VBox(nodeProjectFile, nodeWorkingDirectory);
+		VBox vBox = new VBox(nodeProjectFile, nodeSourceDirectory);
 		vBox.setAlignment(Pos.CENTER_LEFT);
 		
 		this.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
@@ -56,11 +56,11 @@ public class RecentProjectNode extends BorderPane implements InstanceCollector {
 				} else if (isClickOnNodeRemove(event)) {
 					StageManager.getMainStage().removeProjectFromRecents(this, project);
 				} else {
-					if (new File(project.getWorkingDirectory()).exists()) {
+					if (new File(project.getSourceDirectory()).exists()) {
 						settings.getRecentProjects().add(0, project.getProjectFileFullPath());
-						LifecycleManager.startLoading(project);
+						LifecycleManager.startDatabaseLoading(project);
 					} else {
-						StageManager.getErrorStage().show("The working directory of this project could not be found.\nDirectory: " + project.getWorkingDirectory());
+						StageManager.getErrorStage().show("The source directory of this project could not be found.\nDirectory: " + project.getSourceDirectory());
 					}
 				}
 			}

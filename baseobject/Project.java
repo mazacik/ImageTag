@@ -9,11 +9,11 @@ import java.lang.reflect.Type;
 public class Project {
 	private transient static final Type typeToken = new TypeToken<Project>() {}.getType();
 	private transient String projectFileFullPath;
-	private String workingDirectory;
+	private String sourceDirectory;
 	
-	public Project(String projectFileFullPath, String workingDirectory) {
+	public Project(String projectFileFullPath, String sourceDirectory) {
 		this.projectFileFullPath = projectFileFullPath;
-		this.workingDirectory = workingDirectory;
+		this.sourceDirectory = sourceDirectory;
 	}
 	
 	public static Project readFromDisk(String projectFileFullPath) {
@@ -41,7 +41,7 @@ public class Project {
 	public String getProjectFileFullPath() {
 		return projectFileFullPath;
 	}
-	public String getWorkingDirectory() {
-		return workingDirectory;
+	public String getSourceDirectory() {
+		return sourceDirectory;
 	}
 }

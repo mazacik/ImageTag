@@ -15,10 +15,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.WindowEvent;
 import main.InstanceCollector;
 import org.apache.commons.text.WordUtils;
-import tools.EntityGroupUtil;
-import tools.FileUtil;
-import tools.HttpUtil;
-import tools.SystemUtil;
+import tools.*;
 
 import java.awt.*;
 import java.io.File;
@@ -31,7 +28,7 @@ public enum ButtonTemplates implements InstanceCollector {
 			TextNode textNode = new TextNode("Open", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				String fullPath = target.get().getPath();
+				String fullPath = target.get().getFilePath();
 				try {
 					Desktop.getDesktop().open(new File(fullPath));
 				} catch (IOException e) {
@@ -48,7 +45,7 @@ public enum ButtonTemplates implements InstanceCollector {
 			TextNode textNode = new TextNode("Edit", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				String fullPath = target.get().getPath();
+				String fullPath = target.get().getFilePath();
 				try {
 					Runtime.getRuntime().exec("mspaint.exe " + fullPath);
 				} catch (IOException e) {
@@ -65,7 +62,8 @@ public enum ButtonTemplates implements InstanceCollector {
 			TextNode textNode = new TextNode("Copy File Name", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				SystemUtil.setClipboardContent(target.get().getName());
+				String entityName = target.get().getName();
+				SystemUtil.setClipboardContent(entityName.substring(entityName.lastIndexOf(File.separatorChar)));
 				ClickMenu.hideAll();
 			});
 			return textNode;
@@ -76,7 +74,7 @@ public enum ButtonTemplates implements InstanceCollector {
 			TextNode textNode = new TextNode("Copy File Path", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				SystemUtil.setClipboardContent(target.get().getPath());
+				SystemUtil.setClipboardContent(target.get().getFilePath());
 				ClickMenu.hideAll();
 			});
 			return textNode;
@@ -264,7 +262,6 @@ public enum ButtonTemplates implements InstanceCollector {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				EntityGroupUtil.createGroup(select);
 				reload.doReload();
-				galleryPane.updateViewportTilesVisibility();
 				ClickMenu.hideAll();
 			});
 			return textNode;
@@ -289,7 +286,7 @@ public enum ButtonTemplates implements InstanceCollector {
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				entityListMain.writeToDisk();
-				tagListMain.writeDummyToDisk();
+				tagListMain.writeToDisk();
 				ClickMenu.hideAll();
 			});
 			return textNode;
@@ -323,7 +320,7 @@ public enum ButtonTemplates implements InstanceCollector {
 	
 	private void deleteEntity(Entity entity) {
 		if (filter.contains(entity)) {
-			String sourcePath = entity.getPath();
+			String sourcePath = entity.getFilePath();
 			String cachePath = FileUtil.getCacheFilePath(entity);
 			
 			FileUtils fileUtils = FileUtils.getInstance();
@@ -369,7 +366,7 @@ public enum ButtonTemplates implements InstanceCollector {
 	private void deleteCurrentTarget() {
 		Entity currentTarget = target.get();
 		if (currentTarget.getEntityGroupID() == 0 || galleryPane.getExpandedGroups().contains(currentTarget.getEntityGroupID())) {
-			String sourcePath = target.get().getPath();
+			String sourcePath = target.get().getFilePath();
 			ButtonBooleanValue result = StageManager.getYesNoCancelStage().show("Delete file: " + sourcePath + "?");
 			if (result == ButtonBooleanValue.YES) {
 				target.storePosition();
