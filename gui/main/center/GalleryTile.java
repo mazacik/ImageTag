@@ -8,7 +8,10 @@ import gui.component.clickmenu.ClickMenu;
 import gui.component.simple.TextNode;
 import gui.stage.StageManager;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.effect.Blend;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.effect.ImageInput;
@@ -22,6 +25,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import main.InstanceCollector;
 
@@ -35,18 +39,39 @@ public class GalleryTile extends Pane implements InstanceCollector {
 	
 	public static final double SELECT_BORDER_PADDING = 10;
 	
+	private static Image loadingImage = null;
+	
 	public GalleryTile(Entity entity) {
 		this.entity = entity;
 		
-		imageView = new ImageView();
+		imageView = new ImageView(loadingImage);
 		selectBorder = new BorderPane(imageView);
 		selectBorder.setPadding(new Insets(SELECT_BORDER_PADDING));
 		
 		this.getChildren().add(selectBorder);
-		
 		initEvents();
 		
 		ClickMenu.install(imageView, MouseButton.SECONDARY, ClickMenu.StaticInstance.ENTITY);
+	}
+	
+	public static void init() {
+		loadingImage = new WritableImage(settings.getTileSize(), settings.getTileSize()) {{
+			Label label = new Label("Loading");
+			label.setBackground(new Background(new BackgroundFill(Color.GRAY, null, null)));
+			label.setWrapText(true);
+			label.setFont(new Font(26));
+			label.setAlignment(Pos.CENTER);
+			
+			int size = settings.getTileSize();
+			label.setMinWidth(size);
+			label.setMinHeight(size);
+			label.setMaxWidth(size);
+			label.setMaxHeight(size);
+			
+			Scene scene = new Scene(new Group(label));
+			scene.setFill(Color.GRAY);
+			scene.snapshot(this);
+		}};
 	}
 	
 	public void updateSelectBorder() {
@@ -98,7 +123,6 @@ public class GalleryTile extends Pane implements InstanceCollector {
 					if (isClickOnGroupEffect(event)) {
 						onGroupEffectClick();
 						reload.doReload();
-						galleryPane.updateViewportTilesVisibility();
 					} else {
 						if (event.getClickCount() % 2 != 0) onLeftClick(event);
 						else onLeftDoubleClick(event);

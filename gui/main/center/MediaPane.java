@@ -1,25 +1,17 @@
 package gui.main.center;
 
-import baseobject.CustomList;
 import baseobject.entity.Entity;
 import control.reload.Reloadable;
 import gui.component.clickmenu.ClickMenu;
+import gui.component.simple.TextNode;
 import gui.stage.StageManager;
-import javafx.geometry.Pos;
-import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import main.InstanceCollector;
 import tools.FileUtil;
@@ -29,7 +21,6 @@ import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
@@ -42,15 +33,13 @@ public class MediaPane extends BorderPane implements InstanceCollector, Reloadab
 	private Image currentImage = null;
 	private Entity currentCache = null;
 	
-	private Image placeholder = null;
+	private TextNode noLibsErrorNode = null;
 	
 	public MediaPane() {
 	
 	}
 	
 	public void init() {
-		methodsToInvokeOnNextReload = new CustomList<>();
-		
 		canvas = new Canvas();
 		gifPlayer = new ImageView();
 		videoPlayer = VideoPlayer.create(canvas);
@@ -59,16 +48,17 @@ public class MediaPane extends BorderPane implements InstanceCollector, Reloadab
 		gifPlayer.fitWidthProperty().bind(galleryPane.widthProperty());
 		gifPlayer.fitHeightProperty().bind(galleryPane.heightProperty());
 		
+		noLibsErrorNode = new TextNode("No VLC Libs found.") {{
+			this.setFont(new Font(64));
+			this.minWidthProperty().bind(canvas.widthProperty());
+			this.minHeightProperty().bind(canvas.heightProperty());
+		}};
+		
 		this.setCenter(canvas);
 		
-		initEvents();
+		this.initEvents();
 	}
 	
-	private CustomList<Method> methodsToInvokeOnNextReload;
-	@Override
-	public CustomList<Method> getMethodsToInvokeOnNextReload() {
-		return methodsToInvokeOnNextReload;
-	}
 	public boolean reload() {
 		Entity currentTarget = target.get();
 		if (StageManager.getMainStage().isFullView() && currentTarget != null) {
@@ -112,7 +102,7 @@ public class MediaPane extends BorderPane implements InstanceCollector, Reloadab
 			currentCache = currentTarget;
 			
 			try {
-				File file = new File(currentCache.getPath());
+				File file = new File(currentCache.getFilePath());
 				ImageInputStream iis = ImageIO.createImageInputStream(file);
 				Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
 				
@@ -129,9 +119,9 @@ public class MediaPane extends BorderPane implements InstanceCollector, Reloadab
 			}
 			
 			if (originWidth > 2 * maxWidth || originHeight > 2 * maxHeight) {
-				currentImage = new Image("file:" + currentCache.getPath(), canvas.getWidth() * 1.5, canvas.getHeight() * 1.5, true, true);
+				currentImage = new Image("file:" + currentCache.getFilePath(), canvas.getWidth() * 1.5, canvas.getHeight() * 1.5, true, true);
 			} else {
-				currentImage = new Image("file:" + currentCache.getPath());
+				currentImage = new Image("file:" + currentCache.getFilePath());
 			}
 		} else {
 			originWidth = currentImage.getWidth();
@@ -168,7 +158,7 @@ public class MediaPane extends BorderPane implements InstanceCollector, Reloadab
 		
 		if (currentCache == null || !currentCache.equals(currentTarget)) {
 			currentCache = currentTarget;
-			currentImage = new Image("file:" + currentCache.getPath());
+			currentImage = new Image("file:" + currentCache.getFilePath());
 		}
 		
 		gifPlayer.setImage(currentImage);
@@ -181,40 +171,14 @@ public class MediaPane extends BorderPane implements InstanceCollector, Reloadab
 			
 			if (currentCache == null || !currentCache.equals(currentTarget)) {
 				currentCache = currentTarget;
-				videoPlayer.start(currentTarget.getPath());
+				videoPlayer.start(currentTarget.getFilePath());
 			} else {
 				videoPlayer.resume();
 			}
 		} else {
 			controls.setVideoMode(false);
-			
-			GraphicsContext gc = canvas.getGraphicsContext2D();
-			gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-			if (placeholder == null) placeholder = createPlaceholder();
-			gc.drawImage(placeholder, 0, 0, canvas.getWidth(), canvas.getHeight());
+			this.setCenter(noLibsErrorNode);
 		}
-	}
-	
-	private Image createPlaceholder() {
-		Label label = new Label("Placeholder");
-		label.setBackground(new Background(new BackgroundFill(Color.GRAY, null, null)));
-		label.setWrapText(true);
-		label.setFont(new Font(100));
-		label.setAlignment(Pos.CENTER);
-		
-		int width = (int) canvas.getWidth();
-		int height = (int) canvas.getHeight();
-		
-		label.setMinWidth(width);
-		label.setMinHeight(height);
-		label.setMaxWidth(width);
-		label.setMaxHeight(height);
-		
-		WritableImage img = new WritableImage(width, height);
-		Scene scene = new Scene(new Group(label));
-		scene.setFill(Color.GRAY);
-		scene.snapshot(img);
-		return img;
 	}
 	
 	private void initEvents() {
@@ -236,6 +200,10 @@ public class MediaPane extends BorderPane implements InstanceCollector, Reloadab
 				ClickMenu.hideAll();
 			}
 		});
+	}
+	
+	public void disposeVideoPlayer() {
+		if (videoPlayer != null) videoPlayer.dispose();
 	}
 	
 	public VideoPlayer getVideoPlayer() {

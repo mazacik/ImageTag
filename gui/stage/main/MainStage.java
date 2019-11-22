@@ -31,7 +31,6 @@ import tools.SystemUtil;
 
 import java.awt.*;
 import java.io.File;
-import java.util.logging.Logger;
 
 public class MainStage extends StageBase implements InstanceCollector {
 	private HBox introScene;
@@ -40,13 +39,13 @@ public class MainStage extends StageBase implements InstanceCollector {
 	private VBox createProjectScene;
 	private EditNode edtProjectNameCPS;
 	private EditNode edtProjectDirectoryCPS;
-	private EditNode edtWorkingDirectoryCPS;
+	private EditNode edtSourceDirectoryCPS;
 	private TextNode errorNodeCPS;
 	
 	private VBox editProjectScene;
 	private EditNode edtProjectNameEPS;
 	private EditNode edtProjectDirectoryEPS;
-	private EditNode edtWorkingDirectoryEPS;
+	private EditNode edtSourceDirectoryEPS;
 	private TextNode errorNodeEPS;
 	private String projectFullPathBeforeEdit;
 	
@@ -64,6 +63,9 @@ public class MainStage extends StageBase implements InstanceCollector {
 		initCreateProjectScene();
 		initEditProjectScene();
 		initMainScene();
+		
+		setStagePropertiesIntro();
+		showIntroScene();
 	}
 	private void initIntroScene() {
 		TextNode applicationNameNode = new TextNode("Tagallery", false, false, false, true);
@@ -85,7 +87,7 @@ public class MainStage extends StageBase implements InstanceCollector {
 				String projectFilePath = file.getAbsolutePath();
 				settings.getRecentProjects().add(0, projectFilePath);
 				Project project = Project.readFromDisk(projectFilePath);
-				LifecycleManager.startLoading(project);
+				LifecycleManager.startDatabaseLoading(project);
 			}
 		});
 		
@@ -113,7 +115,7 @@ public class MainStage extends StageBase implements InstanceCollector {
 		vBoxRecentProjects = new VBox();
 		vBoxRecentProjects.setMinWidth(400);
 		vBoxRecentProjects.setPadding(new Insets(5));
-		refreshRecentProjectNodes();
+		this.refreshRecentProjectNodes();
 		
 		introScene = new HBox(vBoxRecentProjects, new BoxSeparatorNode(), vBoxStartMenu);
 		introSceneOnKeyPress();
@@ -147,19 +149,19 @@ public class MainStage extends StageBase implements InstanceCollector {
 		hBoxProjectDirectory.setSpacing(10);
 		hBoxProjectDirectory.setAlignment(Pos.CENTER);
 		
-		TextNode lblWorkingDirectory = new TextNode("Working Directory:");
-		lblWorkingDirectory.setAlignment(Pos.CENTER_LEFT);
-		edtWorkingDirectoryCPS = new EditNode("");
-		edtWorkingDirectoryCPS.setPrefWidth(400);
-		TextNode btnWorkingDirectory = new TextNode("Browse", true, true, true, true);
-		btnWorkingDirectory.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+		TextNode lblSourceDirectory = new TextNode("Source Directory:");
+		lblSourceDirectory.setAlignment(Pos.CENTER_LEFT);
+		edtSourceDirectoryCPS = new EditNode("");
+		edtSourceDirectoryCPS.setPrefWidth(400);
+		TextNode btnSourceDirectory = new TextNode("Browse", true, true, true, true);
+		btnSourceDirectory.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
-				edtWorkingDirectoryCPS.setText(FileUtil.directoryChooser(this.getScene()));
+				edtSourceDirectoryCPS.setText(FileUtil.directoryChooser(this.getScene()));
 			}
 		});
-		HBox hBoxWorkingDirectory = new HBox(lblWorkingDirectory, edtWorkingDirectoryCPS, btnWorkingDirectory);
-		hBoxWorkingDirectory.setSpacing(10);
-		hBoxWorkingDirectory.setAlignment(Pos.CENTER);
+		HBox hBoxSourceDirectory = new HBox(lblSourceDirectory, edtSourceDirectoryCPS, btnSourceDirectory);
+		hBoxSourceDirectory.setSpacing(10);
+		hBoxSourceDirectory.setAlignment(Pos.CENTER);
 		
 		errorNodeCPS = new TextNode("");
 		errorNodeCPS.setTextFill(ColorUtil.getColorNegative());
@@ -167,19 +169,19 @@ public class MainStage extends StageBase implements InstanceCollector {
 		TextNode btnCreateProject = new TextNode("Create Project", true, true, true, true);
 		btnCreateProject.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 			if (this.checkEditValidityCPS()) {
-				this.createProject(edtProjectNameCPS.getText(), edtProjectDirectoryCPS.getText(), edtWorkingDirectoryCPS.getText());
+				this.createProject(edtProjectNameCPS.getText(), edtProjectDirectoryCPS.getText(), edtSourceDirectoryCPS.getText());
 			}
 		});
 		TextNode btnCancel = new TextNode("Cancel", true, true, true, true);
 		btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> showIntroScene());
 		HBox hBoxCreateCancel = new HBox(btnCancel, btnCreateProject);
 		
-		double width = SizeUtil.getStringWidth(lblWorkingDirectory.getText());
+		double width = SizeUtil.getStringWidth(lblSourceDirectory.getText());
 		lblProjectName.setPrefWidth(width);
 		lblProjectDirectory.setPrefWidth(width);
-		lblWorkingDirectory.setPrefWidth(width);
+		lblSourceDirectory.setPrefWidth(width);
 		
-		createProjectScene = new VBox(hBoxProjectName, hBoxProjectDirectory, hBoxWorkingDirectory, errorNodeCPS, hBoxCreateCancel);
+		createProjectScene = new VBox(hBoxProjectName, hBoxProjectDirectory, hBoxSourceDirectory, errorNodeCPS, hBoxCreateCancel);
 		createProjectScene.setPadding(new Insets(10));
 		createProjectScene.setSpacing(5);
 		createProjectScene.setAlignment(Pos.CENTER);
@@ -187,7 +189,7 @@ public class MainStage extends StageBase implements InstanceCollector {
 		createProjectScene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
 			if (event.getCode() == KeyCode.ENTER) {
 				if (this.checkEditValidityCPS()) {
-					createProject(edtProjectNameCPS.getText(), edtProjectDirectoryCPS.getText(), edtWorkingDirectoryCPS.getText());
+					createProject(edtProjectNameCPS.getText(), edtProjectDirectoryCPS.getText(), edtSourceDirectoryCPS.getText());
 				}
 			} else if (event.getCode() == KeyCode.ESCAPE) {
 				showIntroScene();
@@ -225,19 +227,19 @@ public class MainStage extends StageBase implements InstanceCollector {
 		hBoxProjectDirectory.setSpacing(10);
 		hBoxProjectDirectory.setAlignment(Pos.CENTER);
 		
-		TextNode lblWorkingDirectory = new TextNode("Working Directory:");
-		lblWorkingDirectory.setAlignment(Pos.CENTER_LEFT);
-		edtWorkingDirectoryEPS = new EditNode("");
-		edtWorkingDirectoryEPS.setPrefWidth(400);
-		TextNode btnWorkingDirectory = new TextNode("Browse", true, true, true, true);
-		btnWorkingDirectory.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+		TextNode lblSourceDirectory = new TextNode("Source Directory:");
+		lblSourceDirectory.setAlignment(Pos.CENTER_LEFT);
+		edtSourceDirectoryEPS = new EditNode("");
+		edtSourceDirectoryEPS.setPrefWidth(400);
+		TextNode btnSourceDirectory = new TextNode("Browse", true, true, true, true);
+		btnSourceDirectory.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
-				edtWorkingDirectoryEPS.setText(FileUtil.directoryChooser(this.getScene()));
+				edtSourceDirectoryEPS.setText(FileUtil.directoryChooser(this.getScene()));
 			}
 		});
-		HBox hBoxWorkingDirectory = new HBox(lblWorkingDirectory, edtWorkingDirectoryEPS, btnWorkingDirectory);
-		hBoxWorkingDirectory.setSpacing(10);
-		hBoxWorkingDirectory.setAlignment(Pos.CENTER);
+		HBox hBoxSourceDirectory = new HBox(lblSourceDirectory, edtSourceDirectoryEPS, btnSourceDirectory);
+		hBoxSourceDirectory.setSpacing(10);
+		hBoxSourceDirectory.setAlignment(Pos.CENTER);
 		
 		errorNodeEPS = new TextNode("");
 		errorNodeEPS.setTextFill(ColorUtil.getColorNegative());
@@ -245,7 +247,7 @@ public class MainStage extends StageBase implements InstanceCollector {
 		TextNode btnApplyChanges = new TextNode("Apply Changes", true, true, true, true);
 		btnApplyChanges.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 			if (this.checkEditValidityEPS()) {
-				this.editProject(edtProjectNameEPS.getText(), edtProjectDirectoryEPS.getText(), edtWorkingDirectoryEPS.getText());
+				this.editProject(edtProjectNameEPS.getText(), edtProjectDirectoryEPS.getText(), edtSourceDirectoryEPS.getText());
 				this.refreshRecentProjectNodes();
 				this.showIntroScene();
 			}
@@ -254,12 +256,12 @@ public class MainStage extends StageBase implements InstanceCollector {
 		btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> showIntroScene());
 		HBox hBoxCreateCancel = new HBox(btnCancel, btnApplyChanges);
 		
-		double width = SizeUtil.getStringWidth(lblWorkingDirectory.getText());
+		double width = SizeUtil.getStringWidth(lblSourceDirectory.getText());
 		lblProjectName.setPrefWidth(width);
 		lblProjectDirectory.setPrefWidth(width);
-		lblWorkingDirectory.setPrefWidth(width);
+		lblSourceDirectory.setPrefWidth(width);
 		
-		editProjectScene = new VBox(hBoxProjectName, hBoxProjectDirectory, hBoxWorkingDirectory, errorNodeEPS, hBoxCreateCancel);
+		editProjectScene = new VBox(hBoxProjectName, hBoxProjectDirectory, hBoxSourceDirectory, errorNodeEPS, hBoxCreateCancel);
 		editProjectScene.setPadding(new Insets(10));
 		editProjectScene.setSpacing(5);
 		editProjectScene.setAlignment(Pos.CENTER);
@@ -267,7 +269,7 @@ public class MainStage extends StageBase implements InstanceCollector {
 		editProjectScene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
 			if (event.getCode() == KeyCode.ENTER) {
 				if (this.checkEditValidityEPS()) {
-					this.editProject(edtProjectNameEPS.getText(), edtProjectDirectoryEPS.getText(), edtWorkingDirectoryEPS.getText());
+					this.editProject(edtProjectNameEPS.getText(), edtProjectDirectoryEPS.getText(), edtSourceDirectoryEPS.getText());
 					this.refreshRecentProjectNodes();
 					this.showIntroScene();
 				}
@@ -310,7 +312,7 @@ public class MainStage extends StageBase implements InstanceCollector {
 				case ENTER:
 					CustomList<String> recentProjectFullPaths = settings.getRecentProjects();
 					if (!recentProjectFullPaths.isEmpty()) {
-						LifecycleManager.startLoading(Project.readFromDisk(recentProjectFullPaths.getFirst()));
+						LifecycleManager.startDatabaseLoading(Project.readFromDisk(recentProjectFullPaths.getFirst()));
 					} else {
 						showCreateProjectScene();
 					}
@@ -351,21 +353,20 @@ public class MainStage extends StageBase implements InstanceCollector {
 	public void showCreateProjectScene() {
 		edtProjectNameCPS.setText("");
 		edtProjectDirectoryCPS.setText("");
-		edtWorkingDirectoryCPS.setText("");
+		edtSourceDirectoryCPS.setText("");
 		
 		this.setTitle("Create a New Project");
 		this.setRoot(createProjectScene);
 	}
-	private void createProject(String projectName, String projectDirectory, String workingDirectory) {
-		if (!projectDirectory.endsWith(File.separator)) projectDirectory += File.separator;
+	private void createProject(String projectName, String projectDirectory, String sourceDirectory) {
 		if (!projectName.endsWith(".json")) projectName += ".json";
 		
-		Project project = new Project(projectDirectory + projectName, workingDirectory);
+		Project project = new Project(projectDirectory + File.separator + projectName, sourceDirectory);
 		project.writeToDisk();
 		
 		settings.getRecentProjects().add(0, project.getProjectFileFullPath());
 		settings.writeToDisk();
-		LifecycleManager.startLoading(project);
+		LifecycleManager.startDatabaseLoading(project);
 	}
 	private boolean checkEditValidityCPS() {
 		if (edtProjectNameCPS.getText().isEmpty()) {
@@ -376,19 +377,19 @@ public class MainStage extends StageBase implements InstanceCollector {
 			errorNodeCPS.setText("Project Directory cannot be empty");
 			return false;
 		}
-		if (edtWorkingDirectoryCPS.getText().isEmpty()) {
-			errorNodeCPS.setText("Working Directory cannot be empty");
+		if (edtSourceDirectoryCPS.getText().isEmpty()) {
+			errorNodeCPS.setText("Source Directory cannot be empty");
 			return false;
 		}
 		
 		File projectDirectory = new File(edtProjectDirectoryCPS.getText());
-		File workingDirectory = new File(edtWorkingDirectoryCPS.getText());
+		File sourceDirectory = new File(edtSourceDirectoryCPS.getText());
 		
 		if (!projectDirectory.exists() || !projectDirectory.isDirectory()) {
 			errorNodeCPS.setText("Project Directory invalid or not found");
 			return false;
 		}
-		if (!workingDirectory.exists() || !workingDirectory.isDirectory()) {
+		if (!sourceDirectory.exists() || !sourceDirectory.isDirectory()) {
 			errorNodeCPS.setText("Project Directory invalid or not found");
 			return false;
 		}
@@ -400,19 +401,19 @@ public class MainStage extends StageBase implements InstanceCollector {
 	public void showEditProjectScene(Project project) {
 		edtProjectNameEPS.setText(project.getProjectFileName());
 		edtProjectDirectoryEPS.setText(project.getProjectDirectory());
-		edtWorkingDirectoryEPS.setText(project.getWorkingDirectory());
+		edtSourceDirectoryEPS.setText(project.getSourceDirectory());
 		
 		projectFullPathBeforeEdit = project.getProjectFileFullPath();
 		
 		this.setTitle("Edit Project");
 		this.setRoot(editProjectScene);
 	}
-	private void editProject(String projectName, String projectDirectory, String workingDirectory) {
+	private void editProject(String projectName, String projectDirectory, String sourceDirectory) {
 		if (!projectDirectory.endsWith(File.separator)) projectDirectory += File.separator;
 		if (!projectName.endsWith(".json")) projectName += ".json";
 		
 		String projectFile = projectDirectory + projectName;
-		Project project = new Project(projectFile, workingDirectory);
+		Project project = new Project(projectFile, sourceDirectory);
 		
 		SystemUtil.deleteFile(projectFullPathBeforeEdit);
 		project.writeToDisk();
@@ -430,19 +431,19 @@ public class MainStage extends StageBase implements InstanceCollector {
 			errorNodeEPS.setText("Project Directory cannot be empty");
 			return false;
 		}
-		if (edtWorkingDirectoryEPS.getText().isEmpty()) {
-			errorNodeEPS.setText("Working Directory cannot be empty");
+		if (edtSourceDirectoryEPS.getText().isEmpty()) {
+			errorNodeEPS.setText("Source Directory cannot be empty");
 			return false;
 		}
 		
 		File projectDirectory = new File(edtProjectDirectoryEPS.getText());
-		File workingDirectory = new File(edtWorkingDirectoryEPS.getText());
+		File sourceDirectory = new File(edtSourceDirectoryEPS.getText());
 		
 		if (!projectDirectory.exists() || !projectDirectory.isDirectory()) {
 			errorNodeEPS.setText("Project Directory invalid or not found");
 			return false;
 		}
-		if (!workingDirectory.exists() || !workingDirectory.isDirectory()) {
+		if (!sourceDirectory.exists() || !sourceDirectory.isDirectory()) {
 			errorNodeEPS.setText("Project Directory invalid or not found");
 			return false;
 		}
@@ -456,14 +457,7 @@ public class MainStage extends StageBase implements InstanceCollector {
 		this.setMinHeight(100 + SizeUtil.getPrefHeightTopMenu() + settings.getTileSize());
 		this.setWidth(SizeUtil.getUsableScreenWidth());
 		this.setHeight(SizeUtil.getUsableScreenHeight());
-		this.setOnCloseRequest(event -> {
-			Logger.getGlobal().info("application exit");
-			VideoPlayer videoPlayer = mediaPane.getVideoPlayer();
-			if (videoPlayer != null) videoPlayer.dispose();
-			settings.writeToDisk();
-			entityListMain.writeToDisk();
-			tagListMain.writeDummyToDisk();
-		});
+		this.setOnCloseRequest(event -> LifecycleManager.exitApplication());
 		
 		this.setBorder(null);
 		this.setAlwaysOnTop(false);
@@ -508,7 +502,6 @@ public class MainStage extends StageBase implements InstanceCollector {
 			galleryPane.requestFocus();
 		} else if (panes.contains(galleryPane)) {
 			panes.set(panes.indexOf(galleryPane), mediaPane);
-			reload.request(mediaPane, "reload");
 			mediaPane.requestFocus();
 			mediaPane.fireEvent(new MouseEvent(MouseEvent.MOUSE_MOVED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
 		}

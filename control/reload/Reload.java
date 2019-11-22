@@ -6,83 +6,66 @@ import baseobject.entity.EntityList;
 import main.InstanceCollector;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 public class Reload implements InstanceCollector {
-	private CustomList<Reloadable> reloadables;
 	private CustomList<Entity> needsTileEffect;
+	private CustomList<InvokeHelper> queue;
 	
 	public Reload() {
 	
 	}
 	
 	public void init() {
-		reloadables = new CustomList<>();
-		reloadables.add(toolbarPane);
-		reloadables.add(galleryPane);
-		reloadables.add(mediaPane);
-		reloadables.add(filterPane);
-		reloadables.add(selectPane);
-		
 		needsTileEffect = new CustomList<>();
+		queue = new CustomList<>();
 		
 		try {
-			this.subscribe(ChangeIn.TARGET, toolbarPane, toolbarPane.getClass().getMethod("reload"));
+			InvokeHelper invokeHelper1 = new InvokeHelper(toolbarPane, toolbarPane.getClass().getMethod("reload"));
+			ChangeIn.TARGET.getSubscribers().add(invokeHelper1);
 			
-			this.subscribe(ChangeIn.ENTITY_LIST_MAIN, galleryPane, galleryPane.getClass().getMethod("reload"));
-			this.subscribe(ChangeIn.FILTER, galleryPane, galleryPane.getClass().getMethod("reload"));
+			InvokeHelper invokeHelper2 = new InvokeHelper(galleryPane, galleryPane.getClass().getMethod("reload"));
+			ChangeIn.ENTITY_LIST_MAIN.getSubscribers().add(invokeHelper2);
+			ChangeIn.FILTER.getSubscribers().add(invokeHelper2);
 			
-			this.subscribe(ChangeIn.TARGET, mediaPane, mediaPane.getClass().getMethod("reload"));
+			InvokeHelper invokeHelper3 = new InvokeHelper(mediaPane, mediaPane.getClass().getMethod("reload"));
+			ChangeIn.TARGET.getSubscribers().add(invokeHelper3);
 			
-			this.subscribe(ChangeIn.TAG_LIST_MAIN, filterPane, filterPane.getClass().getMethod("reload"));
-			this.subscribe(ChangeIn.FILTER, filterPane, filterPane.getClass().getMethod("refresh"));
+			InvokeHelper invokeHelper4 = new InvokeHelper(filterPane, filterPane.getClass().getMethod("reload"));
+			InvokeHelper invokeHelper5 = new InvokeHelper(filterPane, filterPane.getClass().getMethod("refresh"));
+			ChangeIn.TAG_LIST_MAIN.getSubscribers().add(invokeHelper4);
+			ChangeIn.FILTER.getSubscribers().add(invokeHelper5);
 			
-			this.subscribe(ChangeIn.TAG_LIST_MAIN, selectPane, selectPane.getClass().getMethod("reload"));
-			this.subscribe(ChangeIn.TARGET, selectPane, selectPane.getClass().getMethod("refresh"));
-			this.subscribe(ChangeIn.SELECT, selectPane, selectPane.getClass().getMethod("refresh"));
-			this.subscribe(ChangeIn.TAGS_OF_SELECT, selectPane, selectPane.getClass().getMethod("refresh"));
-			
+			InvokeHelper invokeHelper6 = new InvokeHelper(selectPane, selectPane.getClass().getMethod("reload"));
+			InvokeHelper invokeHelper7 = new InvokeHelper(selectPane, selectPane.getClass().getMethod("refresh"));
+			ChangeIn.TAG_LIST_MAIN.getSubscribers().add(invokeHelper6);
+			ChangeIn.TARGET.getSubscribers().add(invokeHelper7);
+			ChangeIn.SELECT.getSubscribers().add(invokeHelper7);
+			ChangeIn.TAGS_OF_SELECT.getSubscribers().add(invokeHelper7);
 		} catch (NoSuchMethodException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	private void subscribe(ChangeIn onChangeIn, Reloadable reloadable, Method method) {
-		onChangeIn.getSubscribers().add(new InvokeHelper(reloadable, method), true);
 	}
 	
 	public void notify(ChangeIn... changeIns) {
 		for (ChangeIn changeIn : changeIns) {
-			for (InvokeHelper invokeHelper : changeIn.getSubscribers()) {
-				invokeHelper.getInstance().getMethodsToInvokeOnNextReload().add(invokeHelper.getMethod(), true);
-			}
-		}
-	}
-	public void request(Reloadable reloadable, String method) {
-		try {
-			reloadable.getMethodsToInvokeOnNextReload().add(reloadable.getClass().getMethod(method), true);
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
+			queue.addAll(changeIn.getSubscribers(), true);
 		}
 	}
 	
 	public void doReload() {
-		for (Reloadable reloadable : reloadables) {
-			CustomList<Method> invokedMethods = new CustomList<>();
-			
-			for (Method method : reloadable.getMethodsToInvokeOnNextReload()) {
-				try {
-					if ((boolean) method.invoke(reloadable)) {
-						invokedMethods.add(method, true);
-					}
-				} catch (IllegalAccessException | InvocationTargetException e) {
-					e.printStackTrace();
+		CustomList<InvokeHelper> successful = new CustomList<>();
+		
+		for (InvokeHelper invokeHelper : queue) {
+			try {
+				if ((boolean) invokeHelper.getMethod().invoke(invokeHelper.getInstance())) {
+					successful.add(invokeHelper);
 				}
+			} catch (IllegalAccessException | InvocationTargetException e) {
+				e.printStackTrace();
 			}
-			
-			reloadable.getMethodsToInvokeOnNextReload().removeAll(invokedMethods);
-			invokedMethods.clear();
 		}
+		
+		queue.removeAll(successful);
 		
 		EntityList entityList = galleryPane.getEntitiesOfTiles();
 		EntityList helper = new EntityList();

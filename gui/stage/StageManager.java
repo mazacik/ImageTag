@@ -13,7 +13,6 @@ public abstract class StageManager {
 	private static OkCancelStage okCancelStage;
 	private static YesNoCancelStage yesNoCancelStage;
 	private static FilterSettingsStage filterSettingsStage;
-	private static CacheCompareStage cacheCompareStage;
 	
 	public static MainStage getMainStage() {
 		if (mainStage == null) mainStage = new MainStage();
@@ -43,9 +42,5 @@ public abstract class StageManager {
 	public static FilterSettingsStage getFilterSettingsStage() {
 		if (filterSettingsStage == null) filterSettingsStage = new FilterSettingsStage();
 		return filterSettingsStage;
-	}
-	public static CacheCompareStage getCacheCompareStage() {
-		if (cacheCompareStage == null) cacheCompareStage = new CacheCompareStage();
-		return cacheCompareStage;
 	}
 }

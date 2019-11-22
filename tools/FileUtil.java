@@ -3,10 +3,8 @@ package tools;
 import baseobject.CustomList;
 import baseobject.entity.Entity;
 import baseobject.entity.EntityList;
-import cache.CacheWriter;
 import gui.stage.StageManager;
 import gui.stage.template.ButtonBooleanValue;
-import gui.stage.template.YesNoCancelStage;
 import javafx.scene.Scene;
 import javafx.stage.DirectoryChooser;
 import main.InstanceCollector;
@@ -15,8 +13,6 @@ import tools.enums.FileType;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Comparator;
-import java.util.logging.Logger;
 
 public abstract class FileUtil implements InstanceCollector {
 	private static final String[] imageExtensions = new String[]{
@@ -43,14 +39,10 @@ public abstract class FileUtil implements InstanceCollector {
 	private static CustomList<String> validExtensions = new CustomList<>();
 	
 	public static void init(String dirProject, String dirSource) {
-		String separator = File.separator;
-		if (!dirProject.endsWith(separator)) dirProject += separator;
-		if (!dirSource.endsWith(separator)) dirSource += separator;
-		
 		projectDirSource = dirSource;
-		projectFileData = dirProject + "data.json";
-		projectFileTags = dirProject + "tags.json";
-		projectDirCache = dirProject + "cache" + separator;
+		projectFileData = dirProject + File.separator + "data.json";
+		projectFileTags = dirProject + File.separator + "tags.json";
+		projectDirCache = dirProject + File.separator + "cache";
 		
 		File dirCache = new File(projectDirCache);
 		if (!dirCache.exists()) {
@@ -72,10 +64,7 @@ public abstract class FileUtil implements InstanceCollector {
 		
 		if (directory == null) return "";
 		
-		String result = directory.getAbsolutePath();
-		char lastChar = result.charAt(result.length() - 1);
-		if (lastChar != File.separatorChar) result += File.separatorChar;
-		return result;
+		return directory.getAbsolutePath();
 	}
 	public static String directoryChooser(Scene ownerScene) {
 		return directoryChooser(ownerScene, System.getProperty("user.dir"));
@@ -112,23 +101,17 @@ public abstract class FileUtil implements InstanceCollector {
 		return getSupportedFiles(new File(directory));
 	}
 	
-	public static void initEntityPaths(CustomList<File> fileList) {
-		EntityList entities = entityListMain;
-		if (entities.size() == fileList.size()) {
-			for (int i = 0; i < entities.size(); i++) {
-				Entity entity = entities.get(i);
-				File sourceFile = fileList.get(i);
-				entity.setPath(sourceFile.getAbsolutePath());
-				//entity.setLength(sourceFile.length());
-			}
-		} else {
-			String error = "entities.size() != fileList.size()";
-			Logger.getGlobal().warning(error);
+	public static void initEntityPaths() {
+		String base = FileUtil.getProjectDirSource() + File.separator;
+		for (Entity entity : entityListMain) {
+			entity.setFilePath(base + entity.getName());
 		}
 	}
 	public static void importFiles() {
+		//todo fix
+		if (true) return;
+		
 		CustomList<File> sourceDirFiles = getSupportedFiles(projectDirSource);
-		fixDuplicateFileNames(sourceDirFiles);
 		CustomList<String> sourceDirFileNames = new CustomList<>();
 		sourceDirFiles.forEach(file -> sourceDirFileNames.add(file.getName()));
 		
@@ -141,7 +124,7 @@ public abstract class FileUtil implements InstanceCollector {
 		if (directory != null && directory.isDirectory()) {
 			for (File file : getSupportedFiles(directory)) {
 				String oldPath = file.getAbsolutePath();
-				String newPath = projectDirSource + file.getName();
+				String newPath = projectDirSource + File.separator;// + FileUtil.getNameForEntity();
 				if (sourceDirFileNames.contains(file.getName())) {
 					String name = getFileNameWithoutExtension(file);
 					String extension = getExtension(file).toLowerCase();
@@ -182,42 +165,11 @@ public abstract class FileUtil implements InstanceCollector {
 			}
 			
 			reload.doReload();
-			galleryPane.updateViewportTilesVisibility();
 		}
 	}
 	
-	public static void fixDuplicateFileNames(CustomList<File> fileList) {
-		fileList.sort(Comparator.comparing(File::getName));
-		File file1;
-		File file2;
-		int j;
-		int sameName;
-		for (int i = 0; i < fileList.size() - 1; i++) {
-			sameName = 0;
-			j = i + 1;
-			file1 = fileList.get(i);
-			file2 = fileList.get(j);
-			while (file1.getName().equals(file2.getName())) {
-				String path = getAbsulatePathWithoutExtension(file2);
-				String extension = getExtension(file2).toLowerCase();
-				int k = 1;
-				File newFile;
-				do {
-					newFile = new File(path + "_" + k + extension);
-					k++;
-				} while (newFile.exists());
-				Logger.getGlobal().info("Renaming " + file2.getAbsolutePath() + " to " + newFile.getAbsolutePath());
-				file2.renameTo(newFile);
-				sameName++;
-				file2 = fileList.get(++j);
-			}
-			i += sameName;
-		}
-	}
-	public static String getAbsulatePathWithoutExtension(File file) {
-		String absolutePath = file.getAbsolutePath();
-		int index = absolutePath.lastIndexOf('.');
-		return absolutePath.substring(0, index);
+	public static String getNameForEntity(File file) {
+		return file.getAbsolutePath().substring((projectDirSource + File.separator).length());
 	}
 	public static String getFileNameWithoutExtension(File file) {
 		String fileName = file.getName();
@@ -252,7 +204,7 @@ public abstract class FileUtil implements InstanceCollector {
 		throw new RuntimeException("FileType " + ext.toUpperCase() + " is not supported");
 	}
 	public static String getCacheFilePath(Entity entity) {
-		return FileUtil.getProjectDirCache() + entity.getName() + "-" + entity.getLength() + CacheWriter.getCacheExtension();
+		return FileUtil.getProjectDirCache() + File.separator + entity.getName() + "-" + entity.getLength() + ".jpg";
 	}
 	
 	public static String getProjectDirSource() {

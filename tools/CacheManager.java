@@ -1,12 +1,20 @@
-package cache;
+package tools;
 
 import baseobject.entity.Entity;
 import gui.main.center.VideoPlayer;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.geometry.Pos;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import main.InstanceCollector;
-import tools.FileUtil;
-import tools.GifDecoder;
+import org.apache.commons.lang3.StringUtils;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
@@ -19,11 +27,41 @@ import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Logger;
 
-public abstract class CacheWriter implements InstanceCollector {
-	private static final String CACHE_EXTENSION = ".jpg";
+public abstract class CacheManager implements InstanceCollector {
+	private static Image placeholder = new WritableImage(settings.getTileSize(), settings.getTileSize()) {{
+		Label label = new Label("Placeholder");
+		label.setBackground(new Background(new BackgroundFill(Color.GRAY, null, null)));
+		label.setWrapText(true);
+		label.setFont(new Font(26));
+		label.setAlignment(Pos.CENTER);
+		
+		int size = settings.getTileSize();
+		label.setMinWidth(size);
+		label.setMinHeight(size);
+		label.setMaxWidth(size);
+		label.setMaxHeight(size);
+		
+		Scene scene = new Scene(new Group(label));
+		scene.setFill(Color.GRAY);
+		scene.snapshot(this);
+	}};
 	
-	public static synchronized Image write(Entity entity) {
-		Logger.getGlobal().info(entity.getName());
+	public static Image get(Entity entity) {
+		File cacheFile = new File(FileUtil.getCacheFilePath(entity));
+		Image image;
+		
+		if (cacheFile.exists()) {
+			image = new Image("file:" + cacheFile.getAbsolutePath());
+		} else {
+			image = create(entity);
+		}
+		
+		return (image == null) ? placeholder : image;
+	}
+	
+	public static Image create(Entity entity) {
+		String entityIndex = StringUtils.right("00000000" + (entityListMain.indexOf(entity) + 1), String.valueOf(entityListMain.size()).length());
+		Logger.getGlobal().info(String.format("[%s] %s", entityIndex, entity.getName()));
 		
 		switch (FileUtil.getFileType(entity)) {
 			case IMAGE:
@@ -36,15 +74,16 @@ public abstract class CacheWriter implements InstanceCollector {
 				return null;
 		}
 	}
-	
 	private static Image createFromImage(Entity entity) {
 		int thumbSize = settings.getTileSize();
-		Image image = new Image("file:" + entity.getPath(), thumbSize, thumbSize, false, false);
+		Image image = new Image("file:" + entity.getFilePath(), thumbSize, thumbSize, false, false);
 		BufferedImage buffer = SwingFXUtils.fromFXImage(image, null);
 		
 		if (buffer != null) {
 			try {
-				ImageIO.write(buffer, "jpg", new File(FileUtil.getCacheFilePath(entity)));
+				File cacheFile = new File(FileUtil.getCacheFilePath(entity));
+				cacheFile.getParentFile().mkdirs();
+				ImageIO.write(buffer, "jpg", cacheFile);
 			} catch (IOException e) {
 				e.printStackTrace();
 				return null;
@@ -57,19 +96,21 @@ public abstract class CacheWriter implements InstanceCollector {
 	}
 	private static Image createFromGif(Entity entity) {
 		GifDecoder gifDecoder = new GifDecoder();
-		gifDecoder.read(entity.getPath());
+		gifDecoder.read(entity.getFilePath());
 		int thumbSize = settings.getTileSize();
 		
 		java.awt.Image frame = gifDecoder.getFrame(gifDecoder.getFrameCount() / 2).getScaledInstance(thumbSize, thumbSize, java.awt.Image.SCALE_FAST);
 		BufferedImage buffer = new BufferedImage(thumbSize, thumbSize, BufferedImage.TYPE_INT_RGB);
 		Graphics2D graphics = buffer.createGraphics();
-		graphics.setBackground(Color.BLACK);
+		graphics.setBackground(java.awt.Color.BLACK);
 		graphics.clearRect(0, 0, thumbSize, thumbSize);
 		graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		graphics.drawImage(frame, 0, 0, thumbSize, thumbSize, null);
 		
 		try {
-			ImageIO.write(buffer, "jpg", new File(FileUtil.getCacheFilePath(entity)));
+			File cacheFile = new File(FileUtil.getCacheFilePath(entity));
+			cacheFile.getParentFile().mkdirs();
+			ImageIO.write(buffer, "jpg", cacheFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
@@ -109,8 +150,9 @@ public abstract class CacheWriter implements InstanceCollector {
 			});
 			
 			File cacheFile = new File(FileUtil.getCacheFilePath(entity));
+			cacheFile.getParentFile().mkdirs();
 			
-			if (mediaPlayer.media().start(entity.getPath())) {
+			if (mediaPlayer.media().start(entity.getFilePath())) {
 				try {
 					mediaPlayer.controls().setPosition(mediaPosition);
 					inPositionLatch.await(); // might wait forever if error
@@ -138,18 +180,19 @@ public abstract class CacheWriter implements InstanceCollector {
 		}
 	}
 	
-	public static void writeAllCacheInBackground() {
-		new Thread(() -> {
-			for (Entity entity : entityListMain) {
-				File cacheFile = new File(FileUtil.getCacheFilePath(entity));
-				if (!cacheFile.exists()) {
-					CacheWriter.write(entity);
+	private static Thread cacheThread = null;
+	public static void createCacheInBackground() {
+		if (cacheThread == null || !cacheThread.isAlive()) {
+			cacheThread = new Thread(() -> {
+				for (Entity entity : entityListMain) {
+					if (Thread.currentThread().isInterrupted()) return;
+					entity.getGalleryTile().setImage(CacheManager.get(entity));
 				}
-			}
-		}).start();
+			});
+			cacheThread.start();
+		}
 	}
-	
-	public static String getCacheExtension() {
-		return CACHE_EXTENSION;
+	public static void stopThread() {
+		cacheThread.interrupt();
 	}
 }

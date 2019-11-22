@@ -3,6 +3,7 @@ package baseobject.entity;
 import baseobject.tag.TagList;
 import gui.main.center.GalleryTile;
 import main.InstanceCollector;
+import tools.FileUtil;
 
 import java.io.File;
 import java.io.Serializable;
@@ -13,18 +14,21 @@ public class Entity implements InstanceCollector, Serializable {
 	private long length;
 	private int entityGroupID;
 	
-	private transient String path;
-	private transient GalleryTile galleryTile;
 	private transient EntityList entityGroup;
+	private transient GalleryTile galleryTile;
+	
+	private transient String filePath;
 	
 	public Entity(File file) {
-		this.name = file.getName();
+		this.name = FileUtil.getNameForEntity(file);
 		this.tagList = new TagList();
 		this.length = file.length();
 		this.entityGroupID = 0;
 		
-		this.path = file.getAbsolutePath();
 		this.entityGroup = null;
+		this.galleryTile = new GalleryTile(this);
+		
+		this.filePath = file.getAbsolutePath();
 	}
 	
 	public String getName() {
@@ -39,17 +43,16 @@ public class Entity implements InstanceCollector, Serializable {
 	public int getEntityGroupID() {
 		return entityGroupID;
 	}
-	public String getPath() {
-		return path;
-	}
-	public GalleryTile getGalleryTile() {
-		if (galleryTile == null) {
-			galleryTile = new GalleryTile(this);
-		}
-		return galleryTile;
-	}
+	
 	public EntityList getEntityGroup() {
 		return entityGroup;
+	}
+	public GalleryTile getGalleryTile() {
+		if (galleryTile == null) galleryTile = new GalleryTile(this);
+		return galleryTile;
+	}
+	public String getFilePath() {
+		return filePath;
 	}
 	
 	public void setName(String name) {
@@ -61,10 +64,11 @@ public class Entity implements InstanceCollector, Serializable {
 	public void setEntityGroupID(int entityGroupID) {
 		this.entityGroupID = entityGroupID;
 	}
-	public void setPath(String path) {
-		this.path = path;
-	}
+	
 	public void setEntityGroup(EntityList entityGroup) {
 		this.entityGroup = entityGroup;
+	}
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
 	}
 }
