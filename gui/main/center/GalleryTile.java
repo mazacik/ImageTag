@@ -208,6 +208,7 @@ public class GalleryTile extends Pane implements InstanceCollector {
 		return imageView.getImage();
 	}
 	public void setImage(Image image) {
-		imageView.setImage(image);
+		if (image == null) imageView.setImage(loadingImage);
+		else imageView.setImage(image);
 	}
 }

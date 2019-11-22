@@ -20,6 +20,8 @@ import tools.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.logging.Logger;
 
 public enum ButtonTemplates implements InstanceCollector {
@@ -274,6 +276,27 @@ public enum ButtonTemplates implements InstanceCollector {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				EntityGroupUtil.discardGroup(select);
 				reload.doReload();
+				ClickMenu.hideAll();
+			});
+			return textNode;
+		}
+	},
+	
+	CACHE_RESET {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Reset Cache", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				CacheManager.stopThread();
+				for (Entity entity : entityListMain) {
+					try {
+						Files.delete(Paths.get(FileUtil.getCacheFilePath(entity)));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					entity.getGalleryTile().setImage(null);
+				}
+				CacheManager.createCacheInBackground();
 				ClickMenu.hideAll();
 			});
 			return textNode;

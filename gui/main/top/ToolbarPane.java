@@ -30,8 +30,9 @@ public class ToolbarPane extends TitleBar implements Reloadable, InstanceCollect
 		TextNode nodeFile = new TextNode("File", true, true, false, true);
 		TextNode nodeSave = ButtonTemplates.APPLICATION_SAVE.get();
 		TextNode nodeImport = ButtonTemplates.APPLICATION_IMPORT.get();
+		TextNode nodeCacheReset = ButtonTemplates.CACHE_RESET.get();
 		TextNode nodeExit = ButtonTemplates.APPLICATION_EXIT.get();
-		ClickMenu.install(nodeFile, Direction.DOWN, nodeSave, nodeImport, new BoxSeparatorNode(), nodeExit);
+		ClickMenu.install(nodeFile, Direction.DOWN, nodeSave, nodeImport, nodeCacheReset, new BoxSeparatorNode(), nodeExit);
 		
 		TextNode nodeRandom = ButtonTemplates.FILTER_RANDOM.get();
 		HBox hBoxTools = new HBox(nodeRandom);
