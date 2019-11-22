@@ -11,8 +11,10 @@ import main.InstanceCollector;
 import tools.enums.FileType;
 
 import java.io.File;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.logging.Logger;
 
 public abstract class FileUtil implements InstanceCollector {
 	private static final String[] imageExtensions = new String[]{
@@ -108,13 +110,6 @@ public abstract class FileUtil implements InstanceCollector {
 		}
 	}
 	public static void importFiles() {
-		//todo fix
-		if (true) return;
-		
-		CustomList<File> sourceDirFiles = getSupportedFiles(projectDirSource);
-		CustomList<String> sourceDirFileNames = new CustomList<>();
-		sourceDirFiles.forEach(file -> sourceDirFileNames.add(file.getName()));
-		
 		DirectoryChooser directoryChooser = new DirectoryChooser();
 		directoryChooser.setTitle("Select a directory to import");
 		directoryChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
@@ -124,21 +119,11 @@ public abstract class FileUtil implements InstanceCollector {
 		if (directory != null && directory.isDirectory()) {
 			for (File file : getSupportedFiles(directory)) {
 				String oldPath = file.getAbsolutePath();
-				String newPath = projectDirSource + File.separator;// + FileUtil.getNameForEntity();
-				if (sourceDirFileNames.contains(file.getName())) {
-					String name = getFileNameWithoutExtension(file);
-					String extension = getExtension(file).toLowerCase();
-					int k = 1;
-					String newFileName;
-					do {
-						newFileName = name + "_" + k++ + extension;
-						newPath = projectDirSource + newFileName;
-					}
-					while (sourceDirFileNames.contains(newFileName));
-				}
+				String newPath = projectDirSource + File.separator + FileUtil.getNameForEntity(file, directory.getAbsolutePath());
 				try {
 					Files.move(Paths.get(oldPath), Paths.get(newPath));
-					sourceDirFileNames.add(new File(newPath).getName());
+				} catch (FileAlreadyExistsException e) {
+					Logger.getGlobal().info("Could not import file " + oldPath + ", file already exists.");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -147,7 +132,7 @@ public abstract class FileUtil implements InstanceCollector {
 		}
 		
 		if (newEntities.isEmpty()) {
-			StageManager.getErrorStage().show("No valid files found.");
+			StageManager.getErrorStage().show("Imported 0 files.");
 		} else {
 			entityListMain.addAll(newEntities);
 			entityListMain.sort();
@@ -169,19 +154,11 @@ public abstract class FileUtil implements InstanceCollector {
 	}
 	
 	public static String getNameForEntity(File file) {
-		return file.getAbsolutePath().substring((projectDirSource + File.separator).length());
+		return getNameForEntity(file, projectDirSource);
 	}
-	public static String getFileNameWithoutExtension(File file) {
-		String fileName = file.getName();
-		int index = fileName.lastIndexOf('.');
-		return fileName.substring(0, index);
+	public static String getNameForEntity(File file, String parentDirectory) {
+		return file.getAbsolutePath().substring((parentDirectory + File.separator).length());
 	}
-	public static String getExtension(File file) {
-		String fileName = file.getName();
-		int index = fileName.lastIndexOf('.');
-		return fileName.substring(index);
-	}
-	
 	public static FileType getFileType(Entity entity) {
 		String ext = entity.getName().toLowerCase().substring(entity.getName().lastIndexOf('.'));
 		
