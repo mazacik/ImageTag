@@ -27,7 +27,6 @@ import javafx.stage.FileChooser;
 import main.InstanceCollector;
 import main.LifecycleManager;
 import tools.FileUtil;
-import tools.SystemUtil;
 
 import java.awt.*;
 import java.io.File;
@@ -415,7 +414,7 @@ public class MainStage extends StageBase implements InstanceCollector {
 		String projectFile = projectDirectory + projectName;
 		Project project = new Project(projectFile, sourceDirectory);
 		
-		SystemUtil.deleteFile(projectFullPathBeforeEdit);
+		FileUtil.deleteFile(projectFullPathBeforeEdit);
 		project.writeToDisk();
 		
 		settings.getRecentProjects().remove(projectFullPathBeforeEdit);

@@ -14,10 +14,10 @@ public class EntityListMain extends EntityList {
 	}
 	
 	public void readFromDisk() {
-		Object jsonResult = JsonUtil.read(typeToken, FileUtil.getProjectFileData());
+		Object jsonResult = JsonUtil.read(typeToken, FileUtil.getDataFilePath());
 		if (jsonResult != null) this.setAll((EntityListMain) jsonResult);
 	}
 	public void writeToDisk() {
-		JsonUtil.write(entityListMain, typeToken, FileUtil.getProjectFileData());
+		JsonUtil.write(entityListMain, typeToken, FileUtil.getDataFilePath());
 	}
 }

@@ -34,10 +34,10 @@ public class TagListMain extends TagList implements InstanceCollector {
 	}
 	
 	public void writeToDisk() {
-		JsonUtil.write(this, typeToken, FileUtil.getProjectFileTags());
+		JsonUtil.write(this, typeToken, FileUtil.getTagsFilePath());
 	}
 	private TagList readFromDisk() {
-		return (TagList) JsonUtil.read(typeToken, FileUtil.getProjectFileTags());
+		return (TagList) JsonUtil.read(typeToken, FileUtil.getTagsFilePath());
 	}
 	
 	public boolean add(Tag tag) {

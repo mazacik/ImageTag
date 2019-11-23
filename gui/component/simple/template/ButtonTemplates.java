@@ -3,19 +3,23 @@ package gui.component.simple.template;
 import baseobject.entity.Entity;
 import baseobject.entity.EntityList;
 import baseobject.tag.Tag;
-import com.sun.jna.platform.FileUtils;
 import control.reload.ChangeIn;
 import gui.component.clickmenu.ClickMenu;
 import gui.component.simple.TextNode;
 import gui.stage.StageManager;
 import gui.stage.template.ButtonBooleanValue;
 import gui.stage.template.tageditstage.TagEditStageResult;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.WindowEvent;
 import main.InstanceCollector;
 import org.apache.commons.text.WordUtils;
-import tools.*;
+import tools.CacheManager;
+import tools.EntityGroupUtil;
+import tools.FileUtil;
+import tools.HttpUtil;
 
 import java.awt.*;
 import java.io.File;
@@ -64,8 +68,10 @@ public enum ButtonTemplates implements InstanceCollector {
 			TextNode textNode = new TextNode("Copy File Name", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				String entityName = target.get().getName();
-				SystemUtil.setClipboardContent(entityName.substring(entityName.lastIndexOf(File.separatorChar)));
+				ClipboardContent content = new ClipboardContent();
+				content.putString(FileUtil.getEntityFile(target.get()).getName());
+				Clipboard.getSystemClipboard().setContent(content);
+				
 				ClickMenu.hideAll();
 			});
 			return textNode;
@@ -76,7 +82,10 @@ public enum ButtonTemplates implements InstanceCollector {
 			TextNode textNode = new TextNode("Copy File Path", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				SystemUtil.setClipboardContent(FileUtil.getEntityFilePath(target.get()));
+				ClipboardContent content = new ClipboardContent();
+				content.putString(FileUtil.getEntityFilePath(target.get()));
+				Clipboard.getSystemClipboard().setContent(content);
+				
 				ClickMenu.hideAll();
 			});
 			return textNode;
@@ -343,18 +352,8 @@ public enum ButtonTemplates implements InstanceCollector {
 	
 	private void deleteEntity(Entity entity) {
 		if (filter.contains(entity)) {
-			File entityFile = FileUtil.getEntityFile(target.get());
-			File cacheFile = new File(FileUtil.getCacheFilePath(entity));
-			
-			FileUtils fileUtils = FileUtils.getInstance();
-			if (fileUtils.hasTrash()) {
-				try {
-					//todo
-					fileUtils.moveToTrash(new File[]{entityFile, cacheFile});
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+			FileUtil.deleteFile(FileUtil.getEntityFilePath(target.get()));
+			FileUtil.deleteFile(FileUtil.getCacheFilePath(entity));
 			
 			galleryPane.getTilePane().getChildren().remove(entity.getGalleryTile());
 			select.remove(entity);

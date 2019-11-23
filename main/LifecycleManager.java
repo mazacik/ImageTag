@@ -47,7 +47,7 @@ public abstract class LifecycleManager implements InstanceCollector {
 		
 		FileUtil.init(projectDirectory, sourceDirectory);
 		
-		CustomList<File> fileList = FileUtil.getSupportedFiles(FileUtil.getProjectDirSource());
+		CustomList<File> fileList = FileUtil.getSupportedFiles(FileUtil.getSourceDirectoryPath());
 		
 		entityListMain.readFromDisk();
 		if (entityListMain.isEmpty()) {

@@ -3,6 +3,7 @@ package tools;
 import baseobject.CustomList;
 import baseobject.entity.Entity;
 import baseobject.entity.EntityList;
+import com.sun.jna.platform.FileUtils;
 import gui.stage.StageManager;
 import gui.stage.template.ButtonBooleanValue;
 import javafx.scene.Scene;
@@ -11,6 +12,7 @@ import main.InstanceCollector;
 import tools.enums.FileType;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -33,20 +35,20 @@ public abstract class FileUtil implements InstanceCollector {
 			".avi",
 			".webm",
 			};
-	private static String projectDirSource;
-	private static String projectFileData;
-	private static String projectFileTags;
-	private static String projectDirCache;
+	private static String sourceDirectoryPath;
+	private static String dataFilePath;
+	private static String tagsFilePath;
+	private static String cacheDirectoryPath;
 	
 	private static CustomList<String> validExtensions = new CustomList<>();
 	
 	public static void init(String dirProject, String dirSource) {
-		projectDirSource = dirSource;
-		projectFileData = dirProject + File.separator + "data.json";
-		projectFileTags = dirProject + File.separator + "tags.json";
-		projectDirCache = dirProject + File.separator + "cache";
+		FileUtil.sourceDirectoryPath = dirSource;
+		dataFilePath = dirProject + File.separator + "data.json";
+		tagsFilePath = dirProject + File.separator + "tags.json";
+		cacheDirectoryPath = dirProject + File.separator + "cache";
 		
-		File dirCache = new File(projectDirCache);
+		File dirCache = new File(FileUtil.cacheDirectoryPath);
 		if (!dirCache.exists()) {
 			dirCache.mkdirs();
 		}
@@ -107,7 +109,7 @@ public abstract class FileUtil implements InstanceCollector {
 		return new File(getEntityFilePath(entity));
 	}
 	public static String getEntityFilePath(Entity entity) {
-		String base = FileUtil.getProjectDirSource() + File.separator;
+		String base = FileUtil.getSourceDirectoryPath() + File.separator;
 		return base + entity.getName();
 	}
 	public static void importFiles() {
@@ -119,16 +121,11 @@ public abstract class FileUtil implements InstanceCollector {
 		EntityList newEntities = new EntityList();
 		if (directory != null && directory.isDirectory()) {
 			for (File file : getSupportedFiles(directory)) {
-				String oldPath = file.getAbsolutePath();
-				String newPath = projectDirSource + File.separator + FileUtil.getNameForEntity(file, directory.getAbsolutePath());
-				try {
-					Files.move(Paths.get(oldPath), Paths.get(newPath));
-				} catch (FileAlreadyExistsException e) {
-					Logger.getGlobal().info("Could not import file " + oldPath + ", file already exists.");
-				} catch (Exception e) {
-					e.printStackTrace();
+				String pathBefore = file.getAbsolutePath();
+				String pathAfter = sourceDirectoryPath + File.separator + FileUtil.getNameForEntity(file, directory.getAbsolutePath());
+				if (FileUtil.moveFile(pathBefore, pathAfter)) {
+					newEntities.add(new Entity(new File(pathAfter)));
 				}
-				newEntities.add(new Entity(new File(newPath)));
 			}
 		}
 		
@@ -154,8 +151,36 @@ public abstract class FileUtil implements InstanceCollector {
 		}
 	}
 	
+	public static boolean moveFile(String pathBefore, String pathAfter) {
+		try {
+			Files.move(Paths.get(pathBefore), Paths.get(pathAfter));
+			return true;
+		} catch (FileAlreadyExistsException e) {
+			Logger.getGlobal().info("Could not import file " + pathBefore);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	public static void deleteFile(String path) {
+		FileUtils fileUtils = FileUtils.getInstance();
+		if (fileUtils.hasTrash()) {
+			try {
+				fileUtils.moveToTrash(new File[]{new File(path)});
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			try {
+				Files.delete(Paths.get(path));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	public static String getNameForEntity(File file) {
-		return getNameForEntity(file, projectDirSource);
+		return getNameForEntity(file, sourceDirectoryPath);
 	}
 	public static String getNameForEntity(File file, String parentDirectory) {
 		return file.getAbsolutePath().substring((parentDirectory + File.separator).length());
@@ -182,20 +207,20 @@ public abstract class FileUtil implements InstanceCollector {
 		throw new RuntimeException("FileType " + ext.toUpperCase() + " is not supported");
 	}
 	public static String getCacheFilePath(Entity entity) {
-		return FileUtil.getProjectDirCache() + File.separator + entity.getName() + "-" + entity.getLength() + ".jpg";
+		return FileUtil.getCacheDirectoryPath() + File.separator + entity.getName() + "-" + entity.getLength() + ".jpg";
 	}
 	
-	public static String getProjectDirSource() {
-		return projectDirSource;
+	public static String getSourceDirectoryPath() {
+		return sourceDirectoryPath;
 	}
-	public static String getProjectFileData() {
-		return projectFileData;
+	public static String getDataFilePath() {
+		return dataFilePath;
 	}
-	public static String getProjectFileTags() {
-		return projectFileTags;
+	public static String getTagsFilePath() {
+		return tagsFilePath;
 	}
-	public static String getProjectDirCache() {
-		return projectDirCache;
+	public static String getCacheDirectoryPath() {
+		return cacheDirectoryPath;
 	}
 	
 	public static String[] getImageExtensions() {
