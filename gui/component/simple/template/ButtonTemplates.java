@@ -30,9 +30,9 @@ public enum ButtonTemplates implements InstanceCollector {
 			TextNode textNode = new TextNode("Open", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				String fullPath = target.get().getFilePath();
+				File entityFile = FileUtil.getEntityFile(target.get());
 				try {
-					Desktop.getDesktop().open(new File(fullPath));
+					Desktop.getDesktop().open(entityFile);
 				} catch (IOException e) {
 					e.printStackTrace();
 				} finally {
@@ -47,9 +47,9 @@ public enum ButtonTemplates implements InstanceCollector {
 			TextNode textNode = new TextNode("Edit", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				String fullPath = target.get().getFilePath();
+				String entityFilePath = FileUtil.getEntityFilePath(target.get());
 				try {
-					Runtime.getRuntime().exec("mspaint.exe " + fullPath);
+					Runtime.getRuntime().exec("mspaint.exe " + entityFilePath);
 				} catch (IOException e) {
 					e.printStackTrace();
 				} finally {
@@ -76,7 +76,7 @@ public enum ButtonTemplates implements InstanceCollector {
 			TextNode textNode = new TextNode("Copy File Path", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				SystemUtil.setClipboardContent(target.get().getFilePath());
+				SystemUtil.setClipboardContent(FileUtil.getEntityFilePath(target.get()));
 				ClickMenu.hideAll();
 			});
 			return textNode;
@@ -343,13 +343,14 @@ public enum ButtonTemplates implements InstanceCollector {
 	
 	private void deleteEntity(Entity entity) {
 		if (filter.contains(entity)) {
-			String sourcePath = entity.getFilePath();
-			String cachePath = FileUtil.getCacheFilePath(entity);
+			File entityFile = FileUtil.getEntityFile(target.get());
+			File cacheFile = new File(FileUtil.getCacheFilePath(entity));
 			
 			FileUtils fileUtils = FileUtils.getInstance();
 			if (fileUtils.hasTrash()) {
 				try {
-					fileUtils.moveToTrash(new File[]{new File(sourcePath), new File(cachePath)});
+					//todo
+					fileUtils.moveToTrash(new File[]{entityFile, cacheFile});
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -389,7 +390,7 @@ public enum ButtonTemplates implements InstanceCollector {
 	private void deleteCurrentTarget() {
 		Entity currentTarget = target.get();
 		if (currentTarget.getEntityGroupID() == 0 || galleryPane.getExpandedGroups().contains(currentTarget.getEntityGroupID())) {
-			String sourcePath = target.get().getFilePath();
+			String sourcePath = FileUtil.getEntityFilePath(currentTarget);
 			ButtonBooleanValue result = StageManager.getYesNoCancelStage().show("Delete file: " + sourcePath + "?");
 			if (result == ButtonBooleanValue.YES) {
 				target.storePosition();

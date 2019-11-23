@@ -102,7 +102,7 @@ public class MediaPane extends BorderPane implements InstanceCollector, Reloadab
 			currentCache = currentTarget;
 			
 			try {
-				File file = new File(currentCache.getFilePath());
+				File file = FileUtil.getEntityFile(currentCache);
 				ImageInputStream iis = ImageIO.createImageInputStream(file);
 				Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
 				
@@ -118,10 +118,11 @@ public class MediaPane extends BorderPane implements InstanceCollector, Reloadab
 				e.printStackTrace();
 			}
 			
+			String entityFilePath = FileUtil.getEntityFilePath(currentCache);
 			if (originWidth > 2 * maxWidth || originHeight > 2 * maxHeight) {
-				currentImage = new Image("file:" + currentCache.getFilePath(), canvas.getWidth() * 1.5, canvas.getHeight() * 1.5, true, true);
+				currentImage = new Image("file:" + entityFilePath, canvas.getWidth() * 1.5, canvas.getHeight() * 1.5, true, true);
 			} else {
-				currentImage = new Image("file:" + currentCache.getFilePath());
+				currentImage = new Image("file:" + entityFilePath);
 			}
 		} else {
 			originWidth = currentImage.getWidth();
@@ -158,7 +159,7 @@ public class MediaPane extends BorderPane implements InstanceCollector, Reloadab
 		
 		if (currentCache == null || !currentCache.equals(currentTarget)) {
 			currentCache = currentTarget;
-			currentImage = new Image("file:" + currentCache.getFilePath());
+			currentImage = new Image("file:" + FileUtil.getEntityFilePath(currentCache));
 		}
 		
 		gifPlayer.setImage(currentImage);
@@ -171,7 +172,7 @@ public class MediaPane extends BorderPane implements InstanceCollector, Reloadab
 			
 			if (currentCache == null || !currentCache.equals(currentTarget)) {
 				currentCache = currentTarget;
-				videoPlayer.start(currentTarget.getFilePath());
+				videoPlayer.start(FileUtil.getEntityFilePath(currentCache));
 			} else {
 				videoPlayer.resume();
 			}

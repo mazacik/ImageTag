@@ -58,7 +58,6 @@ public abstract class LifecycleManager implements InstanceCollector {
 		
 		checkFileDifference(fileList);
 		
-		FileUtil.initEntityPaths();
 		EntityGroupUtil.initGroups();
 		entityListMain.sort();
 		tagListMain.initialize();

@@ -17,8 +17,6 @@ public class Entity implements InstanceCollector, Serializable {
 	private transient EntityList entityGroup;
 	private transient GalleryTile galleryTile;
 	
-	private transient String filePath;
-	
 	public Entity(File file) {
 		this.name = FileUtil.getNameForEntity(file);
 		this.tagList = new TagList();
@@ -27,8 +25,6 @@ public class Entity implements InstanceCollector, Serializable {
 		
 		this.entityGroup = null;
 		this.galleryTile = new GalleryTile(this);
-		
-		this.filePath = file.getAbsolutePath();
 	}
 	
 	public String getName() {
@@ -51,9 +47,6 @@ public class Entity implements InstanceCollector, Serializable {
 		if (galleryTile == null) galleryTile = new GalleryTile(this);
 		return galleryTile;
 	}
-	public String getFilePath() {
-		return filePath;
-	}
 	
 	public void setName(String name) {
 		this.name = name;
@@ -67,8 +60,5 @@ public class Entity implements InstanceCollector, Serializable {
 	
 	public void setEntityGroup(EntityList entityGroup) {
 		this.entityGroup = entityGroup;
-	}
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
 	}
 }

@@ -15,7 +15,7 @@ public abstract class HttpUtil {
 	public static void googleReverseImageSearch(Entity entity) {
 		new Thread(() -> {
 			try {
-				File file = new File(entity.getFilePath());
+				File file = FileUtil.getEntityFile(entity);
 				MultipartEntityBuilder meb = MultipartEntityBuilder.create();
 				meb.addPart("encoded_image", new InputStreamBody(new FileInputStream(file), file.getName()));
 				HttpPost post = new HttpPost("https://www.google.com/searchbyimage/upload");

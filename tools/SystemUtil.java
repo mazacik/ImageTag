@@ -8,6 +8,9 @@ import java.io.File;
 import java.io.IOException;
 
 public abstract class SystemUtil {
+	public static void moveFile(String oldPath, String newPath) {
+		//todo
+	}
 	public static void deleteFile(String fullPath) {
 		FileUtils fileUtils = FileUtils.getInstance();
 		if (fileUtils.hasTrash()) {

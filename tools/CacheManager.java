@@ -76,7 +76,7 @@ public abstract class CacheManager implements InstanceCollector {
 	}
 	private static Image createFromImage(Entity entity) {
 		int thumbSize = settings.getTileSize();
-		Image image = new Image("file:" + entity.getFilePath(), thumbSize, thumbSize, false, false);
+		Image image = new Image("file:" + FileUtil.getEntityFilePath(entity), thumbSize, thumbSize, false, false);
 		BufferedImage buffer = SwingFXUtils.fromFXImage(image, null);
 		
 		if (buffer != null) {
@@ -96,7 +96,7 @@ public abstract class CacheManager implements InstanceCollector {
 	}
 	private static Image createFromGif(Entity entity) {
 		GifDecoder gifDecoder = new GifDecoder();
-		gifDecoder.read(entity.getFilePath());
+		gifDecoder.read(FileUtil.getEntityFilePath(entity));
 		int thumbSize = settings.getTileSize();
 		
 		java.awt.Image frame = gifDecoder.getFrame(gifDecoder.getFrameCount() / 2).getScaledInstance(thumbSize, thumbSize, java.awt.Image.SCALE_FAST);
@@ -152,7 +152,7 @@ public abstract class CacheManager implements InstanceCollector {
 			File cacheFile = new File(FileUtil.getCacheFilePath(entity));
 			cacheFile.getParentFile().mkdirs();
 			
-			if (mediaPlayer.media().start(entity.getFilePath())) {
+			if (mediaPlayer.media().start(FileUtil.getEntityFilePath(entity))) {
 				try {
 					mediaPlayer.controls().setPosition(mediaPosition);
 					inPositionLatch.await(); // might wait forever if error

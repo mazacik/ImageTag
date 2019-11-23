@@ -103,11 +103,12 @@ public abstract class FileUtil implements InstanceCollector {
 		return getSupportedFiles(new File(directory));
 	}
 	
-	public static void initEntityPaths() {
+	public static File getEntityFile(Entity entity) {
+		return new File(getEntityFilePath(entity));
+	}
+	public static String getEntityFilePath(Entity entity) {
 		String base = FileUtil.getProjectDirSource() + File.separator;
-		for (Entity entity : entityListMain) {
-			entity.setFilePath(base + entity.getName());
-		}
+		return base + entity.getName();
 	}
 	public static void importFiles() {
 		DirectoryChooser directoryChooser = new DirectoryChooser();
