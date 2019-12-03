@@ -6,7 +6,6 @@ import baseobject.entity.EntityList;
 import baseobject.tag.Tag;
 import control.reload.ChangeIn;
 import main.InstanceCollector;
-import tools.EntityGroupUtil;
 
 import java.util.Collection;
 
@@ -98,12 +97,12 @@ public class Select extends EntityList implements InstanceCollector {
 		this.addAll(entities);
 	}
 	public void setRandom() {
-		Entity entity = galleryPane.getEntitiesOfTiles().getRandom();
+		Entity entity = EntityList.getRandom(galleryPane.getEntitiesOfTiles());
 		this.set(entity);
 		target.set(entity);
 	}
 	public void setRandomFromEntityGroup() {
-		Entity entity = getRandom(target.get().getEntityGroup());
+		Entity entity = EntityList.getRandom(target.get().getEntityGroup());
 		this.set(entity);
 		target.set(entity);
 	}

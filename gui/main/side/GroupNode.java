@@ -2,7 +2,9 @@ package gui.main.side;
 
 import baseobject.CustomList;
 import gui.component.clickmenu.ClickMenu;
+import gui.component.simple.HBox;
 import gui.component.simple.TextNode;
+import gui.component.simple.VBox;
 import gui.decorator.ColorUtil;
 import gui.stage.StageManager;
 import javafx.beans.value.ChangeListener;
@@ -13,8 +15,6 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
-import gui.component.simple.HBox;
-import gui.component.simple.VBox;
 import javafx.scene.paint.Color;
 import main.InstanceCollector;
 

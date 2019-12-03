@@ -63,7 +63,7 @@ public class EntityList extends CustomList<Entity> implements InstanceCollector 
 		}
 	}
 	
-	public Entity getRandom(CustomList<Entity> customList) {
+	public static Entity getRandom(CustomList<Entity> customList) {
 		Entity entity = customList.getRandom();
 		if (entity != null) {
 			if (entity.getEntityGroupID() == 0) {
@@ -71,6 +71,8 @@ public class EntityList extends CustomList<Entity> implements InstanceCollector 
 			} else {
 				return filter.applyTo(entity.getEntityGroup()).getRandom();
 			}
-		} else return null;
+		} else {
+			return null;
+		}
 	}
 }
