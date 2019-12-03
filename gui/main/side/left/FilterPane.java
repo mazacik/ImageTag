@@ -141,6 +141,5 @@ public class FilterPane extends SidePaneBase {
 				nameNode.setTextFill(ColorUtil.getColorPositive());
 			}
 		}
-		filter.refresh();
 	}
 }

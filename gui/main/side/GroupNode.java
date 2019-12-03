@@ -158,14 +158,12 @@ public class GroupNode extends VBox implements InstanceCollector {
 	}
 	
 	public void showNameNodes() {
-		this.getChildren().clear();
-		this.getChildren().add(hBoxGroup);
+		this.getChildren().retainAll(hBoxGroup);
 		this.getChildren().addAll(nameNodes);
 		nodeExpCol.setText("− ");
 	}
 	public void hideNameNodes() {
-		this.getChildren().clear();
-		this.getChildren().add(hBoxGroup);
+		this.getChildren().retainAll(hBoxGroup);
 		nodeExpCol.setText("+ ");
 	}
 	public void sortNameNodes() {
