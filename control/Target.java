@@ -6,7 +6,6 @@ import baseobject.entity.EntityList;
 import control.reload.ChangeIn;
 import javafx.scene.input.KeyCode;
 import main.InstanceCollector;
-import tools.EntityGroupUtil;
 import tools.enums.Direction;
 
 import java.util.logging.Logger;
@@ -28,8 +27,8 @@ public class Target implements InstanceCollector {
 	
 	public void set(Entity entity) {
 		if (entity != null && entity != this.entity) {
-			reload.requestTileEffect(this.entity);
-			reload.requestTileEffect(entity);
+			reload.requestBorderUpdate(this.entity);
+			reload.requestBorderUpdate(entity);
 			
 			this.entity = entity;
 			

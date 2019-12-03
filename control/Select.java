@@ -24,13 +24,13 @@ public class Select extends EntityList implements InstanceCollector {
 		if (entityGroupID != 0 && !galleryPane.getExpandedGroups().contains(entityGroupID)) {
 			EntityList entityGroup = entity.getEntityGroup();
 			if (super.addAll(entityGroup)) {
-				reload.requestTileEffect(entityGroup);
+				reload.requestBorderUpdate(entityGroup);
 				reload.notify(ChangeIn.SELECT);
 				return true;
 			}
 		} else {
 			if (super.add(entity)) {
-				reload.requestTileEffect(entity);
+				reload.requestBorderUpdate(entity);
 				reload.notify(ChangeIn.SELECT);
 				return true;
 			}
@@ -48,11 +48,11 @@ public class Select extends EntityList implements InstanceCollector {
 			int entityGroupID = entity.getEntityGroupID();
 			if (entityGroupID == 0 || expandedGroups.contains(entityGroupID)) {
 				super.add(entity);
-				reload.requestTileEffect(entity);
+				reload.requestBorderUpdate(entity);
 			} else {
 				EntityList entityGroup = entity.getEntityGroup();
 				super.addAll(entityGroup);
-				reload.requestTileEffect(entityGroup);
+				reload.requestBorderUpdate(entityGroup);
 			}
 		}
 		
@@ -64,11 +64,11 @@ public class Select extends EntityList implements InstanceCollector {
 		
 		int size = this.size();
 		if (entity.getEntityGroupID() == 0 || galleryPane.getExpandedGroups().contains(entity.getEntityGroupID())) {
-			reload.requestTileEffect(entity);
+			reload.requestBorderUpdate(entity);
 			super.remove(entity);
 		} else {
 			EntityList entityGroup = entity.getEntityGroup();
-			reload.requestTileEffect(entityGroup);
+			reload.requestBorderUpdate(entityGroup);
 			this.removeAll(entityGroup);
 		}
 		
@@ -81,7 +81,7 @@ public class Select extends EntityList implements InstanceCollector {
 	public boolean removeAll(EntityList entityList) {
 		if (entityList == null) return false;
 		if (super.removeAll(entityList)) {
-			for (Entity entity : entityList) reload.requestTileEffect(entity);
+			for (Entity entity : entityList) reload.requestBorderUpdate(entity);
 			reload.notify(ChangeIn.SELECT);
 			return true;
 		}
@@ -107,7 +107,7 @@ public class Select extends EntityList implements InstanceCollector {
 		target.set(entity);
 	}
 	public void clear() {
-		reload.requestTileEffect(this);
+		reload.requestBorderUpdate(this);
 		super.clear();
 		reload.notify(ChangeIn.SELECT);
 	}

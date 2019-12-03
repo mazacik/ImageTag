@@ -260,12 +260,12 @@ public class GalleryPane extends ScrollPane implements InstanceCollector, Reload
 						//	however, each object needs to be checked for Filter validity an additional time
 						if (filter.contains(entityGroup)) {
 							tiles.add(entityGroup.getGalleryTile());
-							reload.requestTileEffect(entityGroup);
+							reload.requestBorderUpdate(entityGroup);
 						}
 					}
 				} else {
 					tiles.add(galleryTile);
-					reload.requestTileEffect(entity);
+					reload.requestBorderUpdate(entity);
 				}
 			}
 		}

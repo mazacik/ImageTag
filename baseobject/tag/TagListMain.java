@@ -33,13 +33,6 @@ public class TagListMain extends TagList implements InstanceCollector {
 		this.sort();
 	}
 	
-	public void writeToDisk() {
-		JsonUtil.write(this, typeToken, FileUtil.getTagsFilePath());
-	}
-	private TagList readFromDisk() {
-		return (TagList) JsonUtil.read(typeToken, FileUtil.getTagsFilePath());
-	}
-	
 	public boolean add(Tag tag) {
 		if (super.add(tag)) {
 			reload.notify(ChangeIn.TAG_LIST_MAIN);
@@ -53,5 +46,12 @@ public class TagListMain extends TagList implements InstanceCollector {
 			return true;
 		}
 		return false;
+	}
+	
+	public void writeToDisk() {
+		JsonUtil.write(this, typeToken, FileUtil.getTagsFilePath());
+	}
+	private TagList readFromDisk() {
+		return (TagList) JsonUtil.read(typeToken, FileUtil.getTagsFilePath());
 	}
 }

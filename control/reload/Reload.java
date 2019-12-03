@@ -8,7 +8,7 @@ import main.InstanceCollector;
 import java.lang.reflect.InvocationTargetException;
 
 public class Reload implements InstanceCollector {
-	private CustomList<Entity> needsTileEffect;
+	private CustomList<Entity> needsBorderUpdate;
 	private CustomList<InvokeHelper> queue;
 	
 	public Reload() {
@@ -16,25 +16,30 @@ public class Reload implements InstanceCollector {
 	}
 	
 	public void init() {
-		needsTileEffect = new CustomList<>();
+		needsBorderUpdate = new CustomList<>();
 		queue = new CustomList<>();
 		
 		try {
+			//toolbar
 			InvokeHelper invokeHelper1 = new InvokeHelper(toolbarPane, toolbarPane.getClass().getMethod("reload"));
 			ChangeIn.TARGET.getSubscribers().add(invokeHelper1);
 			
+			//gallery
 			InvokeHelper invokeHelper2 = new InvokeHelper(galleryPane, galleryPane.getClass().getMethod("reload"));
 			ChangeIn.ENTITY_LIST_MAIN.getSubscribers().add(invokeHelper2);
 			ChangeIn.FILTER.getSubscribers().add(invokeHelper2);
 			
+			//media
 			InvokeHelper invokeHelper3 = new InvokeHelper(mediaPane, mediaPane.getClass().getMethod("reload"));
 			ChangeIn.TARGET.getSubscribers().add(invokeHelper3);
 			
+			//filter
 			InvokeHelper invokeHelper4 = new InvokeHelper(filterPane, filterPane.getClass().getMethod("reload"));
 			InvokeHelper invokeHelper5 = new InvokeHelper(filterPane, filterPane.getClass().getMethod("refresh"));
 			ChangeIn.TAG_LIST_MAIN.getSubscribers().add(invokeHelper4);
 			ChangeIn.FILTER.getSubscribers().add(invokeHelper5);
 			
+			//select
 			InvokeHelper invokeHelper6 = new InvokeHelper(selectPane, selectPane.getClass().getMethod("reload"));
 			InvokeHelper invokeHelper7 = new InvokeHelper(selectPane, selectPane.getClass().getMethod("refresh"));
 			ChangeIn.TAG_LIST_MAIN.getSubscribers().add(invokeHelper6);
@@ -67,21 +72,22 @@ public class Reload implements InstanceCollector {
 		
 		queue.removeAll(successful);
 		
+		//update borders of affected tiles
 		EntityList entityList = galleryPane.getEntitiesOfTiles();
 		EntityList helper = new EntityList();
-		for (Entity entity : needsTileEffect) {
+		for (Entity entity : needsBorderUpdate) {
 			if (entityList.contains(entity)) {
 				entity.getGalleryTile().updateSelectBorder();
 				helper.add(entity);
 			}
 		}
-		needsTileEffect.removeAll(helper);
+		needsBorderUpdate.removeAll(helper);
 	}
 	
-	public void requestTileEffect(EntityList entityList) {
-		needsTileEffect.addAll(entityList);
+	public void requestBorderUpdate(EntityList entityList) {
+		needsBorderUpdate.addAll(entityList);
 	}
-	public void requestTileEffect(Entity entity) {
-		needsTileEffect.add(entity);
+	public void requestBorderUpdate(Entity entity) {
+		needsBorderUpdate.add(entity);
 	}
 }
