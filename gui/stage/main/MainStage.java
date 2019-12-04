@@ -55,7 +55,7 @@ public class MainStage extends StageBase implements InstanceCollector {
 	}
 	
 	//init
-	public void init() {
+	public void initNormalStart() {
 		this.setAlwaysOnTop(false);
 		
 		initIntroScene();
@@ -65,6 +65,14 @@ public class MainStage extends StageBase implements InstanceCollector {
 		
 		setStagePropertiesIntro();
 		showIntroScene();
+	}
+	public void initQuickStart() {
+		this.setAlwaysOnTop(false);
+		
+		initMainScene();
+		
+		this.show("");
+		this.setTitle("Welcome to Tagallery");
 	}
 	private void initIntroScene() {
 		TextNode applicationNameNode = new TextNode("Tagallery", false, false, false, true);

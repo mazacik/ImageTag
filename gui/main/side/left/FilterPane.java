@@ -117,6 +117,7 @@ public class FilterPane extends SidePaneBase {
 			//			}
 			//			groupNode.setTextFill(textColor);
 			//			groupNode.getNameNodes().forEach(node -> node.setTextFill(textColor));
+			
 		} else {
 			Tag tag = tagListMain.getTag(groupNode.getGroup(), nameNode.getText());
 			if (filter.isWhitelisted(tag)) {
@@ -141,5 +142,6 @@ public class FilterPane extends SidePaneBase {
 				nameNode.setTextFill(ColorUtil.getColorPositive());
 			}
 		}
+		filter.refresh();
 	}
 }

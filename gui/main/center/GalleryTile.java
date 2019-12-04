@@ -80,7 +80,7 @@ public class GalleryTile extends Pane implements InstanceCollector {
 		} else {
 			selectBorder.setBackground(null);
 		}
-		
+		//todo split this
 		if (entity.getEntityGroupID() != 0) {
 			imageView.setEffect(this.createEntityGroupEffect(entity));
 		}

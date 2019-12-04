@@ -61,12 +61,12 @@ public class Filter extends EntityList implements InstanceCollector {
 	}
 	
 	public void reset() {
-		filter.getInfoListWhite().clear();
-		filter.getInfoListBlack().clear();
+		infoListWhite.clear();
+		infoListBlack.clear();
 		refresh();
 	}
 	public void refresh() {
-		filter.clear();
+		this.clear();
 		
 		for (Entity entity : entityListMain) {
 			switch (FileUtil.getFileType(entity)) {
@@ -112,9 +112,9 @@ public class Filter extends EntityList implements InstanceCollector {
 	@SuppressWarnings("FieldCanBeLocal")
 	private final double similarityFactor = 0.5;
 	public void showSimilar(Entity entity) {
-		filter.getInfoListWhite().clear();
-		filter.getInfoListBlack().clear();
-		filter.clear();
+		infoListWhite.clear();
+		infoListBlack.clear();
+		super.clear();
 		
 		TagList query = entity.getTagList();
 		for (Entity iterator : entityListMain) {

@@ -58,28 +58,21 @@ public class Reload implements InstanceCollector {
 	}
 	
 	public void doReload() {
-		CustomList<InvokeHelper> successful = new CustomList<>();
-		
-		for (InvokeHelper invokeHelper : queue) {
+		while (!queue.isEmpty()) {
+			InvokeHelper invokeHelper = queue.getFirst();
 			try {
-				if ((boolean) invokeHelper.getMethod().invoke(invokeHelper.getInstance())) {
-					successful.add(invokeHelper);
-				}
+				invokeHelper.getMethod().invoke(invokeHelper.getInstance());
 			} catch (IllegalAccessException | InvocationTargetException e) {
 				e.printStackTrace();
 			}
+			queue.remove(invokeHelper);
 		}
 		
-		queue.removeAll(successful);
-		
 		//update borders of affected tiles
-		EntityList entityList = galleryPane.getEntitiesOfTiles();
 		EntityList helper = new EntityList();
 		for (Entity entity : needsBorderUpdate) {
-			if (entityList.contains(entity)) {
-				entity.getGalleryTile().updateSelectBorder();
-				helper.add(entity);
-			}
+			entity.getGalleryTile().updateSelectBorder();
+			helper.add(entity);
 		}
 		needsBorderUpdate.removeAll(helper);
 	}

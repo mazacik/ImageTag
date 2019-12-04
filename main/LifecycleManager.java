@@ -4,6 +4,7 @@ import baseobject.CustomList;
 import baseobject.Project;
 import baseobject.entity.Entity;
 import baseobject.entity.EntityList;
+import control.reload.ChangeIn;
 import gui.main.center.GalleryTile;
 import gui.stage.StageManager;
 import tools.CacheManager;
@@ -15,6 +16,8 @@ import java.util.Comparator;
 import java.util.logging.Logger;
 
 public abstract class LifecycleManager implements InstanceCollector {
+	private static final boolean quickStart = true;
+	
 	public static void startApplication() {
 		System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %2$s: %5$s%n");
 		
@@ -33,7 +36,13 @@ public abstract class LifecycleManager implements InstanceCollector {
 		select.init();
 		reload.init();          /* needs everything */
 		
-		StageManager.getMainStage().init();
+		if (quickStart) {
+			StageManager.getMainStage().initQuickStart();
+			Project project = Project.readFromDisk(settings.getRecentProjects().getFirst());
+			LifecycleManager.startDatabaseLoading(project);
+		} else {
+			StageManager.getMainStage().initNormalStart();
+		}
 	}
 	
 	public static void startDatabaseLoading(Project project) {

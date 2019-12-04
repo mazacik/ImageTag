@@ -158,7 +158,6 @@ public class GroupNode extends VBox implements InstanceCollector {
 	}
 	
 	public void showNameNodes() {
-		this.getChildren().retainAll(hBoxGroup);
 		this.getChildren().addAll(nameNodes);
 		nodeExpCol.setText("− ");
 	}
@@ -168,7 +167,6 @@ public class GroupNode extends VBox implements InstanceCollector {
 	}
 	public void sortNameNodes() {
 		nameNodes.sort(Comparator.comparing(Label::getText));
-		showNameNodes();
 	}
 	public boolean isExpanded() {
 		return this.getChildren().size() > 1;
