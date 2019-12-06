@@ -9,6 +9,7 @@ public enum ChangeIn {
 	TARGET,
 	SELECT,
 	TAGS_OF_SELECT,
+	VIEWMODE,
 	;
 	
 	private CustomList<InvokeHelper> subscribers;

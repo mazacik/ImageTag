@@ -7,7 +7,6 @@ import baseobject.tag.TagList;
 import control.reload.ChangeIn;
 import gui.stage.StageManager;
 import gui.stage.template.ButtonBooleanValue;
-import gui.stage.template.YesNoCancelStage;
 import main.InstanceCollector;
 
 import java.util.Random;
@@ -42,6 +41,7 @@ public abstract class EntityGroupUtil implements InstanceCollector {
 			int entityGroupID = EntityGroupUtil.getID();
 			
 			if (result.getBooleanValue()) {
+				//merge tags
 				TagList tagList = new TagList();
 				for (Entity entity : entityList) {
 					tagList.addAll(entity.getTagList());
@@ -50,12 +50,15 @@ public abstract class EntityGroupUtil implements InstanceCollector {
 					entity.setEntityGroupID(entityGroupID);
 					entity.setEntityGroup(entityList);
 					entity.setTagList(tagList);
+					entity.getGalleryTile().updateGroupIcon();
 				}
 				reload.notify(ChangeIn.TAGS_OF_SELECT);
 			} else {
+				//don't merge tags
 				for (Entity entity : entityList) {
 					entity.setEntityGroupID(entityGroupID);
 					entity.setEntityGroup(entityList);
+					entity.getGalleryTile().updateGroupIcon();
 				}
 			}
 			
@@ -68,6 +71,7 @@ public abstract class EntityGroupUtil implements InstanceCollector {
 			for (Entity entity : entityList) {
 				entity.setEntityGroupID(0);
 				entity.setEntityGroup(null);
+				entity.getGalleryTile().setEffect(null);
 			}
 			reload.notify(ChangeIn.ENTITY_LIST_MAIN/*, ChangeIn.TAGS_OF_SELECT*/);
 		}

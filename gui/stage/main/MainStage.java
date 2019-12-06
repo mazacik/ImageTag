@@ -2,6 +2,7 @@ package gui.stage.main;
 
 import baseobject.CustomList;
 import baseobject.Project;
+import control.reload.ChangeIn;
 import gui.component.simple.*;
 import gui.decorator.ColorPreset;
 import gui.decorator.ColorUtil;
@@ -511,6 +512,7 @@ public class MainStage extends StageBase implements InstanceCollector {
 			panes.set(panes.indexOf(galleryPane), mediaPane);
 			mediaPane.requestFocus();
 			mediaPane.fireEvent(new MouseEvent(MouseEvent.MOUSE_MOVED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
+			reload.notify(ChangeIn.VIEWMODE);
 		}
 	}
 	public boolean isFullView() {
@@ -541,7 +543,7 @@ public class MainStage extends StageBase implements InstanceCollector {
 						reload.doReload();
 						break;
 					case E:
-						target.get().getGalleryTile().onGroupEffectClick();
+						target.get().getGalleryTile().onGroupIconClick();
 						reload.doReload();
 						break;
 					case R:

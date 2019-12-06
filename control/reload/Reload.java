@@ -32,6 +32,7 @@ public class Reload implements InstanceCollector {
 			//media
 			InvokeHelper invokeHelper3 = new InvokeHelper(mediaPane, mediaPane.getClass().getMethod("reload"));
 			ChangeIn.TARGET.getSubscribers().add(invokeHelper3);
+			ChangeIn.VIEWMODE.getSubscribers().add(invokeHelper3);
 			
 			//filter
 			InvokeHelper invokeHelper4 = new InvokeHelper(filterPane, filterPane.getClass().getMethod("reload"));
