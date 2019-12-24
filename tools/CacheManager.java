@@ -1,6 +1,7 @@
 package tools;
 
 import baseobject.entity.Entity;
+import baseobject.entity.EntityList;
 import gui.main.center.VideoPlayer;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Pos;
@@ -47,7 +48,7 @@ public abstract class CacheManager implements InstanceCollector {
 	}};
 	
 	public static Image get(Entity entity) {
-		File cacheFile = new File(FileUtil.getCacheFilePath(entity));
+		File cacheFile = new File(FileUtil.getFileCache(entity));
 		Image image;
 		
 		if (cacheFile.exists()) {
@@ -61,9 +62,9 @@ public abstract class CacheManager implements InstanceCollector {
 	
 	public static Image create(Entity entity) {
 		String entityIndex = StringUtils.right("00000000" + (entityListMain.indexOf(entity) + 1), String.valueOf(entityListMain.size()).length());
-		Logger.getGlobal().info(String.format("[%s] %s", entityIndex, entity.getName()));
+		Logger.getGlobal().info(String.format("[%s/%s] %s", entityIndex, entityListMain.size(), entity.getName()));
 		
-		switch (FileUtil.getFileType(entity)) {
+		switch (FileUtil.getType(entity)) {
 			case IMAGE:
 				return createFromImage(entity);
 			case GIF:
@@ -76,12 +77,12 @@ public abstract class CacheManager implements InstanceCollector {
 	}
 	private static Image createFromImage(Entity entity) {
 		int thumbSize = settings.getTileSize();
-		Image image = new Image("file:" + FileUtil.getEntityFilePath(entity), thumbSize, thumbSize, false, false);
+		Image image = new Image("file:" + FileUtil.getFileEntity(entity), thumbSize, thumbSize, false, false);
 		BufferedImage buffer = SwingFXUtils.fromFXImage(image, null);
 		
 		if (buffer != null) {
 			try {
-				File cacheFile = new File(FileUtil.getCacheFilePath(entity));
+				File cacheFile = new File(FileUtil.getFileCache(entity));
 				cacheFile.getParentFile().mkdirs();
 				ImageIO.write(buffer, "jpg", cacheFile);
 			} catch (IOException e) {
@@ -96,7 +97,7 @@ public abstract class CacheManager implements InstanceCollector {
 	}
 	private static Image createFromGif(Entity entity) {
 		GifDecoder gifDecoder = new GifDecoder();
-		gifDecoder.read(FileUtil.getEntityFilePath(entity));
+		gifDecoder.read(FileUtil.getFileEntity(entity));
 		int thumbSize = settings.getTileSize();
 		
 		java.awt.Image frame = gifDecoder.getFrame(gifDecoder.getFrameCount() / 2).getScaledInstance(thumbSize, thumbSize, java.awt.Image.SCALE_FAST);
@@ -108,7 +109,7 @@ public abstract class CacheManager implements InstanceCollector {
 		graphics.drawImage(frame, 0, 0, thumbSize, thumbSize, null);
 		
 		try {
-			File cacheFile = new File(FileUtil.getCacheFilePath(entity));
+			File cacheFile = new File(FileUtil.getFileCache(entity));
 			cacheFile.getParentFile().mkdirs();
 			ImageIO.write(buffer, "jpg", cacheFile);
 		} catch (IOException e) {
@@ -149,10 +150,10 @@ public abstract class CacheManager implements InstanceCollector {
 				}
 			});
 			
-			File cacheFile = new File(FileUtil.getCacheFilePath(entity));
+			File cacheFile = new File(FileUtil.getFileCache(entity));
 			cacheFile.getParentFile().mkdirs();
 			
-			if (mediaPlayer.media().start(FileUtil.getEntityFilePath(entity))) {
+			if (mediaPlayer.media().start(FileUtil.getFileEntity(entity))) {
 				try {
 					mediaPlayer.controls().setPosition(mediaPosition);
 					inPositionLatch.await(); // might wait forever if error
@@ -181,10 +182,10 @@ public abstract class CacheManager implements InstanceCollector {
 	}
 	
 	private static Thread cacheThread = null;
-	public static void createCacheInBackground() {
+	public static void createCacheInBackground(EntityList entityList) {
 		if (cacheThread == null || !cacheThread.isAlive()) {
 			cacheThread = new Thread(() -> {
-				for (Entity entity : entityListMain) {
+				for (Entity entity : entityList) {
 					if (Thread.currentThread().isInterrupted()) return;
 					entity.getGalleryTile().setImage(CacheManager.get(entity));
 				}
@@ -193,6 +194,6 @@ public abstract class CacheManager implements InstanceCollector {
 		}
 	}
 	public static void stopThread() {
-		cacheThread.interrupt();
+		if (cacheThread != null) cacheThread.interrupt();
 	}
 }

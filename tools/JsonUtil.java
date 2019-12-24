@@ -17,6 +17,7 @@ public abstract class JsonUtil {
 		GsonBuilder GSONBuilder = new GsonBuilder();
 		String JSON = GSONBuilder.serializeNulls().create().toJson(object, type);
 		try {
+			new File(path).getParentFile().mkdirs();
 			BufferedWriter writer = new BufferedWriter(new FileWriter(path, false));
 			writer.write(JSON);
 			writer.close();
@@ -27,7 +28,6 @@ public abstract class JsonUtil {
 		}
 	}
 	public static Object read(Type type, String path) {
-		if (!new File(path).exists()) return null;
 		GsonBuilder GSONBuilder = new GsonBuilder();
 		Gson GSON = GSONBuilder.serializeNulls().create();
 		try {

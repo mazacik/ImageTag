@@ -2,7 +2,6 @@ package gui.main.top;
 
 import baseobject.CustomList;
 import baseobject.entity.Entity;
-import control.reload.Reloadable;
 import gui.component.clickmenu.ClickMenu;
 import gui.component.simple.BoxSeparatorNode;
 import gui.component.simple.HBox;
@@ -17,7 +16,7 @@ import tools.enums.Direction;
 
 import java.util.logging.Logger;
 
-public class ToolbarPane extends TitleBar implements Reloadable, InstanceCollector {
+public class ToolbarPane extends TitleBar implements InstanceCollector {
 	private TextNode nodeTarget;
 	
 	public ToolbarPane() {
@@ -53,10 +52,10 @@ public class ToolbarPane extends TitleBar implements Reloadable, InstanceCollect
 		Logger.getGlobal().info(this.toString());
 		
 		Entity currentTarget = target.get();
-		if (currentTarget.getEntityGroupID() != 0) {
-			CustomList<Entity> entityGroup = currentTarget.getEntityGroup();
-			String entityGroupIndex = (entityGroup.indexOf(currentTarget) + 1) + "/" + entityGroup.size();
-			nodeTarget.setText("[" + entityGroupIndex + "] " + currentTarget.getName());
+		if (currentTarget.getCollectionID() != 0) {
+			CustomList<Entity> collection = currentTarget.getCollection();
+			String collectionIndex = (collection.indexOf(currentTarget) + 1) + "/" + collection.size();
+			nodeTarget.setText("[" + collectionIndex + "] " + currentTarget.getName());
 		} else {
 			nodeTarget.setText(currentTarget.getName());
 		}

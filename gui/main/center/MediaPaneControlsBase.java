@@ -134,9 +134,9 @@ public class MediaPaneControlsBase extends BorderPane implements InstanceCollect
 			btnMute.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, videoPlayer::swapMute);
 			btnSnapshot.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				Entity entity = target.get();
-				File cacheFile = new File(FileUtil.getCacheFilePath(entity));
+				File cacheFile = new File(FileUtil.getFileCache(entity));
 				int thumbSize = (int) settings.getTileSize();
-				mediaPane.getVideoPlayer().snapshot(cacheFile, thumbSize, thumbSize);
+				entityPane.getVideoPlayer().snapshot(cacheFile, thumbSize, thumbSize);
 				
 				Image cache = CacheManager.get(entity);
 				entity.getGalleryTile().setImage(cache);
@@ -179,8 +179,8 @@ public class MediaPaneControlsBase extends BorderPane implements InstanceCollect
 			this.setCenter(hBoxCenter);
 			this.setBottom(progressBar);
 		} else {
-			if (mediaPane.getVideoPlayer() != null)
-				mediaPane.getVideoPlayer().pause();
+			if (entityPane.getVideoPlayer() != null)
+				entityPane.getVideoPlayer().pause();
 			
 			this.setLeft(btnPrevious);
 			this.setRight(btnNext);

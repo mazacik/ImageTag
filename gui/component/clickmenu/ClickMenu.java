@@ -15,7 +15,7 @@ import javafx.scene.layout.Region;
 import javafx.stage.Popup;
 import javafx.stage.WindowEvent;
 import main.InstanceCollector;
-import tools.EntityGroupUtil;
+import tools.CollectionUtil;
 import tools.NodeUtil;
 import tools.enums.Direction;
 
@@ -55,10 +55,10 @@ public class ClickMenu extends Popup implements InstanceCollector {
 		if (select.size() > 1) {
 			list.add(ButtonTemplates.SELECTION_DELETE.get());
 			list.add(new BoxSeparatorNode());
-			if (EntityGroupUtil.isGroup(select)) {
-				list.add(ButtonTemplates.ENTITY_GROUP_DISCARD.get());
+			if (CollectionUtil.isCollection(select)) {
+				list.add(ButtonTemplates.COLLECTION_DISCARD.get());
 			} else {
-				list.add(ButtonTemplates.ENTITY_GROUP_CREATE.get());
+				list.add(ButtonTemplates.COLLECTION_CREATE.get());
 			}
 		}
 		return list;
@@ -75,7 +75,8 @@ public class ClickMenu extends Popup implements InstanceCollector {
 			super.show(root, direction);
 		}
 	};
-	private static ClickMenu clickMenuTags = new ClickMenu(ButtonTemplates.TAG_EDIT.get(), ButtonTemplates.TAG_REMOVE.get());
+	private static ClickMenu clickMenuTagGroup = new ClickMenu(ButtonTemplates.TAG_GROUP_EDIT.get(), ButtonTemplates.TAG_GROUP_REMOVE.get(), ButtonTemplates.TAG_GROUP_WHITELIST.get(), ButtonTemplates.TAG_GROUP_BLACKLIST.get(), ButtonTemplates.TAG_GROUP_UNLIST.get());
+	private static ClickMenu clickMenuTagName = new ClickMenu(ButtonTemplates.TAG_NAME_EDIT.get(), ButtonTemplates.TAG_NAME_REMOVE.get());
 	private static ClickMenu clickMenuSelect = new ClickMenu(ButtonTemplates.SELECTION_SET_ALL.get(), ButtonTemplates.SELECTION_SET_NONE.get());
 	
 	public static void install(Region root, Direction direction, Region... children) {
@@ -90,10 +91,17 @@ public class ClickMenu extends Popup implements InstanceCollector {
 					}
 				});
 				break;
-			case TAG:
+			case TAG_GROUP:
 				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 					if (event.getButton() == mouseButton && event.getSource() == root) {
-						clickMenuTags.show(root, direction);
+						clickMenuTagGroup.show(root, direction);
+					}
+				});
+				break;
+			case TAG_NAME:
+				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+					if (event.getButton() == mouseButton && event.getSource() == root) {
+						clickMenuTagName.show(root, direction);
 					}
 				});
 				break;
@@ -115,10 +123,17 @@ public class ClickMenu extends Popup implements InstanceCollector {
 					}
 				});
 				break;
-			case TAG:
+			case TAG_GROUP:
 				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 					if (event.getButton() == mouseButton && event.getSource() == root) {
-						clickMenuTags.show(root, event);
+						clickMenuTagGroup.show(root, event);
+					}
+				});
+				break;
+			case TAG_NAME:
+				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+					if (event.getButton() == mouseButton && event.getSource() == root) {
+						clickMenuTagName.show(root, event);
 					}
 				});
 				break;
@@ -202,19 +217,19 @@ public class ClickMenu extends Popup implements InstanceCollector {
 				x = rootBounds.getMinX();
 				y = rootBounds.getMinY();
 				if (root.getBorder() != null) y -= root.getBorder().getInsets().getBottom();
-				this.show(StageManager.getMainStage(), x, y);
+				this.show(StageManager.getStageMain(), x, y);
 				this.setAnchorX(this.getAnchorX() - this.getWidth());
 				break;
 			case RIGHT:
 				x = rootBounds.getMaxX();
 				y = rootBounds.getMinY();
 				if (root.getBorder() != null) y -= root.getBorder().getInsets().getBottom();
-				this.show(StageManager.getMainStage(), x, y);
+				this.show(StageManager.getStageMain(), x, y);
 				break;
 			case DOWN:
 				x = rootBounds.getMinX();
 				y = rootBounds.getMaxY();
-				this.show(StageManager.getMainStage(), x, y);
+				this.show(StageManager.getStageMain(), x, y);
 				break;
 		}
 	}
@@ -229,8 +244,11 @@ public class ClickMenu extends Popup implements InstanceCollector {
 				case ENTITY:
 					clickMenuData.show(anchor, event.getScreenX(), event.getScreenY());
 					break;
-				case TAG:
-					clickMenuTags.show(anchor, event.getScreenX(), event.getScreenY());
+				case TAG_GROUP:
+					clickMenuTagGroup.show(anchor, event.getScreenX(), event.getScreenY());
+					break;
+				case TAG_NAME:
+					clickMenuTagName.show(anchor, event.getScreenX(), event.getScreenY());
 					break;
 				case SELECT:
 					clickMenuSelect.show(anchor, event.getScreenX(), event.getScreenY());
@@ -241,7 +259,9 @@ public class ClickMenu extends Popup implements InstanceCollector {
 	
 	public enum StaticInstance {
 		ENTITY,
-		TAG,
-		SELECT
+		TAG_GROUP,
+		TAG_NAME,
+		SELECT,
+		;
 	}
 }

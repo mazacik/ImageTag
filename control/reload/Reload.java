@@ -20,27 +20,27 @@ public class Reload implements InstanceCollector {
 		queue = new CustomList<>();
 		
 		try {
-			//toolbar
+			//  ToolbarPane
 			InvokeHelper invokeHelper1 = new InvokeHelper(toolbarPane, toolbarPane.getClass().getMethod("reload"));
 			ChangeIn.TARGET.getSubscribers().add(invokeHelper1);
 			
-			//gallery
+			//  GalleryPane
 			InvokeHelper invokeHelper2 = new InvokeHelper(galleryPane, galleryPane.getClass().getMethod("reload"));
 			ChangeIn.ENTITY_LIST_MAIN.getSubscribers().add(invokeHelper2);
 			ChangeIn.FILTER.getSubscribers().add(invokeHelper2);
 			
-			//media
-			InvokeHelper invokeHelper3 = new InvokeHelper(mediaPane, mediaPane.getClass().getMethod("reload"));
+			//  MediaPane
+			InvokeHelper invokeHelper3 = new InvokeHelper(entityPane, entityPane.getClass().getMethod("reload"));
 			ChangeIn.TARGET.getSubscribers().add(invokeHelper3);
 			ChangeIn.VIEWMODE.getSubscribers().add(invokeHelper3);
 			
-			//filter
+			//  FilterPane
 			InvokeHelper invokeHelper4 = new InvokeHelper(filterPane, filterPane.getClass().getMethod("reload"));
 			InvokeHelper invokeHelper5 = new InvokeHelper(filterPane, filterPane.getClass().getMethod("refresh"));
 			ChangeIn.TAG_LIST_MAIN.getSubscribers().add(invokeHelper4);
 			ChangeIn.FILTER.getSubscribers().add(invokeHelper5);
 			
-			//select
+			//  SelectPane
 			InvokeHelper invokeHelper6 = new InvokeHelper(selectPane, selectPane.getClass().getMethod("reload"));
 			InvokeHelper invokeHelper7 = new InvokeHelper(selectPane, selectPane.getClass().getMethod("refresh"));
 			ChangeIn.TAG_LIST_MAIN.getSubscribers().add(invokeHelper6);

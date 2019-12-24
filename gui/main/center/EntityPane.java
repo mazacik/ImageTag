@@ -1,7 +1,6 @@
 package gui.main.center;
 
 import baseobject.entity.Entity;
-import control.reload.Reloadable;
 import gui.component.clickmenu.ClickMenu;
 import gui.component.simple.TextNode;
 import gui.stage.StageManager;
@@ -24,7 +23,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
-public class MediaPane extends BorderPane implements InstanceCollector, Reloadable {
+public class EntityPane extends BorderPane implements InstanceCollector {
 	private Canvas canvas;
 	private ImageView gifPlayer;
 	private VideoPlayer videoPlayer;
@@ -33,9 +32,9 @@ public class MediaPane extends BorderPane implements InstanceCollector, Reloadab
 	private Image currentImage = null;
 	private Entity currentCache = null;
 	
-	private TextNode noLibsErrorNode = null;
+	private TextNode nodeNoLibsError = null;
 	
-	public MediaPane() {
+	public EntityPane() {
 	
 	}
 	
@@ -48,7 +47,7 @@ public class MediaPane extends BorderPane implements InstanceCollector, Reloadab
 		gifPlayer.fitWidthProperty().bind(galleryPane.widthProperty());
 		gifPlayer.fitHeightProperty().bind(galleryPane.heightProperty());
 		
-		noLibsErrorNode = new TextNode("No VLC Libs found.") {{
+		nodeNoLibsError = new TextNode("No VLC Libs found.") {{
 			this.setFont(new Font(64));
 			this.minWidthProperty().bind(canvas.widthProperty());
 			this.minHeightProperty().bind(canvas.heightProperty());
@@ -61,10 +60,10 @@ public class MediaPane extends BorderPane implements InstanceCollector, Reloadab
 	
 	public boolean reload() {
 		Entity currentTarget = target.get();
-		if (StageManager.getMainStage().isFullView() && currentTarget != null) {
+		if (!StageManager.getStageMain().getSceneMain().isViewGallery() && currentTarget != null) {
 			Logger.getGlobal().info(this.toString());
 			
-			switch (FileUtil.getFileType(currentTarget)) {
+			switch (FileUtil.getType(currentTarget)) {
 				case IMAGE:
 					reloadAsImage(currentTarget);
 					break;
@@ -102,7 +101,7 @@ public class MediaPane extends BorderPane implements InstanceCollector, Reloadab
 			currentCache = currentTarget;
 			
 			try {
-				File file = FileUtil.getEntityFile(currentCache);
+				File file = new File(FileUtil.getFileEntity(currentCache));
 				ImageInputStream iis = ImageIO.createImageInputStream(file);
 				Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
 				
@@ -118,7 +117,7 @@ public class MediaPane extends BorderPane implements InstanceCollector, Reloadab
 				e.printStackTrace();
 			}
 			
-			String entityFilePath = FileUtil.getEntityFilePath(currentCache);
+			String entityFilePath = FileUtil.getFileEntity(currentCache);
 			if (originWidth > 2 * maxWidth || originHeight > 2 * maxHeight) {
 				currentImage = new Image("file:" + entityFilePath, canvas.getWidth() * 1.5, canvas.getHeight() * 1.5, true, true);
 			} else {
@@ -159,7 +158,7 @@ public class MediaPane extends BorderPane implements InstanceCollector, Reloadab
 		
 		if (currentCache == null || !currentCache.equals(currentTarget)) {
 			currentCache = currentTarget;
-			currentImage = new Image("file:" + FileUtil.getEntityFilePath(currentCache));
+			currentImage = new Image("file:" + FileUtil.getFileEntity(currentCache));
 		}
 		
 		gifPlayer.setImage(currentImage);
@@ -172,13 +171,13 @@ public class MediaPane extends BorderPane implements InstanceCollector, Reloadab
 			
 			if (currentCache == null || !currentCache.equals(currentTarget)) {
 				currentCache = currentTarget;
-				videoPlayer.start(FileUtil.getEntityFilePath(currentCache));
+				videoPlayer.start(FileUtil.getFileEntity(currentCache));
 			} else {
 				videoPlayer.resume();
 			}
 		} else {
 			controls.setVideoMode(false);
-			this.setCenter(noLibsErrorNode);
+			this.setCenter(nodeNoLibsError);
 		}
 	}
 	
@@ -195,7 +194,7 @@ public class MediaPane extends BorderPane implements InstanceCollector, Reloadab
 				if (event.getClickCount() % 2 != 0) {
 					requestFocus();
 				} else {
-					StageManager.getMainStage().swapViewMode();
+					StageManager.getStageMain().getSceneMain().viewGallery();
 					reload.doReload();
 				}
 				ClickMenu.hideAll();
@@ -203,6 +202,10 @@ public class MediaPane extends BorderPane implements InstanceCollector, Reloadab
 		});
 	}
 	
+	public void interruptVideoPlayer() {
+		if (controls.isShowing()) controls.hide();
+		if (videoPlayer != null && videoPlayer.isPlaying()) videoPlayer.pause();
+	}
 	public void disposeVideoPlayer() {
 		if (videoPlayer != null) videoPlayer.dispose();
 	}

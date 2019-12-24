@@ -25,7 +25,7 @@ public abstract class SizeUtil implements InstanceCollector {
 		TilePane tilePane = galleryPane.getTilePane();
 		
 		double galleryTileSize = tilePane.getPrefTileWidth();
-		double sceneWidth = StageManager.getMainStage().getScene().getWidth();
+		double sceneWidth = StageManager.getStageMain().getScene().getWidth();
 		
 		double availableWidth = sceneWidth - 2 * SizeUtil.getMinWidthSideLists();
 		double width = getWidth(availableWidth, galleryTileSize, tilePane.getHgap());

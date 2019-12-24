@@ -10,11 +10,11 @@ public class MediaPaneControls extends Popup {
 	private final MediaPaneControlsBase controlsBase;
 	private final PauseTransition autoHideDelay;
 	
-	public MediaPaneControls(MediaPane mediaPane, VideoPlayer videoPlayer) {
+	public MediaPaneControls(EntityPane entityPane, VideoPlayer videoPlayer) {
 		controlsBase = new MediaPaneControlsBase(videoPlayer);
 		autoHideDelay = new PauseTransition(new Duration(1000));
 		
-		controlsBase.prefWidthProperty().bind(mediaPane.widthProperty());
+		controlsBase.prefWidthProperty().bind(entityPane.widthProperty());
 		
 		BooleanProperty mouseMoving = new SimpleBooleanProperty();
 		mouseMoving.addListener((obs, wasMoving, isNowMoving) -> {
@@ -24,14 +24,14 @@ public class MediaPaneControls extends Popup {
 		});
 		
 		autoHideDelay.setOnFinished(e -> mouseMoving.set(false));
-		mediaPane.setOnMouseMoved(event -> {
+		entityPane.setOnMouseMoved(event -> {
 			mouseMoving.set(true);
 			autoHideDelay.playFromStart();
 			
-			double x = mediaPane.localToScreen(mediaPane.getBoundsInLocal()).getMinX();
-			double y = mediaPane.localToScreen(mediaPane.getBoundsInLocal()).getMinY();
+			double x = entityPane.localToScreen(entityPane.getBoundsInLocal()).getMinX();
+			double y = entityPane.localToScreen(entityPane.getBoundsInLocal()).getMinY();
 			
-			this.show(mediaPane, x, y);
+			this.show(entityPane, x, y);
 		});
 		
 		controlsBase.setOnMouseEntered(event -> autoHideDelay.stop());

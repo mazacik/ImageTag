@@ -78,6 +78,7 @@ public class GroupEditStage extends StageBase {
 		result = args[0];
 		
 		nodeGroupEdit.setText(result);
+		nodeGroupEdit.selectAll();
 		nodeGroupEdit.requestFocus();
 		
 		this.setErrorMessage("");

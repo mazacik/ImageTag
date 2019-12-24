@@ -19,7 +19,7 @@ public class Filter extends EntityList implements InstanceCollector {
 	private boolean showImages;
 	private boolean showGifs;
 	private boolean showVideos;
-	private boolean sessionOnly;
+	private boolean showOnlyNewEntities;
 	private boolean enableLimit;
 	private int limit;
 	
@@ -37,7 +37,7 @@ public class Filter extends EntityList implements InstanceCollector {
 		showImages = true;
 		showGifs = false;
 		showVideos = false;
-		sessionOnly = false;
+		showOnlyNewEntities = false;
 		enableLimit = false;
 		limit = 0;
 	}
@@ -63,13 +63,13 @@ public class Filter extends EntityList implements InstanceCollector {
 	public void reset() {
 		infoListWhite.clear();
 		infoListBlack.clear();
-		refresh();
+		reload.notify(ChangeIn.FILTER);
 	}
 	public void refresh() {
 		this.clear();
 		
 		for (Entity entity : entityListMain) {
-			switch (FileUtil.getFileType(entity)) {
+			switch (FileUtil.getType(entity)) {
 				case IMAGE:
 					if (!showImages) continue;
 					break;
@@ -81,7 +81,7 @@ public class Filter extends EntityList implements InstanceCollector {
 					break;
 			}
 			
-			if (sessionOnly && !currentSessionEntities.contains(entity)) {
+			if (showOnlyNewEntities && !newEntities.contains(entity)) {
 				continue;
 			}
 			
@@ -132,9 +132,9 @@ public class Filter extends EntityList implements InstanceCollector {
 		}
 	}
 	
-	private final EntityList currentSessionEntities = new EntityList();
-	public EntityList getCurrentSessionEntities() {
-		return currentSessionEntities;
+	private final EntityList newEntities = new EntityList();
+	public EntityList getNewEntities() {
+		return newEntities;
 	}
 	
 	public EntityList applyTo(EntityList listBefore) {
@@ -235,13 +235,6 @@ public class Filter extends EntityList implements InstanceCollector {
 		return infoListBlack.containsEqualTo(tagListMain.getTag(group, name));
 	}
 	
-	public TagList getInfoListWhite() {
-		return infoListWhite;
-	}
-	public TagList getInfoListBlack() {
-		return infoListBlack;
-	}
-	
 	public boolean isShowImages() {
 		return showImages;
 	}
@@ -251,8 +244,8 @@ public class Filter extends EntityList implements InstanceCollector {
 	public boolean isShowVideos() {
 		return showVideos;
 	}
-	public boolean isSessionOnly() {
-		return sessionOnly;
+	public boolean isShowOnlyNewEntities() {
+		return showOnlyNewEntities;
 	}
 	public boolean isEnableLimit() {
 		return enableLimit;
@@ -270,8 +263,8 @@ public class Filter extends EntityList implements InstanceCollector {
 	public void setShowVideos(boolean showVideos) {
 		this.showVideos = showVideos;
 	}
-	public void setSessionOnly(boolean sessionOnly) {
-		this.sessionOnly = sessionOnly;
+	public void setShowOnlyNewEntities(boolean showOnlyNewEntities) {
+		this.showOnlyNewEntities = showOnlyNewEntities;
 	}
 	public void setEnableLimit(boolean enableLimit) {
 		this.enableLimit = enableLimit;

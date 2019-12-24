@@ -1,11 +1,11 @@
 package gui.stage;
 
-import gui.stage.main.MainStage;
+import gui.stage.main.StageMain;
 import gui.stage.template.*;
 import gui.stage.template.tageditstage.TagEditStage;
 
 public abstract class StageManager {
-	private static MainStage mainStage;
+	private static StageMain stageMain;
 	
 	private static ErrorStage errorStage;
 	private static TagEditStage stageTagEditStage;
@@ -14,9 +14,9 @@ public abstract class StageManager {
 	private static YesNoCancelStage yesNoCancelStage;
 	private static FilterSettingsStage filterSettingsStage;
 	
-	public static MainStage getMainStage() {
-		if (mainStage == null) mainStage = new MainStage();
-		return mainStage;
+	public static StageMain getStageMain() {
+		if (stageMain == null) stageMain = new StageMain();
+		return stageMain;
 	}
 	
 	public static ErrorStage getErrorStage() {

@@ -10,7 +10,6 @@ import gui.stage.StageManager;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -21,171 +20,167 @@ import main.InstanceCollector;
 import java.util.Comparator;
 
 public class GroupNode extends VBox implements InstanceCollector {
-	private final TextNode nodeExpCol;
-	private final TextNode nodeTitle;
+	private final CustomList<NameNode> nodes;
 	
-	private final HBox hBoxGroup;
-	private final CustomList<TextNode> nameNodes;
+	private final SidePaneBase parentPane;
 	
-	private final SidePaneBase ownerPane;
+	private final TextNode nodeToggle;
+	private final TextNode nodeText;
+	private final HBox hBoxMain;
 	
-	public GroupNode(SidePaneBase ownerPane, String group) {
-		this.ownerPane = ownerPane;
+	public GroupNode(SidePaneBase parentPane, String text) {
+		nodes = new CustomList<>();
 		
-		nodeExpCol = new TextNode("+ ", false, false, false, false);
-		nodeTitle = new TextNode(group, false, false, false, false);
-		nodeExpCol.setPadding(new Insets(0, 5, 0, 15));
-		nodeTitle.setPadding(new Insets(0, 15, 0, 5));
+		this.parentPane = parentPane;
 		
-		hBoxGroup = new HBox(nodeExpCol, nodeTitle);
-		getChildren().add(hBoxGroup);
+		nodeToggle = new TextNode("+ ", false, false, false, false);
+		nodeToggle.setPadding(new Insets(0, 5, 0, 15));
+		nodeText = new TextNode(text, false, false, false, false);
+		nodeText.setPadding(new Insets(0, 15, 0, 5));
 		
-		nameNodes = new CustomList<>();
+		hBoxMain = new HBox(nodeToggle, nodeText);
+		this.getChildren().add(hBoxMain);
 		
-		initNameNodes();
-		initEvents();
-	}
-	
-	private void initNameNodes() {
-		for (String name : tagListMain.getNames(getGroup())) {
-			addNameNode(name);
+		for (String name : tagListMain.getNames(getText())) {
+			this.add(name);
 		}
+		
+		this.initEvents();
 	}
+	
 	private void initEvents() {
+		//todo rework
 		ChangeListener<Boolean> shiftChangeListener = (observable, oldValue, newValue) -> {
 			if (newValue) {
-				ownerPane.getGroupNodes().forEach(groupNode -> groupNode.setArrowFill(ColorUtil.getColorSecondary()));
+				parentPane.getGroupNodes().forEach(groupNode -> groupNode.setToggleFill(ColorUtil.getColorSecondary()));
 			} else {
-				ownerPane.getGroupNodes().forEach(groupNode -> groupNode.setArrowFill(ColorUtil.getColorPrimary()));
+				parentPane.getGroupNodes().forEach(groupNode -> groupNode.setToggleFill(ColorUtil.getColorPrimary()));
 			}
 		};
-		nodeExpCol.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
-			StageManager.getMainStage().shiftDownProperty().addListener(shiftChangeListener);
+		nodeToggle.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
+			StageManager.getStageMain().shiftDownProperty().addListener(shiftChangeListener);
 			if (event.isShiftDown()) {
-				ownerPane.getGroupNodes().forEach(groupNode -> groupNode.setArrowFill(ColorUtil.getColorSecondary()));
+				parentPane.getGroupNodes().forEach(groupNode -> groupNode.setToggleFill(ColorUtil.getColorSecondary()));
 			} else {
-				nodeExpCol.setTextFill(ColorUtil.getColorSecondary());
+				nodeToggle.setTextFill(ColorUtil.getColorSecondary());
 			}
 		});
-		nodeExpCol.addEventFilter(MouseEvent.MOUSE_EXITED, event -> {
-			StageManager.getMainStage().shiftDownProperty().removeListener(shiftChangeListener);
+		nodeToggle.addEventFilter(MouseEvent.MOUSE_EXITED, event -> {
+			StageManager.getStageMain().shiftDownProperty().removeListener(shiftChangeListener);
 			if (event.isShiftDown()) {
-				ownerPane.getGroupNodes().forEach(groupNode -> groupNode.setArrowFill(ColorUtil.getColorPrimary()));
+				parentPane.getGroupNodes().forEach(groupNode -> groupNode.setToggleFill(ColorUtil.getColorPrimary()));
 			} else {
-				nodeExpCol.setTextFill(ColorUtil.getColorPrimary());
+				nodeToggle.setTextFill(ColorUtil.getColorPrimary());
 			}
 		});
-		hBoxGroup.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> this.setBackground(ColorUtil.getBackgroundSecondary()));
-		hBoxGroup.addEventFilter(MouseEvent.MOUSE_EXITED, event -> this.setBackground(Background.EMPTY));
-		hBoxGroup.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-			Bounds boundsExpCol = nodeExpCol.getBoundsInLocal();
+		
+		hBoxMain.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> this.setBackground(ColorUtil.getBackgroundSecondary()));
+		hBoxMain.addEventFilter(MouseEvent.MOUSE_EXITED, event -> this.setBackground(Background.EMPTY));
+		hBoxMain.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+			Bounds boundsExpCol = nodeToggle.getBoundsInLocal();
 			if (event.getX() <= boundsExpCol.getWidth() && event.getY() <= boundsExpCol.getHeight()) {
-				if (!isExpanded()) {
+				if (!this.isExpanded()) {
 					if (event.isShiftDown()) {
-						ownerPane.expandAll();
+						parentPane.expandAll();
 					} else {
-						showNameNodes();
+						this.show();
 					}
 				} else {
 					if (event.isShiftDown()) {
-						ownerPane.collapseAll();
+						parentPane.collapseAll();
 					} else {
-						hideNameNodes();
+						this.hide();
 					}
 				}
 			} else {
 				switch (event.getButton()) {
 					case PRIMARY:
-						ownerPane.changeNodeState(this, null);
-						reload.doReload();
+						if (this.isExpanded()) {
+							this.hide();
+						} else {
+							this.show();
+						}
 						break;
 					case SECONDARY:
-						ClickMenu.setGroup(getGroup());
+						ClickMenu.setGroup(getText());
 						ClickMenu.setName("");
 						break;
 				}
 			}
 		});
-		ClickMenu.install(hBoxGroup, MouseButton.SECONDARY, ClickMenu.StaticInstance.TAG);
+		
+		ClickMenu.install(hBoxMain, MouseButton.SECONDARY, ClickMenu.StaticInstance.TAG_GROUP);
 	}
 	
-	public void addNameNode(String name) {
-		for (TextNode nameNode : nameNodes) {
-			if (nameNode.getText().equals(name)) {
-				return;
-			}
+	public void add(String name) {
+		if (!this.contains(name)) {
+			nodes.add(new NameNode(this, name));
 		}
-		
-		TextNode nameNode = new TextNode(name, true, false, false, false);
-		nameNode.setAlignment(Pos.CENTER_LEFT);
-		nameNode.prefWidthProperty().bind(this.widthProperty());
-		nameNode.setPadding(new Insets(0, 0, 0, 50));
-		nameNode.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-			switch (event.getButton()) {
-				case PRIMARY:
-					ownerPane.changeNodeState(this, nameNode);
-					reload.doReload();
-					break;
-				case SECONDARY:
-					ClickMenu.setGroup(getGroup());
-					ClickMenu.setName(nameNode.getText());
-					break;
-			}
-		});
-		ClickMenu.install(nameNode, MouseButton.SECONDARY, ClickMenu.StaticInstance.TAG);
-		
-		nameNodes.add(nameNode);
 	}
-	public void removeNameNode(String name) {
-		TextNode textNode = null;
-		for (TextNode nameNode : nameNodes) {
-			if (nameNode.getText().equals(name)) {
-				this.getChildren().remove(nameNode);
-				textNode = nameNode;
+	public void remove(String name) {
+		NameNode nameNode = null;
+		
+		for (NameNode _nameNode : nodes) {
+			if (name.equals(_nameNode.getText())) {
+				nameNode = _nameNode;
 				break;
 			}
 		}
-		nameNodes.remove(textNode);
+		
+		this.getChildren().remove(nameNode);
+		nodes.remove(nameNode);
 	}
-	
-	public void updateNameNode(String oldName, String newName) {
-		for (TextNode nameNode : nameNodes) {
-			if (nameNode.getText().equals(oldName)) {
-				nameNode.setText(newName);
+	public void update(String nameOld, String nameNew) {
+		for (NameNode nameNode : nodes) {
+			if (nameNode.getText().equals(nameOld)) {
+				nameNode.setText(nameNew);
 				break;
 			}
 		}
 	}
 	
-	public void showNameNodes() {
-		this.getChildren().addAll(nameNodes);
-		nodeExpCol.setText("− ");
+	public boolean contains(String name) {
+		for (NameNode nameNode : nodes) {
+			if (nameNode.getText().equals(name)) {
+				return true;
+			}
+		}
+		return false;
 	}
-	public void hideNameNodes() {
-		this.getChildren().retainAll(hBoxGroup);
-		nodeExpCol.setText("+ ");
+	
+	public void show() {
+		this.getChildren().addAll(nodes);
+		nodeToggle.setText("− ");
 	}
-	public void sortNameNodes() {
-		nameNodes.sort(Comparator.comparing(Label::getText));
+	public void hide() {
+		this.getChildren().retainAll(hBoxMain);
+		nodeToggle.setText("+ ");
 	}
+	public void sort() {
+		nodes.sort(Comparator.comparing(Label::getText));
+	}
+	
 	public boolean isExpanded() {
-		return this.getChildren().size() > 1;
+		return getChildren().size() > 1;
 	}
 	
-	public CustomList<TextNode> getNameNodes() {
-		return nameNodes;
+	public String getText() {
+		return nodeText.getText();
 	}
-	public String getGroup() {
-		return nodeTitle.getText();
+	public CustomList<NameNode> getNodes() {
+		return nodes;
+	}
+	public SidePaneBase getParentPane() {
+		return parentPane;
 	}
 	
-	public void setGroup(String group) {
-		nodeTitle.setText(group);
+	public void setText(String group) {
+		nodeText.setText(group);
 	}
-	public void setArrowFill(Color fill) {
-		nodeExpCol.setTextFill(fill);
+	public void setToggleFill(Color fill) {
+		nodeToggle.setTextFill(fill);
 	}
 	public void setTextFill(Color fill) {
-		nodeTitle.setTextFill(fill);
+		nodeText.setTextFill(fill);
 	}
 }

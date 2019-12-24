@@ -3,7 +3,6 @@ package gui.main.side;
 import baseobject.CustomList;
 import baseobject.tag.Tag;
 import baseobject.tag.TagList;
-import control.reload.Reloadable;
 import gui.component.simple.TextNode;
 import gui.component.simple.VBox;
 import gui.decorator.SizeUtil;
@@ -14,7 +13,7 @@ import main.InstanceCollector;
 
 import java.util.Comparator;
 
-public abstract class SidePaneBase extends VBox implements Reloadable, SidePaneBaseInterface, InstanceCollector {
+public abstract class SidePaneBase extends VBox implements InstanceCollector {
 	protected TextNode nodeTitle;
 	protected VBox groupNodes;
 	protected ScrollPane scrollPane;
@@ -43,9 +42,9 @@ public abstract class SidePaneBase extends VBox implements Reloadable, SidePaneB
 		for (Node node : groupNodes.getChildren()) {
 			if (node instanceof GroupNode) {
 				GroupNode groupNode = (GroupNode) node;
-				groupsCurrent.add(groupNode.getGroup());
-				for (TextNode nameNode : groupNode.getNameNodes()) {
-					tagsCurrent.add(tagListMain.getTag(groupNode.getGroup(), nameNode.getText()));
+				groupsCurrent.add(groupNode.getText());
+				for (TextNode nameNode : groupNode.getNodes()) {
+					tagsCurrent.add(tagListMain.getTag(groupNode.getText(), nameNode.getText()));
 				}
 			}
 		}
@@ -83,8 +82,8 @@ public abstract class SidePaneBase extends VBox implements Reloadable, SidePaneB
 				Node node = groupNodes.getChildren().get(index);
 				if (node instanceof GroupNode) {
 					GroupNode groupNode = (GroupNode) node;
-					groupNode.addNameNode(tag.getName());
-					groupNode.sortNameNodes();
+					groupNode.add(tag.getName());
+					groupNode.sort();
 				}
 			}
 		}
@@ -97,9 +96,9 @@ public abstract class SidePaneBase extends VBox implements Reloadable, SidePaneB
 				Node node = groupNodes.getChildren().get(groupsCurrent.indexOf(tag.getGroup()));
 				if (node instanceof GroupNode) {
 					GroupNode groupNode = (GroupNode) node;
-					groupNode.removeNameNode(tag.getName());
+					groupNode.remove(tag.getName());
 					//	if GroupNode is empty, remove it
-					if (groupNode.getNameNodes().isEmpty()) groupNodes.getChildren().remove(groupNode);
+					if (groupNode.getNodes().isEmpty()) groupNodes.getChildren().remove(groupNode);
 				}
 			}
 		}
@@ -111,8 +110,8 @@ public abstract class SidePaneBase extends VBox implements Reloadable, SidePaneB
 		for (Node node : groupNodes.getChildren()) {
 			if (node instanceof GroupNode) {
 				GroupNode groupNode = (GroupNode) node;
-				if (groupNode.getGroup().equals(groupBefore)) {
-					groupNode.setGroup(groupAfter);
+				if (groupNode.getText().equals(groupBefore)) {
+					groupNode.setText(groupAfter);
 					break;
 				}
 			}
@@ -123,8 +122,8 @@ public abstract class SidePaneBase extends VBox implements Reloadable, SidePaneB
 		for (Node node : groupNodes.getChildren()) {
 			if (node instanceof GroupNode) {
 				GroupNode groupNode = (GroupNode) node;
-				if (groupNode.getGroup().equals(group)) {
-					groupNode.updateNameNode(nameBefore, nameAfter);
+				if (groupNode.getText().equals(group)) {
+					groupNode.update(nameBefore, nameAfter);
 					break;
 				}
 			}
@@ -135,20 +134,20 @@ public abstract class SidePaneBase extends VBox implements Reloadable, SidePaneB
 		for (Node node : groupNodes.getChildren()) {
 			if (node instanceof GroupNode) {
 				groupNode = (GroupNode) node;
-				if (groupNode.getGroup().equals(group)) {
-					groupNode.removeNameNode(name);
+				if (groupNode.getText().equals(group)) {
+					groupNode.remove(name);
 					break;
 				}
 			}
 		}
-		if (groupNode != null && groupNode.getNameNodes().isEmpty()) groupNodes.getChildren().remove(groupNode);
+		if (groupNode != null && groupNode.getNodes().isEmpty()) groupNodes.getChildren().remove(groupNode);
 	}
 	
 	public void expandAll() {
 		for (Node node : groupNodes.getChildren()) {
 			if (node instanceof GroupNode) {
 				GroupNode groupNode = (GroupNode) node;
-				groupNode.showNameNodes();
+				groupNode.show();
 			}
 		}
 	}
@@ -156,7 +155,7 @@ public abstract class SidePaneBase extends VBox implements Reloadable, SidePaneB
 		for (Node node : groupNodes.getChildren()) {
 			if (node instanceof GroupNode) {
 				GroupNode groupNode = (GroupNode) node;
-				groupNode.hideNameNodes();
+				groupNode.hide();
 			}
 		}
 	}

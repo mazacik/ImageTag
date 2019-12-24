@@ -81,7 +81,7 @@ public class SelectPane extends SidePaneBase {
 		for (Node node : groupNodes.getChildren()) {
 			if (node instanceof GroupNode) {
 				GroupNode groupNode = (GroupNode) node;
-				String group = groupNode.getGroup();
+				String group = groupNode.getText();
 				
 				if (groupsInter.contains(group)) {
 					groupNode.setTextFill(textColorPositive);
@@ -99,7 +99,7 @@ public class SelectPane extends SidePaneBase {
 					namesInter = select.getTagsIntersect().getNames(group);
 					namesShare = select.getTagsAll().getNames(group);
 				}
-				for (TextNode nameNode : groupNode.getNameNodes()) {
+				for (TextNode nameNode : groupNode.getNodes()) {
 					String name = nameNode.getText();
 					
 					if (namesInter.contains(name)) {
@@ -129,27 +129,6 @@ public class SelectPane extends SidePaneBase {
 		nodeTitle.setText(text);
 	}
 	
-	public void changeNodeState(GroupNode groupNode, TextNode nameNode) {
-		if (nameNode == null) {
-			if (groupNode.isExpanded()) {
-				groupNode.hideNameNodes();
-			} else {
-				groupNode.showNameNodes();
-			}
-		} else {
-			Tag tag = tagListMain.getTag(groupNode.getGroup(), nameNode.getText());
-			if (nameNode.getTextFill().equals(ColorUtil.getColorPositive()) || nameNode.getTextFill().equals(ColorUtil.getColorShare())) {
-				nameNode.setTextFill(ColorUtil.getColorPrimary());
-				select.removeTag(tag);
-			} else {
-				nameNode.setTextFill(ColorUtil.getColorPositive());
-				select.addTag(tag);
-			}
-			
-			reload.doReload();
-		}
-	}
-	
 	private Tag bestMatch = null;
 	private TextNode previousMatchNameNode = null;
 	private GroupNode previousMatchGroupNode = null;
@@ -159,7 +138,7 @@ public class SelectPane extends SidePaneBase {
 		return (ChangeListener<String>) (observable, oldValue, newValue) -> {
 			if (newValue.length() < 3) {
 				if (!wasPreviousGroupNodeExpanded) {
-					previousMatchGroupNode.hideNameNodes();
+					previousMatchGroupNode.hide();
 					wasPreviousGroupNodeExpanded = true;
 				}
 				if (previousMatchGroupNode != null) {
@@ -173,10 +152,10 @@ public class SelectPane extends SidePaneBase {
 				bestMatch = this.getBestMatch(newValue);
 				if (bestMatch != null) {
 					for (GroupNode groupNode : getGroupNodes()) {
-						if (groupNode.getGroup().equals(bestMatch.getGroup())) {
+						if (groupNode.getText().equals(bestMatch.getGroup())) {
 							if (previousMatchGroupNode != groupNode) {
 								if (!wasPreviousGroupNodeExpanded) {
-									previousMatchGroupNode.hideNameNodes();
+									previousMatchGroupNode.hide();
 								}
 								
 								if (previousMatchNameNode != null) {
@@ -187,10 +166,10 @@ public class SelectPane extends SidePaneBase {
 								wasPreviousGroupNodeExpanded = groupNode.isExpanded();
 								
 								if (!groupNode.isExpanded()) {
-									groupNode.showNameNodes();
+									groupNode.show();
 								}
 								
-								for (TextNode nameNode : groupNode.getNameNodes()) {
+								for (TextNode nameNode : groupNode.getNodes()) {
 									if (nameNode.getText().equals(bestMatch.getName())) {
 										previousMatchNameNode = nameNode;
 										nameNode.fireEvent(new MouseEvent(MouseEvent.MOUSE_ENTERED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));

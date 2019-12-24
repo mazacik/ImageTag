@@ -11,26 +11,26 @@ import tools.enums.Direction;
 import java.util.logging.Logger;
 
 public class Target implements InstanceCollector {
-	private Entity entity;
+	private Entity current;
 	
 	public Target() {
 	
 	}
 	
 	public void init() {
-		entity = null;
+		current = null;
 	}
 	
 	public Entity get() {
-		return entity;
+		return current;
 	}
 	
 	public void set(Entity entity) {
-		if (entity != null && entity != this.entity) {
-			reload.requestBorderUpdate(this.entity);
+		if (entity != null && entity != this.current) {
+			reload.requestBorderUpdate(this.current);
 			reload.requestBorderUpdate(entity);
 			
-			this.entity = entity;
+			this.current = entity;
 			
 			galleryPane.moveViewportToTarget();
 			reload.notify(ChangeIn.TARGET);
@@ -39,23 +39,23 @@ public class Target implements InstanceCollector {
 		}
 	}
 	public void move(Direction direction) {
-		if (entity == null) return;
+		if (current == null) return;
 		
 		EntityList entities = galleryPane.getEntitiesOfTiles();
 		if (entities.isEmpty()) return;
 		
 		int currentTargetIndex;
-		if (entity.getEntityGroupID() == 0) {
-			currentTargetIndex = entities.indexOf(entity);
+		if (current.getCollectionID() == 0) {
+			currentTargetIndex = entities.indexOf(current);
 		} else {
-			if (galleryPane.getExpandedGroups().contains(entity.getEntityGroupID())) {
-				currentTargetIndex = entities.indexOf(entity);
+			if (galleryPane.getExpandedGroups().contains(current.getCollectionID())) {
+				currentTargetIndex = entities.indexOf(current);
 			} else {
-				Entity groupFirst = entity.getEntityGroup().getFirst();
+				Entity groupFirst = current.getCollection().getFirst();
 				if (entities.contains(groupFirst)) {
 					currentTargetIndex = entities.indexOf(groupFirst);
 				} else {
-					currentTargetIndex = entities.indexOf(entity);
+					currentTargetIndex = entities.indexOf(current);
 				}
 			}
 		}
@@ -103,18 +103,18 @@ public class Target implements InstanceCollector {
 	private Entity storeEntity = null;
 	private int storePos = -1;
 	public void storePosition() {
-		CustomList<Integer> expandedentityGroup = galleryPane.getExpandedGroups();
+		CustomList<Integer> expandedcollection = galleryPane.getExpandedGroups();
 		CustomList<Entity> visibleEntities = galleryPane.getEntitiesOfTiles();
 		
-		if (entity.getEntityGroupID() == 0) {
-			storeEntity = entity;
-			storePos = visibleEntities.indexOf(entity);
+		if (current.getCollectionID() == 0) {
+			storeEntity = current;
+			storePos = visibleEntities.indexOf(current);
 		} else {
-			if (expandedentityGroup.contains(entity.getEntityGroupID())) {
-				storeEntity = entity;
-				storePos = visibleEntities.indexOf(entity);
+			if (expandedcollection.contains(current.getCollectionID())) {
+				storeEntity = current;
+				storePos = visibleEntities.indexOf(current);
 			} else {
-				storeEntity = entity.getEntityGroup().getFirst();
+				storeEntity = current.getCollection().getFirst();
 				storePos = visibleEntities.indexOf(storeEntity);
 			}
 		}

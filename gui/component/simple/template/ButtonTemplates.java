@@ -1,5 +1,6 @@
 package gui.component.simple.template;
 
+import baseobject.Project;
 import baseobject.entity.Entity;
 import baseobject.entity.EntityList;
 import baseobject.tag.Tag;
@@ -17,7 +18,7 @@ import javafx.stage.WindowEvent;
 import main.InstanceCollector;
 import org.apache.commons.text.WordUtils;
 import tools.CacheManager;
-import tools.EntityGroupUtil;
+import tools.CollectionUtil;
 import tools.FileUtil;
 import tools.HttpUtil;
 
@@ -34,7 +35,7 @@ public enum ButtonTemplates implements InstanceCollector {
 			TextNode textNode = new TextNode("Open", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				File entityFile = FileUtil.getEntityFile(target.get());
+				File entityFile = new File(FileUtil.getFileEntity(target.get()));
 				try {
 					Desktop.getDesktop().open(entityFile);
 				} catch (IOException e) {
@@ -51,7 +52,7 @@ public enum ButtonTemplates implements InstanceCollector {
 			TextNode textNode = new TextNode("Edit", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				String entityFilePath = FileUtil.getEntityFilePath(target.get());
+				String entityFilePath = FileUtil.getFileEntity(target.get());
 				try {
 					Runtime.getRuntime().exec("mspaint.exe " + entityFilePath);
 				} catch (IOException e) {
@@ -69,7 +70,7 @@ public enum ButtonTemplates implements InstanceCollector {
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClipboardContent content = new ClipboardContent();
-				content.putString(FileUtil.getEntityFile(target.get()).getName());
+				content.putString(FileUtil.getFileEntity(target.get()));
 				Clipboard.getSystemClipboard().setContent(content);
 				
 				ClickMenu.hideAll();
@@ -83,7 +84,7 @@ public enum ButtonTemplates implements InstanceCollector {
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClipboardContent content = new ClipboardContent();
-				content.putString(FileUtil.getEntityFilePath(target.get()));
+				content.putString(FileUtil.getFileEntity(target.get()));
 				Clipboard.getSystemClipboard().setContent(content);
 				
 				ClickMenu.hideAll();
@@ -121,9 +122,7 @@ public enum ButtonTemplates implements InstanceCollector {
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				filter.showSimilar(target.get());
-				if (StageManager.getMainStage().isFullView()) {
-					StageManager.getMainStage().swapViewMode();
-				}
+				StageManager.getStageMain().getSceneMain().viewGallery();
 				reload.doReload();
 				ClickMenu.hideAll();
 			});
@@ -178,50 +177,122 @@ public enum ButtonTemplates implements InstanceCollector {
 		}
 	},
 	
-	TAG_EDIT {
+	TAG_GROUP_EDIT {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Edit", true, true, false, true);
+			TextNode textNode = new TextNode("Edit Tag Group", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				if (!ClickMenu.getName().isEmpty()) {
-					//  click was on name node
-					String groupBefore = ClickMenu.getGroup();
-					String nameBefore = ClickMenu.getName();
-					Tag tag = tagListMain.getTag(groupBefore, nameBefore);
-					
-					TagEditStageResult result = StageManager.getTagEditStage().show(groupBefore, nameBefore);
-					String groupAfter = WordUtils.capitalize(result.getGroup().toLowerCase());
-					String nameAfter = WordUtils.capitalize(result.getName().toLowerCase());
-					
-					tag.set(groupAfter, nameAfter);
-					tagListMain.sort();
-					
-					if (result.isAddToSelect()) {
-						select.addTag(tag);
+				String groupBefore = ClickMenu.getGroup();
+				String groupAfter = WordUtils.capitalize(StageManager.getGroupEditStage().show(groupBefore).toLowerCase());
+				
+				tagListMain.forEach(tag -> {
+					if (tag.getGroup().equals(groupBefore)) {
+						tag.setGroup(groupAfter);
 					}
-					
-					if (!groupBefore.equals(groupAfter)) {
-						filterPane.updateGroupNode(groupBefore, groupAfter);
-						selectPane.updateGroupNode(groupBefore, groupAfter);
+				});
+				
+				filterPane.updateGroupNode(groupBefore, groupAfter);
+				selectPane.updateGroupNode(groupBefore, groupAfter);
+				
+				ClickMenu.hideAll();
+				reload.doReload();
+			});
+			return textNode;
+		}
+	},
+	TAG_GROUP_REMOVE {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Remove Tag Group", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				String group = ClickMenu.getGroup();
+				
+				if (StageManager.getOkCancelStage().show("Remove \"" + group + "\" and all of its tags?")) {
+					for (String n : tagListMain.getNames(group)) {
+						filterPane.removeNameNode(group, n);
+						selectPane.removeNameNode(group, n);
+						Tag tag = tagListMain.getTag(group, n);
+						entityListMain.forEach(entity -> entity.getTagList().remove(tag));
+						filter.unlist(tag);
+						tagListMain.remove(tag);
+						reload.notify(ChangeIn.TAG_LIST_MAIN);
 					}
-					
-					if (!nameBefore.equals(nameAfter)) {
-						filterPane.updateNameNode(groupAfter, nameBefore, nameAfter);
-						selectPane.updateNameNode(groupAfter, nameBefore, nameAfter);
-					}
-				} else {
-					//  click on group node
-					String groupBefore = ClickMenu.getGroup();
-					String groupAfter = WordUtils.capitalize(StageManager.getGroupEditStage().show(groupBefore).toLowerCase());
-					
-					tagListMain.forEach(tag -> {
-						if (tag.getGroup().equals(groupBefore)) {
-							tag.setGroup(groupAfter);
-						}
-					});
-					
+				}
+				
+				reload.doReload();
+				ClickMenu.hideAll();
+			});
+			return textNode;
+		}
+	},
+	TAG_GROUP_WHITELIST {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Whitelist All", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				filter.whitelist(ClickMenu.getGroup());
+				filter.refresh();
+				ClickMenu.hideAll();
+				reload.doReload();
+			});
+			return textNode;
+		}
+	},
+	TAG_GROUP_BLACKLIST {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Blacklist All", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				filter.blacklist(ClickMenu.getGroup());
+				filter.refresh();
+				ClickMenu.hideAll();
+				reload.doReload();
+			});
+			return textNode;
+		}
+	},
+	TAG_GROUP_UNLIST {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Unlist All", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				filter.unlist(ClickMenu.getGroup());
+				filter.refresh();
+				ClickMenu.hideAll();
+				reload.doReload();
+			});
+			return textNode;
+		}
+	},
+	
+	TAG_NAME_EDIT {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Edit Tag", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				String groupBefore = ClickMenu.getGroup();
+				String nameBefore = ClickMenu.getName();
+				Tag tag = tagListMain.getTag(groupBefore, nameBefore);
+				
+				TagEditStageResult result = StageManager.getTagEditStage().show(groupBefore, nameBefore);
+				String groupAfter = WordUtils.capitalize(result.getGroup().toLowerCase());
+				String nameAfter = WordUtils.capitalize(result.getName().toLowerCase());
+				
+				tag.set(groupAfter, nameAfter);
+				tagListMain.sort();
+				
+				if (result.isAddToSelect()) {
+					select.addTag(tag);
+				}
+				
+				if (!groupBefore.equals(groupAfter)) {
 					filterPane.updateGroupNode(groupBefore, groupAfter);
 					selectPane.updateGroupNode(groupBefore, groupAfter);
+				}
+				
+				if (!nameBefore.equals(nameAfter)) {
+					filterPane.updateNameNode(groupAfter, nameBefore, nameAfter);
+					selectPane.updateNameNode(groupAfter, nameBefore, nameAfter);
 				}
 				
 				ClickMenu.hideAll();
@@ -230,33 +301,22 @@ public enum ButtonTemplates implements InstanceCollector {
 			return textNode;
 		}
 	},
-	TAG_REMOVE {
+	TAG_NAME_REMOVE {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Remove", true, true, false, true);
+			TextNode textNode = new TextNode("Remove Tag", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				String group = ClickMenu.getGroup();
 				String name = ClickMenu.getName();
-				if (name.isEmpty()) {
-					if (StageManager.getOkCancelStage().show("Remove \"" + group + "\" and all of its tags?")) {
-						for (String n : tagListMain.getNames(group)) {
-							filterPane.removeNameNode(group, n);
-							selectPane.removeNameNode(group, n);
-							Tag tag = tagListMain.getTag(group, n);
-							entityListMain.forEach(entity -> entity.getTagList().remove(tag));
-							filter.unlist(tag);
-							tagListMain.remove(tag);
-						}
-					}
-				} else {
-					Tag tag = tagListMain.getTag(group, name);
-					if (StageManager.getOkCancelStage().show("Remove \"" + tag.getFull() + "\" ?")) {
-						filterPane.removeNameNode(group, name);
-						selectPane.removeNameNode(group, name);
-						entityListMain.forEach(entity -> entity.getTagList().remove(tag));
-						filter.unlist(tag);
-						tagListMain.remove(tag);
-					}
+				
+				Tag tag = tagListMain.getTag(group, name);
+				if (StageManager.getOkCancelStage().show("Remove \"" + tag.getFull() + "\" ?")) {
+					filterPane.removeNameNode(group, name);
+					selectPane.removeNameNode(group, name);
+					entityListMain.forEach(entity -> entity.getTagList().remove(tag));
+					filter.unlist(tag);
+					tagListMain.remove(tag);
+					reload.notify(ChangeIn.TAG_LIST_MAIN);
 				}
 				
 				reload.doReload();
@@ -266,24 +326,24 @@ public enum ButtonTemplates implements InstanceCollector {
 		}
 	},
 	
-	ENTITY_GROUP_CREATE {
+	COLLECTION_CREATE {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Create Entity Group", true, true, false, true);
+			TextNode textNode = new TextNode("Create Collection", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				EntityGroupUtil.createGroup(select);
+				CollectionUtil.create(select);
 				reload.doReload();
 				ClickMenu.hideAll();
 			});
 			return textNode;
 		}
 	},
-	ENTITY_GROUP_DISCARD {
+	COLLECTION_DISCARD {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Discard Entity Group", true, true, false, true);
+			TextNode textNode = new TextNode("Discard Collection", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				EntityGroupUtil.discardGroup(select);
+				CollectionUtil.discard(target.get());
 				reload.doReload();
 				ClickMenu.hideAll();
 			});
@@ -299,13 +359,13 @@ public enum ButtonTemplates implements InstanceCollector {
 				CacheManager.stopThread();
 				for (Entity entity : entityListMain) {
 					try {
-						Files.delete(Paths.get(FileUtil.getCacheFilePath(entity)));
+						Files.delete(Paths.get(FileUtil.getFileCache(entity)));
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
 					entity.getGalleryTile().setImage(null);
 				}
-				CacheManager.createCacheInBackground();
+				CacheManager.createCacheInBackground(entityListMain);
 				ClickMenu.hideAll();
 			});
 			return textNode;
@@ -317,8 +377,7 @@ public enum ButtonTemplates implements InstanceCollector {
 			TextNode textNode = new TextNode("Save", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				entityListMain.writeToDisk();
-				tagListMain.writeToDisk();
+				Project.getCurrent().writeToDisk();
 				ClickMenu.hideAll();
 			});
 			return textNode;
@@ -340,7 +399,7 @@ public enum ButtonTemplates implements InstanceCollector {
 			TextNode textNode = new TextNode("Exit", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () ->
-					StageManager.getMainStage().fireEvent(new WindowEvent(null, WindowEvent.WINDOW_CLOSE_REQUEST)));
+					StageManager.getStageMain().fireEvent(new WindowEvent(null, WindowEvent.WINDOW_CLOSE_REQUEST)));
 			return textNode;
 		}
 	},
@@ -352,8 +411,8 @@ public enum ButtonTemplates implements InstanceCollector {
 	
 	private void deleteEntity(Entity entity) {
 		if (filter.contains(entity)) {
-			FileUtil.deleteFile(FileUtil.getEntityFilePath(target.get()));
-			FileUtil.deleteFile(FileUtil.getCacheFilePath(entity));
+			FileUtil.deleteFile(FileUtil.getFileEntity(target.get()));
+			FileUtil.deleteFile(FileUtil.getFileCache(entity));
 			
 			galleryPane.getTilePane().getChildren().remove(entity.getGalleryTile());
 			select.remove(entity);
@@ -369,8 +428,8 @@ public enum ButtonTemplates implements InstanceCollector {
 		
 		EntityList entitiesToDelete = new EntityList();
 		select.forEach(entity -> {
-			if (entity.getEntityGroupID() != 0 && !galleryPane.getExpandedGroups().contains(entity.getEntityGroupID())) {
-				entitiesToDelete.addAll(entity.getEntityGroup(), true);
+			if (entity.getCollectionID() != 0 && !galleryPane.getExpandedGroups().contains(entity.getCollectionID())) {
+				entitiesToDelete.addAll(entity.getCollection(), true);
 			} else {
 				entitiesToDelete.add(entity, true);
 			}
@@ -388,8 +447,8 @@ public enum ButtonTemplates implements InstanceCollector {
 	}
 	private void deleteCurrentTarget() {
 		Entity currentTarget = target.get();
-		if (currentTarget.getEntityGroupID() == 0 || galleryPane.getExpandedGroups().contains(currentTarget.getEntityGroupID())) {
-			String sourcePath = FileUtil.getEntityFilePath(currentTarget);
+		if (currentTarget.getCollectionID() == 0 || galleryPane.getExpandedGroups().contains(currentTarget.getCollectionID())) {
+			String sourcePath = FileUtil.getFileEntity(currentTarget);
 			ButtonBooleanValue result = StageManager.getYesNoCancelStage().show("Delete file: " + sourcePath + "?");
 			if (result == ButtonBooleanValue.YES) {
 				target.storePosition();
@@ -400,11 +459,11 @@ public enum ButtonTemplates implements InstanceCollector {
 				reload.doReload();
 			}
 		} else {
-			ButtonBooleanValue result = StageManager.getYesNoCancelStage().show("Delete " + currentTarget.getEntityGroup().size() + " file(s)?");
+			ButtonBooleanValue result = StageManager.getYesNoCancelStage().show("Delete " + currentTarget.getCollection().size() + " file(s)?");
 			if (result == ButtonBooleanValue.YES) {
 				
 				target.storePosition();
-				for (Entity entity : currentTarget.getEntityGroup()) {
+				for (Entity entity : currentTarget.getCollection()) {
 					this.deleteEntity(entity);
 				}
 				target.restorePosition();

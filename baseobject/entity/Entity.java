@@ -12,18 +12,18 @@ public class Entity implements InstanceCollector, Serializable {
 	private String name;
 	private TagList tagList;
 	private long length;
-	private int entityGroupID;
+	private int collectionID;
 	
-	private transient EntityList entityGroup;
+	private transient EntityList collection;
 	private transient GalleryTile galleryTile;
 	
 	public Entity(File file) {
-		this.name = FileUtil.getNameForEntity(file);
+		this.name = FileUtil.createEntityName(file);
 		this.tagList = new TagList();
 		this.length = file.length();
-		this.entityGroupID = 0;
+		this.collectionID = 0;
 		
-		this.entityGroup = null;
+		this.collection = null;
 		this.galleryTile = new GalleryTile(this);
 	}
 	
@@ -36,12 +36,12 @@ public class Entity implements InstanceCollector, Serializable {
 	public long getLength() {
 		return length;
 	}
-	public int getEntityGroupID() {
-		return entityGroupID;
+	public int getCollectionID() {
+		return collectionID;
 	}
 	
-	public EntityList getEntityGroup() {
-		return entityGroup;
+	public EntityList getCollection() {
+		return collection;
 	}
 	public GalleryTile getGalleryTile() {
 		if (galleryTile == null) galleryTile = new GalleryTile(this);
@@ -54,11 +54,11 @@ public class Entity implements InstanceCollector, Serializable {
 	public void setTagList(TagList tagList) {
 		this.tagList = tagList;
 	}
-	public void setEntityGroupID(int entityGroupID) {
-		this.entityGroupID = entityGroupID;
+	public void setCollectionID(int collectionID) {
+		this.collectionID = collectionID;
 	}
 	
-	public void setEntityGroup(EntityList entityGroup) {
-		this.entityGroup = entityGroup;
+	public void setCollection(EntityList collection) {
+		this.collection = collection;
 	}
 }

@@ -27,7 +27,7 @@ public class CheckboxNode extends HBox {
 		selectedProperty = new SimpleBooleanProperty();
 		setSelected(startSelected);
 		setSpacing(3);
-		setAlignment(Pos.CENTER_LEFT);
+		setAlignment(Pos.CENTER);
 		
 		if (boxPosition == Direction.LEFT) {
 			getChildren().addAll(nodeMark, nodeText);

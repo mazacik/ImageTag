@@ -39,6 +39,14 @@ public class FilterSettingsStage extends StageBase implements InstanceCollector 
 		cbGifs = new CheckboxNode("Gifs");
 		cbVideos = new CheckboxNode("Videos");
 		cbSession = new CheckboxNode("Session");
+		
+		cbImages.setAlignment(Pos.CENTER_LEFT);
+		cbGifs.setAlignment(Pos.CENTER_LEFT);
+		cbVideos.setAlignment(Pos.CENTER_LEFT);
+		cbSession.setAlignment(Pos.CENTER_LEFT);
+		cbLimit.setAlignment(Pos.CENTER_LEFT);
+		tfLimit.setAlignment(Pos.CENTER_LEFT);
+		
 		vBoxLeft.getChildren().addAll(cbImages, cbGifs, cbVideos, cbSession, cbLimit, tfLimit);
 		
 		VBox vBoxRight = new VBox();
@@ -64,7 +72,7 @@ public class FilterSettingsStage extends StageBase implements InstanceCollector 
 			filter.setShowImages(cbImages.isSelected());
 			filter.setShowGifs(cbGifs.isSelected());
 			filter.setShowVideos(cbVideos.isSelected());
-			filter.setSessionOnly(cbSession.isSelected());
+			filter.setShowOnlyNewEntities(cbSession.isSelected());
 			filter.setEnableLimit(cbLimit.isSelected());
 			filter.setLimit(Integer.parseInt(tfLimit.getText()));
 			filter.refresh();
@@ -88,7 +96,7 @@ public class FilterSettingsStage extends StageBase implements InstanceCollector 
 		cbImages.setSelected(filter.isShowImages());
 		cbGifs.setSelected(filter.isShowGifs());
 		cbVideos.setSelected(filter.isShowVideos());
-		cbSession.setSelected(filter.isSessionOnly());
+		cbSession.setSelected(filter.isShowOnlyNewEntities());
 		cbLimit.setSelected(filter.isEnableLimit());
 		tfLimit.setText(String.valueOf(filter.getLimit()));
 		

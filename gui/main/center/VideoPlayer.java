@@ -67,21 +67,21 @@ public class VideoPlayer implements InstanceCollector {
 			@Override
 			public void positionChanged(MediaPlayer mediaPlayer, float newPosition) {
 				super.positionChanged(mediaPlayer, newPosition);
-				mediaPane.getControls().setVideoProgress(newPosition);
+				entityPane.getControls().setVideoProgress(newPosition);
 			}
 		});
 		mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
 			@Override
 			public void timeChanged(MediaPlayer mediaPlayer, long newTime) {
 				super.timeChanged(mediaPlayer, newTime);
-				mediaPane.getControls().setTimeCurrent(newTime);
+				entityPane.getControls().setTimeCurrent(newTime);
 			}
 		});
 		mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
 			@Override
 			public void lengthChanged(MediaPlayer mediaPlayer, long newLength) {
 				super.lengthChanged(mediaPlayer, newLength);
-				mediaPane.getControls().setTimeTotal(newLength);
+				entityPane.getControls().setTimeTotal(newLength);
 			}
 		});
 		
@@ -89,14 +89,14 @@ public class VideoPlayer implements InstanceCollector {
 			@Override
 			public void opening(MediaPlayer mediaPlayer) {
 				super.opening(mediaPlayer);
-				mediaPane.getControls().setVideoProgress(0);
+				entityPane.getControls().setVideoProgress(0);
 			}
 		});
 		mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
 			@Override
 			public void finished(MediaPlayer mediaPlayer) {
 				super.finished(mediaPlayer);
-				mediaPane.getControls().setVideoProgress(1);
+				entityPane.getControls().setVideoProgress(1);
 			}
 		});
 	}

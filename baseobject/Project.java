@@ -1,47 +1,74 @@
 package baseobject;
 
+import baseobject.entity.EntityList;
+import baseobject.tag.TagList;
 import com.google.gson.reflect.TypeToken;
+import main.InstanceCollector;
+import tools.FileUtil;
 import tools.JsonUtil;
 
 import java.io.File;
 import java.lang.reflect.Type;
+import java.util.Comparator;
 
 public class Project {
-	private transient static final Type typeToken = new TypeToken<Project>() {}.getType();
-	private transient String projectFileFullPath;
-	private String sourceDirectory;
+	private transient String projectName;
+	private transient String projectFile;
 	
-	public Project(String projectFileFullPath, String sourceDirectory) {
-		this.projectFileFullPath = projectFileFullPath;
-		this.sourceDirectory = sourceDirectory;
+	private long msLastAccess;
+	private String directorySource;
+	private EntityList entityList;
+	private TagList tagList;
+	
+	public Project(String projectName, String directorySource) {
+		this.projectName = projectName;
+		this.projectFile = FileUtil.getDirectoryProject() + File.separator + projectName + ".json";
+		this.directorySource = directorySource;
 	}
 	
-	public static Project readFromDisk(String projectFileFullPath) {
-		Project project = (Project) JsonUtil.read(typeToken, projectFileFullPath);
-		project.projectFileFullPath = projectFileFullPath;
+	private transient static final Type typeToken = new TypeToken<Project>() {}.getType();
+	public static Project readFromDisk(String projectFile) {
+		Project project = (Project) JsonUtil.read(typeToken, projectFile);
+		project.projectName = FileUtil.getFileNameNoExtension(projectFile);
+		project.projectFile = projectFile;
 		return project;
 	}
 	public void writeToDisk() {
-		File projectDir = new File(projectFileFullPath).getParentFile();
-		
-		if (!projectDir.exists()) {
-			projectDir.mkdirs();
-		}
-		
-		JsonUtil.write(this, typeToken, projectFileFullPath);
+		this.msLastAccess = System.currentTimeMillis();
+		this.entityList = InstanceCollector.entityListMain;
+		this.tagList = InstanceCollector.tagListMain;
+		JsonUtil.write(this, typeToken, projectFile);
 	}
 	
-	public String getProjectFileName() {
-		String projectNameWithExtension = projectFileFullPath.substring(projectFileFullPath.lastIndexOf(File.separatorChar) + 1);
-		return projectNameWithExtension.substring(0, projectNameWithExtension.lastIndexOf('.'));
+	public static Comparator<Project> getComparator() {
+		return (o1, o2) -> (int) (o2.getMsLastAccess() - o1.getMsLastAccess());
 	}
-	public String getProjectDirectory() {
-		return projectFileFullPath.substring(0, projectFileFullPath.lastIndexOf(File.separatorChar) + 1);
+	
+	public String getProjectName() {
+		return projectName;
 	}
-	public String getProjectFileFullPath() {
-		return projectFileFullPath;
+	public String getProjectFile() {
+		return projectFile;
 	}
-	public String getSourceDirectory() {
-		return sourceDirectory;
+	
+	public long getMsLastAccess() {
+		return msLastAccess;
+	}
+	public String getDirectorySource() {
+		return directorySource;
+	}
+	public EntityList getEntityList() {
+		return entityList;
+	}
+	public TagList getTagList() {
+		return tagList;
+	}
+	
+	private static transient Project current;
+	public static Project getCurrent() {
+		return current;
+	}
+	public static void setCurrent(Project project) {
+		Project.current = project;
 	}
 }

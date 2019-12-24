@@ -66,10 +66,10 @@ public class EntityList extends CustomList<Entity> implements InstanceCollector 
 	public static Entity getRandom(CustomList<Entity> customList) {
 		Entity entity = customList.getRandom();
 		if (entity != null) {
-			if (entity.getEntityGroupID() == 0) {
+			if (entity.getCollectionID() == 0) {
 				return entity;
 			} else {
-				return filter.applyTo(entity.getEntityGroup()).getRandom();
+				return filter.applyTo(entity.getCollection()).getRandom();
 			}
 		} else {
 			return null;

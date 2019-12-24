@@ -25,14 +25,13 @@ import javafx.scene.text.Font;
 import main.InstanceCollector;
 
 public class GalleryTile extends Pane implements InstanceCollector {
-	private final Entity entity;
+	public static final double SELECT_BORDER_PADDING = 10;
 	
+	private final Entity entity;
 	private ImageView imageView;
 	
 	private BorderPane selectBorder;
 	private static Background selectBorderBackground;
-	
-	public static final double SELECT_BORDER_PADDING = 10;
 	
 	private static Image loadingImage = null;
 	
@@ -49,8 +48,8 @@ public class GalleryTile extends Pane implements InstanceCollector {
 		selectBorder = new BorderPane(imageView);
 		selectBorder.setPadding(new Insets(SELECT_BORDER_PADDING));
 		
-		if (entity.getEntityGroupID() != 0) {
-			if (entity.getEntityGroup().getFirst().equals(entity)) {
+		if (entity.getCollectionID() != 0) {
+			if (entity.getCollection().getFirst().equals(entity)) {
 				this.setEffect(effectGroupExpand);
 			} else {
 				this.setEffect(effectGroupCollapse);
@@ -106,8 +105,8 @@ public class GalleryTile extends Pane implements InstanceCollector {
 		}
 	}
 	public void updateGroupIcon() {
-		if (entity.getEntityGroup().getFirst().equals(entity)) {
-			if (!galleryPane.getExpandedGroups().contains(entity.getEntityGroupID())) {
+		if (entity.getCollection().getFirst().equals(entity)) {
+			if (!galleryPane.getExpandedGroups().contains(entity.getCollectionID())) {
 				this.setEffect(effectGroupExpand);
 			} else {
 				this.setEffect(effectGroupCollapse);
@@ -121,7 +120,7 @@ public class GalleryTile extends Pane implements InstanceCollector {
 		this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			switch (event.getButton()) {
 				case PRIMARY:
-					if (isClickOnGroupIcon(event)) {
+					if (isClickOnCollectionIcon(event)) {
 						onGroupIconClick();
 						reload.doReload();
 					} else {
@@ -173,7 +172,7 @@ public class GalleryTile extends Pane implements InstanceCollector {
 		ClickMenu.hideAll();
 	}
 	private void onLeftDoubleClick() {
-		StageManager.getMainStage().swapViewMode();
+		StageManager.getStageMain().getSceneMain().viewEntity();
 		reload.doReload();
 	}
 	private void onRightClick() {
@@ -187,25 +186,25 @@ public class GalleryTile extends Pane implements InstanceCollector {
 		reload.doReload();
 	}
 	public void onGroupIconClick() {
-		int entityGroupID = entity.getEntityGroupID();
+		int collectionID = entity.getCollectionID();
 		
-		if (entityGroupID != 0) {
+		if (collectionID != 0) {
 			CustomList<Integer> expandedGroups = galleryPane.getExpandedGroups();
-			if (expandedGroups.contains(entityGroupID)) {
+			if (expandedGroups.contains(collectionID)) {
 				//noinspection RedundantCollectionOperation
-				expandedGroups.remove(expandedGroups.indexOf(entityGroupID));
+				expandedGroups.remove(expandedGroups.indexOf(collectionID));
 			} else {
-				expandedGroups.add(entityGroupID);
+				expandedGroups.add(collectionID);
 			}
 			
-			entity.getEntityGroup().getFirst().getGalleryTile().updateGroupIcon();
+			entity.getCollection().getFirst().getGalleryTile().updateGroupIcon();
 			
 			target.set(entity);
 			reload.notify(ChangeIn.ENTITY_LIST_MAIN);
 		}
 	}
-	private boolean isClickOnGroupIcon(MouseEvent event) {
-		if (entity.getEntityGroupID() == 0) return false;
+	private boolean isClickOnCollectionIcon(MouseEvent event) {
+		if (entity.getCollectionID() == 0) return false;
 		boolean hitWidth = event.getX() >= effectX && event.getX() <= effectX + effectSize;
 		boolean hitHeight = event.getY() <= effectY + effectSize && event.getY() >= effectY;
 		return hitWidth && hitHeight;

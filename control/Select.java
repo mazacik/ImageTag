@@ -20,11 +20,11 @@ public class Select extends EntityList implements InstanceCollector {
 	
 	public boolean add(Entity entity) {
 		if (entity == null) return false;
-		int entityGroupID = entity.getEntityGroupID();
-		if (entityGroupID != 0 && !galleryPane.getExpandedGroups().contains(entityGroupID)) {
-			EntityList entityGroup = entity.getEntityGroup();
-			if (super.addAll(entityGroup)) {
-				reload.requestBorderUpdate(entityGroup);
+		int collectionID = entity.getCollectionID();
+		if (collectionID != 0 && !galleryPane.getExpandedGroups().contains(collectionID)) {
+			EntityList collection = entity.getCollection();
+			if (super.addAll(collection)) {
+				reload.requestBorderUpdate(collection);
 				reload.notify(ChangeIn.SELECT);
 				return true;
 			}
@@ -45,14 +45,14 @@ public class Select extends EntityList implements InstanceCollector {
 		for (Entity entity : c) {
 			if (entity == null || this.contains(entity)) continue;
 			
-			int entityGroupID = entity.getEntityGroupID();
-			if (entityGroupID == 0 || expandedGroups.contains(entityGroupID)) {
+			int collectionID = entity.getCollectionID();
+			if (collectionID == 0 || expandedGroups.contains(collectionID)) {
 				super.add(entity);
 				reload.requestBorderUpdate(entity);
 			} else {
-				EntityList entityGroup = entity.getEntityGroup();
-				super.addAll(entityGroup);
-				reload.requestBorderUpdate(entityGroup);
+				EntityList collection = entity.getCollection();
+				super.addAll(collection);
+				reload.requestBorderUpdate(collection);
 			}
 		}
 		
@@ -63,13 +63,13 @@ public class Select extends EntityList implements InstanceCollector {
 		if (entity == null) return false;
 		
 		int size = this.size();
-		if (entity.getEntityGroupID() == 0 || galleryPane.getExpandedGroups().contains(entity.getEntityGroupID())) {
+		if (entity.getCollectionID() == 0 || galleryPane.getExpandedGroups().contains(entity.getCollectionID())) {
 			reload.requestBorderUpdate(entity);
 			super.remove(entity);
 		} else {
-			EntityList entityGroup = entity.getEntityGroup();
-			reload.requestBorderUpdate(entityGroup);
-			this.removeAll(entityGroup);
+			EntityList collection = entity.getCollection();
+			reload.requestBorderUpdate(collection);
+			this.removeAll(collection);
 		}
 		
 		if (size != this.size()) {
@@ -101,8 +101,8 @@ public class Select extends EntityList implements InstanceCollector {
 		this.set(entity);
 		target.set(entity);
 	}
-	public void setRandomFromEntityGroup() {
-		Entity entity = EntityList.getRandom(target.get().getEntityGroup());
+	public void setRandomFromCollection() {
+		Entity entity = EntityList.getRandom(target.get().getCollection());
 		this.set(entity);
 		target.set(entity);
 	}

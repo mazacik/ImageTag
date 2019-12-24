@@ -3,7 +3,6 @@ package gui.main.center;
 import baseobject.CustomList;
 import baseobject.entity.Entity;
 import baseobject.entity.EntityList;
-import control.reload.Reloadable;
 import gui.component.clickmenu.ClickMenu;
 import gui.decorator.SizeUtil;
 import gui.stage.StageManager;
@@ -23,7 +22,7 @@ import tools.Stopwatch;
 
 import java.util.logging.Logger;
 
-public class GalleryPane extends ScrollPane implements InstanceCollector, Reloadable {
+public class GalleryPane extends ScrollPane implements InstanceCollector {
 	private TilePane tilePane;
 	private CustomList<Integer> expandedGroups;
 	
@@ -122,7 +121,7 @@ public class GalleryPane extends ScrollPane implements InstanceCollector, Reload
 				//add a cooldown timer if necessary
 				CustomList<Entity> intersectingTiles = getSelectRectangleTiles();
 				
-				if (StageManager.getMainStage().isShiftDown()) {
+				if (StageManager.getStageMain().isShiftDown()) {
 					select.addAll(intersectingTiles);
 				} else {
 					select.setAll(intersectingTiles);
@@ -239,28 +238,28 @@ public class GalleryPane extends ScrollPane implements InstanceCollector, Reload
 		Logger.getGlobal().info(this.toString());
 		
 		//	var init
-		CustomList<Integer> entityGroupIDs = new CustomList<>();
+		CustomList<Integer> collectionIDs = new CustomList<>();
 		CustomList<GalleryTile> tiles = new CustomList<>();
 		target.storePosition();
 		
 		//	main loop
 		for (Entity entity : filter) {
 			GalleryTile galleryTile = entity.getGalleryTile();
-			int entityGroupID = entity.getEntityGroupID();
+			int collectionID = entity.getCollectionID();
 			
-			if (entityGroupID == 0) {
+			if (collectionID == 0) {
 				tiles.add(galleryTile);
-			} else if (!entityGroupIDs.contains(entityGroupID)) {
+			} else if (!collectionIDs.contains(collectionID)) {
 				//	only one object in the entity group needs to be processed
-				entityGroupIDs.add(entityGroupID);
-				if (expandedGroups.contains(entityGroupID)) {
-					for (Entity entityGroup : entity.getEntityGroup()) {
+				collectionIDs.add(collectionID);
+				if (expandedGroups.contains(collectionID)) {
+					for (Entity collection : entity.getCollection()) {
 						//	instead of letting the main loop take care of all objects in the entity group
 						//	the entity group gets processed in a separate loop to keep its objects together
 						//	however, each object needs to be checked for Filter validity an additional time
-						if (filter.contains(entityGroup)) {
-							tiles.add(entityGroup.getGalleryTile());
-							reload.requestBorderUpdate(entityGroup);
+						if (filter.contains(collection)) {
+							tiles.add(collection.getGalleryTile());
+							reload.requestBorderUpdate(collection);
 						}
 					}
 				} else {
@@ -277,11 +276,11 @@ public class GalleryPane extends ScrollPane implements InstanceCollector, Reload
 		Entity currentTarget = target.restorePosition();
 		if (currentTarget != null) {
 			this.moveViewportToTarget();
-			if (currentTarget.getEntityGroupID() != 0) {
-				if (!expandedGroups.contains(currentTarget.getEntityGroupID())) {
-					EntityList entityGroup = currentTarget.getEntityGroup();
-					if (select.containsAny(entityGroup)) {
-						select.addAll(entityGroup);
+			if (currentTarget.getCollectionID() != 0) {
+				if (!expandedGroups.contains(currentTarget.getCollectionID())) {
+					EntityList collection = currentTarget.getCollection();
+					if (select.containsAny(collection)) {
+						select.addAll(collection);
 					}
 				}
 			}
@@ -294,9 +293,9 @@ public class GalleryPane extends ScrollPane implements InstanceCollector, Reload
 		this.layout();
 		
 		Entity currentTarget = target.get();
-		if (StageManager.getMainStage().isFullView() || currentTarget == null) return;
-		if (currentTarget.getEntityGroupID() != 0 && !expandedGroups.contains(currentTarget.getEntityGroupID())) {
-			currentTarget = currentTarget.getEntityGroup().getFirst();
+		if (!StageManager.getStageMain().getSceneMain().isViewGallery() || currentTarget == null) return;
+		if (currentTarget.getCollectionID() != 0 && !expandedGroups.contains(currentTarget.getCollectionID())) {
+			currentTarget = currentTarget.getCollection().getFirst();
 		}
 		int targetIndex = this.getEntitiesOfTiles().indexOf(currentTarget);
 		if (targetIndex < 0) return;

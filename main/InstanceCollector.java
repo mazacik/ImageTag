@@ -1,14 +1,14 @@
 package main;
 
-import baseobject.entity.EntityListMain;
-import baseobject.tag.TagListMain;
+import baseobject.entity.EntityList;
+import baseobject.tag.TagList;
 import control.Filter;
 import control.Select;
 import control.Settings;
 import control.Target;
 import control.reload.Reload;
 import gui.main.center.GalleryPane;
-import gui.main.center.MediaPane;
+import gui.main.center.EntityPane;
 import gui.main.side.left.FilterPane;
 import gui.main.side.right.SelectPane;
 import gui.main.top.ToolbarPane;
@@ -16,12 +16,12 @@ import gui.main.top.ToolbarPane;
 public interface InstanceCollector {
 	Settings settings = new Settings();
 	
-	EntityListMain entityListMain = new EntityListMain();
-	TagListMain tagListMain = new TagListMain();
+	EntityList entityListMain = new EntityList();
+	TagList tagListMain = new TagList();
 	
 	ToolbarPane toolbarPane = new ToolbarPane();
 	GalleryPane galleryPane = new GalleryPane();
-	MediaPane mediaPane = new MediaPane();
+	EntityPane entityPane = new EntityPane();
 	FilterPane filterPane = new FilterPane();
 	SelectPane selectPane = new SelectPane();
 	
