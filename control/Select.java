@@ -14,14 +14,10 @@ public class Select extends EntityList implements InstanceCollector {
 	
 	}
 	
-	public void init() {
-	
-	}
-	
 	public boolean add(Entity entity) {
 		if (entity == null) return false;
 		int collectionID = entity.getCollectionID();
-		if (collectionID != 0 && !galleryPane.getExpandedGroups().contains(collectionID)) {
+		if (collectionID != 0 && !paneGallery.getExpandedGroups().contains(collectionID)) {
 			EntityList collection = entity.getCollection();
 			if (super.addAll(collection)) {
 				reload.requestBorderUpdate(collection);
@@ -40,7 +36,7 @@ public class Select extends EntityList implements InstanceCollector {
 	public boolean addAll(Collection<? extends Entity> c) {
 		if (c == null || c.isEmpty()) return false;
 		
-		CustomList<Integer> expandedGroups = galleryPane.getExpandedGroups();
+		CustomList<Integer> expandedGroups = paneGallery.getExpandedGroups();
 		
 		for (Entity entity : c) {
 			if (entity == null || this.contains(entity)) continue;
@@ -63,7 +59,7 @@ public class Select extends EntityList implements InstanceCollector {
 		if (entity == null) return false;
 		
 		int size = this.size();
-		if (entity.getCollectionID() == 0 || galleryPane.getExpandedGroups().contains(entity.getCollectionID())) {
+		if (entity.getCollectionID() == 0 || paneGallery.getExpandedGroups().contains(entity.getCollectionID())) {
 			reload.requestBorderUpdate(entity);
 			super.remove(entity);
 		} else {
@@ -97,7 +93,7 @@ public class Select extends EntityList implements InstanceCollector {
 		this.addAll(entities);
 	}
 	public void setRandom() {
-		Entity entity = EntityList.getRandom(galleryPane.getEntitiesOfTiles());
+		Entity entity = EntityList.getRandom(paneGallery.getEntitiesOfTiles());
 		this.set(entity);
 		target.set(entity);
 	}
@@ -133,7 +129,7 @@ public class Select extends EntityList implements InstanceCollector {
 		this.shiftStart = entityFrom;
 	}
 	public void shiftSelectTo(Entity entityTo) {
-		CustomList<Entity> entities = galleryPane.getEntitiesOfTiles();
+		CustomList<Entity> entities = paneGallery.getEntitiesOfTiles();
 		
 		int indexFrom = entities.indexOf(shiftStart);
 		int indexTo = entities.indexOf(entityTo);

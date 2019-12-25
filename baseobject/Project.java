@@ -35,8 +35,8 @@ public class Project {
 	}
 	public void writeToDisk() {
 		this.msLastAccess = System.currentTimeMillis();
-		this.entityList = InstanceCollector.entityListMain;
-		this.tagList = InstanceCollector.tagListMain;
+		this.entityList = InstanceCollector.mainEntityList;
+		this.tagList = InstanceCollector.mainTagList;
 		JsonUtil.write(this, typeToken, projectFile);
 	}
 	

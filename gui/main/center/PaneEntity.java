@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
-public class EntityPane extends BorderPane implements InstanceCollector {
+public class PaneEntity extends BorderPane implements InstanceCollector {
 	private Canvas canvas;
 	private ImageView gifPlayer;
 	private VideoPlayer videoPlayer;
@@ -34,7 +34,7 @@ public class EntityPane extends BorderPane implements InstanceCollector {
 	
 	private TextNode nodeNoLibsError = null;
 	
-	public EntityPane() {
+	public PaneEntity() {
 	
 	}
 	
@@ -44,8 +44,8 @@ public class EntityPane extends BorderPane implements InstanceCollector {
 		videoPlayer = VideoPlayer.create(canvas);
 		controls = new MediaPaneControls(this, videoPlayer);
 		
-		gifPlayer.fitWidthProperty().bind(galleryPane.widthProperty());
-		gifPlayer.fitHeightProperty().bind(galleryPane.heightProperty());
+		gifPlayer.fitWidthProperty().bind(paneGallery.widthProperty());
+		gifPlayer.fitHeightProperty().bind(paneGallery.heightProperty());
 		
 		nodeNoLibsError = new TextNode("No VLC Libs found.") {{
 			this.setFont(new Font(64));
@@ -182,8 +182,8 @@ public class EntityPane extends BorderPane implements InstanceCollector {
 	}
 	
 	private void initEvents() {
-		canvas.widthProperty().bind(galleryPane.widthProperty());
-		canvas.heightProperty().bind(galleryPane.heightProperty());
+		canvas.widthProperty().bind(paneGallery.widthProperty());
+		canvas.heightProperty().bind(paneGallery.heightProperty());
 		
 		canvas.widthProperty().addListener((observable, oldValue, newValue) -> reload());
 		canvas.heightProperty().addListener((observable, oldValue, newValue) -> reload());

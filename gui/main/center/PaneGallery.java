@@ -22,7 +22,7 @@ import tools.Stopwatch;
 
 import java.util.logging.Logger;
 
-public class GalleryPane extends ScrollPane implements InstanceCollector {
+public class PaneGallery extends ScrollPane implements InstanceCollector {
 	private TilePane tilePane;
 	private CustomList<Integer> expandedGroups;
 	
@@ -35,7 +35,7 @@ public class GalleryPane extends ScrollPane implements InstanceCollector {
 	
 	public static final double GAP = 5;
 	
-	public GalleryPane() {
+	public PaneGallery() {
 	
 	}
 	

@@ -25,17 +25,9 @@ public class EntityList extends CustomList<Entity> implements InstanceCollector 
 	}
 	
 	public TagList getTagsAll() {
-		if (!this.isEmpty()) {
-			TagList tagList = new TagList();
-			
-			for (Entity entity : this) {
-				tagList.addAll(entity.getTagList());
-			}
-			
-			return tagList;
-		} else {
-			return new TagList();
-		}
+		TagList tagList = new TagList();
+		this.forEach(entity -> tagList.addAll(entity.getTagList(), true));
+		return tagList;
 	}
 	public TagList getTagsIntersect() {
 		if (!this.isEmpty()) {

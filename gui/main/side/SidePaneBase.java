@@ -36,7 +36,7 @@ public abstract class SidePaneBase extends VBox implements InstanceCollector {
 	public boolean reload() {
 		//	populate primary helpers
 		CustomList<String> groupsCurrent = new CustomList<>();
-		CustomList<Tag> tagsMain = new CustomList<>(tagListMain);
+		CustomList<Tag> tagsMain = new CustomList<>(mainTagList);
 		CustomList<Tag> tagsCurrent = new CustomList<>();
 		
 		for (Node node : groupNodes.getChildren()) {
@@ -44,7 +44,7 @@ public abstract class SidePaneBase extends VBox implements InstanceCollector {
 				GroupNode groupNode = (GroupNode) node;
 				groupsCurrent.add(groupNode.getText());
 				for (TextNode nameNode : groupNode.getNodes()) {
-					tagsCurrent.add(tagListMain.getTag(groupNode.getText(), nameNode.getText()));
+					tagsCurrent.add(mainTagList.getTag(groupNode.getText(), nameNode.getText()));
 				}
 			}
 		}

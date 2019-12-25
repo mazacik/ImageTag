@@ -106,7 +106,7 @@ public class GalleryTile extends Pane implements InstanceCollector {
 	}
 	public void updateGroupIcon() {
 		if (entity.getCollection().getFirst().equals(entity)) {
-			if (!galleryPane.getExpandedGroups().contains(entity.getCollectionID())) {
+			if (!paneGallery.getExpandedGroups().contains(entity.getCollectionID())) {
 				this.setEffect(effectGroupExpand);
 			} else {
 				this.setEffect(effectGroupCollapse);
@@ -189,7 +189,7 @@ public class GalleryTile extends Pane implements InstanceCollector {
 		int collectionID = entity.getCollectionID();
 		
 		if (collectionID != 0) {
-			CustomList<Integer> expandedGroups = galleryPane.getExpandedGroups();
+			CustomList<Integer> expandedGroups = paneGallery.getExpandedGroups();
 			if (expandedGroups.contains(collectionID)) {
 				//noinspection RedundantCollectionOperation
 				expandedGroups.remove(expandedGroups.indexOf(collectionID));

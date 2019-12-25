@@ -40,14 +40,14 @@ public class NameNode extends TextNode implements InstanceCollector {
 	}
 	
 	public void changeState() {
-		if (groupNode.getParentPane() == filterPane) {
+		if (groupNode.getParentPane() == paneFilter) {
 			this.changeStateAsFilter();
-		} else if (groupNode.getParentPane() == selectPane) {
+		} else if (groupNode.getParentPane() == paneSelect) {
 			this.changeStateAsSelect();
 		}
 	}
 	private void changeStateAsFilter() {
-		Tag tag = tagListMain.getTag(groupNode.getText(), this.getText());
+		Tag tag = mainTagList.getTag(groupNode.getText(), this.getText());
 		if (filter.isWhitelisted(tag)) {
 			filter.blacklist(tag);
 			if (filter.isBlacklisted(tag.getGroup())) {
@@ -72,7 +72,7 @@ public class NameNode extends TextNode implements InstanceCollector {
 		filter.refresh();
 	}
 	private void changeStateAsSelect() {
-		Tag tag = tagListMain.getTag(groupNode.getText(), this.getText());
+		Tag tag = mainTagList.getTag(groupNode.getText(), this.getText());
 		if (this.getTextFill().equals(ColorUtil.getColorPositive()) || this.getTextFill().equals(ColorUtil.getColorShare())) {
 			this.setTextFill(ColorUtil.getColorPrimary());
 			select.removeTag(tag);

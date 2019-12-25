@@ -22,7 +22,7 @@ public abstract class SizeUtil implements InstanceCollector {
 	}
 	
 	public static void stageWidthChangeHandler() {
-		TilePane tilePane = galleryPane.getTilePane();
+		TilePane tilePane = paneGallery.getTilePane();
 		
 		double galleryTileSize = tilePane.getPrefTileWidth();
 		double sceneWidth = StageManager.getStageMain().getScene().getWidth();
@@ -35,8 +35,8 @@ public abstract class SizeUtil implements InstanceCollector {
 		if (prefColumnsNew != prefColumnsOld) {
 			tilePane.setPrefColumns(prefColumnsNew);
 			
-			galleryPane.setMinViewportWidth(width);
-			galleryPane.setPrefViewportWidth(width);
+			paneGallery.setMinViewportWidth(width);
+			paneGallery.setPrefViewportWidth(width);
 		}
 	}
 	private static double getWidth(double availableWidth, double galleryTileSize, double tileHgap) {

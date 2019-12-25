@@ -16,10 +16,10 @@ import tools.enums.Direction;
 
 import java.util.logging.Logger;
 
-public class ToolbarPane extends TitleBar implements InstanceCollector {
+public class PaneToolbar extends TitleBar implements InstanceCollector {
 	private TextNode nodeTarget;
 	
-	public ToolbarPane() {
+	public PaneToolbar() {
 	
 	}
 	

@@ -41,7 +41,7 @@ public class GroupNode extends VBox implements InstanceCollector {
 		hBoxMain = new HBox(nodeToggle, nodeText);
 		this.getChildren().add(hBoxMain);
 		
-		for (String name : tagListMain.getNames(getText())) {
+		for (String name : mainTagList.getNames(getText())) {
 			this.add(name);
 		}
 		

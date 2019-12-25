@@ -7,23 +7,23 @@ import control.Select;
 import control.Settings;
 import control.Target;
 import control.reload.Reload;
-import gui.main.center.GalleryPane;
-import gui.main.center.EntityPane;
-import gui.main.side.left.FilterPane;
-import gui.main.side.right.SelectPane;
-import gui.main.top.ToolbarPane;
+import gui.main.center.PaneGallery;
+import gui.main.center.PaneEntity;
+import gui.main.side.left.PaneFilter;
+import gui.main.side.right.PaneSelect;
+import gui.main.top.PaneToolbar;
 
 public interface InstanceCollector {
 	Settings settings = new Settings();
 	
-	EntityList entityListMain = new EntityList();
-	TagList tagListMain = new TagList();
+	EntityList mainEntityList = new EntityList();
+	TagList mainTagList = new TagList();
 	
-	ToolbarPane toolbarPane = new ToolbarPane();
-	GalleryPane galleryPane = new GalleryPane();
-	EntityPane entityPane = new EntityPane();
-	FilterPane filterPane = new FilterPane();
-	SelectPane selectPane = new SelectPane();
+	PaneToolbar paneToolbar = new PaneToolbar();
+	PaneGallery paneGallery = new PaneGallery();
+	PaneEntity paneEntity = new PaneEntity();
+	PaneFilter paneFilter = new PaneFilter();
+	PaneSelect paneSelect = new PaneSelect();
 	
 	Filter filter = new Filter();
 	Target target = new Target();

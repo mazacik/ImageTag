@@ -26,10 +26,10 @@ import tools.enums.Direction;
 
 import java.util.logging.Logger;
 
-public class SelectPane extends SidePaneBase {
+public class PaneSelect extends SidePaneBase {
 	private EditNode nodeSearch;
 	
-	public SelectPane() {
+	public PaneSelect() {
 	
 	}
 	
@@ -195,7 +195,7 @@ public class SelectPane extends SidePaneBase {
 	}
 	private Tag getBestMatch(String query) {
 		//	simple check if the name of any tag starts with query
-		for (Tag tag : tagListMain) {
+		for (Tag tag : mainTagList) {
 			if (tag.getName().toLowerCase().startsWith(query)) {
 				return tag;
 			}
@@ -205,7 +205,7 @@ public class SelectPane extends SidePaneBase {
 		Tag bestMatch = null;
 		double bestMatchFactor = 0;
 		
-		for (Tag tag : tagListMain) {
+		for (Tag tag : mainTagList) {
 			SimilarityStrategy strategy = new JaroWinklerStrategy();
 			StringSimilarityService service = new StringSimilarityServiceImpl(strategy);
 			double currentFactor = service.score(tag.getName(), query);

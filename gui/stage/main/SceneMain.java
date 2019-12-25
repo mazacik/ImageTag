@@ -8,33 +8,33 @@ import main.InstanceCollector;
 
 public class SceneMain extends HBox implements InstanceCollector {
 	public SceneMain() {
-		super(filterPane, galleryPane, selectPane);
+		super(paneFilter, paneGallery, paneSelect);
 	}
 	
 	public void viewGallery() {
 		if (!isViewGallery()) {
-			entityPane.interruptVideoPlayer();
+			paneEntity.interruptVideoPlayer();
 			
-			this.getChildren().set(1, galleryPane);
+			this.getChildren().set(1, paneGallery);
 			
-			galleryPane.moveViewportToTarget();
-			galleryPane.requestFocus();
+			paneGallery.moveViewportToTarget();
+			paneGallery.requestFocus();
 			
 			reload.notify(ChangeIn.VIEWMODE);
 		}
 	}
 	public void viewEntity() {
 		if (isViewGallery()) {
-			this.getChildren().set(1, entityPane);
+			this.getChildren().set(1, paneEntity);
 			
-			entityPane.requestFocus();
-			entityPane.fireEvent(new MouseEvent(MouseEvent.MOUSE_MOVED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
+			paneEntity.requestFocus();
+			paneEntity.fireEvent(new MouseEvent(MouseEvent.MOUSE_MOVED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
 			
 			reload.notify(ChangeIn.VIEWMODE);
 		}
 	}
 	
 	public boolean isViewGallery() {
-		return this.getChildren().contains(galleryPane);
+		return this.getChildren().contains(paneGallery);
 	}
 }

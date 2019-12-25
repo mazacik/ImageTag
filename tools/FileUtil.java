@@ -100,8 +100,8 @@ public abstract class FileUtil implements InstanceCollector {
 		} else {
 			CacheManager.createCacheInBackground(newEntities);
 			
-			entityListMain.addAll(newEntities);
-			entityListMain.sort();
+			mainEntityList.addAll(newEntities);
+			mainEntityList.sort();
 			
 			String s = "Imported " + newEntities.size() + " files.\nWould you like to view the new files?";
 			if (StageManager.getYesNoCancelStage().show(s) == ButtonBooleanValue.YES) {

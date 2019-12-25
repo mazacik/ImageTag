@@ -10,7 +10,7 @@ public class MediaPaneControls extends Popup {
 	private final MediaPaneControlsBase controlsBase;
 	private final PauseTransition autoHideDelay;
 	
-	public MediaPaneControls(EntityPane entityPane, VideoPlayer videoPlayer) {
+	public MediaPaneControls(PaneEntity entityPane, VideoPlayer videoPlayer) {
 		controlsBase = new MediaPaneControlsBase(videoPlayer);
 		autoHideDelay = new PauseTransition(new Duration(1000));
 		

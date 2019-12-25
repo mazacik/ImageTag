@@ -34,24 +34,16 @@ public class Main extends Application implements InstanceCollector {
 	private static void initLogger() {
 		System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %2$s: %5$s%n");
 	}
-	private static void initGraphics() {
-	
-	}
 	private static void initInstances() {
 		settings.readFromDisk();
 		
-		toolbarPane.init();     /* needs Settings */
-		galleryPane.init();     /* needs Settings */
-		entityPane.init();      /* needs Settings, GalleryPane */
-		filterPane.init();      /* needs Settings */
-		selectPane.init();      /* needs Settings */
+		paneToolbar.init();     /* needs Settings */
+		paneGallery.init();     /* needs Settings */
+		paneEntity.init();      /* needs Settings, GalleryPane */
+		paneFilter.init();      /* needs Settings */
+		paneSelect.init();      /* needs Settings */
 		
 		GalleryTile.init();
-		
-		filter.init();
-		target.init();
-		select.init();
-		reload.init();          /* needs everything */
 	}
 	private static void initLoading() {
 		CustomList<Project> projects = FileUtil.getProjects();
@@ -68,11 +60,11 @@ public class Main extends Application implements InstanceCollector {
 	
 	public static void startDatabaseLoading(Project project) {
 		Project.setCurrent(project);
-		entityListMain.addAll(project.getEntityList());
+		mainEntityList.addAll(project.getEntityList());
 		checkForNewFiles(FileUtil.getSupportedFiles(new File(project.getDirectorySource())));
 		
 		CollectionUtil.init();
-		entityListMain.sort();
+		mainEntityList.sort();
 		initTags(project);
 		filter.refresh();
 		target.set(filter.get(0));
@@ -80,41 +72,42 @@ public class Main extends Application implements InstanceCollector {
 		
 		reload.doReload();
 		
-		filterPane.collapseAll();
-		selectPane.collapseAll();
+		paneFilter.collapseAll();
+		paneSelect.collapseAll();
 		
-		CacheManager.createCacheInBackground(entityListMain);
+		CacheManager.createCacheInBackground(mainEntityList);
 	}
-	public static void initTags(Project project) {
+	private static void initTags(Project project) {
 		//todo help
 		TagList allTags = project.getTagList();
 		if (allTags != null) {
-			tagListMain.addAll(allTags);
+			mainTagList.addAll(allTags);
 		}
 		
-		for (Entity entity : entityListMain) {
+		for (Entity entity : mainEntityList) {
 			TagList tagList = entity.getTagList();
 			
 			for (Tag tag : tagList) {
-				if (tagListMain.containsEqualTo(tag)) {
-					tagList.set(tagList.indexOf(tag), tagListMain.getTag(tag));
+				if (mainTagList.containsEqualTo(tag)) {
+					tagList.set(tagList.indexOf(tag), mainTagList.getTag(tag));
 				} else {
-					tagListMain.add(tag);
+					mainTagList.add(tag);
 				}
 			}
 		}
 		
-		tagListMain.sort();
+		mainTagList.sort();
 		reload.notify(ChangeIn.TAG_LIST_MAIN);
 	}
 	private static void checkForNewFiles(CustomList<File> fileList) {
-		entityListMain.sort(Comparator.comparing(Entity::getName));
+		mainEntityList.sort(Comparator.comparing(Entity::getName));
 		fileList.sort(Comparator.comparing(File::getName));
-		EntityList orphanEntities = new EntityList(entityListMain);
+		
+		EntityList orphanEntities = new EntityList(mainEntityList);
 		CustomList<File> newFiles = new CustomList<>(fileList);
 		
 		/* compare files in the source directory with known objects in the database */
-		for (Entity entity : entityListMain) {
+		for (Entity entity : mainEntityList) {
 			for (int i = 0; i < newFiles.size(); i++) {
 				File file = newFiles.get(i);
 				if (entity.getName().equals(FileUtil.createEntityName(file))) {
@@ -147,24 +140,25 @@ public class Main extends Application implements InstanceCollector {
 		/* add unrecognized objects */
 		for (File file : newFiles) {
 			Entity entity = new Entity(file);
-			entityListMain.add(entity);
+			mainEntityList.add(entity);
 			filter.getNewEntities().add(entity);
 		}
 		
 		/* discard orphan objects */
 		for (Entity entity : orphanEntities) {
-			entityListMain.remove(entity);
+			mainEntityList.remove(entity);
 		}
 		
-		entityListMain.sort(Comparator.comparing(Entity::getName));
+		mainEntityList.sort(Comparator.comparing(Entity::getName));
 	}
+	
 	public static void exitApplication() {
 		Logger.getGlobal().info("Application Exit");
 		
 		CacheManager.stopThread();
 		
-		entityPane.disposeVideoPlayer();
-		entityPane.getControls().hide();
+		paneEntity.disposeVideoPlayer();
+		paneEntity.getControls().hide();
 		
 		Project.getCurrent().writeToDisk();
 		settings.writeToDisk();

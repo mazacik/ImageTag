@@ -14,10 +14,6 @@ public class Target implements InstanceCollector {
 	private Entity current;
 	
 	public Target() {
-	
-	}
-	
-	public void init() {
 		current = null;
 	}
 	
@@ -32,7 +28,7 @@ public class Target implements InstanceCollector {
 			
 			this.current = entity;
 			
-			galleryPane.moveViewportToTarget();
+			paneGallery.moveViewportToTarget();
 			reload.notify(ChangeIn.TARGET);
 			
 			Logger.getGlobal().info(entity.getName());
@@ -41,14 +37,14 @@ public class Target implements InstanceCollector {
 	public void move(Direction direction) {
 		if (current == null) return;
 		
-		EntityList entities = galleryPane.getEntitiesOfTiles();
+		EntityList entities = paneGallery.getEntitiesOfTiles();
 		if (entities.isEmpty()) return;
 		
 		int currentTargetIndex;
 		if (current.getCollectionID() == 0) {
 			currentTargetIndex = entities.indexOf(current);
 		} else {
-			if (galleryPane.getExpandedGroups().contains(current.getCollectionID())) {
+			if (paneGallery.getExpandedGroups().contains(current.getCollectionID())) {
 				currentTargetIndex = entities.indexOf(current);
 			} else {
 				Entity groupFirst = current.getCollection().getFirst();
@@ -60,7 +56,7 @@ public class Target implements InstanceCollector {
 			}
 		}
 		
-		int columnCount = galleryPane.getColumnCount();
+		int columnCount = paneGallery.getColumnCount();
 		
 		int newTargetIndex = currentTargetIndex;
 		switch (direction) {
@@ -103,8 +99,8 @@ public class Target implements InstanceCollector {
 	private Entity storeEntity = null;
 	private int storePos = -1;
 	public void storePosition() {
-		CustomList<Integer> expandedcollection = galleryPane.getExpandedGroups();
-		CustomList<Entity> visibleEntities = galleryPane.getEntitiesOfTiles();
+		CustomList<Integer> expandedcollection = paneGallery.getExpandedGroups();
+		CustomList<Entity> visibleEntities = paneGallery.getEntitiesOfTiles();
 		
 		if (current.getCollectionID() == 0) {
 			storeEntity = current;
@@ -120,7 +116,7 @@ public class Target implements InstanceCollector {
 		}
 	}
 	public Entity restorePosition() {
-		EntityList visibleEntities = galleryPane.getEntitiesOfTiles();
+		EntityList visibleEntities = paneGallery.getEntitiesOfTiles();
 		if (!visibleEntities.isEmpty()) {
 			if (storeEntity != null && visibleEntities.contains(storeEntity)) {
 				this.set(storeEntity);

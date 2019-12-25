@@ -61,8 +61,8 @@ public abstract class CacheManager implements InstanceCollector {
 	}
 	
 	public static Image create(Entity entity) {
-		String entityIndex = StringUtils.right("00000000" + (entityListMain.indexOf(entity) + 1), String.valueOf(entityListMain.size()).length());
-		Logger.getGlobal().info(String.format("[%s/%s] %s", entityIndex, entityListMain.size(), entity.getName()));
+		String entityIndex = StringUtils.right("00000000" + (mainEntityList.indexOf(entity) + 1), String.valueOf(mainEntityList.size()).length());
+		Logger.getGlobal().info(String.format("[%s/%s] %s", entityIndex, mainEntityList.size(), entity.getName()));
 		
 		switch (FileUtil.getType(entity)) {
 			case IMAGE:

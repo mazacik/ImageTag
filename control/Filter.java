@@ -24,10 +24,6 @@ public class Filter extends EntityList implements InstanceCollector {
 	private int limit;
 	
 	public Filter() {
-	
-	}
-	
-	public void init() {
 		infoListWhite = new TagList();
 		infoListBlack = new TagList();
 		
@@ -50,11 +46,6 @@ public class Filter extends EntityList implements InstanceCollector {
 			return false;
 		}
 	}
-	public void setAll(EntityList entities) {
-		if (super.setAll(entities)) {
-			reload.notify(ChangeIn.FILTER);
-		}
-	}
 	public void clear() {
 		super.clear();
 		reload.notify(ChangeIn.FILTER);
@@ -68,7 +59,7 @@ public class Filter extends EntityList implements InstanceCollector {
 	public void refresh() {
 		this.clear();
 		
-		for (Entity entity : entityListMain) {
+		for (Entity entity : mainEntityList) {
 			switch (FileUtil.getType(entity)) {
 				case IMAGE:
 					if (!showImages) continue;
@@ -117,7 +108,7 @@ public class Filter extends EntityList implements InstanceCollector {
 		super.clear();
 		
 		TagList query = entity.getTagList();
-		for (Entity iterator : entityListMain) {
+		for (Entity iterator : mainEntityList) {
 			if (iterator.getTagList().size() != 0) {
 				TagList sameTags = new TagList(query);
 				sameTags.retainAll(iterator.getTagList());
@@ -165,18 +156,18 @@ public class Filter extends EntityList implements InstanceCollector {
 	}
 	
 	public void whitelist(String group) {
-		for (String name : tagListMain.getNames(group)) {
-			whitelist(tagListMain.getTag(group, name));
+		for (String name : mainTagList.getNames(group)) {
+			whitelist(mainTagList.getTag(group, name));
 		}
 	}
 	public void blacklist(String group) {
-		for (String name : tagListMain.getNames(group)) {
-			blacklist(tagListMain.getTag(group, name));
+		for (String name : mainTagList.getNames(group)) {
+			blacklist(mainTagList.getTag(group, name));
 		}
 	}
 	public void unlist(String group) {
-		for (String name : tagListMain.getNames(group)) {
-			unlist(tagListMain.getTag(group, name));
+		for (String name : mainTagList.getNames(group)) {
+			unlist(mainTagList.getTag(group, name));
 		}
 	}
 	
@@ -203,7 +194,7 @@ public class Filter extends EntityList implements InstanceCollector {
 	
 	public boolean isWhitelisted(String group) {
 		boolean value = true;
-		for (String name : tagListMain.getNames(group)) {
+		for (String name : mainTagList.getNames(group)) {
 			if (!isWhitelisted(group, name)) {
 				value = false;
 				break;
@@ -213,7 +204,7 @@ public class Filter extends EntityList implements InstanceCollector {
 	}
 	public boolean isBlacklisted(String group) {
 		boolean value = true;
-		for (String name : tagListMain.getNames(group)) {
+		for (String name : mainTagList.getNames(group)) {
 			if (!isBlacklisted(group, name)) {
 				value = false;
 				break;
@@ -226,13 +217,13 @@ public class Filter extends EntityList implements InstanceCollector {
 		return infoListWhite.containsEqualTo(tag);
 	}
 	public boolean isWhitelisted(String group, String name) {
-		return infoListWhite.containsEqualTo(tagListMain.getTag(group, name));
+		return infoListWhite.containsEqualTo(mainTagList.getTag(group, name));
 	}
 	public boolean isBlacklisted(Tag tag) {
 		return infoListBlack.containsEqualTo(tag);
 	}
 	public boolean isBlacklisted(String group, String name) {
-		return infoListBlack.containsEqualTo(tagListMain.getTag(group, name));
+		return infoListBlack.containsEqualTo(mainTagList.getTag(group, name));
 	}
 	
 	public boolean isShowImages() {

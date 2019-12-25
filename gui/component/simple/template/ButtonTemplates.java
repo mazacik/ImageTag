@@ -185,14 +185,14 @@ public enum ButtonTemplates implements InstanceCollector {
 				String groupBefore = ClickMenu.getGroup();
 				String groupAfter = WordUtils.capitalize(StageManager.getGroupEditStage().show(groupBefore).toLowerCase());
 				
-				tagListMain.forEach(tag -> {
+				mainTagList.forEach(tag -> {
 					if (tag.getGroup().equals(groupBefore)) {
 						tag.setGroup(groupAfter);
 					}
 				});
 				
-				filterPane.updateGroupNode(groupBefore, groupAfter);
-				selectPane.updateGroupNode(groupBefore, groupAfter);
+				paneFilter.updateGroupNode(groupBefore, groupAfter);
+				paneSelect.updateGroupNode(groupBefore, groupAfter);
 				
 				ClickMenu.hideAll();
 				reload.doReload();
@@ -208,13 +208,13 @@ public enum ButtonTemplates implements InstanceCollector {
 				String group = ClickMenu.getGroup();
 				
 				if (StageManager.getOkCancelStage().show("Remove \"" + group + "\" and all of its tags?")) {
-					for (String n : tagListMain.getNames(group)) {
-						filterPane.removeNameNode(group, n);
-						selectPane.removeNameNode(group, n);
-						Tag tag = tagListMain.getTag(group, n);
-						entityListMain.forEach(entity -> entity.getTagList().remove(tag));
+					for (String n : mainTagList.getNames(group)) {
+						paneFilter.removeNameNode(group, n);
+						paneSelect.removeNameNode(group, n);
+						Tag tag = mainTagList.getTag(group, n);
+						mainEntityList.forEach(entity -> entity.getTagList().remove(tag));
 						filter.unlist(tag);
-						tagListMain.remove(tag);
+						mainTagList.remove(tag);
 						reload.notify(ChangeIn.TAG_LIST_MAIN);
 					}
 				}
@@ -272,27 +272,27 @@ public enum ButtonTemplates implements InstanceCollector {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				String groupBefore = ClickMenu.getGroup();
 				String nameBefore = ClickMenu.getName();
-				Tag tag = tagListMain.getTag(groupBefore, nameBefore);
+				Tag tag = mainTagList.getTag(groupBefore, nameBefore);
 				
 				TagEditStageResult result = StageManager.getTagEditStage().show(groupBefore, nameBefore);
 				String groupAfter = WordUtils.capitalize(result.getGroup().toLowerCase());
 				String nameAfter = WordUtils.capitalize(result.getName().toLowerCase());
 				
 				tag.set(groupAfter, nameAfter);
-				tagListMain.sort();
+				mainTagList.sort();
 				
 				if (result.isAddToSelect()) {
 					select.addTag(tag);
 				}
 				
 				if (!groupBefore.equals(groupAfter)) {
-					filterPane.updateGroupNode(groupBefore, groupAfter);
-					selectPane.updateGroupNode(groupBefore, groupAfter);
+					paneFilter.updateGroupNode(groupBefore, groupAfter);
+					paneSelect.updateGroupNode(groupBefore, groupAfter);
 				}
 				
 				if (!nameBefore.equals(nameAfter)) {
-					filterPane.updateNameNode(groupAfter, nameBefore, nameAfter);
-					selectPane.updateNameNode(groupAfter, nameBefore, nameAfter);
+					paneFilter.updateNameNode(groupAfter, nameBefore, nameAfter);
+					paneSelect.updateNameNode(groupAfter, nameBefore, nameAfter);
 				}
 				
 				ClickMenu.hideAll();
@@ -309,13 +309,13 @@ public enum ButtonTemplates implements InstanceCollector {
 				String group = ClickMenu.getGroup();
 				String name = ClickMenu.getName();
 				
-				Tag tag = tagListMain.getTag(group, name);
+				Tag tag = mainTagList.getTag(group, name);
 				if (StageManager.getOkCancelStage().show("Remove \"" + tag.getFull() + "\" ?")) {
-					filterPane.removeNameNode(group, name);
-					selectPane.removeNameNode(group, name);
-					entityListMain.forEach(entity -> entity.getTagList().remove(tag));
+					paneFilter.removeNameNode(group, name);
+					paneSelect.removeNameNode(group, name);
+					mainEntityList.forEach(entity -> entity.getTagList().remove(tag));
 					filter.unlist(tag);
-					tagListMain.remove(tag);
+					mainTagList.remove(tag);
 					reload.notify(ChangeIn.TAG_LIST_MAIN);
 				}
 				
@@ -331,7 +331,7 @@ public enum ButtonTemplates implements InstanceCollector {
 			TextNode textNode = new TextNode("Create Collection", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				CollectionUtil.create(select);
+				CollectionUtil.create();
 				reload.doReload();
 				ClickMenu.hideAll();
 			});
@@ -357,7 +357,7 @@ public enum ButtonTemplates implements InstanceCollector {
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				CacheManager.stopThread();
-				for (Entity entity : entityListMain) {
+				for (Entity entity : mainEntityList) {
 					try {
 						Files.delete(Paths.get(FileUtil.getFileCache(entity)));
 					} catch (IOException e) {
@@ -365,7 +365,7 @@ public enum ButtonTemplates implements InstanceCollector {
 					}
 					entity.getGalleryTile().setImage(null);
 				}
-				CacheManager.createCacheInBackground(entityListMain);
+				CacheManager.createCacheInBackground(mainEntityList);
 				ClickMenu.hideAll();
 			});
 			return textNode;
@@ -414,10 +414,10 @@ public enum ButtonTemplates implements InstanceCollector {
 			FileUtil.deleteFile(FileUtil.getFileEntity(target.get()));
 			FileUtil.deleteFile(FileUtil.getFileCache(entity));
 			
-			galleryPane.getTilePane().getChildren().remove(entity.getGalleryTile());
+			paneGallery.getTilePane().getChildren().remove(entity.getGalleryTile());
 			select.remove(entity);
 			filter.remove(entity);
-			entityListMain.remove(entity);
+			mainEntityList.remove(entity);
 		}
 	}
 	private void deleteSelection() {
@@ -428,7 +428,7 @@ public enum ButtonTemplates implements InstanceCollector {
 		
 		EntityList entitiesToDelete = new EntityList();
 		select.forEach(entity -> {
-			if (entity.getCollectionID() != 0 && !galleryPane.getExpandedGroups().contains(entity.getCollectionID())) {
+			if (entity.getCollectionID() != 0 && !paneGallery.getExpandedGroups().contains(entity.getCollectionID())) {
 				entitiesToDelete.addAll(entity.getCollection(), true);
 			} else {
 				entitiesToDelete.add(entity, true);
@@ -447,7 +447,7 @@ public enum ButtonTemplates implements InstanceCollector {
 	}
 	private void deleteCurrentTarget() {
 		Entity currentTarget = target.get();
-		if (currentTarget.getCollectionID() == 0 || galleryPane.getExpandedGroups().contains(currentTarget.getCollectionID())) {
+		if (currentTarget.getCollectionID() == 0 || paneGallery.getExpandedGroups().contains(currentTarget.getCollectionID())) {
 			String sourcePath = FileUtil.getFileEntity(currentTarget);
 			ButtonBooleanValue result = StageManager.getYesNoCancelStage().show("Delete file: " + sourcePath + "?");
 			if (result == ButtonBooleanValue.YES) {

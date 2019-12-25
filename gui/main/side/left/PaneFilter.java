@@ -17,8 +17,8 @@ import tools.NodeUtil;
 
 import java.util.logging.Logger;
 
-public class FilterPane extends SidePaneBase {
-	public FilterPane() {
+public class PaneFilter extends SidePaneBase {
+	public PaneFilter() {
 	
 	}
 	
@@ -30,9 +30,9 @@ public class FilterPane extends SidePaneBase {
 		btnCreateNewTag.prefWidthProperty().bind(this.widthProperty());
 		btnCreateNewTag.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			TagEditStageResult result = StageManager.getTagEditStage().show("");
-			Tag tag = tagListMain.getTag(result.getGroup(), result.getName());
-			tagListMain.add(tag);
-			tagListMain.sort();
+			Tag tag = mainTagList.getTag(result.getGroup(), result.getName());
+			mainTagList.add(tag);
+			mainTagList.sort();
 			
 			if (result.isAddToSelect()) {
 				select.addTag(tag);

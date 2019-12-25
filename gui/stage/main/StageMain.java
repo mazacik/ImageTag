@@ -12,6 +12,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import main.InstanceCollector;
 import main.Main;
+import tools.NodeUtil;
 
 import java.awt.*;
 
@@ -46,6 +47,7 @@ public class StageMain extends StageBase implements InstanceCollector {
 		double height = usableScreenBounds.getHeight() / 2;
 		
 		this.setVisible(false);
+		this.setBorder(NodeUtil.getBorder(1));
 		this.setWidth(width);
 		this.setHeight(height);
 		this.setMinWidth(width);
@@ -61,12 +63,13 @@ public class StageMain extends StageBase implements InstanceCollector {
 		sceneMain = new SceneMain();
 		
 		this.setVisible(false);
-		this.setTitleBar(toolbarPane);
+		this.setBorder(null);
+		this.setTitleBar(paneToolbar);
 		this.setRoot(sceneMain);
 		
-		Decorator.applyScrollbarStyle(galleryPane);
-		Decorator.applyScrollbarStyle(filterPane.getScrollPane());
-		Decorator.applyScrollbarStyle(selectPane.getScrollPane());
+		Decorator.applyScrollbarStyle(paneGallery);
+		Decorator.applyScrollbarStyle(paneFilter.getScrollPane());
+		Decorator.applyScrollbarStyle(paneSelect.getScrollPane());
 		
 		this.getScene().widthProperty().addListener((observable, oldValue, newValue) -> SizeUtil.stageWidthChangeHandler());
 		this.setMinWidth(100 + SizeUtil.getMinWidthSideLists() * 2 + settings.getTileSize());

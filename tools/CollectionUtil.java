@@ -15,7 +15,7 @@ public abstract class CollectionUtil implements InstanceCollector {
 	public static void init() {
 		CustomList<EntityList> collections = new CustomList<>();
 		int collectionID;
-		for (Entity entity : entityListMain) {
+		for (Entity entity : mainEntityList) {
 			collectionID = entity.getCollectionID();
 			if (collectionID != 0) {
 				boolean match = false;
@@ -36,36 +36,42 @@ public abstract class CollectionUtil implements InstanceCollector {
 		}
 	}
 	
-	public static void create(EntityList entityList) {
-		ButtonBooleanValue result = StageManager.getYesNoCancelStage().show("Merge tags? (" + entityList.size() + " items selected)");
-		if (result != ButtonBooleanValue.CANCEL) {
-			int collectionID = CollectionUtil.getID();
+	public static void create() {
+		TagList collectionTags = select.getTagsAll();
+		
+		if (collectionTags.isEmpty()) {
+			create(collectionTags, false);
+		} else {
+			String s = "A collection of " + select.size() + " items will be created.\nMerge tags?";
+			ButtonBooleanValue result = StageManager.getYesNoCancelStage().show(s);
 			
-			if (result.getBooleanValue()) {
-				//merge tags
-				TagList tagList = new TagList();
-				for (Entity entity : entityList) {
-					tagList.addAll(entity.getTagList());
-				}
-				for (Entity entity : entityList) {
-					entity.setCollectionID(collectionID);
-					entity.setCollection(entityList);
-					entity.setTagList(tagList);
-					entity.getGalleryTile().updateGroupIcon();
-				}
-				reload.notify(ChangeIn.TAGS_OF_SELECT);
-			} else {
-				//don't merge tags
-				for (Entity entity : entityList) {
-					entity.setCollectionID(collectionID);
-					entity.setCollection(entityList);
-					entity.getGalleryTile().updateGroupIcon();
-				}
+			if (result == ButtonBooleanValue.YES) {
+				create(collectionTags, true);
+			} else if (result == ButtonBooleanValue.NO) {
+				create(collectionTags, false);
 			}
-			
-			target.set(entityList.getFirst());
-			reload.notify(ChangeIn.ENTITY_LIST_MAIN);
 		}
+	}
+	private static void create(TagList collectionTags, boolean mergeTags) {
+		int collectionID = CollectionUtil.getID();
+		
+		if (mergeTags) {
+			for (Entity entity : select) {
+				entity.setCollectionID(collectionID);
+				entity.setCollection(select);
+				entity.setTagList(collectionTags);
+				entity.getGalleryTile().updateGroupIcon();
+			}
+			reload.notify(ChangeIn.TAGS_OF_SELECT);
+		} else {
+			for (Entity entity : select) {
+				entity.setCollectionID(collectionID);
+				entity.setCollection(select);
+				entity.getGalleryTile().updateGroupIcon();
+			}
+		}
+		
+		reload.notify(ChangeIn.ENTITY_LIST_MAIN);
 	}
 	public static void discard(Entity entity) {
 		for (Entity _entity : entity.getCollection()) {
@@ -91,7 +97,7 @@ public abstract class CollectionUtil implements InstanceCollector {
 	private static CustomList<Integer> getCollectionIDs() {
 		CustomList<Integer> collectionIDs = new CustomList<>();
 		int collectionID;
-		for (Entity entity : entityListMain) {
+		for (Entity entity : mainEntityList) {
 			collectionID = entity.getCollectionID();
 			if (collectionID != 0) {
 				collectionIDs.add(collectionID);
