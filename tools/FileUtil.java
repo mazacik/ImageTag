@@ -6,7 +6,6 @@ import baseobject.entity.Entity;
 import baseobject.entity.EntityList;
 import com.sun.jna.platform.FileUtils;
 import gui.stage.StageManager;
-import gui.stage.template.ButtonBooleanValue;
 import javafx.scene.Scene;
 import javafx.stage.DirectoryChooser;
 import main.InstanceCollector;
@@ -104,7 +103,7 @@ public abstract class FileUtil implements InstanceCollector {
 			mainEntityList.sort();
 			
 			String s = "Imported " + newEntities.size() + " files.\nWould you like to view the new files?";
-			if (StageManager.getYesNoCancelStage().show(s) == ButtonBooleanValue.YES) {
+			if (StageManager.getYesNoStage().show(s)) {
 				filter.getNewEntities().setAll(newEntities);
 				filter.setShowOnlyNewEntities(true);
 			}

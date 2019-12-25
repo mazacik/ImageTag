@@ -11,7 +11,7 @@ public abstract class StageManager {
 	private static TagEditStage stageTagEditStage;
 	private static GroupEditStage stageGroupEditStage;
 	private static OkCancelStage okCancelStage;
-	private static YesNoCancelStage yesNoCancelStage;
+	private static YesNoStage yesNoStage;
 	private static FilterSettingsStage filterSettingsStage;
 	
 	public static StageMain getStageMain() {
@@ -35,9 +35,9 @@ public abstract class StageManager {
 		if (okCancelStage == null) okCancelStage = new OkCancelStage();
 		return okCancelStage;
 	}
-	public static YesNoCancelStage getYesNoCancelStage() {
-		if (yesNoCancelStage == null) yesNoCancelStage = new YesNoCancelStage();
-		return yesNoCancelStage;
+	public static YesNoStage getYesNoStage() {
+		if (yesNoStage == null) yesNoStage = new YesNoStage();
+		return yesNoStage;
 	}
 	public static FilterSettingsStage getFilterSettingsStage() {
 		if (filterSettingsStage == null) filterSettingsStage = new FilterSettingsStage();

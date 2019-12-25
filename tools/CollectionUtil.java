@@ -6,7 +6,6 @@ import baseobject.entity.EntityList;
 import baseobject.tag.TagList;
 import control.reload.ChangeIn;
 import gui.stage.StageManager;
-import gui.stage.template.ButtonBooleanValue;
 import main.InstanceCollector;
 
 import java.util.Random;
@@ -43,11 +42,9 @@ public abstract class CollectionUtil implements InstanceCollector {
 			create(collectionTags, false);
 		} else {
 			String s = "A collection of " + select.size() + " items will be created.\nMerge tags?";
-			ButtonBooleanValue result = StageManager.getYesNoCancelStage().show(s);
-			
-			if (result == ButtonBooleanValue.YES) {
+			if (StageManager.getYesNoStage().show(s)) {
 				create(collectionTags, true);
-			} else if (result == ButtonBooleanValue.NO) {
+			} else {
 				create(collectionTags, false);
 			}
 		}

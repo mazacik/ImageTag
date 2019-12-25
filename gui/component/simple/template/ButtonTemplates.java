@@ -8,7 +8,6 @@ import control.reload.ChangeIn;
 import gui.component.clickmenu.ClickMenu;
 import gui.component.simple.TextNode;
 import gui.stage.StageManager;
-import gui.stage.template.ButtonBooleanValue;
 import gui.stage.template.tageditstage.TagEditStageResult;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -435,8 +434,7 @@ public enum ButtonTemplates implements InstanceCollector {
 			}
 		});
 		
-		ButtonBooleanValue result = StageManager.getYesNoCancelStage().show("Delete " + entitiesToDelete.size() + " file(s)?");
-		if (result == ButtonBooleanValue.YES) {
+		if (StageManager.getYesNoStage().show("Delete " + entitiesToDelete.size() + " file(s)?")) {
 			target.storePosition();
 			entitiesToDelete.forEach(this::deleteEntity);
 			target.restorePosition();
@@ -449,8 +447,7 @@ public enum ButtonTemplates implements InstanceCollector {
 		Entity currentTarget = target.get();
 		if (currentTarget.getCollectionID() == 0 || paneGallery.getExpandedGroups().contains(currentTarget.getCollectionID())) {
 			String sourcePath = FileUtil.getFileEntity(currentTarget);
-			ButtonBooleanValue result = StageManager.getYesNoCancelStage().show("Delete file: " + sourcePath + "?");
-			if (result == ButtonBooleanValue.YES) {
+			if (StageManager.getYesNoStage().show("Delete file: " + sourcePath + "?")) {
 				target.storePosition();
 				this.deleteEntity(currentTarget);
 				target.restorePosition();
@@ -459,8 +456,7 @@ public enum ButtonTemplates implements InstanceCollector {
 				reload.doReload();
 			}
 		} else {
-			ButtonBooleanValue result = StageManager.getYesNoCancelStage().show("Delete " + currentTarget.getCollection().size() + " file(s)?");
-			if (result == ButtonBooleanValue.YES) {
+			if (StageManager.getYesNoStage().show("Delete " + currentTarget.getCollection().size() + " file(s)?")) {
 				
 				target.storePosition();
 				for (Entity entity : currentTarget.getCollection()) {

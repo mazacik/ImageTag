@@ -5,7 +5,6 @@ import gui.component.simple.TextNode;
 import gui.component.simple.VBox;
 import gui.decorator.ColorUtil;
 import gui.stage.StageManager;
-import gui.stage.template.ButtonBooleanValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -64,7 +63,7 @@ public class ProjectNode extends BorderPane {
 					//todo re-implement
 				} else if (pickResult.equals(nodeRemove)) {
 					String message = "Delete project data? The source directory will not be affected";
-					if (StageManager.getYesNoCancelStage().show(message) == ButtonBooleanValue.YES) {
+					if (StageManager.getYesNoStage().show(message)) {
 						FileUtil.deleteFile(project.getProjectFile());
 						FileUtil.deleteFile(FileUtil.getDirectoryCache(project));
 						stageMain.getSceneIntro().getProjectBox().refresh();

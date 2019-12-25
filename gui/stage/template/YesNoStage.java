@@ -5,38 +5,33 @@ import gui.stage.base.StageBase;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
-public class YesNoCancelStage extends StageBase {
+public class YesNoStage extends StageBase {
 	private TextNode labelContent;
-	private ButtonBooleanValue result;
+	private boolean result;
 	
-	public YesNoCancelStage() {
+	public YesNoStage() {
 		super("Confirmation", false, true, true);
 		
 		labelContent = new TextNode("CONTENT_STRING", false, false, false, false);
 		
 		TextNode buttonPositive = new TextNode("Yes", true, true, false, true);
 		buttonPositive.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-			result = ButtonBooleanValue.YES;
+			result = true;
 			this.close();
 		});
 		TextNode buttonNegative = new TextNode("No", true, true, false, true);
 		buttonNegative.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-			result = ButtonBooleanValue.NO;
-			this.close();
-		});
-		TextNode buttonCancel = new TextNode("Cancel", true, true, false, true);
-		buttonCancel.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-			result = ButtonBooleanValue.CANCEL;
+			result = false;
 			this.close();
 		});
 		
 		setRoot(labelContent);
-		setButtons(buttonPositive, buttonNegative, buttonCancel);
+		setButtons(buttonPositive, buttonNegative);
 	}
 	
 	@Override
-	public ButtonBooleanValue show(String... args) {
-		result = ButtonBooleanValue.CANCEL;
+	public Boolean show(String... args) {
+		result = false;
 		labelContent.setText(args[0]);
 		this.showAndWait();
 		return result;
