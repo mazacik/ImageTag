@@ -1,25 +1,35 @@
 package main;
 
-import baseobject.CustomList;
-import baseobject.Project;
-import baseobject.entity.Entity;
-import baseobject.entity.EntityList;
-import baseobject.tag.Tag;
-import baseobject.tag.TagList;
+import base.CustomList;
+import base.entity.EntityCollectionUtil;
+import base.entity.Entity;
+import base.entity.EntityList;
+import base.tag.Tag;
+import base.tag.TagList;
+import cache.CacheManager;
+import control.filter.Filter;
+import control.Select;
+import control.Target;
 import control.reload.ChangeIn;
-import gui.main.center.GalleryTile;
-import gui.stage.StageManager;
+import control.reload.Reload;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import tools.CacheManager;
-import tools.CollectionUtil;
-import tools.FileUtil;
+import misc.FileUtil;
+import misc.Settings;
+import misc.Project;
+import ui.main.center.PaneGallery;
+import ui.main.center.GalleryTile;
+import ui.main.center.PaneEntity;
+import ui.main.side.left.PaneFilter;
+import ui.main.side.right.PaneSelect;
+import ui.main.top.PaneToolbar;
+import ui.stage.StageManager;
 
 import java.io.File;
 import java.util.Comparator;
 import java.util.logging.Logger;
 
-public class Main extends Application implements InstanceCollector {
+public class Main extends Application {
 	private static final boolean QUICKSTART = false;
 	
 	public static void main(String[] args) {
@@ -35,22 +45,23 @@ public class Main extends Application implements InstanceCollector {
 		System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %2$s: %5$s%n");
 	}
 	private static void initInstances() {
-		settings.readFromDisk();
+		Settings.readFromDisk();
 		
-		paneToolbar.init();     /* needs Settings */
-		paneGallery.init();     /* needs Settings */
-		paneEntity.init();      /* needs Settings, GalleryPane */
-		paneFilter.init();      /* needs Settings */
-		paneSelect.init();      /* needs Settings */
+		PaneToolbar.get().init();
+		PaneGallery.get().init();
+		PaneEntity.get().init();
+		PaneFilter.get().init();
+		PaneSelect.get().init();
 		
 		GalleryTile.init();
+		Reload.init();
 	}
 	private static void initLoading() {
-		CustomList<Project> projects = FileUtil.getProjects();
 		
-		if (!QUICKSTART || projects.isEmpty()) {
+		if (!QUICKSTART || FileUtil.getProjectFiles().isEmpty()) {
 			StageManager.getStageMain().layoutIntro();
 		} else {
+			CustomList<Project> projects = FileUtil.getProjects();
 			StageManager.getStageMain().layoutMain();
 			
 			projects.sort(Project.getComparator());
@@ -60,54 +71,54 @@ public class Main extends Application implements InstanceCollector {
 	
 	public static void startDatabaseLoading(Project project) {
 		Project.setCurrent(project);
-		mainEntityList.addAll(project.getEntityList());
+		EntityList.getMain().addAll(project.getEntityList());
 		checkForNewFiles(FileUtil.getSupportedFiles(new File(project.getDirectorySource())));
 		
-		CollectionUtil.init();
-		mainEntityList.sort();
+		EntityCollectionUtil.init();
+		EntityList.getMain().sort();
 		initTags(project);
-		filter.refresh();
-		target.set(filter.get(0));
-		select.set(filter.get(0));
+		Filter.refresh();
+		Target.set(Filter.getEntities().get(0));
+		Select.getEntities().set(Filter.getEntities().get(0));
 		
-		reload.doReload();
+		Reload.start();
 		
-		paneFilter.collapseAll();
-		paneSelect.collapseAll();
+		PaneFilter.get().collapseAll();
+		PaneSelect.get().collapseAll();
 		
-		CacheManager.createCacheInBackground(mainEntityList);
+		CacheManager.createCacheInBackground(EntityList.getMain());
 	}
 	private static void initTags(Project project) {
 		//todo help
 		TagList allTags = project.getTagList();
 		if (allTags != null) {
-			mainTagList.addAll(allTags);
+			TagList.getMainInstance().addAll(allTags);
 		}
 		
-		for (Entity entity : mainEntityList) {
+		for (Entity entity : EntityList.getMain()) {
 			TagList tagList = entity.getTagList();
 			
 			for (Tag tag : tagList) {
-				if (mainTagList.containsEqualTo(tag)) {
-					tagList.set(tagList.indexOf(tag), mainTagList.getTag(tag));
+				if (TagList.getMainInstance().containsEqualTo(tag)) {
+					tagList.set(tagList.indexOf(tag), TagList.getMainInstance().getTag(tag));
 				} else {
-					mainTagList.add(tag);
+					TagList.getMainInstance().add(tag);
 				}
 			}
 		}
 		
-		mainTagList.sort();
-		reload.notify(ChangeIn.TAG_LIST_MAIN);
+		TagList.getMainInstance().sort();
+		Reload.notify(ChangeIn.TAG_LIST_MAIN);
 	}
 	private static void checkForNewFiles(CustomList<File> fileList) {
-		mainEntityList.sort(Comparator.comparing(Entity::getName));
+		EntityList.getMain().sort(Comparator.comparing(Entity::getName));
 		fileList.sort(Comparator.comparing(File::getName));
 		
-		EntityList orphanEntities = new EntityList(mainEntityList);
+		EntityList orphanEntities = new EntityList(EntityList.getMain());
 		CustomList<File> newFiles = new CustomList<>(fileList);
 		
 		/* compare files in the source directory with known objects in the database */
-		for (Entity entity : mainEntityList) {
+		for (Entity entity : EntityList.getMain()) {
 			for (int i = 0; i < newFiles.size(); i++) {
 				File file = newFiles.get(i);
 				if (entity.getName().equals(FileUtil.createEntityName(file))) {
@@ -140,16 +151,16 @@ public class Main extends Application implements InstanceCollector {
 		/* add unrecognized objects */
 		for (File file : newFiles) {
 			Entity entity = new Entity(file);
-			mainEntityList.add(entity);
-			filter.getNewEntities().add(entity);
+			EntityList.getMain().add(entity);
+			Filter.getNewEntities().add(entity);
 		}
 		
 		/* discard orphan objects */
 		for (Entity entity : orphanEntities) {
-			mainEntityList.remove(entity);
+			EntityList.getMain().remove(entity);
 		}
 		
-		mainEntityList.sort(Comparator.comparing(Entity::getName));
+		EntityList.getMain().sort(Comparator.comparing(Entity::getName));
 	}
 	
 	public static void exitApplication() {
@@ -157,10 +168,10 @@ public class Main extends Application implements InstanceCollector {
 		
 		CacheManager.stopThread();
 		
-		paneEntity.disposeVideoPlayer();
-		paneEntity.getControls().hide();
+		PaneEntity.get().disposeVideoPlayer();
+		PaneEntity.get().getControls().hide();
 		
 		Project.getCurrent().writeToDisk();
-		settings.writeToDisk();
+		Settings.writeToDisk();
 	}
 }

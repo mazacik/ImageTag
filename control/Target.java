@@ -1,62 +1,63 @@
 package control;
 
-import baseobject.CustomList;
-import baseobject.entity.Entity;
-import baseobject.entity.EntityList;
+import base.CustomList;
+import base.entity.Entity;
+import base.entity.EntityList;
 import control.reload.ChangeIn;
+import control.reload.Reload;
+import enums.Direction;
 import javafx.scene.input.KeyCode;
-import main.InstanceCollector;
-import tools.enums.Direction;
+import ui.main.center.PaneGallery;
 
 import java.util.logging.Logger;
 
-public class Target implements InstanceCollector {
-	private Entity current;
+public class Target {
+	private static Entity instance = null;
 	
-	public Target() {
-		current = null;
+	private Target() {
+	
 	}
 	
-	public Entity get() {
-		return current;
+	public static Entity get() {
+		return instance;
 	}
 	
-	public void set(Entity entity) {
-		if (entity != null && entity != this.current) {
-			reload.requestBorderUpdate(this.current);
-			reload.requestBorderUpdate(entity);
+	public static void set(Entity entity) {
+		if (entity != null && entity != instance) {
+			Reload.requestBorderUpdate(instance);
+			Reload.requestBorderUpdate(entity);
 			
-			this.current = entity;
+			instance = entity;
 			
-			paneGallery.moveViewportToTarget();
-			reload.notify(ChangeIn.TARGET);
+			PaneGallery.get().moveViewportToTarget();
+			Reload.notify(ChangeIn.TARGET);
 			
 			Logger.getGlobal().info(entity.getName());
 		}
 	}
-	public void move(Direction direction) {
-		if (current == null) return;
+	public static void move(Direction direction) {
+		if (instance == null) return;
 		
-		EntityList entities = paneGallery.getEntitiesOfTiles();
+		EntityList entities = PaneGallery.get().getEntitiesOfTiles();
 		if (entities.isEmpty()) return;
 		
 		int currentTargetIndex;
-		if (current.getCollectionID() == 0) {
-			currentTargetIndex = entities.indexOf(current);
+		if (instance.getCollectionID() == 0) {
+			currentTargetIndex = entities.indexOf(instance);
 		} else {
-			if (paneGallery.getExpandedGroups().contains(current.getCollectionID())) {
-				currentTargetIndex = entities.indexOf(current);
+			if (PaneGallery.get().getOpenCollections().contains(instance.getCollectionID())) {
+				currentTargetIndex = entities.indexOf(instance);
 			} else {
-				Entity groupFirst = current.getCollection().getFirst();
+				Entity groupFirst = instance.getCollection().getFirst();
 				if (entities.contains(groupFirst)) {
 					currentTargetIndex = entities.indexOf(groupFirst);
 				} else {
-					currentTargetIndex = entities.indexOf(current);
+					currentTargetIndex = entities.indexOf(instance);
 				}
 			}
 		}
 		
-		int columnCount = paneGallery.getColumnCount();
+		int columnCount = PaneGallery.get().getColumnCount();
 		
 		int newTargetIndex = currentTargetIndex;
 		switch (direction) {
@@ -77,9 +78,9 @@ public class Target implements InstanceCollector {
 		if (newTargetIndex < 0) newTargetIndex = 0;
 		if (newTargetIndex >= entities.size()) newTargetIndex = entities.size() - 1;
 		
-		this.set(entities.get(newTargetIndex));
+		set(entities.get(newTargetIndex));
 	}
-	public void move(KeyCode keyCode) {
+	public static void move(KeyCode keyCode) {
 		switch (keyCode) {
 			case W:
 				move(Direction.UP);
@@ -96,30 +97,30 @@ public class Target implements InstanceCollector {
 		}
 	}
 	
-	private Entity storeEntity = null;
-	private int storePos = -1;
-	public void storePosition() {
-		CustomList<Integer> expandedcollection = paneGallery.getExpandedGroups();
-		CustomList<Entity> visibleEntities = paneGallery.getEntitiesOfTiles();
+	private static Entity storeEntity = null;
+	private static int storePos = -1;
+	public static void storePosition() {
+		CustomList<Integer> expandedcollection = PaneGallery.get().getOpenCollections();
+		CustomList<Entity> visibleEntities = PaneGallery.get().getEntitiesOfTiles();
 		
-		if (current.getCollectionID() == 0) {
-			storeEntity = current;
-			storePos = visibleEntities.indexOf(current);
+		if (instance.getCollectionID() == 0) {
+			storeEntity = instance;
+			storePos = visibleEntities.indexOf(instance);
 		} else {
-			if (expandedcollection.contains(current.getCollectionID())) {
-				storeEntity = current;
-				storePos = visibleEntities.indexOf(current);
+			if (expandedcollection.contains(instance.getCollectionID())) {
+				storeEntity = instance;
+				storePos = visibleEntities.indexOf(instance);
 			} else {
-				storeEntity = current.getCollection().getFirst();
+				storeEntity = instance.getCollection().getFirst();
 				storePos = visibleEntities.indexOf(storeEntity);
 			}
 		}
 	}
-	public Entity restorePosition() {
-		EntityList visibleEntities = paneGallery.getEntitiesOfTiles();
+	public static Entity restorePosition() {
+		EntityList visibleEntities = PaneGallery.get().getEntitiesOfTiles();
 		if (!visibleEntities.isEmpty()) {
 			if (storeEntity != null && visibleEntities.contains(storeEntity)) {
-				this.set(storeEntity);
+				set(storeEntity);
 				return storeEntity;
 			} else if (storePos >= 0) {
 				Entity newTarget;
@@ -127,10 +128,10 @@ public class Target implements InstanceCollector {
 				if (storePos <= visibleEntities.size() - 1) newTarget = visibleEntities.get(storePos);
 				else newTarget = visibleEntities.getLast();
 				
-				this.set(newTarget);
+				set(newTarget);
 				
-				if (select.isEmpty()) {
-					select.add(newTarget);
+				if (Select.getEntities().isEmpty()) {
+					Select.getEntities().add(newTarget);
 				}
 				
 				return newTarget;

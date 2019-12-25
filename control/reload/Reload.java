@@ -1,44 +1,49 @@
 package control.reload;
 
-import baseobject.CustomList;
-import baseobject.entity.Entity;
-import baseobject.entity.EntityList;
-import main.InstanceCollector;
+import base.CustomList;
+import base.entity.Entity;
+import base.entity.EntityList;
+import ui.main.center.PaneGallery;
+import ui.main.center.PaneEntity;
+import ui.main.side.left.PaneFilter;
+import ui.main.side.right.PaneSelect;
+import ui.main.top.PaneToolbar;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class Reload implements InstanceCollector {
-	private CustomList<Entity> needsBorderUpdate;
-	private CustomList<InvokeHelper> queue;
+public class Reload {
+	private final static CustomList<Entity> needsBorderUpdate = new CustomList<>();
+	private final static CustomList<InvokeHelper> queue = new CustomList<>();
 	
-	public Reload() {
-		needsBorderUpdate = new CustomList<>();
-		queue = new CustomList<>();
-		
+	private Reload() {
+	
+	}
+	
+	public static void init() {
 		try {
 			//  ToolbarPane
-			InvokeHelper invokeHelper1 = new InvokeHelper(paneToolbar, paneToolbar.getClass().getMethod("reload"));
+			InvokeHelper invokeHelper1 = new InvokeHelper(PaneToolbar.get(), PaneToolbar.get().getClass().getMethod("reload"));
 			ChangeIn.TARGET.getSubscribers().add(invokeHelper1);
 			
 			//  GalleryPane
-			InvokeHelper invokeHelper2 = new InvokeHelper(paneGallery, paneGallery.getClass().getMethod("reload"));
+			InvokeHelper invokeHelper2 = new InvokeHelper(PaneGallery.get(), PaneGallery.get().getClass().getMethod("reload"));
 			ChangeIn.ENTITY_LIST_MAIN.getSubscribers().add(invokeHelper2);
 			ChangeIn.FILTER.getSubscribers().add(invokeHelper2);
 			
 			//  MediaPane
-			InvokeHelper invokeHelper3 = new InvokeHelper(paneEntity, paneEntity.getClass().getMethod("reload"));
+			InvokeHelper invokeHelper3 = new InvokeHelper(PaneEntity.get(), PaneEntity.get().getClass().getMethod("reload"));
 			ChangeIn.TARGET.getSubscribers().add(invokeHelper3);
 			ChangeIn.VIEWMODE.getSubscribers().add(invokeHelper3);
 			
 			//  FilterPane
-			InvokeHelper invokeHelper4 = new InvokeHelper(paneFilter, paneFilter.getClass().getMethod("reload"));
-			InvokeHelper invokeHelper5 = new InvokeHelper(paneFilter, paneFilter.getClass().getMethod("refresh"));
+			InvokeHelper invokeHelper4 = new InvokeHelper(PaneFilter.get(), PaneFilter.get().getClass().getMethod("reload"));
+			InvokeHelper invokeHelper5 = new InvokeHelper(PaneFilter.get(), PaneFilter.get().getClass().getMethod("refresh"));
 			ChangeIn.TAG_LIST_MAIN.getSubscribers().add(invokeHelper4);
 			ChangeIn.FILTER.getSubscribers().add(invokeHelper5);
 			
 			//  SelectPane
-			InvokeHelper invokeHelper6 = new InvokeHelper(paneSelect, paneSelect.getClass().getMethod("reload"));
-			InvokeHelper invokeHelper7 = new InvokeHelper(paneSelect, paneSelect.getClass().getMethod("refresh"));
+			InvokeHelper invokeHelper6 = new InvokeHelper(PaneSelect.get(), PaneSelect.get().getClass().getMethod("reload"));
+			InvokeHelper invokeHelper7 = new InvokeHelper(PaneSelect.get(), PaneSelect.get().getClass().getMethod("refresh"));
 			ChangeIn.TAG_LIST_MAIN.getSubscribers().add(invokeHelper6);
 			ChangeIn.TARGET.getSubscribers().add(invokeHelper7);
 			ChangeIn.SELECT.getSubscribers().add(invokeHelper7);
@@ -48,13 +53,12 @@ public class Reload implements InstanceCollector {
 		}
 	}
 	
-	public void notify(ChangeIn... changeIns) {
+	public static void notify(ChangeIn... changeIns) {
 		for (ChangeIn changeIn : changeIns) {
 			queue.addAll(changeIn.getSubscribers(), true);
 		}
 	}
-	
-	public void doReload() {
+	public static void start() {
 		while (!queue.isEmpty()) {
 			InvokeHelper invokeHelper = queue.getFirst();
 			try {
@@ -74,10 +78,10 @@ public class Reload implements InstanceCollector {
 		needsBorderUpdate.removeAll(helper);
 	}
 	
-	public void requestBorderUpdate(EntityList entityList) {
+	public static void requestBorderUpdate(EntityList entityList) {
 		needsBorderUpdate.addAll(entityList);
 	}
-	public void requestBorderUpdate(Entity entity) {
+	public static void requestBorderUpdate(Entity entity) {
 		needsBorderUpdate.add(entity);
 	}
 }

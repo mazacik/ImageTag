@@ -1,33 +1,32 @@
 package control;
 
-import baseobject.CustomList;
-import baseobject.entity.Entity;
-import baseobject.entity.EntityList;
-import baseobject.tag.Tag;
+import base.CustomList;
+import base.entity.Entity;
+import base.entity.EntityList;
+import base.tag.Tag;
+import control.filter.Filter;
 import control.reload.ChangeIn;
-import main.InstanceCollector;
+import control.reload.Reload;
+import misc.FileUtil;
+import ui.main.center.PaneGallery;
 
 import java.util.Collection;
 
-public class Select extends EntityList implements InstanceCollector {
-	public Select() {
-	
-	}
-	
+public class Select extends EntityList {
 	public boolean add(Entity entity) {
 		if (entity == null) return false;
 		int collectionID = entity.getCollectionID();
-		if (collectionID != 0 && !paneGallery.getExpandedGroups().contains(collectionID)) {
+		if (collectionID != 0 && !PaneGallery.get().getOpenCollections().contains(collectionID)) {
 			EntityList collection = entity.getCollection();
 			if (super.addAll(collection)) {
-				reload.requestBorderUpdate(collection);
-				reload.notify(ChangeIn.SELECT);
+				Reload.requestBorderUpdate(collection);
+				Reload.notify(ChangeIn.SELECT);
 				return true;
 			}
 		} else {
 			if (super.add(entity)) {
-				reload.requestBorderUpdate(entity);
-				reload.notify(ChangeIn.SELECT);
+				Reload.requestBorderUpdate(entity);
+				Reload.notify(ChangeIn.SELECT);
 				return true;
 			}
 		}
@@ -36,7 +35,7 @@ public class Select extends EntityList implements InstanceCollector {
 	public boolean addAll(Collection<? extends Entity> c) {
 		if (c == null || c.isEmpty()) return false;
 		
-		CustomList<Integer> expandedGroups = paneGallery.getExpandedGroups();
+		CustomList<Integer> expandedGroups = PaneGallery.get().getOpenCollections();
 		
 		for (Entity entity : c) {
 			if (entity == null || this.contains(entity)) continue;
@@ -44,32 +43,32 @@ public class Select extends EntityList implements InstanceCollector {
 			int collectionID = entity.getCollectionID();
 			if (collectionID == 0 || expandedGroups.contains(collectionID)) {
 				super.add(entity);
-				reload.requestBorderUpdate(entity);
+				Reload.requestBorderUpdate(entity);
 			} else {
 				EntityList collection = entity.getCollection();
 				super.addAll(collection);
-				reload.requestBorderUpdate(collection);
+				Reload.requestBorderUpdate(collection);
 			}
 		}
 		
-		reload.notify(ChangeIn.SELECT);
+		Reload.notify(ChangeIn.SELECT);
 		return true;
 	}
 	public boolean remove(Entity entity) {
 		if (entity == null) return false;
 		
 		int size = this.size();
-		if (entity.getCollectionID() == 0 || paneGallery.getExpandedGroups().contains(entity.getCollectionID())) {
-			reload.requestBorderUpdate(entity);
+		if (entity.getCollectionID() == 0 || PaneGallery.get().getOpenCollections().contains(entity.getCollectionID())) {
+			Reload.requestBorderUpdate(entity);
 			super.remove(entity);
 		} else {
 			EntityList collection = entity.getCollection();
-			reload.requestBorderUpdate(collection);
+			Reload.requestBorderUpdate(collection);
 			this.removeAll(collection);
 		}
 		
 		if (size != this.size()) {
-			reload.notify(ChangeIn.SELECT);
+			Reload.notify(ChangeIn.SELECT);
 			return true;
 		}
 		return false;
@@ -77,8 +76,8 @@ public class Select extends EntityList implements InstanceCollector {
 	public boolean removeAll(EntityList entityList) {
 		if (entityList == null) return false;
 		if (super.removeAll(entityList)) {
-			for (Entity entity : entityList) reload.requestBorderUpdate(entity);
-			reload.notify(ChangeIn.SELECT);
+			for (Entity entity : entityList) Reload.requestBorderUpdate(entity);
+			Reload.notify(ChangeIn.SELECT);
 			return true;
 		}
 		return false;
@@ -93,19 +92,19 @@ public class Select extends EntityList implements InstanceCollector {
 		this.addAll(entities);
 	}
 	public void setRandom() {
-		Entity entity = EntityList.getRandom(paneGallery.getEntitiesOfTiles());
+		Entity entity = EntityList.getRandom(PaneGallery.get().getEntitiesOfTiles());
 		this.set(entity);
-		target.set(entity);
+		Target.set(entity);
 	}
 	public void setRandomFromCollection() {
-		Entity entity = EntityList.getRandom(target.get().getCollection());
+		Entity entity = EntityList.getRandom(Target.get().getCollection());
 		this.set(entity);
-		target.set(entity);
+		Target.set(entity);
 	}
 	public void clear() {
-		reload.requestBorderUpdate(this);
+		Reload.requestBorderUpdate(this);
 		super.clear();
-		reload.notify(ChangeIn.SELECT);
+		Reload.notify(ChangeIn.SELECT);
 	}
 	public void swapState(Entity entity) {
 		if (super.contains(entity)) {
@@ -115,23 +114,40 @@ public class Select extends EntityList implements InstanceCollector {
 		}
 	}
 	
-	public void addTag(Tag tag) {
-		this.forEach(entity -> entity.getTagList().add(tag));
-		reload.notify(ChangeIn.TAGS_OF_SELECT);
+	public static void addTag(Tag tag) {
+		Loader.INSTANCE.forEach(entity -> entity.getTagList().add(tag));
+		Reload.notify(ChangeIn.TAGS_OF_SELECT);
 	}
-	public void removeTag(Tag tag) {
-		this.forEach(entity -> entity.getTagList().remove(tag));
-		reload.notify(ChangeIn.TAGS_OF_SELECT);
+	public static void removeTag(Tag tag) {
+		Loader.INSTANCE.forEach(entity -> entity.getTagList().remove(tag));
+		Reload.notify(ChangeIn.TAGS_OF_SELECT);
+	}
+	
+	public static void deleteFiles() {
+		Target.storePosition();
+		Loader.INSTANCE.forEach(entity -> {
+			FileUtil.deleteFile(FileUtil.getFileEntity(Target.get()));
+			FileUtil.deleteFile(FileUtil.getFileCache(entity));
+			
+			PaneGallery.get().getTiles().getChildren().remove(entity.getGalleryTile());
+			Loader.INSTANCE.remove(entity);
+			Filter.getEntities().remove(entity);
+			EntityList.getMain().remove(entity);
+		});
+		Target.restorePosition();
+		
+		Reload.notify(ChangeIn.ENTITY_LIST_MAIN);
+		Reload.start();
 	}
 	
 	private Entity shiftStart = null;
-	public void shiftSelectFrom(Entity entityFrom) {
-		this.shiftStart = entityFrom;
+	public static void shiftSelectFrom(Entity entityFrom) {
+		Loader.INSTANCE.shiftStart = entityFrom;
 	}
-	public void shiftSelectTo(Entity entityTo) {
-		CustomList<Entity> entities = paneGallery.getEntitiesOfTiles();
+	public static void shiftSelectTo(Entity entityTo) {
+		CustomList<Entity> entities = PaneGallery.get().getEntitiesOfTiles();
 		
-		int indexFrom = entities.indexOf(shiftStart);
+		int indexFrom = entities.indexOf(Loader.INSTANCE.shiftStart);
 		int indexTo = entities.indexOf(entityTo);
 		
 		int indexLower;
@@ -145,6 +161,14 @@ public class Select extends EntityList implements InstanceCollector {
 			indexHigher = indexTo;
 		}
 		
-		this.addAll(entities.subList(indexLower, indexHigher + 1));
+		Loader.INSTANCE.addAll(entities.subList(indexLower, indexHigher + 1));
+	}
+	
+	private Select() {}
+	private static class Loader {
+		private static final Select INSTANCE = new Select();
+	}
+	public static Select getEntities() {
+		return Loader.INSTANCE;
 	}
 }
