@@ -51,8 +51,8 @@ public class ClickMenu extends Popup {
 		list.add(ButtonTemplates.ENTITY_COPY_NAME.get());
 		list.add(ButtonTemplates.ENTITY_COPY_PATH.get());
 		list.add(new BoxSeparatorNode());
+		list.add(ButtonTemplates.SELECTION_DELETE.get());
 		if (Select.getEntities().size() > 1) {
-			list.add(ButtonTemplates.SELECTION_DELETE.get());
 			list.add(new BoxSeparatorNode());
 			if (EntityCollectionUtil.isCollection(Select.getEntities())) {
 				list.add(ButtonTemplates.COLLECTION_DISCARD.get());

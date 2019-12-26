@@ -45,6 +45,7 @@ public class SceneIntro extends HBox {
 			fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
 			File file = fileChooser.showOpenDialog(StageManager.getStageMain());
 			if (file != null) {
+				StageManager.getStageMain().layoutMain();
 				Main.startDatabaseLoading(Project.readFromDisk(file.getAbsolutePath()));
 			}
 		});
@@ -75,6 +76,8 @@ public class SceneIntro extends HBox {
 				case ENTER:
 					CustomList<Project> projects = FileUtil.getProjects();
 					if (!projects.isEmpty()) {
+						StageManager.getStageMain().layoutMain();
+						projects.sort(Project.getComparator());
 						Main.startDatabaseLoading(projects.getFirst());
 					} else {
 						StageManager.getStageMain().getSceneProject().show();

@@ -34,6 +34,7 @@ public class StageMain extends StageBase {
 		this.setBorder(null);
 		this.setAlwaysOnTop(false);
 		this.getScene().addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+			//todo is this necessary
 			Node node = event.getPickResult().getIntersectedNode();
 			if (node instanceof EditNode) {
 				event.consume();
@@ -88,9 +89,9 @@ public class StageMain extends StageBase {
 		
 		sceneMain.requestFocus();
 		sceneMain.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-			if (getScene().getFocusOwner() instanceof EditNode) {
+			if (this.getScene().getFocusOwner() instanceof EditNode) {
 				if (event.getCode() == KeyCode.ESCAPE) {
-					getScene().getRoot().requestFocus();
+					this.getRoot().requestFocus();
 				} else if (event.getCode() == KeyCode.SHIFT) {
 					shiftDown.setValue(true);
 					Select.shiftSelectFrom(Target.get());
@@ -140,6 +141,7 @@ public class StageMain extends StageBase {
 						break;
 				}
 			}
+			event.consume();
 		});
 		sceneMain.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
 			switch (event.getCode()) {

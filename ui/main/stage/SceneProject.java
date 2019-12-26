@@ -54,6 +54,7 @@ public class SceneProject extends VBox {
 			if (this.checkEditValidity(edtProjectNameCPS, edtDirectorySourceCPS, nodeError)) {
 				Project project = new Project(edtProjectNameCPS.getText(), edtDirectorySourceCPS.getText());
 				project.writeToDisk();
+				StageManager.getStageMain().layoutMain();
 				Main.startDatabaseLoading(project);
 			}
 		});
@@ -80,6 +81,7 @@ public class SceneProject extends VBox {
 				if (this.checkEditValidity(edtProjectNameCPS, edtDirectorySourceCPS, nodeError)) {
 					Project project = new Project(edtProjectNameCPS.getText(), edtDirectorySourceCPS.getText());
 					project.writeToDisk();
+					StageManager.getStageMain().layoutMain();
 					Main.startDatabaseLoading(project);
 				}
 			} else if (event.getCode() == KeyCode.ESCAPE) {

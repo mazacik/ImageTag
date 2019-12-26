@@ -1,5 +1,6 @@
 package ui.stage.base;
 
+import javafx.scene.Node;
 import ui.component.simple.HBox;
 import ui.component.simple.TextNode;
 import ui.component.simple.VBox;
@@ -49,6 +50,10 @@ public abstract class StageBase extends Stage implements StageBaseInterface {
 		this.setOnShown(event -> this.centerOnScreen());
 		this.setAlwaysOnTop(true);
 		this.titleProperty().addListener((observable, oldValue, newValue) -> titleBar.setTitle(newValue));
+	}
+	
+	public Node getRoot() {
+		return vBoxMain.getChildren().get(1);
 	}
 	
 	public void setRoot(Region root) {

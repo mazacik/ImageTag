@@ -125,7 +125,7 @@ public class Select extends EntityList {
 	
 	public static void deleteFiles() {
 		Target.storePosition();
-		Loader.INSTANCE.forEach(entity -> {
+		new CustomList<>(Loader.INSTANCE).forEach(entity -> {
 			FileUtil.deleteFile(FileUtil.getFileEntity(Target.get()));
 			FileUtil.deleteFile(FileUtil.getFileCache(entity));
 			

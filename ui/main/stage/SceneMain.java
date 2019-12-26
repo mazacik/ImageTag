@@ -22,7 +22,6 @@ public class SceneMain extends HBox {
 			this.getChildren().set(1, PaneGallery.get());
 			
 			PaneGallery.get().moveViewportToTarget();
-			PaneGallery.get().requestFocus();
 			
 			Reload.notify(ChangeIn.VIEWMODE);
 		}

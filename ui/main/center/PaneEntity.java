@@ -110,6 +110,8 @@ public class PaneEntity extends BorderPane {
 					originWidth = reader.getWidth(0);
 					originHeight = reader.getHeight(0);
 				}
+				
+				iis.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
