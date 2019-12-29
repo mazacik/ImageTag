@@ -63,12 +63,13 @@ public class PaneGallery extends ScrollPane {
 		selectRectangleVisible = false;
 		localCursorPositionX = 0;
 		localCursorPositionY = 0;
-		
+		//todo calculate (min) pref width
 		this.setContent(tilePane);
 		this.getChildren().add(tilePane);
 		this.setBackground(Background.EMPTY);
 		this.setHbarPolicy(ScrollBarPolicy.NEVER);
 		this.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+		this.setMinViewportWidth(actualTileSize);
 		this.setPrefViewportHeight(SizeUtil.getUsableScreenHeight());
 		this.addEventFilter(ScrollEvent.SCROLL, this::onScroll);
 	}
@@ -121,7 +122,7 @@ public class PaneGallery extends ScrollPane {
 				//add a cooldown timer if necessary
 				CustomList<Entity> intersectingTiles = getSelectRectangleTiles();
 				
-				if (StageManager.getStageMain().isShiftDown()) {
+				if (event.isShiftDown()) {
 					Select.getEntities().addAll(intersectingTiles);
 				} else {
 					Select.getEntities().setAll(intersectingTiles);

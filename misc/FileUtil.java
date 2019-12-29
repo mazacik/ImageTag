@@ -101,7 +101,7 @@ public abstract class FileUtil {
 		if (newEntities.isEmpty()) {
 			StageManager.getErrorStage().show("Imported 0 files.");
 		} else {
-			CacheManager.createCacheInBackground(newEntities);
+			CacheManager.checkCacheInBackground(newEntities);
 			
 			EntityList.getMain().addAll(newEntities);
 			EntityList.getMain().sort();
@@ -125,6 +125,9 @@ public abstract class FileUtil {
 	}
 	public static CustomList<File> getProjectFiles() {
 		return new CustomList<>(new File(getDirectoryProject()).listFiles(file -> file.isFile() && file.getName().endsWith(".json")));
+	}
+	public static CustomList<File> getSupportedFiles() {
+		return getSupportedFiles(new File(Project.getCurrent().getDirectorySource()));
 	}
 	public static CustomList<File> getSupportedFiles(File directorySource) {
 		CustomList<File> actualFiles = new CustomList<>();
@@ -210,6 +213,10 @@ public abstract class FileUtil {
 	}
 	public static String getFileSettings() {
 		return getDirectoryLocal() + File.separator + "settings.json";
+	}
+	
+	public static String getApplicationName() {
+		return APPLICATION_NAME;
 	}
 	
 	public enum FileType {

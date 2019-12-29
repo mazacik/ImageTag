@@ -14,6 +14,7 @@ public class TagList extends CustomList<Tag> {
 	}
 	
 	public boolean containsEqualTo(Tag tag) {
+		//todo maybe remove?
 		String group = tag.getGroup();
 		String name = tag.getName();
 		

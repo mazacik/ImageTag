@@ -136,7 +136,7 @@ public class Select extends EntityList {
 		});
 		Target.restorePosition();
 		
-		Reload.notify(ChangeIn.ENTITY_LIST_MAIN);
+		Reload.notify(ChangeIn.ENTITY_LIST_MAIN, ChangeIn.FILTER);
 		Reload.start();
 	}
 	

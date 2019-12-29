@@ -34,7 +34,7 @@ public abstract class StageBase extends Stage implements StageBaseInterface {
 		vBoxMain.setBackground(ColorUtil.getBackgroundPrimary());
 		vBoxMain.setBorder(NodeUtil.getBorder(1));
 		
-		titleBar = new TitleBar(title);
+		titleBar = new TitleBar(this, title);
 		errorNode = new TextNode("", false, false, false, false);
 		errorNode.setTextFill(ColorUtil.getColorNegative());
 		buttonBox = new HBox();
@@ -49,7 +49,6 @@ public abstract class StageBase extends Stage implements StageBaseInterface {
 		this.initStyle(StageStyle.UNDECORATED);
 		this.setOnShown(event -> this.centerOnScreen());
 		this.setAlwaysOnTop(true);
-		this.titleProperty().addListener((observable, oldValue, newValue) -> titleBar.setTitle(newValue));
 	}
 	
 	public Node getRoot() {

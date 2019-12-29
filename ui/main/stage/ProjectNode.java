@@ -71,7 +71,8 @@ public class ProjectNode extends BorderPane {
 				} else {
 					if (new File(project.getDirectorySource()).exists()) {
 						StageManager.getStageMain().layoutMain();
-						Main.startDatabaseLoading(project);
+						Project.setCurrent(project);
+						Main.startDatabaseLoading();
 					} else {
 						StageManager.getErrorStage().show("The source directory of this misc.project could not be found.\nDirectory: " + project.getDirectorySource());
 					}

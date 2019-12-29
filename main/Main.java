@@ -1,33 +1,28 @@
 package main;
 
 import base.CustomList;
-import base.entity.EntityCollectionUtil;
 import base.entity.Entity;
 import base.entity.EntityList;
 import base.tag.Tag;
 import base.tag.TagList;
 import cache.CacheManager;
 import control.filter.Filter;
-import control.Select;
-import control.Target;
 import control.reload.ChangeIn;
 import control.reload.Reload;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import misc.FileUtil;
-import misc.Settings;
 import misc.Project;
-import ui.main.center.PaneGallery;
+import misc.Settings;
 import ui.main.center.GalleryTile;
 import ui.main.center.PaneEntity;
+import ui.main.center.PaneGallery;
 import ui.main.side.left.PaneFilter;
 import ui.main.side.right.PaneSelect;
 import ui.main.top.PaneToolbar;
 import ui.stage.StageManager;
 
 import java.io.File;
-import java.util.Comparator;
-import java.util.logging.Logger;
 
 public class Main extends Application {
 	private static final boolean QUICKSTART = false;
@@ -36,15 +31,8 @@ public class Main extends Application {
 		launch(args);
 	}
 	public void start(Stage stage) {
-		initLogger();
-		initInstances();
-		initLoading();
-	}
-	
-	private static void initLogger() {
 		System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %2$s: %5$s%n");
-	}
-	private static void initInstances() {
+		
 		Settings.readFromDisk();
 		
 		PaneToolbar.get().init();
@@ -55,8 +43,6 @@ public class Main extends Application {
 		
 		GalleryTile.init();
 		Reload.init();
-	}
-	private static void initLoading() {
 		
 		if (!QUICKSTART || FileUtil.getProjectFiles().isEmpty()) {
 			StageManager.getStageMain().layoutIntro();
@@ -65,107 +51,133 @@ public class Main extends Application {
 			StageManager.getStageMain().layoutMain();
 			
 			projects.sort(Project.getComparator());
-			startDatabaseLoading(projects.getFirst());
+			Project.setCurrent(projects.getFirst());
+			startDatabaseLoading();
 		}
 	}
 	
-	public static void startDatabaseLoading(Project project) {
-		Project.setCurrent(project);
-		EntityList.getMain().addAll(project.getEntityList());
-		checkForNewFiles(FileUtil.getSupportedFiles(new File(project.getDirectorySource())));
+	public static void startDatabaseLoading() {
+		initEntities();
+		initCollections();
+		initTags();
 		
-		EntityCollectionUtil.init();
-		EntityList.getMain().sort();
-		initTags(project);
 		Filter.refresh();
-		Target.set(Filter.getEntities().get(0));
-		Select.getEntities().set(Filter.getEntities().get(0));
-		
 		Reload.start();
 		
-		PaneFilter.get().collapseAll();
-		PaneSelect.get().collapseAll();
-		
-		CacheManager.createCacheInBackground(EntityList.getMain());
+		CacheManager.checkCacheInBackground();
 	}
-	private static void initTags(Project project) {
-		//todo help
-		TagList allTags = project.getTagList();
-		if (allTags != null) {
-			TagList.getMainInstance().addAll(allTags);
-		}
+	
+	private static void initEntities() {
+		EntityList.getMain().setAll(Project.getCurrent().getEntityList());
 		
-		for (Entity entity : EntityList.getMain()) {
-			TagList tagList = entity.getTagList();
-			
-			for (Tag tag : tagList) {
-				if (TagList.getMainInstance().containsEqualTo(tag)) {
-					tagList.set(tagList.indexOf(tag), TagList.getMainInstance().getTag(tag));
-				} else {
-					TagList.getMainInstance().add(tag);
-				}
-			}
-		}
+		EntityList entitiesWithoutFiles = new EntityList(EntityList.getMain());
+		CustomList<File> filesWithoutEntities = FileUtil.getSupportedFiles();
 		
-		TagList.getMainInstance().sort();
-		Reload.notify(ChangeIn.TAG_LIST_MAIN);
-	}
-	private static void checkForNewFiles(CustomList<File> fileList) {
-		EntityList.getMain().sort(Comparator.comparing(Entity::getName));
-		fileList.sort(Comparator.comparing(File::getName));
+		CustomList<String> newFileNames = new CustomList<>();
+		filesWithoutEntities.forEach(file -> newFileNames.add(FileUtil.createEntityName(file)));
 		
-		EntityList orphanEntities = new EntityList(EntityList.getMain());
-		CustomList<File> newFiles = new CustomList<>(fileList);
-		
-		/* compare files in the source directory with known objects in the database */
-		for (Entity entity : EntityList.getMain()) {
-			for (int i = 0; i < newFiles.size(); i++) {
-				File file = newFiles.get(i);
-				if (entity.getName().equals(FileUtil.createEntityName(file))) {
-					orphanEntities.remove(entity);
-					newFiles.remove(file);
+		/* match files in the source directory with known entities in the database */
+		for (int i = 0; i < entitiesWithoutFiles.size(); i++) {
+			for (int j = 0; j < filesWithoutEntities.size(); j++) {
+				if (entitiesWithoutFiles.get(i).getName().equals(newFileNames.get(j))) {
+					entitiesWithoutFiles.remove(i--);
+					newFileNames.remove(j);
+					filesWithoutEntities.remove(j);
 					break;
 				}
 			}
 		}
 		
 		/* match files with the exact same size, these were probably renamed outside of the application */
-		for (File newFile : new CustomList<>(newFiles)) {
-			for (Entity orphanEntity : new CustomList<>(orphanEntities)) {
-				if (newFile.length() == orphanEntity.getLength()) {
-					newFiles.remove(newFile);
-					orphanEntities.remove(orphanEntity);
-					
+		File newFile;
+		long newFileLength;
+		Entity orphanEntity;
+		for (int i = 0; i < filesWithoutEntities.size(); i++) {
+			newFile = filesWithoutEntities.get(i);
+			newFileLength = newFile.length();
+			for (int j = 0; j < entitiesWithoutFiles.size(); j++) {
+				orphanEntity = entitiesWithoutFiles.get(j);
+				if (newFileLength == orphanEntity.getLength()) {
 					/* rename the object and cache file */
 					File oldCacheFile = new File(FileUtil.getFileCache(orphanEntity));
-					orphanEntity.setName(newFile.getName());
+					orphanEntity.setName(FileUtil.createEntityName(newFile));
 					File newCacheFile = new File(FileUtil.getFileCache(orphanEntity));
 					
 					if (oldCacheFile.exists() && !newCacheFile.exists()) {
 						oldCacheFile.renameTo(newCacheFile);
 					}
+					
+					filesWithoutEntities.remove(i--);
+					entitiesWithoutFiles.remove(j);
+					break;
 				}
 			}
 		}
 		
-		/* add unrecognized objects */
-		for (File file : newFiles) {
-			Entity entity = new Entity(file);
-			EntityList.getMain().add(entity);
-			Filter.getNewEntities().add(entity);
+		boolean needsSort = false;
+		if (!entitiesWithoutFiles.isEmpty()) {
+			EntityList.getMain().removeAll(entitiesWithoutFiles);
+			needsSort = true;
+		}
+		if (!filesWithoutEntities.isEmpty()) {
+			EntityList newEntities = new EntityList(filesWithoutEntities);
+			EntityList.getMain().addAll(newEntities);
+			Filter.getNewEntities().addAll(newEntities);
+			needsSort = true;
+		}
+		if (needsSort) EntityList.getMain().sort();
+	}
+	private static void initCollections() {
+		CustomList<EntityList> collections = new CustomList<>();
+		int collectionID;
+		for (Entity entity : EntityList.getMain()) {
+			collectionID = entity.getCollectionID();
+			if (collectionID != 0) {
+				boolean match = false;
+				for (EntityList collection : collections) {
+					if (collection.getFirst().getCollectionID() == collectionID) {
+						collection.add(entity);
+						entity.setCollection(collection);
+						match = true;
+						break;
+					}
+				}
+				if (!match) {
+					EntityList collection = new EntityList(entity);
+					entity.setCollection(collection);
+					collections.add(collection);
+				}
+			}
+		}
+	}
+	private static void initTags() {
+		TagList allTags = Project.getCurrent().getTagList();
+		TagList tagListMain = TagList.getMainInstance();
+		if (allTags != null) tagListMain.addAll(allTags);
+		
+		Tag entityTag;
+		Tag mainListTag;
+		TagList tagList;
+		for (Entity entity : EntityList.getMain()) {
+			tagList = entity.getTagList();
+			
+			for (int i = 0; i < tagList.size(); i++) {
+				entityTag = tagList.get(i);
+				mainListTag = tagListMain.getTag(entityTag);
+				
+				if (mainListTag != null) {
+					tagList.set(i, mainListTag);
+				} else {
+					tagListMain.add(entityTag);
+				}
+			}
 		}
 		
-		/* discard orphan objects */
-		for (Entity entity : orphanEntities) {
-			EntityList.getMain().remove(entity);
-		}
-		
-		EntityList.getMain().sort(Comparator.comparing(Entity::getName));
+		tagListMain.sort();
+		Reload.notify(ChangeIn.TAG_LIST_MAIN);
 	}
 	
 	public static void exitApplication() {
-		Logger.getGlobal().info("Application Exit");
-		
 		CacheManager.stopThread();
 		
 		PaneEntity.get().disposeVideoPlayer();

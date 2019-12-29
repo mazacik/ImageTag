@@ -5,6 +5,7 @@ import base.tag.Tag;
 import base.tag.TagList;
 import control.filter.Filter;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -18,6 +19,9 @@ public class EntityList extends CustomList<Entity> {
 	}
 	public EntityList(Collection<? extends Entity> c) {
 		super(c);
+	}
+	public EntityList(CustomList<File> fileList) {
+		fileList.forEach(file -> this.add(new Entity(file)));
 	}
 	
 	public void sort() {

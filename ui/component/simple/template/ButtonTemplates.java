@@ -358,7 +358,7 @@ public enum ButtonTemplates {
 					}
 					entity.getGalleryTile().setImage(null);
 				}
-				CacheManager.createCacheInBackground(EntityList.getMain());
+				CacheManager.checkCacheInBackground(EntityList.getMain());
 				ClickMenu.hideAll();
 			});
 			return textNode;

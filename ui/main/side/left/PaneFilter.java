@@ -80,7 +80,7 @@ public class PaneFilter extends SidePaneBase {
 				} else {
 					groupNode.setTextFill(textColorDefault);
 				}
-				for (TextNode nameNode : groupNode.getNodes()) {
+				for (TextNode nameNode : groupNode.getNameNodes()) {
 					String name = nameNode.getText();
 					
 					if (Filter.getListManager().isWhitelisted(group, name)) {

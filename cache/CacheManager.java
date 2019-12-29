@@ -183,7 +183,10 @@ public abstract class CacheManager {
 	}
 	
 	private static Thread cacheThread = null;
-	public static void createCacheInBackground(EntityList entityList) {
+	public static void checkCacheInBackground() {
+		checkCacheInBackground(EntityList.getMain());
+	}
+	public static void checkCacheInBackground(EntityList entityList) {
 		if (cacheThread == null || !cacheThread.isAlive()) {
 			cacheThread = new Thread(() -> {
 				for (Entity entity : entityList) {

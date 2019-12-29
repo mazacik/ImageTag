@@ -3,24 +3,28 @@ package ui.main.top;
 import base.CustomList;
 import base.entity.Entity;
 import control.Target;
+import enums.Direction;
+import javafx.geometry.Pos;
+import javafx.scene.input.MouseButton;
+import javafx.scene.layout.BorderPane;
+import ui.NodeUtil;
 import ui.component.clickmenu.ClickMenu;
 import ui.component.simple.BoxSeparatorNode;
 import ui.component.simple.HBox;
 import ui.component.simple.TextNode;
 import ui.component.simple.template.ButtonTemplates;
 import ui.decorator.SizeUtil;
+import ui.stage.StageManager;
 import ui.stage.TitleBar;
-import javafx.geometry.Pos;
-import javafx.scene.input.MouseButton;
-import enums.Direction;
 
 import java.util.logging.Logger;
 
-public class PaneToolbar extends TitleBar {
+public class PaneToolbar extends BorderPane {
+	private TitleBar titleBar;
 	private TextNode nodeTarget;
 	
 	public void init() {
-		super.init("");
+		titleBar = new TitleBar(StageManager.getStageMain());
 		
 		TextNode nodeFile = new TextNode("File", true, true, false, true);
 		TextNode nodeSave = ButtonTemplates.APPLICATION_SAVE.get();
@@ -39,9 +43,13 @@ public class PaneToolbar extends TitleBar {
 		HBox hBox = new HBox(nodeFile, hBoxTools);
 		hBox.setAlignment(Pos.CENTER);
 		
+		titleBar.setCenter(nodeTarget);
+		titleBar.setBorder(null);
+		
+		this.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
 		this.setPrefHeight(SizeUtil.getPrefHeightTopMenu());
 		this.setLeft(hBox);
-		this.setCenter(nodeTarget);
+		this.setCenter(titleBar);
 	}
 	
 	public boolean reload() {
@@ -59,7 +67,7 @@ public class PaneToolbar extends TitleBar {
 		return true;
 	}
 	
-	private PaneToolbar() {}
+	private PaneToolbar() {super();}
 	private static class Loader {
 		private static final PaneToolbar INSTANCE = new PaneToolbar();
 	}

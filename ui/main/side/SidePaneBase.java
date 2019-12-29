@@ -42,7 +42,7 @@ public abstract class SidePaneBase extends VBox {
 			if (node instanceof GroupNode) {
 				GroupNode groupNode = (GroupNode) node;
 				groupsCurrent.add(groupNode.getText());
-				for (TextNode nameNode : groupNode.getNodes()) {
+				for (TextNode nameNode : groupNode.getNameNodes()) {
 					tagsCurrent.add(TagList.getMainInstance().getTag(groupNode.getText(), nameNode.getText()));
 				}
 			}
@@ -97,7 +97,7 @@ public abstract class SidePaneBase extends VBox {
 					GroupNode groupNode = (GroupNode) node;
 					groupNode.remove(tag.getName());
 					//	if GroupNode is empty, remove it
-					if (groupNode.getNodes().isEmpty()) groupNodes.getChildren().remove(groupNode);
+					if (groupNode.getNameNodes().isEmpty()) groupNodes.getChildren().remove(groupNode);
 				}
 			}
 		}
@@ -117,6 +117,7 @@ public abstract class SidePaneBase extends VBox {
 		}
 	}
 	
+	//todo move to GroupNode
 	public void updateNameNode(String group, String nameBefore, String nameAfter) {
 		for (Node node : groupNodes.getChildren()) {
 			if (node instanceof GroupNode) {
@@ -139,14 +140,14 @@ public abstract class SidePaneBase extends VBox {
 				}
 			}
 		}
-		if (groupNode != null && groupNode.getNodes().isEmpty()) groupNodes.getChildren().remove(groupNode);
+		if (groupNode != null && groupNode.getNameNodes().isEmpty()) groupNodes.getChildren().remove(groupNode);
 	}
 	
 	public void expandAll() {
 		for (Node node : groupNodes.getChildren()) {
 			if (node instanceof GroupNode) {
 				GroupNode groupNode = (GroupNode) node;
-				groupNode.show();
+				groupNode.expand();
 			}
 		}
 	}
@@ -154,7 +155,7 @@ public abstract class SidePaneBase extends VBox {
 		for (Node node : groupNodes.getChildren()) {
 			if (node instanceof GroupNode) {
 				GroupNode groupNode = (GroupNode) node;
-				groupNode.hide();
+				groupNode.collapse();
 			}
 		}
 	}

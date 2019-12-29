@@ -2,12 +2,6 @@ package ui.main.side;
 
 import base.CustomList;
 import base.tag.TagList;
-import ui.component.clickmenu.ClickMenu;
-import ui.component.simple.HBox;
-import ui.component.simple.TextNode;
-import ui.component.simple.VBox;
-import ui.decorator.ColorUtil;
-import ui.stage.StageManager;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -16,11 +10,16 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
+import ui.component.clickmenu.ClickMenu;
+import ui.component.simple.HBox;
+import ui.component.simple.TextNode;
+import ui.component.simple.VBox;
+import ui.decorator.ColorUtil;
 
 import java.util.Comparator;
 
 public class GroupNode extends VBox {
-	private final CustomList<NameNode> nodes;
+	private final CustomList<NameNode> nameNodes;
 	
 	private final SidePaneBase parentPane;
 	
@@ -29,7 +28,7 @@ public class GroupNode extends VBox {
 	private final HBox hBoxMain;
 	
 	public GroupNode(SidePaneBase parentPane, String text) {
-		nodes = new CustomList<>();
+		nameNodes = new CustomList<>();
 		
 		this.parentPane = parentPane;
 		
@@ -58,7 +57,7 @@ public class GroupNode extends VBox {
 			}
 		};
 		nodeToggle.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
-			StageManager.getStageMain().shiftDownProperty().addListener(shiftChangeListener);
+			//StageManager.getStageMain().shiftDownProperty().addListener(shiftChangeListener);
 			if (event.isShiftDown()) {
 				parentPane.getGroupNodes().forEach(groupNode -> groupNode.setToggleFill(ColorUtil.getColorSecondary()));
 			} else {
@@ -66,7 +65,7 @@ public class GroupNode extends VBox {
 			}
 		});
 		nodeToggle.addEventFilter(MouseEvent.MOUSE_EXITED, event -> {
-			StageManager.getStageMain().shiftDownProperty().removeListener(shiftChangeListener);
+			//StageManager.getStageMain().shiftDownProperty().removeListener(shiftChangeListener);
 			if (event.isShiftDown()) {
 				parentPane.getGroupNodes().forEach(groupNode -> groupNode.setToggleFill(ColorUtil.getColorPrimary()));
 			} else {
@@ -83,22 +82,22 @@ public class GroupNode extends VBox {
 					if (event.isShiftDown()) {
 						parentPane.expandAll();
 					} else {
-						this.show();
+						this.expand();
 					}
 				} else {
 					if (event.isShiftDown()) {
 						parentPane.collapseAll();
 					} else {
-						this.hide();
+						this.collapse();
 					}
 				}
 			} else {
 				switch (event.getButton()) {
 					case PRIMARY:
 						if (this.isExpanded()) {
-							this.hide();
+							this.collapse();
 						} else {
-							this.show();
+							this.expand();
 						}
 						break;
 					case SECONDARY:
@@ -114,33 +113,35 @@ public class GroupNode extends VBox {
 	
 	public void add(String name) {
 		if (!this.contains(name)) {
-			nodes.add(new NameNode(this, name));
+			nameNodes.add(new NameNode(this, name));
 		}
 	}
 	public void remove(String name) {
 		NameNode nameNode = null;
 		
-		for (NameNode _nameNode : nodes) {
+		for (NameNode _nameNode : nameNodes) {
 			if (name.equals(_nameNode.getText())) {
 				nameNode = _nameNode;
 				break;
 			}
 		}
 		
-		this.getChildren().remove(nameNode);
-		nodes.remove(nameNode);
+		//this.getChildren().remove(nameNode);
+		nameNodes.remove(nameNode);
 	}
 	public void update(String nameOld, String nameNew) {
-		for (NameNode nameNode : nodes) {
+		for (NameNode nameNode : nameNodes) {
 			if (nameNode.getText().equals(nameOld)) {
 				nameNode.setText(nameNew);
 				break;
 			}
 		}
 	}
-	
+	public void sort() {
+		nameNodes.sort(Comparator.comparing(Label::getText));
+	}
 	public boolean contains(String name) {
-		for (NameNode nameNode : nodes) {
+		for (NameNode nameNode : nameNodes) {
 			if (nameNode.getText().equals(name)) {
 				return true;
 			}
@@ -148,16 +149,13 @@ public class GroupNode extends VBox {
 		return false;
 	}
 	
-	public void show() {
-		this.getChildren().addAll(nodes);
+	public void expand() {
+		this.getChildren().addAll(nameNodes);
 		nodeToggle.setText("− ");
 	}
-	public void hide() {
+	public void collapse() {
 		this.getChildren().retainAll(hBoxMain);
 		nodeToggle.setText("+ ");
-	}
-	public void sort() {
-		nodes.sort(Comparator.comparing(Label::getText));
 	}
 	
 	public boolean isExpanded() {
@@ -167,8 +165,8 @@ public class GroupNode extends VBox {
 	public String getText() {
 		return nodeText.getText();
 	}
-	public CustomList<NameNode> getNodes() {
-		return nodes;
+	public CustomList<NameNode> getNameNodes() {
+		return nameNodes;
 	}
 	public SidePaneBase getParentPane() {
 		return parentPane;

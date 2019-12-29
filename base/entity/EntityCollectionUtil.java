@@ -10,30 +10,6 @@ import ui.stage.StageManager;
 import java.util.Random;
 
 public abstract class EntityCollectionUtil {
-	public static void init() {
-		CustomList<EntityList> collections = new CustomList<>();
-		int collectionID;
-		for (Entity entity : EntityList.getMain()) {
-			collectionID = entity.getCollectionID();
-			if (collectionID != 0) {
-				boolean match = false;
-				for (EntityList collection : collections) {
-					if (collection.getFirst().getCollectionID() == collectionID) {
-						collection.add(entity);
-						entity.setCollection(collection);
-						match = true;
-						break;
-					}
-				}
-				if (!match) {
-					EntityList collectionNew = new EntityList(entity);
-					collections.add(collectionNew);
-					entity.setCollection(collectionNew);
-				}
-			}
-		}
-	}
-	
 	public static void create() {
 		TagList collectionTags = Select.getEntities().getTagsAll();
 		

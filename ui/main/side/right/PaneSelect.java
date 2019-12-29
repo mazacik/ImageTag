@@ -100,7 +100,7 @@ public class PaneSelect extends SidePaneBase {
 					namesInter = Select.getEntities().getTagsIntersect().getNames(group);
 					namesShare = Select.getEntities().getTagsAll().getNames(group);
 				}
-				for (TextNode nameNode : groupNode.getNodes()) {
+				for (TextNode nameNode : groupNode.getNameNodes()) {
 					String name = nameNode.getText();
 					
 					if (namesInter.contains(name)) {
@@ -139,7 +139,7 @@ public class PaneSelect extends SidePaneBase {
 		return (ChangeListener<String>) (observable, oldValue, newValue) -> {
 			if (newValue.length() < 3) {
 				if (!wasPreviousGroupNodeExpanded) {
-					previousMatchGroupNode.hide();
+					previousMatchGroupNode.collapse();
 					wasPreviousGroupNodeExpanded = true;
 				}
 				if (previousMatchGroupNode != null) {
@@ -156,7 +156,7 @@ public class PaneSelect extends SidePaneBase {
 						if (groupNode.getText().equals(bestMatch.getGroup())) {
 							if (previousMatchGroupNode != groupNode) {
 								if (!wasPreviousGroupNodeExpanded) {
-									previousMatchGroupNode.hide();
+									previousMatchGroupNode.collapse();
 								}
 								
 								if (previousMatchNameNode != null) {
@@ -167,10 +167,10 @@ public class PaneSelect extends SidePaneBase {
 								wasPreviousGroupNodeExpanded = groupNode.isExpanded();
 								
 								if (!groupNode.isExpanded()) {
-									groupNode.show();
+									groupNode.expand();
 								}
 								
-								for (TextNode nameNode : groupNode.getNodes()) {
+								for (TextNode nameNode : groupNode.getNameNodes()) {
 									if (nameNode.getText().equals(bestMatch.getName())) {
 										previousMatchNameNode = nameNode;
 										nameNode.fireEvent(new MouseEvent(MouseEvent.MOUSE_ENTERED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
@@ -226,5 +226,9 @@ public class PaneSelect extends SidePaneBase {
 	}
 	public static PaneSelect get() {
 		return Loader.INSTANCE;
+	}
+	
+	public EditNode getNodeSearch() {
+		return nodeSearch;
 	}
 }
