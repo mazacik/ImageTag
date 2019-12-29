@@ -68,10 +68,10 @@ public class PaneFilter extends SidePaneBase {
 		Color textColorPositive = ColorUtil.getColorPositive();
 		Color textColorNegative = ColorUtil.getColorNegative();
 		
-		for (Node node : groupNodes.getChildren()) {
+		for (Node node : boxGroupNodes.getChildren()) {
 			if (node instanceof GroupNode) {
 				GroupNode groupNode = (GroupNode) node;
-				String group = groupNode.getText();
+				String group = groupNode.getGroup();
 				
 				if (Filter.getListManager().isWhitelisted(group)) {
 					groupNode.setTextFill(textColorPositive);

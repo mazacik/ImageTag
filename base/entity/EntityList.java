@@ -41,7 +41,7 @@ public class EntityList extends CustomList<Entity> {
 			for (Tag tag : this.getFirst().getTagList()) {
 				//check if all objects contain the tag
 				for (Entity entity : this) {
-					if (entity.getTagList().containsEqualTo(tag)) {
+					if (entity.getTagList().contains(tag)) {
 						//if the last object contains the tag, all before do too, add
 						if (entity.equals(this.getLast())) {
 							tagsIntersect.add(tag);

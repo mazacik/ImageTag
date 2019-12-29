@@ -40,9 +40,7 @@ public class GroupNode extends VBox {
 		hBoxMain = new HBox(nodeToggle, nodeText);
 		this.getChildren().add(hBoxMain);
 		
-		for (String name : TagList.getMainInstance().getNames(getText())) {
-			this.add(name);
-		}
+		TagList.getMainInstance().getNames(this.getGroup()).forEach(this::addNameNode);
 		
 		this.initEvents();
 	}
@@ -101,7 +99,7 @@ public class GroupNode extends VBox {
 						}
 						break;
 					case SECONDARY:
-						ClickMenu.setGroup(getText());
+						ClickMenu.setGroup(getGroup());
 						ClickMenu.setName("");
 						break;
 				}
@@ -111,42 +109,28 @@ public class GroupNode extends VBox {
 		ClickMenu.install(hBoxMain, MouseButton.SECONDARY, ClickMenu.StaticInstance.TAG_GROUP);
 	}
 	
-	public void add(String name) {
+	public void addNameNode(String name) {
 		if (!this.contains(name)) {
 			nameNodes.add(new NameNode(this, name));
 		}
 	}
-	public void remove(String name) {
-		NameNode nameNode = null;
-		
-		for (NameNode _nameNode : nameNodes) {
-			if (name.equals(_nameNode.getText())) {
-				nameNode = _nameNode;
-				break;
-			}
-		}
-		
-		//this.getChildren().remove(nameNode);
-		nameNodes.remove(nameNode);
-	}
-	public void update(String nameOld, String nameNew) {
-		for (NameNode nameNode : nameNodes) {
-			if (nameNode.getText().equals(nameOld)) {
-				nameNode.setText(nameNew);
-				break;
+	public void removeNameNode(String name) {
+		NameNode nameNode = this.getNameNode(name);
+		if (nameNode != null) {
+			if (nameNodes.size() == 1) {
+				parentPane.boxGroupNodes.getChildren().remove(this);
+			} else {
+				nameNodes.remove(nameNode);
+				this.getChildren().remove(nameNode);
 			}
 		}
 	}
+	
 	public void sort() {
 		nameNodes.sort(Comparator.comparing(Label::getText));
 	}
 	public boolean contains(String name) {
-		for (NameNode nameNode : nameNodes) {
-			if (nameNode.getText().equals(name)) {
-				return true;
-			}
-		}
-		return false;
+		return this.getNameNode(name) != null;
 	}
 	
 	public void expand() {
@@ -162,8 +146,16 @@ public class GroupNode extends VBox {
 		return getChildren().size() > 1;
 	}
 	
-	public String getText() {
+	public String getGroup() {
 		return nodeText.getText();
+	}
+	public NameNode getNameNode(String name) {
+		for (NameNode nameNode : nameNodes) {
+			if (name.equals(nameNode.getText())) {
+				return nameNode;
+			}
+		}
+		return null;
 	}
 	public CustomList<NameNode> getNameNodes() {
 		return nameNodes;
@@ -172,7 +164,7 @@ public class GroupNode extends VBox {
 		return parentPane;
 	}
 	
-	public void setText(String group) {
+	public void setGroup(String group) {
 		nodeText.setText(group);
 	}
 	public void setToggleFill(Color fill) {

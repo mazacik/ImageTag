@@ -3,25 +3,24 @@ package ui.main.side;
 import base.CustomList;
 import base.tag.Tag;
 import base.tag.TagList;
-import ui.component.simple.TextNode;
-import ui.component.simple.VBox;
-import ui.decorator.SizeUtil;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Background;
+import ui.component.simple.TextNode;
+import ui.component.simple.VBox;
+import ui.decorator.SizeUtil;
 
 import java.util.Comparator;
 
 public abstract class SidePaneBase extends VBox {
 	protected TextNode nodeTitle;
-	protected VBox groupNodes;
+	protected VBox boxGroupNodes;
 	protected ScrollPane scrollPane;
 	
 	public SidePaneBase() {
-		groupNodes = new VBox();
+		boxGroupNodes = new VBox();
 		
-		scrollPane = new ScrollPane();
-		scrollPane.setContent(groupNodes);
+		scrollPane = new ScrollPane(boxGroupNodes);
 		scrollPane.setFitToWidth(true);
 		scrollPane.setFitToHeight(true);
 		scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -38,12 +37,12 @@ public abstract class SidePaneBase extends VBox {
 		CustomList<Tag> tagsMain = new CustomList<>(TagList.getMainInstance());
 		CustomList<Tag> tagsCurrent = new CustomList<>();
 		
-		for (Node node : groupNodes.getChildren()) {
+		for (Node node : boxGroupNodes.getChildren()) {
 			if (node instanceof GroupNode) {
 				GroupNode groupNode = (GroupNode) node;
-				groupsCurrent.add(groupNode.getText());
+				groupsCurrent.add(groupNode.getGroup());
 				for (TextNode nameNode : groupNode.getNameNodes()) {
-					tagsCurrent.add(TagList.getMainInstance().getTag(groupNode.getText(), nameNode.getText()));
+					tagsCurrent.add(TagList.getMainInstance().getTag(groupNode.getGroup(), nameNode.getText()));
 				}
 			}
 		}
@@ -73,15 +72,15 @@ public abstract class SidePaneBase extends VBox {
 					groupsCurrent.sort(Comparator.naturalOrder());
 					index = groupsCurrent.indexOf(group);
 					GroupNode groupNode = new GroupNode(this, group);
-					groupNodes.getChildren().add(index, groupNode);
+					boxGroupNodes.getChildren().add(index, groupNode);
 				} else {
 					index = groupsCurrent.indexOf(group);
 				}
 				//	add NameNode to the respective GroupNode and sort
-				Node node = groupNodes.getChildren().get(index);
+				Node node = boxGroupNodes.getChildren().get(index);
 				if (node instanceof GroupNode) {
 					GroupNode groupNode = (GroupNode) node;
-					groupNode.add(tag.getName());
+					groupNode.addNameNode(tag.getName());
 					groupNode.sort();
 				}
 			}
@@ -92,12 +91,12 @@ public abstract class SidePaneBase extends VBox {
 			for (Tag tag : tagsToRemove) {
 				//	use helper to find the GroupNode
 				//	remove NameNode from the GroupNode
-				Node node = groupNodes.getChildren().get(groupsCurrent.indexOf(tag.getGroup()));
+				Node node = boxGroupNodes.getChildren().get(groupsCurrent.indexOf(tag.getGroup()));
 				if (node instanceof GroupNode) {
 					GroupNode groupNode = (GroupNode) node;
-					groupNode.remove(tag.getName());
+					groupNode.removeNameNode(tag.getName());
 					//	if GroupNode is empty, remove it
-					if (groupNode.getNameNodes().isEmpty()) groupNodes.getChildren().remove(groupNode);
+					if (groupNode.getNameNodes().isEmpty()) boxGroupNodes.getChildren().remove(groupNode);
 				}
 			}
 		}
@@ -105,46 +104,8 @@ public abstract class SidePaneBase extends VBox {
 		return true;
 	}
 	
-	public void updateGroupNode(String groupBefore, String groupAfter) {
-		for (Node node : groupNodes.getChildren()) {
-			if (node instanceof GroupNode) {
-				GroupNode groupNode = (GroupNode) node;
-				if (groupNode.getText().equals(groupBefore)) {
-					groupNode.setText(groupAfter);
-					break;
-				}
-			}
-		}
-	}
-	
-	//todo move to GroupNode
-	public void updateNameNode(String group, String nameBefore, String nameAfter) {
-		for (Node node : groupNodes.getChildren()) {
-			if (node instanceof GroupNode) {
-				GroupNode groupNode = (GroupNode) node;
-				if (groupNode.getText().equals(group)) {
-					groupNode.update(nameBefore, nameAfter);
-					break;
-				}
-			}
-		}
-	}
-	public void removeNameNode(String group, String name) {
-		GroupNode groupNode = null;
-		for (Node node : groupNodes.getChildren()) {
-			if (node instanceof GroupNode) {
-				groupNode = (GroupNode) node;
-				if (groupNode.getText().equals(group)) {
-					groupNode.remove(name);
-					break;
-				}
-			}
-		}
-		if (groupNode != null && groupNode.getNameNodes().isEmpty()) groupNodes.getChildren().remove(groupNode);
-	}
-	
 	public void expandAll() {
-		for (Node node : groupNodes.getChildren()) {
+		for (Node node : boxGroupNodes.getChildren()) {
 			if (node instanceof GroupNode) {
 				GroupNode groupNode = (GroupNode) node;
 				groupNode.expand();
@@ -152,7 +113,7 @@ public abstract class SidePaneBase extends VBox {
 		}
 	}
 	public void collapseAll() {
-		for (Node node : groupNodes.getChildren()) {
+		for (Node node : boxGroupNodes.getChildren()) {
 			if (node instanceof GroupNode) {
 				GroupNode groupNode = (GroupNode) node;
 				groupNode.collapse();
@@ -160,16 +121,28 @@ public abstract class SidePaneBase extends VBox {
 		}
 	}
 	
-	public ScrollPane getScrollPane() {
-		return scrollPane;
+	public GroupNode getGroupNode(String group) {
+		GroupNode groupNode;
+		for (Node node : boxGroupNodes.getChildren()) {
+			if (node instanceof GroupNode) {
+				groupNode = (GroupNode) node;
+				if (groupNode.getGroup().equals(group)) {
+					return groupNode;
+				}
+			}
+		}
+		return null;
 	}
 	public CustomList<GroupNode> getGroupNodes() {
 		CustomList<GroupNode> customList = new CustomList<>();
-		groupNodes.getChildren().forEach(node -> {
+		boxGroupNodes.getChildren().forEach(node -> {
 			if (node instanceof GroupNode) {
 				customList.add((GroupNode) node);
 			}
 		});
 		return customList;
+	}
+	public ScrollPane getScrollPane() {
+		return scrollPane;
 	}
 }

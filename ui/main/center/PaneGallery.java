@@ -3,9 +3,9 @@ package ui.main.center;
 import base.CustomList;
 import base.entity.Entity;
 import base.entity.EntityList;
-import control.filter.Filter;
 import control.Select;
 import control.Target;
+import control.filter.Filter;
 import control.reload.Reload;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
@@ -19,7 +19,6 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import misc.Settings;
-import misc.Stopwatch;
 import ui.component.clickmenu.ClickMenu;
 import ui.decorator.SizeUtil;
 import ui.stage.StageManager;
@@ -150,9 +149,7 @@ public class PaneGallery extends ScrollPane {
 		return this.sceneToLocal(tilePane.localToScene(event.getX(), event.getY())).getY();
 	}
 	private EntityList getSelectRectangleTiles() {
-		Stopwatch.start();
 		EntityList entityList = new EntityList();
-		
 		CustomList<GalleryTile> tiles = new CustomList<>();
 		tilePane.getChildren().forEach(tile -> tiles.add((GalleryTile) tile));
 		
@@ -163,7 +160,6 @@ public class PaneGallery extends ScrollPane {
 				entityList.add(galleryTile.getEntity());
 			}
 		}
-		Stopwatch.stop();
 		return entityList;
 	}
 	

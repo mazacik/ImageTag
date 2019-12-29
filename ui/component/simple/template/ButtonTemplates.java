@@ -6,9 +6,9 @@ import base.entity.EntityList;
 import base.tag.Tag;
 import base.tag.TagList;
 import cache.CacheManager;
-import control.filter.Filter;
 import control.Select;
 import control.Target;
+import control.filter.Filter;
 import control.reload.ChangeIn;
 import control.reload.Reload;
 import javafx.scene.input.Clipboard;
@@ -184,8 +184,8 @@ public enum ButtonTemplates {
 					}
 				});
 				
-				PaneFilter.get().updateGroupNode(groupBefore, groupAfter);
-				PaneSelect.get().updateGroupNode(groupBefore, groupAfter);
+				PaneFilter.get().getGroupNode(groupBefore).setGroup(groupAfter);
+				PaneSelect.get().getGroupNode(groupBefore).setGroup(groupAfter);
 				
 				ClickMenu.hideAll();
 				Reload.start();
@@ -201,10 +201,10 @@ public enum ButtonTemplates {
 				String group = ClickMenu.getGroup();
 				
 				if (StageManager.getOkCancelStage().show("Remove \"" + group + "\" and all of its tags?")) {
-					for (String n : TagList.getMainInstance().getNames(group)) {
-						PaneFilter.get().removeNameNode(group, n);
-						PaneSelect.get().removeNameNode(group, n);
-						Tag tag = TagList.getMainInstance().getTag(group, n);
+					for (String name : TagList.getMainInstance().getNames(group)) {
+						PaneFilter.get().getGroupNode(group).removeNameNode(name);
+						PaneSelect.get().getGroupNode(group).removeNameNode(name);
+						Tag tag = TagList.getMainInstance().getTag(group, name);
 						EntityList.getMain().forEach(entity -> entity.getTagList().remove(tag));
 						Filter.getListManager().unlist(tag);
 						TagList.getMainInstance().remove(tag);
@@ -279,13 +279,13 @@ public enum ButtonTemplates {
 				}
 				
 				if (!groupBefore.equals(groupAfter)) {
-					PaneFilter.get().updateGroupNode(groupBefore, groupAfter);
-					PaneSelect.get().updateGroupNode(groupBefore, groupAfter);
+					PaneFilter.get().getGroupNode(groupBefore).setGroup(groupAfter);
+					PaneSelect.get().getGroupNode(groupBefore).setGroup(groupAfter);
 				}
 				
 				if (!nameBefore.equals(nameAfter)) {
-					PaneFilter.get().updateNameNode(groupAfter, nameBefore, nameAfter);
-					PaneSelect.get().updateNameNode(groupAfter, nameBefore, nameAfter);
+					PaneFilter.get().getGroupNode(groupAfter).getNameNode(nameBefore).setText(nameAfter);
+					PaneSelect.get().getGroupNode(groupAfter).getNameNode(nameBefore).setText(nameAfter);
 				}
 				
 				ClickMenu.hideAll();
@@ -304,8 +304,8 @@ public enum ButtonTemplates {
 				
 				Tag tag = TagList.getMainInstance().getTag(group, name);
 				if (StageManager.getOkCancelStage().show("Remove \"" + tag.getFull() + "\" ?")) {
-					PaneFilter.get().removeNameNode(group, name);
-					PaneSelect.get().removeNameNode(group, name);
+					PaneFilter.get().getGroupNode(group).removeNameNode(name);
+					PaneSelect.get().getGroupNode(group).removeNameNode(name);
 					EntityList.getMain().forEach(entity -> entity.getTagList().remove(tag));
 					Filter.getListManager().unlist(tag);
 					TagList.getMainInstance().remove(tag);

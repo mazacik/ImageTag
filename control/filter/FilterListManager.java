@@ -87,16 +87,16 @@ public class FilterListManager {
 	}
 	
 	public boolean isWhitelisted(Tag tag) {
-		return whitelist.containsEqualTo(tag);
+		return whitelist.contains(tag);
 	}
 	public boolean isWhitelisted(String group, String name) {
-		return whitelist.containsEqualTo(TagList.getMainInstance().getTag(group, name));
+		return whitelist.contains(TagList.getMainInstance().getTag(group, name));
 	}
 	public boolean isBlacklisted(Tag tag) {
-		return blacklist.containsEqualTo(tag);
+		return blacklist.contains(tag);
 	}
 	public boolean isBlacklisted(String group, String name) {
-		return blacklist.containsEqualTo(TagList.getMainInstance().getTag(group, name));
+		return blacklist.contains(TagList.getMainInstance().getTag(group, name));
 	}
 	
 	TagList getWhitelist() {

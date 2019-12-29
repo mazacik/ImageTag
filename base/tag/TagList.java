@@ -13,22 +13,6 @@ public class TagList extends CustomList<Tag> {
 		super(c);
 	}
 	
-	public boolean containsEqualTo(Tag tag) {
-		//todo maybe remove?
-		String group = tag.getGroup();
-		String name = tag.getName();
-		
-		for (Tag iterator : this) {
-			String iteratorGroup = iterator.getGroup();
-			String iteratorName = iterator.getName();
-			
-			if (group.equals(iteratorGroup) && name.equals(iteratorName)) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
 	public void sort() {
 		super.sort(Comparator.comparing(Tag::getFull));
 	}

@@ -79,10 +79,10 @@ public class PaneSelect extends SidePaneBase {
 			groupsShare = Select.getEntities().getTagsAll().getGroups();
 		}
 		
-		for (Node node : groupNodes.getChildren()) {
+		for (Node node : boxGroupNodes.getChildren()) {
 			if (node instanceof GroupNode) {
 				GroupNode groupNode = (GroupNode) node;
-				String group = groupNode.getText();
+				String group = groupNode.getGroup();
 				
 				if (groupsInter.contains(group)) {
 					groupNode.setTextFill(textColorPositive);
@@ -153,7 +153,7 @@ public class PaneSelect extends SidePaneBase {
 				bestMatch = this.getBestMatch(newValue);
 				if (bestMatch != null) {
 					for (GroupNode groupNode : getGroupNodes()) {
-						if (groupNode.getText().equals(bestMatch.getGroup())) {
+						if (groupNode.getGroup().equals(bestMatch.getGroup())) {
 							if (previousMatchGroupNode != groupNode) {
 								if (!wasPreviousGroupNodeExpanded) {
 									previousMatchGroupNode.collapse();
