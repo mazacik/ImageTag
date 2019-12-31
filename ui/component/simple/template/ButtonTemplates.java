@@ -22,6 +22,7 @@ import misc.Project;
 import org.apache.commons.text.WordUtils;
 import ui.component.clickmenu.ClickMenu;
 import ui.component.simple.TextNode;
+import ui.main.center.PaneGallery;
 import ui.main.side.left.PaneFilter;
 import ui.main.side.right.PaneSelect;
 import ui.stage.StageManager;
@@ -127,7 +128,8 @@ public enum ButtonTemplates {
 			TextNode textNode = new TextNode("Random", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				Select.getEntities().setRandom();
+				Select.getEntities().set(PaneGallery.get().getEntitiesOfTiles().getRandom());//todo is this right?
+				//Target.set(entity);//todo ??
 				Reload.start();
 			});
 			return textNode;
@@ -163,7 +165,7 @@ public enum ButtonTemplates {
 			TextNode textNode = new TextNode("Delete Selection", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				Select.deleteFiles();
+				Select.getEntities().deleteFiles();
 				ClickMenu.hideAll();
 			});
 			return textNode;
@@ -275,7 +277,7 @@ public enum ButtonTemplates {
 				TagList.getMainInstance().sort();
 				
 				if (result.isAddToSelect()) {
-					Select.addTag(tag);
+					Select.getEntities().addTag(tag);
 				}
 				
 				if (!groupBefore.equals(groupAfter)) {

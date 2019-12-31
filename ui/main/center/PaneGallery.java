@@ -62,7 +62,7 @@ public class PaneGallery extends ScrollPane {
 		selectRectangleVisible = false;
 		localCursorPositionX = 0;
 		localCursorPositionY = 0;
-
+		
 		this.setContent(tilePane);
 		this.getChildren().add(tilePane);
 		this.setBackground(Background.EMPTY);
@@ -122,6 +122,7 @@ public class PaneGallery extends ScrollPane {
 				CustomList<Entity> intersectingTiles = getSelectRectangleTiles();
 				
 				if (event.isShiftDown()) {
+					//todo if adding a collection tile, add the entire collection if needed
 					Select.getEntities().addAll(intersectingTiles);
 				} else {
 					Select.getEntities().setAll(intersectingTiles);
@@ -232,6 +233,7 @@ public class PaneGallery extends ScrollPane {
 	}
 	
 	public boolean reload() {
+		//todo refactor
 		Logger.getGlobal().info(this.toString());
 		
 		//	var init
@@ -270,18 +272,7 @@ public class PaneGallery extends ScrollPane {
 		tilePane.getChildren().setAll(tiles);
 		
 		//	Target and Select adjustments
-		Entity currentTarget = Target.restorePosition();
-		if (currentTarget != null) {
-			this.moveViewportToTarget();
-			if (currentTarget.getCollectionID() != 0) {
-				if (!expandedGroups.contains(currentTarget.getCollectionID())) {
-					EntityList collection = currentTarget.getCollection();
-					if (Select.getEntities().containsAny(collection)) {
-						Select.getEntities().addAll(collection);
-					}
-				}
-			}
-		}
+		Target.restorePosition();
 		
 		return true;
 	}
@@ -335,7 +326,7 @@ public class PaneGallery extends ScrollPane {
 	public TilePane getTiles() {
 		return tilePane;
 	}
-	public CustomList<Integer> getOpenCollections() {
+	public CustomList<Integer> getExpandedCollections() {
 		return expandedGroups;
 	}
 	

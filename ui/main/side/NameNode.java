@@ -80,10 +80,10 @@ public class NameNode extends TextNode {
 		Tag tag = TagList.getMainInstance().getTag(groupNode.getGroup(), this.getText());
 		if (this.getTextFill().equals(ColorUtil.getColorPositive()) || this.getTextFill().equals(ColorUtil.getColorShare())) {
 			this.setTextFill(ColorUtil.getColorPrimary());
-			Select.removeTag(tag);
+			Select.getEntities().removeTag(tag);
 		} else {
 			this.setTextFill(ColorUtil.getColorPositive());
-			Select.addTag(tag);
+			Select.getEntities().addTag(tag);
 		}
 		
 		Reload.start();

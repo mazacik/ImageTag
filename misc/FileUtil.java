@@ -45,6 +45,7 @@ public abstract class FileUtil {
 		}
 	}
 	public static void deleteFile(String path) {
+		//todo return boolean, using methods do shit based on return value
 		FileUtils fileUtils = FileUtils.getInstance();
 		File abstractFile = new File(path);
 		if (fileUtils.hasTrash()) {

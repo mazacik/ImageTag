@@ -42,8 +42,7 @@ public class Entity {
 		return collection;
 	}
 	public GalleryTile getGalleryTile() {
-		if (galleryTile == null) galleryTile = new GalleryTile(this);
-		return galleryTile;
+		return (galleryTile != null) ? galleryTile : new GalleryTile(this);
 	}
 	
 	public void setName(String name) {

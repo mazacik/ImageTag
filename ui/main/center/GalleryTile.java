@@ -6,9 +6,6 @@ import control.Select;
 import control.Target;
 import control.reload.ChangeIn;
 import control.reload.Reload;
-import misc.Settings;
-import ui.component.clickmenu.ClickMenu;
-import ui.stage.StageManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -26,6 +23,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import misc.Settings;
+import ui.component.clickmenu.ClickMenu;
+import ui.stage.StageManager;
 
 public class GalleryTile extends Pane {
 	public static final double SELECT_BORDER_PADDING = 10;
@@ -109,7 +109,7 @@ public class GalleryTile extends Pane {
 	}
 	public void updateGroupIcon() {
 		if (entity.getCollection().getFirst().equals(entity)) {
-			if (!PaneGallery.get().getOpenCollections().contains(entity.getCollectionID())) {
+			if (!PaneGallery.get().getExpandedCollections().contains(entity.getCollectionID())) {
 				this.setEffect(effectGroupExpand);
 			} else {
 				this.setEffect(effectGroupCollapse);
@@ -163,7 +163,11 @@ public class GalleryTile extends Pane {
 		Target.set(entity);
 		
 		if (event.isControlDown()) {
-			Select.getEntities().swapState(entity);
+			if (Select.getEntities().contains(entity)) {
+				Select.getEntities().remove(entity);
+			} else {
+				Select.getEntities().add(entity);
+			}
 		} else if (event.isShiftDown()) {
 			Select.shiftSelectTo(entity);
 		} else {
@@ -192,7 +196,7 @@ public class GalleryTile extends Pane {
 		int collectionID = entity.getCollectionID();
 		
 		if (collectionID != 0) {
-			CustomList<Integer> expandedGroups = PaneGallery.get().getOpenCollections();
+			CustomList<Integer> expandedGroups = PaneGallery.get().getExpandedCollections();
 			if (expandedGroups.contains(collectionID)) {
 				//noinspection RedundantCollectionOperation
 				expandedGroups.remove(expandedGroups.indexOf(collectionID));

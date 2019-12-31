@@ -45,7 +45,7 @@ public class Target {
 		if (instance.getCollectionID() == 0) {
 			currentTargetIndex = entities.indexOf(instance);
 		} else {
-			if (PaneGallery.get().getOpenCollections().contains(instance.getCollectionID())) {
+			if (PaneGallery.get().getExpandedCollections().contains(instance.getCollectionID())) {
 				currentTargetIndex = entities.indexOf(instance);
 			} else {
 				Entity groupFirst = instance.getCollection().getFirst();
@@ -100,7 +100,7 @@ public class Target {
 	private static Entity storeEntity = null;
 	private static int storePos = -1;
 	public static void storePosition() {
-		CustomList<Integer> expandedcollection = PaneGallery.get().getOpenCollections();
+		CustomList<Integer> expandedcollection = PaneGallery.get().getExpandedCollections();
 		CustomList<Entity> visibleEntities = PaneGallery.get().getEntitiesOfTiles();
 		
 		if (instance.getCollectionID() == 0) {
@@ -117,6 +117,8 @@ public class Target {
 		}
 	}
 	public static Entity restorePosition() {
+		//todo if this lands on a non-expanded collection, add the whole collection
+		//todo add move viewpoert to target
 		EntityList visibleEntities = PaneGallery.get().getEntitiesOfTiles();
 		if (!visibleEntities.isEmpty()) {
 			if (storeEntity != null && visibleEntities.contains(storeEntity)) {

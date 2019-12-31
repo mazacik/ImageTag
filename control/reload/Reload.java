@@ -10,6 +10,7 @@ import ui.main.side.right.PaneSelect;
 import ui.main.top.PaneToolbar;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 
 public class Reload {
 	private final static CustomList<Entity> needsBorderUpdate = new CustomList<>();
@@ -78,8 +79,8 @@ public class Reload {
 		needsBorderUpdate.removeAll(helper);
 	}
 	
-	public static void requestBorderUpdate(EntityList entityList) {
-		needsBorderUpdate.addAll(entityList);
+	public static void requestBorderUpdate(Collection<? extends Entity> c) {
+		needsBorderUpdate.addAll(c);
 	}
 	public static void requestBorderUpdate(Entity entity) {
 		needsBorderUpdate.add(entity);

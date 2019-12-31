@@ -55,7 +55,7 @@ public class SceneMain extends Scene {
 						PaneSelect.get().getNodeSearch().requestFocus();
 						break;
 					case DELETE:
-						Select.deleteFiles();
+						Select.getEntities().deleteFiles();
 						Reload.start();
 						break;
 					case E:
@@ -63,11 +63,12 @@ public class SceneMain extends Scene {
 						Reload.start();
 						break;
 					case R:
-						Select.getEntities().setRandom();
+						//todo fixme Select.getEntities().setRandom();
 						Reload.start();
 						break;
 					case G:
-						Select.getEntities().setRandomFromCollection();
+						Select.getEntities().set(Target.get().getCollection().getRandom());
+						//todo target set
 						Reload.start();
 						break;
 					case F:

@@ -3,7 +3,10 @@ package base.entity;
 import base.CustomList;
 import base.tag.Tag;
 import base.tag.TagList;
+import control.Select;
 import control.filter.Filter;
+import control.reload.ChangeIn;
+import control.reload.Reload;
 
 import java.io.File;
 import java.util.Arrays;
@@ -11,6 +14,7 @@ import java.util.Collection;
 import java.util.Comparator;
 
 public class EntityList extends CustomList<Entity> {
+	//todo rework classes extending entitylist
 	public EntityList() {
 	
 	}
@@ -59,8 +63,17 @@ public class EntityList extends CustomList<Entity> {
 		}
 	}
 	
-	public static Entity getRandom(CustomList<Entity> customList) {
-		Entity entity = customList.getRandom();
+	public void addTag(Tag tag) {
+		this.forEach(entity -> entity.getTagList().add(tag));
+		Reload.notify(ChangeIn.TAGS_OF_SELECT);
+	}
+	public void removeTag(Tag tag) {
+		this.forEach(entity -> entity.getTagList().remove(tag));
+		Reload.notify(ChangeIn.TAGS_OF_SELECT);
+	}
+	
+	public Entity getRandom() {
+		Entity entity = super.getRandom();
 		if (entity != null) {
 			if (entity.getCollectionID() == 0) {
 				return entity;
