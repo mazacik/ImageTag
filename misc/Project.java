@@ -19,7 +19,7 @@ public class Project {
 	
 	public Project(String projectName, String directorySource) {
 		this.projectName = projectName;
-		this.projectFile = FileUtil.getDirectoryProject() + File.separator + projectName + ".json";
+		this.projectFile = createProjectFilePath(projectName);
 		this.directorySource = directorySource;
 	}
 	
@@ -35,6 +35,18 @@ public class Project {
 		this.entityList = EntityList.getMain();
 		this.tagList = TagList.getMainInstance();
 		JsonUtil.write(this, typeToken, projectFile);
+	}
+	
+	public void updateProject(String projectNameNew, String directorySourceNew) {
+		String projectFileNew = createProjectFilePath(projectNameNew);
+		if (!new File(projectFileNew).exists()) {
+			FileUtil.moveFile(projectFile, projectFileNew);
+			FileUtil.moveFile(FileUtil.getDirectoryCache(this.projectName), FileUtil.getDirectoryCache(projectNameNew));
+			
+			this.projectName = projectNameNew;
+			this.projectFile = projectFileNew;
+			this.directorySource = directorySourceNew;
+		}
 	}
 	
 	public static Comparator<Project> getComparator() {
@@ -59,6 +71,10 @@ public class Project {
 	}
 	public TagList getTagList() {
 		return tagList;
+	}
+	
+	public static String createProjectFilePath(String projectName) {
+		return FileUtil.getDirectoryProject() + File.separator + projectName + ".json";
 	}
 	
 	private static transient Project current;

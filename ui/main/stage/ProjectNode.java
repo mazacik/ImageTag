@@ -1,10 +1,5 @@
 package ui.main.stage;
 
-import misc.Project;
-import ui.component.simple.TextNode;
-import ui.component.simple.VBox;
-import ui.decorator.ColorUtil;
-import ui.stage.StageManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -16,6 +11,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 import main.Main;
 import misc.FileUtil;
+import misc.Project;
+import ui.component.simple.TextNode;
+import ui.component.simple.VBox;
+import ui.decorator.ColorUtil;
+import ui.stage.StageManager;
 
 import java.io.File;
 
@@ -59,13 +59,12 @@ public class ProjectNode extends BorderPane {
 				Node pickResult = event.getPickResult().getIntersectedNode().getParent();
 				
 				if (pickResult.equals(nodeEdit)) {
-					//stageMain.getSceneProject().show();
-					//todo re-implement
+					StageManager.getStageMain().getSceneProject().show(project);
 				} else if (pickResult.equals(nodeRemove)) {
-					String message = "Delete misc.project data? The source directory will not be affected";
+					String message = "Delete project data? The source directory will not be affected";
 					if (StageManager.getYesNoStage().show(message)) {
 						FileUtil.deleteFile(project.getProjectFile());
-						FileUtil.deleteFile(FileUtil.getDirectoryCache(project));
+						FileUtil.deleteFile(FileUtil.getDirectoryCache(project.getProjectName()));
 						stageMain.getSceneIntro().getProjectBox().refresh();
 					}
 				} else {
@@ -74,7 +73,7 @@ public class ProjectNode extends BorderPane {
 						Project.setCurrent(project);
 						Main.startDatabaseLoading();
 					} else {
-						StageManager.getErrorStage().show("The source directory of this misc.project could not be found.\nDirectory: " + project.getDirectorySource());
+						StageManager.getErrorStage().show("The source directory of this project could not be found.\nDirectory: " + project.getDirectorySource());
 					}
 				}
 			}

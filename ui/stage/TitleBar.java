@@ -16,9 +16,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class TitleBar extends BorderPane {
-	private TextNode lblTitle;
-	private TextNode btnMinimize;
-	private TextNode btnExit;
+	private TextNode nodeTitle;
+	private TextNode nodeMinimize;
+	private TextNode nodeExit;
 	
 	public TitleBar() {
 		this(null, "");
@@ -31,32 +31,32 @@ public class TitleBar extends BorderPane {
 	}
 	public TitleBar(Stage owner, String title) {
 		if (owner != null)
-			owner.titleProperty().addListener((observable, oldValue, newValue) -> lblTitle.setText(newValue));
+			owner.titleProperty().addListener((observable, oldValue, newValue) -> nodeTitle.setText(newValue));
 		
-		lblTitle = new TextNode(title, false, false, false, true);
-		BorderPane.setAlignment(lblTitle, Pos.CENTER_LEFT);
+		nodeTitle = new TextNode(title, false, false, false, true);
+		BorderPane.setAlignment(nodeTitle, Pos.CENTER_LEFT);
 		
-		btnMinimize = new TextNode("⚊", true, true, false, true);
-		btnMinimize.setOnMouseClicked(event -> {
+		nodeMinimize = new TextNode("⚊", true, true, false, true);
+		nodeMinimize.setOnMouseClicked(event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
-				btnMinimize.setBackground(Background.EMPTY);
-				btnMinimize.setTextFill(ColorUtil.getColorPrimary());
-				btnMinimize.applyCss();
+				nodeMinimize.setBackground(Background.EMPTY);
+				nodeMinimize.setTextFill(ColorUtil.getColorPrimary());
+				nodeMinimize.applyCss();
 				((Stage) this.getScene().getWindow()).setIconified(true);
 			}
 		});
-		BorderPane.setAlignment(btnMinimize, Pos.CENTER);
+		BorderPane.setAlignment(nodeMinimize, Pos.CENTER);
 		
-		btnExit = new TextNode("✕", true, true, false, true);
-		btnExit.setOnMouseClicked(event -> {
+		nodeExit = new TextNode("✕", true, true, false, true);
+		nodeExit.setOnMouseClicked(event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
 				this.fireEvent(new WindowEvent(null, WindowEvent.WINDOW_CLOSE_REQUEST));
 			}
 		});
-		BorderPane.setAlignment(btnExit, Pos.CENTER);
+		BorderPane.setAlignment(nodeExit, Pos.CENTER);
 		
-		this.setLeft(lblTitle);
-		this.setRight(new HBox(btnMinimize, btnExit));
+		this.setLeft(nodeTitle);
+		this.setRight(new HBox(nodeMinimize, nodeExit));
 		this.setBorder(NodeUtil.getBorder(0, 0, 1, 0));
 		
 		initDragEvents();
@@ -69,7 +69,7 @@ public class TitleBar extends BorderPane {
 		
 		this.setOnMousePressed(event -> {
 			Parent parent = event.getPickResult().getIntersectedNode().getParent();
-			clickOnButton.set(parent == btnExit || parent == btnMinimize);
+			clickOnButton.set(parent == nodeExit || parent == nodeMinimize);
 			xOffset.set(this.getScene().getWindow().getX() - event.getScreenX());
 			yOffset.set(this.getScene().getWindow().getY() - event.getScreenY());
 		});
@@ -85,5 +85,9 @@ public class TitleBar extends BorderPane {
 			}
 			clickOnButton.set(false);
 		});
+	}
+	
+	public void setTitle(String title) {
+		nodeTitle.setText(title);
 	}
 }

@@ -6,6 +6,7 @@ import main.Main;
 import misc.Settings;
 import ui.decorator.Decorator;
 import ui.decorator.SizeUtil;
+import ui.main.center.PaneEntity;
 import ui.main.center.PaneGallery;
 import ui.main.side.left.PaneFilter;
 import ui.main.side.right.PaneSelect;
@@ -55,12 +56,17 @@ public class StageMain extends Stage {
 		
 		this.setScene(sceneMain);
 		this.getScene().widthProperty().addListener((observable, oldValue, newValue) -> SizeUtil.stageWidthChangeHandler());
+		
 		this.setMinWidth(100 + SizeUtil.getMinWidthSideLists() * 2 + Settings.getTileSize());
 		this.setMinHeight(100 + SizeUtil.getPrefHeightTopMenu() + Settings.getTileSize());
 		this.setWidth(SizeUtil.getUsableScreenWidth());
 		this.setHeight(SizeUtil.getUsableScreenHeight());
+		
 		this.centerOnScreen();
 		this.setOnCloseRequest(event -> Main.exitApplication());
+		this.focusedProperty().addListener((observable, oldValue, newValue) -> {
+			if (!newValue) PaneEntity.get().getControls().hide();
+		});
 		
 		sceneMain.getRoot().requestFocus();
 		

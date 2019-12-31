@@ -129,15 +129,15 @@ public class Select extends EntityList {
 			FileUtil.deleteFile(FileUtil.getFileEntity(Target.get()));
 			FileUtil.deleteFile(FileUtil.getFileCache(entity));
 			
-			PaneGallery.get().getTiles().getChildren().remove(entity.getGalleryTile());
 			Loader.INSTANCE.remove(entity);
 			Filter.getEntities().remove(entity);
 			EntityList.getMain().remove(entity);
 		});
-		Target.restorePosition();
 		
 		Reload.notify(ChangeIn.ENTITY_LIST_MAIN, ChangeIn.FILTER);
 		Reload.start();
+		
+		Target.restorePosition();
 	}
 	
 	private Entity shiftStart = null;

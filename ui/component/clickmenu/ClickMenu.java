@@ -2,6 +2,7 @@ package ui.component.clickmenu;
 
 import base.CustomList;
 import control.Select;
+import javafx.scene.control.Separator;
 import ui.component.simple.BoxSeparatorNode;
 import ui.component.simple.VBox;
 import ui.component.simple.template.ButtonTemplates;
@@ -74,7 +75,7 @@ public class ClickMenu extends Popup {
 			super.show(root, direction);
 		}
 	};
-	private static ClickMenu clickMenuTagGroup = new ClickMenu(ButtonTemplates.TAG_GROUP_EDIT.get(), ButtonTemplates.TAG_GROUP_REMOVE.get(), ButtonTemplates.TAG_GROUP_WHITELIST.get(), ButtonTemplates.TAG_GROUP_BLACKLIST.get(), ButtonTemplates.TAG_GROUP_UNLIST.get());
+	private static ClickMenu clickMenuTagGroup = new ClickMenu(ButtonTemplates.TAG_GROUP_WHITELIST.get(), ButtonTemplates.TAG_GROUP_BLACKLIST.get(), ButtonTemplates.TAG_GROUP_UNLIST.get(), new Separator(), ButtonTemplates.TAG_GROUP_EDIT.get(), ButtonTemplates.TAG_GROUP_REMOVE.get());
 	private static ClickMenu clickMenuTagName = new ClickMenu(ButtonTemplates.TAG_NAME_EDIT.get(), ButtonTemplates.TAG_NAME_REMOVE.get());
 	private static ClickMenu clickMenuSelect = new ClickMenu(ButtonTemplates.SELECTION_SET_ALL.get(), ButtonTemplates.SELECTION_SET_NONE.get());
 	

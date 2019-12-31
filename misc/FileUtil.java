@@ -178,7 +178,7 @@ public abstract class FileUtil {
 		return Project.getCurrent().getDirectorySource() + File.separator + entity.getName();
 	}
 	public static String getFileCache(Entity entity) {
-		return getDirectoryCache(Project.getCurrent()) + File.separator + entity.getName() + "-" + entity.getLength() + ".jpg";
+		return getDirectoryCache(Project.getCurrent().getProjectName()) + File.separator + entity.getName() + "-" + entity.getLength() + ".jpg";
 	}
 	public static FileType getType(Entity entity) {
 		String ext = entity.getName().toLowerCase().substring(entity.getName().lastIndexOf('.'));
@@ -208,8 +208,8 @@ public abstract class FileUtil {
 	public static String getDirectoryProject() {
 		return getDirectoryLocal() + File.separator + "data";
 	}
-	public static String getDirectoryCache(Project project) {
-		return getDirectoryLocal() + File.separator + "cache" + File.separator + project.getProjectName();
+	public static String getDirectoryCache(String projectName) {
+		return getDirectoryLocal() + File.separator + "cache" + File.separator + projectName;
 	}
 	public static String getFileSettings() {
 		return getDirectoryLocal() + File.separator + "settings.json";

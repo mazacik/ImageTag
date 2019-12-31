@@ -36,7 +36,7 @@ public class SceneIntro extends Scene {
 		
 		TextNode btnNewProject = new TextNode("Create a New Project", true, false, true, true);
 		btnNewProject.setMaxWidth(Double.MAX_VALUE);
-		btnNewProject.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> StageManager.getStageMain().setScene(StageManager.getStageMain().getSceneProject()));
+		btnNewProject.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> StageManager.getStageMain().getSceneProject().show());
 		
 		TextNode btnOpenProject = new TextNode("Open Project", true, false, true, true);
 		btnOpenProject.setMaxWidth(Double.MAX_VALUE);
@@ -91,7 +91,7 @@ public class SceneIntro extends Scene {
 						Project.setCurrent(projects.getFirst());
 						Main.startDatabaseLoading();
 					} else {
-						StageManager.getStageMain().setScene(StageManager.getStageMain().getSceneProject());
+						StageManager.getStageMain().getSceneProject().show();
 					}
 					break;
 				default:
@@ -99,6 +99,10 @@ public class SceneIntro extends Scene {
 			}
 		});
 		this.setRoot(vBox);
+	}
+	
+	public void show() {
+		StageManager.getStageMain().setScene(this);
 	}
 	
 	public ProjectBox getProjectBox() {

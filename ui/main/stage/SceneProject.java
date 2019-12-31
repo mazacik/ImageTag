@@ -24,82 +24,110 @@ import ui.stage.TitleBar;
 import java.io.File;
 
 public class SceneProject extends Scene {
+	EditNode editProjectName;
+	EditNode editDirectorySource;
+	TextNode nodeError;
+	TitleBar titleBar;
+	
+	Project project;
+	
 	public SceneProject() {
 		TextNode lblProjectName = new TextNode("Project Name:");
 		lblProjectName.setAlignment(Pos.CENTER_LEFT);
-		EditNode edtProjectNameCPS = new EditNode("Project1");
-		edtProjectNameCPS.setPrefWidth(400);
+		editProjectName = new EditNode("Project1");
+		editProjectName.setPrefWidth(400);
 		TextNode btnHelperProjectName = new TextNode("Browse", true, true, true, true);
 		btnHelperProjectName.setVisible(false);
-		HBox hBoxProjectName = new HBox(lblProjectName, edtProjectNameCPS, btnHelperProjectName);
-		hBoxProjectName.setSpacing(10);
-		hBoxProjectName.setAlignment(Pos.CENTER);
+		HBox boxProjectName = new HBox(lblProjectName, editProjectName, btnHelperProjectName);
+		boxProjectName.setSpacing(10);
+		boxProjectName.setAlignment(Pos.CENTER);
 		
 		TextNode lblDirectorySource = new TextNode("Source Directory:");
 		lblDirectorySource.setAlignment(Pos.CENTER_LEFT);
-		EditNode edtDirectorySourceCPS = new EditNode("");
-		edtDirectorySourceCPS.setPrefWidth(400);
+		editDirectorySource = new EditNode("");
+		editDirectorySource.setPrefWidth(400);
 		TextNode btnDirectorySource = new TextNode("Browse", true, true, true, true);
 		btnDirectorySource.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
-				edtDirectorySourceCPS.setText(FileUtil.directoryChooser(this));
+				editDirectorySource.setText(FileUtil.directoryChooser(this));
 			}
 		});
-		HBox hBoxDirectorySource = new HBox(lblDirectorySource, edtDirectorySourceCPS, btnDirectorySource);
-		hBoxDirectorySource.setSpacing(10);
-		hBoxDirectorySource.setAlignment(Pos.CENTER);
+		HBox boxDirectorySource = new HBox(lblDirectorySource, editDirectorySource, btnDirectorySource);
+		boxDirectorySource.setSpacing(10);
+		boxDirectorySource.setAlignment(Pos.CENTER);
 		
-		TextNode nodeError = new TextNode("");
+		nodeError = new TextNode("");
 		nodeError.setTextFill(ColorUtil.getColorNegative());
 		
-		TextNode btnCreateProject = new TextNode("Create Project", true, true, true, true);
-		btnCreateProject.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-			if (this.checkEditValidity(edtProjectNameCPS, edtDirectorySourceCPS, nodeError)) {
-				Project project = new Project(edtProjectNameCPS.getText(), edtDirectorySourceCPS.getText());
-				project.writeToDisk();
-				StageManager.getStageMain().layoutMain();
-				Project.setCurrent(project);
-				Main.startDatabaseLoading();
-			}
-		});
+		TextNode btnFinish = new TextNode("Finish", true, true, true, true);
+		btnFinish.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> this.initProject());
 		TextNode btnCancel = new TextNode("Cancel", true, true, true, true);
-		btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-			edtProjectNameCPS.setText("");
-			edtDirectorySourceCPS.setText("");
-			nodeError.setText("");
-			StageManager.getStageMain().setScene(StageManager.getStageMain().getSceneIntro());
-		});
-		HBox hBoxCreateCancel = new HBox(btnCancel, btnCreateProject);
+		btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> StageManager.getStageMain().getSceneIntro().show());
+		HBox boxFinishCancel = new HBox(btnCancel, btnFinish);
 		
 		double width = SizeUtil.getStringWidth(lblDirectorySource.getText());
 		lblProjectName.setPrefWidth(width);
 		lblDirectorySource.setPrefWidth(width);
 		
-		VBox mainBox = new VBox(hBoxProjectName, hBoxDirectorySource, nodeError, hBoxCreateCancel);
-		mainBox.setPadding(new Insets(10));
-		mainBox.setSpacing(5);
-		mainBox.setAlignment(Pos.CENTER);
-		mainBox.setFillWidth(false);
-		VBox.setVgrow(mainBox, Priority.ALWAYS);
+		VBox boxMain = new VBox(boxProjectName, boxDirectorySource, nodeError, boxFinishCancel);
+		boxMain.setPadding(new Insets(10));
+		boxMain.setSpacing(5);
+		boxMain.setAlignment(Pos.CENTER);
+		boxMain.setFillWidth(false);
+		VBox.setVgrow(boxMain, Priority.ALWAYS);
 		
-		VBox vBox = new VBox(new TitleBar("Create a New Project"), mainBox);
+		titleBar = new TitleBar("Create a New Project");
+		VBox vBox = new VBox(titleBar, boxMain);
 		vBox.setBackground(ColorUtil.getBackgroundPrimary());
 		vBox.setBorder(NodeUtil.getBorder(1));
 		
 		this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
 			if (event.getCode() == KeyCode.ENTER) {
-				if (this.checkEditValidity(edtProjectNameCPS, edtDirectorySourceCPS, nodeError)) {
-					Project project = new Project(edtProjectNameCPS.getText(), edtDirectorySourceCPS.getText());
-					project.writeToDisk();
-					StageManager.getStageMain().layoutMain();
-					Project.setCurrent(project);
-					Main.startDatabaseLoading();
-				}
+				this.initProject();
 			} else if (event.getCode() == KeyCode.ESCAPE) {
-				StageManager.getStageMain().setScene(StageManager.getStageMain().getSceneIntro());
+				StageManager.getStageMain().getSceneIntro().show();
 			}
 		});
 		this.setRoot(vBox);
+	}
+	
+	public void show() {
+		editProjectName.setText("");
+		editDirectorySource.setText("");
+		nodeError.setText("");
+		
+		titleBar.setTitle("Create a New Project");
+		
+		StageManager.getStageMain().setScene(this);
+	}
+	public void show(Project project) {
+		this.project = project;
+		
+		editProjectName.setText(project.getProjectName());
+		editDirectorySource.setText(project.getDirectorySource());
+		nodeError.setText("");
+		
+		titleBar.setTitle("Edit Project");
+		
+		StageManager.getStageMain().setScene(this);
+	}
+	
+	private void initProject() {
+		if (this.checkEditValidity(editProjectName, editDirectorySource, nodeError)) {
+			if (project == null) {
+				Project newProject = new Project(editProjectName.getText(), editDirectorySource.getText());
+				newProject.writeToDisk();
+				StageManager.getStageMain().layoutMain();
+				Project.setCurrent(newProject);
+				Main.startDatabaseLoading();
+			} else {
+				project.updateProject(editProjectName.getText(), editDirectorySource.getText());
+				
+				SceneIntro sceneIntro = StageManager.getStageMain().getSceneIntro();
+				sceneIntro.getProjectBox().refresh();
+				sceneIntro.show();
+			}
+		}
 	}
 	
 	private boolean checkEditValidity(EditNode editProjectName, EditNode editDirectorySource, TextNode nodeError) {
