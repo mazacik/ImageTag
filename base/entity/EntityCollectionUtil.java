@@ -11,23 +11,11 @@ import java.util.Random;
 
 public abstract class EntityCollectionUtil {
 	public static void create() {
+		int collectionID = new Random().nextInt();
 		TagList collectionTags = Select.getEntities().getTagsAll();
 		
-		if (collectionTags.isEmpty()) {
-			create(collectionTags, false);
-		} else {
-			String s = "A collection of " + Select.getEntities().size() + " items will be created.\nMerge tags?";
-			if (StageManager.getYesNoStage().show(s)) {
-				create(collectionTags, true);
-			} else {
-				create(collectionTags, false);
-			}
-		}
-	}
-	private static void create(TagList collectionTags, boolean mergeTags) {
-		int collectionID = EntityCollectionUtil.getID();
-		
-		if (mergeTags) {
+		String s = "A collection of " + Select.getEntities().size() + " items will be created.\nMerge tags?";
+		if (!collectionTags.isEmpty() && StageManager.getYesNoStage().show(s)) {
 			for (Entity entity : Select.getEntities()) {
 				entity.setCollectionID(collectionID);
 				entity.setCollection(Select.getEntities());
@@ -45,32 +33,11 @@ public abstract class EntityCollectionUtil {
 		
 		Reload.notify(ChangeIn.ENTITY_LIST_MAIN);
 	}
-	private static int getID() {
-		CustomList<Integer> collectionIDs = EntityCollectionUtil.getCollectionIDs();
-		int collectionID;
-		do {
-			collectionID = new Random().nextInt();
-		}
-		while (collectionIDs.contains(collectionID));
-		return collectionID;
-	}
-	private static CustomList<Integer> getCollectionIDs() {
-		CustomList<Integer> collectionIDs = new CustomList<>();
-		int collectionID;
-		for (Entity entity : EntityList.getMain()) {
-			collectionID = entity.getCollectionID();
-			if (collectionID != 0) {
-				collectionIDs.add(collectionID);
-			}
-		}
-		return collectionIDs;
-	}
-	
-	public static void discard(Entity entity) {
-		for (Entity _entity : entity.getCollection()) {
-			_entity.setCollectionID(0);
-			_entity.setCollection(null);
-			_entity.getGalleryTile().setEffect(null);
+	public static void discard() {
+		for (Entity entity : Select.getEntities().getFirst().getCollection()) {
+			entity.setCollectionID(0);
+			entity.setCollection(null);
+			entity.getGalleryTile().setEffect(null);
 		}
 		
 		Reload.notify(ChangeIn.ENTITY_LIST_MAIN);
@@ -92,8 +59,7 @@ public abstract class EntityCollectionUtil {
 		int collectionID = entity.getCollectionID();
 		if (collectionID != 0) {
 			if (openCollections.contains(collectionID)) {
-				//noinspection RedundantCollectionOperation//todo try removing this + testing
-				openCollections.remove(openCollections.indexOf(collectionID));
+				openCollections.remove((Integer) collectionID);
 			} else {
 				openCollections.add(collectionID);
 			}

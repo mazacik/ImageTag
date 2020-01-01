@@ -337,7 +337,7 @@ public enum ButtonTemplates {
 			TextNode textNode = new TextNode("Discard Collection", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				EntityCollectionUtil.discard(Select.getTarget());
+				EntityCollectionUtil.discard();
 				Reload.start();
 				ClickMenu.hideAll();
 			});

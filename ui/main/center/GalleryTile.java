@@ -92,9 +92,9 @@ public class GalleryTile extends Pane {
 		
 		if (entity.getCollectionID() != 0) {
 			if (entity.getCollection().getFirst() == entity) {
-				imageView.setEffect(collectionIconPlus);
+				this.setEffect(collectionIconPlus);
 			} else {
-				imageView.setEffect(collectionIconMinus);
+				this.setEffect(collectionIconMinus);
 			}
 		}
 		
