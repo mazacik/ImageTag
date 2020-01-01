@@ -44,14 +44,17 @@ public abstract class FileUtil {
 			e.printStackTrace();
 		}
 	}
-	public static void deleteFile(String path) {
-		//todo return boolean, using methods do shit based on return value
+	public static boolean deleteFile(String path) {
+		int counter = 0;
 		FileUtils fileUtils = FileUtils.getInstance();
 		File abstractFile = new File(path);
+		
 		if (fileUtils.hasTrash()) {
 			if (abstractFile.isFile()) {
 				try {
 					fileUtils.moveToTrash(new File[]{abstractFile});
+					//if (!abstractFile.exists()) counter++;
+					counter++;
 				} catch (IOException e) {
 					StageManager.getErrorStage().show("Delete failed: " + abstractFile.getAbsolutePath() + "\nCannot access the file because it is being used by another process.");
 					e.printStackTrace();
@@ -62,8 +65,13 @@ public abstract class FileUtil {
 				}
 			}
 		} else {
+			//todo need custom logger, info level and above opens error stage
+			//todo stages as static?
+			StageManager.getErrorStage().show("Delete failed: No OS-level file trash support");
 			Logger.getGlobal().severe("No OS-level file trash support");
 		}
+		
+		return counter != 0;
 	}
 	
 	public static String getFileNameNoExtension(String path) {

@@ -82,18 +82,22 @@ public class Select extends EntityList {
 	public void deleteFiles() {
 		storeTargetPosition();
 		
-		EntityList helper = new EntityList(Loader.INSTANCE);
-		helper.forEach(entity -> {
-			FileUtil.deleteFile(FileUtil.getFileEntity(entity));
-			FileUtil.deleteFile(FileUtil.getFileCache(entity));
+		EntityList helper = new EntityList();
+		getEntities().forEach(entity -> {
+			if (FileUtil.deleteFile(FileUtil.getFileEntity(entity))) {
+				FileUtil.deleteFile(FileUtil.getFileCache(entity));
+				helper.add(entity);
+			}
 		});
 		
-		Select.getEntities().removeAll(helper);
-		Filter.getEntities().removeAll(helper);
-		EntityList.getMain().removeAll(helper);
-		
-		Reload.notify(ChangeIn.ENTITY_LIST_MAIN);
-		Reload.start();
+		if (!helper.isEmpty()) {
+			Select.getEntities().removeAll(helper);
+			Filter.getEntities().removeAll(helper);
+			EntityList.getMain().removeAll(helper);
+			
+			Reload.notify(ChangeIn.ENTITY_LIST_MAIN);
+			Reload.start();
+		}
 		
 		restoreTargetPosition();
 	}
