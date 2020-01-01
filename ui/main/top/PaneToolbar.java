@@ -2,7 +2,7 @@ package ui.main.top;
 
 import base.CustomList;
 import base.entity.Entity;
-import control.Target;
+import control.Select;
 import enums.Direction;
 import javafx.geometry.Pos;
 import javafx.scene.input.MouseButton;
@@ -55,7 +55,7 @@ public class PaneToolbar extends BorderPane {
 	public boolean reload() {
 		Logger.getGlobal().info(this.toString());
 		
-		Entity currentTarget = Target.get();
+		Entity currentTarget = Select.getTarget();
 		if (currentTarget.getCollectionID() != 0) {
 			CustomList<Entity> collection = currentTarget.getCollection();
 			String collectionIndex = (collection.indexOf(currentTarget) + 1) + "/" + collection.size();

@@ -3,7 +3,6 @@ package ui.main.center;
 import base.CustomList;
 import base.entity.Entity;
 import control.Select;
-import control.Target;
 import control.reload.ChangeIn;
 import control.reload.Reload;
 import javafx.geometry.Insets;
@@ -160,7 +159,7 @@ public class GalleryTile extends Pane {
 		});
 	}
 	private void onLeftClick(MouseEvent event) {
-		Target.set(entity);
+		Select.setTarget(entity);
 		
 		if (event.isControlDown()) {
 			if (Select.getEntities().contains(entity)) {
@@ -189,7 +188,7 @@ public class GalleryTile extends Pane {
 		
 		//additional functionality from ClickMenu
 		
-		Target.set(entity);
+		Select.setTarget(entity);
 		Reload.start();
 	}
 	public void onGroupIconClick() {
@@ -206,7 +205,7 @@ public class GalleryTile extends Pane {
 			
 			entity.getCollection().getFirst().getGalleryTile().updateGroupIcon();
 			
-			Target.set(entity);
+			Select.setTarget(entity);
 			Reload.notify(ChangeIn.ENTITY_LIST_MAIN);
 		}
 	}

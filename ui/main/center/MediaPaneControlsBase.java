@@ -3,7 +3,6 @@ package ui.main.center;
 import base.entity.Entity;
 import cache.CacheManager;
 import control.Select;
-import control.Target;
 import control.reload.Reload;
 import enums.Direction;
 import javafx.application.Platform;
@@ -135,24 +134,24 @@ public class MediaPaneControlsBase extends BorderPane {
 			
 			btnMute.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, videoPlayer::swapMute);
 			btnSnapshot.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				Entity entity = Target.get();
-				File cacheFile = new File(FileUtil.getFileCache(entity));
+				Entity target = Select.getTarget();
+				File cacheFile = new File(FileUtil.getFileCache(target));
 				int thumbSize = Settings.getTileSize();
 				PaneEntity.get().getVideoPlayer().snapshot(cacheFile, thumbSize, thumbSize);
 				
-				Image cache = CacheManager.get(entity);
-				entity.getGalleryTile().setImage(cache);
+				Image cache = CacheManager.get(target);
+				target.getGalleryTile().setImage(cache);
 			});
 		}
 		
 		btnPrevious.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-			Target.move(Direction.LEFT);
-			Select.getEntities().set(Target.get());
+			Select.moveTarget(Direction.LEFT);
+			Select.getEntities().set(Select.getTarget());
 			Reload.start();
 		});
 		btnNext.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-			Target.move(Direction.RIGHT);
-			Select.getEntities().set(Target.get());
+			Select.moveTarget(Direction.RIGHT);
+			Select.getEntities().set(Select.getTarget());
 			Reload.start();
 		});
 	}

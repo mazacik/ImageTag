@@ -4,7 +4,6 @@ import base.CustomList;
 import base.entity.Entity;
 import base.entity.EntityList;
 import control.Select;
-import control.Target;
 import control.filter.Filter;
 import control.reload.Reload;
 import javafx.geometry.BoundingBox;
@@ -239,7 +238,7 @@ public class PaneGallery extends ScrollPane {
 		//	var init
 		CustomList<Integer> collectionIDs = new CustomList<>();
 		CustomList<GalleryTile> tiles = new CustomList<>();
-		Target.storePosition();
+		Select.storeTargetPosition();
 		
 		//	main loop
 		for (Entity entity : Filter.getEntities()) {
@@ -272,7 +271,7 @@ public class PaneGallery extends ScrollPane {
 		tilePane.getChildren().setAll(tiles);
 		
 		//	Target and Select adjustments
-		Target.restorePosition();
+		Select.restoreTargetPosition();
 		
 		return true;
 	}
@@ -280,7 +279,7 @@ public class PaneGallery extends ScrollPane {
 	public void moveViewportToTarget() {
 		this.layout();
 		
-		Entity currentTarget = Target.get();
+		Entity currentTarget = Select.getTarget();
 		if (!StageManager.getStageMain().getSceneMain().isViewGallery() || currentTarget == null) return;
 		if (currentTarget.getCollectionID() != 0 && !expandedGroups.contains(currentTarget.getCollectionID())) {
 			currentTarget = currentTarget.getCollection().getFirst();

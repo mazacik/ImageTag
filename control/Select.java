@@ -6,10 +6,13 @@ import base.entity.EntityList;
 import control.filter.Filter;
 import control.reload.ChangeIn;
 import control.reload.Reload;
+import enums.Direction;
+import javafx.scene.input.KeyCode;
 import misc.FileUtil;
 import ui.main.center.PaneGallery;
 
 import java.util.Collection;
+import java.util.logging.Logger;
 
 public class Select extends EntityList {
 	public boolean add(Entity entity) {
@@ -78,7 +81,7 @@ public class Select extends EntityList {
 	}
 	
 	public void deleteFiles() {
-		Target.storePosition();
+		storeTargetPosition();
 		
 		EntityList helper = new EntityList(Loader.INSTANCE);
 		helper.forEach(entity -> {
@@ -93,7 +96,7 @@ public class Select extends EntityList {
 		Reload.notify(ChangeIn.ENTITY_LIST_MAIN);
 		Reload.start();
 		
-		Target.restorePosition();
+		restoreTargetPosition();
 	}
 	
 	private Entity shiftStart = null;
@@ -126,5 +129,132 @@ public class Select extends EntityList {
 	}
 	public static Select getEntities() {
 		return Loader.INSTANCE;
+	}
+	
+	/* Target */
+	private static Entity target;
+	
+	public static Entity getTarget() {
+		return target;
+	}
+	public static void setTarget(Entity newTarget) {
+		if (newTarget != null && newTarget != target) {
+			if (target != null) Reload.requestBorderUpdate(target);
+			Reload.requestBorderUpdate(newTarget);
+			
+			target = newTarget;
+			
+			PaneGallery.get().moveViewportToTarget();
+			Reload.notify(ChangeIn.TARGET);
+			
+			Logger.getGlobal().info(newTarget.getName());
+		}
+	}
+	
+	public static void moveTarget(Direction direction) {
+		if (target == null) return;
+		
+		EntityList entities = PaneGallery.get().getEntitiesOfTiles();
+		if (entities.isEmpty()) return;
+		
+		int currentTargetIndex;
+		if (target.getCollectionID() == 0) {
+			currentTargetIndex = entities.indexOf(target);
+		} else {
+			if (PaneGallery.get().getExpandedCollections().contains(target.getCollectionID())) {
+				currentTargetIndex = entities.indexOf(target);
+			} else {
+				Entity groupFirst = target.getCollection().getFirst();
+				if (entities.contains(groupFirst)) {
+					currentTargetIndex = entities.indexOf(groupFirst);
+				} else {
+					currentTargetIndex = entities.indexOf(target);
+				}
+			}
+		}
+		
+		int columnCount = PaneGallery.get().getColumnCount();
+		
+		int newTargetIndex = currentTargetIndex;
+		switch (direction) {
+			case UP:
+				newTargetIndex -= columnCount;
+				break;
+			case LEFT:
+				newTargetIndex -= 1;
+				break;
+			case DOWN:
+				newTargetIndex += columnCount;
+				break;
+			case RIGHT:
+				newTargetIndex += 1;
+				break;
+		}
+		
+		if (newTargetIndex < 0) newTargetIndex = 0;
+		if (newTargetIndex >= entities.size()) newTargetIndex = entities.size() - 1;
+		
+		setTarget(entities.get(newTargetIndex));
+	}
+	public static void moveTarget(KeyCode keyCode) {
+		switch (keyCode) {
+			case W:
+				moveTarget(Direction.UP);
+				break;
+			case A:
+				moveTarget(Direction.LEFT);
+				break;
+			case S:
+				moveTarget(Direction.DOWN);
+				break;
+			case D:
+				moveTarget(Direction.RIGHT);
+				break;
+		}
+	}
+	
+	private static Entity storeEntity = null;
+	private static int storePos = -1;
+	public static void storeTargetPosition() {
+		CustomList<Integer> expandedcollection = PaneGallery.get().getExpandedCollections();
+		CustomList<Entity> visibleEntities = PaneGallery.get().getEntitiesOfTiles();
+		
+		if (target.getCollectionID() == 0) {
+			storeEntity = target;
+			storePos = visibleEntities.indexOf(target);
+		} else {
+			if (expandedcollection.contains(target.getCollectionID())) {
+				storeEntity = target;
+				storePos = visibleEntities.indexOf(target);
+			} else {
+				storeEntity = target.getCollection().getFirst();
+				storePos = visibleEntities.indexOf(storeEntity);
+			}
+		}
+	}
+	public static Entity restoreTargetPosition() {
+		//todo if this lands on a non-expanded collection, add the whole collection
+		//todo add move viewpoert to target
+		EntityList visibleEntities = PaneGallery.get().getEntitiesOfTiles();
+		if (!visibleEntities.isEmpty()) {
+			if (storeEntity != null && visibleEntities.contains(storeEntity)) {
+				setTarget(storeEntity);
+				return storeEntity;
+			} else if (storePos >= 0) {
+				Entity newTarget;
+				
+				if (storePos <= visibleEntities.size() - 1) newTarget = visibleEntities.get(storePos);
+				else newTarget = visibleEntities.getLast();
+				
+				setTarget(newTarget);
+				
+				if (Select.getEntities().isEmpty()) {
+					Select.getEntities().add(newTarget);
+				}
+				
+				return newTarget;
+			}
+		}
+		return null;
 	}
 }

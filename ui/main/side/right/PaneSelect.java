@@ -5,7 +5,6 @@ import base.entity.Entity;
 import base.tag.Tag;
 import base.tag.TagList;
 import control.Select;
-import control.Target;
 import control.filter.Filter;
 import control.reload.Reload;
 import enums.Direction;
@@ -68,8 +67,8 @@ public class PaneSelect extends SidePaneBase {
 		CustomList<String> groupsShare;
 		
 		if (Select.getEntities().size() == 0) {
-			if (Target.get() != null) {
-				groupsInter = Target.get().getTagList().getGroups();
+			if (Select.getTarget() != null) {
+				groupsInter = Select.getTarget().getTagList().getGroups();
 				groupsShare = new CustomList<>();
 			} else {
 				return false;
@@ -94,7 +93,7 @@ public class PaneSelect extends SidePaneBase {
 				CustomList<String> namesInter;
 				CustomList<String> namesShare;
 				if (Select.getEntities().size() == 0) {
-					namesInter = Target.get().getTagList().getNames(group);
+					namesInter = Select.getTarget().getTagList().getNames(group);
 					namesShare = new CustomList<>();
 				} else {
 					namesInter = Select.getEntities().getTagsIntersect().getNames(group);
@@ -190,7 +189,7 @@ public class PaneSelect extends SidePaneBase {
 			}
 			
 			nodeSearch.clear();
-			Select.addTag(bestMatch);
+			Select.getEntities().addTag(bestMatch);
 			Reload.start();
 		};
 	}

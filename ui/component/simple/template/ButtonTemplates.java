@@ -7,7 +7,6 @@ import base.tag.Tag;
 import base.tag.TagList;
 import cache.CacheManager;
 import control.Select;
-import control.Target;
 import control.filter.Filter;
 import control.reload.ChangeIn;
 import control.reload.Reload;
@@ -40,7 +39,7 @@ public enum ButtonTemplates {
 			TextNode textNode = new TextNode("Open", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				File entityFile = new File(FileUtil.getFileEntity(Target.get()));
+				File entityFile = new File(FileUtil.getFileEntity(Select.getTarget()));
 				try {
 					Desktop.getDesktop().open(entityFile);
 				} catch (IOException e) {
@@ -57,7 +56,7 @@ public enum ButtonTemplates {
 			TextNode textNode = new TextNode("Edit", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				String entityFilePath = FileUtil.getFileEntity(Target.get());
+				String entityFilePath = FileUtil.getFileEntity(Select.getTarget());
 				try {
 					Runtime.getRuntime().exec("mspaint.exe " + entityFilePath);
 				} catch (IOException e) {
@@ -75,7 +74,7 @@ public enum ButtonTemplates {
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClipboardContent content = new ClipboardContent();
-				content.putString(FileUtil.getFileEntity(Target.get()));
+				content.putString(FileUtil.getFileEntity(Select.getTarget()));
 				Clipboard.getSystemClipboard().setContent(content);
 				
 				ClickMenu.hideAll();
@@ -89,7 +88,7 @@ public enum ButtonTemplates {
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClipboardContent content = new ClipboardContent();
-				content.putString(FileUtil.getFileEntity(Target.get()));
+				content.putString(FileUtil.getFileEntity(Select.getTarget()));
 				Clipboard.getSystemClipboard().setContent(content);
 				
 				ClickMenu.hideAll();
@@ -102,7 +101,7 @@ public enum ButtonTemplates {
 			TextNode textNode = new TextNode("Reverse Image Search", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				HttpUtil.googleReverseImageSearch(Target.get());
+				HttpUtil.googleReverseImageSearch(Select.getTarget());
 				StageManager.getErrorStage().show("Info", "Request sent.");
 				ClickMenu.hideAll();
 			});
@@ -115,7 +114,7 @@ public enum ButtonTemplates {
 			TextNode textNode = new TextNode("Show Similar Files", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				Filter.showSimilar(Target.get());
+				Filter.showSimilar(Select.getTarget());
 				StageManager.getStageMain().getSceneMain().viewGallery();
 				Reload.start();
 				ClickMenu.hideAll();
@@ -338,7 +337,7 @@ public enum ButtonTemplates {
 			TextNode textNode = new TextNode("Discard Collection", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				EntityCollectionUtil.discard(Target.get());
+				EntityCollectionUtil.discard(Select.getTarget());
 				Reload.start();
 				ClickMenu.hideAll();
 			});

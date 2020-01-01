@@ -1,7 +1,7 @@
 package ui.main.center;
 
 import base.entity.Entity;
-import control.Target;
+import control.Select;
 import control.reload.Reload;
 import ui.component.clickmenu.ClickMenu;
 import ui.component.simple.TextNode;
@@ -56,7 +56,7 @@ public class PaneEntity extends BorderPane {
 	}
 	
 	public boolean reload() {
-		Entity currentTarget = Target.get();
+		Entity currentTarget = Select.getTarget();
 		if (!StageManager.getStageMain().getSceneMain().isViewGallery() && currentTarget != null) {
 			Logger.getGlobal().info(this.toString());
 			

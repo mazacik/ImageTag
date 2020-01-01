@@ -5,7 +5,6 @@ import base.entity.Entity;
 import base.entity.EntityList;
 import base.tag.TagList;
 import control.Select;
-import control.Target;
 import control.reload.ChangeIn;
 import control.reload.Reload;
 import misc.FileUtil;
@@ -63,8 +62,8 @@ public class Filter extends EntityList {
 			}
 		}
 		
-		if (!Loader.INSTANCE.contains(Target.get())) {
-			Target.set(Loader.INSTANCE.getFirst());
+		if (!Loader.INSTANCE.contains(Select.getTarget())) {
+			Select.setTarget(Loader.INSTANCE.getFirst());
 		}
 		
 		for (Entity entity : new CustomList<>(Select.getEntities())) {
@@ -73,7 +72,7 @@ public class Filter extends EntityList {
 			}
 		}
 		if (Select.getEntities().isEmpty()) {
-			Select.getEntities().set(Target.get());
+			Select.getEntities().set(Select.getTarget());
 		}
 	}
 	

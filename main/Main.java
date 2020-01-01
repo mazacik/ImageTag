@@ -25,7 +25,7 @@ import ui.stage.StageManager;
 import java.io.File;
 
 public class Main extends Application {
-	private static final boolean QUICKSTART = false;
+	private static final boolean QUICKSTART = true;
 	
 	public static void main(String[] args) {
 		launch(args);

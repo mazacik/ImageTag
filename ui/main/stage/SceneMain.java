@@ -1,9 +1,11 @@
 package ui.main.stage;
 
+import base.entity.Entity;
+import cache.CacheManager;
 import control.Select;
-import control.Target;
 import control.reload.ChangeIn;
 import control.reload.Reload;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -12,6 +14,7 @@ import ui.component.simple.EditNode;
 import ui.component.simple.HBox;
 import ui.component.simple.VBox;
 import ui.decorator.ColorUtil;
+import ui.main.center.GalleryTile;
 import ui.main.center.PaneEntity;
 import ui.main.center.PaneGallery;
 import ui.main.side.left.PaneFilter;
@@ -43,10 +46,19 @@ public class SceneMain extends Scene {
 					mainBox.requestFocus();
 					event.consume();
 				} else if (event.getCode() == KeyCode.SHIFT) {
-					Select.shiftSelectFrom(Target.get());
+					Select.shiftSelectFrom(Select.getTarget());
 				}
 			} else {
 				switch (event.getCode()) {
+					case BACK_QUOTE:
+						Entity target = Select.getTarget();
+						Image i = CacheManager.get(target);
+						target.getGalleryTile().setImage(i);
+						System.out.println(i != null);
+						Reload.requestBorderUpdate(target);
+						Reload.start();
+						PaneGallery.get().reload();
+						break;
 					case ESCAPE:
 						StageManager.getStageMain().getSceneMain().viewGallery();
 						Reload.start();
@@ -59,7 +71,7 @@ public class SceneMain extends Scene {
 						Reload.start();
 						break;
 					case E:
-						Target.get().getGalleryTile().onGroupIconClick();
+						Select.getTarget().getGalleryTile().onGroupIconClick();
 						Reload.start();
 						break;
 					case R:
@@ -67,7 +79,7 @@ public class SceneMain extends Scene {
 						Reload.start();
 						break;
 					case G:
-						Select.getEntities().set(Target.get().getCollection().getRandom());
+						Select.getEntities().set(Select.getTarget().getCollection().getRandom());
 						//todo target set
 						Reload.start();
 						break;
@@ -77,17 +89,17 @@ public class SceneMain extends Scene {
 						Reload.start();
 						break;
 					case SHIFT:
-						Select.shiftSelectFrom(Target.get());
+						Select.shiftSelectFrom(Select.getTarget());
 						break;
 					case W:
 					case A:
 					case S:
 					case D:
-						Target.move(event.getCode());
+						Select.moveTarget(event.getCode());
 						
-						if (event.isShiftDown()) Select.shiftSelectTo(Target.get());
-						else if (event.isControlDown()) Select.getEntities().add(Target.get());
-						else Select.getEntities().set(Target.get());
+						if (event.isShiftDown()) Select.shiftSelectTo(Select.getTarget());
+						else if (event.isControlDown()) Select.getEntities().add(Select.getTarget());
+						else Select.getEntities().set(Select.getTarget());
 						
 						Reload.start();
 						break;
