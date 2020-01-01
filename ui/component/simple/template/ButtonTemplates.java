@@ -127,7 +127,7 @@ public enum ButtonTemplates {
 			TextNode textNode = new TextNode("Random", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				Select.getEntities().set(PaneGallery.get().getEntitiesOfTiles().getRandom());//todo is this right?
+				Select.getEntities().set(PaneGallery.getInstance().getEntitiesOfTiles().getRandom());//todo is this right?
 				//Target.set(entity);//todo ??
 				Reload.start();
 			});
@@ -179,7 +179,7 @@ public enum ButtonTemplates {
 				String groupBefore = ClickMenu.getGroup();
 				String groupAfter = WordUtils.capitalize(StageManager.getGroupEditStage().show(groupBefore).toLowerCase());
 				
-				TagList.getMainInstance().forEach(tag -> {
+				TagList.getMain().forEach(tag -> {
 					if (tag.getGroup().equals(groupBefore)) {
 						tag.setGroup(groupAfter);
 					}
@@ -202,13 +202,13 @@ public enum ButtonTemplates {
 				String group = ClickMenu.getGroup();
 				
 				if (StageManager.getOkCancelStage().show("Remove \"" + group + "\" and all of its tags?")) {
-					for (String name : TagList.getMainInstance().getNames(group)) {
+					for (String name : TagList.getMain().getNames(group)) {
 						PaneFilter.get().getGroupNode(group).removeNameNode(name);
 						PaneSelect.get().getGroupNode(group).removeNameNode(name);
-						Tag tag = TagList.getMainInstance().getTag(group, name);
+						Tag tag = TagList.getMain().getTag(group, name);
 						EntityList.getMain().forEach(entity -> entity.getTagList().remove(tag));
 						Filter.getListManager().unlist(tag);
-						TagList.getMainInstance().remove(tag);
+						TagList.getMain().remove(tag);
 						Reload.notify(ChangeIn.TAG_LIST_MAIN);
 					}
 				}
@@ -266,14 +266,14 @@ public enum ButtonTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				String groupBefore = ClickMenu.getGroup();
 				String nameBefore = ClickMenu.getName();
-				Tag tag = TagList.getMainInstance().getTag(groupBefore, nameBefore);
+				Tag tag = TagList.getMain().getTag(groupBefore, nameBefore);
 				
 				TagEditStageResult result = StageManager.getTagEditStage().show(groupBefore, nameBefore);
 				String groupAfter = WordUtils.capitalize(result.getGroup().toLowerCase());
 				String nameAfter = WordUtils.capitalize(result.getName().toLowerCase());
 				
 				tag.set(groupAfter, nameAfter);
-				TagList.getMainInstance().sort();
+				TagList.getMain().sort();
 				
 				if (result.isAddToSelect()) {
 					Select.getEntities().addTag(tag);
@@ -303,13 +303,13 @@ public enum ButtonTemplates {
 				String group = ClickMenu.getGroup();
 				String name = ClickMenu.getName();
 				
-				Tag tag = TagList.getMainInstance().getTag(group, name);
+				Tag tag = TagList.getMain().getTag(group, name);
 				if (StageManager.getOkCancelStage().show("Remove \"" + tag.getFull() + "\" ?")) {
 					PaneFilter.get().getGroupNode(group).removeNameNode(name);
 					PaneSelect.get().getGroupNode(group).removeNameNode(name);
 					EntityList.getMain().forEach(entity -> entity.getTagList().remove(tag));
 					Filter.getListManager().unlist(tag);
-					TagList.getMainInstance().remove(tag);
+					TagList.getMain().remove(tag);
 					Reload.notify(ChangeIn.TAG_LIST_MAIN);
 				}
 				

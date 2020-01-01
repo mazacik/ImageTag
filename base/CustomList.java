@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Random;
+
 //todo check for refactor
 public class CustomList<T> extends ArrayList<T> {
 	public CustomList() {

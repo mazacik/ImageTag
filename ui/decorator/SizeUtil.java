@@ -22,7 +22,7 @@ public abstract class SizeUtil {
 	}
 	
 	public static void stageWidthChangeHandler() {
-		PaneGallery paneGallery = PaneGallery.get();
+		PaneGallery paneGallery = PaneGallery.getInstance();
 		TilePane tiles = paneGallery.getTiles();
 		
 		double galleryTileSize = tiles.getPrefTileWidth();

@@ -52,7 +52,7 @@ public class NameNode extends TextNode {
 		}
 	}
 	private void changeStateAsFilter() {
-		Tag tag = TagList.getMainInstance().getTag(groupNode.getGroup(), this.getText());
+		Tag tag = TagList.getMain().getTag(groupNode.getGroup(), this.getText());
 		if (Filter.getListManager().isWhitelisted(tag)) {
 			Filter.getListManager().blacklist(tag);
 			if (Filter.getListManager().isBlacklisted(tag.getGroup())) {
@@ -77,7 +77,7 @@ public class NameNode extends TextNode {
 		Filter.refresh();
 	}
 	private void changeStateAsSelect() {
-		Tag tag = TagList.getMainInstance().getTag(groupNode.getGroup(), this.getText());
+		Tag tag = TagList.getMain().getTag(groupNode.getGroup(), this.getText());
 		if (this.getTextFill().equals(ColorUtil.getColorPositive()) || this.getTextFill().equals(ColorUtil.getColorShare())) {
 			this.setTextFill(ColorUtil.getColorPrimary());
 			Select.getEntities().removeTag(tag);

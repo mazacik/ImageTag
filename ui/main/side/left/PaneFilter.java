@@ -30,9 +30,9 @@ public class PaneFilter extends SidePaneBase {
 		btnCreateNewTag.prefWidthProperty().bind(this.widthProperty());
 		btnCreateNewTag.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			TagEditStageResult result = StageManager.getTagEditStage().show("");
-			Tag tag = TagList.getMainInstance().getTag(result.getGroup(), result.getName());
-			TagList.getMainInstance().add(tag);
-			TagList.getMainInstance().sort();
+			Tag tag = TagList.getMain().getTag(result.getGroup(), result.getName());
+			TagList.getMain().add(tag);
+			TagList.getMain().sort();
 			
 			if (result.isAddToSelect()) {
 				Select.getEntities().addTag(tag);

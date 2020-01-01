@@ -38,7 +38,7 @@ public class GroupNode extends VBox {
 		hBoxMain = new HBox(nodeToggle, nodeText);
 		this.getChildren().add(hBoxMain);
 		
-		TagList.getMainInstance().getNames(this.getGroup()).forEach(this::addNameNode);
+		TagList.getMain().getNames(this.getGroup()).forEach(this::addNameNode);
 		
 		hBoxMain.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> this.setBackground(ColorUtil.getBackgroundSecondary()));
 		hBoxMain.addEventFilter(MouseEvent.MOUSE_EXITED, event -> this.setBackground(Background.EMPTY));

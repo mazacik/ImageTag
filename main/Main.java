@@ -25,7 +25,7 @@ import ui.stage.StageManager;
 import java.io.File;
 
 public class Main extends Application {
-	private static final boolean QUICKSTART = true;
+	private static final boolean QUICKSTART = false;
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -36,7 +36,7 @@ public class Main extends Application {
 		Settings.readFromDisk();
 		
 		PaneToolbar.get().init();
-		PaneGallery.get().init();
+		PaneGallery.getInstance().init();
 		PaneEntity.get().init();
 		PaneFilter.get().init();
 		PaneSelect.get().init();
@@ -152,7 +152,7 @@ public class Main extends Application {
 	}
 	private static void initTags() {
 		TagList allTags = Project.getCurrent().getTagList();
-		TagList tagListMain = TagList.getMainInstance();
+		TagList tagListMain = TagList.getMain();
 		if (allTags != null) tagListMain.addAll(allTags);
 		
 		Tag entityTag;

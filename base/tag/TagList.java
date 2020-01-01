@@ -55,7 +55,7 @@ public class TagList extends CustomList<Tag> {
 	private static class Loader {
 		private static final TagList INSTANCE = new TagList();
 	}
-	public static TagList getMainInstance() {
+	public static TagList getMain() {
 		return Loader.INSTANCE;
 	}
 }

@@ -195,7 +195,7 @@ public class PaneSelect extends SidePaneBase {
 	}
 	private Tag getBestMatch(String query) {
 		//	simple check if the name of any tag starts with query
-		for (Tag tag : TagList.getMainInstance()) {
+		for (Tag tag : TagList.getMain()) {
 			if (tag.getName().toLowerCase().startsWith(query)) {
 				return tag;
 			}
@@ -205,7 +205,7 @@ public class PaneSelect extends SidePaneBase {
 		Tag bestMatch = null;
 		double bestMatchFactor = 0;
 		
-		for (Tag tag : TagList.getMainInstance()) {
+		for (Tag tag : TagList.getMain()) {
 			SimilarityStrategy strategy = new JaroWinklerStrategy();
 			StringSimilarityService service = new StringSimilarityServiceImpl(strategy);
 			double currentFactor = service.score(tag.getName(), query);

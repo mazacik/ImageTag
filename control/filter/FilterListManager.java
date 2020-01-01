@@ -29,18 +29,18 @@ public class FilterListManager {
 	}
 	
 	public void whitelist(String group) {
-		for (String name : TagList.getMainInstance().getNames(group)) {
-			whitelist(TagList.getMainInstance().getTag(group, name));
+		for (String name : TagList.getMain().getNames(group)) {
+			whitelist(TagList.getMain().getTag(group, name));
 		}
 	}
 	public void blacklist(String group) {
-		for (String name : TagList.getMainInstance().getNames(group)) {
-			blacklist(TagList.getMainInstance().getTag(group, name));
+		for (String name : TagList.getMain().getNames(group)) {
+			blacklist(TagList.getMain().getTag(group, name));
 		}
 	}
 	public void unlist(String group) {
-		for (String name : TagList.getMainInstance().getNames(group)) {
-			unlist(TagList.getMainInstance().getTag(group, name));
+		for (String name : TagList.getMain().getNames(group)) {
+			unlist(TagList.getMain().getTag(group, name));
 		}
 	}
 	
@@ -67,7 +67,7 @@ public class FilterListManager {
 	
 	public boolean isWhitelisted(String group) {
 		boolean value = true;
-		for (String name : TagList.getMainInstance().getNames(group)) {
+		for (String name : TagList.getMain().getNames(group)) {
 			if (!isWhitelisted(group, name)) {
 				value = false;
 				break;
@@ -77,7 +77,7 @@ public class FilterListManager {
 	}
 	public boolean isBlacklisted(String group) {
 		boolean value = true;
-		for (String name : TagList.getMainInstance().getNames(group)) {
+		for (String name : TagList.getMain().getNames(group)) {
 			if (!isBlacklisted(group, name)) {
 				value = false;
 				break;
@@ -90,13 +90,13 @@ public class FilterListManager {
 		return whitelist.contains(tag);
 	}
 	public boolean isWhitelisted(String group, String name) {
-		return whitelist.contains(TagList.getMainInstance().getTag(group, name));
+		return whitelist.contains(TagList.getMain().getTag(group, name));
 	}
 	public boolean isBlacklisted(Tag tag) {
 		return blacklist.contains(tag);
 	}
 	public boolean isBlacklisted(String group, String name) {
-		return blacklist.contains(TagList.getMainInstance().getTag(group, name));
+		return blacklist.contains(TagList.getMain().getTag(group, name));
 	}
 	
 	TagList getWhitelist() {

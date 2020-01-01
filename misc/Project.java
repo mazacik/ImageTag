@@ -32,20 +32,25 @@ public class Project {
 	}
 	public void writeToDisk() {
 		this.msLastAccess = System.currentTimeMillis();
-		this.entityList = EntityList.getMain();
-		this.tagList = TagList.getMainInstance();
+		if (entityList == null) entityList = EntityList.getMain();
+		if (tagList == null) tagList = TagList.getMain();
 		JsonUtil.write(this, typeToken, projectFile);
 	}
 	
 	public void updateProject(String projectNameNew, String directorySourceNew) {
-		String projectFileNew = createProjectFilePath(projectNameNew);
-		if (!new File(projectFileNew).exists()) {
-			FileUtil.moveFile(projectFile, projectFileNew);
-			FileUtil.moveFile(FileUtil.getDirectoryCache(this.projectName), FileUtil.getDirectoryCache(projectNameNew));
-			
-			this.projectName = projectNameNew;
-			this.projectFile = projectFileNew;
+		if (projectName.equals(projectNameNew)) {
 			this.directorySource = directorySourceNew;
+			this.writeToDisk();
+		} else {
+			String projectFileNew = createProjectFilePath(projectNameNew);
+			if (!new File(projectFileNew).exists()) {
+				FileUtil.moveFile(projectFile, projectFileNew);
+				FileUtil.moveFile(FileUtil.getDirectoryCache(this.projectName), FileUtil.getDirectoryCache(projectNameNew));
+				
+				this.projectName = projectNameNew;
+				this.projectFile = projectFileNew;
+				this.directorySource = directorySourceNew;
+			}
 		}
 	}
 	

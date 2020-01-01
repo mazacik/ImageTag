@@ -34,7 +34,7 @@ public abstract class SidePaneBase extends VBox {
 	public boolean reload() {
 		//	populate primary helpers
 		CustomList<String> groupsCurrent = new CustomList<>();
-		CustomList<Tag> tagsMain = new CustomList<>(TagList.getMainInstance());
+		CustomList<Tag> tagsMain = new CustomList<>(TagList.getMain());
 		CustomList<Tag> tagsCurrent = new CustomList<>();
 		
 		for (Node node : boxGroupNodes.getChildren()) {
@@ -42,7 +42,7 @@ public abstract class SidePaneBase extends VBox {
 				GroupNode groupNode = (GroupNode) node;
 				groupsCurrent.add(groupNode.getGroup());
 				for (TextNode nameNode : groupNode.getNameNodes()) {
-					tagsCurrent.add(TagList.getMainInstance().getTag(groupNode.getGroup(), nameNode.getText()));
+					tagsCurrent.add(TagList.getMain().getTag(groupNode.getGroup(), nameNode.getText()));
 				}
 			}
 		}

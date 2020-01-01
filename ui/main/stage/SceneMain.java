@@ -14,7 +14,6 @@ import ui.component.simple.EditNode;
 import ui.component.simple.HBox;
 import ui.component.simple.VBox;
 import ui.decorator.ColorUtil;
-import ui.main.center.GalleryTile;
 import ui.main.center.PaneEntity;
 import ui.main.center.PaneGallery;
 import ui.main.side.left.PaneFilter;
@@ -27,7 +26,7 @@ public class SceneMain extends Scene {
 	private HBox mainBox;
 	
 	public SceneMain() {
-		mainBox = new HBox(PaneFilter.get(), PaneGallery.get(), PaneSelect.get());
+		mainBox = new HBox(PaneFilter.get(), PaneGallery.getInstance(), PaneSelect.get());
 		
 		VBox vBox = new VBox(PaneToolbar.get(), mainBox);
 		vBox.setBackground(ColorUtil.getBackgroundPrimary());
@@ -57,7 +56,7 @@ public class SceneMain extends Scene {
 						System.out.println(i != null);
 						Reload.requestBorderUpdate(target);
 						Reload.start();
-						PaneGallery.get().reload();
+						PaneGallery.getInstance().reload();
 						break;
 					case ESCAPE:
 						StageManager.getStageMain().getSceneMain().viewGallery();
@@ -112,9 +111,9 @@ public class SceneMain extends Scene {
 		if (!isViewGallery()) {
 			PaneEntity.get().interruptVideoPlayer();
 			
-			mainBox.getChildren().set(1, PaneGallery.get());
+			mainBox.getChildren().set(1, PaneGallery.getInstance());
 			
-			PaneGallery.get().moveViewportToTarget();
+			PaneGallery.getInstance().moveViewportToTarget();
 			
 			Reload.notify(ChangeIn.VIEWMODE);
 		}
@@ -131,6 +130,6 @@ public class SceneMain extends Scene {
 	}
 	
 	public boolean isViewGallery() {
-		return mainBox.getChildren().contains(PaneGallery.get());
+		return mainBox.getChildren().contains(PaneGallery.getInstance());
 	}
 }

@@ -276,23 +276,26 @@ public class PaneGallery extends ScrollPane {
 		return true;
 	}
 	
-	public void moveViewportToTarget() {
-		this.layout();
+	public static void moveViewportToTarget() {
+		PaneGallery instance = Loader.INSTANCE;
+		TilePane tilePane = instance.tilePane;
+		
+		//instance.layout();
 		
 		Entity currentTarget = Select.getTarget();
 		if (!StageManager.getStageMain().getSceneMain().isViewGallery() || currentTarget == null) return;
-		if (currentTarget.getCollectionID() != 0 && !expandedGroups.contains(currentTarget.getCollectionID())) {
+		if (currentTarget.getCollectionID() != 0 && !instance.expandedGroups.contains(currentTarget.getCollectionID())) {
 			currentTarget = currentTarget.getCollection().getFirst();
 		}
-		int TargetIndex = this.getEntitiesOfTiles().indexOf(currentTarget);
+		int TargetIndex = instance.getEntitiesOfTiles().indexOf(currentTarget);
 		if (TargetIndex < 0) return;
 		
-		int columnCount = this.getColumnCount();
+		int columnCount = instance.getColumnCount();
 		int TargetRow = TargetIndex / columnCount;
 		
-		Bounds buggyBounds = this.getViewportBounds();
+		Bounds buggyBounds = instance.getViewportBounds();
 		Bounds correctBounds = new BoundingBox(0, 0, 0, buggyBounds.getWidth(), buggyBounds.getHeight(), buggyBounds.getDepth());
-		Bounds viewportBoundsTransform = tilePane.sceneToLocal(this.localToScene(correctBounds));
+		Bounds viewportBoundsTransform = tilePane.sceneToLocal(instance.localToScene(correctBounds));
 		Bounds currentTargetTileBounds = tilePane.getChildren().get(TargetIndex).getBoundsInParent();
 		
 		double viewportHeight = viewportBoundsTransform.getHeight();
@@ -308,12 +311,13 @@ public class PaneGallery extends ScrollPane {
 		double tileBottom = currentTargetTileBounds.getMaxY();
 		
 		if (tileBottom > viewportBottom) {
-			this.setVvalue((TargetRow + 1) * rowToContentRatio - viewportToContentRatio);
+			instance.setVvalue((TargetRow + 1) * rowToContentRatio - viewportToContentRatio);
 		} else if (tileTop < viewportTop) {
-			this.setVvalue(TargetRow * rowToContentRatio);
+			instance.setVvalue(TargetRow * rowToContentRatio);
 		}
 	}
 	public EntityList getEntitiesOfTiles() {
+		//todo make this a variable, update on reload?
 		EntityList entities = new EntityList();
 		tilePane.getChildren().forEach(tile -> entities.add(((GalleryTile) tile).getEntity()));
 		return entities;
@@ -333,7 +337,7 @@ public class PaneGallery extends ScrollPane {
 	private static class Loader {
 		private static final PaneGallery INSTANCE = new PaneGallery();
 	}
-	public static PaneGallery get() {
+	public static PaneGallery getInstance() {
 		return Loader.INSTANCE;
 	}
 }

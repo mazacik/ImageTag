@@ -41,8 +41,8 @@ public class PaneEntity extends BorderPane {
 		videoPlayer = VideoPlayer.create(canvas);
 		controls = new MediaPaneControls(this, videoPlayer);
 		
-		gifPlayer.fitWidthProperty().bind(PaneGallery.get().widthProperty());
-		gifPlayer.fitHeightProperty().bind(PaneGallery.get().heightProperty());
+		gifPlayer.fitWidthProperty().bind(PaneGallery.getInstance().widthProperty());
+		gifPlayer.fitHeightProperty().bind(PaneGallery.getInstance().heightProperty());
 		
 		nodeNoLibsError = new TextNode("No VLC Libs found.") {{
 			this.setFont(new Font(64));
@@ -181,8 +181,8 @@ public class PaneEntity extends BorderPane {
 	}
 	
 	private void initEvents() {
-		canvas.widthProperty().bind(PaneGallery.get().widthProperty());
-		canvas.heightProperty().bind(PaneGallery.get().heightProperty());
+		canvas.widthProperty().bind(PaneGallery.getInstance().widthProperty());
+		canvas.heightProperty().bind(PaneGallery.getInstance().heightProperty());
 		
 		canvas.widthProperty().addListener((observable, oldValue, newValue) -> reload());
 		canvas.heightProperty().addListener((observable, oldValue, newValue) -> reload());

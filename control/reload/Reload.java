@@ -27,7 +27,7 @@ public class Reload {
 			ChangeIn.TARGET.getSubscribers().add(invokeHelper1);
 			
 			//  GalleryPane
-			InvokeHelper invokeHelper2 = new InvokeHelper(PaneGallery.get(), PaneGallery.get().getClass().getMethod("reload"));
+			InvokeHelper invokeHelper2 = new InvokeHelper(PaneGallery.getInstance(), PaneGallery.getInstance().getClass().getMethod("reload"));
 			ChangeIn.ENTITY_LIST_MAIN.getSubscribers().add(invokeHelper2);
 			ChangeIn.FILTER.getSubscribers().add(invokeHelper2);
 			

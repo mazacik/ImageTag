@@ -50,7 +50,7 @@ public class StageMain extends Stage {
 		
 		sceneMain = new SceneMain();
 		
-		Decorator.applyScrollbarStyle(PaneGallery.get());
+		Decorator.applyScrollbarStyle(PaneGallery.getInstance());
 		Decorator.applyScrollbarStyle(PaneFilter.get().getScrollPane());
 		Decorator.applyScrollbarStyle(PaneSelect.get().getScrollPane());
 		

@@ -108,7 +108,7 @@ public class GalleryTile extends Pane {
 	}
 	public void updateGroupIcon() {
 		if (entity.getCollection().getFirst().equals(entity)) {
-			if (!PaneGallery.get().getExpandedCollections().contains(entity.getCollectionID())) {
+			if (!PaneGallery.getInstance().getExpandedCollections().contains(entity.getCollectionID())) {
 				this.setEffect(effectGroupExpand);
 			} else {
 				this.setEffect(effectGroupCollapse);
@@ -195,7 +195,7 @@ public class GalleryTile extends Pane {
 		int collectionID = entity.getCollectionID();
 		
 		if (collectionID != 0) {
-			CustomList<Integer> expandedGroups = PaneGallery.get().getExpandedCollections();
+			CustomList<Integer> expandedGroups = PaneGallery.getInstance().getExpandedCollections();
 			if (expandedGroups.contains(collectionID)) {
 				//noinspection RedundantCollectionOperation
 				expandedGroups.remove(expandedGroups.indexOf(collectionID));
@@ -203,9 +203,8 @@ public class GalleryTile extends Pane {
 				expandedGroups.add(collectionID);
 			}
 			
-			entity.getCollection().getFirst().getGalleryTile().updateGroupIcon();
+			entity.getCollection().getFirst().getGalleryTile().updateGroupIcon();//todo simplify
 			
-			Select.setTarget(entity);
 			Reload.notify(ChangeIn.ENTITY_LIST_MAIN);
 		}
 	}

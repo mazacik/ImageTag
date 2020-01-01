@@ -12,11 +12,10 @@ import misc.FileUtil;
 import ui.main.center.PaneGallery;
 
 import java.util.Collection;
-import java.util.logging.Logger;
 
 public class Select extends EntityList {
 	public boolean add(Entity entity) {
-		if (entity.getCollectionID() == 0 || PaneGallery.get().getExpandedCollections().contains(entity.getCollectionID())) {
+		if (entity.getCollectionID() == 0 || PaneGallery.getInstance().getExpandedCollections().contains(entity.getCollectionID())) {
 			if (super.add(entity)) {
 				Reload.requestBorderUpdate(entity);
 				Reload.notify(ChangeIn.SELECT);
@@ -41,7 +40,7 @@ public class Select extends EntityList {
 	}
 	
 	public boolean remove(Entity entity) {
-		if (entity.getCollectionID() == 0 || PaneGallery.get().getExpandedCollections().contains(entity.getCollectionID())) {
+		if (entity.getCollectionID() == 0 || PaneGallery.getInstance().getExpandedCollections().contains(entity.getCollectionID())) {
 			if (super.remove(entity)) {
 				Reload.requestBorderUpdate(entity);
 				Reload.notify(ChangeIn.SELECT);
@@ -99,14 +98,14 @@ public class Select extends EntityList {
 		restoreTargetPosition();
 	}
 	
-	private Entity shiftStart = null;
+	private static Entity entityFrom = null;
 	public static void shiftSelectFrom(Entity entityFrom) {
-		Loader.INSTANCE.shiftStart = entityFrom;
+		Select.entityFrom = entityFrom;
 	}
 	public static void shiftSelectTo(Entity entityTo) {
-		CustomList<Entity> entities = PaneGallery.get().getEntitiesOfTiles();
+		CustomList<Entity> entities = PaneGallery.getInstance().getEntitiesOfTiles();
 		
-		int indexFrom = entities.indexOf(Loader.INSTANCE.shiftStart);
+		int indexFrom = entities.indexOf(entityFrom);
 		int indexTo = entities.indexOf(entityTo);
 		
 		int indexLower;
@@ -119,8 +118,8 @@ public class Select extends EntityList {
 			indexLower = indexFrom;
 			indexHigher = indexTo;
 		}
-		//todo probably a bug here too
-		Loader.INSTANCE.addAll(entities.subList(indexLower, indexHigher + 1));
+		//todo this needs a rework
+		Loader.INSTANCE.addAll(entities.subList(indexLower, indexHigher + 1), true);
 	}
 	
 	private Select() {}
@@ -139,29 +138,36 @@ public class Select extends EntityList {
 	}
 	public static void setTarget(Entity newTarget) {
 		if (newTarget != null && newTarget != target) {
-			if (target != null) Reload.requestBorderUpdate(target);
+			Reload.requestBorderUpdate(target);
 			Reload.requestBorderUpdate(newTarget);
 			
 			target = newTarget;
 			
-			PaneGallery.get().moveViewportToTarget();
-			Reload.notify(ChangeIn.TARGET);
+			if (getEntities().isEmpty()) {
+				if (target.getCollectionID() == 0 || PaneGallery.getInstance().getExpandedCollections().contains(target.getCollectionID())) {
+					getEntities().add(target);
+				} else {
+					getEntities().addAll(target.getCollection());
+				}
+			}
 			
-			Logger.getGlobal().info(newTarget.getName());
+			PaneGallery.moveViewportToTarget();
+			
+			Reload.notify(ChangeIn.TARGET);
 		}
 	}
 	
 	public static void moveTarget(Direction direction) {
 		if (target == null) return;
 		
-		EntityList entities = PaneGallery.get().getEntitiesOfTiles();
+		EntityList entities = PaneGallery.getInstance().getEntitiesOfTiles();
 		if (entities.isEmpty()) return;
 		
 		int currentTargetIndex;
 		if (target.getCollectionID() == 0) {
 			currentTargetIndex = entities.indexOf(target);
 		} else {
-			if (PaneGallery.get().getExpandedCollections().contains(target.getCollectionID())) {
+			if (PaneGallery.getInstance().getExpandedCollections().contains(target.getCollectionID())) {
 				currentTargetIndex = entities.indexOf(target);
 			} else {
 				Entity groupFirst = target.getCollection().getFirst();
@@ -173,7 +179,7 @@ public class Select extends EntityList {
 			}
 		}
 		
-		int columnCount = PaneGallery.get().getColumnCount();
+		int columnCount = PaneGallery.getInstance().getColumnCount();
 		
 		int newTargetIndex = currentTargetIndex;
 		switch (direction) {
@@ -216,9 +222,9 @@ public class Select extends EntityList {
 	private static Entity storeEntity = null;
 	private static int storePos = -1;
 	public static void storeTargetPosition() {
-		CustomList<Integer> expandedcollection = PaneGallery.get().getExpandedCollections();
-		CustomList<Entity> visibleEntities = PaneGallery.get().getEntitiesOfTiles();
-		
+		CustomList<Integer> expandedcollection = PaneGallery.getInstance().getExpandedCollections();
+		CustomList<Entity> visibleEntities = PaneGallery.getInstance().getEntitiesOfTiles();
+		//todo probably needs getFirst() somewhere
 		if (target.getCollectionID() == 0) {
 			storeEntity = target;
 			storePos = visibleEntities.indexOf(target);
@@ -232,29 +238,19 @@ public class Select extends EntityList {
 			}
 		}
 	}
-	public static Entity restoreTargetPosition() {
+	public static void restoreTargetPosition() {
 		//todo if this lands on a non-expanded collection, add the whole collection
-		//todo add move viewpoert to target
-		EntityList visibleEntities = PaneGallery.get().getEntitiesOfTiles();
+		EntityList visibleEntities = PaneGallery.getInstance().getEntitiesOfTiles();
 		if (!visibleEntities.isEmpty()) {
 			if (storeEntity != null && visibleEntities.contains(storeEntity)) {
 				setTarget(storeEntity);
-				return storeEntity;
 			} else if (storePos >= 0) {
-				Entity newTarget;
-				
-				if (storePos <= visibleEntities.size() - 1) newTarget = visibleEntities.get(storePos);
-				else newTarget = visibleEntities.getLast();
-				
-				setTarget(newTarget);
-				
-				if (Select.getEntities().isEmpty()) {
-					Select.getEntities().add(newTarget);
+				if (storePos <= visibleEntities.size() - 1) {
+					setTarget(visibleEntities.get(storePos));
+				} else {
+					setTarget(visibleEntities.getLast());
 				}
-				
-				return newTarget;
 			}
 		}
-		return null;
 	}
 }
