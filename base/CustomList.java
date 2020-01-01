@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Random;
 
-//todo check for refactor
 public class CustomList<T> extends ArrayList<T> {
 	public CustomList() {
 		super();
@@ -29,31 +28,22 @@ public class CustomList<T> extends ArrayList<T> {
 		return false;
 	}
 	
-	public void add(int index, T t) {
-		if (t != null) {
-			super.remove(t);
-			super.add(index, t);
-		}
-	}
-	
 	public boolean addAll(Collection<? extends T> c) {
 		return this.addAll(c, false);
 	}
 	public boolean addAll(Collection<? extends T> c, boolean checkDuplicates) {
-		int size = this.size();
-		c.forEach(t -> this.add(t, checkDuplicates));
-		return size != this.size();
+		int sizeBefore = this.size();
+		for (T t : c) this.add(t, checkDuplicates);
+		return sizeBefore != this.size();
 	}
 	
 	public boolean addAll(T[] c) {
 		return this.addAll(c, false);
 	}
 	public boolean addAll(T[] c, boolean checkDuplicates) {
-		int size = this.size();
-		for (T t : c) {
-			this.add(t, checkDuplicates);
-		}
-		return size != this.size();
+		int sizeBefore = this.size();
+		for (T t : c) this.add(t, checkDuplicates);
+		return sizeBefore != this.size();
 	}
 	
 	public boolean set(T t) {
@@ -66,25 +56,12 @@ public class CustomList<T> extends ArrayList<T> {
 	}
 	
 	public T getFirst() {
-		if (!this.isEmpty()) {
-			return this.get(0);
-		} else {
-			return null;
-		}
+		return (!this.isEmpty()) ? this.get(0) : null;
 	}
 	public T getLast() {
-		if (!this.isEmpty()) {
-			return this.get(this.size() - 1);
-		} else {
-			return null;
-		}
+		return (!this.isEmpty()) ? this.get(this.size() - 1) : null;
 	}
 	public T getRandom() {
-		if (!this.isEmpty()) {
-			int index = new Random().nextInt(this.size());
-			return this.get(index);
-		} else {
-			return null;
-		}
+		return (!this.isEmpty()) ? this.get(new Random().nextInt(this.size())) : null;
 	}
 }

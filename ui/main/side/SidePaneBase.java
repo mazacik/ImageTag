@@ -72,6 +72,7 @@ public abstract class SidePaneBase extends VBox {
 					groupsCurrent.sort(Comparator.naturalOrder());
 					index = groupsCurrent.indexOf(group);
 					GroupNode groupNode = new GroupNode(this, group);
+					boxGroupNodes.getChildren().remove(groupNode);
 					boxGroupNodes.getChildren().add(index, groupNode);
 				} else {
 					index = groupsCurrent.indexOf(group);
