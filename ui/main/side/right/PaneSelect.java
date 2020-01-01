@@ -75,7 +75,7 @@ public class PaneSelect extends SidePaneBase {
 			}
 		} else {
 			groupsInter = Select.getEntities().getTagsIntersect().getGroups();
-			groupsShare = Select.getEntities().getTagsAll().getGroups();
+			groupsShare = Select.getEntities().getTags().getGroups();
 		}
 		
 		for (Node node : boxGroupNodes.getChildren()) {
@@ -97,7 +97,7 @@ public class PaneSelect extends SidePaneBase {
 					namesShare = new CustomList<>();
 				} else {
 					namesInter = Select.getEntities().getTagsIntersect().getNames(group);
-					namesShare = Select.getEntities().getTagsAll().getNames(group);
+					namesShare = Select.getEntities().getTags().getNames(group);
 				}
 				for (TextNode nameNode : groupNode.getNameNodes()) {
 					String name = nameNode.getText();

@@ -12,7 +12,7 @@ import java.util.Random;
 public abstract class EntityCollectionUtil {
 	public static void create() {
 		int collectionID = new Random().nextInt();
-		TagList collectionTags = Select.getEntities().getTagsAll();
+		TagList collectionTags = Select.getEntities().getTags();
 		
 		String s = "A collection of " + Select.getEntities().size() + " items will be created.\nMerge tags?";
 		if (!collectionTags.isEmpty() && StageManager.getYesNoStage().show(s)) {
