@@ -101,7 +101,7 @@ public class PaneFilter extends SidePaneBase {
 	private static class Loader {
 		private static final PaneFilter INSTANCE = new PaneFilter();
 	}
-	public static PaneFilter get() {
+	public static PaneFilter getInstance() {
 		return Loader.INSTANCE;
 	}
 }

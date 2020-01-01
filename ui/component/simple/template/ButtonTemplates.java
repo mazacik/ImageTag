@@ -185,8 +185,8 @@ public enum ButtonTemplates {
 					}
 				});
 				
-				PaneFilter.get().getGroupNode(groupBefore).setGroup(groupAfter);
-				PaneSelect.get().getGroupNode(groupBefore).setGroup(groupAfter);
+				PaneFilter.getInstance().getGroupNode(groupBefore).setGroup(groupAfter);
+				PaneSelect.getInstance().getGroupNode(groupBefore).setGroup(groupAfter);
 				
 				ClickMenu.hideAll();
 				Reload.start();
@@ -203,8 +203,8 @@ public enum ButtonTemplates {
 				
 				if (StageManager.getOkCancelStage().show("Remove \"" + group + "\" and all of its tags?")) {
 					for (String name : TagList.getMain().getNames(group)) {
-						PaneFilter.get().getGroupNode(group).removeNameNode(name);
-						PaneSelect.get().getGroupNode(group).removeNameNode(name);
+						PaneFilter.getInstance().getGroupNode(group).removeNameNode(name);
+						PaneSelect.getInstance().getGroupNode(group).removeNameNode(name);
 						Tag tag = TagList.getMain().getTag(group, name);
 						EntityList.getMain().forEach(entity -> entity.getTagList().remove(tag));
 						Filter.getListManager().unlist(tag);
@@ -280,13 +280,13 @@ public enum ButtonTemplates {
 				}
 				
 				if (!groupBefore.equals(groupAfter)) {
-					PaneFilter.get().getGroupNode(groupBefore).setGroup(groupAfter);
-					PaneSelect.get().getGroupNode(groupBefore).setGroup(groupAfter);
+					PaneFilter.getInstance().getGroupNode(groupBefore).setGroup(groupAfter);
+					PaneSelect.getInstance().getGroupNode(groupBefore).setGroup(groupAfter);
 				}
 				
 				if (!nameBefore.equals(nameAfter)) {
-					PaneFilter.get().getGroupNode(groupAfter).getNameNode(nameBefore).setText(nameAfter);
-					PaneSelect.get().getGroupNode(groupAfter).getNameNode(nameBefore).setText(nameAfter);
+					PaneFilter.getInstance().getGroupNode(groupAfter).getNameNode(nameBefore).setText(nameAfter);
+					PaneSelect.getInstance().getGroupNode(groupAfter).getNameNode(nameBefore).setText(nameAfter);
 				}
 				
 				ClickMenu.hideAll();
@@ -305,8 +305,8 @@ public enum ButtonTemplates {
 				
 				Tag tag = TagList.getMain().getTag(group, name);
 				if (StageManager.getOkCancelStage().show("Remove \"" + tag.getFull() + "\" ?")) {
-					PaneFilter.get().getGroupNode(group).removeNameNode(name);
-					PaneSelect.get().getGroupNode(group).removeNameNode(name);
+					PaneFilter.getInstance().getGroupNode(group).removeNameNode(name);
+					PaneSelect.getInstance().getGroupNode(group).removeNameNode(name);
 					EntityList.getMain().forEach(entity -> entity.getTagList().remove(tag));
 					Filter.getListManager().unlist(tag);
 					TagList.getMain().remove(tag);

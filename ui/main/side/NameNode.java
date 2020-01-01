@@ -45,9 +45,9 @@ public class NameNode extends TextNode {
 	}
 	
 	public void changeState() {
-		if (groupNode.getParentPane() == PaneFilter.get()) {
+		if (groupNode.getParentPane() == PaneFilter.getInstance()) {
 			this.changeStateAsFilter();
-		} else if (groupNode.getParentPane() == PaneSelect.get()) {
+		} else if (groupNode.getParentPane() == PaneSelect.getInstance()) {
 			this.changeStateAsSelect();
 		}
 	}

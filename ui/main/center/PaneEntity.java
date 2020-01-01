@@ -220,7 +220,7 @@ public class PaneEntity extends BorderPane {
 	private static class Loader {
 		private static final PaneEntity INSTANCE = new PaneEntity();
 	}
-	public static PaneEntity get() {
+	public static PaneEntity getInstance() {
 		return Loader.INSTANCE;
 	}
 }

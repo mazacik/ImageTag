@@ -32,14 +32,14 @@ public abstract class EntityCollectionUtil {
 				entity.setCollectionID(collectionID);
 				entity.setCollection(Select.getEntities());
 				entity.setTagList(collectionTags);
-				entity.getGalleryTile().updateGroupIcon();
+				entity.getGalleryTile().updateCollectionIcon();
 			}
 			Reload.notify(ChangeIn.TAGS_OF_SELECT);
 		} else {
 			for (Entity entity : Select.getEntities()) {
 				entity.setCollectionID(collectionID);
 				entity.setCollection(Select.getEntities());
-				entity.getGalleryTile().updateGroupIcon();
+				entity.getGalleryTile().updateCollectionIcon();
 			}
 		}
 		
@@ -85,5 +85,23 @@ public abstract class EntityCollectionUtil {
 			}
 		}
 		return true;
+	}
+	
+	private static CustomList<Integer> openCollections = new CustomList<>();
+	public static void openCollection(Entity entity) {
+		int collectionID = entity.getCollectionID();
+		if (collectionID != 0) {
+			if (openCollections.contains(collectionID)) {
+				//noinspection RedundantCollectionOperation//todo try removing this + testing
+				openCollections.remove(openCollections.indexOf(collectionID));
+			} else {
+				openCollections.add(collectionID);
+			}
+			entity.getGalleryTile().updateCollectionIcon();
+			Reload.notify(ChangeIn.ENTITY_LIST_MAIN);
+		}
+	}
+	public static CustomList<Integer> getOpenCollections() {
+		return openCollections;
 	}
 }

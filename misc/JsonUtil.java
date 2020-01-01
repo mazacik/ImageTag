@@ -36,6 +36,7 @@ public abstract class JsonUtil {
 			Logger.getGlobal().info("\"" + path + "\" .. ok");
 			return fromJson;
 		} catch (Exception e) {
+			e.printStackTrace();
 			Logger.getGlobal().info("\"" + path + "\" .. fail");
 			return null;
 		}

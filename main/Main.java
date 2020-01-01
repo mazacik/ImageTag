@@ -25,7 +25,7 @@ import ui.stage.StageManager;
 import java.io.File;
 
 public class Main extends Application {
-	private static final boolean QUICKSTART = false;
+	private static final boolean QUICKSTART = true;
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -33,16 +33,15 @@ public class Main extends Application {
 	public void start(Stage stage) {
 		System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %2$s: %5$s%n");
 		
-		Settings.readFromDisk();
+		//Settings.readFromDisk();
 		
-		PaneToolbar.get().init();
+		PaneToolbar.getInstance().init();
 		PaneGallery.getInstance().init();
-		PaneEntity.get().init();
-		PaneFilter.get().init();
-		PaneSelect.get().init();
+		PaneEntity.getInstance().init();
+		PaneFilter.getInstance().init();
+		PaneSelect.getInstance().init();
 		
-		GalleryTile.init();
-		Reload.init();
+		Reload.initStaticVariables();//todo remove
 		
 		if (!QUICKSTART || FileUtil.getProjectFiles().isEmpty()) {
 			StageManager.getStageMain().layoutIntro();
@@ -128,6 +127,7 @@ public class Main extends Application {
 		if (needsSort) EntityList.getMain().sort();
 	}
 	private static void initCollections() {
+		//todo probably needs rework
 		CustomList<EntityList> collections = new CustomList<>();
 		int collectionID;
 		for (Entity entity : EntityList.getMain()) {
@@ -180,8 +180,8 @@ public class Main extends Application {
 	public static void exitApplication() {
 		CacheManager.stopThread();
 		
-		PaneEntity.get().disposeVideoPlayer();
-		PaneEntity.get().getControls().hide();
+		PaneEntity.getInstance().disposeVideoPlayer();
+		PaneEntity.getInstance().getControls().hide();
 		
 		Project.getCurrent().writeToDisk();
 		Settings.writeToDisk();

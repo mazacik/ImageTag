@@ -9,16 +9,10 @@ public class Settings {
 	private static Integer FONT_SIZE;
 	private static Integer GALLERY_TILE_SIZE;
 	
-	private Integer colorPreset;
-	private Integer fontSize;
-	private Integer tileSize;
-	
-	private Settings() {
-	
-	}
-	
-	private transient static final Type typeToken = new TypeToken<Settings>() {}.getType();
-	public static void readFromDisk() {
+	private transient static final Type typeToken;
+	static {
+		typeToken = new TypeToken<Settings>() {}.getType();
+		
 		try {
 			Settings settings = (Settings) JsonUtil.read(typeToken, FileUtil.getFileSettings());
 			COLOR_PRESET_INDEX = settings.colorPreset;
@@ -30,6 +24,15 @@ public class Settings {
 			GALLERY_TILE_SIZE = 200;
 		}
 	}
+	
+	private Integer colorPreset;
+	private Integer fontSize;
+	private Integer tileSize;
+	
+	private Settings() {
+	
+	}
+	
 	public static void writeToDisk() {
 		Settings settings = new Settings();
 		settings.colorPreset = COLOR_PRESET_INDEX;

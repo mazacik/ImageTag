@@ -51,8 +51,8 @@ public class StageMain extends Stage {
 		sceneMain = new SceneMain();
 		
 		Decorator.applyScrollbarStyle(PaneGallery.getInstance());
-		Decorator.applyScrollbarStyle(PaneFilter.get().getScrollPane());
-		Decorator.applyScrollbarStyle(PaneSelect.get().getScrollPane());
+		Decorator.applyScrollbarStyle(PaneFilter.getInstance().getScrollPane());
+		Decorator.applyScrollbarStyle(PaneSelect.getInstance().getScrollPane());
 		
 		this.setScene(sceneMain);
 		this.getScene().widthProperty().addListener((observable, oldValue, newValue) -> SizeUtil.stageWidthChangeHandler());
@@ -65,7 +65,7 @@ public class StageMain extends Stage {
 		this.centerOnScreen();
 		this.setOnCloseRequest(event -> Main.exitApplication());
 		this.focusedProperty().addListener((observable, oldValue, newValue) -> {
-			if (!newValue) PaneEntity.get().getControls().hide();
+			if (!newValue) PaneEntity.getInstance().getControls().hide();
 		});
 		
 		sceneMain.getRoot().requestFocus();

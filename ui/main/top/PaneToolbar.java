@@ -71,7 +71,7 @@ public class PaneToolbar extends BorderPane {
 	private static class Loader {
 		private static final PaneToolbar INSTANCE = new PaneToolbar();
 	}
-	public static PaneToolbar get() {
+	public static PaneToolbar getInstance() {
 		return Loader.INSTANCE;
 	}
 }

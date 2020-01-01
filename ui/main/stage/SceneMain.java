@@ -1,6 +1,7 @@
 package ui.main.stage;
 
 import base.entity.Entity;
+import base.entity.EntityCollectionUtil;
 import cache.CacheManager;
 import control.Select;
 import control.reload.ChangeIn;
@@ -26,9 +27,9 @@ public class SceneMain extends Scene {
 	private HBox mainBox;
 	
 	public SceneMain() {
-		mainBox = new HBox(PaneFilter.get(), PaneGallery.getInstance(), PaneSelect.get());
+		mainBox = new HBox(PaneFilter.getInstance(), PaneGallery.getInstance(), PaneSelect.getInstance());
 		
-		VBox vBox = new VBox(PaneToolbar.get(), mainBox);
+		VBox vBox = new VBox(PaneToolbar.getInstance(), mainBox);
 		vBox.setBackground(ColorUtil.getBackgroundPrimary());
 		
 		this.initKeybinds();
@@ -63,14 +64,14 @@ public class SceneMain extends Scene {
 						Reload.start();
 						break;
 					case TAB:
-						PaneSelect.get().getNodeSearch().requestFocus();
+						PaneSelect.getInstance().getNodeSearch().requestFocus();
 						break;
 					case DELETE:
 						Select.getEntities().deleteFiles();
 						Reload.start();
 						break;
 					case E:
-						Select.getTarget().getGalleryTile().onGroupIconClick();
+						EntityCollectionUtil.openCollection(Select.getTarget());
 						Reload.start();
 						break;
 					case R:
@@ -109,7 +110,7 @@ public class SceneMain extends Scene {
 	
 	public void viewGallery() {
 		if (!isViewGallery()) {
-			PaneEntity.get().interruptVideoPlayer();
+			PaneEntity.getInstance().interruptVideoPlayer();
 			
 			mainBox.getChildren().set(1, PaneGallery.getInstance());
 			
@@ -120,10 +121,10 @@ public class SceneMain extends Scene {
 	}
 	public void viewEntity() {
 		if (isViewGallery()) {
-			mainBox.getChildren().set(1, PaneEntity.get());
+			mainBox.getChildren().set(1, PaneEntity.getInstance());
 			
-			PaneEntity.get().requestFocus();
-			PaneEntity.get().fireEvent(new MouseEvent(MouseEvent.MOUSE_MOVED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
+			PaneEntity.getInstance().requestFocus();
+			PaneEntity.getInstance().fireEvent(new MouseEvent(MouseEvent.MOUSE_MOVED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
 			
 			Reload.notify(ChangeIn.VIEWMODE);
 		}

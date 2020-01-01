@@ -2,6 +2,7 @@ package ui.main.center;
 
 import base.CustomList;
 import base.entity.Entity;
+import base.entity.EntityCollectionUtil;
 import base.entity.EntityList;
 import control.Select;
 import control.filter.Filter;
@@ -26,7 +27,6 @@ import java.util.logging.Logger;
 
 public class PaneGallery extends ScrollPane {
 	private TilePane tilePane;
-	private CustomList<Integer> expandedGroups;
 	
 	private Rectangle selectRectangle;
 	private boolean selectRectangleVisible;
@@ -41,7 +41,7 @@ public class PaneGallery extends ScrollPane {
 		tilePane = new TilePane(GAP, GAP);
 		tilePane.setPadding(new Insets(GAP));
 		
-		double actualTileSize = Settings.getTileSize() + 2 * GalleryTile.SELECT_BORDER_PADDING;
+		double actualTileSize = Settings.getTileSize() + 2 * GalleryTile.HIGHLIGHT_PADDING;
 		tilePane.setPrefTileWidth(actualTileSize);
 		tilePane.setPrefTileHeight(actualTileSize);
 		
@@ -49,8 +49,6 @@ public class PaneGallery extends ScrollPane {
 		tilePane.addEventFilter(MouseEvent.MOUSE_PRESSED, this::onMousePress);
 		tilePane.addEventFilter(MouseEvent.MOUSE_DRAGGED, this::onMouseDrag);
 		tilePane.addEventFilter(MouseEvent.MOUSE_RELEASED, this::onMouseRelease);
-		
-		expandedGroups = new CustomList<>();
 		
 		selectRectangle = new Rectangle(0, 0, Color.GRAY);
 		selectRectangle.setStroke(Color.BLACK);
@@ -250,7 +248,7 @@ public class PaneGallery extends ScrollPane {
 			} else if (!collectionIDs.contains(collectionID)) {
 				//	only one object in the entity group needs to be processed
 				collectionIDs.add(collectionID);
-				if (expandedGroups.contains(collectionID)) {
+				if (EntityCollectionUtil.getOpenCollections().contains(collectionID)) {
 					for (Entity collection : entity.getCollection()) {
 						//	instead of letting the main loop take care of all objects in the entity group
 						//	the entity group gets processed in a separate loop to keep its objects together
@@ -284,7 +282,7 @@ public class PaneGallery extends ScrollPane {
 		
 		Entity currentTarget = Select.getTarget();
 		if (!StageManager.getStageMain().getSceneMain().isViewGallery() || currentTarget == null) return;
-		if (currentTarget.getCollectionID() != 0 && !instance.expandedGroups.contains(currentTarget.getCollectionID())) {
+		if (currentTarget.getCollectionID() != 0 && !EntityCollectionUtil.getOpenCollections().contains(currentTarget.getCollectionID())) {
 			currentTarget = currentTarget.getCollection().getFirst();
 		}
 		int TargetIndex = instance.getEntitiesOfTiles().indexOf(currentTarget);
@@ -328,9 +326,6 @@ public class PaneGallery extends ScrollPane {
 	}
 	public TilePane getTiles() {
 		return tilePane;
-	}
-	public CustomList<Integer> getExpandedCollections() {
-		return expandedGroups;
 	}
 	
 	private PaneGallery() {}

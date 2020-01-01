@@ -66,21 +66,21 @@ public class VideoPlayer {
 			@Override
 			public void positionChanged(MediaPlayer mediaPlayer, float newPosition) {
 				super.positionChanged(mediaPlayer, newPosition);
-				PaneEntity.get().getControls().setVideoProgress(newPosition);
+				PaneEntity.getInstance().getControls().setVideoProgress(newPosition);
 			}
 		});
 		mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
 			@Override
 			public void timeChanged(MediaPlayer mediaPlayer, long newTime) {
 				super.timeChanged(mediaPlayer, newTime);
-				PaneEntity.get().getControls().setTimeCurrent(newTime);
+				PaneEntity.getInstance().getControls().setTimeCurrent(newTime);
 			}
 		});
 		mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
 			@Override
 			public void lengthChanged(MediaPlayer mediaPlayer, long newLength) {
 				super.lengthChanged(mediaPlayer, newLength);
-				PaneEntity.get().getControls().setTimeTotal(newLength);
+				PaneEntity.getInstance().getControls().setTimeTotal(newLength);
 			}
 		});
 		
@@ -88,14 +88,14 @@ public class VideoPlayer {
 			@Override
 			public void opening(MediaPlayer mediaPlayer) {
 				super.opening(mediaPlayer);
-				PaneEntity.get().getControls().setVideoProgress(0);
+				PaneEntity.getInstance().getControls().setVideoProgress(0);
 			}
 		});
 		mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
 			@Override
 			public void finished(MediaPlayer mediaPlayer) {
 				super.finished(mediaPlayer);
-				PaneEntity.get().getControls().setVideoProgress(1);
+				PaneEntity.getInstance().getControls().setVideoProgress(1);
 			}
 		});
 	}

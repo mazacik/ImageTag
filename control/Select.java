@@ -2,6 +2,7 @@ package control;
 
 import base.CustomList;
 import base.entity.Entity;
+import base.entity.EntityCollectionUtil;
 import base.entity.EntityList;
 import control.filter.Filter;
 import control.reload.ChangeIn;
@@ -15,7 +16,7 @@ import java.util.Collection;
 
 public class Select extends EntityList {
 	public boolean add(Entity entity) {
-		if (entity.getCollectionID() == 0 || PaneGallery.getInstance().getExpandedCollections().contains(entity.getCollectionID())) {
+		if (entity.getCollectionID() == 0 || EntityCollectionUtil.getOpenCollections().contains(entity.getCollectionID())) {
 			if (super.add(entity)) {
 				Reload.requestBorderUpdate(entity);
 				Reload.notify(ChangeIn.SELECT);
@@ -40,7 +41,7 @@ public class Select extends EntityList {
 	}
 	
 	public boolean remove(Entity entity) {
-		if (entity.getCollectionID() == 0 || PaneGallery.getInstance().getExpandedCollections().contains(entity.getCollectionID())) {
+		if (entity.getCollectionID() == 0 || EntityCollectionUtil.getOpenCollections().contains(entity.getCollectionID())) {
 			if (super.remove(entity)) {
 				Reload.requestBorderUpdate(entity);
 				Reload.notify(ChangeIn.SELECT);
@@ -148,7 +149,7 @@ public class Select extends EntityList {
 			target = newTarget;
 			
 			if (getEntities().isEmpty()) {
-				if (target.getCollectionID() == 0 || PaneGallery.getInstance().getExpandedCollections().contains(target.getCollectionID())) {
+				if (target.getCollectionID() == 0 || EntityCollectionUtil.getOpenCollections().contains(target.getCollectionID())) {
 					getEntities().add(target);
 				} else {
 					getEntities().addAll(target.getCollection());
@@ -171,7 +172,7 @@ public class Select extends EntityList {
 		if (target.getCollectionID() == 0) {
 			currentTargetIndex = entities.indexOf(target);
 		} else {
-			if (PaneGallery.getInstance().getExpandedCollections().contains(target.getCollectionID())) {
+			if (EntityCollectionUtil.getOpenCollections().contains(target.getCollectionID())) {
 				currentTargetIndex = entities.indexOf(target);
 			} else {
 				Entity groupFirst = target.getCollection().getFirst();
@@ -226,7 +227,7 @@ public class Select extends EntityList {
 	private static Entity storeEntity = null;
 	private static int storePos = -1;
 	public static void storeTargetPosition() {
-		CustomList<Integer> expandedcollection = PaneGallery.getInstance().getExpandedCollections();
+		CustomList<Integer> expandedcollection = EntityCollectionUtil.getOpenCollections();
 		CustomList<Entity> visibleEntities = PaneGallery.getInstance().getEntitiesOfTiles();
 		//todo probably needs getFirst() somewhere
 		if (target.getCollectionID() == 0) {

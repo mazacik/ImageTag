@@ -20,10 +20,10 @@ public class Reload {
 	
 	}
 	
-	public static void init() {
+	public static void initStaticVariables() {
 		try {
 			//  ToolbarPane
-			InvokeHelper invokeHelper1 = new InvokeHelper(PaneToolbar.get(), PaneToolbar.get().getClass().getMethod("reload"));
+			InvokeHelper invokeHelper1 = new InvokeHelper(PaneToolbar.getInstance(), PaneToolbar.getInstance().getClass().getMethod("reload"));
 			ChangeIn.TARGET.getSubscribers().add(invokeHelper1);
 			
 			//  GalleryPane
@@ -32,19 +32,19 @@ public class Reload {
 			ChangeIn.FILTER.getSubscribers().add(invokeHelper2);
 			
 			//  MediaPane
-			InvokeHelper invokeHelper3 = new InvokeHelper(PaneEntity.get(), PaneEntity.get().getClass().getMethod("reload"));
+			InvokeHelper invokeHelper3 = new InvokeHelper(PaneEntity.getInstance(), PaneEntity.getInstance().getClass().getMethod("reload"));
 			ChangeIn.TARGET.getSubscribers().add(invokeHelper3);
 			ChangeIn.VIEWMODE.getSubscribers().add(invokeHelper3);
 			
 			//  FilterPane
-			InvokeHelper invokeHelper4 = new InvokeHelper(PaneFilter.get(), PaneFilter.get().getClass().getMethod("reload"));
-			InvokeHelper invokeHelper5 = new InvokeHelper(PaneFilter.get(), PaneFilter.get().getClass().getMethod("refresh"));
+			InvokeHelper invokeHelper4 = new InvokeHelper(PaneFilter.getInstance(), PaneFilter.getInstance().getClass().getMethod("reload"));
+			InvokeHelper invokeHelper5 = new InvokeHelper(PaneFilter.getInstance(), PaneFilter.getInstance().getClass().getMethod("refresh"));
 			ChangeIn.TAG_LIST_MAIN.getSubscribers().add(invokeHelper4);
 			ChangeIn.FILTER.getSubscribers().add(invokeHelper5);
 			
 			//  SelectPane
-			InvokeHelper invokeHelper6 = new InvokeHelper(PaneSelect.get(), PaneSelect.get().getClass().getMethod("reload"));
-			InvokeHelper invokeHelper7 = new InvokeHelper(PaneSelect.get(), PaneSelect.get().getClass().getMethod("refresh"));
+			InvokeHelper invokeHelper6 = new InvokeHelper(PaneSelect.getInstance(), PaneSelect.getInstance().getClass().getMethod("reload"));
+			InvokeHelper invokeHelper7 = new InvokeHelper(PaneSelect.getInstance(), PaneSelect.getInstance().getClass().getMethod("refresh"));
 			ChangeIn.TAG_LIST_MAIN.getSubscribers().add(invokeHelper6);
 			ChangeIn.TARGET.getSubscribers().add(invokeHelper7);
 			ChangeIn.SELECT.getSubscribers().add(invokeHelper7);
@@ -73,7 +73,7 @@ public class Reload {
 		//update borders of affected tiles
 		EntityList helper = new EntityList();
 		for (Entity entity : needsBorderUpdate) {
-			entity.getGalleryTile().updateSelectBorder();
+			entity.getGalleryTile().updateHighlight();
 			helper.add(entity);
 		}
 		needsBorderUpdate.removeAll(helper);

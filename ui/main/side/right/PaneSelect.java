@@ -223,7 +223,7 @@ public class PaneSelect extends SidePaneBase {
 	private static class Loader {
 		private static final PaneSelect INSTANCE = new PaneSelect();
 	}
-	public static PaneSelect get() {
+	public static PaneSelect getInstance() {
 		return Loader.INSTANCE;
 	}
 	
