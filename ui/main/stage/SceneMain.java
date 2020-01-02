@@ -51,13 +51,7 @@ public class SceneMain extends Scene {
 			} else {
 				switch (event.getCode()) {
 					case BACK_QUOTE:
-						Entity target = Select.getTarget();
-						Image i = CacheManager.get(target);
-						target.getGalleryTile().setImage(i);
-						System.out.println(i != null);
-						Reload.requestBorderUpdate(target);
-						Reload.start();
-						PaneGallery.getInstance().reload();
+						
 						break;
 					case ESCAPE:
 						StageManager.getStageMain().getSceneMain().viewGallery();
@@ -114,7 +108,7 @@ public class SceneMain extends Scene {
 			
 			mainBox.getChildren().set(1, PaneGallery.getInstance());
 			
-			PaneGallery.getInstance().moveViewportToTarget();
+			PaneGallery.moveViewportToTarget();
 			
 			Reload.notify(ChangeIn.VIEWMODE);
 		}

@@ -108,7 +108,7 @@ public class Select extends EntityList {
 		Select.entityFrom = entityFrom;
 	}
 	public static void shiftSelectTo(Entity entityTo) {
-		CustomList<Entity> entities = PaneGallery.getInstance().getEntitiesOfTiles();
+		CustomList<Entity> entities = PaneGallery.getTileEntities();
 		
 		int indexFrom = entities.indexOf(entityFrom);
 		int indexTo = entities.indexOf(entityTo);
@@ -165,7 +165,7 @@ public class Select extends EntityList {
 	public static void moveTarget(Direction direction) {
 		if (target == null) return;
 		
-		EntityList entities = PaneGallery.getInstance().getEntitiesOfTiles();
+		EntityList entities = PaneGallery.getTileEntities();
 		if (entities.isEmpty()) return;
 		
 		int currentTargetIndex;
@@ -184,7 +184,7 @@ public class Select extends EntityList {
 			}
 		}
 		
-		int columnCount = PaneGallery.getInstance().getColumnCount();
+		int columnCount = PaneGallery.getTilePane().getPrefColumns();
 		
 		int newTargetIndex = currentTargetIndex;
 		switch (direction) {
@@ -228,7 +228,7 @@ public class Select extends EntityList {
 	private static int storePos = -1;
 	public static void storeTargetPosition() {
 		CustomList<Integer> expandedcollection = EntityCollectionUtil.getOpenCollections();
-		CustomList<Entity> visibleEntities = PaneGallery.getInstance().getEntitiesOfTiles();
+		CustomList<Entity> visibleEntities = PaneGallery.getTileEntities();
 		//todo probably needs getFirst() somewhere
 		if (target.getCollectionID() == 0) {
 			storeEntity = target;
@@ -245,7 +245,7 @@ public class Select extends EntityList {
 	}
 	public static void restoreTargetPosition() {
 		//todo if this lands on a non-expanded collection, add the whole collection
-		EntityList visibleEntities = PaneGallery.getInstance().getEntitiesOfTiles();
+		EntityList visibleEntities = PaneGallery.getTileEntities();
 		if (!visibleEntities.isEmpty()) {
 			if (storeEntity != null && visibleEntities.contains(storeEntity)) {
 				setTarget(storeEntity);

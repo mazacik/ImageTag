@@ -26,51 +26,32 @@ import ui.stage.StageManager;
 import java.util.logging.Logger;
 
 public class PaneGallery extends ScrollPane {
-	private TilePane tilePane;
-	
-	private Rectangle selectRectangle;
-	private boolean selectRectangleVisible;
-	private double selectRectangleX;
-	private double selectRectangleY;
-	private double localCursorPositionX;
-	private double localCursorPositionY;
-	
 	public static final double GAP = 5;
 	
-	public void init() {
-		tilePane = new TilePane(GAP, GAP);
-		tilePane.setPadding(new Insets(GAP));
-		
-		double actualTileSize = Settings.getTileSize() + 2 * GalleryTile.HIGHLIGHT_PADDING;
-		tilePane.setPrefTileWidth(actualTileSize);
-		tilePane.setPrefTileHeight(actualTileSize);
-		
-		tilePane.addEventFilter(MouseEvent.MOUSE_CLICKED, this::onMouseClick);
-		tilePane.addEventFilter(MouseEvent.MOUSE_PRESSED, this::onMousePress);
-		tilePane.addEventFilter(MouseEvent.MOUSE_DRAGGED, this::onMouseDrag);
-		tilePane.addEventFilter(MouseEvent.MOUSE_RELEASED, this::onMouseRelease);
-		
-		selectRectangle = new Rectangle(0, 0, Color.GRAY);
-		selectRectangle.setStroke(Color.BLACK);
-		selectRectangle.setStrokeWidth(1);
-		selectRectangle.setOpacity(0.5);
-		selectRectangleX = 0;
-		selectRectangleY = 0;
-		selectRectangleVisible = false;
-		localCursorPositionX = 0;
-		localCursorPositionY = 0;
-		
-		this.setContent(tilePane);
-		this.getChildren().add(tilePane);
-		this.setBackground(Background.EMPTY);
-		this.setHbarPolicy(ScrollBarPolicy.NEVER);
-		this.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
-		//this.setMinViewportWidth(actualTileSize);
-		this.setPrefViewportHeight(SizeUtil.getUsableScreenHeight());
-		this.addEventFilter(ScrollEvent.SCROLL, this::onScroll);
+	private static final TilePane tilePane;
+	
+	private static final Rectangle selectRectangle;
+	private static double selectRectangleX;
+	private static double selectRectangleY;
+	private static double localCursorPositionX;
+	private static double localCursorPositionY;
+	
+	private static double getContentY(MouseEvent event) {
+		return Loader.INSTANCE.sceneToLocal(tilePane.localToScene(event.getX(), event.getY())).getY();
+	}
+	private static EntityList getSelectRectangleEntities() {
+		Bounds rectBounds = selectRectangle.localToScene(selectRectangle.getBoundsInLocal());
+		EntityList entityList = new EntityList();
+		for (GalleryTile tile : tiles) {
+			Bounds tileBounds = tile.localToScene(tile.getBoundsInLocal());
+			if (rectBounds.intersects(tileBounds)) {
+				entityList.add(tile.getEntity());
+			}
+		}
+		return entityList;
 	}
 	
-	private void onMouseClick(MouseEvent event) {
+	private static void onMouseClick(MouseEvent event) {
 		switch (event.getButton()) {
 			case PRIMARY:
 				ClickMenu.hideAll();
@@ -80,34 +61,33 @@ public class PaneGallery extends ScrollPane {
 				break;
 		}
 	}
-	private void onMousePress(MouseEvent event) {
+	private static void onMousePress(MouseEvent event) {
 		switch (event.getButton()) {
 			case PRIMARY:
+				double x = event.getX();
+				double y = PaneGallery.getContentY(event);
+				
+				selectRectangleX = x;
+				selectRectangleY = y;
+				localCursorPositionX = x;
+				localCursorPositionY = y;
+				
 				ClickMenu.hideAll();
-				localCursorPositionX = event.getX();
-				localCursorPositionY = this.getContentY(event);
-				selectRectangleX = event.getX();
-				selectRectangleY = this.getContentY(event);
 				break;
 			case SECONDARY:
 				break;
 		}
 	}
-	private void onMouseDrag(MouseEvent event) {
+	private static void onMouseDrag(MouseEvent event) {
 		if (event.getButton() == MouseButton.PRIMARY) {
 			localCursorPositionX = event.getX();
-			localCursorPositionY = this.getContentY(event);
+			localCursorPositionY = PaneGallery.getContentY(event);
 			double width = Math.abs(localCursorPositionX - selectRectangleX);
 			double height = Math.abs(localCursorPositionY - selectRectangleY);
 			
-			if (!selectRectangleVisible) {
+			if (!Loader.INSTANCE.getChildren().contains(selectRectangle)) {
 				if (width >= 5 || height >= 5) {
-					selectRectangleVisible = true;
-					this.getChildren().add(selectRectangle);
-					selectRectangle.setWidth(width);
-					selectRectangle.setHeight(height);
-					selectRectangle.setX(Math.min(selectRectangleX, localCursorPositionX));
-					selectRectangle.setY(Math.min(selectRectangleY, localCursorPositionY));
+					Loader.INSTANCE.getChildren().add(selectRectangle);
 				}
 			} else {
 				selectRectangle.setWidth(width);
@@ -115,68 +95,56 @@ public class PaneGallery extends ScrollPane {
 				selectRectangle.setX(Math.min(selectRectangleX, localCursorPositionX));
 				selectRectangle.setY(Math.min(selectRectangleY, localCursorPositionY));
 				
-				//add a cooldown timer if necessary
-				CustomList<Entity> intersectingTiles = getSelectRectangleTiles();
+				EntityList entities = new EntityList();
+				for (Entity entity : PaneGallery.getSelectRectangleEntities()) {
+					if (EntityCollectionUtil.hasNoCollectionOrIsOpen(entity)) {
+						entities.add(entity);
+					} else {
+						entities.addAll(entity.getCollection());
+					}
+				}
 				
 				if (event.isShiftDown()) {
-					//todo if adding a collection tile, add the entire collection if needed
-					Select.getEntities().addAll(intersectingTiles);
+					Select.getEntities().addAll(entities, true);
 				} else {
-					Select.getEntities().setAll(intersectingTiles);
+					Select.getEntities().setAll(entities);
 				}
 				
 				Reload.start();
 			}
 		}
 	}
-	private void onMouseRelease(MouseEvent event) {
-		if (selectRectangleVisible && event.getButton() == MouseButton.PRIMARY) {
+	private static void onMouseRelease(MouseEvent event) {
+		if (event.getButton() == MouseButton.PRIMARY && Loader.INSTANCE.getChildren().contains(selectRectangle)) {
 			selectRectangle.setWidth(0);
 			selectRectangle.setHeight(0);
 			selectRectangle.setX(0);
 			selectRectangle.setY(0);
 			
-			selectRectangleVisible = false;
-			this.getChildren().remove(selectRectangle);
+			Loader.INSTANCE.getChildren().remove(selectRectangle);
 			
 			Reload.start();
 		}
 	}
 	
-	private double getContentY(MouseEvent event) {
-		return this.sceneToLocal(tilePane.localToScene(event.getX(), event.getY())).getY();
-	}
-	private EntityList getSelectRectangleTiles() {
-		EntityList entityList = new EntityList();
-		CustomList<GalleryTile> tiles = new CustomList<>();
-		tilePane.getChildren().forEach(tile -> tiles.add((GalleryTile) tile));
-		
-		Bounds rectBounds = selectRectangle.localToScene(selectRectangle.getBoundsInLocal());
-		for (GalleryTile galleryTile : tiles) {
-			Bounds tileBounds = galleryTile.localToScene(galleryTile.getBoundsInLocal());
-			if (rectBounds.intersects(tileBounds)) {
-				entityList.add(galleryTile.getEntity());
-			}
-		}
-		return entityList;
-	}
-	
-	private void onScroll(ScrollEvent event) {
+	private static void onScroll(ScrollEvent event) {
 		event.consume();
 		
+		PaneGallery instance = Loader.INSTANCE;
+		
 		double rowHeight = tilePane.getPrefTileHeight() + GAP;
-		double contentHeight = tilePane.getHeight() - this.getViewportBounds().getHeight();
+		double contentHeight = tilePane.getHeight() - instance.getViewportBounds().getHeight();
 		double rowToContentRatio = rowHeight / contentHeight;
-		double currentVvalue = this.getVvalue();
+		double currentVvalue = instance.getVvalue();
 		
 		if (event.getDeltaY() > 0) {
 			//mouse-scroll-up
-			this.setVvalue(currentVvalue - rowToContentRatio);
+			instance.setVvalue(currentVvalue - rowToContentRatio);
 			
 			//top-of-content fix
 			if (currentVvalue == 0) return;
 			
-			double minY = Math.abs(this.getViewportBounds().getMinY());
+			double minY = Math.abs(instance.getViewportBounds().getMinY());
 			double pxChange = rowHeight;
 			if (minY - rowHeight < 0) {
 				pxChange = minY;
@@ -197,13 +165,13 @@ public class PaneGallery extends ScrollPane {
 			}
 		} else {
 			//mouse-scroll-down
-			this.setVvalue(currentVvalue + rowToContentRatio);
+			instance.setVvalue(currentVvalue + rowToContentRatio);
 			
 			//bottom-of-content fix
 			if (currentVvalue == 1) return;
 			
-			double viewportHeight = this.getViewportBounds().getHeight();
-			double viewportMinY = Math.abs(this.getViewportBounds().getMaxY());
+			double viewportHeight = instance.getViewportBounds().getHeight();
+			double viewportMinY = Math.abs(instance.getViewportBounds().getMaxY());
 			
 			double viewportPositionAfterChange = viewportMinY + viewportHeight + rowHeight;
 			double contentPosition = contentHeight - viewportHeight;
@@ -229,55 +197,96 @@ public class PaneGallery extends ScrollPane {
 		}
 	}
 	
+	static {
+		tilePane = new TilePane(GAP, GAP);
+		tilePane.setPadding(new Insets(GAP));
+		
+		double actualTileSize = Settings.getTileSize() + 2 * GalleryTile.HIGHLIGHT_PADDING;
+		tilePane.setPrefTileWidth(actualTileSize);
+		tilePane.setPrefTileHeight(actualTileSize);
+		
+		tilePane.addEventFilter(MouseEvent.MOUSE_CLICKED, PaneGallery::onMouseClick);
+		tilePane.addEventFilter(MouseEvent.MOUSE_PRESSED, PaneGallery::onMousePress);
+		tilePane.addEventFilter(MouseEvent.MOUSE_DRAGGED, PaneGallery::onMouseDrag);
+		tilePane.addEventFilter(MouseEvent.MOUSE_RELEASED, PaneGallery::onMouseRelease);
+		
+		selectRectangle = new Rectangle(0, 0, Color.GRAY);
+		selectRectangle.setStroke(Color.BLACK);
+		selectRectangle.setStrokeWidth(1);
+		selectRectangle.setOpacity(0.5);
+		selectRectangleX = 0;
+		selectRectangleY = 0;
+		localCursorPositionX = 0;
+		localCursorPositionY = 0;
+		
+		PaneGallery instance = Loader.INSTANCE;
+		
+		instance.setContent(tilePane);
+		instance.getChildren().add(tilePane);
+		instance.setBackground(Background.EMPTY);
+		instance.setHbarPolicy(ScrollBarPolicy.NEVER);
+		instance.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+		instance.setPrefViewportHeight(SizeUtil.getUsableScreenHeight());
+		instance.addEventFilter(ScrollEvent.SCROLL, PaneGallery::onScroll);
+	}
+	
+	private static EntityList tileEntities = new EntityList();
+	private static CustomList<GalleryTile> tiles = new CustomList<>();
+	
 	public boolean reload() {
-		//todo refactor
 		Logger.getGlobal().info(this.toString());
 		
-		//	var init
-		CustomList<Integer> collectionIDs = new CustomList<>();
-		CustomList<GalleryTile> tiles = new CustomList<>();
+		//	prepare
 		Select.storeTargetPosition();
 		
+		tiles.clear();
+		tileEntities.clear();
+		
+		CustomList<Integer> collectionIDs = new CustomList<>();
+		
 		//	main loop
+		int collectionID;
+		GalleryTile galleryTile;
+		
 		for (Entity entity : Filter.getEntities()) {
-			GalleryTile galleryTile = entity.getGalleryTile();
-			int collectionID = entity.getCollectionID();
+			galleryTile = entity.getGalleryTile();
+			collectionID = entity.getCollectionID();
 			
 			if (collectionID == 0) {
 				tiles.add(galleryTile);
+				tileEntities.add(entity);
 			} else if (!collectionIDs.contains(collectionID)) {
 				//	only one object in the entity group needs to be processed
 				collectionIDs.add(collectionID);
 				if (EntityCollectionUtil.getOpenCollections().contains(collectionID)) {
-					for (Entity collection : entity.getCollection()) {
+					for (Entity entityInCollection : entity.getCollection()) {
 						//	instead of letting the main loop take care of all objects in the entity group
 						//	the entity group gets processed in a separate loop to keep its objects together
 						//	however, each object needs to be checked for Filter validity an additional time
-						if (Filter.getEntities().contains(collection)) {
-							tiles.add(collection.getGalleryTile());
-							Reload.requestBorderUpdate(collection);
+						if (Filter.getEntities().contains(entityInCollection)) {
+							tiles.add(entityInCollection.getGalleryTile());
+							tileEntities.add(entityInCollection);
+							Reload.requestBorderUpdate(entityInCollection);
 						}
 					}
 				} else {
 					tiles.add(galleryTile);
+					tileEntities.add(entity);
 					Reload.requestBorderUpdate(entity);
 				}
 			}
 		}
 		
-		//	apply changes to TilePane
+		//	apply
 		tilePane.getChildren().setAll(tiles);
 		
-		//	Target and Select adjustments
+		//  finish
 		Select.restoreTargetPosition();
 		
 		return true;
 	}
-	
 	public static void moveViewportToTarget() {
 		PaneGallery instance = Loader.INSTANCE;
-		TilePane tilePane = instance.tilePane;
-		
 		//instance.layout();
 		
 		Entity currentTarget = Select.getTarget();
@@ -285,10 +294,10 @@ public class PaneGallery extends ScrollPane {
 		if (currentTarget.getCollectionID() != 0 && !EntityCollectionUtil.getOpenCollections().contains(currentTarget.getCollectionID())) {
 			currentTarget = currentTarget.getCollection().getFirst();
 		}
-		int TargetIndex = instance.getEntitiesOfTiles().indexOf(currentTarget);
+		int TargetIndex = tileEntities.indexOf(currentTarget);
 		if (TargetIndex < 0) return;
 		
-		int columnCount = instance.getColumnCount();
+		int columnCount = tilePane.getPrefColumns();
 		int TargetRow = TargetIndex / columnCount;
 		
 		Bounds buggyBounds = instance.getViewportBounds();
@@ -314,18 +323,12 @@ public class PaneGallery extends ScrollPane {
 			instance.setVvalue(TargetRow * rowToContentRatio);
 		}
 	}
-	public EntityList getEntitiesOfTiles() {
-		//todo make this a variable, update on reload?
-		EntityList entities = new EntityList();
-		tilePane.getChildren().forEach(tile -> entities.add(((GalleryTile) tile).getEntity()));
-		return entities;
-	}
 	
-	public int getColumnCount() {
-		return tilePane.getPrefColumns();
-	}
-	public TilePane getTiles() {
+	public static TilePane getTilePane() {
 		return tilePane;
+	}
+	public static EntityList getTileEntities() {
+		return tileEntities;
 	}
 	
 	private PaneGallery() {}

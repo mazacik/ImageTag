@@ -21,7 +21,6 @@ import misc.Project;
 import org.apache.commons.text.WordUtils;
 import ui.component.clickmenu.ClickMenu;
 import ui.component.simple.TextNode;
-import ui.main.center.PaneGallery;
 import ui.main.side.left.PaneFilter;
 import ui.main.side.right.PaneSelect;
 import ui.stage.StageManager;
@@ -118,18 +117,6 @@ public enum ButtonTemplates {
 				StageManager.getStageMain().getSceneMain().viewGallery();
 				Reload.start();
 				ClickMenu.hideAll();
-			});
-			return textNode;
-		}
-	},
-	FILTER_RANDOM {
-		public TextNode get() {
-			TextNode textNode = new TextNode("Random", true, true, false, true);
-			textNode.setMaxWidth(Double.MAX_VALUE);
-			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				Select.getEntities().set(PaneGallery.getInstance().getEntitiesOfTiles().getRandom());//todo is this right?
-				//Target.set(entity);//todo ??
-				Reload.start();
 			});
 			return textNode;
 		}

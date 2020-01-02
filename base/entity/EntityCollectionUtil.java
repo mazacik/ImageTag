@@ -53,6 +53,9 @@ public abstract class EntityCollectionUtil {
 		}
 		return true;
 	}
+	public static boolean hasNoCollectionOrIsOpen(Entity entity) {
+		return entity.getCollectionID() == 0 || openCollections.contains(entity.getCollectionID());
+	}
 	
 	private static CustomList<Integer> openCollections = new CustomList<>();
 	public static void openCollection(Entity entity) {

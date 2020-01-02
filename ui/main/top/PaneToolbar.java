@@ -33,14 +33,10 @@ public class PaneToolbar extends BorderPane {
 		TextNode nodeExit = ButtonTemplates.APPLICATION_EXIT.get();
 		ClickMenu.install(nodeFile, Direction.DOWN, nodeSave, nodeImport, nodeCacheReset, new BoxSeparatorNode(), nodeExit);
 		
-		TextNode nodeRandom = ButtonTemplates.FILTER_RANDOM.get();
-		HBox hBoxTools = new HBox(nodeRandom);
-		hBoxTools.setAlignment(Pos.CENTER);
-		
 		nodeTarget = new TextNode("", true, true, false, true);
 		ClickMenu.install(nodeTarget, Direction.DOWN, MouseButton.PRIMARY, ClickMenu.StaticInstance.ENTITY);
 		
-		HBox hBox = new HBox(nodeFile, hBoxTools);
+		HBox hBox = new HBox(nodeFile);
 		hBox.setAlignment(Pos.CENTER);
 		
 		titleBar.setCenter(nodeTarget);

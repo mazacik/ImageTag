@@ -33,10 +33,7 @@ public class Main extends Application {
 	public void start(Stage stage) {
 		System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %2$s: %5$s%n");
 		
-		//Settings.readFromDisk();
-		
 		PaneToolbar.getInstance().init();
-		PaneGallery.getInstance().init();
 		PaneEntity.getInstance().init();
 		PaneFilter.getInstance().init();
 		PaneSelect.getInstance().init();

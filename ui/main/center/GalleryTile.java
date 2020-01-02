@@ -79,9 +79,6 @@ public class GalleryTile extends Pane {
 	}
 	
 	private final Entity entity;
-	public Entity getEntity() {
-		return entity;
-	}
 	
 	public GalleryTile(Entity entity) {
 		this.entity = entity;
@@ -177,6 +174,10 @@ public class GalleryTile extends Pane {
 		} else {
 			entity.getCollection().getFirst().getGalleryTile().setEffect(collectionIconMinus);
 		}
+	}
+	
+	public Entity getEntity() {
+		return entity;
 	}
 	
 	public void setImage(Image image) {
