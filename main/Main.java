@@ -14,9 +14,7 @@ import javafx.stage.Stage;
 import misc.FileUtil;
 import misc.Project;
 import misc.Settings;
-import ui.main.center.GalleryTile;
 import ui.main.center.PaneEntity;
-import ui.main.center.PaneGallery;
 import ui.main.side.left.PaneFilter;
 import ui.main.side.right.PaneSelect;
 import ui.main.top.PaneToolbar;
@@ -122,22 +120,22 @@ public class Main extends Application {
 		if (needsSort) EntityList.getMain().sort();
 	}
 	private static void initCollections() {
-		//todo probably needs rework
-		CustomList<EntityList> collections = new CustomList<>();
 		int collectionID;
+		boolean collectionExists;
+		CustomList<EntityList> collections = new CustomList<>();
 		for (Entity entity : EntityList.getMain()) {
 			collectionID = entity.getCollectionID();
 			if (collectionID != 0) {
-				boolean match = false;
+				collectionExists = false;
 				for (EntityList collection : collections) {
 					if (collection.getFirst().getCollectionID() == collectionID) {
 						collection.add(entity);
 						entity.setCollection(collection);
-						match = true;
+						collectionExists = true;
 						break;
 					}
 				}
-				if (!match) {
+				if (!collectionExists) {
 					EntityList collection = new EntityList(entity);
 					entity.setCollection(collection);
 					collections.add(collection);
