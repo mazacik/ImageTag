@@ -3,8 +3,8 @@ package control.reload;
 import base.CustomList;
 import base.entity.Entity;
 import base.entity.EntityList;
-import ui.main.center.PaneGallery;
 import ui.main.center.PaneEntity;
+import ui.main.center.PaneGallery;
 import ui.main.side.left.PaneFilter;
 import ui.main.side.right.PaneSelect;
 import ui.main.top.PaneToolbar;
@@ -12,15 +12,11 @@ import ui.main.top.PaneToolbar;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
-public class Reload {
+public abstract class Reload {
 	private final static CustomList<Entity> needsBorderUpdate = new CustomList<>();
 	private final static CustomList<InvokeHelper> queue = new CustomList<>();
 	
-	private Reload() {
-	
-	}
-	
-	public static void initStaticVariables() {
+	static {
 		try {
 			//  ToolbarPane
 			InvokeHelper invokeHelper1 = new InvokeHelper(PaneToolbar.getInstance(), PaneToolbar.getInstance().getClass().getMethod("reload"));

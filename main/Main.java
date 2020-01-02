@@ -38,8 +38,6 @@ public class Main extends Application {
 		PaneFilter.getInstance().init();
 		PaneSelect.getInstance().init();
 		
-		Reload.initStaticVariables();//todo remove
-		
 		if (!QUICKSTART || FileUtil.getProjectFiles().isEmpty()) {
 			StageManager.getStageMain().layoutIntro();
 		} else {

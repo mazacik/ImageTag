@@ -103,6 +103,7 @@ public class Select extends EntityList {
 		restoreTargetPosition();
 	}
 	
+	//todo ShiftSelect needs a rework to function like Windows ShiftSelect
 	private static Entity entityFrom = null;
 	public static void shiftSelectFrom(Entity entityFrom) {
 		Select.entityFrom = entityFrom;
@@ -123,7 +124,6 @@ public class Select extends EntityList {
 			indexLower = indexFrom;
 			indexHigher = indexTo;
 		}
-		//todo this needs a rework
 		Loader.INSTANCE.addAll(entities.subList(indexLower, indexHigher + 1), true);
 	}
 	
