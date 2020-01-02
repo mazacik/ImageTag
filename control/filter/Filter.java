@@ -97,13 +97,13 @@ public class Filter extends EntityList {
 		}
 	}
 	public static EntityList applyTo(EntityList listBefore) {
-		EntityList listAfter = new EntityList();
+		EntityList entityList = new EntityList();
 		listBefore.forEach(entity -> {
 			if (Loader.INSTANCE.contains(entity)) {
-				listAfter.add(entity);
+				entityList.add(entity);
 			}
 		});
-		return listAfter;
+		return entityList;
 	}
 	
 	public static FilterSettings getSettings() {

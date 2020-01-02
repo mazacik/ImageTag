@@ -99,16 +99,15 @@ public class GalleryTile extends Pane {
 		this.setPadding(new Insets(HIGHLIGHT_PADDING));
 		
 		this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+			if (!event.isStillSincePress()) return;
 			switch (event.getButton()) {
 				case PRIMARY:
 					boolean hitWidth = event.getX() >= collectionIconX && event.getX() <= collectionIconX + collectionIconSize;
 					boolean hitHeight = event.getY() <= collectionIconY + collectionIconSize && event.getY() >= collectionIconY;
 					if (entity.getCollectionID() != 0 && hitWidth && hitHeight) {
 						EntityCollectionUtil.openCollection(entity);
-						Reload.start();
 					} else {
 						if (event.getClickCount() % 2 != 0) {
-							Select.setTarget(entity);
 							
 							if (event.isControlDown()) {
 								if (Select.getEntities().contains(entity)) {
@@ -117,19 +116,17 @@ public class GalleryTile extends Pane {
 									Select.getEntities().add(entity);
 								}
 							} else if (event.isShiftDown()) {
-								Select.shiftSelectTo(entity);
+								Select.shiftSelect(entity);
 							} else {
 								Select.getEntities().set(entity);
 							}
-							
-							Reload.start();
-							
-							ClickMenu.hideAll();
+							Select.setTarget(entity);
 						} else {
 							StageManager.getStageMain().getSceneMain().viewEntity();
-							Reload.start();
 						}
 					}
+					ClickMenu.hideAll();
+					Reload.start();
 					break;
 				case SECONDARY:
 					if (!Select.getEntities().contains(entity)) {

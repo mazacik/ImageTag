@@ -41,8 +41,6 @@ public class SceneMain extends Scene {
 				if (event.getCode() == KeyCode.ESCAPE) {
 					mainBox.requestFocus();
 					event.consume();
-				} else if (event.getCode() == KeyCode.SHIFT) {
-					Select.shiftSelectFrom(Select.getTarget());
 				}
 			} else {
 				switch (event.getCode()) {
@@ -81,19 +79,13 @@ public class SceneMain extends Scene {
 						else this.viewGallery();
 						Reload.start();
 						break;
-					case SHIFT:
-						Select.shiftSelectFrom(Select.getTarget());
-						break;
 					case W:
 					case A:
 					case S:
 					case D:
+						//todo fix ctrl/shift
 						Select.moveTarget(event.getCode());
-						
-						if (event.isShiftDown()) Select.shiftSelectTo(Select.getTarget());
-						else if (event.isControlDown()) Select.getEntities().add(Select.getTarget());
-						else Select.getEntities().set(Select.getTarget());
-						
+						Select.getEntities().set(Select.getTarget());
 						Reload.start();
 						break;
 				}

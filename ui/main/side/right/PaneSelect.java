@@ -67,12 +67,8 @@ public class PaneSelect extends SidePaneBase {
 		CustomList<String> groupsShare;
 		
 		if (Select.getEntities().size() == 0) {
-			if (Select.getTarget() != null) {
-				groupsInter = Select.getTarget().getTagList().getGroups();
-				groupsShare = new CustomList<>();
-			} else {
-				return false;
-			}
+			groupsInter = new CustomList<>();
+			groupsShare = new CustomList<>();
 		} else {
 			groupsInter = Select.getEntities().getTagsIntersect().getGroups();
 			groupsShare = Select.getEntities().getTags().getGroups();

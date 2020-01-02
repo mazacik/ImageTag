@@ -16,7 +16,69 @@ import java.util.Collection;
 
 public class Select extends EntityList {
 	public boolean add(Entity entity) {
-		if (entity.getCollectionID() == 0 || EntityCollectionUtil.getOpenCollections().contains(entity.getCollectionID())) {
+		return this.add(entity, false);
+	}
+	public boolean add(Entity entity, boolean checkDuplicates) {
+		if (EntityCollectionUtil.hasOpenOrNoCollection(entity)) {
+			if (super.add(entity, checkDuplicates)) {
+				Reload.requestBorderUpdate(entity);
+				Reload.notify(ChangeIn.SELECT);
+				return true;
+			}
+		} else {
+			if (super.addAll(entity.getCollection(), checkDuplicates)) {
+				Reload.requestBorderUpdate(entity.getCollection());
+				Reload.notify(ChangeIn.SELECT);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean addAll(Collection<? extends Entity> c) {
+		return this.addAll(c, false);
+	}
+	public boolean addAll(Collection<? extends Entity> c, boolean checkDuplicates) {
+		if (super.addAll(c, checkDuplicates)) {
+			Reload.requestBorderUpdate(c);
+			Reload.notify(ChangeIn.SELECT);
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean remove(Entity entity) {
+		if (EntityCollectionUtil.hasOpenOrNoCollection(entity)) {
+			if (this.size() != 1) {
+				if (super.remove(entity)) {
+					Reload.requestBorderUpdate(entity);
+					Reload.notify(ChangeIn.SELECT);
+					return true;
+				}
+			}
+		} else {
+			if (this.size() != entity.getCollection().size()) {
+				if (super.removeAll(entity.getCollection())) {
+					Reload.requestBorderUpdate(entity.getCollection());
+					Reload.notify(ChangeIn.SELECT);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	public boolean removeAll(Collection<?> c) {
+		if (super.removeAll(c)) {
+			Reload.requestBorderUpdate((EntityList) c);
+			Reload.notify(ChangeIn.SELECT);
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean set(Entity entity) {
+		this.clear();
+		if (EntityCollectionUtil.hasOpenOrNoCollection(entity)) {
 			if (super.add(entity)) {
 				Reload.requestBorderUpdate(entity);
 				Reload.notify(ChangeIn.SELECT);
@@ -30,44 +92,6 @@ public class Select extends EntityList {
 			}
 		}
 		return false;
-	}
-	public boolean addAll(Collection<? extends Entity> c) {
-		if (super.addAll(c)) {
-			Reload.requestBorderUpdate(c);
-			Reload.notify(ChangeIn.SELECT);
-			return true;
-		}
-		return false;
-	}
-	
-	public boolean remove(Entity entity) {
-		if (entity.getCollectionID() == 0 || EntityCollectionUtil.getOpenCollections().contains(entity.getCollectionID())) {
-			if (super.remove(entity)) {
-				Reload.requestBorderUpdate(entity);
-				Reload.notify(ChangeIn.SELECT);
-				return true;
-			}
-		} else {
-			if (super.removeAll(entity.getCollection())) {
-				Reload.requestBorderUpdate(entity.getCollection());
-				Reload.notify(ChangeIn.SELECT);
-				return true;
-			}
-		}
-		return false;
-	}
-	public boolean removeAll(Collection<?> c) {
-		if (super.removeAll(c)) {
-			Reload.requestBorderUpdate((Entity) c);
-			Reload.notify(ChangeIn.SELECT);
-			return true;
-		}
-		return false;
-	}
-	
-	public boolean set(Entity entity) {
-		this.clear();
-		return this.add(entity);
 	}
 	public boolean setAll(Collection<? extends Entity> c) {
 		this.clear();
@@ -103,15 +127,10 @@ public class Select extends EntityList {
 		restoreTargetPosition();
 	}
 	
-	//todo ShiftSelect needs a rework to function like Windows ShiftSelect
-	private static Entity entityFrom = null;
-	public static void shiftSelectFrom(Entity entityFrom) {
-		Select.entityFrom = entityFrom;
-	}
-	public static void shiftSelectTo(Entity entityTo) {
+	public static void shiftSelect(Entity entityTo) {
 		CustomList<Entity> entities = PaneGallery.getTileEntities();
 		
-		int indexFrom = entities.indexOf(entityFrom);
+		int indexFrom = entities.indexOf(Select.getTarget());
 		int indexTo = entities.indexOf(entityTo);
 		
 		int indexLower;
@@ -124,7 +143,8 @@ public class Select extends EntityList {
 			indexLower = indexFrom;
 			indexHigher = indexTo;
 		}
-		Loader.INSTANCE.addAll(entities.subList(indexLower, indexHigher + 1), true);
+		
+		getEntities().addAll(entities.subList(indexLower, indexHigher + 1), true);
 	}
 	
 	private Select() {}

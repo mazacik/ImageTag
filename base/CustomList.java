@@ -33,16 +33,11 @@ public class CustomList<T> extends ArrayList<T> {
 	}
 	public boolean addAll(Collection<? extends T> c, boolean checkDuplicates) {
 		int sizeBefore = this.size();
-		for (T t : c) this.add(t, checkDuplicates);
-		return sizeBefore != this.size();
-	}
-	
-	public boolean addAll(T[] c) {
-		return this.addAll(c, false);
-	}
-	public boolean addAll(T[] c, boolean checkDuplicates) {
-		int sizeBefore = this.size();
-		for (T t : c) this.add(t, checkDuplicates);
+		for (T t : c) {
+			if (!checkDuplicates || !super.contains(t)) {
+				super.add(t);
+			}
+		}
 		return sizeBefore != this.size();
 	}
 	

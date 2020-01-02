@@ -36,16 +36,23 @@ public class PaneGallery extends ScrollPane {
 	private static double localCursorPositionX;
 	private static double localCursorPositionY;
 	
+	private static final EntityList selectRectangleHelper;
+	
 	private static double getContentY(MouseEvent event) {
-		return Loader.INSTANCE.sceneToLocal(tilePane.localToScene(event.getX(), event.getY())).getY();
+		return getInstance().sceneToLocal(tilePane.localToScene(event.getX(), event.getY())).getY();
 	}
 	private static EntityList getSelectRectangleEntities() {
-		Bounds rectBounds = selectRectangle.localToScene(selectRectangle.getBoundsInLocal());
+		Entity entity;
 		EntityList entityList = new EntityList();
-		for (GalleryTile tile : tiles) {
-			Bounds tileBounds = tile.localToScene(tile.getBoundsInLocal());
-			if (rectBounds.intersects(tileBounds)) {
-				entityList.add(tile.getEntity());
+		for (GalleryTile galleryTile : galleryTiles) {
+			if (selectRectangle.localToScene(selectRectangle.getBoundsInLocal()).intersects(galleryTile.localToScene(galleryTile.getBoundsInLocal()))) {
+				entity = galleryTile.getEntity();
+				if (EntityCollectionUtil.hasOpenOrNoCollection(entity)) {
+					entityList.add(entity);
+				} else {
+					entityList.addAll(entity.getCollection());
+				}
+				
 			}
 		}
 		return entityList;
@@ -72,6 +79,8 @@ public class PaneGallery extends ScrollPane {
 				localCursorPositionX = x;
 				localCursorPositionY = y;
 				
+				selectRectangleHelper.setAll(Select.getEntities());
+				
 				ClickMenu.hideAll();
 				break;
 			case SECONDARY:
@@ -85,9 +94,9 @@ public class PaneGallery extends ScrollPane {
 			double width = Math.abs(localCursorPositionX - selectRectangleX);
 			double height = Math.abs(localCursorPositionY - selectRectangleY);
 			
-			if (!Loader.INSTANCE.getChildren().contains(selectRectangle)) {
+			if (!getInstance().getChildren().contains(selectRectangle)) {
 				if (width >= 5 || height >= 5) {
-					Loader.INSTANCE.getChildren().add(selectRectangle);
+					getInstance().getChildren().add(selectRectangle);
 				}
 			} else {
 				selectRectangle.setWidth(width);
@@ -95,19 +104,24 @@ public class PaneGallery extends ScrollPane {
 				selectRectangle.setX(Math.min(selectRectangleX, localCursorPositionX));
 				selectRectangle.setY(Math.min(selectRectangleY, localCursorPositionY));
 				
-				EntityList entities = new EntityList();
-				for (Entity entity : PaneGallery.getSelectRectangleEntities()) {
-					if (EntityCollectionUtil.hasOpenOrNoCollection(entity)) {
-						entities.add(entity);
-					} else {
-						entities.addAll(entity.getCollection());
-					}
-				}
+				EntityList selectRectangleEntities = PaneGallery.getSelectRectangleEntities();
+				Select.getEntities().clear();
 				
-				if (event.isShiftDown()) {
-					Select.getEntities().addAll(entities, true);
+				if (event.isControlDown()) {
+					Select.getEntities().addAll(selectRectangleHelper, true);
+					Select.getEntities().addAll(selectRectangleEntities, true);
+					for (Entity entity : new EntityList(Select.getEntities())) {
+						if (entity != Select.getTarget() && selectRectangleHelper.contains(entity) && selectRectangleEntities.contains(entity)) {
+							Select.getEntities().remove(entity);
+						}
+					}
+				} else if (event.isShiftDown()) {
+					selectRectangleHelper.removeAll(selectRectangleEntities);
+					Select.getEntities().addAll(selectRectangleHelper, true);
+					Select.getEntities().addAll(selectRectangleEntities, true);
 				} else {
-					Select.getEntities().setAll(entities);
+					selectRectangleHelper.removeAll(selectRectangleEntities);
+					Select.getEntities().addAll(selectRectangleEntities);
 				}
 				
 				Reload.start();
@@ -115,13 +129,13 @@ public class PaneGallery extends ScrollPane {
 		}
 	}
 	private static void onMouseRelease(MouseEvent event) {
-		if (event.getButton() == MouseButton.PRIMARY && Loader.INSTANCE.getChildren().contains(selectRectangle)) {
+		if (event.getButton() == MouseButton.PRIMARY && getInstance().getChildren().contains(selectRectangle)) {
 			selectRectangle.setWidth(0);
 			selectRectangle.setHeight(0);
 			selectRectangle.setX(0);
 			selectRectangle.setY(0);
 			
-			Loader.INSTANCE.getChildren().remove(selectRectangle);
+			getInstance().getChildren().remove(selectRectangle);
 			
 			Reload.start();
 		}
@@ -130,7 +144,7 @@ public class PaneGallery extends ScrollPane {
 	private static void onScroll(ScrollEvent event) {
 		event.consume();
 		
-		PaneGallery instance = Loader.INSTANCE;
+		PaneGallery instance = getInstance();
 		
 		double rowHeight = tilePane.getPrefTileHeight() + GAP;
 		double contentHeight = tilePane.getHeight() - instance.getViewportBounds().getHeight();
@@ -214,12 +228,15 @@ public class PaneGallery extends ScrollPane {
 		selectRectangle.setStroke(Color.BLACK);
 		selectRectangle.setStrokeWidth(1);
 		selectRectangle.setOpacity(0.5);
+		selectRectangle.setMouseTransparent(true);
 		selectRectangleX = 0;
 		selectRectangleY = 0;
 		localCursorPositionX = 0;
 		localCursorPositionY = 0;
 		
-		PaneGallery instance = Loader.INSTANCE;
+		selectRectangleHelper = new EntityList();
+		
+		PaneGallery instance = getInstance();
 		
 		instance.setContent(tilePane);
 		instance.getChildren().add(tilePane);
@@ -231,7 +248,7 @@ public class PaneGallery extends ScrollPane {
 	}
 	
 	private static EntityList tileEntities = new EntityList();
-	private static CustomList<GalleryTile> tiles = new CustomList<>();
+	private static CustomList<GalleryTile> galleryTiles = new CustomList<>();
 	
 	public boolean reload() {
 		Logger.getGlobal().info(this.toString());
@@ -239,7 +256,7 @@ public class PaneGallery extends ScrollPane {
 		//	prepare
 		Select.storeTargetPosition();
 		
-		tiles.clear();
+		galleryTiles.clear();
 		tileEntities.clear();
 		
 		CustomList<Integer> collectionIDs = new CustomList<>();
@@ -253,7 +270,7 @@ public class PaneGallery extends ScrollPane {
 			collectionID = entity.getCollectionID();
 			
 			if (collectionID == 0) {
-				tiles.add(galleryTile);
+				galleryTiles.add(galleryTile);
 				tileEntities.add(entity);
 			} else if (!collectionIDs.contains(collectionID)) {
 				//	only one object in the entity group needs to be processed
@@ -264,13 +281,13 @@ public class PaneGallery extends ScrollPane {
 						//	the entity group gets processed in a separate loop to keep its objects together
 						//	however, each object needs to be checked for Filter validity an additional time
 						if (Filter.getEntities().contains(entityInCollection)) {
-							tiles.add(entityInCollection.getGalleryTile());
+							galleryTiles.add(entityInCollection.getGalleryTile());
 							tileEntities.add(entityInCollection);
 							Reload.requestBorderUpdate(entityInCollection);
 						}
 					}
 				} else {
-					tiles.add(galleryTile);
+					galleryTiles.add(galleryTile);
 					tileEntities.add(entity);
 					Reload.requestBorderUpdate(entity);
 				}
@@ -278,7 +295,7 @@ public class PaneGallery extends ScrollPane {
 		}
 		
 		//	apply
-		tilePane.getChildren().setAll(tiles);
+		tilePane.getChildren().setAll(galleryTiles);
 		
 		//  finish
 		Select.restoreTargetPosition();
@@ -286,9 +303,6 @@ public class PaneGallery extends ScrollPane {
 		return true;
 	}
 	public static void moveViewportToTarget() {
-		PaneGallery instance = Loader.INSTANCE;
-		//instance.layout();
-		
 		Entity currentTarget = Select.getTarget();
 		if (!StageManager.getStageMain().getSceneMain().isViewGallery() || currentTarget == null) return;
 		if (currentTarget.getCollectionID() != 0 && !EntityCollectionUtil.getOpenCollections().contains(currentTarget.getCollectionID())) {
@@ -300,9 +314,9 @@ public class PaneGallery extends ScrollPane {
 		int columnCount = tilePane.getPrefColumns();
 		int TargetRow = TargetIndex / columnCount;
 		
-		Bounds buggyBounds = instance.getViewportBounds();
+		Bounds buggyBounds = getInstance().getViewportBounds();
 		Bounds correctBounds = new BoundingBox(0, 0, 0, buggyBounds.getWidth(), buggyBounds.getHeight(), buggyBounds.getDepth());
-		Bounds viewportBoundsTransform = tilePane.sceneToLocal(instance.localToScene(correctBounds));
+		Bounds viewportBoundsTransform = tilePane.sceneToLocal(getInstance().localToScene(correctBounds));
 		Bounds currentTargetTileBounds = tilePane.getChildren().get(TargetIndex).getBoundsInParent();
 		
 		double viewportHeight = viewportBoundsTransform.getHeight();
@@ -318,9 +332,9 @@ public class PaneGallery extends ScrollPane {
 		double tileBottom = currentTargetTileBounds.getMaxY();
 		
 		if (tileBottom > viewportBottom) {
-			instance.setVvalue((TargetRow + 1) * rowToContentRatio - viewportToContentRatio);
+			getInstance().setVvalue((TargetRow + 1) * rowToContentRatio - viewportToContentRatio);
 		} else if (tileTop < viewportTop) {
-			instance.setVvalue(TargetRow * rowToContentRatio);
+			getInstance().setVvalue(TargetRow * rowToContentRatio);
 		}
 	}
 	
