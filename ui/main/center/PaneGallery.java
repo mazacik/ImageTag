@@ -97,7 +97,7 @@ public class PaneGallery extends ScrollPane {
 				
 				EntityList entities = new EntityList();
 				for (Entity entity : PaneGallery.getSelectRectangleEntities()) {
-					if (EntityCollectionUtil.hasNoCollectionOrIsOpen(entity)) {
+					if (EntityCollectionUtil.hasOpenOrNoCollection(entity)) {
 						entities.add(entity);
 					} else {
 						entities.addAll(entity.getCollection());

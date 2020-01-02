@@ -33,10 +33,10 @@ public class EntityList extends CustomList<Entity> {
 	public Entity getRandom() {
 		Entity entity = super.getRandom();
 		if (entity != null) {
-			if (EntityCollectionUtil.hasNoCollectionOrIsOpen(entity)) {
+			if (EntityCollectionUtil.hasOpenOrNoCollection(entity)) {
 				return entity;
 			} else {
-				return ((CustomList<Entity>) Filter.applyTo(entity.getCollection())).getRandom();
+				return new CustomList<>(Filter.applyTo(entity.getCollection())).getRandom();
 			}
 		}
 		return null;

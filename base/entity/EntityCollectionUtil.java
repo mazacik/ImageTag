@@ -53,7 +53,7 @@ public abstract class EntityCollectionUtil {
 		}
 		return true;
 	}
-	public static boolean hasNoCollectionOrIsOpen(Entity entity) {
+	public static boolean hasOpenOrNoCollection(Entity entity) {
 		return entity.getCollectionID() == 0 || openCollections.contains(entity.getCollectionID());
 	}
 	

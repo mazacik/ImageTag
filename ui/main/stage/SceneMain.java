@@ -65,7 +65,7 @@ public class SceneMain extends Scene {
 						Reload.start();
 						break;
 					case R:
-						Entity randomEntity = Filter.getEntities().getRandom();
+						Entity randomEntity = PaneGallery.getTileEntities().getRandom();
 						Select.getEntities().set(randomEntity);
 						Select.setTarget(randomEntity);
 						Reload.start();
