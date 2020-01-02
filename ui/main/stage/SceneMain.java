@@ -2,11 +2,10 @@ package ui.main.stage;
 
 import base.entity.Entity;
 import base.entity.EntityCollectionUtil;
-import cache.CacheManager;
 import control.Select;
+import control.filter.Filter;
 import control.reload.ChangeIn;
 import control.reload.Reload;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -38,9 +37,6 @@ public class SceneMain extends Scene {
 	
 	private void initKeybinds() {
 		this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-			//System.out.println("Focus: " + this.getFocusOwner().getClass().toString());
-			//System.out.println("KeyCode: " + event.getCode().getName());
-			
 			if (this.getFocusOwner() instanceof EditNode) {
 				if (event.getCode() == KeyCode.ESCAPE) {
 					mainBox.requestFocus();
@@ -69,12 +65,15 @@ public class SceneMain extends Scene {
 						Reload.start();
 						break;
 					case R:
-						//todo fixme Select.getEntities().setRandom();
+						Entity randomEntity = Filter.getEntities().getRandom();
+						Select.getEntities().set(randomEntity);
+						Select.setTarget(randomEntity);
 						Reload.start();
 						break;
 					case G:
-						Select.getEntities().set(Select.getTarget().getCollection().getRandom());
-						//todo target set
+						Entity randomEntityFromCollection = Select.getTarget().getCollection().getRandom();
+						Select.getEntities().set(randomEntityFromCollection);
+						Select.setTarget(randomEntityFromCollection);
 						Reload.start();
 						break;
 					case F:
