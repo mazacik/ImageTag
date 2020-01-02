@@ -83,8 +83,6 @@ public abstract class FileUtil {
 	}
 	
 	public static void importFiles() {
-		//todo file moving on background thread
-		//todo when showing new imported files, show all file types
 		DirectoryChooser directoryChooser = new DirectoryChooser();
 		directoryChooser.setTitle("Select a directory to import from");
 		directoryChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
@@ -118,7 +116,12 @@ public abstract class FileUtil {
 			String s = "Imported " + newEntities.size() + " files.\nWould you like to view the new files?";
 			if (StageManager.getYesNoStage().show(s)) {
 				Filter.getNewEntities().setAll(newEntities);
+				
 				Filter.getSettings().setShowOnlyNewEntities(true);
+				Filter.getSettings().setShowImages(true);
+				Filter.getSettings().setShowGifs(true);
+				Filter.getSettings().setShowVideos(true);
+				Filter.getSettings().setEnableLimit(false);
 			}
 			
 			Filter.refresh();
