@@ -33,14 +33,13 @@ public class EntityList extends CustomList<Entity> {
 	public Entity getRandom() {
 		Entity entity = super.getRandom();
 		if (entity != null) {
-			if (entity.getCollectionID() == 0) {
+			if (EntityCollectionUtil.hasNoCollectionOrIsOpen(entity)) {
 				return entity;
 			} else {
-				return Filter.applyTo(entity.getCollection()).getRandom();
+				return ((CustomList<Entity>) Filter.applyTo(entity.getCollection())).getRandom();
 			}
-		} else {
-			return null;
 		}
+		return null;
 	}
 	
 	public void addTag(Tag tag) {
