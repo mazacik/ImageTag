@@ -65,8 +65,6 @@ public abstract class FileUtil {
 				}
 			}
 		} else {
-			//todo need custom logger, info level and above opens error stage
-			//todo stages as static?
 			StageManager.getErrorStage().show("Delete failed: No OS-level file trash support");
 			Logger.getGlobal().severe("No OS-level file trash support");
 		}
@@ -85,6 +83,8 @@ public abstract class FileUtil {
 	}
 	
 	public static void importFiles() {
+		//todo file moving on background thread
+		//todo when showing new imported files, show all file types
 		DirectoryChooser directoryChooser = new DirectoryChooser();
 		directoryChooser.setTitle("Select a directory to import from");
 		directoryChooser.setInitialDirectory(new File(System.getProperty("user.dir")));

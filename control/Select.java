@@ -148,14 +148,6 @@ public class Select extends EntityList {
 			
 			target = newTarget;
 			
-			if (getEntities().isEmpty()) {
-				if (target.getCollectionID() == 0 || EntityCollectionUtil.getOpenCollections().contains(target.getCollectionID())) {
-					getEntities().add(target);
-				} else {
-					getEntities().addAll(target.getCollection());
-				}
-			}
-			
 			PaneGallery.moveViewportToTarget();
 			
 			Reload.notify(ChangeIn.TARGET);
@@ -224,36 +216,33 @@ public class Select extends EntityList {
 		}
 	}
 	
-	private static Entity storeEntity = null;
 	private static int storePos = -1;
+	private static Entity storeEntity = null;
 	public static void storeTargetPosition() {
-		CustomList<Integer> expandedcollection = EntityCollectionUtil.getOpenCollections();
-		CustomList<Entity> visibleEntities = PaneGallery.getTileEntities();
-		//todo probably needs getFirst() somewhere
-		if (target.getCollectionID() == 0) {
+		if (EntityCollectionUtil.hasOpenOrNoCollection(target)) {
 			storeEntity = target;
-			storePos = visibleEntities.indexOf(target);
 		} else {
-			if (expandedcollection.contains(target.getCollectionID())) {
-				storeEntity = target;
-				storePos = visibleEntities.indexOf(target);
-			} else {
-				storeEntity = target.getCollection().getFirst();
-				storePos = visibleEntities.indexOf(storeEntity);
-			}
+			storeEntity = target.getCollection().getFirst();
 		}
+		storePos = PaneGallery.getTileEntities().indexOf(storeEntity);
 	}
 	public static void restoreTargetPosition() {
-		//todo if this lands on a non-expanded collection, add the whole collection
-		EntityList visibleEntities = PaneGallery.getTileEntities();
-		if (!visibleEntities.isEmpty()) {
-			if (storeEntity != null && visibleEntities.contains(storeEntity)) {
+		Entity newTarget;
+		EntityList tileEntities = PaneGallery.getTileEntities();
+		if (!tileEntities.isEmpty()) {
+			if (storeEntity != null && tileEntities.contains(storeEntity)) {
 				setTarget(storeEntity);
 			} else if (storePos >= 0) {
-				if (storePos <= visibleEntities.size() - 1) {
-					setTarget(visibleEntities.get(storePos));
+				if (storePos <= tileEntities.size() - 1) {
+					newTarget = tileEntities.get(storePos);
 				} else {
-					setTarget(visibleEntities.getLast());
+					newTarget = tileEntities.getLast();
+				}
+				setTarget(newTarget);
+				if (EntityCollectionUtil.hasOpenOrNoCollection(newTarget)) {
+					getEntities().set(newTarget);
+				} else {
+					getEntities().setAll(newTarget.getCollection());
 				}
 			}
 		}
