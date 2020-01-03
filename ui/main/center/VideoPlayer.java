@@ -7,8 +7,6 @@ import javafx.scene.image.PixelFormat;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.image.WritablePixelFormat;
-import javafx.scene.paint.Color;
-import javafx.scene.transform.Affine;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.factory.discovery.NativeDiscovery;
 import uk.co.caprica.vlcj.player.base.ControlsApi;
@@ -62,6 +60,7 @@ public class VideoPlayer {
 		mediaPlayerFactory = new MediaPlayerFactory();
 		mediaPlayer = mediaPlayerFactory.mediaPlayers().newEmbeddedMediaPlayer();
 		mediaPlayer.videoSurface().set(new JavaFxVideoSurface());
+		mediaPlayer.controls().setRepeat(true);
 		mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
 			@Override
 			public void positionChanged(MediaPlayer mediaPlayer, float newPosition) {
@@ -157,42 +156,39 @@ public class VideoPlayer {
 		mediaPlayer.controls().setPosition((float) position);
 	}
 	public void renderFrame() {
-		GraphicsContext g = canvas.getGraphicsContext2D();
-		
-		double width = canvas.getWidth();
-		double height = canvas.getHeight();
-		g.setFill(new Color(0, 0, 0, 1));
-		g.fillRect(0, 0, width, height);
-		
 		if (img != null) {
-			double imageWidth = img.getWidth();
-			double imageHeight = img.getHeight();
+			double originWidth = img.getWidth();
+			double originHeight = img.getHeight();
+			double maxWidth = canvas.getWidth();
+			double maxHeight = canvas.getHeight();
 			
-			double sx = width / imageWidth;
-			double sy = height / imageHeight;
+			boolean upScale = false;
 			
-			double sf = Math.min(sx, sy);
+			double resultWidth;
+			double resultHeight;
 			
-			double scaledW = imageWidth * sf;
-			double scaledH = imageHeight * sf;
-			
-			Affine ax = g.getTransform();
-			
-			g.translate((width - scaledW) / 2, (height - scaledH) / 2);
-			
-			if (sf != 1.0) {
-				g.scale(sf, sf);
+			if (!upScale && originWidth < maxWidth && originHeight < maxHeight) {
+				// image is smaller than canvas or upscaling is off
+				resultWidth = originWidth;
+				resultHeight = originHeight;
+			} else {
+				// scale image to fit width
+				resultWidth = maxWidth;
+				resultHeight = originHeight * maxWidth / originWidth;
+				
+				// if scaled image is too tall, scale to fit height instead
+				if (resultHeight > maxHeight) {
+					resultHeight = maxHeight;
+					resultWidth = originWidth * maxHeight / originHeight;
+				}
 			}
 			
-			try {
-				semaphore.acquire();
-				g.drawImage(img, 0, 0);
-				semaphore.release();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			double resultX = maxWidth / 2 - resultWidth / 2;
+			double resultY = maxHeight / 2 - resultHeight / 2;
 			
-			g.setTransform(ax);
+			GraphicsContext gc = canvas.getGraphicsContext2D();
+			gc.clearRect(0, 0, maxWidth, maxHeight);
+			gc.drawImage(img, resultX, resultY, resultWidth, resultHeight);
 		}
 	}
 	private class JavaFxVideoSurface extends CallbackVideoSurface {
