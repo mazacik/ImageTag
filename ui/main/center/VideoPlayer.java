@@ -22,14 +22,12 @@ import uk.co.caprica.vlcj.player.embedded.videosurface.callback.format.RV32Buffe
 
 import java.io.File;
 import java.nio.ByteBuffer;
-import java.util.concurrent.Semaphore;
 
 public class VideoPlayer {
 	private final WritablePixelFormat<ByteBuffer> pixelFormat;
 	private final MediaPlayerFactory mediaPlayerFactory;
 	private final EmbeddedMediaPlayer mediaPlayer;
 	private final Canvas canvas;
-	private final Semaphore semaphore = new Semaphore(1);
 	private PixelWriter pixelWriter;
 	private WritableImage img;
 	private VideoPlayer videoPlayer = this;
@@ -207,13 +205,7 @@ public class VideoPlayer {
 	private class JavaFxRenderCallback implements RenderCallback {
 		@Override
 		public void display(MediaPlayer mediaPlayer, ByteBuffer[] nativeBuffers, BufferFormat bufferFormat) {
-			try {
-				semaphore.acquire();
-				pixelWriter.setPixels(0, 0, bufferFormat.getWidth(), bufferFormat.getHeight(), pixelFormat, nativeBuffers[0], bufferFormat.getPitches()[0]);
-				semaphore.release();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			pixelWriter.setPixels(0, 0, bufferFormat.getWidth(), bufferFormat.getHeight(), pixelFormat, nativeBuffers[0], bufferFormat.getPitches()[0]);
 		}
 	}
 }
