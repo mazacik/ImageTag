@@ -65,7 +65,7 @@ public abstract class CacheManager {
 		String entityIndex = StringUtils.right("00000000" + (EntityList.getMain().indexOf(entity) + 1), String.valueOf(EntityList.getMain().size()).length());
 		Logger.getGlobal().info(String.format("[%s/%s] %s", entityIndex, EntityList.getMain().size(), entity.getName()));
 		
-		switch (FileUtil.getType(entity)) {
+		switch (entity.getMediaType()) {
 			case IMAGE:
 				return createFromImage(entity);
 			case GIF:
@@ -156,6 +156,7 @@ public abstract class CacheManager {
 			
 			if (mediaPlayer.media().start(FileUtil.getFileEntity(entity))) {
 				try {
+					entity.setMediaDuration(mediaPlayer.media().info().duration());
 					mediaPlayer.controls().setPosition(mediaPosition);
 					inPositionLatch.await(); // might wait forever if error
 					

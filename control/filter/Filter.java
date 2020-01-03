@@ -7,7 +7,6 @@ import base.tag.TagList;
 import control.Select;
 import control.reload.ChangeIn;
 import control.reload.Reload;
-import misc.FileUtil;
 
 public class Filter extends EntityList {
 	private static final FilterSettings settings = new FilterSettings();
@@ -34,18 +33,17 @@ public class Filter extends EntityList {
 	}
 	public static void refresh() {
 		Loader.INSTANCE.clear();
-		
+		long mediaDuration;
 		for (Entity entity : EntityList.getMain()) {
-			switch (FileUtil.getType(entity)) {
-				case IMAGE:
-					if (!settings.isShowImages()) continue;
-					break;
-				case VIDEO:
-					if (!settings.isShowVideos()) continue;
-					break;
-				case GIF:
-					if (!settings.isShowGifs()) continue;
-					break;
+			mediaDuration = entity.getMediaDuration();
+			if (mediaDuration == 0) {
+				if (!settings.isShowImages()) continue;
+			} else if (mediaDuration >= 1 && mediaDuration < 30000) {
+				if (!settings.isShowGifs()) continue;
+			} else if (mediaDuration >= 30000) {
+				if (!settings.isShowVideos()) continue;
+			} else {
+				continue;
 			}
 			
 			if (settings.isShowOnlyNewEntities() && !newEntities.contains(entity)) {

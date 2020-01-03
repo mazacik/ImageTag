@@ -89,7 +89,7 @@ public class Main extends Application {
 			newFileLength = newFile.length();
 			for (int j = 0; j < entitiesWithoutFiles.size(); j++) {
 				orphanEntity = entitiesWithoutFiles.get(j);
-				if (newFileLength == orphanEntity.getLength()) {
+				if (newFileLength == orphanEntity.getSize()) {
 					/* rename the object and cache file */
 					File oldCacheFile = new File(FileUtil.getFileCache(orphanEntity));
 					orphanEntity.setName(FileUtil.createEntityName(newFile));
@@ -109,7 +109,6 @@ public class Main extends Application {
 		boolean needsSort = false;
 		if (!entitiesWithoutFiles.isEmpty()) {
 			EntityList.getMain().removeAll(entitiesWithoutFiles);
-			needsSort = true;
 		}
 		if (!filesWithoutEntities.isEmpty()) {
 			EntityList newEntities = new EntityList(filesWithoutEntities);

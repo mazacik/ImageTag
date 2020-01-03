@@ -83,7 +83,6 @@ public class SceneMain extends Scene {
 					case A:
 					case S:
 					case D:
-						//todo fix ctrl/shift
 						Select.moveTarget(event.getCode());
 						Select.getEntities().set(Select.getTarget());
 						Reload.start();

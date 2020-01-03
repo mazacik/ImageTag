@@ -7,6 +7,7 @@ import cache.CacheManager;
 import com.sun.jna.platform.FileUtils;
 import control.filter.Filter;
 import control.reload.Reload;
+import enums.MediaType;
 import javafx.scene.Scene;
 import javafx.stage.DirectoryChooser;
 import ui.stage.StageManager;
@@ -190,28 +191,28 @@ public abstract class FileUtil {
 		return Project.getCurrent().getDirectorySource() + File.separator + entity.getName();
 	}
 	public static String getFileCache(Entity entity) {
-		return getDirectoryCache(Project.getCurrent().getProjectName()) + File.separator + entity.getName() + "-" + entity.getLength() + ".jpg";
+		return getDirectoryCache(Project.getCurrent().getProjectName()) + File.separator + entity.getName() + "-" + entity.getSize() + ".jpg";
 	}
-	public static FileType getType(Entity entity) {
+	public static MediaType getMediaType(Entity entity) {
 		String ext = entity.getName().toLowerCase().substring(entity.getName().lastIndexOf('.'));
 		
 		for (String _ext : EXTENSIONS_IMAGE) {
 			if (ext.equals(_ext)) {
-				return FileType.IMAGE;
+				return MediaType.IMAGE;
 			}
 		}
 		for (String _ext : EXTENSIONS_GIF) {
 			if (ext.equals(_ext)) {
-				return FileType.GIF;
+				return MediaType.GIF;
 			}
 		}
 		for (String _ext : EXTENSIONS_VIDEO) {
 			if (ext.equals(_ext)) {
-				return FileType.VIDEO;
+				return MediaType.VIDEO;
 			}
 		}
 		
-		throw new RuntimeException("FileType " + ext.toUpperCase() + " is not supported");
+		throw new RuntimeException("MediaType " + ext.toUpperCase() + " is not supported");
 	}
 	
 	public static String getDirectoryLocal() {
@@ -229,11 +230,5 @@ public abstract class FileUtil {
 	
 	public static String getApplicationName() {
 		return APPLICATION_NAME;
-	}
-	
-	public enum FileType {
-		IMAGE,
-		GIF,
-		VIDEO,
 	}
 }

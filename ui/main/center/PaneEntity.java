@@ -60,7 +60,7 @@ public class PaneEntity extends BorderPane {
 		if (!StageManager.getStageMain().getSceneMain().isViewGallery() && currentTarget != null) {
 			Logger.getGlobal().info(this.toString());
 			
-			switch (FileUtil.getType(currentTarget)) {
+			switch (currentTarget.getMediaType()) {
 				case IMAGE:
 					reloadAsImage(currentTarget);
 					break;

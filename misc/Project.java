@@ -32,8 +32,8 @@ public class Project {
 	}
 	public void writeToDisk() {
 		this.msLastAccess = System.currentTimeMillis();
-		if (entityList == null) entityList = EntityList.getMain();
-		if (tagList == null) tagList = TagList.getMain();
+		this.entityList = EntityList.getMain();
+		this.tagList = TagList.getMain();
 		JsonUtil.write(this, typeToken, projectFile);
 	}
 	

@@ -340,6 +340,7 @@ public enum ButtonTemplates {
 				CacheManager.stopThread();
 				for (Entity entity : EntityList.getMain()) {
 					try {
+						//todo maybe doesn't exist
 						Files.delete(Paths.get(FileUtil.getFileCache(entity)));
 					} catch (IOException e) {
 						e.printStackTrace();
