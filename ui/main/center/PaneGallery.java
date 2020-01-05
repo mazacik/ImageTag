@@ -42,11 +42,10 @@ public class PaneGallery extends ScrollPane {
 		return getInstance().sceneToLocal(tilePane.localToScene(event.getX(), event.getY())).getY();
 	}
 	private static EntityList getSelectRectangleEntities() {
-		Entity entity;
 		EntityList entityList = new EntityList();
 		for (GalleryTile galleryTile : galleryTiles) {
 			if (selectRectangle.localToScene(selectRectangle.getBoundsInLocal()).intersects(galleryTile.localToScene(galleryTile.getBoundsInLocal()))) {
-				entity = galleryTile.getEntity();
+				Entity entity = galleryTile.getEntity();
 				if (EntityCollectionUtil.hasOpenOrNoCollection(entity)) {
 					entityList.add(entity);
 				} else {

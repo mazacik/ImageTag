@@ -98,6 +98,7 @@ public class SceneMain extends Scene {
 			
 			mainBox.getChildren().set(1, PaneGallery.getInstance());
 			
+			PaneGallery.getInstance().requestFocus();
 			PaneGallery.moveViewportToTarget();
 			
 			Reload.notify(ChangeIn.VIEWMODE);

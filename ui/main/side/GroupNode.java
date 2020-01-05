@@ -8,6 +8,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
+import misc.Stopwatch;
 import ui.component.clickmenu.ClickMenu;
 import ui.component.simple.HBox;
 import ui.component.simple.TextNode;
@@ -94,6 +95,7 @@ public class GroupNode extends VBox {
 	}
 	
 	public void expand() {
+		this.getChildren().retainAll(hBoxMain);
 		this.getChildren().addAll(nameNodes);
 		nodeToggle.setText("− ");
 	}

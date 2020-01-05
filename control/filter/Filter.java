@@ -1,12 +1,12 @@
 package control.filter;
 
-import base.CustomList;
 import base.entity.Entity;
 import base.entity.EntityList;
 import base.tag.TagList;
 import control.Select;
 import control.reload.ChangeIn;
 import control.reload.Reload;
+import enums.MediaType;
 
 public class Filter extends EntityList {
 	private static final FilterSettings settings = new FilterSettings();
@@ -29,46 +29,52 @@ public class Filter extends EntityList {
 	public static void reset() {
 		listManager.getWhitelist().clear();
 		listManager.getBlacklist().clear();
+		refresh();
 		Reload.notify(ChangeIn.FILTER);
 	}
 	public static void refresh() {
-		Loader.INSTANCE.clear();
-		long mediaDuration;
+		getEntities().clear();
+		
 		for (Entity entity : EntityList.getMain()) {
-			mediaDuration = entity.getMediaDuration();
-			if (mediaDuration == 0) {
-				if (!settings.isShowImages()) continue;
-			} else if (mediaDuration >= 1 && mediaDuration < 30000) {
-				if (!settings.isShowGifs()) continue;
-			} else if (mediaDuration >= 30000) {
-				if (!settings.isShowVideos()) continue;
-			} else {
-				continue;
+			if (entity.getMediaType() == MediaType.IMAGE) {
+				if (!settings.isShowImages()) {
+					continue;
+				}
+			} else if (entity.getMediaType() == MediaType.GIF || entity.getMediaDuration() < 30000) {
+				if (!settings.isShowGifs()) {
+					continue;
+				}
+			} else if (entity.getMediaType() == MediaType.VIDEO) {
+				if (!settings.isShowVideos()) {
+					continue;
+				}
 			}
 			
 			if (settings.isShowOnlyNewEntities() && !newEntities.contains(entity)) {
 				continue;
 			}
 			
-			TagList tagList = entity.getTagList();
-			if (settings.isEnableLimit() && tagList.size() > settings.getLimit()) {
+			if (settings.isEnableLimit() && entity.getTagList().size() > settings.getLimit()) {
 				continue;
 			}
 			
-			if (listManager.isWhitelistOk(tagList) && listManager.isBlacklistOk(tagList)) {
-				Loader.INSTANCE.add(entity);
+			if (!listManager.isWhitelistOk(entity) || !listManager.isBlacklistOk(entity)) {
+				continue;
 			}
+			
+			getEntities().add(entity);
 		}
 		
-		if (!Loader.INSTANCE.contains(Select.getTarget())) {
-			Select.setTarget(Loader.INSTANCE.getFirst());
+		if (!getEntities().contains(Select.getTarget())) {
+			Select.setTarget(getEntities().getFirst());
 		}
 		
-		for (Entity entity : new CustomList<>(Select.getEntities())) {
-			if (!Loader.INSTANCE.contains(entity)) {
+		for (Entity entity : new EntityList(Select.getEntities())) {
+			if (!getEntities().contains(entity)) {
 				Select.getEntities().remove(entity);
 			}
 		}
+		
 		if (Select.getEntities().isEmpty()) {
 			Select.getEntities().set(Select.getTarget());
 		}

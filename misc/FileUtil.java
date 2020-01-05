@@ -221,6 +221,9 @@ public abstract class FileUtil {
 	public static String getDirectoryProject() {
 		return getDirectoryLocal() + File.separator + "data";
 	}
+	public static String getDirectoryCache() {
+		return getDirectoryCache(Project.getCurrent().getProjectName());
+	}
 	public static String getDirectoryCache(String projectName) {
 		return getDirectoryLocal() + File.separator + "cache" + File.separator + projectName;
 	}

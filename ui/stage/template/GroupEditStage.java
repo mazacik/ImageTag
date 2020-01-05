@@ -66,10 +66,6 @@ public class GroupEditStage extends StageBase {
 			this.setErrorMessage("Field \"" + nodeGroup.getText() + "\" cannot be empty.");
 			return false;
 		}
-		if (fields[0].contains(" - ")) {
-			this.setErrorMessage("Field \"" + nodeGroup.getText() + "\" cannot contain \" - \".");
-			return false;
-		}
 		return true;
 	}
 	

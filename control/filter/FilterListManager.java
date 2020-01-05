@@ -1,5 +1,6 @@
 package control.filter;
 
+import base.entity.Entity;
 import base.tag.Tag;
 import base.tag.TagList;
 
@@ -44,6 +45,9 @@ public class FilterListManager {
 		}
 	}
 	
+	boolean isWhitelistOk(Entity entity) {
+		return isWhitelistOk(entity.getTagList());
+	}
 	boolean isWhitelistOk(TagList tagList) {
 		if (whitelist.isEmpty()) {
 			return true;
@@ -53,6 +57,10 @@ public class FilterListManager {
 			double factor = (double) commonTags.size() / (double) whitelist.size();
 			return factor >= Filter.getSettings().getWhitelistFactor();
 		}
+	}
+	
+	boolean isBlacklistOk(Entity entity) {
+		return isBlacklistOk(entity.getTagList());
 	}
 	boolean isBlacklistOk(TagList tagList) {
 		if (blacklist.isEmpty()) {
@@ -66,37 +74,48 @@ public class FilterListManager {
 	}
 	
 	public boolean isWhitelisted(String group) {
-		boolean value = true;
 		for (String name : TagList.getMain().getNames(group)) {
 			if (!isWhitelisted(group, name)) {
-				value = false;
-				break;
+				return false;
 			}
 		}
-		return value;
+		return true;
 	}
-	public boolean isBlacklisted(String group) {
-		boolean value = true;
-		for (String name : TagList.getMain().getNames(group)) {
-			if (!isBlacklisted(group, name)) {
-				value = false;
-				break;
-			}
-		}
-		return value;
-	}
-	
 	public boolean isWhitelisted(Tag tag) {
 		return whitelist.contains(tag);
 	}
 	public boolean isWhitelisted(String group, String name) {
-		return whitelist.contains(TagList.getMain().getTag(group, name));
+		return isWhitelisted(TagList.getMain().getTag(group, name));
+	}
+	
+	public boolean isBlacklisted(String group) {
+		for (String name : TagList.getMain().getNames(group)) {
+			if (!isBlacklisted(group, name)) {
+				return false;
+			}
+		}
+		return true;
 	}
 	public boolean isBlacklisted(Tag tag) {
 		return blacklist.contains(tag);
 	}
 	public boolean isBlacklisted(String group, String name) {
-		return blacklist.contains(TagList.getMain().getTag(group, name));
+		return isBlacklisted(TagList.getMain().getTag(group, name));
+	}
+	
+	public boolean isUnlisted(String group) {
+		for (String name : TagList.getMain().getNames(group)) {
+			if (!isUnlisted(group, name)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	public boolean isUnlisted(Tag tag) {
+		return !isWhitelisted(tag) && !isBlacklisted(tag);
+	}
+	public boolean isUnlisted(String group, String name) {
+		return !isWhitelisted(group, name) && !isBlacklisted(group, name);
 	}
 	
 	TagList getWhitelist() {

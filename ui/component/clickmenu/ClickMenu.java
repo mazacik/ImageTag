@@ -45,6 +45,7 @@ public class ClickMenu extends Popup {
 		CustomList<Node> list = new CustomList<>();
 		
 		list.add(ButtonTemplates.ENTITY_OPEN.get());
+		list.add(ButtonTemplates.ENTITY_OPEN_DIRECTORY.get());
 		list.add(ButtonTemplates.ENTITY_EDIT.get());
 		list.add(ButtonTemplates.FILTER_SIMILAR.get());
 		list.add(ButtonTemplates.ENTITY_REVERSE_IMAGE_SEARCH.get());

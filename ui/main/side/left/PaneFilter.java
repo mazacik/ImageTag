@@ -2,8 +2,8 @@ package ui.main.side.left;
 
 import base.tag.Tag;
 import base.tag.TagList;
-import control.filter.Filter;
 import control.Select;
+import control.filter.Filter;
 import control.reload.ChangeIn;
 import control.reload.Reload;
 import javafx.scene.Node;
@@ -30,13 +30,11 @@ public class PaneFilter extends SidePaneBase {
 		btnCreateNewTag.prefWidthProperty().bind(this.widthProperty());
 		btnCreateNewTag.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			TagEditStageResult result = StageManager.getTagEditStage().show("");
-			Tag tag = TagList.getMain().getTag(result.getGroup(), result.getName());
+			Tag tag = new Tag(result.getGroup(), result.getName());
 			TagList.getMain().add(tag);
 			TagList.getMain().sort();
 			
-			if (result.isAddToSelect()) {
-				Select.getEntities().addTag(tag);
-			}
+			if (result.isAddToSelect()) Select.getEntities().addTag(tag);
 			
 			Reload.notify(ChangeIn.TAG_LIST_MAIN);
 			Reload.start();
@@ -67,6 +65,7 @@ public class PaneFilter extends SidePaneBase {
 		Color textColorDefault = ColorUtil.getColorPrimary();
 		Color textColorPositive = ColorUtil.getColorPositive();
 		Color textColorNegative = ColorUtil.getColorNegative();
+		Color textColorShare = ColorUtil.getColorShare();
 		
 		for (Node node : boxGroupNodes.getChildren()) {
 			if (node instanceof GroupNode) {
@@ -77,15 +76,16 @@ public class PaneFilter extends SidePaneBase {
 					groupNode.setTextFill(textColorPositive);
 				} else if (Filter.getListManager().isBlacklisted(group)) {
 					groupNode.setTextFill(textColorNegative);
-				} else {
+				} else if (Filter.getListManager().isUnlisted(group)) {
 					groupNode.setTextFill(textColorDefault);
+				} else {
+					groupNode.setTextFill(textColorShare);
 				}
+				
 				for (TextNode nameNode : groupNode.getNameNodes()) {
-					String name = nameNode.getText();
-					
-					if (Filter.getListManager().isWhitelisted(group, name)) {
+					if (Filter.getListManager().isWhitelisted(group, nameNode.getText())) {
 						nameNode.setTextFill(textColorPositive);
-					} else if (Filter.getListManager().isBlacklisted(group, name)) {
+					} else if (Filter.getListManager().isBlacklisted(group, nameNode.getText())) {
 						nameNode.setTextFill(textColorNegative);
 					} else {
 						nameNode.setTextFill(textColorDefault);

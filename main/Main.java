@@ -56,6 +56,9 @@ public class Main extends Application {
 		Filter.refresh();
 		Reload.start();
 		
+		PaneFilter.getInstance().collapseAll();
+		PaneSelect.getInstance().collapseAll();
+		
 		CacheManager.checkCacheInBackground();
 	}
 	
@@ -81,14 +84,11 @@ public class Main extends Application {
 		}
 		
 		/* match files with the exact same size, these were probably renamed outside of the application */
-		File newFile;
-		long newFileLength;
-		Entity orphanEntity;
 		for (int i = 0; i < filesWithoutEntities.size(); i++) {
-			newFile = filesWithoutEntities.get(i);
-			newFileLength = newFile.length();
+			File newFile = filesWithoutEntities.get(i);
+			long newFileLength = newFile.length();
 			for (int j = 0; j < entitiesWithoutFiles.size(); j++) {
-				orphanEntity = entitiesWithoutFiles.get(j);
+				Entity orphanEntity = entitiesWithoutFiles.get(j);
 				if (newFileLength == orphanEntity.getSize()) {
 					/* rename the object and cache file */
 					File oldCacheFile = new File(FileUtil.getFileCache(orphanEntity));
@@ -119,13 +119,11 @@ public class Main extends Application {
 		if (needsSort) EntityList.getMain().sort();
 	}
 	private static void initCollections() {
-		int collectionID;
-		boolean collectionExists;
 		CustomList<EntityList> collections = new CustomList<>();
 		for (Entity entity : EntityList.getMain()) {
-			collectionID = entity.getCollectionID();
+			int collectionID = entity.getCollectionID();
 			if (collectionID != 0) {
-				collectionExists = false;
+				boolean collectionExists = false;
 				for (EntityList collection : collections) {
 					if (collection.getFirst().getCollectionID() == collectionID) {
 						collection.add(entity);
@@ -147,15 +145,12 @@ public class Main extends Application {
 		TagList tagListMain = TagList.getMain();
 		if (allTags != null) tagListMain.addAll(allTags);
 		
-		Tag entityTag;
-		Tag mainListTag;
-		TagList tagList;
 		for (Entity entity : EntityList.getMain()) {
-			tagList = entity.getTagList();
+			TagList tagList = entity.getTagList();
 			
 			for (int i = 0; i < tagList.size(); i++) {
-				entityTag = tagList.get(i);
-				mainListTag = tagListMain.getTag(entityTag);
+				Tag entityTag = tagList.get(i);
+				Tag mainListTag = tagListMain.getTag(entityTag);
 				
 				if (mainListTag != null) {
 					tagList.set(i, mainListTag);

@@ -51,6 +51,7 @@ public abstract class Reload {
 	}
 	
 	public static void notify(ChangeIn... changeIns) {
+		//todo maybe it's faster if just changeIns are added to a list and the subscribers are processed on start
 		for (ChangeIn changeIn : changeIns) {
 			queue.addAll(changeIn.getSubscribers(), true);
 		}

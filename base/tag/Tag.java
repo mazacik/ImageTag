@@ -7,7 +7,8 @@ public class Tag {
 	private String name;
 	
 	public Tag(String group, String name) {
-		set(group, name);
+		this.setGroup(group);
+		this.setName(name);
 	}
 	
 	public boolean isEmpty() {
@@ -21,7 +22,7 @@ public class Tag {
 		return name;
 	}
 	public String getFull() {
-		return group + " - " + name;
+		return group + name;
 	}
 	
 	public void setGroup(String group) {
@@ -29,9 +30,5 @@ public class Tag {
 	}
 	public void setName(String name) {
 		this.name = WordUtils.capitalizeFully(name, '-', '/', ' ');
-	}
-	public void set(String group, String name) {
-		this.setGroup(group);
-		this.setName(name);
 	}
 }

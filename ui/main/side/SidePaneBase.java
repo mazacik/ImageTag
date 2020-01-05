@@ -32,72 +32,75 @@ public abstract class SidePaneBase extends VBox {
 	}
 	
 	public boolean reload() {
-		//	populate primary helpers
-		CustomList<String> groupsCurrent = new CustomList<>();
-		CustomList<Tag> tagsMain = new CustomList<>(TagList.getMain());
-		CustomList<Tag> tagsCurrent = new CustomList<>();
+		//	populate primary lists
+		CustomList<String> groupsWithNodes = new CustomList<>();
+		TagList tagsWithNodes = new TagList();
 		
 		for (Node node : boxGroupNodes.getChildren()) {
 			if (node instanceof GroupNode) {
 				GroupNode groupNode = (GroupNode) node;
-				groupsCurrent.add(groupNode.getGroup());
+				groupsWithNodes.add(groupNode.getGroup(), true);
 				for (TextNode nameNode : groupNode.getNameNodes()) {
-					tagsCurrent.add(TagList.getMain().getTag(groupNode.getGroup(), nameNode.getText()));
+					Tag tag = TagList.getMain().getTag(groupNode.getGroup(), nameNode.getText());
+					if (tag == null) {
+						//  it's possible the Tag is not in TagList.getMain()
+						tag = new Tag(groupNode.getGroup(), nameNode.getText());
+					}
+					tagsWithNodes.add(tag, true);
 				}
 			}
 		}
 		
-		//	populate secondary helpers
-		CustomList<Tag> tagsToAdd = new CustomList<>();
-		for (Tag tagMain : tagsMain) {
-			if (!tagsCurrent.contains(tagMain)) {
-				tagsToAdd.add(tagMain);
+		//	populate secondary lists
+		CustomList<Tag> tagsWithoutNodes = new CustomList<>();
+		for (Tag tagMain : TagList.getMain()) {
+			if (!tagsWithNodes.contains(tagMain)) {
+				tagsWithoutNodes.add(tagMain);
 			}
 		}
-		TagList tagsToRemove = new TagList();
-		for (Tag tagCurrent : tagsCurrent) {
-			if (!tagsMain.contains(tagCurrent)) {
-				tagsToRemove.add(tagCurrent);
+		TagList nodesWithoutTags = new TagList();
+		for (Tag tagCurrent : tagsWithNodes) {
+			if (!TagList.getMain().contains(tagCurrent)) {
+				nodesWithoutTags.add(tagCurrent);
 			}
 		}
 		
 		//	check if any changes are necessary (add)
-		if (!tagsCurrent.containsAll(tagsMain)) {
-			for (Tag tag : tagsToAdd) {
+		if (!tagsWithNodes.containsAll(TagList.getMain())) {
+			for (Tag tag : tagsWithoutNodes) {
 				//	check if the GroupNode exists, if not, add it
 				String group = tag.getGroup();
 				int index;
-				if (!groupsCurrent.contains(group)) {
-					groupsCurrent.add(group);
-					groupsCurrent.sort(Comparator.naturalOrder());
-					index = groupsCurrent.indexOf(group);
+				if (!groupsWithNodes.contains(group)) {
+					groupsWithNodes.add(group);
+					groupsWithNodes.sort(Comparator.naturalOrder());
+					index = groupsWithNodes.indexOf(group);
 					GroupNode groupNode = new GroupNode(this, group);
-					boxGroupNodes.getChildren().remove(groupNode);
 					boxGroupNodes.getChildren().add(index, groupNode);
 				} else {
-					index = groupsCurrent.indexOf(group);
+					index = groupsWithNodes.indexOf(group);
 				}
+				
 				//	add NameNode to the respective GroupNode and sort
 				Node node = boxGroupNodes.getChildren().get(index);
 				if (node instanceof GroupNode) {
 					GroupNode groupNode = (GroupNode) node;
 					groupNode.addNameNode(tag.getName());
 					groupNode.sort();
+					groupNode.expand();
 				}
 			}
 		}
 		
 		//	check if any changes are necessary (remove)
-		if (!tagsMain.containsAll(tagsCurrent)) {
-			for (Tag tag : tagsToRemove) {
+		if (!TagList.getMain().containsAll(tagsWithNodes)) {
+			for (Tag tag : nodesWithoutTags) {
 				//	use helper to find the GroupNode
 				//	remove NameNode from the GroupNode
-				Node node = boxGroupNodes.getChildren().get(groupsCurrent.indexOf(tag.getGroup()));
+				Node node = boxGroupNodes.getChildren().get(groupsWithNodes.indexOf(tag.getGroup()));
 				if (node instanceof GroupNode) {
 					GroupNode groupNode = (GroupNode) node;
 					groupNode.removeNameNode(tag.getName());
-					//	if GroupNode is empty, remove it
-					if (groupNode.getNameNodes().isEmpty()) boxGroupNodes.getChildren().remove(groupNode);
 				}
 			}
 		}
@@ -123,10 +126,9 @@ public abstract class SidePaneBase extends VBox {
 	}
 	
 	public GroupNode getGroupNode(String group) {
-		GroupNode groupNode;
 		for (Node node : boxGroupNodes.getChildren()) {
 			if (node instanceof GroupNode) {
-				groupNode = (GroupNode) node;
+				GroupNode groupNode = (GroupNode) node;
 				if (groupNode.getGroup().equals(group)) {
 					return groupNode;
 				}

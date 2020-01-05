@@ -1,6 +1,5 @@
 package ui.component.simple.template;
 
-import base.entity.Entity;
 import base.entity.EntityCollectionUtil;
 import base.entity.EntityList;
 import base.tag.Tag;
@@ -29,8 +28,6 @@ import ui.stage.template.tageditstage.TagEditStageResult;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public enum ButtonTemplates {
 	ENTITY_OPEN {
@@ -41,6 +38,23 @@ public enum ButtonTemplates {
 				File entityFile = new File(FileUtil.getFileEntity(Select.getTarget()));
 				try {
 					Desktop.getDesktop().open(entityFile);
+				} catch (IOException e) {
+					e.printStackTrace();
+				} finally {
+					ClickMenu.hideAll();
+				}
+			});
+			return textNode;
+		}
+	},
+	ENTITY_OPEN_DIRECTORY {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Open in Directory", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				File entityFile = new File(FileUtil.getFileEntity(Select.getTarget()));
+				try {
+					Runtime.getRuntime().exec("explorer.exe /select," + entityFile);
 				} catch (IOException e) {
 					e.printStackTrace();
 				} finally {
@@ -259,22 +273,14 @@ public enum ButtonTemplates {
 				String groupAfter = WordUtils.capitalize(result.getGroup().toLowerCase());
 				String nameAfter = WordUtils.capitalize(result.getName().toLowerCase());
 				
-				tag.set(groupAfter, nameAfter);
+				tag.setGroup(groupAfter);
+				tag.setName(nameAfter);
+				
 				TagList.getMain().sort();
 				
-				if (result.isAddToSelect()) {
-					Select.getEntities().addTag(tag);
-				}
+				if (result.isAddToSelect()) Select.getEntities().addTag(tag);
 				
-				if (!groupBefore.equals(groupAfter)) {
-					PaneFilter.getInstance().getGroupNode(groupBefore).setGroup(groupAfter);
-					PaneSelect.getInstance().getGroupNode(groupBefore).setGroup(groupAfter);
-				}
-				
-				if (!nameBefore.equals(nameAfter)) {
-					PaneFilter.getInstance().getGroupNode(groupAfter).getNameNode(nameBefore).setText(nameAfter);
-					PaneSelect.getInstance().getGroupNode(groupAfter).getNameNode(nameBefore).setText(nameAfter);
-				}
+				Reload.notify(ChangeIn.TAG_LIST_MAIN);
 				
 				ClickMenu.hideAll();
 				Reload.start();
@@ -291,7 +297,7 @@ public enum ButtonTemplates {
 				String name = ClickMenu.getName();
 				
 				Tag tag = TagList.getMain().getTag(group, name);
-				if (StageManager.getOkCancelStage().show("Remove \"" + tag.getFull() + "\" ?")) {
+				if (StageManager.getOkCancelStage().show("Remove \"" + tag.getGroup() + " - " + tag.getName() + "\" ?")) {
 					PaneFilter.getInstance().getGroupNode(group).removeNameNode(name);
 					PaneSelect.getInstance().getGroupNode(group).removeNameNode(name);
 					EntityList.getMain().forEach(entity -> entity.getTagList().remove(tag));
@@ -338,16 +344,13 @@ public enum ButtonTemplates {
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				CacheManager.stopThread();
-				for (Entity entity : EntityList.getMain()) {
-					try {
-						//todo maybe doesn't exist
-						Files.delete(Paths.get(FileUtil.getFileCache(entity)));
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					entity.getGalleryTile().setImage(null);
-				}
+				
+				EntityList.getMain().forEach(entity -> entity.getGalleryTile().setImage(null));
+				
+				FileUtil.deleteFile(FileUtil.getDirectoryCache());
+				
 				CacheManager.checkCacheInBackground(EntityList.getMain());
+				
 				ClickMenu.hideAll();
 			});
 			return textNode;

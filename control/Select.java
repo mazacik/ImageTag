@@ -120,7 +120,7 @@ public class Select extends EntityList {
 			Filter.getEntities().removeAll(helper);
 			EntityList.getMain().removeAll(helper);
 			
-			Reload.notify(ChangeIn.ENTITY_LIST_MAIN);
+			Reload.notify(ChangeIn.ENTITY_LIST_MAIN, ChangeIn.FILTER);
 			Reload.start();
 		}
 		

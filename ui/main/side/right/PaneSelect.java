@@ -86,6 +86,7 @@ public class PaneSelect extends SidePaneBase {
 				} else {
 					groupNode.setTextFill(textColorDefault);
 				}
+				
 				CustomList<String> namesInter;
 				CustomList<String> namesShare;
 				if (Select.getEntities().size() == 0) {
@@ -95,6 +96,7 @@ public class PaneSelect extends SidePaneBase {
 					namesInter = Select.getEntities().getTagsIntersect().getNames(group);
 					namesShare = Select.getEntities().getTags().getNames(group);
 				}
+				
 				for (TextNode nameNode : groupNode.getNameNodes()) {
 					String name = nameNode.getText();
 					
