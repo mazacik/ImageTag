@@ -202,7 +202,7 @@ public abstract class CacheManager {
 			cacheThread.start();
 		}
 	}
-	public static void stopThread() {
+	public static void stopCacheThread() {
 		if (cacheThread != null) cacheThread.interrupt();
 	}
 }

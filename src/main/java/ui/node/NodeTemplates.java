@@ -352,7 +352,7 @@ public enum NodeTemplates {
 			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClickMenu.hideAll();
 				
-				CacheManager.stopThread();
+				CacheManager.stopCacheThread();
 				
 				EntityList.getMain().forEach(entity -> entity.getTile().setImage(null));
 				

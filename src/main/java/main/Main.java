@@ -165,7 +165,8 @@ public class Main extends Application {
 	}
 	
 	public static void exitApplication() {
-		CacheManager.stopThread();
+		CacheManager.stopCacheThread();
+		FileUtil.stopImportThread();
 		
 		PaneDisplay.getInstance().disposeVideoPlayer();
 		PaneDisplay.getInstance().getControls().hide();

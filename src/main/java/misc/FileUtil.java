@@ -8,11 +8,12 @@ import com.sun.jna.platform.FileUtils;
 import control.filter.Filter;
 import control.reload.Reload;
 import enums.MediaType;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.DirectoryChooser;
 import ui.main.stage.StageMain;
-import ui.stage.StageSimpleMessage;
 import ui.stage.StageConfirmation;
+import ui.stage.StageSimpleMessage;
 
 import java.io.File;
 import java.io.IOException;
@@ -85,51 +86,67 @@ public abstract class FileUtil {
 		return path;
 	}
 	
+	private static Thread importThread = null;
 	public static void importFiles() {
 		DirectoryChooser directoryChooser = new DirectoryChooser();
-		directoryChooser.setTitle("Select a directory to import from");
+		directoryChooser.setTitle("Select a directory to import");
 		directoryChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
 		File directory = directoryChooser.showDialog(StageMain.getInstance());
 		
-		EntityList newEntities = new EntityList();
 		if (directory != null && directory.isDirectory()) {
-			for (File file : getSupportedFiles(directory)) {
-				String pathBefore = file.getAbsolutePath();
-				String pathAfter = Project.getCurrent().getDirectorySource() + File.separator + FileUtil.createEntityName(file, directory.getAbsolutePath());
-				
-				File fileAfter = new File(pathAfter);
-				if (!fileAfter.exists()) {
-					fileAfter.getParentFile().mkdirs();
-					FileUtil.moveFile(pathBefore, pathAfter);
-					newEntities.add(new Entity(fileAfter));
-				} else {
-					Logger.getGlobal().info("Could not import file " + file.getName() + ", file already exists");
-				}
+			if (importThread == null || !importThread.isAlive()) {
+				importThread = new Thread(() -> {
+					EntityList newEntities = new EntityList();
+					for (File file : getSupportedFiles(directory)) {
+						if (Thread.currentThread().isInterrupted()) {
+							Logger.getGlobal().info("interrupted");
+							return;
+						}
+						
+						String pathBefore = file.getAbsolutePath();
+						String pathAfter = Project.getCurrent().getDirectorySource() + File.separator + FileUtil.createEntityName(file, directory.getAbsolutePath());
+						
+						File fileAfter = new File(pathAfter);
+						if (!fileAfter.exists()) {
+							fileAfter.getParentFile().mkdirs();
+							FileUtil.moveFile(pathBefore, pathAfter);
+							newEntities.add(new Entity(fileAfter));
+						} else {
+							Logger.getGlobal().info("Could not import file " + file.getName() + ", file already exists");
+						}
+					}
+					
+					if (newEntities.isEmpty()) {
+						Platform.runLater(() -> StageSimpleMessage.show("Imported 0 files."));
+					} else {
+						CacheManager.checkCacheInBackground(newEntities);
+						
+						EntityList.getMain().addAll(newEntities);
+						EntityList.getMain().sort();
+						
+						Filter.getNewEntities().setAll(newEntities);
+						
+						Platform.runLater(() -> {
+							String s = "Imported " + newEntities.size() + " files.\nWould you like to view the new files?";
+							if (StageConfirmation.show(s)) {
+								Filter.getSettings().setShowImages(true);
+								Filter.getSettings().setShowGifs(true);
+								Filter.getSettings().setShowVideos(true);
+								Filter.getSettings().setShowOnlyNewEntities(true);
+								Filter.getSettings().setEnableLimit(false);
+							}
+							Filter.refresh();
+							Reload.start();
+						});
+					}
+					Logger.getGlobal().info("finished");
+				});
+				importThread.start();
 			}
 		}
-		
-		if (newEntities.isEmpty()) {
-			StageSimpleMessage.show("Imported 0 files.");
-		} else {
-			CacheManager.checkCacheInBackground(newEntities);
-			
-			EntityList.getMain().addAll(newEntities);
-			EntityList.getMain().sort();
-			
-			String s = "Imported " + newEntities.size() + " files.\nWould you like to view the new files?";
-			if (StageConfirmation.show(s)) {
-				Filter.getNewEntities().setAll(newEntities);
-				
-				Filter.getSettings().setShowOnlyNewEntities(true);
-				Filter.getSettings().setShowImages(true);
-				Filter.getSettings().setShowGifs(true);
-				Filter.getSettings().setShowVideos(true);
-				Filter.getSettings().setEnableLimit(false);
-			}
-			
-			Filter.refresh();
-			Reload.start();
-		}
+	}
+	public static void stopImportThread() {
+		if (importThread != null) importThread.interrupt();
 	}
 	
 	public static CustomList<Project> getProjects() {
