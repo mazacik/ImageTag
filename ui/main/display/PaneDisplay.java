@@ -191,13 +191,14 @@ public class PaneDisplay extends BorderPane {
 		ClickMenu.install(this, MouseButton.SECONDARY, ClickMenu.StaticInstance.ENTITY);
 		this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
+				ClickMenu.hideAll();
+				
 				if (event.getClickCount() % 2 != 0) {
 					requestFocus();
 				} else {
 					StageMain.getSceneMain().viewGallery();
 					Reload.start();
 				}
-				ClickMenu.hideAll();
 			}
 		});
 	}

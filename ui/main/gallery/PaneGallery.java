@@ -79,8 +79,6 @@ public class PaneGallery extends ScrollPane {
 				localCursorPositionY = y;
 				
 				selectRectangleHelper.setAll(Select.getEntities());
-				
-				ClickMenu.hideAll();
 				break;
 			case SECONDARY:
 				break;

@@ -22,62 +22,59 @@ import ui.custom.ClickMenu;
 import ui.main.side.PaneFilter;
 import ui.main.side.PaneSelect;
 import ui.main.stage.StageMain;
-import ui.stage.StageSimpleMessage;
+import ui.stage.StageConfirmation;
 import ui.stage.StageEditGroup;
 import ui.stage.StageEditTag;
-import ui.stage.StageConfirmation;
+import ui.stage.StageSimpleMessage;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
 public enum NodeTemplates {
-	ENTITY_OPEN {
+	ENTITY_OPEN_FILE {
 		public NodeText get() {
-			NodeText nodeText = new NodeText("Open", true, true, false, true);
+			NodeText nodeText = new NodeText("Open File", true, true, false, true);
 			nodeText.setMaxWidth(Double.MAX_VALUE);
 			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				File entityFile = new File(FileUtil.getFileEntity(Select.getTarget()));
+				ClickMenu.hideAll();
+				
 				try {
-					Desktop.getDesktop().open(entityFile);
+					Desktop.getDesktop().open(new File(FileUtil.getFileEntity(Select.getTarget())));
 				} catch (IOException e) {
 					e.printStackTrace();
-				} finally {
-					ClickMenu.hideAll();
 				}
 			});
 			return nodeText;
 		}
 	},
-	ENTITY_OPEN_DIRECTORY {
+	ENTITY_SHOW_EXPLORER {
 		public NodeText get() {
-			NodeText nodeText = new NodeText("Open in Directory", true, true, false, true);
+			NodeText nodeText = new NodeText("Show in Explorer", true, true, false, true);
 			nodeText.setMaxWidth(Double.MAX_VALUE);
 			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				File entityFile = new File(FileUtil.getFileEntity(Select.getTarget()));
+				ClickMenu.hideAll();
+				
 				try {
-					Runtime.getRuntime().exec("explorer.exe /select," + entityFile);
+					Runtime.getRuntime().exec("explorer.exe /select," + new File(FileUtil.getFileEntity(Select.getTarget())));
 				} catch (IOException e) {
 					e.printStackTrace();
-				} finally {
-					ClickMenu.hideAll();
 				}
 			});
 			return nodeText;
 		}
 	},
-	ENTITY_EDIT {
+	ENTITY_EDIT_PAINT {
 		public NodeText get() {
-			NodeText nodeText = new NodeText("Edit", true, true, false, true);
+			NodeText nodeText = new NodeText("Edit in Paint", true, true, false, true);
 			nodeText.setMaxWidth(Double.MAX_VALUE);
 			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				String entityFilePath = FileUtil.getFileEntity(Select.getTarget());
+				ClickMenu.hideAll();
+				
 				try {
-					Runtime.getRuntime().exec("mspaint.exe " + entityFilePath);
+					Runtime.getRuntime().exec("mspaint.exe " + FileUtil.getFileEntity(Select.getTarget()));
 				} catch (IOException e) {
 					e.printStackTrace();
-				} finally {
-					ClickMenu.hideAll();
 				}
 			});
 			return nodeText;
@@ -88,11 +85,11 @@ public enum NodeTemplates {
 			NodeText nodeText = new NodeText("Copy File Name", true, true, false, true);
 			nodeText.setMaxWidth(Double.MAX_VALUE);
 			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ClickMenu.hideAll();
+				
 				ClipboardContent content = new ClipboardContent();
 				content.putString(FileUtil.getFileEntity(Select.getTarget()));
 				Clipboard.getSystemClipboard().setContent(content);
-				
-				ClickMenu.hideAll();
 			});
 			return nodeText;
 		}
@@ -102,11 +99,11 @@ public enum NodeTemplates {
 			NodeText nodeText = new NodeText("Copy File Path", true, true, false, true);
 			nodeText.setMaxWidth(Double.MAX_VALUE);
 			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ClickMenu.hideAll();
+				
 				ClipboardContent content = new ClipboardContent();
 				content.putString(FileUtil.getFileEntity(Select.getTarget()));
 				Clipboard.getSystemClipboard().setContent(content);
-				
-				ClickMenu.hideAll();
 			});
 			return nodeText;
 		}
@@ -116,9 +113,10 @@ public enum NodeTemplates {
 			NodeText nodeText = new NodeText("Reverse Image Search", true, true, false, true);
 			nodeText.setMaxWidth(Double.MAX_VALUE);
 			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				HttpUtil.googleReverseImageSearch(Select.getTarget());
-				StageSimpleMessage.show("Info", "Request sent.");
 				ClickMenu.hideAll();
+				
+				HttpUtil.googleReverseImageSearch(Select.getTarget());
+				StageSimpleMessage.show("Info", "Request Sent.");
 			});
 			return nodeText;
 		}
@@ -129,10 +127,11 @@ public enum NodeTemplates {
 			NodeText nodeText = new NodeText("Show Similar Files", true, true, false, true);
 			nodeText.setMaxWidth(Double.MAX_VALUE);
 			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				Filter.showSimilar(Select.getTarget());
-				StageMain.getSceneMain().viewGallery();
-				Reload.start();
 				ClickMenu.hideAll();
+				
+				StageMain.getSceneMain().viewGallery();
+				Filter.showSimilar(Select.getTarget());
+				Reload.start();
 			});
 			return nodeText;
 		}
@@ -143,9 +142,10 @@ public enum NodeTemplates {
 			NodeText nodeText = new NodeText("Select All", true, true, false, true);
 			nodeText.setMaxWidth(Double.MAX_VALUE);
 			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ClickMenu.hideAll();
+				
 				Select.getEntities().setAll(Filter.getEntities());
 				Reload.start();
-				ClickMenu.hideAll();
 			});
 			return nodeText;
 		}
@@ -155,9 +155,10 @@ public enum NodeTemplates {
 			NodeText nodeText = new NodeText("Select None", true, true, false, true);
 			nodeText.setMaxWidth(Double.MAX_VALUE);
 			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ClickMenu.hideAll();
+				
 				Select.getEntities().clear();
 				Reload.start();
-				ClickMenu.hideAll();
 			});
 			return nodeText;
 		}
@@ -167,8 +168,9 @@ public enum NodeTemplates {
 			NodeText nodeText = new NodeText("Delete Selection", true, true, false, true);
 			nodeText.setMaxWidth(Double.MAX_VALUE);
 			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				Select.getEntities().deleteFiles();
 				ClickMenu.hideAll();
+				
+				Select.getEntities().deleteFiles();
 			});
 			return nodeText;
 		}
@@ -179,6 +181,8 @@ public enum NodeTemplates {
 			NodeText nodeText = new NodeText("Edit Tag Group", true, true, false, true);
 			nodeText.setMaxWidth(Double.MAX_VALUE);
 			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ClickMenu.hideAll();
+				
 				String groupBefore = ClickMenu.getGroup();
 				String groupAfter = WordUtils.capitalize(StageEditGroup.show(groupBefore).toLowerCase());
 				
@@ -191,7 +195,6 @@ public enum NodeTemplates {
 				PaneFilter.getInstance().getGroupNode(groupBefore).setGroup(groupAfter);
 				PaneSelect.getInstance().getGroupNode(groupBefore).setGroup(groupAfter);
 				
-				ClickMenu.hideAll();
 				Reload.start();
 			});
 			return nodeText;
@@ -202,22 +205,22 @@ public enum NodeTemplates {
 			NodeText nodeText = new NodeText("Remove Tag Group", true, true, false, true);
 			nodeText.setMaxWidth(Double.MAX_VALUE);
 			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				String group = ClickMenu.getGroup();
+				ClickMenu.hideAll();
 				
+				String group = ClickMenu.getGroup();
 				if (StageConfirmation.show("Remove \"" + group + "\" and all of its tags?")) {
 					for (String name : TagList.getMain().getNames(group)) {
 						PaneFilter.getInstance().getGroupNode(group).removeNameNode(name);
 						PaneSelect.getInstance().getGroupNode(group).removeNameNode(name);
+						
 						Tag tag = TagList.getMain().getTag(group, name);
 						EntityList.getMain().forEach(entity -> entity.getTagList().remove(tag));
 						Filter.getListManager().unlist(tag);
 						TagList.getMain().remove(tag);
-						Reload.notify(Notifier.TAG_LIST_MAIN);
 					}
+					Reload.notify(Notifier.TAG_LIST_MAIN);
+					Reload.start();
 				}
-				
-				Reload.start();
-				ClickMenu.hideAll();
 			});
 			return nodeText;
 		}
@@ -227,9 +230,10 @@ public enum NodeTemplates {
 			NodeText nodeText = new NodeText("Whitelist All", true, true, false, true);
 			nodeText.setMaxWidth(Double.MAX_VALUE);
 			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ClickMenu.hideAll();
+				
 				Filter.getListManager().whitelist(ClickMenu.getGroup());
 				Filter.refresh();
-				ClickMenu.hideAll();
 				Reload.start();
 			});
 			return nodeText;
@@ -240,9 +244,10 @@ public enum NodeTemplates {
 			NodeText nodeText = new NodeText("Blacklist All", true, true, false, true);
 			nodeText.setMaxWidth(Double.MAX_VALUE);
 			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ClickMenu.hideAll();
+				
 				Filter.getListManager().blacklist(ClickMenu.getGroup());
 				Filter.refresh();
-				ClickMenu.hideAll();
 				Reload.start();
 			});
 			return nodeText;
@@ -253,9 +258,10 @@ public enum NodeTemplates {
 			NodeText nodeText = new NodeText("Unlist All", true, true, false, true);
 			nodeText.setMaxWidth(Double.MAX_VALUE);
 			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ClickMenu.hideAll();
+				
 				Filter.getListManager().unlist(ClickMenu.getGroup());
 				Filter.refresh();
-				ClickMenu.hideAll();
 				Reload.start();
 			});
 			return nodeText;
@@ -267,6 +273,8 @@ public enum NodeTemplates {
 			NodeText nodeText = new NodeText("Edit Tag", true, true, false, true);
 			nodeText.setMaxWidth(Double.MAX_VALUE);
 			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ClickMenu.hideAll();
+				
 				Tag tag = TagList.getMain().getTag(ClickMenu.getGroup(), ClickMenu.getName());
 				StageEditTag.Result result = StageEditTag.show(ClickMenu.getGroup(), ClickMenu.getName());
 				
@@ -290,10 +298,12 @@ public enum NodeTemplates {
 			NodeText nodeText = new NodeText("Remove Tag", true, true, false, true);
 			nodeText.setMaxWidth(Double.MAX_VALUE);
 			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ClickMenu.hideAll();
+				
 				String group = ClickMenu.getGroup();
 				String name = ClickMenu.getName();
-				
 				Tag tag = TagList.getMain().getTag(group, name);
+				
 				if (StageConfirmation.show("Remove \"" + tag.getGroup() + " - " + tag.getName() + "\" ?")) {
 					PaneFilter.getInstance().getGroupNode(group).removeNameNode(name);
 					PaneSelect.getInstance().getGroupNode(group).removeNameNode(name);
@@ -301,10 +311,8 @@ public enum NodeTemplates {
 					Filter.getListManager().unlist(tag);
 					TagList.getMain().remove(tag);
 					Reload.notify(Notifier.TAG_LIST_MAIN);
+					Reload.start();
 				}
-				
-				Reload.start();
-				ClickMenu.hideAll();
 			});
 			return nodeText;
 		}
@@ -315,9 +323,10 @@ public enum NodeTemplates {
 			NodeText nodeText = new NodeText("Create Collection", true, true, false, true);
 			nodeText.setMaxWidth(Double.MAX_VALUE);
 			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ClickMenu.hideAll();
+				
 				EntityCollectionUtil.create();
 				Reload.start();
-				ClickMenu.hideAll();
 			});
 			return nodeText;
 		}
@@ -327,9 +336,10 @@ public enum NodeTemplates {
 			NodeText nodeText = new NodeText("Discard Collection", true, true, false, true);
 			nodeText.setMaxWidth(Double.MAX_VALUE);
 			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ClickMenu.hideAll();
+				
 				EntityCollectionUtil.discard();
 				Reload.start();
-				ClickMenu.hideAll();
 			});
 			return nodeText;
 		}
@@ -340,6 +350,8 @@ public enum NodeTemplates {
 			NodeText nodeText = new NodeText("Reset Cache", true, true, false, true);
 			nodeText.setMaxWidth(Double.MAX_VALUE);
 			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ClickMenu.hideAll();
+				
 				CacheManager.stopThread();
 				
 				EntityList.getMain().forEach(entity -> entity.getTile().setImage(null));
@@ -347,8 +359,6 @@ public enum NodeTemplates {
 				FileUtil.deleteFile(FileUtil.getDirectoryCache());
 				
 				CacheManager.checkCacheInBackground(EntityList.getMain());
-				
-				ClickMenu.hideAll();
 			});
 			return nodeText;
 		}
@@ -359,8 +369,9 @@ public enum NodeTemplates {
 			NodeText nodeText = new NodeText("Save", true, true, false, true);
 			nodeText.setMaxWidth(Double.MAX_VALUE);
 			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				Project.getCurrent().writeToDisk();
 				ClickMenu.hideAll();
+				
+				Project.getCurrent().writeToDisk();
 			});
 			return nodeText;
 		}
@@ -370,8 +381,9 @@ public enum NodeTemplates {
 			NodeText nodeText = new NodeText("Import", true, true, false, true);
 			nodeText.setMaxWidth(Double.MAX_VALUE);
 			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				FileUtil.importFiles();
 				ClickMenu.hideAll();
+				
+				FileUtil.importFiles();
 			});
 			return nodeText;
 		}

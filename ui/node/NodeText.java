@@ -63,7 +63,6 @@ public class NodeText extends Label {
 				this.setCursor(Cursor.DEFAULT);
 			}
 		});
-		this.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> ClickMenu.hideAll());
 	}
 	
 	public <T extends Event> void addMouseEvent(final EventType<T> eventType, MouseButton mouseButton, Runnable runnable) {

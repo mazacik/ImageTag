@@ -102,6 +102,8 @@ public class Tile extends Pane {
 			if (!event.isStillSincePress()) return;
 			switch (event.getButton()) {
 				case PRIMARY:
+					ClickMenu.hideAll();
+					
 					boolean hitWidth = event.getX() >= collectionIconX && event.getX() <= collectionIconX + collectionIconSize;
 					boolean hitHeight = event.getY() <= collectionIconY + collectionIconSize && event.getY() >= collectionIconY;
 					if (entity.getCollectionID() != 0 && hitWidth && hitHeight) {
@@ -125,7 +127,7 @@ public class Tile extends Pane {
 							StageMain.getSceneMain().viewEntity();
 						}
 					}
-					ClickMenu.hideAll();
+					
 					Reload.start();
 					break;
 				case SECONDARY:
@@ -177,7 +179,7 @@ public class Tile extends Pane {
 		return entity;
 	}
 	
-	public void setImage(Image image) {
+	public synchronized void setImage(Image image) {
 		ImageView imageView = ((ImageView) this.getChildren().get(0));
 		if (image != null) {
 			imageView.setImage(image);
