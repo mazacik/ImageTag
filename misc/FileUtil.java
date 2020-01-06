@@ -10,7 +10,9 @@ import control.reload.Reload;
 import enums.MediaType;
 import javafx.scene.Scene;
 import javafx.stage.DirectoryChooser;
-import ui.stage.StageManager;
+import ui.main.stage.StageMain;
+import ui.stage.StageSimpleMessage;
+import ui.stage.StageConfirmation;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,7 +59,7 @@ public abstract class FileUtil {
 					//if (!abstractFile.exists()) counter++;
 					counter++;
 				} catch (IOException e) {
-					StageManager.getErrorStage().show("Delete failed: " + abstractFile.getAbsolutePath() + "\nCannot access the file because it is being used by another process.");
+					StageSimpleMessage.show("Delete failed: " + abstractFile.getAbsolutePath() + "\nCannot access the file because it is being used by another process.");
 					e.printStackTrace();
 				}
 			} else {
@@ -66,7 +68,7 @@ public abstract class FileUtil {
 				}
 			}
 		} else {
-			StageManager.getErrorStage().show("Delete failed: No OS-level file trash support");
+			StageSimpleMessage.show("Delete failed: No OS-level file trash support");
 			Logger.getGlobal().severe("No OS-level file trash support");
 		}
 		
@@ -87,7 +89,7 @@ public abstract class FileUtil {
 		DirectoryChooser directoryChooser = new DirectoryChooser();
 		directoryChooser.setTitle("Select a directory to import from");
 		directoryChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-		File directory = directoryChooser.showDialog(StageManager.getStageMain());
+		File directory = directoryChooser.showDialog(StageMain.getInstance());
 		
 		EntityList newEntities = new EntityList();
 		if (directory != null && directory.isDirectory()) {
@@ -107,7 +109,7 @@ public abstract class FileUtil {
 		}
 		
 		if (newEntities.isEmpty()) {
-			StageManager.getErrorStage().show("Imported 0 files.");
+			StageSimpleMessage.show("Imported 0 files.");
 		} else {
 			CacheManager.checkCacheInBackground(newEntities);
 			
@@ -115,7 +117,7 @@ public abstract class FileUtil {
 			EntityList.getMain().sort();
 			
 			String s = "Imported " + newEntities.size() + " files.\nWould you like to view the new files?";
-			if (StageManager.getYesNoStage().show(s)) {
+			if (StageConfirmation.show(s)) {
 				Filter.getNewEntities().setAll(newEntities);
 				
 				Filter.getSettings().setShowOnlyNewEntities(true);

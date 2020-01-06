@@ -1,23 +1,24 @@
 package base.entity;
 
 import base.tag.TagList;
+import com.google.gson.annotations.SerializedName;
 import enums.MediaType;
 import misc.FileUtil;
-import ui.main.center.GalleryTile;
+import ui.main.gallery.Tile;
 
 import java.io.File;
 
 public class Entity {
-	private String name;
-	private TagList tagList;
-	private long size;
-	private int collectionID;
+	@SerializedName("n") private String name;
+	@SerializedName("t") private TagList tagList;
+	@SerializedName("s") private long size;
+	@SerializedName("c") private int collectionID;
 	
-	private MediaType mediaType;
-	private long mediaDuration;
+	@SerializedName("f") private MediaType mediaType;
+	@SerializedName("d") private long mediaDuration;
 	
 	private transient EntityList collection;
-	private transient GalleryTile galleryTile;
+	private transient Tile tile;
 	
 	public Entity(File file) {
 		this.name = FileUtil.createEntityName(file);
@@ -29,7 +30,7 @@ public class Entity {
 		this.mediaDuration = 0;
 		
 		this.collection = null;
-		this.galleryTile = new GalleryTile(this);
+		this.tile = new Tile(this);
 	}
 	
 	public String getName() {
@@ -58,11 +59,11 @@ public class Entity {
 	public EntityList getCollection() {
 		return collection;
 	}
-	public GalleryTile getGalleryTile() {
-		if (galleryTile == null) {
-			galleryTile = new GalleryTile(this);
+	public Tile getTile() {
+		if (tile == null) {
+			tile = new Tile(this);
 		}
-		return galleryTile;
+		return tile;
 	}
 	
 	public void setName(String name) {

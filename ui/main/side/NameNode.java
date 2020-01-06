@@ -9,13 +9,11 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import ui.component.clickmenu.ClickMenu;
-import ui.component.simple.TextNode;
-import ui.decorator.ColorUtil;
-import ui.main.side.left.PaneFilter;
-import ui.main.side.right.PaneSelect;
+import ui.custom.ClickMenu;
+import ui.decorator.Decorator;
+import ui.node.NodeText;
 
-public class NameNode extends TextNode {
+public class NameNode extends NodeText {
 	private static final Insets PADDING = new Insets(0, 0, 0, 50);
 	
 	private final GroupNode groupNode;
@@ -56,33 +54,33 @@ public class NameNode extends TextNode {
 		if (Filter.getListManager().isWhitelisted(tag)) {
 			Filter.getListManager().blacklist(tag);
 			if (Filter.getListManager().isBlacklisted(tag.getGroup())) {
-				groupNode.setTextFill(ColorUtil.getColorNegative());
+				groupNode.setTextFill(Decorator.getColorNegative());
 			} else if (!Filter.getListManager().isWhitelisted(tag.getGroup())) {
-				groupNode.setTextFill(ColorUtil.getColorPrimary());
+				groupNode.setTextFill(Decorator.getColorPrimary());
 			}
-			this.setTextFill(ColorUtil.getColorNegative());
+			this.setTextFill(Decorator.getColorNegative());
 		} else if (Filter.getListManager().isBlacklisted(tag)) {
 			Filter.getListManager().unlist(tag);
 			if (!Filter.getListManager().isWhitelisted(tag.getGroup()) && !Filter.getListManager().isBlacklisted(tag.getGroup())) {
-				groupNode.setTextFill(ColorUtil.getColorPrimary());
+				groupNode.setTextFill(Decorator.getColorPrimary());
 			}
-			this.setTextFill(ColorUtil.getColorPrimary());
+			this.setTextFill(Decorator.getColorPrimary());
 		} else {
 			Filter.getListManager().whitelist(tag);
 			if (Filter.getListManager().isWhitelisted(tag.getGroup())) {
-				groupNode.setTextFill(ColorUtil.getColorPositive());
+				groupNode.setTextFill(Decorator.getColorPositive());
 			}
-			this.setTextFill(ColorUtil.getColorPositive());
+			this.setTextFill(Decorator.getColorPositive());
 		}
 		Filter.refresh();
 	}
 	private void changeStateAsSelect() {
 		Tag tag = TagList.getMain().getTag(groupNode.getGroup(), this.getText());
-		if (this.getTextFill().equals(ColorUtil.getColorPositive()) || this.getTextFill().equals(ColorUtil.getColorShare())) {
-			this.setTextFill(ColorUtil.getColorPrimary());
+		if (this.getTextFill().equals(Decorator.getColorPositive()) || this.getTextFill().equals(Decorator.getColorShare())) {
+			this.setTextFill(Decorator.getColorPrimary());
 			Select.getEntities().removeTag(tag);
 		} else {
-			this.setTextFill(ColorUtil.getColorPositive());
+			this.setTextFill(Decorator.getColorPositive());
 			Select.getEntities().addTag(tag);
 		}
 		

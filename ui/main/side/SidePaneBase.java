@@ -6,14 +6,16 @@ import base.tag.TagList;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Background;
-import ui.component.simple.TextNode;
-import ui.component.simple.VBox;
-import ui.decorator.SizeUtil;
+import ui.decorator.Decorator;
+import ui.node.NodeText;
+import ui.override.VBox;
 
 import java.util.Comparator;
 
 public abstract class SidePaneBase extends VBox {
-	protected TextNode nodeTitle;
+	public static final double MIN_WIDTH_SIDELISTS = 250;
+	
+	protected NodeText nodeTitle;
 	protected VBox boxGroupNodes;
 	protected ScrollPane scrollPane;
 	
@@ -27,8 +29,8 @@ public abstract class SidePaneBase extends VBox {
 		scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 		scrollPane.setBackground(Background.EMPTY);
 		
-		this.setPrefWidth(SizeUtil.getUsableScreenWidth());
-		this.setMinWidth(SizeUtil.getMinWidthSideLists());
+		this.setPrefWidth(Decorator.getUsableScreenWidth());
+		this.setMinWidth(SidePaneBase.MIN_WIDTH_SIDELISTS);
 	}
 	
 	public boolean reload() {
@@ -40,7 +42,7 @@ public abstract class SidePaneBase extends VBox {
 			if (node instanceof GroupNode) {
 				GroupNode groupNode = (GroupNode) node;
 				groupsWithNodes.add(groupNode.getGroup(), true);
-				for (TextNode nameNode : groupNode.getNameNodes()) {
+				for (NodeText nameNode : groupNode.getNameNodes()) {
 					Tag tag = TagList.getMain().getTag(groupNode.getGroup(), nameNode.getText());
 					if (tag == null) {
 						//  it's possible the Tag is not in TagList.getMain()

@@ -2,6 +2,7 @@ package misc;
 
 import base.entity.EntityList;
 import base.tag.TagList;
+import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
@@ -12,10 +13,10 @@ public class Project {
 	private transient String projectName;
 	private transient String projectFile;
 	
-	private long msLastAccess;
-	private String directorySource;
-	private EntityList entityList;
-	private TagList tagList;
+	@SerializedName("a") private long msLastAccess;
+	@SerializedName("s") private String directorySource;
+	@SerializedName("e") private EntityList entityList;
+	@SerializedName("t") private TagList tagList;
 	
 	public Project(String projectName, String directorySource) {
 		this.projectName = projectName;

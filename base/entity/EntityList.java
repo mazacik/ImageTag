@@ -4,7 +4,7 @@ import base.CustomList;
 import base.tag.Tag;
 import base.tag.TagList;
 import control.filter.Filter;
-import control.reload.ChangeIn;
+import control.reload.Notifier;
 import control.reload.Reload;
 
 import java.io.File;
@@ -43,12 +43,15 @@ public class EntityList extends CustomList<Entity> {
 	}
 	
 	public void addTag(Tag tag) {
-		this.forEach(entity -> entity.getTagList().add(tag));
-		Reload.notify(ChangeIn.TAGS_OF_SELECT);
+		this.forEach(entity -> {
+			entity.getTagList().add(tag);
+			entity.getTagList().sort();
+		});
+		Reload.notify(Notifier.TAGS_OF_SELECT);
 	}
 	public void removeTag(Tag tag) {
 		this.forEach(entity -> entity.getTagList().remove(tag));
-		Reload.notify(ChangeIn.TAGS_OF_SELECT);
+		Reload.notify(Notifier.TAGS_OF_SELECT);
 	}
 	
 	public TagList getTags() {

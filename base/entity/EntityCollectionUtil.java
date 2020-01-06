@@ -3,9 +3,9 @@ package base.entity;
 import base.CustomList;
 import base.tag.TagList;
 import control.Select;
-import control.reload.ChangeIn;
+import control.reload.Notifier;
 import control.reload.Reload;
-import ui.stage.StageManager;
+import ui.stage.StageConfirmation;
 
 import java.util.Random;
 
@@ -15,32 +15,32 @@ public abstract class EntityCollectionUtil {
 		TagList collectionTags = Select.getEntities().getTags();
 		
 		String s = "A collection of " + Select.getEntities().size() + " items will be created.\nMerge tags?";
-		if (!collectionTags.isEmpty() && StageManager.getYesNoStage().show(s)) {
+		if (!collectionTags.isEmpty() && StageConfirmation.show(s)) {
 			for (Entity entity : Select.getEntities()) {
 				entity.setCollectionID(collectionID);
 				entity.setCollection(Select.getEntities());
 				entity.setTagList(collectionTags);
-				entity.getGalleryTile().updateCollectionIcon();
+				entity.getTile().updateCollectionIcon();
 			}
-			Reload.notify(ChangeIn.TAGS_OF_SELECT);
+			Reload.notify(Notifier.TAGS_OF_SELECT);
 		} else {
 			for (Entity entity : Select.getEntities()) {
 				entity.setCollectionID(collectionID);
 				entity.setCollection(Select.getEntities());
-				entity.getGalleryTile().updateCollectionIcon();
+				entity.getTile().updateCollectionIcon();
 			}
 		}
 		
-		Reload.notify(ChangeIn.ENTITY_LIST_MAIN);
+		Reload.notify(Notifier.ENTITY_LIST_MAIN);
 	}
 	public static void discard() {
 		for (Entity entity : Select.getEntities().getFirst().getCollection()) {
 			entity.setCollectionID(0);
 			entity.setCollection(null);
-			entity.getGalleryTile().setEffect(null);
+			entity.getTile().setEffect(null);
 		}
 		
-		Reload.notify(ChangeIn.ENTITY_LIST_MAIN);
+		Reload.notify(Notifier.ENTITY_LIST_MAIN);
 	}
 	
 	public static boolean isCollection(EntityList entityList) {
@@ -66,8 +66,8 @@ public abstract class EntityCollectionUtil {
 			} else {
 				openCollections.add(collectionID);
 			}
-			entity.getGalleryTile().updateCollectionIcon();
-			Reload.notify(ChangeIn.ENTITY_LIST_MAIN);
+			entity.getTile().updateCollectionIcon();
+			Reload.notify(Notifier.ENTITY_LIST_MAIN);
 		}
 	}
 	public static CustomList<Integer> getOpenCollections() {

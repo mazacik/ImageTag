@@ -1,5 +1,6 @@
 package control.reload;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class InvokeHelper {
@@ -11,10 +12,11 @@ public class InvokeHelper {
 		this.method = method;
 	}
 	
-	public Object getInstance() {
-		return instance;
-	}
-	public Method getMethod() {
-		return method;
+	public void invoke() {
+		try {
+			method.invoke(instance);
+		} catch (IllegalAccessException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
 	}
 }

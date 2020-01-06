@@ -2,8 +2,8 @@ package ui.main.stage;
 
 import base.CustomList;
 import misc.Project;
-import ui.component.simple.TextNode;
-import ui.component.simple.VBox;
+import ui.node.NodeText;
+import ui.override.VBox;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import misc.FileUtil;
@@ -25,7 +25,7 @@ public class ProjectBox extends VBox {
 			projects.forEach(project -> this.getChildren().add(new ProjectNode(project)));
 		} else {
 			this.setAlignment(Pos.CENTER);
-			this.getChildren().add(new TextNode("No Projects Found"));
+			this.getChildren().add(new NodeText("No Projects Found"));
 		}
 	}
 }

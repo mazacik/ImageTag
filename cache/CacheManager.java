@@ -16,7 +16,7 @@ import javafx.scene.text.Font;
 import misc.FileUtil;
 import misc.Settings;
 import org.apache.commons.lang3.StringUtils;
-import ui.main.center.VideoPlayer;
+import ui.main.display.VideoPlayer;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
@@ -191,9 +191,13 @@ public abstract class CacheManager {
 		if (cacheThread == null || !cacheThread.isAlive()) {
 			cacheThread = new Thread(() -> {
 				for (Entity entity : entityList) {
-					if (Thread.currentThread().isInterrupted()) return;
-					entity.getGalleryTile().setImage(CacheManager.get(entity));
+					if (Thread.currentThread().isInterrupted()) {
+						Logger.getGlobal().info("interrupted");
+						return;
+					}
+					entity.getTile().setImage(CacheManager.get(entity));
 				}
+				Logger.getGlobal().info("finished");
 			});
 			cacheThread.start();
 		}

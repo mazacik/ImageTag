@@ -8,12 +8,11 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
-import misc.Stopwatch;
-import ui.component.clickmenu.ClickMenu;
-import ui.component.simple.HBox;
-import ui.component.simple.TextNode;
-import ui.component.simple.VBox;
-import ui.decorator.ColorUtil;
+import ui.custom.ClickMenu;
+import ui.decorator.Decorator;
+import ui.override.HBox;
+import ui.node.NodeText;
+import ui.override.VBox;
 
 import java.util.Comparator;
 
@@ -22,8 +21,8 @@ public class GroupNode extends VBox {
 	
 	private final SidePaneBase parentPane;
 	
-	private final TextNode nodeToggle;
-	private final TextNode nodeText;
+	private final NodeText nodeToggle;
+	private final NodeText nodeText;
 	private final HBox hBoxMain;
 	
 	public GroupNode(SidePaneBase parentPane, String text) {
@@ -31,9 +30,9 @@ public class GroupNode extends VBox {
 		
 		this.parentPane = parentPane;
 		
-		nodeToggle = new TextNode("+ ", false, false, false, false);
+		nodeToggle = new NodeText("+ ", false, false, false, false);
 		nodeToggle.setPadding(new Insets(0, 5, 0, 15));
-		nodeText = new TextNode(text, false, false, false, false);
+		nodeText = new NodeText(text, false, false, false, false);
 		nodeText.setPadding(new Insets(0, 15, 0, 5));
 		
 		hBoxMain = new HBox(nodeToggle, nodeText);
@@ -41,7 +40,7 @@ public class GroupNode extends VBox {
 		
 		TagList.getMain().getNames(this.getGroup()).forEach(this::addNameNode);
 		
-		hBoxMain.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> this.setBackground(ColorUtil.getBackgroundSecondary()));
+		hBoxMain.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> this.setBackground(Decorator.getBackgroundSecondary()));
 		hBoxMain.addEventFilter(MouseEvent.MOUSE_EXITED, event -> this.setBackground(Background.EMPTY));
 		hBoxMain.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 			switch (event.getButton()) {

@@ -1,10 +1,11 @@
 package base.tag;
 
+import com.google.gson.annotations.SerializedName;
 import org.apache.commons.text.WordUtils;
 
 public class Tag {
-	private String group;
-	private String name;
+	@SerializedName("g") private String group;
+	@SerializedName("n") private String name;
 	
 	public Tag(String group, String name) {
 		this.setGroup(group);

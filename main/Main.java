@@ -7,18 +7,18 @@ import base.tag.Tag;
 import base.tag.TagList;
 import cache.CacheManager;
 import control.filter.Filter;
-import control.reload.ChangeIn;
+import control.reload.Notifier;
 import control.reload.Reload;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import misc.FileUtil;
 import misc.Project;
 import misc.Settings;
-import ui.main.center.PaneEntity;
-import ui.main.side.left.PaneFilter;
-import ui.main.side.right.PaneSelect;
+import ui.main.display.PaneDisplay;
+import ui.main.side.PaneFilter;
+import ui.main.side.PaneSelect;
+import ui.main.stage.StageMain;
 import ui.main.top.PaneToolbar;
-import ui.stage.StageManager;
 
 import java.io.File;
 
@@ -32,15 +32,15 @@ public class Main extends Application {
 		System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %2$s: %5$s%n");
 		
 		PaneToolbar.getInstance().init();
-		PaneEntity.getInstance().init();
+		PaneDisplay.getInstance().init();
 		PaneFilter.getInstance().init();
 		PaneSelect.getInstance().init();
 		
 		if (!QUICKSTART || FileUtil.getProjectFiles().isEmpty()) {
-			StageManager.getStageMain().layoutIntro();
+			StageMain.layoutIntro();
 		} else {
 			CustomList<Project> projects = FileUtil.getProjects();
-			StageManager.getStageMain().layoutMain();
+			StageMain.layoutMain();
 			
 			projects.sort(Project.getComparator());
 			Project.setCurrent(projects.getFirst());
@@ -161,14 +161,14 @@ public class Main extends Application {
 		}
 		
 		tagListMain.sort();
-		Reload.notify(ChangeIn.TAG_LIST_MAIN);
+		Reload.notify(Notifier.TAG_LIST_MAIN);
 	}
 	
 	public static void exitApplication() {
 		CacheManager.stopThread();
 		
-		PaneEntity.getInstance().disposeVideoPlayer();
-		PaneEntity.getInstance().getControls().hide();
+		PaneDisplay.getInstance().disposeVideoPlayer();
+		PaneDisplay.getInstance().getControls().hide();
 		
 		Project.getCurrent().writeToDisk();
 		Settings.writeToDisk();

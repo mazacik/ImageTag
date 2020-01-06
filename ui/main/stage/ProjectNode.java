@@ -12,26 +12,27 @@ import javafx.scene.text.Font;
 import main.Main;
 import misc.FileUtil;
 import misc.Project;
-import ui.component.simple.TextNode;
-import ui.component.simple.VBox;
-import ui.decorator.ColorUtil;
-import ui.stage.StageManager;
+import ui.decorator.Decorator;
+import ui.node.NodeText;
+import ui.override.VBox;
+import ui.stage.StageSimpleMessage;
+import ui.stage.StageConfirmation;
 
 import java.io.File;
 
 public class ProjectNode extends BorderPane {
 	public ProjectNode(Project project) {
-		TextNode nodeProjectName = new TextNode(project.getProjectName(), false, false, false);
-		TextNode nodeDirectorySource = new TextNode(project.getDirectorySource(), false, false, false);
+		NodeText nodeProjectName = new NodeText(project.getProjectName(), false, false, false);
+		NodeText nodeDirectorySource = new NodeText(project.getDirectorySource(), false, false, false);
 		
 		VBox vBoxLabels = new VBox(nodeProjectName, nodeDirectorySource);
 		vBoxLabels.setAlignment(Pos.CENTER_LEFT);
 		
-		TextNode nodeEdit = new TextNode("···", false, true, false);
+		NodeText nodeEdit = new NodeText("···", false, true, false);
 		nodeEdit.setFont(new Font(26));
 		nodeEdit.setVisible(false);
 		
-		TextNode nodeRemove = new TextNode("✕", false, true, false);
+		NodeText nodeRemove = new NodeText("✕", false, true, false);
 		nodeRemove.setFont(new Font(20));
 		nodeRemove.setVisible(false);
 		
@@ -40,7 +41,7 @@ public class ProjectNode extends BorderPane {
 		vBoxButtons.setPadding(new Insets(-10, 0, 0, 0));
 		
 		this.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
-			this.setBackground(ColorUtil.getBackgroundSecondary());
+			this.setBackground(Decorator.getBackgroundSecondary());
 			this.setCursor(Cursor.HAND);
 			
 			nodeEdit.setVisible(true);
@@ -55,25 +56,24 @@ public class ProjectNode extends BorderPane {
 		});
 		this.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
-				StageMain stageMain = StageManager.getStageMain();
 				Node pickResult = event.getPickResult().getIntersectedNode().getParent();
 				
 				if (pickResult.equals(nodeEdit)) {
-					StageManager.getStageMain().getSceneProject().show(project);
+					StageMain.getSceneProject().show(project);
 				} else if (pickResult.equals(nodeRemove)) {
 					String message = "Delete project data? The source directory will not be affected";
-					if (StageManager.getYesNoStage().show(message)) {
+					if (StageConfirmation.show(message)) {
 						FileUtil.deleteFile(project.getProjectFile());
 						FileUtil.deleteFile(FileUtil.getDirectoryCache(project.getProjectName()));
-						stageMain.getSceneIntro().getProjectBox().refresh();
+						StageMain.getSceneIntro().getProjectBox().refresh();
 					}
 				} else {
 					if (new File(project.getDirectorySource()).exists()) {
-						StageManager.getStageMain().layoutMain();
+						StageMain.layoutMain();
 						Project.setCurrent(project);
 						Main.startDatabaseLoading();
 					} else {
-						StageManager.getErrorStage().show("The source directory of this project could not be found.\nDirectory: " + project.getDirectorySource());
+						StageSimpleMessage.show("The source directory of this project could not be found.\nDirectory: " + project.getDirectorySource());
 					}
 				}
 			}

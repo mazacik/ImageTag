@@ -4,7 +4,7 @@ import base.entity.Entity;
 import base.entity.EntityList;
 import base.tag.TagList;
 import control.Select;
-import control.reload.ChangeIn;
+import control.reload.Notifier;
 import control.reload.Reload;
 import enums.MediaType;
 
@@ -15,7 +15,7 @@ public class Filter extends EntityList {
 	
 	public boolean add(Entity entity) {
 		if (super.add(entity)) {
-			Reload.notify(ChangeIn.FILTER);
+			Reload.notify(Notifier.FILTER);
 			return true;
 		} else {
 			return false;
@@ -23,14 +23,14 @@ public class Filter extends EntityList {
 	}
 	public void clear() {
 		super.clear();
-		Reload.notify(ChangeIn.FILTER);
+		Reload.notify(Notifier.FILTER);
 	}
 	
 	public static void reset() {
 		listManager.getWhitelist().clear();
 		listManager.getBlacklist().clear();
 		refresh();
-		Reload.notify(ChangeIn.FILTER);
+		Reload.notify(Notifier.FILTER);
 	}
 	public static void refresh() {
 		getEntities().clear();
