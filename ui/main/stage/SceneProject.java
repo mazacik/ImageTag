@@ -1,62 +1,58 @@
 package ui.main.stage;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import main.Main;
 import misc.FileUtil;
 import misc.Project;
-import ui.decorator.Decorator;
-import ui.override.Scene;
-import ui.node.NodeEdit;
-import ui.override.HBox;
-import ui.node.NodeText;
-import ui.override.VBox;
 import ui.custom.TitleBar;
+import ui.decorator.Decorator;
+import ui.node.NodeEdit;
+import ui.node.NodeText;
+import ui.override.HBox;
+import ui.override.Scene;
+import ui.override.VBox;
 
 import java.io.File;
 
 public class SceneProject extends Scene {
-	NodeEdit editProjectName;
-	NodeEdit editDirectorySource;
-	NodeText nodeError;
-	TitleBar titleBar;
+	private final NodeEdit editProjectName;
+	private final NodeEdit editSourceDirectory;
+	private final NodeText nodeError;
+	private final TitleBar titleBar;
 	
-	Project project;
+	private Project project;
 	
 	public SceneProject() {
-		NodeText lblProjectName = new NodeText("Project Name:");
-		lblProjectName.setAlignment(Pos.CENTER_LEFT);
+		NodeText nodeProjectName = new NodeText("Project Name:");
+		nodeProjectName.setAlignment(Pos.CENTER_LEFT);
 		editProjectName = new NodeEdit();
 		editProjectName.setPrefWidth(400);
-		HBox boxProjectName = new HBox(lblProjectName, editProjectName);
-		boxProjectName.setSpacing(10);
-		boxProjectName.setAlignment(Pos.CENTER);
 		
-		NodeText lblDirectorySource = new NodeText("Source Directory:");
-		lblDirectorySource.setAlignment(Pos.CENTER_LEFT);
-		editDirectorySource = new NodeEdit("");
-		editDirectorySource.setPrefWidth(400);
-		NodeText btnDirectorySource = new NodeText("Browse", true, true, true, true);
-		btnDirectorySource.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+		NodeText nodeSourceDirectory = new NodeText("Source Directory:");
+		nodeSourceDirectory.setAlignment(Pos.CENTER_LEFT);
+		editSourceDirectory = new NodeEdit("");
+		editSourceDirectory.setPrefWidth(400);
+		NodeText nodeBrowseForDirectory = new NodeText("Browse", true, true, true, true);
+		nodeBrowseForDirectory.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
-				editDirectorySource.setText(FileUtil.directoryChooser(this));
+				editSourceDirectory.setText(FileUtil.directoryChooser(this));
 			}
 		});
-		HBox boxDirectorySource = new HBox(lblDirectorySource, editDirectorySource, btnDirectorySource);
-		boxDirectorySource.setSpacing(10);
-		boxDirectorySource.setAlignment(Pos.CENTER);
 		
-		boxDirectorySource.layoutXProperty().addListener((observable, oldValue, newValue) -> {
-			//todo shit doesn't work
-			boxProjectName.setLayoutX((Double) newValue);
-		});
+		GridPane gridPane = new GridPane();
+		gridPane.add(nodeProjectName, 0, 0);
+		gridPane.add(editProjectName, 1, 0);
+		gridPane.add(nodeSourceDirectory, 0, 1);
+		gridPane.add(editSourceDirectory, 1, 1);
+		gridPane.add(nodeBrowseForDirectory, 2, 1);
+		gridPane.setHgap(5);
+		gridPane.setVgap(5);
 		
 		nodeError = new NodeText("");
 		nodeError.setTextFill(Decorator.getColorNegative());
@@ -65,10 +61,8 @@ public class SceneProject extends Scene {
 		btnFinish.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> this.initProject());
 		NodeText btnCancel = new NodeText("Cancel", true, true, true, true);
 		btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> StageMain.getSceneIntro().show());
-		HBox boxFinishCancel = new HBox(btnCancel, btnFinish);
 		
-		VBox boxMain = new VBox(boxProjectName, boxDirectorySource, nodeError, boxFinishCancel);
-		boxMain.setPadding(new Insets(10));
+		VBox boxMain = new VBox(gridPane, nodeError, new HBox(btnCancel, btnFinish));
 		boxMain.setSpacing(5);
 		boxMain.setAlignment(Pos.CENTER);
 		boxMain.setFillWidth(false);
@@ -91,7 +85,7 @@ public class SceneProject extends Scene {
 	
 	public void show() {
 		editProjectName.setText("");
-		editDirectorySource.setText("");
+		editSourceDirectory.setText("");
 		nodeError.setText("");
 		
 		titleBar.setTitle("Create a New Project");
@@ -102,7 +96,7 @@ public class SceneProject extends Scene {
 		this.project = project;
 		
 		editProjectName.setText(project.getProjectName());
-		editDirectorySource.setText(project.getDirectorySource());
+		editSourceDirectory.setText(project.getDirectorySource());
 		nodeError.setText("");
 		
 		titleBar.setTitle("Edit Project");
@@ -111,23 +105,22 @@ public class SceneProject extends Scene {
 	}
 	
 	private void initProject() {
-		if (this.checkEditValidity(editProjectName, editDirectorySource, nodeError)) {
+		if (this.checkEditNodes(editProjectName, editSourceDirectory, nodeError)) {
 			if (project == null) {
-				Project newProject = new Project(editProjectName.getText(), editDirectorySource.getText());
+				Project newProject = new Project(editProjectName.getText(), editSourceDirectory.getText());
 				newProject.writeToDisk();
 				StageMain.layoutMain();
 				Project.setCurrent(newProject);
 				Main.startDatabaseLoading();
 			} else {
-				project.updateProject(editProjectName.getText(), editDirectorySource.getText());
+				project.updateProject(editProjectName.getText(), editSourceDirectory.getText());
 				
 				StageMain.getSceneIntro().getProjectBox().refresh();
 				StageMain.getSceneIntro().show();
 			}
 		}
 	}
-	
-	private boolean checkEditValidity(NodeEdit editProjectName, NodeEdit editDirectorySource, NodeText nodeError) {
+	private boolean checkEditNodes(NodeEdit editProjectName, NodeEdit editDirectorySource, NodeText nodeError) {
 		if (editProjectName.getText().isEmpty()) {
 			nodeError.setText("Project Name cannot be empty");
 			return false;
