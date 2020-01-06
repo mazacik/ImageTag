@@ -23,7 +23,7 @@ import ui.main.top.PaneToolbar;
 import java.io.File;
 
 public class Main extends Application {
-	private static final boolean QUICKSTART = true;
+	private static final boolean QUICKSTART = false;
 	
 	public static void main(String[] args) {
 		launch(args);
