@@ -11,12 +11,10 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import ui.decorator.Decorator;
-import ui.override.HBox;
 import ui.node.NodeText;
-import ui.stage.StageFilterOptions;
+import ui.override.HBox;
 import ui.stage.StageEditTag;
-
-import java.util.logging.Logger;
+import ui.stage.StageFilterOptions;
 
 public class PaneFilter extends SidePaneBase {
 	public void init() {
@@ -57,8 +55,6 @@ public class PaneFilter extends SidePaneBase {
 	}
 	
 	public boolean refresh() {
-		Logger.getGlobal().info(this.toString());
-		
 		nodeTitle.setText("Filter: " + Filter.getEntities().size());
 		
 		Color textColorDefault = Decorator.getColorPrimary();

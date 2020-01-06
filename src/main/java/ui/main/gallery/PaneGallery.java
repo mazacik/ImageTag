@@ -19,11 +19,9 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import misc.Settings;
+import ui.custom.ClickMenu;
 import ui.decorator.Decorator;
 import ui.main.stage.StageMain;
-import ui.custom.ClickMenu;
-
-import java.util.logging.Logger;
 
 public class PaneGallery extends ScrollPane {
 	public static final double GAP = 5;
@@ -248,8 +246,6 @@ public class PaneGallery extends ScrollPane {
 	private static CustomList<Tile> tiles = new CustomList<>();
 	
 	public boolean reload() {
-		Logger.getGlobal().info(this.toString());
-		
 		//	prepare
 		Select.storeTargetPosition();
 		

@@ -3,11 +3,13 @@ package control.reload;
 import base.CustomList;
 
 public enum Notifier {
+	FILTER,
+	SELECT,
+	TARGET,
+	
 	ENTITY_LIST_MAIN,
 	TAG_LIST_MAIN,
-	FILTER,
-	TARGET,
-	SELECT,
+	
 	TAGS_OF_SELECT,
 	VIEWMODE,
 	;

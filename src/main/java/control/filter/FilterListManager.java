@@ -3,6 +3,8 @@ package control.filter;
 import base.entity.Entity;
 import base.tag.Tag;
 import base.tag.TagList;
+import control.reload.Notifier;
+import control.reload.Reload;
 
 public class FilterListManager {
 	private final TagList whitelist = new TagList();
@@ -16,17 +18,20 @@ public class FilterListManager {
 		if (!isWhitelisted(tag)) {
 			whitelist.add(tag);
 			blacklist.remove(tag);
+			Reload.notify(Notifier.FILTER);
 		}
 	}
 	public void blacklist(Tag tag) {
 		if (!isBlacklisted(tag)) {
 			whitelist.remove(tag);
 			blacklist.add(tag);
+			Reload.notify(Notifier.FILTER);
 		}
 	}
 	public void unlist(Tag tag) {
 		whitelist.remove(tag);
 		blacklist.remove(tag);
+		Reload.notify(Notifier.FILTER);
 	}
 	
 	public void whitelist(String group) {

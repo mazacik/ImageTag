@@ -2,6 +2,7 @@ package ui.stage;
 
 import control.filter.Filter;
 import control.filter.FilterSettings;
+import control.reload.Notifier;
 import control.reload.Reload;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -79,7 +80,7 @@ public class StageFilterOptions extends StageBase {
 			filterSettings.setEnableLimit(nodeLimit.isSelected());
 			filterSettings.setLimit(Integer.parseInt(nodeLimitValue.getText()));
 			
-			Filter.refresh();
+			Reload.notify(Notifier.FILTER);
 			Reload.start();
 			getInstance().close();
 		});

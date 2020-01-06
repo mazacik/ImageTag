@@ -7,16 +7,14 @@ import enums.Direction;
 import javafx.geometry.Pos;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
+import ui.custom.ClickMenu;
+import ui.custom.TitleBar;
 import ui.decorator.Decorator;
 import ui.main.stage.StageMain;
-import ui.custom.ClickMenu;
 import ui.node.NodeBoxSeparator;
 import ui.node.NodeTemplates;
-import ui.override.HBox;
 import ui.node.NodeText;
-import ui.custom.TitleBar;
-
-import java.util.logging.Logger;
+import ui.override.HBox;
 
 public class PaneToolbar extends BorderPane {
 	public static final double PREF_HEIGHT = 30;
@@ -49,8 +47,6 @@ public class PaneToolbar extends BorderPane {
 	}
 	
 	public boolean reload() {
-		Logger.getGlobal().info(this.toString());
-		
 		Entity currentTarget = Select.getTarget();
 		if (currentTarget.getCollectionID() != 0) {
 			CustomList<Entity> collection = currentTarget.getCollection();

@@ -233,7 +233,6 @@ public enum NodeTemplates {
 				ClickMenu.hideAll();
 				
 				Filter.getListManager().whitelist(ClickMenu.getGroup());
-				Filter.refresh();
 				Reload.start();
 			});
 			return nodeText;
@@ -247,7 +246,6 @@ public enum NodeTemplates {
 				ClickMenu.hideAll();
 				
 				Filter.getListManager().blacklist(ClickMenu.getGroup());
-				Filter.refresh();
 				Reload.start();
 			});
 			return nodeText;
@@ -261,7 +259,6 @@ public enum NodeTemplates {
 				ClickMenu.hideAll();
 				
 				Filter.getListManager().unlist(ClickMenu.getGroup());
-				Filter.refresh();
 				Reload.start();
 			});
 			return nodeText;

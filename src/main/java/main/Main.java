@@ -15,6 +15,7 @@ import misc.FileUtil;
 import misc.Project;
 import misc.Settings;
 import ui.main.display.PaneDisplay;
+import ui.main.gallery.Tile;
 import ui.main.side.PaneFilter;
 import ui.main.side.PaneSelect;
 import ui.main.stage.StageMain;
@@ -23,7 +24,7 @@ import ui.main.top.PaneToolbar;
 import java.io.File;
 
 public class Main extends Application {
-	private static final boolean QUICKSTART = false;
+	private static final boolean QUICKSTART = true;
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -53,7 +54,7 @@ public class Main extends Application {
 		initCollections();
 		initTags();
 		
-		Filter.refresh();
+		Reload.notify(Notifier.values());
 		Reload.start();
 		
 		PaneFilter.getInstance().collapseAll();

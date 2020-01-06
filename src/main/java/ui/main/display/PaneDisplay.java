@@ -12,9 +12,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 import misc.FileUtil;
+import ui.custom.ClickMenu;
 import ui.main.gallery.PaneGallery;
 import ui.main.stage.StageMain;
-import ui.custom.ClickMenu;
 import ui.node.NodeText;
 
 import javax.imageio.ImageIO;
@@ -23,7 +23,6 @@ import javax.imageio.stream.ImageInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.logging.Logger;
 
 public class PaneDisplay extends BorderPane {
 	private Canvas canvas;
@@ -59,8 +58,6 @@ public class PaneDisplay extends BorderPane {
 	public boolean reload() {
 		Entity currentTarget = Select.getTarget();
 		if (!StageMain.getSceneMain().isViewGallery() && currentTarget != null) {
-			Logger.getGlobal().info(this.toString());
-			
 			switch (currentTarget.getMediaType()) {
 				case IMAGE:
 					reloadAsImage(currentTarget);

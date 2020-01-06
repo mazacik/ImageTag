@@ -6,6 +6,7 @@ import base.entity.EntityList;
 import cache.CacheManager;
 import com.sun.jna.platform.FileUtils;
 import control.filter.Filter;
+import control.reload.Notifier;
 import control.reload.Reload;
 import enums.MediaType;
 import javafx.application.Platform;
@@ -134,9 +135,10 @@ public abstract class FileUtil {
 								Filter.getSettings().setShowVideos(true);
 								Filter.getSettings().setShowOnlyNewEntities(true);
 								Filter.getSettings().setEnableLimit(false);
+								
+								Reload.notify(Notifier.FILTER);
+								Reload.start();
 							}
-							Filter.refresh();
-							Reload.start();
 						});
 					}
 					Logger.getGlobal().info("finished");

@@ -19,13 +19,11 @@ import net.ricecode.similarity.JaroWinklerStrategy;
 import net.ricecode.similarity.SimilarityStrategy;
 import net.ricecode.similarity.StringSimilarityService;
 import net.ricecode.similarity.StringSimilarityServiceImpl;
-import ui.decorator.Decorator;
 import ui.custom.ClickMenu;
+import ui.decorator.Decorator;
 import ui.node.NodeEdit;
-import ui.node.NodeText;
 import ui.node.NodeTemplates;
-
-import java.util.logging.Logger;
+import ui.node.NodeText;
 
 public class PaneSelect extends SidePaneBase {
 	private NodeEdit nodeSearch;
@@ -52,8 +50,6 @@ public class PaneSelect extends SidePaneBase {
 	}
 	
 	public boolean refresh() {
-		Logger.getGlobal().info(this.toString());
-		
 		refreshTitle();
 		
 		Color textColorDefault = Decorator.getColorPrimary();

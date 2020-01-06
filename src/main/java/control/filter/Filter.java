@@ -29,7 +29,6 @@ public class Filter extends EntityList {
 	public static void reset() {
 		listManager.getWhitelist().clear();
 		listManager.getBlacklist().clear();
-		refresh();
 		Reload.notify(Notifier.FILTER);
 	}
 	public static void refresh() {

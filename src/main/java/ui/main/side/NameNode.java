@@ -4,6 +4,7 @@ import base.tag.Tag;
 import base.tag.TagList;
 import control.Select;
 import control.filter.Filter;
+import control.reload.Notifier;
 import control.reload.Reload;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -72,7 +73,6 @@ public class NameNode extends NodeText {
 			}
 			this.setTextFill(Decorator.getColorPositive());
 		}
-		Filter.refresh();
 	}
 	private void changeStateAsSelect() {
 		Tag tag = TagList.getMain().getTag(groupNode.getGroup(), this.getText());
