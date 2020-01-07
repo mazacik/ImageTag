@@ -13,23 +13,9 @@ public class Filter extends EntityList {
 	private static final FilterListManager listManager = new FilterListManager();
 	private static final EntityList newEntities = new EntityList();
 	
-	public boolean add(Entity entity) {
-		if (super.add(entity)) {
-			Reload.notify(Notifier.FILTER);
-			return true;
-		} else {
-			return false;
-		}
-	}
-	public void clear() {
-		super.clear();
-		Reload.notify(Notifier.FILTER);
-	}
-	
 	public static void reset() {
 		listManager.getWhitelist().clear();
 		listManager.getBlacklist().clear();
-		Reload.notify(Notifier.FILTER);
 	}
 	public static void refresh() {
 		getEntities().clear();
@@ -64,18 +50,22 @@ public class Filter extends EntityList {
 			getEntities().add(entity);
 		}
 		
-		if (!getEntities().contains(Select.getTarget())) {
-			Select.setTarget(getEntities().getFirst());
-		}
-		
-		for (Entity entity : new EntityList(Select.getEntities())) {
-			if (!getEntities().contains(entity)) {
-				Select.getEntities().remove(entity);
+		if (!getEntities().isEmpty()) {
+			if (!getEntities().contains(Select.getTarget())) {
+				Select.setTarget(getEntities().getFirst());
 			}
-		}
-		
-		if (Select.getEntities().isEmpty()) {
-			Select.getEntities().set(Select.getTarget());
+			
+			for (Entity entity : new EntityList(Select.getEntities())) {
+				if (!getEntities().contains(entity)) {
+					Select.getEntities().remove(entity);
+				}
+			}
+			
+			if (Select.getEntities().isEmpty()) {
+				Select.getEntities().set(Select.getTarget());
+			}
+			
+			Reload.notify(Notifier.FILTER);
 		}
 	}
 	

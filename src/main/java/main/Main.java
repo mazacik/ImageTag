@@ -15,7 +15,6 @@ import misc.FileUtil;
 import misc.Project;
 import misc.Settings;
 import ui.main.display.PaneDisplay;
-import ui.main.gallery.Tile;
 import ui.main.side.PaneFilter;
 import ui.main.side.PaneSelect;
 import ui.main.stage.StageMain;
@@ -24,7 +23,10 @@ import ui.main.top.PaneToolbar;
 import java.io.File;
 
 public class Main extends Application {
-	private static final boolean QUICKSTART = true;
+	public static final boolean DEBUG_MAIN_QUICKSTART = true;
+	
+	public static final boolean DEBUG_FS_FILE_MOVE = true;
+	public static final boolean DEBUG_FS_FILE_DELETE = true;
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -37,7 +39,7 @@ public class Main extends Application {
 		PaneFilter.getInstance().init();
 		PaneSelect.getInstance().init();
 		
-		if (!QUICKSTART || FileUtil.getProjectFiles().isEmpty()) {
+		if (!DEBUG_MAIN_QUICKSTART || FileUtil.getProjectFiles().isEmpty()) {
 			StageMain.layoutIntro();
 		} else {
 			CustomList<Project> projects = FileUtil.getProjects();

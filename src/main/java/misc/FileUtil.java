@@ -12,6 +12,7 @@ import enums.MediaType;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.DirectoryChooser;
+import main.Main;
 import ui.main.stage.StageMain;
 import ui.stage.StageConfirmation;
 import ui.stage.StageSimpleMessage;
@@ -43,38 +44,44 @@ public abstract class FileUtil {
 	}
 	
 	public static void moveFile(String from, String to) {
-		try {
-			Files.move(Paths.get(from), Paths.get(to));
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (Main.DEBUG_FS_FILE_MOVE) {
+			try {
+				Files.move(Paths.get(from), Paths.get(to));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	public static boolean deleteFile(String path) {
-		int counter = 0;
-		FileUtils fileUtils = FileUtils.getInstance();
-		File abstractFile = new File(path);
-		
-		if (fileUtils.hasTrash()) {
-			if (abstractFile.isFile()) {
-				try {
-					fileUtils.moveToTrash(new File[]{abstractFile});
-					//if (!abstractFile.exists()) counter++;
-					counter++;
-				} catch (IOException e) {
-					StageSimpleMessage.show("Delete failed: " + abstractFile.getAbsolutePath() + "\nCannot access the file because it is being used by another process.");
-					e.printStackTrace();
+		if (Main.DEBUG_FS_FILE_DELETE) {
+			int counter = 0;
+			FileUtils fileUtils = FileUtils.getInstance();
+			File abstractFile = new File(path);
+			
+			if (fileUtils.hasTrash()) {
+				if (abstractFile.isFile()) {
+					try {
+						fileUtils.moveToTrash(new File[]{abstractFile});
+						//if (!abstractFile.exists()) counter++;
+						counter++;
+					} catch (IOException e) {
+						StageSimpleMessage.show("Delete failed: " + abstractFile.getAbsolutePath() + "\nCannot access the file because it is being used by another process.");
+						e.printStackTrace();
+					}
+				} else {
+					for (File _abstractFile : new CustomList<>(abstractFile.listFiles())) {
+						deleteFile(_abstractFile.getAbsolutePath());
+					}
 				}
 			} else {
-				for (File _abstractFile : new CustomList<>(abstractFile.listFiles())) {
-					deleteFile(_abstractFile.getAbsolutePath());
-				}
+				StageSimpleMessage.show("Delete failed: No OS-level file trash support");
+				Logger.getGlobal().severe("No OS-level file trash support");
 			}
+			
+			return counter != 0;
 		} else {
-			StageSimpleMessage.show("Delete failed: No OS-level file trash support");
-			Logger.getGlobal().severe("No OS-level file trash support");
+			return true;
 		}
-		
-		return counter != 0;
 	}
 	
 	public static String getFileNameNoExtension(String path) {
@@ -136,7 +143,7 @@ public abstract class FileUtil {
 								Filter.getSettings().setShowOnlyNewEntities(true);
 								Filter.getSettings().setEnableLimit(false);
 								
-								Reload.notify(Notifier.FILTER);
+								Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
 								Reload.start();
 							}
 						});

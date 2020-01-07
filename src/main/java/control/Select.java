@@ -120,11 +120,9 @@ public class Select extends EntityList {
 			Filter.getEntities().removeAll(helper);
 			EntityList.getMain().removeAll(helper);
 			
-			Reload.notify(Notifier.ENTITY_LIST_MAIN, Notifier.FILTER);
+			Reload.notify(Notifier.ENTITY_LIST_MAIN);
 			Reload.start();
 		}
-		
-		restoreTargetPosition();
 	}
 	
 	public static void shiftSelect(Entity entityTo) {
@@ -239,12 +237,14 @@ public class Select extends EntityList {
 	private static int storePos = -1;
 	private static Entity storeEntity = null;
 	public static void storeTargetPosition() {
-		if (EntityCollectionUtil.hasOpenOrNoCollection(target)) {
-			storeEntity = target;
-		} else {
-			storeEntity = target.getCollection().getFirst();
+		if (storeEntity == null && storePos == -1) {
+			if (EntityCollectionUtil.hasOpenOrNoCollection(target)) {
+				storeEntity = target;
+			} else {
+				storeEntity = target.getCollection().getFirst();
+			}
+			storePos = PaneGallery.getTileEntities().indexOf(storeEntity);
 		}
-		storePos = PaneGallery.getTileEntities().indexOf(storeEntity);
 	}
 	public static void restoreTargetPosition() {
 		Entity newTarget;
@@ -258,7 +258,9 @@ public class Select extends EntityList {
 				} else {
 					newTarget = tileEntities.getLast();
 				}
+				
 				setTarget(newTarget);
+				
 				if (EntityCollectionUtil.hasOpenOrNoCollection(newTarget)) {
 					getEntities().set(newTarget);
 				} else {
@@ -266,5 +268,7 @@ public class Select extends EntityList {
 				}
 			}
 		}
+		storeEntity = null;
+		storePos = -1;
 	}
 }

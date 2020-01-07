@@ -80,7 +80,7 @@ public class StageFilterOptions extends StageBase {
 			filterSettings.setEnableLimit(nodeLimit.isSelected());
 			filterSettings.setLimit(Integer.parseInt(nodeLimitValue.getText()));
 			
-			Reload.notify(Notifier.FILTER);
+			Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
 			Reload.start();
 			getInstance().close();
 		});

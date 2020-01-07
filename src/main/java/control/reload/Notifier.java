@@ -3,6 +3,8 @@ package control.reload;
 import base.CustomList;
 
 public enum Notifier {
+	FILTER_NEEDS_REFRESH,
+	
 	FILTER,
 	SELECT,
 	TARGET,

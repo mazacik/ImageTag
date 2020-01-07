@@ -31,7 +31,8 @@ public abstract class Reload {
 			InvokeHelper ihPFilterRefresh = new InvokeHelper(10, PaneFilter.getInstance(), PaneFilter.getInstance().getClass().getMethod("refresh"));
 			InvokeHelper ihPSelectRefresh = new InvokeHelper(10, PaneSelect.getInstance(), PaneSelect.getInstance().getClass().getMethod("refresh"));
 			
-			Notifier.FILTER.getInvokeHelpers().add(ihFilterRefresh);
+			Notifier.FILTER_NEEDS_REFRESH.getInvokeHelpers().add(ihFilterRefresh);
+			
 			Notifier.FILTER.getInvokeHelpers().add(ihPGalleryReload);
 			Notifier.FILTER.getInvokeHelpers().add(ihPFilterRefresh);
 			
@@ -63,6 +64,8 @@ public abstract class Reload {
 		
 		invokeHelpers.sort(Comparator.comparing(InvokeHelper::getPriority));
 		invokeHelpers.forEach(InvokeHelper::invoke);
+		
+		if (!notifiers.isEmpty()) start();
 		
 		//update tile borders
 		EntityList helper = new EntityList();

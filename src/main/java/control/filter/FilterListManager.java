@@ -18,20 +18,20 @@ public class FilterListManager {
 		if (!isWhitelisted(tag)) {
 			whitelist.add(tag);
 			blacklist.remove(tag);
-			Reload.notify(Notifier.FILTER);
+			Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
 		}
 	}
 	public void blacklist(Tag tag) {
 		if (!isBlacklisted(tag)) {
 			whitelist.remove(tag);
 			blacklist.add(tag);
-			Reload.notify(Notifier.FILTER);
+			Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
 		}
 	}
 	public void unlist(Tag tag) {
 		whitelist.remove(tag);
 		blacklist.remove(tag);
-		Reload.notify(Notifier.FILTER);
+		Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
 	}
 	
 	public void whitelist(String group) {
