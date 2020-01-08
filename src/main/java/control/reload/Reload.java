@@ -46,6 +46,8 @@ public abstract class Reload {
 			
 			Notifier.TAG_LIST_MAIN.getInvokeHelpers().add(ihPFilterReload);
 			Notifier.TAG_LIST_MAIN.getInvokeHelpers().add(ihPSelectReload);
+			Notifier.TAG_LIST_MAIN.getInvokeHelpers().add(ihPFilterRefresh);
+			Notifier.TAG_LIST_MAIN.getInvokeHelpers().add(ihPSelectRefresh);
 			
 			Notifier.TAGS_OF_SELECT.getInvokeHelpers().add(ihPSelectRefresh);
 			Notifier.VIEWMODE.getInvokeHelpers().add(ihPDisplayReload);

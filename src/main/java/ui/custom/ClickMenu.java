@@ -75,7 +75,7 @@ public class ClickMenu extends Popup {
 			super.show(root, direction);
 		}
 	};
-	private static ClickMenu clickMenuTagGroup = new ClickMenu(NodeTemplates.TAG_GROUP_WHITELIST.get(), NodeTemplates.TAG_GROUP_BLACKLIST.get(), NodeTemplates.TAG_GROUP_UNLIST.get(), new Separator(), NodeTemplates.TAG_GROUP_EDIT.get(), NodeTemplates.TAG_GROUP_REMOVE.get());
+	private static ClickMenu clickMenuTagGroup = new ClickMenu(NodeTemplates.TAG_GROUP_WHITELIST.get(), NodeTemplates.TAG_GROUP_BLACKLIST.get(), NodeTemplates.TAG_GROUP_UNLIST.get(), new NodeBoxSeparator(), NodeTemplates.TAG_GROUP_EDIT.get(), NodeTemplates.TAG_GROUP_REMOVE.get());
 	private static ClickMenu clickMenuTagName = new ClickMenu(NodeTemplates.TAG_NAME_EDIT.get(), NodeTemplates.TAG_NAME_REMOVE.get());
 	private static ClickMenu clickMenuSelect = new ClickMenu(NodeTemplates.SELECTION_SET_ALL.get(), NodeTemplates.SELECTION_SET_NONE.get());
 	

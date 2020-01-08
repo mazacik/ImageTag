@@ -184,17 +184,17 @@ public enum NodeTemplates {
 				ClickMenu.hideAll();
 				
 				String groupBefore = ClickMenu.getGroup();
-				String groupAfter = WordUtils.capitalize(StageEditGroup.show(groupBefore).toLowerCase());
+				String groupAfter = WordUtils.capitalizeFully(StageEditGroup.show(groupBefore).toLowerCase());
 				
-				TagList.getMain().forEach(tag -> {
-					if (tag.getGroup().equals(groupBefore)) {
+				for (Tag tag : TagList.getMain()) {
+					if (groupBefore.equals(tag.getGroup())) {
 						tag.setGroup(groupAfter);
 					}
-				});
+				}
 				
-				PaneFilter.getInstance().getGroupNode(groupBefore).setGroup(groupAfter);
-				PaneSelect.getInstance().getGroupNode(groupBefore).setGroup(groupAfter);
+				TagList.getMain().sort();
 				
+				Reload.notify(Notifier.TAG_LIST_MAIN);
 				Reload.start();
 			});
 			return nodeText;
