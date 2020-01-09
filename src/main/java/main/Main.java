@@ -24,7 +24,7 @@ import ui.main.top.PaneToolbar;
 import java.io.File;
 
 public class Main extends Application {
-	public static final boolean DEBUG_MAIN_QUICKSTART = true;
+	public static final boolean DEBUG_MAIN_QUICKSTART = false;
 	
 	public static final boolean DEBUG_FS_FILE_MOVE = true;
 	public static final boolean DEBUG_FS_FILE_DELETE = true;
