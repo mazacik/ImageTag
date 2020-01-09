@@ -6,7 +6,9 @@ public abstract class Stopwatch {
 	public static void start() {
 		startTime = System.nanoTime();
 	}
-	public static void stop() {
-		System.out.println((System.nanoTime() - startTime) / 1000000);
+	public static void ping() {
+		long nanoTime = System.nanoTime();
+		System.out.println((nanoTime - startTime) / 1000000);
+		startTime = nanoTime;
 	}
 }

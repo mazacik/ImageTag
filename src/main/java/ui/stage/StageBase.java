@@ -5,6 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.Region;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import ui.custom.TitleBar;
@@ -45,8 +46,8 @@ public abstract class StageBase extends Stage {
 		
 		this.setScene(new Scene(vBoxMain));
 		this.initStyle(StageStyle.UNDECORATED);
+		this.initModality(Modality.APPLICATION_MODAL);
 		this.setOnShown(event -> this.centerOnScreen());
-		this.setAlwaysOnTop(true);
 	}
 	
 	public void setRoot(Region root) {
