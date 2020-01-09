@@ -21,9 +21,9 @@ public abstract class JsonUtil {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(path, false));
 			writer.write(JSON);
 			writer.close();
-			Logger.getGlobal().info("\"" + path + "\" .. ok");
+			Logger.getGlobal().config("GSON W \"" + path + "\" OK");
 		} catch (IOException e) {
-			Logger.getGlobal().info("\"" + path + "\" .. fail");
+			Logger.getGlobal().severe("GSON W \"" + path + "\" ERROR");
 			e.printStackTrace();
 		}
 	}
@@ -33,11 +33,11 @@ public abstract class JsonUtil {
 		try {
 			String JSON = new String(Files.readAllBytes(Paths.get(path)));
 			Object fromJson = GSON.fromJson(JSON, type);
-			Logger.getGlobal().info("\"" + path + "\" .. ok");
+			Logger.getGlobal().config("GSON R \"" + path + "\" OK");
 			return fromJson;
 		} catch (Exception e) {
 			e.printStackTrace();
-			Logger.getGlobal().info("\"" + path + "\" .. fail");
+			Logger.getGlobal().severe("GSON R \"" + path + "\" ERROR");
 			return null;
 		}
 	}

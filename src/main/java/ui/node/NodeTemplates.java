@@ -184,7 +184,7 @@ public enum NodeTemplates {
 				ClickMenu.hideAll();
 				
 				String groupBefore = ClickMenu.getGroup();
-				String groupAfter = WordUtils.capitalizeFully(StageEditGroup.show(groupBefore).toLowerCase());
+				String groupAfter = WordUtils.capitalize(StageEditGroup.show(groupBefore).toLowerCase());
 				
 				for (Tag tag : TagList.getMain()) {
 					if (groupBefore.equals(tag.getGroup())) {
@@ -276,8 +276,8 @@ public enum NodeTemplates {
 				StageEditTag.Result result = StageEditTag.show(ClickMenu.getGroup(), ClickMenu.getName());
 				
 				if (result != null) {
-					tag.setGroup(WordUtils.capitalize(result.getGroup().toLowerCase()));
-					tag.setName(WordUtils.capitalize(result.getName().toLowerCase()));
+					tag.setGroup(result.getGroup());
+					tag.setName(result.getName());
 					
 					TagList.getMain().sort();
 					

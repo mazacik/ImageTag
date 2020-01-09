@@ -18,7 +18,7 @@ public abstract class EntityCollectionUtil {
 		if (!collectionTags.isEmpty() && StageConfirmation.show(s)) {
 			for (Entity entity : Select.getEntities()) {
 				entity.setCollectionID(collectionID);
-				entity.setCollection(Select.getEntities());
+				entity.setCollection(new EntityList(Select.getEntities()));
 				entity.setTagList(collectionTags);
 				entity.getTile().updateCollectionIcon();
 			}
@@ -26,7 +26,7 @@ public abstract class EntityCollectionUtil {
 		} else {
 			for (Entity entity : Select.getEntities()) {
 				entity.setCollectionID(collectionID);
-				entity.setCollection(Select.getEntities());
+				entity.setCollection(new EntityList(Select.getEntities()));
 				entity.getTile().updateCollectionIcon();
 			}
 		}

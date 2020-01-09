@@ -105,8 +105,6 @@ public class Select extends EntityList {
 	}
 	
 	public void deleteFiles() {
-		storeTargetPosition();
-		
 		EntityList helper = new EntityList();
 		getEntities().forEach(entity -> {
 			if (FileUtil.deleteFile(FileUtil.getFileEntity(entity))) {
@@ -234,41 +232,32 @@ public class Select extends EntityList {
 		}
 	}
 	
-	private static int storePos = -1;
+	private static int storePos = 0;
 	private static Entity storeEntity = null;
 	public static void storeTargetPosition() {
-		if (storeEntity == null && storePos == -1) {
-			if (EntityCollectionUtil.hasOpenOrNoCollection(target)) {
-				storeEntity = target;
-			} else {
-				storeEntity = target.getCollection().getFirst();
-			}
-			storePos = PaneGallery.getTileEntities().indexOf(storeEntity);
+		if (EntityCollectionUtil.hasOpenOrNoCollection(target)) {
+			storeEntity = target;
+		} else {
+			storeEntity = target.getCollection().getFirst();
 		}
+		storePos = PaneGallery.getTileEntities().indexOf(storeEntity);
 	}
 	public static void restoreTargetPosition() {
-		Entity newTarget;
 		EntityList tileEntities = PaneGallery.getTileEntities();
 		if (!tileEntities.isEmpty()) {
-			if (storeEntity != null && tileEntities.contains(storeEntity)) {
-				setTarget(storeEntity);
-			} else if (storePos >= 0) {
+			if (!tileEntities.contains(storeEntity)) {
 				if (storePos <= tileEntities.size() - 1) {
-					newTarget = tileEntities.get(storePos);
+					setTarget(tileEntities.get(storePos));
 				} else {
-					newTarget = tileEntities.getLast();
+					setTarget(tileEntities.getLast());
 				}
 				
-				setTarget(newTarget);
-				
-				if (EntityCollectionUtil.hasOpenOrNoCollection(newTarget)) {
-					getEntities().set(newTarget);
+				if (EntityCollectionUtil.hasOpenOrNoCollection(target)) {
+					getEntities().set(target);
 				} else {
-					getEntities().setAll(newTarget.getCollection());
+					getEntities().setAll(target.getCollection());
 				}
 			}
 		}
-		storeEntity = null;
-		storePos = -1;
 	}
 }

@@ -6,6 +6,7 @@ import base.entity.EntityList;
 import base.tag.Tag;
 import base.tag.TagList;
 import cache.CacheManager;
+import control.Select;
 import control.filter.Filter;
 import control.reload.Notifier;
 import control.reload.Reload;
@@ -21,6 +22,9 @@ import ui.main.stage.StageMain;
 import ui.main.top.PaneToolbar;
 
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 public class Main extends Application {
 	public static final boolean DEBUG_MAIN_QUICKSTART = true;
@@ -32,7 +36,7 @@ public class Main extends Application {
 		launch(args);
 	}
 	public void start(Stage stage) {
-		System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %2$s: %5$s%n");
+		System.setProperty("java.util.logging.SimpleFormatter.format", "[%4$-7s] %5$s%n");
 		
 		PaneToolbar.getInstance().init();
 		PaneDisplay.getInstance().init();
@@ -55,6 +59,9 @@ public class Main extends Application {
 		initEntities();
 		initCollections();
 		initTags();
+		
+		Select.setTarget(EntityList.getMain().getFirst());
+		Select.getEntities().set(Select.getTarget());
 		
 		Reload.notify(Notifier.values());
 		Reload.start();

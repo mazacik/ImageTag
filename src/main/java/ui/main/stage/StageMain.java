@@ -63,7 +63,9 @@ public class StageMain extends Stage {
 		getInstance().centerOnScreen();
 		getInstance().setOnCloseRequest(event -> Main.exitApplication());
 		getInstance().focusedProperty().addListener((observable, oldValue, newValue) -> {
-			if (!newValue) PaneDisplay.getInstance().getControls().hide();
+			if (!newValue) {
+				PaneDisplay.getInstance().getControls().hide();
+			}
 		});
 		
 		sceneMain.getRoot().requestFocus();

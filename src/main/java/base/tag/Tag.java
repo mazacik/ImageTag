@@ -27,9 +27,9 @@ public class Tag {
 	}
 	
 	public void setGroup(String group) {
-		this.group = WordUtils.capitalizeFully(group, '-', '/', ' ');
+		this.group = WordUtils.capitalize(group, '-', '/', ' ');
 	}
 	public void setName(String name) {
-		this.name = WordUtils.capitalizeFully(name, '-', '/', ' ');
+		this.name = WordUtils.capitalize(name, '-', '/', ' ');
 	}
 }

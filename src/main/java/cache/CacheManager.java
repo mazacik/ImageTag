@@ -192,12 +192,12 @@ public abstract class CacheManager {
 			cacheThread = new Thread(() -> {
 				for (Entity entity : entityList) {
 					if (Thread.currentThread().isInterrupted()) {
-						Logger.getGlobal().info("interrupted");
+						Logger.getGlobal().warning("CACHE CHECK THREAD INTERRUPTED");
 						return;
 					}
 					entity.getTile().setImage(CacheManager.get(entity));
 				}
-				Logger.getGlobal().info("finished");
+				Logger.getGlobal().info("CACHE CHECK THREAD FINISHED");
 			});
 			cacheThread.start();
 		}

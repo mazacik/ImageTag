@@ -56,39 +56,31 @@ public class VideoPlayer {
 		pixelFormat = PixelFormat.getByteBgraInstance();
 		
 		mediaPlayerFactory = new MediaPlayerFactory();
+		mediaPlayerFactory.application().newLog().release();
 		mediaPlayer = mediaPlayerFactory.mediaPlayers().newEmbeddedMediaPlayer();
 		mediaPlayer.videoSurface().set(new JavaFxVideoSurface());
 		mediaPlayer.controls().setRepeat(true);
-		mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
-			@Override
-			public void positionChanged(MediaPlayer mediaPlayer, float newPosition) {
-				super.positionChanged(mediaPlayer, newPosition);
-				PaneDisplay.getInstance().getControls().setVideoProgress(newPosition);
-			}
-		});
 		mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
 			@Override
 			public void timeChanged(MediaPlayer mediaPlayer, long newTime) {
 				super.timeChanged(mediaPlayer, newTime);
 				PaneDisplay.getInstance().getControls().setTimeCurrent(newTime);
 			}
-		});
-		mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
+			@Override
+			public void positionChanged(MediaPlayer mediaPlayer, float newPosition) {
+				super.positionChanged(mediaPlayer, newPosition);
+				PaneDisplay.getInstance().getControls().setVideoProgress(newPosition);
+			}
 			@Override
 			public void lengthChanged(MediaPlayer mediaPlayer, long newLength) {
 				super.lengthChanged(mediaPlayer, newLength);
 				PaneDisplay.getInstance().getControls().setTimeTotal(newLength);
 			}
-		});
-		
-		mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
 			@Override
 			public void opening(MediaPlayer mediaPlayer) {
 				super.opening(mediaPlayer);
 				PaneDisplay.getInstance().getControls().setVideoProgress(0);
 			}
-		});
-		mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
 			@Override
 			public void finished(MediaPlayer mediaPlayer) {
 				super.finished(mediaPlayer);
