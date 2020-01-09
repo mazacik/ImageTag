@@ -1,8 +1,8 @@
 package ui.node;
 
-import ui.decorator.Decorator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
+import ui.decorator.Decorator;
 
 public class NodeEdit extends TextField {
 	public NodeEdit(String promptText, EditNodeType type) {

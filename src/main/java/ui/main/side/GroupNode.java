@@ -10,8 +10,8 @@ import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
 import ui.custom.ClickMenu;
 import ui.decorator.Decorator;
-import ui.override.HBox;
 import ui.node.NodeText;
+import ui.override.HBox;
 import ui.override.VBox;
 
 import java.util.Comparator;

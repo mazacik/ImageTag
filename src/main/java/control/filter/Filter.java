@@ -3,7 +3,6 @@ package control.filter;
 import base.entity.Entity;
 import base.entity.EntityList;
 import base.tag.TagList;
-import control.Select;
 import control.reload.Notifier;
 import control.reload.Reload;
 import enums.MediaType;

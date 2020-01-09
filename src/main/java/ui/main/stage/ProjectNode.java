@@ -15,8 +15,8 @@ import misc.Project;
 import ui.decorator.Decorator;
 import ui.node.NodeText;
 import ui.override.VBox;
-import ui.stage.StageSimpleMessage;
 import ui.stage.StageConfirmation;
+import ui.stage.StageSimpleMessage;
 
 import java.io.File;
 

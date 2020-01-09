@@ -1,7 +1,6 @@
 package ui.main.display;
 
 import base.entity.Entity;
-import com.sun.istack.internal.logging.Logger;
 import control.Select;
 import control.reload.Reload;
 import javafx.scene.canvas.Canvas;

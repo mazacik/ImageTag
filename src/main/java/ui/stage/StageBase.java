@@ -7,10 +7,10 @@ import javafx.scene.layout.Border;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import ui.decorator.Decorator;
 import ui.custom.TitleBar;
-import ui.override.HBox;
+import ui.decorator.Decorator;
 import ui.node.NodeText;
+import ui.override.HBox;
 import ui.override.VBox;
 
 public abstract class StageBase extends Stage {

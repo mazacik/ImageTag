@@ -22,9 +22,6 @@ import ui.main.stage.StageMain;
 import ui.main.top.PaneToolbar;
 
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
 public class Main extends Application {
 	public static final boolean DEBUG_MAIN_QUICKSTART = true;

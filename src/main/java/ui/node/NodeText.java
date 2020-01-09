@@ -10,7 +10,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.text.TextAlignment;
-import ui.custom.ClickMenu;
 import ui.decorator.Decorator;
 
 public class NodeText extends Label {

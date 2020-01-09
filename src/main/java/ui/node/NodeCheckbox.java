@@ -1,12 +1,12 @@
 package ui.node;
 
+import enums.Direction;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.WindowEvent;
 import ui.decorator.Decorator;
-import enums.Direction;
 import ui.override.HBox;
 
 public class NodeCheckbox extends HBox {

@@ -10,10 +10,10 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import ui.node.NodeCheckbox;
 import ui.node.NodeEdit;
+import ui.node.NodeSwitch;
 import ui.node.NodeText;
 import ui.override.HBox;
 import ui.override.VBox;
-import ui.node.NodeSwitch;
 
 public class StageFilterOptions extends StageBase {
 	private static final NodeCheckbox nodeImages;

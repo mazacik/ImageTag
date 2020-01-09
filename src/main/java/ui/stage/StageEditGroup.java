@@ -7,8 +7,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import ui.decorator.Decorator;
 import ui.node.NodeEdit;
-import ui.override.HBox;
 import ui.node.NodeText;
+import ui.override.HBox;
 
 public class StageEditGroup extends StageBase {
 	private static final NodeText nodeGroup;

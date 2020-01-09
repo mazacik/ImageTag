@@ -1,12 +1,12 @@
 package ui.main.stage;
 
 import base.CustomList;
-import misc.Project;
-import ui.node.NodeText;
-import ui.override.VBox;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import misc.FileUtil;
+import misc.Project;
+import ui.node.NodeText;
+import ui.override.VBox;
 
 public class ProjectBox extends VBox {
 	public ProjectBox() {

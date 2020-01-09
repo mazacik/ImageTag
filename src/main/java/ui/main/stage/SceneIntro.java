@@ -13,14 +13,14 @@ import javafx.stage.FileChooser;
 import main.Main;
 import misc.FileUtil;
 import misc.Project;
-import ui.decorator.Decorator;
-import ui.decorator.ColorPreset;
-import ui.override.Scene;
-import ui.node.NodeBoxSeparator;
-import ui.override.HBox;
-import ui.node.NodeText;
-import ui.override.VBox;
 import ui.custom.TitleBar;
+import ui.decorator.ColorPreset;
+import ui.decorator.Decorator;
+import ui.node.NodeBoxSeparator;
+import ui.node.NodeText;
+import ui.override.HBox;
+import ui.override.Scene;
+import ui.override.VBox;
 
 import java.io.File;
 

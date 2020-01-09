@@ -10,7 +10,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import ui.decorator.Decorator;
-import ui.override.Scene;
 import ui.main.display.PaneDisplay;
 import ui.main.gallery.PaneGallery;
 import ui.main.side.PaneFilter;
@@ -18,6 +17,7 @@ import ui.main.side.PaneSelect;
 import ui.main.top.PaneToolbar;
 import ui.node.NodeEdit;
 import ui.override.HBox;
+import ui.override.Scene;
 import ui.override.VBox;
 
 public class SceneMain extends Scene {

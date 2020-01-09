@@ -21,8 +21,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import misc.Settings;
-import ui.main.stage.StageMain;
 import ui.custom.ClickMenu;
+import ui.main.stage.StageMain;
 
 public class Tile extends Pane {
 	public static final double HIGHLIGHT_PADDING = 10;

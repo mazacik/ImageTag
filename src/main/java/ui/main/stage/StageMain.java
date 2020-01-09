@@ -14,7 +14,6 @@ import ui.main.side.SidePaneBase;
 import ui.main.top.PaneToolbar;
 
 import java.awt.*;
-import java.awt.event.MouseEvent;
 
 public class StageMain extends Stage {
 	private static SceneIntro sceneIntro;
