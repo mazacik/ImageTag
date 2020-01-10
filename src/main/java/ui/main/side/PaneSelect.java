@@ -50,59 +50,59 @@ public class PaneSelect extends SidePaneBase {
 	}
 	
 	public boolean refresh() {
-		refreshTitle();
-		
-		Color textColorDefault = Decorator.getColorPrimary();
-		Color textColorPositive = Decorator.getColorPositive();
-		Color textColorShare = Decorator.getColorShare();
-		
-		CustomList<String> groupsInter;
-		CustomList<String> groupsShare;
-		
-		if (Select.getEntities().size() == 0) {
-			groupsInter = new CustomList<>();
-			groupsShare = new CustomList<>();
-		} else {
-			groupsInter = Select.getEntities().getTagsIntersect().getGroups();
-			groupsShare = Select.getEntities().getTags().getGroups();
-		}
-		
-		for (Node node : boxGroupNodes.getChildren()) {
-			if (node instanceof GroupNode) {
-				GroupNode groupNode = (GroupNode) node;
-				String group = groupNode.getGroup();
-				
-				if (groupsInter.contains(group)) {
-					groupNode.setTextFill(textColorPositive);
-				} else if (groupsShare.contains(group)) {
-					groupNode.setTextFill(textColorShare);
-				} else {
-					groupNode.setTextFill(textColorDefault);
-				}
-				
-				CustomList<String> namesInter;
-				CustomList<String> namesShare;
-				if (Select.getEntities().size() == 0) {
-					namesInter = Select.getTarget().getTagList().getNames(group);
-					namesShare = new CustomList<>();
-				} else {
-					namesInter = Select.getEntities().getTagsIntersect().getNames(group);
-					namesShare = Select.getEntities().getTags().getNames(group);
-				}
-				
-				for (NodeText nameNode : groupNode.getNameNodes()) {
-					String name = nameNode.getText();
-					
-					if (namesInter.contains(name)) {
-						nameNode.setTextFill(textColorPositive);
-					} else if (namesShare.contains(name)) {
-						nameNode.setTextFill(textColorShare);
-					} else {
-						nameNode.setTextFill(textColorDefault);
-					}
-				}
-			}
-		}
+//		refreshTitle();
+//
+//		Color textColorDefault = Decorator.getColorPrimary();
+//		Color textColorPositive = Decorator.getColorPositive();
+//		Color textColorShare = Decorator.getColorShare();
+//
+//		CustomList<String> groupsInter;
+//		CustomList<String> groupsShare;
+//
+//		if (Select.getEntities().size() == 0) {
+//			groupsInter = new CustomList<>();
+//			groupsShare = new CustomList<>();
+//		} else {
+//			groupsInter = Select.getEntities().getTagsIntersect().getGroups();
+//			groupsShare = Select.getEntities().getTagIDs().getGroups();
+//		}
+//
+//		for (Node node : boxGroupNodes.getChildren()) {
+//			if (node instanceof GroupNode) {
+//				GroupNode groupNode = (GroupNode) node;
+//				String group = groupNode.getGroup();
+//
+//				if (groupsInter.contains(group)) {
+//					groupNode.setTextFill(textColorPositive);
+//				} else if (groupsShare.contains(group)) {
+//					groupNode.setTextFill(textColorShare);
+//				} else {
+//					groupNode.setTextFill(textColorDefault);
+//				}
+//
+//				CustomList<String> namesInter;
+//				CustomList<String> namesShare;
+//				if (Select.getEntities().size() == 0) {
+//					namesInter = Select.getTarget().getTagIDs().getNames(group);
+//					namesShare = new CustomList<>();
+//				} else {
+//					namesInter = Select.getEntities().getTagsIntersect().getNames(group);
+//					namesShare = Select.getEntities().getTagIDs().getNames(group);
+//				}
+//
+//				for (NodeText nameNode : groupNode.getNameNodes()) {
+//					String name = nameNode.getText();
+//
+//					if (namesInter.contains(name)) {
+//						nameNode.setTextFill(textColorPositive);
+//					} else if (namesShare.contains(name)) {
+//						nameNode.setTextFill(textColorShare);
+//					} else {
+//						nameNode.setTextFill(textColorDefault);
+//					}
+//				}
+//			}
+//		}
 		
 		return true;
 	}
@@ -180,7 +180,7 @@ public class PaneSelect extends SidePaneBase {
 			}
 			
 			nodeSearch.clear();
-			Select.getEntities().addTag(bestMatch);
+			Select.getEntities().addTag(bestMatch.getID());
 			Reload.start();
 		};
 	}

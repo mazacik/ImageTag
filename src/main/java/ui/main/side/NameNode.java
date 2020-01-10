@@ -51,22 +51,22 @@ public class NameNode extends NodeText {
 	}
 	private void changeStateAsFilter() {
 		Tag tag = TagList.getMain().getTag(groupNode.getGroup(), this.getText());
-		if (Filter.getListManager().isWhitelisted(tag)) {
-			Filter.getListManager().blacklist(tag);
+		if (Filter.getListManager().isWhitelisted(tag.getID())) {
+			Filter.getListManager().blacklist(tag.getID());
 			if (Filter.getListManager().isBlacklisted(tag.getGroup())) {
 				groupNode.setTextFill(Decorator.getColorNegative());
 			} else if (!Filter.getListManager().isWhitelisted(tag.getGroup())) {
 				groupNode.setTextFill(Decorator.getColorPrimary());
 			}
 			this.setTextFill(Decorator.getColorNegative());
-		} else if (Filter.getListManager().isBlacklisted(tag)) {
-			Filter.getListManager().unlist(tag);
+		} else if (Filter.getListManager().isBlacklisted(tag.getID())) {
+			Filter.getListManager().unlist(tag.getID());
 			if (!Filter.getListManager().isWhitelisted(tag.getGroup()) && !Filter.getListManager().isBlacklisted(tag.getGroup())) {
 				groupNode.setTextFill(Decorator.getColorPrimary());
 			}
 			this.setTextFill(Decorator.getColorPrimary());
 		} else {
-			Filter.getListManager().whitelist(tag);
+			Filter.getListManager().whitelist(tag.getID());
 			if (Filter.getListManager().isWhitelisted(tag.getGroup())) {
 				groupNode.setTextFill(Decorator.getColorPositive());
 			}
@@ -74,13 +74,13 @@ public class NameNode extends NodeText {
 		}
 	}
 	private void changeStateAsSelect() {
-		Tag tag = TagList.getMain().getTag(groupNode.getGroup(), this.getText());
+		Integer tagID = TagList.getMain().getTag(groupNode.getGroup(), this.getText()).getID();
 		if (this.getTextFill().equals(Decorator.getColorPositive()) || this.getTextFill().equals(Decorator.getColorShare())) {
 			this.setTextFill(Decorator.getColorPrimary());
-			Select.getEntities().removeTag(tag);
+			Select.getEntities().removeTag(tagID);
 		} else {
 			this.setTextFill(Decorator.getColorPositive());
-			Select.getEntities().addTag(tag);
+			Select.getEntities().addTag(tagID);
 		}
 		
 		Reload.start();

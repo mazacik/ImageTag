@@ -1,63 +1,63 @@
 package control.filter;
 
+import base.CustomList;
 import base.entity.Entity;
-import base.tag.Tag;
 import base.tag.TagList;
 import control.reload.Notifier;
 import control.reload.Reload;
 
 public class FilterListManager {
-	private final TagList whitelist = new TagList();
-	private final TagList blacklist = new TagList();
+	private final CustomList<Integer> whitelist = new CustomList<>();
+	private final CustomList<Integer> blacklist = new CustomList<>();
 	
 	FilterListManager() {
 	
 	}
 	
-	public void whitelist(Tag tag) {
-		if (!isWhitelisted(tag)) {
-			whitelist.add(tag);
-			blacklist.remove(tag);
+	public void whitelist(Integer tagID) {
+		if (!isWhitelisted(tagID)) {
+			whitelist.add(tagID);
+			blacklist.remove(tagID);
 			Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
 		}
 	}
-	public void blacklist(Tag tag) {
-		if (!isBlacklisted(tag)) {
-			whitelist.remove(tag);
-			blacklist.add(tag);
+	public void blacklist(Integer tagID) {
+		if (!isBlacklisted(tagID)) {
+			whitelist.remove(tagID);
+			blacklist.add(tagID);
 			Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
 		}
 	}
-	public void unlist(Tag tag) {
-		whitelist.remove(tag);
-		blacklist.remove(tag);
+	public void unlist(Integer tagID) {
+		whitelist.remove(tagID);
+		blacklist.remove(tagID);
 		Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
 	}
 	
 	public void whitelist(String group) {
 		for (String name : TagList.getMain().getNames(group)) {
-			whitelist(TagList.getMain().getTag(group, name));
+			whitelist(TagList.getMain().getTag(group, name).getID());
 		}
 	}
 	public void blacklist(String group) {
 		for (String name : TagList.getMain().getNames(group)) {
-			blacklist(TagList.getMain().getTag(group, name));
+			blacklist(TagList.getMain().getTag(group, name).getID());
 		}
 	}
 	public void unlist(String group) {
 		for (String name : TagList.getMain().getNames(group)) {
-			unlist(TagList.getMain().getTag(group, name));
+			unlist(TagList.getMain().getTag(group, name).getID());
 		}
 	}
 	
 	boolean isWhitelistOk(Entity entity) {
-		return isWhitelistOk(entity.getTagList());
+		return isWhitelistOk(entity.getTagIDs());
 	}
-	boolean isWhitelistOk(TagList tagList) {
+	boolean isWhitelistOk(CustomList<Integer> tagIDs) {
 		if (whitelist.isEmpty()) {
 			return true;
 		} else {
-			TagList commonTags = new TagList(tagList);
+			CustomList<Integer> commonTags = new CustomList<>(tagIDs);
 			commonTags.retainAll(whitelist);
 			double factor = (double) commonTags.size() / (double) whitelist.size();
 			return factor >= Filter.getSettings().getWhitelistFactor();
@@ -65,13 +65,13 @@ public class FilterListManager {
 	}
 	
 	boolean isBlacklistOk(Entity entity) {
-		return isBlacklistOk(entity.getTagList());
+		return isBlacklistOk(entity.getTagIDs());
 	}
-	boolean isBlacklistOk(TagList tagList) {
+	boolean isBlacklistOk(CustomList<Integer> tagIDs) {
 		if (blacklist.isEmpty()) {
 			return true;
 		} else {
-			TagList commonTags = new TagList(tagList);
+			CustomList<Integer> commonTags = new CustomList<>(tagIDs);
 			commonTags.retainAll(blacklist);
 			double factor = (double) commonTags.size() / (double) blacklist.size();
 			return factor <= Filter.getSettings().getBlacklistFactor();
@@ -86,11 +86,11 @@ public class FilterListManager {
 		}
 		return true;
 	}
-	public boolean isWhitelisted(Tag tag) {
-		return whitelist.contains(tag);
+	public boolean isWhitelisted(Integer tagID) {
+		return whitelist.contains(tagID);
 	}
 	public boolean isWhitelisted(String group, String name) {
-		return isWhitelisted(TagList.getMain().getTag(group, name));
+		return isWhitelisted(TagList.getMain().getTag(group, name).getID());
 	}
 	
 	public boolean isBlacklisted(String group) {
@@ -101,11 +101,11 @@ public class FilterListManager {
 		}
 		return true;
 	}
-	public boolean isBlacklisted(Tag tag) {
-		return blacklist.contains(tag);
+	public boolean isBlacklisted(Integer tagID) {
+		return blacklist.contains(tagID);
 	}
 	public boolean isBlacklisted(String group, String name) {
-		return isBlacklisted(TagList.getMain().getTag(group, name));
+		return isBlacklisted(TagList.getMain().getTag(group, name).getID());
 	}
 	
 	public boolean isUnlisted(String group) {
@@ -116,17 +116,17 @@ public class FilterListManager {
 		}
 		return true;
 	}
-	public boolean isUnlisted(Tag tag) {
-		return !isWhitelisted(tag) && !isBlacklisted(tag);
+	public boolean isUnlisted(Integer tagID) {
+		return !isWhitelisted(tagID) && !isBlacklisted(tagID);
 	}
 	public boolean isUnlisted(String group, String name) {
 		return !isWhitelisted(group, name) && !isBlacklisted(group, name);
 	}
 	
-	TagList getWhitelist() {
+	CustomList<Integer> getWhitelist() {
 		return whitelist;
 	}
-	TagList getBlacklist() {
+	CustomList<Integer> getBlacklist() {
 		return blacklist;
 	}
 }

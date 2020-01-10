@@ -14,7 +14,7 @@ public class TagList extends CustomList<Tag> {
 	}
 	
 	public void sort() {
-		super.sort(Comparator.comparing(Tag::getFull));
+		super.sort(Comparator.comparing(Tag::getString));
 	}
 	
 	public CustomList<String> getGroups() {
@@ -37,6 +37,16 @@ public class TagList extends CustomList<Tag> {
 		}
 		
 		return names;
+	}
+	
+	public Tag getTag(Integer id) {
+		for (Tag tag : this) {
+			if (tag.getID() == id) {
+				return tag;
+			}
+		}
+		
+		return null;
 	}
 	
 	public Tag getTag(String group, String name) {

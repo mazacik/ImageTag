@@ -188,7 +188,7 @@ public enum NodeTemplates {
 				
 				for (Tag tag : TagList.getMain()) {
 					if (groupBefore.equals(tag.getGroup())) {
-						tag.setGroup(groupAfter);
+						//tag.setGroup(groupAfter);
 					}
 				}
 				
@@ -213,10 +213,10 @@ public enum NodeTemplates {
 						PaneFilter.getInstance().getGroupNode(group).removeNameNode(name);
 						PaneSelect.getInstance().getGroupNode(group).removeNameNode(name);
 						
-						Tag tag = TagList.getMain().getTag(group, name);
-						EntityList.getMain().forEach(entity -> entity.getTagList().remove(tag));
-						Filter.getListManager().unlist(tag);
-						TagList.getMain().remove(tag);
+						Integer tagID = TagList.getMain().getTag(group, name).getID();
+						EntityList.getMain().forEach(entity -> entity.getTagIDs().remove(tagID));
+						Filter.getListManager().unlist(tagID);
+						TagList.getMain().remove(tagID);
 					}
 					Reload.notify(Notifier.TAG_LIST_MAIN);
 					Reload.start();
@@ -276,12 +276,12 @@ public enum NodeTemplates {
 				StageEditTag.Result result = StageEditTag.show(ClickMenu.getGroup(), ClickMenu.getName());
 				
 				if (result != null) {
-					tag.setGroup(result.getGroup());
-					tag.setName(result.getName());
+					//tag.setGroup(result.getGroup());
+					//tag.setName(result.getName());
 					
 					TagList.getMain().sort();
 					
-					if (result.isAddToSelect()) Select.getEntities().addTag(tag);
+					if (result.isAddToSelect()) Select.getEntities().addTag(tag.getID());
 					
 					Reload.notify(Notifier.TAG_LIST_MAIN);
 					Reload.start();
@@ -304,8 +304,8 @@ public enum NodeTemplates {
 				if (StageConfirmation.show("Remove \"" + tag.getGroup() + " - " + tag.getName() + "\" ?")) {
 					PaneFilter.getInstance().getGroupNode(group).removeNameNode(name);
 					PaneSelect.getInstance().getGroupNode(group).removeNameNode(name);
-					EntityList.getMain().forEach(entity -> entity.getTagList().remove(tag));
-					Filter.getListManager().unlist(tag);
+					EntityList.getMain().forEach(entity -> entity.getTagIDs().remove(tag.getID()));
+					Filter.getListManager().unlist(tag.getID());
 					TagList.getMain().remove(tag);
 					Reload.notify(Notifier.TAG_LIST_MAIN);
 					Reload.start();

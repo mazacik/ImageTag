@@ -1,7 +1,6 @@
 package base.entity;
 
 import base.CustomList;
-import base.tag.TagList;
 import control.Select;
 import control.reload.Notifier;
 import control.reload.Reload;
@@ -12,14 +11,14 @@ import java.util.Random;
 public abstract class EntityCollectionUtil {
 	public static void create() {
 		int collectionID = new Random().nextInt();
-		TagList collectionTags = Select.getEntities().getTags();
+		CustomList<Integer> collectionTags = Select.getEntities().getTagIDs();
 		
 		String s = "A collection of " + Select.getEntities().size() + " items will be created.\nMerge tags?";
 		if (!collectionTags.isEmpty() && StageConfirmation.show(s)) {
 			for (Entity entity : Select.getEntities()) {
 				entity.setCollectionID(collectionID);
 				entity.setCollection(new EntityList(Select.getEntities()));
-				entity.setTagList(collectionTags);
+				entity.setTagIDs(collectionTags);
 				entity.getTile().updateCollectionIcon();
 			}
 			Reload.notify(Notifier.TAGS_OF_SELECT);

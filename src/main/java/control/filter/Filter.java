@@ -1,8 +1,8 @@
 package control.filter;
 
+import base.CustomList;
 import base.entity.Entity;
 import base.entity.EntityList;
-import base.tag.TagList;
 import control.reload.Notifier;
 import control.reload.Reload;
 import enums.MediaType;
@@ -39,7 +39,7 @@ public class Filter extends EntityList {
 				continue;
 			}
 			
-			if (settings.isEnableLimit() && entity.getTagList().size() > settings.getLimit()) {
+			if (settings.isEnableLimit() && entity.getTagIDs().size() > settings.getLimit()) {
 				continue;
 			}
 			
@@ -58,11 +58,11 @@ public class Filter extends EntityList {
 		listManager.getBlacklist().clear();
 		Loader.INSTANCE.clear();
 		
-		TagList query = entity.getTagList();
+		CustomList<Integer> query = entity.getTagIDs();
 		for (Entity iterator : EntityList.getMain()) {
-			if (iterator.getTagList().size() != 0) {
-				TagList sameTags = new TagList(query);
-				sameTags.retainAll(iterator.getTagList());
+			if (iterator.getTagIDs().size() != 0) {
+				CustomList<Integer> sameTags = new CustomList<>(query);
+				sameTags.retainAll(iterator.getTagIDs());
 				
 				if (!sameTags.isEmpty()) {
 					double similarity = (double) sameTags.size() / (double) query.size();

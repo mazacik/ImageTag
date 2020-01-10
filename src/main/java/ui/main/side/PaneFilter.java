@@ -30,7 +30,7 @@ public class PaneFilter extends SidePaneBase {
 				TagList.getMain().add(tag);
 				TagList.getMain().sort();
 				
-				if (result.isAddToSelect()) Select.getEntities().addTag(tag);
+				if (result.isAddToSelect()) Select.getEntities().addTag(tag.getID());
 				
 				Reload.notify(Notifier.TAG_LIST_MAIN);
 				Reload.start();

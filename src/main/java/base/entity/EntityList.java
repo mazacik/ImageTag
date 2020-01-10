@@ -1,8 +1,6 @@
 package base.entity;
 
 import base.CustomList;
-import base.tag.Tag;
-import base.tag.TagList;
 import control.filter.Filter;
 import control.reload.Notifier;
 import control.reload.Reload;
@@ -42,37 +40,34 @@ public class EntityList extends CustomList<Entity> {
 		return null;
 	}
 	
-	public void addTag(Tag tag) {
-		this.forEach(entity -> {
-			entity.getTagList().add(tag);
-			entity.getTagList().sort();
-		});
+	public void addTag(Integer tagID) {
+		this.forEach(entity -> entity.getTagIDs().add(tagID));
 		Reload.notify(Notifier.TAGS_OF_SELECT);
 	}
-	public void removeTag(Tag tag) {
-		this.forEach(entity -> entity.getTagList().remove(tag));
+	public void removeTag(Integer tagID) {
+		this.forEach(entity -> entity.getTagIDs().remove(tagID));
 		Reload.notify(Notifier.TAGS_OF_SELECT);
 	}
 	
-	public TagList getTags() {
-		TagList tagList = new TagList();
-		this.forEach(entity -> tagList.addAll(entity.getTagList(), true));
-		return tagList;
+	public CustomList<Integer> getTagIDs() {
+		CustomList<Integer> tagIDs = new CustomList<>();
+		this.forEach(entity -> tagIDs.addAll(entity.getTagIDs(), true));
+		return tagIDs;
 	}
-	public TagList getTagsIntersect() {
+	public CustomList<Integer> getTagsIntersect() {
 		if (!this.isEmpty()) {
-			TagList tagsIntersect = new TagList();
+			CustomList<Integer> tagsIntersect = new CustomList<>();
 			
 			//check every tag of the first object
-			for (Tag tag : this.getFirst().getTagList()) {
-				//check if all objects contain the tag
+			for (Integer tagID : this.getFirst().getTagIDs()) {
+				//check if all objects contain the tagID
 				for (Entity entity : this) {
-					if (entity.getTagList().contains(tag)) {
-						//if the last object contains the tag, all before do too, add
+					if (entity.getTagIDs().contains(tagID)) {
+						//if the last object contains the tagID, all before do too, add
 						if (entity.equals(this.getLast())) {
-							tagsIntersect.add(tag);
+							tagsIntersect.add(tagID);
 						}
-						//if any of the objects doesn't contain the tag, break
+						//if any of the objects doesn't contain the tagID, break
 					} else {
 						break;
 					}
@@ -81,7 +76,7 @@ public class EntityList extends CustomList<Entity> {
 			
 			return tagsIntersect;
 		} else {
-			return new TagList();
+			return new CustomList<>();
 		}
 	}
 	

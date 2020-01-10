@@ -3,7 +3,6 @@ package main;
 import base.CustomList;
 import base.entity.Entity;
 import base.entity.EntityList;
-import base.tag.Tag;
 import base.tag.TagList;
 import cache.CacheManager;
 import control.Select;
@@ -151,21 +150,6 @@ public class Main extends Application {
 		TagList allTags = Project.getCurrent().getTagList();
 		TagList tagListMain = TagList.getMain();
 		if (allTags != null) tagListMain.addAll(allTags);
-		
-		for (Entity entity : EntityList.getMain()) {
-			TagList tagList = entity.getTagList();
-			
-			for (int i = 0; i < tagList.size(); i++) {
-				Tag entityTag = tagList.get(i);
-				Tag mainListTag = tagListMain.getTag(entityTag);
-				
-				if (mainListTag != null) {
-					tagList.set(i, mainListTag);
-				} else {
-					tagListMain.add(entityTag);
-				}
-			}
-		}
 		
 		tagListMain.sort();
 		Reload.notify(Notifier.TAG_LIST_MAIN);
