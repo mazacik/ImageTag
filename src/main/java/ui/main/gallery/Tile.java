@@ -110,7 +110,6 @@ public class Tile extends Pane {
 						EntityCollectionUtil.openCollection(entity);
 					} else {
 						if (event.getClickCount() % 2 != 0) {
-							
 							if (event.isControlDown()) {
 								if (Select.getEntities().contains(entity)) {
 									Select.getEntities().remove(entity);

@@ -35,6 +35,7 @@ public abstract class Reload {
 			
 			Notifier.FILTER.getInvokeHelpers().add(ihPGalleryReload);
 			Notifier.FILTER.getInvokeHelpers().add(ihPFilterRefresh);
+			Notifier.FILTER.getInvokeHelpers().add(ihPSelectRefresh);
 			
 			Notifier.SELECT.getInvokeHelpers().add(ihPSelectRefresh);
 			

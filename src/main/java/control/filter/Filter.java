@@ -50,9 +50,7 @@ public class Filter extends EntityList {
 			getEntities().add(entity);
 		}
 		
-		if (!getEntities().isEmpty()) {
-			Reload.notify(Notifier.FILTER);
-		}
+		Reload.notify(Notifier.FILTER);
 	}
 	
 	public static void showSimilar(Entity entity) {

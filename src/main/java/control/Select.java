@@ -27,7 +27,7 @@ public class Select extends EntityList {
 			}
 		} else {
 			if (super.addAll(entity.getCollection(), checkDuplicates)) {
-				Reload.requestBorderUpdate(entity.getCollection());
+				Reload.requestBorderUpdate((Filter.applyTo(entity.getCollection())));
 				Reload.notify(Notifier.SELECT);
 				return true;
 			}
@@ -58,7 +58,7 @@ public class Select extends EntityList {
 			}
 		} else {
 			if (this.size() != entity.getCollection().size()) {
-				if (super.removeAll(entity.getCollection())) {
+				if (super.removeAll((Filter.applyTo(entity.getCollection())))) {
 					Reload.requestBorderUpdate(entity.getCollection());
 					Reload.notify(Notifier.SELECT);
 					return true;
@@ -85,7 +85,7 @@ public class Select extends EntityList {
 				return true;
 			}
 		} else {
-			if (super.addAll(entity.getCollection())) {
+			if (super.addAll(Filter.applyTo(entity.getCollection()))) {
 				Reload.requestBorderUpdate(entity.getCollection());
 				Reload.notify(Notifier.SELECT);
 				return true;
@@ -232,7 +232,7 @@ public class Select extends EntityList {
 		}
 	}
 	
-	private static int storePos = 0;
+	private static int storePos = -1;
 	private static Entity storeEntity = null;
 	public static void storeTargetPosition() {
 		if (EntityCollectionUtil.hasOpenOrNoCollection(target)) {
@@ -245,7 +245,7 @@ public class Select extends EntityList {
 	public static void restoreTargetPosition() {
 		EntityList tileEntities = PaneGallery.getTileEntities();
 		if (!tileEntities.isEmpty()) {
-			if (!tileEntities.contains(storeEntity)) {
+			if (!tileEntities.contains(storeEntity) && storePos >= 0) {
 				if (storePos <= tileEntities.size() - 1) {
 					setTarget(tileEntities.get(storePos));
 				} else {

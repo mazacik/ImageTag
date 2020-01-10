@@ -122,9 +122,9 @@ public abstract class Decorator {
 		return colorPreset;
 	}
 	public static void setColorPreset(ColorPreset colorPreset) {
-		ColorPreset previousPreset = colorPreset;
+		ColorPreset previousPreset = Decorator.colorPreset;
 		
-		colorPreset = colorPreset;
+		Decorator.colorPreset = colorPreset;
 		Settings.setColorPreset(colorPreset.ordinal());
 		
 		updateNodes(previousPreset);
