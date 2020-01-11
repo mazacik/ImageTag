@@ -3,6 +3,7 @@ package main;
 import base.CustomList;
 import base.entity.Entity;
 import base.entity.EntityList;
+import base.tag.Tag;
 import base.tag.TagList;
 import cache.CacheManager;
 import control.Select;
@@ -23,7 +24,7 @@ import ui.main.top.PaneToolbar;
 import java.io.File;
 
 public class Main extends Application {
-	public static final boolean DEBUG_MAIN_QUICKSTART = false;
+	public static final boolean DEBUG_MAIN_QUICKSTART = true;
 	
 	public static final boolean DEBUG_FS_FILE_MOVE = true;
 	public static final boolean DEBUG_FS_FILE_DELETE = true;
@@ -52,18 +53,15 @@ public class Main extends Application {
 	}
 	
 	public static void startDatabaseLoading() {
+		initTags();
 		initEntities();
 		initCollections();
-		initTags();
 		
 		Select.setTarget(EntityList.getMain().getFirst());
 		Select.getEntities().set(Select.getTarget());
 		
 		Reload.notify(Notifier.values());
 		Reload.start();
-		
-		PaneFilter.getInstance().collapseAll();
-		PaneSelect.getInstance().collapseAll();
 		
 		CacheManager.checkCacheInBackground();
 	}
@@ -123,6 +121,12 @@ public class Main extends Application {
 			needsSort = true;
 		}
 		if (needsSort) EntityList.getMain().sort();
+		
+		for (Entity entity : EntityList.getMain()) {
+			for (int tagID : entity.getTagIDs()) {
+				entity.getTagList().add(TagList.getMain().getTag(tagID));
+			}
+		}
 	}
 	private static void initCollections() {
 		CustomList<EntityList> collections = new CustomList<>();
@@ -151,7 +155,9 @@ public class Main extends Application {
 		TagList tagListMain = TagList.getMain();
 		if (allTags != null) tagListMain.addAll(allTags);
 		
+		tagListMain.forEach(Tag::setStringValue);
 		tagListMain.sort();
+		
 		Reload.notify(Notifier.TAG_LIST_MAIN);
 	}
 	

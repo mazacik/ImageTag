@@ -1,6 +1,8 @@
 package base.entity;
 
 import base.CustomList;
+import base.tag.Tag;
+import base.tag.TagList;
 import com.google.gson.annotations.SerializedName;
 import enums.MediaType;
 import misc.FileUtil;
@@ -62,6 +64,14 @@ public class Entity {
 		this.collection = collection;
 	}
 	
+	private transient TagList tagList;
+	public TagList getTagList() {
+		if (tagList == null) {
+			tagList = new TagList();
+		}
+		return tagList;
+	}
+	
 	private transient Tile tile;
 	public Tile getTile() {
 		if (tile == null) {
@@ -81,5 +91,18 @@ public class Entity {
 		
 		this.collection = null;
 		this.tile = new Tile(this);
+	}
+	
+	public void addTag(Tag tag) {
+		tagList.add(tag, true);
+	}
+	public void addTag(int tagID) {
+		this.addTag(TagList.getMain().getTag(tagID));
+	}
+	public void removeTag(Tag tag) {
+		tagList.remove(tag);
+	}
+	public void removeTag(int tagID) {
+		this.removeTag(TagList.getMain().getTag(tagID));
 	}
 }

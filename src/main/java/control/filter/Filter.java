@@ -43,7 +43,7 @@ public class Filter extends EntityList {
 				continue;
 			}
 			
-			if (!listManager.isWhitelistOk(entity) || !listManager.isBlacklistOk(entity)) {
+			if (!listManager.applyLists(entity)) {
 				continue;
 			}
 			

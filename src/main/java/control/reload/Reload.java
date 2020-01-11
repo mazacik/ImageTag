@@ -58,7 +58,11 @@ public abstract class Reload {
 	}
 	
 	public static void notify(Notifier... notifiers) {
-		Reload.notifiers.addAll(Arrays.asList(notifiers), true);
+		if (notifiers.length == 1) {
+			Reload.notifiers.add(notifiers[0], true);
+		} else {
+			Reload.notifiers.addAll(Arrays.asList(notifiers), true);
+		}
 	}
 	public static void start() {
 		CustomList<InvokeHelper> invokeHelpers = new CustomList<>();

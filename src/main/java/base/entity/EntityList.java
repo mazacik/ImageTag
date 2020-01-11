@@ -41,11 +41,11 @@ public class EntityList extends CustomList<Entity> {
 	}
 	
 	public void addTag(Integer tagID) {
-		this.forEach(entity -> entity.getTagIDs().add(tagID));
+		this.forEach(entity -> entity.addTag(tagID));
 		Reload.notify(Notifier.TAGS_OF_SELECT);
 	}
 	public void removeTag(Integer tagID) {
-		this.forEach(entity -> entity.getTagIDs().remove(tagID));
+		this.forEach(entity -> entity.removeTag(tagID));
 		Reload.notify(Notifier.TAGS_OF_SELECT);
 	}
 	

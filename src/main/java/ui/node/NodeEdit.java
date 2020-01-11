@@ -5,10 +5,10 @@ import javafx.scene.layout.Background;
 import ui.decorator.Decorator;
 
 public class NodeEdit extends TextField {
-	public NodeEdit(String promptText, EditNodeType type) {
+	public NodeEdit(String text, EditNodeType type) {
 		this.setFont(Decorator.getFont());
 		this.setBorder(Decorator.getBorder(1, 1, 1, 1));
-		this.setPromptText(promptText);
+		this.setText(text);
 		//this.skinProperty().addListener((observable, oldValue, newValue) -> setStyle("-fx-text-fill: " + Decorator.getColorAsStringForCss(ColorUtil.getColorPrimary()) + "; -fx-prompt-text-fill: gray;"));
 		this.setBackground(Background.EMPTY);
 		this.setStyle("-fx-text-fill: " + Decorator.getCssString(Decorator.getColorPrimary()) + ";");

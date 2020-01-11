@@ -14,29 +14,7 @@ public class TagList extends CustomList<Tag> {
 	}
 	
 	public void sort() {
-		super.sort(Comparator.comparing(Tag::getString));
-	}
-	
-	public CustomList<String> getGroups() {
-		CustomList<String> groups = new CustomList<>();
-		
-		for (Tag tag : this) {
-			groups.add(tag.getGroup());
-		}
-		
-		groups.sort(Comparator.naturalOrder());
-		
-		return groups;
-	}
-	public CustomList<String> getNames(String group) {
-		CustomList<String> names = new CustomList<>();
-		for (Tag tag : this) {
-			if (tag.getGroup().equals(group)) {
-				names.add(tag.getName());
-			}
-		}
-		
-		return names;
+		super.sort(Comparator.comparing(Tag::getStringValue));
 	}
 	
 	public Tag getTag(Integer id) {
@@ -48,18 +26,14 @@ public class TagList extends CustomList<Tag> {
 		
 		return null;
 	}
-	
-	public Tag getTag(String group, String name) {
+	public TagList getTags(String query) {
+		TagList results = new TagList();
 		for (Tag tag : this) {
-			if (group.equals(tag.getGroup()) && name.equals(tag.getName())) {
-				return tag;
+			if (tag.getStringValue().contains(query)) {
+				results.add(tag);
 			}
 		}
-		
-		return null;
-	}
-	public Tag getTag(Tag tag) {
-		return getTag(tag.getGroup(), tag.getName());
+		return results;
 	}
 	
 	private static class Loader {

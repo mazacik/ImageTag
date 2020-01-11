@@ -2,14 +2,11 @@ package ui.main.side;
 
 import base.tag.Tag;
 import base.tag.TagList;
-import control.Select;
 import control.filter.Filter;
 import control.reload.Notifier;
 import control.reload.Reload;
-import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 import ui.decorator.Decorator;
 import ui.node.NodeText;
 import ui.override.HBox;
@@ -18,19 +15,16 @@ import ui.stage.StageFilterOptions;
 
 public class PaneFilter extends SidePaneBase {
 	public void init() {
-		nodeTitle = new NodeText("", false, false, false, true);
-		
 		NodeText btnCreateNewTag = new NodeText("Create a New Tag", true, true, false, true);
 		btnCreateNewTag.setBorder(Decorator.getBorder(0, 0, 1, 0));
 		btnCreateNewTag.prefWidthProperty().bind(this.widthProperty());
 		btnCreateNewTag.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-			StageEditTag.Result result = StageEditTag.show("");
+			Tag result = new Tag(StageEditTag.show(null));
 			if (result != null) {
-				Tag tag = new Tag(result.getGroup(), result.getName());
-				TagList.getMain().add(tag);
+				TagList.getMain().add(result);
 				TagList.getMain().sort();
 				
-				if (result.isAddToSelect()) Select.getEntities().addTag(tag.getID());
+				//if (result.isAddToSelect()) Select.getEntities().addTag(tag.getID());
 				
 				Reload.notify(Notifier.TAG_LIST_MAIN);
 				Reload.start();
@@ -57,37 +51,31 @@ public class PaneFilter extends SidePaneBase {
 	public boolean refresh() {
 		nodeTitle.setText("Filter: " + Filter.getEntities().size());
 		
-		Color textColorDefault = Decorator.getColorPrimary();
-		Color textColorPositive = Decorator.getColorPositive();
-		Color textColorNegative = Decorator.getColorNegative();
-		Color textColorShare = Decorator.getColorShare();
-		
-		for (Node node : boxGroupNodes.getChildren()) {
-			if (node instanceof GroupNode) {
-				GroupNode groupNode = (GroupNode) node;
-				String group = groupNode.getGroup();
-				
-				if (Filter.getListManager().isWhitelisted(group)) {
-					groupNode.setTextFill(textColorPositive);
-				} else if (Filter.getListManager().isBlacklisted(group)) {
-					groupNode.setTextFill(textColorNegative);
-				} else if (Filter.getListManager().isUnlisted(group)) {
-					groupNode.setTextFill(textColorDefault);
-				} else {
-					groupNode.setTextFill(textColorShare);
-				}
-				
-				for (NodeText nameNode : groupNode.getNameNodes()) {
-					if (Filter.getListManager().isWhitelisted(group, nameNode.getText())) {
-						nameNode.setTextFill(textColorPositive);
-					} else if (Filter.getListManager().isBlacklisted(group, nameNode.getText())) {
-						nameNode.setTextFill(textColorNegative);
-					} else {
-						nameNode.setTextFill(textColorDefault);
-					}
-				}
-			}
-		}
+		//		Color textColorDefault = Decorator.getColorPrimary();
+		//		Color textColorPositive = Decorator.getColorPositive();
+		//		Color textColorNegative = Decorator.getColorNegative();
+		//
+		//		CustomList<TagNode> tagNodes = new CustomList<>();
+		//		getTagNodes(tagNodes);
+		//		for (TagNode tagNode : tagNodes) {
+		//			if (tagNode.isLast()) {
+		//				if (Filter.getListManager().isWhitelisted(tagNode.getStringValue())) {
+		//					tagNode.setTextFill(textColorPositive);
+		//				} else if (Filter.getListManager().isBlacklisted(tagNode.getStringValue())) {
+		//					tagNode.setTextFill(textColorNegative);
+		//				} else if (Filter.getListManager().isUnlisted(tagNode.getStringValue())) {
+		//					tagNode.setTextFill(textColorDefault);
+		//				}
+		//			} else {
+		//				if (tagNode.getListMode() == 0) {
+		//					tagNode.setTextFill(textColorDefault);
+		//				} else if (tagNode.getListMode() == 1) {
+		//					tagNode.setTextFill(textColorPositive);
+		//				} else if (tagNode.getListMode() == 2) {
+		//					tagNode.setTextFill(textColorNegative);
+		//				}
+		//			}
+		//		}
 		
 		return true;
 	}

@@ -1,54 +1,51 @@
 package ui.stage;
 
-import base.tag.TagList;
-import enums.Direction;
+import base.CustomList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
 import ui.decorator.Decorator;
-import ui.node.NodeCheckbox;
 import ui.node.NodeEdit;
 import ui.node.NodeText;
 import ui.override.HBox;
 import ui.override.VBox;
 
 public class StageEditTag extends StageBase {
-	private static final NodeEdit editGroup;
-	private static final NodeEdit editName;
-	private static final NodeCheckbox nodeApplyToSelect;
+	private static final CustomList<NodeLevel> nodesLevel;
+	private static final VBox boxLevels;
 	
+	private static final NodeText levelAdd;
+	
+	private static final ScrollPane scrollPane;
 	private static final VBox boxContent;
+	
 	private static final NodeText nodeOK;
 	private static final NodeText nodeCancel;
 	
-	private static String group;
-	private static String name;
+	private static final CustomList<String> levels;
 	
 	static {
-		NodeText nodeGroup = new NodeText("Group", false, false, false, false);
-		nodeGroup.setPrefWidth(80);
-		editGroup = new NodeEdit();
-		editGroup.setPrefWidth(200);
+		levels = new CustomList<>();
+		nodesLevel = new CustomList<>();
+		boxLevels = new VBox();
 		
-		NodeText nodeName = new NodeText("Name", false, false, false, false);
-		nodeName.setPrefWidth(80);
-		editName = new NodeEdit();
-		editName.setPrefWidth(200);
+		levelAdd = new NodeText("Add Level", true, true, false, true);
+		scrollPane = new ScrollPane(boxLevels);
+		scrollPane.setMinHeight(500);
+		boxContent = new VBox(scrollPane, levelAdd);
 		
-		editGroup.setBorder(Decorator.getBorder(1, 1, 1, 1));
-		editName.setBorder(Decorator.getBorder(1, 1, 1, 1));
+		levelAdd.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+			NodeLevel nodeLevel = new NodeLevel(boxLevels.getChildren().size(), "");
+			nodesLevel.add(nodeLevel);
+			boxLevels.getChildren().add(nodeLevel);
+		});
 		
-		HBox hBoxGroup = new HBox(nodeGroup, editGroup);
-		hBoxGroup.setAlignment(Pos.CENTER);
-		
-		HBox hBoxName = new HBox(nodeName, editName);
-		hBoxName.setAlignment(Pos.CENTER);
-		
-		nodeApplyToSelect = new NodeCheckbox("Apply to selection?", Direction.RIGHT);
-		
-		boxContent = new VBox(hBoxGroup, hBoxName, nodeApplyToSelect);
-		boxContent.setSpacing(5);
+		boxContent.setAlignment(Pos.CENTER);
+		boxContent.setPadding(new Insets(5));
 		boxContent.setOnKeyPressed(event -> {
 			if (event.getCode() == KeyCode.ENTER) {
 				returnValue();
@@ -57,8 +54,18 @@ public class StageEditTag extends StageBase {
 			}
 		});
 		
+		scrollPane.setFitToWidth(true);
+		scrollPane.setFitToHeight(true);
+		scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+		scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+		scrollPane.setBackground(Background.EMPTY);
+		
 		nodeOK = new NodeText("OK", true, true, false, true);
-		nodeOK.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, StageEditTag::returnValue);
+		nodeOK.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+			if (checkEditNodes()) {
+				returnValue();
+			}
+		});
 		
 		nodeCancel = new NodeText("Cancel", true, true, false, true);
 		nodeCancel.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, getInstance()::close);
@@ -66,66 +73,49 @@ public class StageEditTag extends StageBase {
 	
 	private static void returnValue() {
 		if (checkEditNodes()) {
-			group = editGroup.getText();
-			name = editName.getText();
+			levels.clear();
+			nodesLevel.forEach(nodeLevel -> levels.add(nodeLevel.nodeEdit.getText()));
 			getInstance().close();
 		}
 	}
-	private static boolean checkEditNodes() {
-		String group = editGroup.getText().trim();
-		String name = editName.getText().trim();
-		
-		if (group.isEmpty()) {
-			getInstance().setErrorMessage("Field \"Group\" cannot be empty.");
-			return false;
-		}
-		if (name.isEmpty()) {
-			getInstance().setErrorMessage("Field \"Name\" cannot be empty.");
-			return false;
-		}
-		
-		if (TagList.getMain().getTag(group, name) != null) {
-			getInstance().setErrorMessage("Tag \"" + group + " - " + name + "\" already exists.");
-			return false;
-		}
-		
+	
+	public static boolean checkEditNodes(String... fields) {
+		//		if (fields[0].trim().isEmpty()) {
+		//			getInstance().setErrorMessage("Field \"" + nodeText.getText() + "\" cannot be empty.");
+		//			return false;
+		//		}
 		return true;
 	}
 	
-	public static Result show(String... args) {
-		if (args.length == 2) {
-			getInstance().setTitle("Edit Tag");
-			group = args[0];
-			name = args[1];
-		} else {
-			getInstance().setTitle("Create a New Tag");
-			group = "";
-			name = "";
+	private static void refreshBoxContent(CustomList<String> levelsBefore) {
+		nodesLevel.clear();
+		
+		if (levelsBefore == null) {
+			nodesLevel.add(new NodeLevel(0, ""));
 		}
 		
-		editGroup.setText(group);
-		editName.setText(name);
-		
-		if (group.isEmpty()) {
-			editGroup.requestFocus();
-		} else {
-			editName.selectAll();
-			editName.requestFocus();
+		for (int i = 0; i < levelsBefore.size(); i++) {
+			nodesLevel.add(new NodeLevel(i, levelsBefore.get(i)));
 		}
 		
-		nodeApplyToSelect.setSelected(false);
+		boxLevels.getChildren().setAll(nodesLevel);
+	}
+	
+	public static CustomList<String> show(CustomList<String> levelsBefore) {
+		refreshBoxContent(levelsBefore);
 		
+		getInstance().setErrorMessage("");
 		getInstance().showAndWait();
 		
-		if (group.isEmpty() || name.isEmpty()) {
-			return null;
-		} else {
-			return new Result(group, name, nodeApplyToSelect.isSelected());
-		}
+		return levels;
+	}
+	
+	public static ScrollPane getScrollPane() {
+		return scrollPane;
 	}
 	
 	private StageEditTag() {
-		super("", true, true, true);
+		super("Edit Group", true, true, true);
 		setRoot(boxContent);
 		setButtons(nodeOK, nodeCancel);
 	}
@@ -136,25 +126,26 @@ public class StageEditTag extends StageBase {
 		return Loader.INSTANCE;
 	}
 	
-	public static class Result {
-		private String group;
-		private String name;
-		private boolean addToSelect;
+	private static class NodeLevel extends HBox {
+		private final NodeText nodeText;
+		private final NodeEdit nodeEdit;
 		
-		public Result(String group, String name, boolean addToSelect) {
-			this.group = group;
-			this.name = name;
-			this.addToSelect = addToSelect;
+		public NodeLevel(int level, String edit) {
+			nodeText = new NodeText("Level " + (level + 1) + ":");
+			nodeText.setPrefWidth(80);
+			
+			nodeEdit = new NodeEdit(edit);
+			nodeEdit.setPrefWidth(200);
+			nodeEdit.setBorder(Decorator.getBorder(1, 1, 1, 1));
+			
+			this.getChildren().addAll(nodeText, nodeEdit);
 		}
 		
-		public String getGroup() {
-			return group;
+		public NodeText getNodeText() {
+			return nodeText;
 		}
-		public String getName() {
-			return name;
-		}
-		public boolean isAddToSelect() {
-			return addToSelect;
+		public NodeEdit getNodeEdit() {
+			return nodeEdit;
 		}
 	}
 }

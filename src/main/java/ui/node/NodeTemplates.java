@@ -1,8 +1,8 @@
 package ui.node;
 
+import base.CustomList;
 import base.entity.EntityCollectionUtil;
 import base.entity.EntityList;
-import base.tag.Tag;
 import base.tag.TagList;
 import cache.CacheManager;
 import control.Select;
@@ -17,13 +17,8 @@ import javafx.stage.WindowEvent;
 import misc.FileUtil;
 import misc.HttpUtil;
 import misc.Project;
-import org.apache.commons.text.WordUtils;
 import ui.custom.ClickMenu;
-import ui.main.side.PaneFilter;
-import ui.main.side.PaneSelect;
 import ui.main.stage.StageMain;
-import ui.stage.StageConfirmation;
-import ui.stage.StageEditGroup;
 import ui.stage.StageEditTag;
 import ui.stage.StageSimpleMessage;
 
@@ -176,65 +171,16 @@ public enum NodeTemplates {
 		}
 	},
 	
-	TAG_GROUP_EDIT {
-		public NodeText get() {
-			NodeText nodeText = new NodeText("Edit Tag Group", true, true, false, true);
-			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
-				
-				String groupBefore = ClickMenu.getGroup();
-				String groupAfter = WordUtils.capitalize(StageEditGroup.show(groupBefore).toLowerCase());
-				
-				for (Tag tag : TagList.getMain()) {
-					if (groupBefore.equals(tag.getGroup())) {
-						//tag.setGroup(groupAfter);
-					}
-				}
-				
-				TagList.getMain().sort();
-				
-				Reload.notify(Notifier.TAG_LIST_MAIN);
-				Reload.start();
-			});
-			return nodeText;
-		}
-	},
-	TAG_GROUP_REMOVE {
-		public NodeText get() {
-			NodeText nodeText = new NodeText("Remove Tag Group", true, true, false, true);
-			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
-				
-				String group = ClickMenu.getGroup();
-				if (StageConfirmation.show("Remove \"" + group + "\" and all of its tags?")) {
-					for (String name : TagList.getMain().getNames(group)) {
-						PaneFilter.getInstance().getGroupNode(group).removeNameNode(name);
-						PaneSelect.getInstance().getGroupNode(group).removeNameNode(name);
-						
-						Integer tagID = TagList.getMain().getTag(group, name).getID();
-						EntityList.getMain().forEach(entity -> entity.getTagIDs().remove(tagID));
-						Filter.getListManager().unlist(tagID);
-						TagList.getMain().remove(tagID);
-					}
-					Reload.notify(Notifier.TAG_LIST_MAIN);
-					Reload.start();
-				}
-			});
-			return nodeText;
-		}
-	},
 	TAG_GROUP_WHITELIST {
 		public NodeText get() {
 			NodeText nodeText = new NodeText("Whitelist All", true, true, false, true);
 			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
-				
-				Filter.getListManager().whitelist(ClickMenu.getGroup());
-				Reload.start();
-			});
+			//			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+			//				ClickMenu.hideAll();
+			//
+			//				Filter.getListManager().whitelist(ClickMenu.getGroup());
+			//				Reload.start();
+			//			});
 			return nodeText;
 		}
 	},
@@ -242,12 +188,12 @@ public enum NodeTemplates {
 		public NodeText get() {
 			NodeText nodeText = new NodeText("Blacklist All", true, true, false, true);
 			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
-				
-				Filter.getListManager().blacklist(ClickMenu.getGroup());
-				Reload.start();
-			});
+			//			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+			//				ClickMenu.hideAll();
+			//
+			//				Filter.getListManager().blacklist(ClickMenu.getGroup());
+			//				Reload.start();
+			//			});
 			return nodeText;
 		}
 	},
@@ -255,12 +201,12 @@ public enum NodeTemplates {
 		public NodeText get() {
 			NodeText nodeText = new NodeText("Unlist All", true, true, false, true);
 			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
-				
-				Filter.getListManager().unlist(ClickMenu.getGroup());
-				Reload.start();
-			});
+			//			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+			//				ClickMenu.hideAll();
+			//
+			//				Filter.getListManager().unlist(ClickMenu.getGroup());
+			//				Reload.start();
+			//			});
 			return nodeText;
 		}
 	},
@@ -271,21 +217,17 @@ public enum NodeTemplates {
 			nodeText.setMaxWidth(Double.MAX_VALUE);
 			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClickMenu.hideAll();
+				String before = ClickMenu.getTagNode().getStringValue();
+				int countBefore = ClickMenu.getTagNode().getLevel() + 1;
+				CustomList<String> levels = StageEditTag.show(ClickMenu.getTagNode().getLevels());
 				
-				Tag tag = TagList.getMain().getTag(ClickMenu.getGroup(), ClickMenu.getName());
-				StageEditTag.Result result = StageEditTag.show(ClickMenu.getGroup(), ClickMenu.getName());
+				TagList.getMain().getTags(before).forEach(tag -> tag.replaceLevelsFromStart(countBefore, levels));
+				TagList.getMain().sort();
 				
-				if (result != null) {
-					//tag.setGroup(result.getGroup());
-					//tag.setName(result.getName());
-					
-					TagList.getMain().sort();
-					
-					if (result.isAddToSelect()) Select.getEntities().addTag(tag.getID());
-					
-					Reload.notify(Notifier.TAG_LIST_MAIN);
-					Reload.start();
-				}
+				//if (result.isAddToSelect()) Select.getEntities().addTag(tag.getID());
+				
+				Reload.notify(Notifier.TAG_LIST_MAIN);
+				Reload.start();
 			});
 			return nodeText;
 		}
@@ -294,23 +236,23 @@ public enum NodeTemplates {
 		public NodeText get() {
 			NodeText nodeText = new NodeText("Remove Tag", true, true, false, true);
 			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
-				
-				String group = ClickMenu.getGroup();
-				String name = ClickMenu.getName();
-				Tag tag = TagList.getMain().getTag(group, name);
-				
-				if (StageConfirmation.show("Remove \"" + tag.getGroup() + " - " + tag.getName() + "\" ?")) {
-					PaneFilter.getInstance().getGroupNode(group).removeNameNode(name);
-					PaneSelect.getInstance().getGroupNode(group).removeNameNode(name);
-					EntityList.getMain().forEach(entity -> entity.getTagIDs().remove(tag.getID()));
-					Filter.getListManager().unlist(tag.getID());
-					TagList.getMain().remove(tag);
-					Reload.notify(Notifier.TAG_LIST_MAIN);
-					Reload.start();
-				}
-			});
+			//			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+			//				ClickMenu.hideAll();
+			//
+			//				String group = ClickMenu.getGroup();
+			//				String name = ClickMenu.getName();
+			//				Tag tag = TagList.getMain().getTag(group, name);
+			//
+			//				if (StageConfirmation.show("Remove \"" + tag.getGroup() + " - " + tag.getName() + "\" ?")) {
+			//					PaneFilter.getInstance().getGroupNode(group).removeNameNode(name);
+			//					PaneSelect.getInstance().getGroupNode(group).removeNameNode(name);
+			//					EntityList.getMain().forEach(entity -> entity.getTagIDs().remove(tag.getID()));
+			//					Filter.getListManager().unlist(tag.getID());
+			//					TagList.getMain().remove(tag);
+			//					Reload.notify(Notifier.TAG_LIST_MAIN);
+			//					Reload.start();
+			//				}
+			//			});
 			return nodeText;
 		}
 	},

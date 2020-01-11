@@ -8,10 +8,8 @@ import control.Select;
 import control.filter.Filter;
 import control.reload.Reload;
 import enums.Direction;
-import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -29,14 +27,13 @@ public class PaneSelect extends SidePaneBase {
 	private NodeEdit nodeSearch;
 	
 	public void init() {
-		nodeTitle = new NodeText("", true, true, false, true);
 		nodeTitle.setBorder(Decorator.getBorder(0, 0, 1, 0));
 		nodeTitle.prefWidthProperty().bind(this.widthProperty());
 		
 		nodeSearch = new NodeEdit("Quick Search");
 		nodeSearch.setBorder(Decorator.getBorder(0, 0, 1, 0));
 		nodeSearch.prefWidthProperty().bind(this.widthProperty());
-		nodeSearch.textProperty().addListener(getSearchTextListener());
+		//nodeSearch.textProperty().addListener(getSearchTextListener());
 		nodeSearch.setOnAction(getSearchOnAction());
 		
 		NodeText nodeSelectAll = NodeTemplates.SELECTION_SET_ALL.get();
@@ -46,61 +43,39 @@ public class PaneSelect extends SidePaneBase {
 		this.setBorder(Decorator.getBorder(0, 0, 0, 1));
 		this.getChildren().addAll(nodeTitle, nodeSearch, scrollPane);
 		
-		collapseAll();
+		//collapseAll();
 	}
 	
 	public boolean refresh() {
-//		refreshTitle();
-//
+		refreshTitle();
+		
 //		Color textColorDefault = Decorator.getColorPrimary();
 //		Color textColorPositive = Decorator.getColorPositive();
 //		Color textColorShare = Decorator.getColorShare();
 //
-//		CustomList<String> groupsInter;
-//		CustomList<String> groupsShare;
-//
+//		CustomList<Integer> namesInter;
+//		CustomList<Integer> namesShare;
 //		if (Select.getEntities().size() == 0) {
-//			groupsInter = new CustomList<>();
-//			groupsShare = new CustomList<>();
+//			namesInter = Select.getTarget().getTagIDs();
+//			namesShare = new CustomList<>();
 //		} else {
-//			groupsInter = Select.getEntities().getTagsIntersect().getGroups();
-//			groupsShare = Select.getEntities().getTagIDs().getGroups();
+//			namesInter = Select.getEntities().getTagsIntersect();
+//			namesShare = Select.getEntities().getTagIDs();
 //		}
 //
-//		for (Node node : boxGroupNodes.getChildren()) {
-//			if (node instanceof GroupNode) {
-//				GroupNode groupNode = (GroupNode) node;
-//				String group = groupNode.getGroup();
-//
-//				if (groupsInter.contains(group)) {
-//					groupNode.setTextFill(textColorPositive);
-//				} else if (groupsShare.contains(group)) {
-//					groupNode.setTextFill(textColorShare);
+//		CustomList<TagNode> tagNodes = new CustomList<>();
+//		getTagNodes(tagNodes);
+//		for (TagNode tagNode : tagNodes) {
+//			if (tagNode.isLast()) {
+//				if (namesInter.contains(tagNode.getStringValue().getID())) {
+//					tagNode.setTextFill(textColorPositive);
+//				} else if (namesShare.contains(tagNode.getStringValue().getID())) {
+//					tagNode.setTextFill(textColorShare);
 //				} else {
-//					groupNode.setTextFill(textColorDefault);
+//					tagNode.setTextFill(textColorDefault);
 //				}
+//			} else {
 //
-//				CustomList<String> namesInter;
-//				CustomList<String> namesShare;
-//				if (Select.getEntities().size() == 0) {
-//					namesInter = Select.getTarget().getTagIDs().getNames(group);
-//					namesShare = new CustomList<>();
-//				} else {
-//					namesInter = Select.getEntities().getTagsIntersect().getNames(group);
-//					namesShare = Select.getEntities().getTagIDs().getNames(group);
-//				}
-//
-//				for (NodeText nameNode : groupNode.getNameNodes()) {
-//					String name = nameNode.getText();
-//
-//					if (namesInter.contains(name)) {
-//						nameNode.setTextFill(textColorPositive);
-//					} else if (namesShare.contains(name)) {
-//						nameNode.setTextFill(textColorShare);
-//					} else {
-//						nameNode.setTextFill(textColorDefault);
-//					}
-//				}
 //			}
 //		}
 		
@@ -122,57 +97,57 @@ public class PaneSelect extends SidePaneBase {
 	
 	private Tag bestMatch = null;
 	private NodeText previousMatchNameNode = null;
-	private GroupNode previousMatchGroupNode = null;
+	//private GroupNode previousMatchGroupNode = null;
 	private boolean wasPreviousGroupNodeExpanded = true;
 	
-	private ChangeListener<? super String> getSearchTextListener() {
-		return (ChangeListener<String>) (observable, oldValue, newValue) -> {
-			if (newValue.length() < 3) {
-				if (!wasPreviousGroupNodeExpanded) {
-					previousMatchGroupNode.collapse();
-					wasPreviousGroupNodeExpanded = true;
-				}
-				if (previousMatchGroupNode != null) {
-					previousMatchGroupNode = null;
-				}
-				if (previousMatchNameNode != null) {
-					previousMatchNameNode.fireEvent(new MouseEvent(MouseEvent.MOUSE_EXITED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
-					previousMatchNameNode = null;
-				}
-			} else {
-				bestMatch = this.getBestMatch(newValue);
-				if (bestMatch != null) {
-					for (GroupNode groupNode : getGroupNodes()) {
-						if (groupNode.getGroup().equals(bestMatch.getGroup())) {
-							if (previousMatchGroupNode != groupNode) {
-								if (!wasPreviousGroupNodeExpanded) {
-									previousMatchGroupNode.collapse();
-								}
-								
-								if (previousMatchNameNode != null) {
-									previousMatchNameNode.fireEvent(new MouseEvent(MouseEvent.MOUSE_EXITED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
-								}
-								
-								previousMatchGroupNode = groupNode;
-								wasPreviousGroupNodeExpanded = groupNode.isExpanded();
-								
-								if (!groupNode.isExpanded()) {
-									groupNode.expand();
-								}
-								
-								for (NodeText nameNode : groupNode.getNameNodes()) {
-									if (nameNode.getText().equals(bestMatch.getName())) {
-										previousMatchNameNode = nameNode;
-										nameNode.fireEvent(new MouseEvent(MouseEvent.MOUSE_ENTERED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		};
-	}
+	//	private ChangeListener<? super String> getSearchTextListener() {
+	//		return (ChangeListener<String>) (observable, oldValue, newValue) -> {
+	//			if (newValue.length() < 3) {
+	//				if (!wasPreviousGroupNodeExpanded) {
+	//					previousMatchGroupNode.collapse();
+	//					wasPreviousGroupNodeExpanded = true;
+	//				}
+	//				if (previousMatchGroupNode != null) {
+	//					previousMatchGroupNode = null;
+	//				}
+	//				if (previousMatchNameNode != null) {
+	//					previousMatchNameNode.fireEvent(new MouseEvent(MouseEvent.MOUSE_EXITED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
+	//					previousMatchNameNode = null;
+	//				}
+	//			} else {
+	//				bestMatch = this.getBestMatch(newValue);
+	//				if (bestMatch != null) {
+	//					for (GroupNode groupNode : getGroupNodes()) {
+	//						if (groupNode.getGroup().equals(bestMatch.getGroup())) {
+	//							if (previousMatchGroupNode != groupNode) {
+	//								if (!wasPreviousGroupNodeExpanded) {
+	//									previousMatchGroupNode.collapse();
+	//								}
+	//
+	//								if (previousMatchNameNode != null) {
+	//									previousMatchNameNode.fireEvent(new MouseEvent(MouseEvent.MOUSE_EXITED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
+	//								}
+	//
+	//								previousMatchGroupNode = groupNode;
+	//								wasPreviousGroupNodeExpanded = groupNode.isExpanded();
+	//
+	//								if (!groupNode.isExpanded()) {
+	//									groupNode.expand();
+	//								}
+	//
+	//								for (NodeText nameNode : groupNode.getNameNodes()) {
+	//									if (nameNode.getText().equals(bestMatch.getName())) {
+	//										previousMatchNameNode = nameNode;
+	//										nameNode.fireEvent(new MouseEvent(MouseEvent.MOUSE_ENTERED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
+	//									}
+	//								}
+	//							}
+	//						}
+	//					}
+	//				}
+	//			}
+	//		};
+	//	}
 	private EventHandler<ActionEvent> getSearchOnAction() {
 		return event -> {
 			if (previousMatchNameNode != null) {
@@ -187,9 +162,9 @@ public class PaneSelect extends SidePaneBase {
 	private Tag getBestMatch(String query) {
 		//	simple check if the name of any tag starts with query
 		for (Tag tag : TagList.getMain()) {
-			if (tag.getName().toLowerCase().startsWith(query)) {
-				return tag;
-			}
+			//if (tag.getName().toLowerCase().startsWith(query)) {
+			return tag;
+			//}
 		}
 		
 		//	more complex check for string similarity
@@ -199,12 +174,12 @@ public class PaneSelect extends SidePaneBase {
 		for (Tag tag : TagList.getMain()) {
 			SimilarityStrategy strategy = new JaroWinklerStrategy();
 			StringSimilarityService service = new StringSimilarityServiceImpl(strategy);
-			double currentFactor = service.score(tag.getName(), query);
+			//double currentFactor = service.score(tag.getName(), query);
 			
-			if (currentFactor > bestMatchFactor) {
-				bestMatch = tag;
-				bestMatchFactor = currentFactor;
-			}
+			//if (currentFactor > bestMatchFactor) {
+			bestMatch = tag;
+			//bestMatchFactor = currentFactor;
+			//}
 		}
 		
 		return bestMatch;

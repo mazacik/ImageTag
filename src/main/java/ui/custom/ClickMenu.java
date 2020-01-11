@@ -13,27 +13,19 @@ import javafx.scene.layout.Region;
 import javafx.stage.Popup;
 import javafx.stage.WindowEvent;
 import ui.decorator.Decorator;
+import ui.main.side.TagNode;
 import ui.main.stage.StageMain;
 import ui.node.NodeBoxSeparator;
 import ui.node.NodeTemplates;
 import ui.override.VBox;
 
 public class ClickMenu extends Popup {
-	private static String name;
-	private static String group;
-	
-	public static String getName() {
-		return name;
+	private static TagNode tagNode;
+	public static TagNode getTagNode() {
+		return tagNode;
 	}
-	public static String getGroup() {
-		return group;
-	}
-	
-	public static void setName(String name) {
-		ClickMenu.name = name;
-	}
-	public static void setGroup(String group) {
-		ClickMenu.group = group;
+	public static void setTagNode(TagNode tagNode) {
+		ClickMenu.tagNode = tagNode;
 	}
 	
 	protected static final CustomList<ClickMenu> instanceList = new CustomList<>();
@@ -74,7 +66,7 @@ public class ClickMenu extends Popup {
 			super.show(root, direction);
 		}
 	};
-	private static ClickMenu clickMenuTagGroup = new ClickMenu(NodeTemplates.TAG_GROUP_WHITELIST.get(), NodeTemplates.TAG_GROUP_BLACKLIST.get(), NodeTemplates.TAG_GROUP_UNLIST.get(), new NodeBoxSeparator(), NodeTemplates.TAG_GROUP_EDIT.get(), NodeTemplates.TAG_GROUP_REMOVE.get());
+	private static ClickMenu clickMenuTagGroup = new ClickMenu(NodeTemplates.TAG_GROUP_WHITELIST.get(), NodeTemplates.TAG_GROUP_BLACKLIST.get(), NodeTemplates.TAG_GROUP_UNLIST.get(), new NodeBoxSeparator(), NodeTemplates.TAG_NAME_EDIT.get(), NodeTemplates.TAG_NAME_REMOVE.get());
 	private static ClickMenu clickMenuTagName = new ClickMenu(NodeTemplates.TAG_NAME_EDIT.get(), NodeTemplates.TAG_NAME_REMOVE.get());
 	private static ClickMenu clickMenuSelect = new ClickMenu(NodeTemplates.SELECTION_SET_ALL.get(), NodeTemplates.SELECTION_SET_NONE.get());
 	
