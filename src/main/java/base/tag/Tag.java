@@ -9,29 +9,21 @@ public class Tag {
 	@SerializedName("I") private int id;
 	@SerializedName("L") private CustomList<String> levels;
 	
-	private transient String stringValue;
-	
 	public Tag(CustomList<String> levels) {
 		this.id = new Random().nextInt();
 		this.levels = levels;
 	}
 	
-	public boolean isEmpty() {
-		for (String s : levels) {
-			if (s.isEmpty()) {
-				return true;
-			}
+	public void replaceLevelsFromStart(int levelCount, CustomList<String> levels) {
+		CustomList<String> levelsNew = new CustomList<>(levels);
+		for (int i = levelCount; i < this.levels.size(); i++) {
+			levelsNew.add(this.levels.get(i));
 		}
-		return false;
+		this.levels.setAll(levelsNew);
+		setStringValue();
 	}
 	
-	public String getLevel(int level) {
-		return levels.get(level);
-	}
-	public String getLevelLast() {
-		return levels.get(levels.size() - 1);
-	}
-	
+	private transient String stringValue;
 	public String getStringValue() {
 		return stringValue;
 	}
@@ -41,19 +33,10 @@ public class Tag {
 		stringValue = builder.toString();
 	}
 	
+	public String getLevel(int level) {
+		return levels.get(level);
+	}
 	public int getID() {
 		return id;
-	}
-	public CustomList<String> getLevels() {
-		return levels;
-	}
-	
-	public void replaceLevelsFromStart(int count, CustomList<String> levels) {
-		CustomList<String> levelsNew = new CustomList<>(levels);
-		for (int i = count; i < this.levels.size(); i++) {
-			levelsNew.add(this.levels.get(i));
-		}
-		this.levels.setAll(levelsNew);
-		setStringValue();
 	}
 }

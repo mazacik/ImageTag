@@ -10,23 +10,23 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import ui.decorator.Decorator;
-import ui.main.display.PaneDisplay;
-import ui.main.gallery.PaneGallery;
-import ui.main.side.PaneFilter;
-import ui.main.side.PaneSelect;
-import ui.main.top.PaneToolbar;
+import ui.main.display.DisplayPane;
+import ui.main.gallery.GalleryPane;
+import ui.main.side.FilterPane;
+import ui.main.side.SelectPane;
+import ui.main.top.ToolbarPane;
 import ui.node.EditNode;
 import ui.override.HBox;
 import ui.override.Scene;
 import ui.override.VBox;
 
-public class SceneMain extends Scene {
+public class MainScene extends Scene {
 	private HBox mainBox;
 	
-	public SceneMain() {
-		mainBox = new HBox(PaneFilter.getInstance(), PaneGallery.getInstance(), PaneSelect.getInstance());
+	public MainScene() {
+		mainBox = new HBox(FilterPane.getInstance(), GalleryPane.getInstance(), SelectPane.getInstance());
 		
-		VBox vBox = new VBox(PaneToolbar.getInstance(), mainBox);
+		VBox vBox = new VBox(ToolbarPane.getInstance(), mainBox);
 		vBox.setBackground(Decorator.getBackgroundPrimary());
 		
 		this.initKeybinds();
@@ -46,11 +46,11 @@ public class SceneMain extends Scene {
 						
 						break;
 					case ESCAPE:
-						StageMain.getSceneMain().viewGallery();
+						MainStage.getMainScene().viewGallery();
 						Reload.start();
 						break;
 					case TAB:
-						PaneSelect.getInstance().getNodeSearch().requestFocus();
+						SelectPane.getInstance().getNodeSearch().requestFocus();
 						break;
 					case DELETE:
 						Select.getEntities().deleteFiles();
@@ -62,7 +62,7 @@ public class SceneMain extends Scene {
 						break;
 					case R:
 						Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
-						Entity randomEntity = PaneGallery.getTileEntities().getRandom();
+						Entity randomEntity = GalleryPane.getTileEntities().getRandom();
 						Select.getEntities().set(randomEntity);
 						Select.setTarget(randomEntity);
 						Reload.start();
@@ -93,28 +93,28 @@ public class SceneMain extends Scene {
 	
 	public void viewGallery() {
 		if (!isViewGallery()) {
-			PaneDisplay.getInstance().interruptVideoPlayer();
+			DisplayPane.getInstance().interruptVideoPlayer();
 			
-			mainBox.getChildren().set(1, PaneGallery.getInstance());
+			mainBox.getChildren().set(1, GalleryPane.getInstance());
 			
-			PaneGallery.getInstance().requestFocus();
-			PaneGallery.moveViewportToTarget();
+			GalleryPane.getInstance().requestFocus();
+			GalleryPane.moveViewportToTarget();
 			
 			Reload.notify(Notifier.VIEWMODE);
 		}
 	}
 	public void viewEntity() {
 		if (isViewGallery()) {
-			mainBox.getChildren().set(1, PaneDisplay.getInstance());
+			mainBox.getChildren().set(1, DisplayPane.getInstance());
 			
-			PaneDisplay.getInstance().requestFocus();
-			PaneDisplay.getInstance().fireEvent(new MouseEvent(MouseEvent.MOUSE_MOVED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
+			DisplayPane.getInstance().requestFocus();
+			DisplayPane.getInstance().fireEvent(new MouseEvent(MouseEvent.MOUSE_MOVED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
 			
 			Reload.notify(Notifier.VIEWMODE);
 		}
 	}
 	
 	public boolean isViewGallery() {
-		return mainBox.getChildren().contains(PaneGallery.getInstance());
+		return mainBox.getChildren().contains(GalleryPane.getInstance());
 	}
 }

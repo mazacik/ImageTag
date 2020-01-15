@@ -10,11 +10,11 @@ public class FilterListManager {
 	private final CustomList<TagNode> whitelist = new CustomList<>();
 	private final CustomList<TagNode> blacklist = new CustomList<>();
 	
-	protected FilterListManager() {
+	public FilterListManager() {
 	
 	}
 	
-	boolean applyLists(Entity entity) {
+	public boolean applyLists(Entity entity) {
 		CustomList<String> stringValues = new CustomList<>();
 		entity.getTagList().forEach(tag -> stringValues.add(tag.getStringValue()));
 		
@@ -75,18 +75,16 @@ public class FilterListManager {
 		blacklist.remove(tagNode);
 		Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
 	}
+	public void unlistAll() {
+		whitelist.clear();
+		blacklist.clear();
+		Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
+	}
 	
 	public boolean isWhitelisted(TagNode tagNode) {
 		return whitelist.contains(tagNode);
 	}
 	public boolean isBlacklisted(TagNode tagNode) {
 		return blacklist.contains(tagNode);
-	}
-	
-	CustomList<TagNode> getWhitelist() {
-		return whitelist;
-	}
-	CustomList<TagNode> getBlacklist() {
-		return blacklist;
 	}
 }

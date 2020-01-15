@@ -18,47 +18,22 @@ import ui.override.HBox;
 import ui.override.VBox;
 
 public class TagNode extends VBox {
-	private CustomList<TagNode> subNodes;
-	
-	private TextNode nodeToggle;
-	private TextNode textNode;
-	private HBox hBoxMain;
-	
 	private static final int PADDING_DEFAULT = 10;
 	private static final int PADDING_INCREMENT = 10;
 	
-	private final SidePaneBase parentPane;
+	private final TextNode toggleNode;
+	private final TextNode textNode;
+	private final HBox boxMain;
 	
-	private CustomList<String> levels;
-	public CustomList<String> getLevels() {
-		return levels;
-	}
+	private final SidePaneBase parentPane;
+	private final CustomList<String> levels;
+	private final CustomList<TagNode> subNodesDirect;
 	
 	private String stringValue;
-	private void updateStringValue() {
-		StringBuilder string = new StringBuilder();
-		for (String level : levels) {
-			string.append(level);
-		}
-		stringValue = string.toString();
-	}
-	public String getStringValue() {
-		return stringValue;
-	}
-	
-	public String getStringValueSeparate() {
-		StringBuilder sb = new StringBuilder();
-		for (String level : levels) {
-			sb.append(level);
-			sb.append(" - ");
-		}
-		sb.delete(sb.length() - 4, sb.length() - 1);
-		return sb.toString();
-	}
 	
 	public TagNode(SidePaneBase parentPane, Tag tag, int level) {
 		this.parentPane = parentPane;
-		this.subNodes = new CustomList<>();
+		this.subNodesDirect = new CustomList<>();
 		this.levels = new CustomList<>();
 		
 		for (int i = 0; i <= level; i++) {
@@ -69,9 +44,9 @@ public class TagNode extends VBox {
 		
 		int paddingLeft = PADDING_DEFAULT + PADDING_INCREMENT * level;
 		
-		nodeToggle = new TextNode("+ ", false, false, false, false);
-		nodeToggle.setPadding(new Insets(0, PADDING_DEFAULT, 0, paddingLeft));
-		nodeToggle.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+		toggleNode = new TextNode("+ ", false, false, false, false);
+		toggleNode.setPadding(new Insets(0, PADDING_DEFAULT, 0, paddingLeft));
+		toggleNode.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 			switch (event.getButton()) {
 				case PRIMARY:
 					if (!this.isOpen()) {
@@ -87,18 +62,18 @@ public class TagNode extends VBox {
 		
 		textNode = new TextNode(tag.getLevel(level), false, false, false, false);
 		
-		hBoxMain = new HBox(nodeToggle, textNode);
-		this.getChildren().add(hBoxMain);
+		boxMain = new HBox(toggleNode, textNode);
+		this.getChildren().add(boxMain);
 		
-		hBoxMain.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> this.setBackground(Decorator.getBackgroundSecondary()));
-		hBoxMain.addEventFilter(MouseEvent.MOUSE_EXITED, event -> this.setBackground(Background.EMPTY));
-		hBoxMain.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+		boxMain.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> this.setBackground(Decorator.getBackgroundSecondary()));
+		boxMain.addEventFilter(MouseEvent.MOUSE_EXITED, event -> this.setBackground(Background.EMPTY));
+		boxMain.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 			switch (event.getButton()) {
 				case PRIMARY:
-					if (event.getX() > nodeToggle.getWidth()) {
-						if (parentPane == PaneFilter.getInstance()) {
+					if (event.getX() > toggleNode.getWidth()) {
+						if (parentPane == FilterPane.getInstance()) {
 							clickFilter();
-						} else if (parentPane == PaneSelect.getInstance()) {
+						} else if (parentPane == SelectPane.getInstance()) {
 							clickSelect();
 						}
 						Reload.start();
@@ -110,7 +85,7 @@ public class TagNode extends VBox {
 			}
 		});
 		
-		ClickMenu.install(hBoxMain, MouseButton.SECONDARY, ClickMenu.StaticInstance.TAG);
+		ClickMenu.install(boxMain, MouseButton.SECONDARY, ClickMenu.StaticInstance.TAG);
 	}
 	
 	private void clickFilter() {
@@ -144,48 +119,34 @@ public class TagNode extends VBox {
 	public void open() {
 		parentPane.getOpenNodes().add(this.getStringValue());
 		
-		for (TagNode subNode : subNodes) {
+		for (TagNode subNode : subNodesDirect) {
 			if (subNode.isLast()) {
-				subNode.nodeToggle.setVisible(false);
+				subNode.toggleNode.setVisible(false);
 			}
 		}
 		
-		this.getChildren().retainAll(hBoxMain);
-		this.getChildren().addAll(subNodes);
-		nodeToggle.setText("− ");
+		this.getChildren().retainAll(boxMain);
+		this.getChildren().addAll(subNodesDirect);
+		toggleNode.setText("− ");
 	}
 	public void close() {
 		parentPane.getOpenNodes().remove(this.getStringValue());
 		
-		this.getChildren().retainAll(hBoxMain);
-		nodeToggle.setText("+ ");
+		this.getChildren().retainAll(boxMain);
+		toggleNode.setText("+ ");
 	}
 	
-	public CustomList<TagNode> getSubNodesDirect() {
-		return subNodes;
-	}
-	public int getLevel() {
-		return levels.size() - 1;
-	}
-	public String getText() {
-		return textNode.getText();
-	}
-	public boolean isOpen() {
+	private boolean isOpen() {
 		return this.getChildren().size() > 1;
 	}
-	
-	public boolean isLast() {
-		return subNodes.isEmpty();
-	}
-	
-	public void setTextFill(Color color) {
-		textNode.setTextFill(color);
+	private boolean isLast() {
+		return subNodesDirect.isEmpty();
 	}
 	
 	public TagNode getSubNode(Tag tag) {
-		return getSubNode(this, tag);
+		return getSubNodeRecursion(this, tag);
 	}
-	private TagNode getSubNode(TagNode currentNode, Tag tag) {
+	private TagNode getSubNodeRecursion(TagNode currentNode, Tag tag) {
 		//check if current node is the one we want
 		if (currentNode.getStringValue().equals(tag.getStringValue())) {
 			return currentNode;
@@ -197,7 +158,7 @@ public class TagNode extends VBox {
 			for (TagNode tagNode : currentNode.getSubNodesDirect()) {
 				if (tagNode.getText().equals(nextLevelString)) {
 					//child node found, repeat with next level
-					return getSubNode(tagNode, tag);
+					return getSubNodeRecursion(tagNode, tag);
 				}
 			}
 		}
@@ -205,19 +166,47 @@ public class TagNode extends VBox {
 		//child node not found, needs to be created
 		TagNode newNode = new TagNode(parentPane, tag, currentNode.getLevel() + 1);
 		currentNode.getSubNodesDirect().add(newNode);
-		return getSubNode(newNode, tag);
+		return getSubNodeRecursion(newNode, tag);
 	}
 	
-	public CustomList<TagNode> getSubNodes() {
+	public CustomList<TagNode> getSubNodesDirect() {
+		return subNodesDirect;
+	}
+	public CustomList<TagNode> getSubNodesComplete() {
 		CustomList<TagNode> subNodes = new CustomList<>();
-		getSubNodes(this, subNodes);
+		getSubNodesRecursion(this, subNodes);
 		return subNodes;
 	}
-	private void getSubNodes(TagNode currentNode, CustomList<TagNode> tagNodes) {
+	private void getSubNodesRecursion(TagNode currentNode, CustomList<TagNode> tagNodes) {
 		if (currentNode.isLast()) {
 			tagNodes.add(currentNode);
 		} else {
-			currentNode.getSubNodesDirect().forEach(subNode -> getSubNodes(subNode, tagNodes));
+			currentNode.getSubNodesDirect().forEach(subNode -> getSubNodesRecursion(subNode, tagNodes));
 		}
+	}
+	
+	private void updateStringValue() {
+		StringBuilder string = new StringBuilder();
+		for (String level : levels) {
+			string.append(level);
+		}
+		stringValue = string.toString();
+	}
+	public String getStringValue() {
+		return stringValue;
+	}
+	
+	public int getLevel() {
+		return levels.size() - 1;
+	}
+	public String getText() {
+		return textNode.getText();
+	}
+	public CustomList<String> getLevels() {
+		return levels;
+	}
+	
+	public void setTextFill(Color color) {
+		textNode.setTextFill(color);
 	}
 }

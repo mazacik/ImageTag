@@ -10,7 +10,7 @@ import control.reload.Reload;
 import enums.Direction;
 import javafx.scene.input.KeyCode;
 import misc.FileUtil;
-import ui.main.gallery.PaneGallery;
+import ui.main.gallery.GalleryPane;
 
 import java.util.Collection;
 
@@ -141,7 +141,7 @@ public class Select extends EntityList {
 	}
 	
 	public static void shiftSelect(Entity entityTo) {
-		CustomList<Entity> entities = PaneGallery.getTileEntities();
+		CustomList<Entity> entities = GalleryPane.getTileEntities();
 		
 		int indexFrom = entities.indexOf(Select.getTarget());
 		int indexTo = entities.indexOf(entityTo);
@@ -181,7 +181,7 @@ public class Select extends EntityList {
 			
 			target = newTarget;
 			
-			PaneGallery.moveViewportToTarget();
+			GalleryPane.moveViewportToTarget();
 			
 			Reload.notify(Notifier.TARGET);
 		}
@@ -190,7 +190,7 @@ public class Select extends EntityList {
 	public static void moveTarget(Direction direction) {
 		if (target == null) return;
 		
-		EntityList entities = PaneGallery.getTileEntities();
+		EntityList entities = GalleryPane.getTileEntities();
 		if (entities.isEmpty()) return;
 		
 		int currentTargetIndex;
@@ -209,7 +209,7 @@ public class Select extends EntityList {
 			}
 		}
 		
-		int columnCount = PaneGallery.getTilePane().getPrefColumns();
+		int columnCount = GalleryPane.getTilePane().getPrefColumns();
 		
 		int newTargetIndex = currentTargetIndex;
 		switch (direction) {
@@ -257,10 +257,10 @@ public class Select extends EntityList {
 		} else {
 			storeEntity = target.getCollection().getFirst();
 		}
-		storePos = PaneGallery.getTileEntities().indexOf(storeEntity);
+		storePos = GalleryPane.getTileEntities().indexOf(storeEntity);
 	}
 	public static void restoreTargetPosition() {
-		EntityList tileEntities = PaneGallery.getTileEntities();
+		EntityList tileEntities = GalleryPane.getTileEntities();
 		if (!tileEntities.isEmpty()) {
 			if (!tileEntities.contains(storeEntity) && storePos >= 0) {
 				if (storePos <= tileEntities.size() - 1) {

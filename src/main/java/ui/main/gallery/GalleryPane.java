@@ -21,9 +21,9 @@ import javafx.scene.shape.Rectangle;
 import misc.Settings;
 import ui.custom.ClickMenu;
 import ui.decorator.Decorator;
-import ui.main.stage.StageMain;
+import ui.main.stage.MainStage;
 
-public class PaneGallery extends ScrollPane {
+public class GalleryPane extends ScrollPane {
 	public static final double GAP = 5;
 	
 	private static final TilePane tilePane;
@@ -69,7 +69,7 @@ public class PaneGallery extends ScrollPane {
 		switch (event.getButton()) {
 			case PRIMARY:
 				double x = event.getX();
-				double y = PaneGallery.getContentY(event);
+				double y = GalleryPane.getContentY(event);
 				
 				selectRectangleX = x;
 				selectRectangleY = y;
@@ -85,7 +85,7 @@ public class PaneGallery extends ScrollPane {
 	private static void onMouseDrag(MouseEvent event) {
 		if (event.getButton() == MouseButton.PRIMARY) {
 			localCursorPositionX = event.getX();
-			localCursorPositionY = PaneGallery.getContentY(event);
+			localCursorPositionY = GalleryPane.getContentY(event);
 			double width = Math.abs(localCursorPositionX - selectRectangleX);
 			double height = Math.abs(localCursorPositionY - selectRectangleY);
 			
@@ -99,7 +99,7 @@ public class PaneGallery extends ScrollPane {
 				selectRectangle.setX(Math.min(selectRectangleX, localCursorPositionX));
 				selectRectangle.setY(Math.min(selectRectangleY, localCursorPositionY));
 				
-				EntityList selectRectangleEntities = PaneGallery.getSelectRectangleEntities();
+				EntityList selectRectangleEntities = GalleryPane.getSelectRectangleEntities();
 				Select.getEntities().clear();
 				
 				if (event.isControlDown()) {
@@ -139,7 +139,7 @@ public class PaneGallery extends ScrollPane {
 	private static void onScroll(ScrollEvent event) {
 		event.consume();
 		
-		PaneGallery instance = getInstance();
+		GalleryPane instance = getInstance();
 		
 		double rowHeight = tilePane.getPrefTileHeight() + GAP;
 		double contentHeight = tilePane.getHeight() - instance.getViewportBounds().getHeight();
@@ -214,10 +214,10 @@ public class PaneGallery extends ScrollPane {
 		tilePane.setPrefTileWidth(actualTileSize);
 		tilePane.setPrefTileHeight(actualTileSize);
 		
-		tilePane.addEventFilter(MouseEvent.MOUSE_CLICKED, PaneGallery::onMouseClick);
-		tilePane.addEventFilter(MouseEvent.MOUSE_PRESSED, PaneGallery::onMousePress);
-		tilePane.addEventFilter(MouseEvent.MOUSE_DRAGGED, PaneGallery::onMouseDrag);
-		tilePane.addEventFilter(MouseEvent.MOUSE_RELEASED, PaneGallery::onMouseRelease);
+		tilePane.addEventFilter(MouseEvent.MOUSE_CLICKED, GalleryPane::onMouseClick);
+		tilePane.addEventFilter(MouseEvent.MOUSE_PRESSED, GalleryPane::onMousePress);
+		tilePane.addEventFilter(MouseEvent.MOUSE_DRAGGED, GalleryPane::onMouseDrag);
+		tilePane.addEventFilter(MouseEvent.MOUSE_RELEASED, GalleryPane::onMouseRelease);
 		
 		selectRectangle = new Rectangle(0, 0, Color.GRAY);
 		selectRectangle.setStroke(Color.BLACK);
@@ -231,7 +231,7 @@ public class PaneGallery extends ScrollPane {
 		
 		selectRectangleHelper = new EntityList();
 		
-		PaneGallery instance = getInstance();
+		GalleryPane instance = getInstance();
 		
 		instance.setContent(tilePane);
 		instance.getChildren().add(tilePane);
@@ -239,7 +239,7 @@ public class PaneGallery extends ScrollPane {
 		instance.setHbarPolicy(ScrollBarPolicy.NEVER);
 		instance.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
 		instance.setPrefViewportHeight(Decorator.getUsableScreenHeight());
-		instance.addEventFilter(ScrollEvent.SCROLL, PaneGallery::onScroll);
+		instance.addEventFilter(ScrollEvent.SCROLL, GalleryPane::onScroll);
 	}
 	
 	private static EntityList tileEntities = new EntityList();
@@ -297,7 +297,7 @@ public class PaneGallery extends ScrollPane {
 	}
 	public static void moveViewportToTarget() {
 		Entity currentTarget = Select.getTarget();
-		if (!StageMain.getSceneMain().isViewGallery() || currentTarget == null) return;
+		if (!MainStage.getMainScene().isViewGallery() || currentTarget == null) return;
 		if (currentTarget.getCollectionID() != 0 && !EntityCollectionUtil.getOpenCollections().contains(currentTarget.getCollectionID())) {
 			currentTarget = currentTarget.getCollection().getFirst();
 		}
@@ -338,11 +338,11 @@ public class PaneGallery extends ScrollPane {
 		return tileEntities;
 	}
 	
-	private PaneGallery() {}
+	private GalleryPane() {}
 	private static class Loader {
-		private static final PaneGallery INSTANCE = new PaneGallery();
+		private static final GalleryPane INSTANCE = new GalleryPane();
 	}
-	public static PaneGallery getInstance() {
+	public static GalleryPane getInstance() {
 		return Loader.INSTANCE;
 	}
 }

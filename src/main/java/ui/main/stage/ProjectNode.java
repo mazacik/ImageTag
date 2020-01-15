@@ -59,17 +59,17 @@ public class ProjectNode extends BorderPane {
 				Node pickResult = event.getPickResult().getIntersectedNode().getParent();
 				
 				if (pickResult.equals(nodeEdit)) {
-					StageMain.getSceneProject().show(project);
+					MainStage.getProjectScene().show(project);
 				} else if (pickResult.equals(nodeRemove)) {
 					String message = "Delete project data? The source directory will not be affected";
 					if (ConfirmationStage.show(message)) {
 						FileUtil.deleteFile(project.getProjectFile());
 						FileUtil.deleteFile(FileUtil.getDirectoryCache(project.getProjectName()));
-						StageMain.getSceneIntro().getProjectBox().refresh();
+						MainStage.getIntroScene().getProjectBox().refresh();
 					}
 				} else {
 					if (new File(project.getDirectorySource()).exists()) {
-						StageMain.layoutMain();
+						MainStage.layoutMain();
 						Project.setCurrent(project);
 						Main.startDatabaseLoading();
 					} else {

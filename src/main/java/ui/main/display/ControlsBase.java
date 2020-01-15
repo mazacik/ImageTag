@@ -137,7 +137,7 @@ public class ControlsBase extends BorderPane {
 				Entity target = Select.getTarget();
 				File cacheFile = new File(FileUtil.getFileCache(target));
 				int thumbSize = Settings.getTileSize();
-				PaneDisplay.getInstance().getVideoPlayer().snapshot(cacheFile, thumbSize, thumbSize);
+				DisplayPane.getInstance().getVideoPlayer().snapshot(cacheFile, thumbSize, thumbSize);
 				
 				Image cache = CacheManager.get(target);
 				target.getTile().setImage(cache);
@@ -180,8 +180,8 @@ public class ControlsBase extends BorderPane {
 			this.setCenter(hBoxCenter);
 			this.setBottom(progressBar);
 		} else {
-			if (PaneDisplay.getInstance().getVideoPlayer() != null)
-				PaneDisplay.getInstance().getVideoPlayer().pause();
+			if (DisplayPane.getInstance().getVideoPlayer() != null)
+				DisplayPane.getInstance().getVideoPlayer().pause();
 			
 			this.setLeft(btnPrevious);
 			this.setRight(btnNext);

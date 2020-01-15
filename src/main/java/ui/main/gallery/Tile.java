@@ -22,7 +22,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import misc.Settings;
 import ui.custom.ClickMenu;
-import ui.main.stage.StageMain;
+import ui.main.stage.MainStage;
 
 public class Tile extends Pane {
 	public static final double HIGHLIGHT_PADDING = 10;
@@ -123,7 +123,7 @@ public class Tile extends Pane {
 							}
 							Select.setTarget(entity);
 						} else {
-							StageMain.getSceneMain().viewEntity();
+							MainStage.getMainScene().viewEntity();
 						}
 					}
 					

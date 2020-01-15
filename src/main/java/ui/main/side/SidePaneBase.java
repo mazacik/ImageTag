@@ -41,27 +41,20 @@ public abstract class SidePaneBase extends VBox {
 	
 	public boolean reload() {
 		tagNodesLevel0.clear();
-		
-		for (Tag tag : TagList.getMain()) {
-			getTagNode(tag);
-		}
+		TagList.getMain().forEach(this::createTagNode);
+		boxNodes.getChildren().setAll(tagNodesLevel0);
 		
 		CustomList<String> openNodes = new CustomList<>(this.openNodes);
 		this.openNodes.clear();
-		
-		CustomList<TagNode> tagNodes = new CustomList<>();
-		getTagNodes(tagNodes);
-		for (TagNode tagNode : tagNodes) {
+		for (TagNode tagNode : this.getTagNodesComplete()) {
 			if (openNodes.contains(tagNode.getStringValue())) {
 				tagNode.open();
 			}
 		}
 		
-		boxNodes.getChildren().setAll(tagNodesLevel0);
-		
 		return true;
 	}
-	private TagNode getTagNode(Tag tag) {
+	private TagNode createTagNode(Tag tag) {
 		for (TagNode tagNode : tagNodesLevel0) {
 			if (tagNode.getText().equals(tag.getLevel(0))) {
 				//child node found, repeat with next level
@@ -75,18 +68,15 @@ public abstract class SidePaneBase extends VBox {
 		return newNode.getSubNode(tag);
 	}
 	
-	protected CustomList<TagNode> getTagNodes() {
+	protected CustomList<TagNode> getTagNodesComplete() {
 		CustomList<TagNode> returnList = new CustomList<>();
-		getTagNodes(returnList);
+		getTagNodesRecursion(tagNodesLevel0, returnList);
 		return returnList;
 	}
-	private void getTagNodes(CustomList<TagNode> returnList) {
-		getTagNodes(tagNodesLevel0, returnList);
-	}
-	private void getTagNodes(CustomList<TagNode> subNodes, CustomList<TagNode> returnList) {
+	private void getTagNodesRecursion(CustomList<TagNode> subNodes, CustomList<TagNode> returnList) {
 		for (TagNode tagNode : subNodes) {
 			returnList.add(tagNode);
-			getTagNodes(tagNode.getSubNodesDirect(), returnList);
+			getTagNodesRecursion(tagNode.getSubNodesDirect(), returnList);
 		}
 	}
 	

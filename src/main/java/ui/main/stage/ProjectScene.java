@@ -20,7 +20,7 @@ import ui.override.VBox;
 
 import java.io.File;
 
-public class SceneProject extends Scene {
+public class ProjectScene extends Scene {
 	private final EditNode editProjectName;
 	private final EditNode editSourceDirectory;
 	private final TextNode nodeError;
@@ -28,7 +28,7 @@ public class SceneProject extends Scene {
 	
 	private Project project;
 	
-	public SceneProject() {
+	public ProjectScene() {
 		TextNode nodeProjectName = new TextNode("Project Name:");
 		nodeProjectName.setAlignment(Pos.CENTER_LEFT);
 		editProjectName = new EditNode();
@@ -60,7 +60,7 @@ public class SceneProject extends Scene {
 		TextNode btnFinish = new TextNode("Finish", true, true, true, true);
 		btnFinish.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> this.initProject());
 		TextNode btnCancel = new TextNode("Cancel", true, true, true, true);
-		btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> StageMain.getSceneIntro().show());
+		btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> MainStage.getIntroScene().show());
 		
 		VBox boxMain = new VBox(gridPane, nodeError, new HBox(btnCancel, btnFinish));
 		boxMain.setSpacing(5);
@@ -77,7 +77,7 @@ public class SceneProject extends Scene {
 			if (event.getCode() == KeyCode.ENTER) {
 				this.initProject();
 			} else if (event.getCode() == KeyCode.ESCAPE) {
-				StageMain.getSceneIntro().show();
+				MainStage.getIntroScene().show();
 			}
 		});
 		this.setRoot(vBox);
@@ -90,7 +90,7 @@ public class SceneProject extends Scene {
 		
 		titleBar.setTitle("Create a New Project");
 		
-		StageMain.getInstance().setScene(this);
+		MainStage.getInstance().setScene(this);
 	}
 	public void show(Project project) {
 		this.project = project;
@@ -101,7 +101,7 @@ public class SceneProject extends Scene {
 		
 		titleBar.setTitle("Edit Project");
 		
-		StageMain.getInstance().setScene(this);
+		MainStage.getInstance().setScene(this);
 	}
 	
 	private void initProject() {
@@ -109,14 +109,14 @@ public class SceneProject extends Scene {
 			if (project == null) {
 				Project newProject = new Project(editProjectName.getText(), editSourceDirectory.getText());
 				newProject.writeToDisk();
-				StageMain.layoutMain();
+				MainStage.layoutMain();
 				Project.setCurrent(newProject);
 				Main.startDatabaseLoading();
 			} else {
 				project.updateProject(editProjectName.getText(), editSourceDirectory.getText());
 				
-				StageMain.getSceneIntro().getProjectBox().refresh();
-				StageMain.getSceneIntro().show();
+				MainStage.getIntroScene().getProjectBox().refresh();
+				MainStage.getIntroScene().show();
 			}
 		}
 	}

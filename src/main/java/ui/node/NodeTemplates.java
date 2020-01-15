@@ -19,7 +19,7 @@ import misc.HttpUtil;
 import misc.Project;
 import ui.custom.ClickMenu;
 import ui.main.side.TagNode;
-import ui.main.stage.StageMain;
+import ui.main.stage.MainStage;
 import ui.stage.ConfirmationStage;
 import ui.stage.SimpleMessageStage;
 import ui.stage.TagEditStage;
@@ -126,7 +126,7 @@ public enum NodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClickMenu.hideAll();
 				
-				StageMain.getSceneMain().viewGallery();
+				MainStage.getMainScene().viewGallery();
 				Filter.showSimilar(Select.getTarget());
 				Reload.start();
 			});
@@ -180,12 +180,12 @@ public enum NodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClickMenu.hideAll();
 				
-				String before = ClickMenu.getTagNode().getStringValue();
+				String stringBefore = ClickMenu.getTagNode().getStringValue();
 				int countBefore = ClickMenu.getTagNode().getLevel() + 1;
-				CustomList<String> levels = TagEditStage.show(ClickMenu.getTagNode().getLevels());
+				CustomList<String> levelsAfter = TagEditStage.show(ClickMenu.getTagNode().getLevels());
 				
-				if (levels != null) {
-					TagList.getMain().getTagsContaining(before).forEach(tag -> tag.replaceLevelsFromStart(countBefore, levels));
+				if (levelsAfter != null) {
+					TagList.getMain().getTagsContaining(stringBefore).forEach(tag -> tag.replaceLevelsFromStart(countBefore, levelsAfter));
 					TagList.getMain().sort();
 					
 					Reload.notify(Notifier.TAG_LIST_MAIN);
@@ -203,10 +203,10 @@ public enum NodeTemplates {
 				ClickMenu.hideAll();
 				
 				TagNode tagNode = ClickMenu.getTagNode();
-				if (ConfirmationStage.show("Remove \"" + tagNode.getStringValueSeparate() + "\" ?")) {
+				if (ConfirmationStage.show("Remove \"" + tagNode.getText() + "\" ?")) {
 					TagList tagList = TagList.getMain().getTagsContaining(tagNode.getStringValue());
 					
-					tagNode.getSubNodes().forEach(subNode -> Filter.getListManager().unlist(subNode));
+					tagNode.getSubNodesComplete().forEach(subNode -> Filter.getListManager().unlist(subNode));
 					EntityList.getMain().forEach(entity -> entity.removeTag(tagList));
 					TagList.getMain().removeAll(tagList);
 					
@@ -292,7 +292,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Exit", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
-			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> StageMain.getInstance().fireEvent(new WindowEvent(null, WindowEvent.WINDOW_CLOSE_REQUEST)));
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> MainStage.getInstance().fireEvent(new WindowEvent(null, WindowEvent.WINDOW_CLOSE_REQUEST)));
 			return textNode;
 		}
 	},

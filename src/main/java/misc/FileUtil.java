@@ -13,7 +13,7 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.DirectoryChooser;
 import main.Main;
-import ui.main.stage.StageMain;
+import ui.main.stage.MainStage;
 import ui.stage.ConfirmationStage;
 import ui.stage.SimpleMessageStage;
 
@@ -99,7 +99,7 @@ public abstract class FileUtil {
 		DirectoryChooser directoryChooser = new DirectoryChooser();
 		directoryChooser.setTitle("Select a directory to import");
 		directoryChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-		File directory = directoryChooser.showDialog(StageMain.getInstance());
+		File directory = directoryChooser.showDialog(MainStage.getInstance());
 		
 		if (directory != null && directory.isDirectory()) {
 			if (importThread == null || !importThread.isAlive()) {

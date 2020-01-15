@@ -6,31 +6,31 @@ import javafx.stage.StageStyle;
 import main.Main;
 import misc.Settings;
 import ui.decorator.Decorator;
-import ui.main.display.PaneDisplay;
-import ui.main.gallery.PaneGallery;
-import ui.main.side.PaneFilter;
-import ui.main.side.PaneSelect;
+import ui.main.display.DisplayPane;
+import ui.main.gallery.GalleryPane;
+import ui.main.side.FilterPane;
+import ui.main.side.SelectPane;
 import ui.main.side.SidePaneBase;
-import ui.main.top.PaneToolbar;
+import ui.main.top.ToolbarPane;
 
 import java.awt.*;
 
-public class StageMain extends Stage {
-	private static SceneIntro sceneIntro;
-	private static SceneProject sceneProject;
-	private static SceneMain sceneMain;
+public class MainStage extends Stage {
+	private static IntroScene introScene;
+	private static ProjectScene projectScene;
+	private static MainScene mainScene;
 	
 	public static void layoutIntro() {
 		setVisible(false);
 		
-		sceneIntro = new SceneIntro();
-		sceneProject = new SceneProject();
+		introScene = new IntroScene();
+		projectScene = new ProjectScene();
 		
 		Rectangle usableScreenBounds = Decorator.getUsableScreenBounds();
 		double width = usableScreenBounds.getWidth() / 2;
 		double height = usableScreenBounds.getHeight() / 2;
 		
-		getInstance().setScene(sceneIntro);
+		getInstance().setScene(introScene);
 		getInstance().setWidth(width);
 		getInstance().setHeight(height);
 		getInstance().setMinWidth(width);
@@ -38,24 +38,24 @@ public class StageMain extends Stage {
 		getInstance().setOnCloseRequest(event -> Settings.writeToDisk());
 		getInstance().centerOnScreen();
 		
-		sceneIntro.getRoot().requestFocus();
+		introScene.getRoot().requestFocus();
 		
 		setVisible(true);
 	}
 	public static void layoutMain() {
 		setVisible(false);
 		
-		sceneMain = new SceneMain();
+		mainScene = new MainScene();
 		
-		Decorator.setScrollbarStyle(PaneGallery.getInstance());
-		Decorator.setScrollbarStyle(PaneFilter.getInstance().getScrollPane());
-		Decorator.setScrollbarStyle(PaneSelect.getInstance().getScrollPane());
+		Decorator.setScrollbarStyle(GalleryPane.getInstance());
+		Decorator.setScrollbarStyle(FilterPane.getInstance().getScrollPane());
+		Decorator.setScrollbarStyle(SelectPane.getInstance().getScrollPane());
 		
-		getInstance().setScene(sceneMain);
+		getInstance().setScene(mainScene);
 		getInstance().getScene().widthProperty().addListener((observable, oldValue, newValue) -> onStageWidthChange());
 		
 		getInstance().setMinWidth(100 + SidePaneBase.MIN_WIDTH_SIDELISTS * 2 + Settings.getTileSize());
-		getInstance().setMinHeight(100 + PaneToolbar.PREF_HEIGHT + Settings.getTileSize());
+		getInstance().setMinHeight(100 + ToolbarPane.PREF_HEIGHT + Settings.getTileSize());
 		getInstance().setWidth(Decorator.getUsableScreenWidth());
 		getInstance().setHeight(Decorator.getUsableScreenHeight());
 		
@@ -63,21 +63,21 @@ public class StageMain extends Stage {
 		getInstance().setOnCloseRequest(event -> Main.exitApplication());
 		getInstance().focusedProperty().addListener((observable, oldValue, newValue) -> {
 			if (!newValue) {
-				PaneDisplay.getInstance().getControls().hide();
+				DisplayPane.getInstance().getControls().hide();
 			}
 		});
 		
-		sceneMain.getRoot().requestFocus();
+		mainScene.getRoot().requestFocus();
 		
 		setVisible(true);
 	}
 	
 	private static void onStageWidthChange() {
-		PaneGallery paneGallery = PaneGallery.getInstance();
-		TilePane tiles = PaneGallery.getTilePane();
+		GalleryPane galleryPane = GalleryPane.getInstance();
+		TilePane tiles = GalleryPane.getTilePane();
 		
 		double galleryTileSize = tiles.getPrefTileWidth();
-		double sceneWidth = StageMain.getInstance().getScene().getWidth();
+		double sceneWidth = MainStage.getInstance().getScene().getWidth();
 		
 		double width = 0;
 		double availableWidth = sceneWidth - 2 * SidePaneBase.MIN_WIDTH_SIDELISTS;
@@ -91,8 +91,8 @@ public class StageMain extends Stage {
 		if (prefColumnsNew != prefColumnsOld) {
 			tiles.setPrefColumns(prefColumnsNew);
 			
-			paneGallery.setMinViewportWidth(width);
-			paneGallery.setPrefViewportWidth(width);
+			galleryPane.setMinViewportWidth(width);
+			galleryPane.setPrefViewportWidth(width);
 		}
 	}
 	private static void setVisible(boolean value) {
@@ -103,24 +103,24 @@ public class StageMain extends Stage {
 		}
 	}
 	
-	public static SceneIntro getSceneIntro() {
-		return sceneIntro;
+	public static IntroScene getIntroScene() {
+		return introScene;
 	}
-	public static SceneProject getSceneProject() {
-		return sceneProject;
+	public static ProjectScene getProjectScene() {
+		return projectScene;
 	}
-	public static SceneMain getSceneMain() {
-		return sceneMain;
+	public static MainScene getMainScene() {
+		return mainScene;
 	}
 	
-	private StageMain() {
+	private MainStage() {
 		this.initStyle(StageStyle.UNDECORATED);
 		this.show();
 	}
 	private static class Loader {
-		private static final StageMain INSTANCE = new StageMain();
+		private static final MainStage INSTANCE = new MainStage();
 	}
-	public static StageMain getInstance() {
+	public static MainStage getInstance() {
 		return Loader.INSTANCE;
 	}
 }

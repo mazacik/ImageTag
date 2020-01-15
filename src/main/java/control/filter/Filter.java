@@ -13,9 +13,8 @@ public class Filter extends EntityList {
 	private static final EntityList newEntities = new EntityList();
 	
 	public static void reset() {
-		listManager.getWhitelist().clear();
-		listManager.getBlacklist().clear();
-		Reload.notify(Notifier.FILTER_NEEDS_REFRESH, Notifier.TAG_LIST_MAIN);
+		listManager.unlistAll();
+		Reload.notify(Notifier.TAG_LIST_MAIN);
 	}
 	public static void refresh() {
 		getEntities().clear();
@@ -54,9 +53,9 @@ public class Filter extends EntityList {
 	}
 	
 	public static void showSimilar(Entity entity) {
-		listManager.getWhitelist().clear();
-		listManager.getBlacklist().clear();
-		Loader.INSTANCE.clear();
+		listManager.unlistAll();
+		listManager.unlistAll();
+		getEntities().clear();
 		
 		CustomList<Integer> query = entity.getTagIDs();
 		for (Entity iterator : EntityList.getMain()) {
@@ -67,7 +66,7 @@ public class Filter extends EntityList {
 				if (!sameTags.isEmpty()) {
 					double similarity = (double) sameTags.size() / (double) query.size();
 					if (similarity >= settings.getSimilarityFactor()) {
-						Loader.INSTANCE.add(iterator);
+						getEntities().add(iterator);
 					}
 				}
 			}

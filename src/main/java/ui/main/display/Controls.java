@@ -10,7 +10,7 @@ public class Controls extends Popup {
 	private final ControlsBase controlsBase;
 	private final PauseTransition autoHideDelay;
 	
-	public Controls(PaneDisplay entityPane, VideoPlayer videoPlayer) {
+	public Controls(DisplayPane entityPane, VideoPlayer videoPlayer) {
 		controlsBase = new ControlsBase(videoPlayer);
 		autoHideDelay = new PauseTransition(new Duration(1000));
 		

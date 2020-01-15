@@ -14,11 +14,11 @@ import javafx.stage.Stage;
 import misc.FileUtil;
 import misc.Project;
 import misc.Settings;
-import ui.main.display.PaneDisplay;
-import ui.main.side.PaneFilter;
-import ui.main.side.PaneSelect;
-import ui.main.stage.StageMain;
-import ui.main.top.PaneToolbar;
+import ui.main.display.DisplayPane;
+import ui.main.side.FilterPane;
+import ui.main.side.SelectPane;
+import ui.main.stage.MainStage;
+import ui.main.top.ToolbarPane;
 
 import java.io.File;
 
@@ -34,16 +34,16 @@ public class Main extends Application {
 	public void start(Stage stage) {
 		System.setProperty("java.util.logging.SimpleFormatter.format", "[%4$-7s] %5$s%n");
 		
-		PaneToolbar.getInstance().init();
-		PaneDisplay.getInstance().init();
-		PaneFilter.getInstance().init();
-		PaneSelect.getInstance().init();
+		ToolbarPane.getInstance().init();
+		DisplayPane.getInstance().init();
+		FilterPane.getInstance().init();
+		SelectPane.getInstance().init();
 		
 		if (!DEBUG_MAIN_QUICKSTART || FileUtil.getProjectFiles().isEmpty()) {
-			StageMain.layoutIntro();
+			MainStage.layoutIntro();
 		} else {
 			CustomList<Project> projects = FileUtil.getProjects();
-			StageMain.layoutMain();
+			MainStage.layoutMain();
 			
 			projects.sort(Project.getComparator());
 			Project.setCurrent(projects.getFirst());
@@ -161,8 +161,8 @@ public class Main extends Application {
 		CacheManager.stopCacheThread();
 		FileUtil.stopImportThread();
 		
-		PaneDisplay.getInstance().disposeVideoPlayer();
-		PaneDisplay.getInstance().getControls().hide();
+		DisplayPane.getInstance().disposeVideoPlayer();
+		DisplayPane.getInstance().getControls().hide();
 		
 		Project.getCurrent().writeToDisk();
 		Settings.writeToDisk();

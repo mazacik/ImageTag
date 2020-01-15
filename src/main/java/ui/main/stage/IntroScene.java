@@ -24,17 +24,17 @@ import ui.override.VBox;
 
 import java.io.File;
 
-public class SceneIntro extends Scene {
+public class IntroScene extends Scene {
 	private ProjectBox projectBox = new ProjectBox();
 	
-	public SceneIntro() {
+	public IntroScene() {
 		TextNode applicationNameNode = new TextNode("Tagallery", false, false, false, true);
 		applicationNameNode.setFont(new Font(48));
 		applicationNameNode.setPadding(new Insets(-20, 0, 20, 0));
 		
 		TextNode btnNewProject = new TextNode("Create a New Project", true, false, true, true);
 		btnNewProject.setMaxWidth(Double.MAX_VALUE);
-		btnNewProject.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> StageMain.getSceneProject().show());
+		btnNewProject.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> MainStage.getProjectScene().show());
 		
 		TextNode btnOpenProject = new TextNode("Open Project", true, false, true, true);
 		btnOpenProject.setMaxWidth(Double.MAX_VALUE);
@@ -42,9 +42,9 @@ public class SceneIntro extends Scene {
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.setTitle("Open Project");
 			fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-			File file = fileChooser.showOpenDialog(StageMain.getInstance());
+			File file = fileChooser.showOpenDialog(MainStage.getInstance());
 			if (file != null) {
-				StageMain.layoutMain();
+				MainStage.layoutMain();
 				Project.setCurrent(Project.readFromDisk(file.getAbsolutePath()));
 				Main.startDatabaseLoading();
 			}
@@ -84,12 +84,12 @@ public class SceneIntro extends Scene {
 				case ENTER:
 					CustomList<Project> projects = FileUtil.getProjects();
 					if (!projects.isEmpty()) {
-						StageMain.layoutMain();
+						MainStage.layoutMain();
 						projects.sort(Project.getComparator());
 						Project.setCurrent(projects.getFirst());
 						Main.startDatabaseLoading();
 					} else {
-						StageMain.getSceneProject().show();
+						MainStage.getProjectScene().show();
 					}
 					break;
 				default:
@@ -100,7 +100,7 @@ public class SceneIntro extends Scene {
 	}
 	
 	public void show() {
-		StageMain.getInstance().setScene(this);
+		MainStage.getInstance().setScene(this);
 	}
 	
 	public ProjectBox getProjectBox() {

@@ -10,19 +10,19 @@ import javafx.scene.layout.BorderPane;
 import ui.custom.ClickMenu;
 import ui.custom.TitleBar;
 import ui.decorator.Decorator;
-import ui.main.stage.StageMain;
+import ui.main.stage.MainStage;
 import ui.node.BoxSeparator;
 import ui.node.NodeTemplates;
 import ui.node.TextNode;
 import ui.override.HBox;
 
-public class PaneToolbar extends BorderPane {
+public class ToolbarPane extends BorderPane {
 	public static final double PREF_HEIGHT = 30;
 	
 	private TextNode nodeTarget;
 	
 	public void init() {
-		TitleBar titleBar = new TitleBar(StageMain.getInstance());
+		TitleBar titleBar = new TitleBar(MainStage.getInstance());
 		
 		TextNode nodeFile = new TextNode("File", true, true, false, true);
 		TextNode nodeSave = NodeTemplates.APPLICATION_SAVE.get();
@@ -59,11 +59,11 @@ public class PaneToolbar extends BorderPane {
 		return true;
 	}
 	
-	private PaneToolbar() {super();}
+	private ToolbarPane() {super();}
 	private static class Loader {
-		private static final PaneToolbar INSTANCE = new PaneToolbar();
+		private static final ToolbarPane INSTANCE = new ToolbarPane();
 	}
-	public static PaneToolbar getInstance() {
+	public static ToolbarPane getInstance() {
 		return Loader.INSTANCE;
 	}
 }

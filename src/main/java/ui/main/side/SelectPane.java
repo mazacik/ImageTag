@@ -11,7 +11,7 @@ import ui.node.EditNode;
 import ui.node.NodeTemplates;
 import ui.node.TextNode;
 
-public class PaneSelect extends SidePaneBase {
+public class SelectPane extends SidePaneBase {
 	private EditNode nodeSearch;
 	
 	public void init() {
@@ -45,7 +45,7 @@ public class PaneSelect extends SidePaneBase {
 		CustomList<String> stringListUnion = new CustomList<>();
 		Select.getEntities().getTagList().forEach(tag -> stringListUnion.add(tag.getStringValue()));
 		
-		getTagNodes().forEach(tagNode -> refreshNodeColor(tagNode, stringListIntersect, stringListUnion));
+		getTagNodesComplete().forEach(tagNode -> refreshNodeColor(tagNode, stringListIntersect, stringListUnion));
 		
 		return true;
 	}
@@ -79,6 +79,7 @@ public class PaneSelect extends SidePaneBase {
 		nodeTitle.setText(text);
 	}
 	
+	//todo implement me
 	//	private Tag bestMatch = null;
 	//	private TextNode previousMatchNameNode = null;
 	//	//private GroupNode previousMatchGroupNode = null;
@@ -169,11 +170,11 @@ public class PaneSelect extends SidePaneBase {
 	//		return bestMatch;
 	//	}
 	
-	private PaneSelect() {}
+	private SelectPane() {}
 	private static class Loader {
-		private static final PaneSelect INSTANCE = new PaneSelect();
+		private static final SelectPane INSTANCE = new SelectPane();
 	}
-	public static PaneSelect getInstance() {
+	public static SelectPane getInstance() {
 		return Loader.INSTANCE;
 	}
 	

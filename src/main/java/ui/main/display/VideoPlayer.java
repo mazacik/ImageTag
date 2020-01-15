@@ -64,27 +64,27 @@ public class VideoPlayer {
 			@Override
 			public void timeChanged(MediaPlayer mediaPlayer, long newTime) {
 				super.timeChanged(mediaPlayer, newTime);
-				PaneDisplay.getInstance().getControls().setTimeCurrent(newTime);
+				DisplayPane.getInstance().getControls().setTimeCurrent(newTime);
 			}
 			@Override
 			public void positionChanged(MediaPlayer mediaPlayer, float newPosition) {
 				super.positionChanged(mediaPlayer, newPosition);
-				PaneDisplay.getInstance().getControls().setVideoProgress(newPosition);
+				DisplayPane.getInstance().getControls().setVideoProgress(newPosition);
 			}
 			@Override
 			public void lengthChanged(MediaPlayer mediaPlayer, long newLength) {
 				super.lengthChanged(mediaPlayer, newLength);
-				PaneDisplay.getInstance().getControls().setTimeTotal(newLength);
+				DisplayPane.getInstance().getControls().setTimeTotal(newLength);
 			}
 			@Override
 			public void opening(MediaPlayer mediaPlayer) {
 				super.opening(mediaPlayer);
-				PaneDisplay.getInstance().getControls().setVideoProgress(0);
+				DisplayPane.getInstance().getControls().setVideoProgress(0);
 			}
 			@Override
 			public void finished(MediaPlayer mediaPlayer) {
 				super.finished(mediaPlayer);
-				PaneDisplay.getInstance().getControls().setVideoProgress(1);
+				DisplayPane.getInstance().getControls().setVideoProgress(1);
 			}
 		});
 	}

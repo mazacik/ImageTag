@@ -14,7 +14,7 @@ import ui.override.HBox;
 import ui.stage.TagEditStage;
 import ui.stage.FilterOptionStage;
 
-public class PaneFilter extends SidePaneBase {
+public class FilterPane extends SidePaneBase {
 	public void init() {
 		TextNode btnCreateNewTag = new TextNode("Create a New Tag", true, true, false, true);
 		btnCreateNewTag.setBorder(Decorator.getBorder(0, 0, 1, 0));
@@ -53,11 +53,11 @@ public class PaneFilter extends SidePaneBase {
 		return true;
 	}
 	
-	private PaneFilter() {}
+	private FilterPane() {}
 	private static class Loader {
-		private static final PaneFilter INSTANCE = new PaneFilter();
+		private static final FilterPane INSTANCE = new FilterPane();
 	}
-	public static PaneFilter getInstance() {
+	public static FilterPane getInstance() {
 		return Loader.INSTANCE;
 	}
 }

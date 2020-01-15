@@ -14,7 +14,7 @@ import javafx.stage.Popup;
 import javafx.stage.WindowEvent;
 import ui.decorator.Decorator;
 import ui.main.side.TagNode;
-import ui.main.stage.StageMain;
+import ui.main.stage.MainStage;
 import ui.node.BoxSeparator;
 import ui.node.NodeTemplates;
 import ui.override.VBox;
@@ -193,19 +193,19 @@ public class ClickMenu extends Popup {
 				x = rootBounds.getMinX();
 				y = rootBounds.getMinY();
 				if (root.getBorder() != null) y -= root.getBorder().getInsets().getBottom();
-				this.show(StageMain.getInstance(), x, y);
+				this.show(MainStage.getInstance(), x, y);
 				this.setAnchorX(this.getAnchorX() - this.getWidth());
 				break;
 			case RIGHT:
 				x = rootBounds.getMaxX();
 				y = rootBounds.getMinY();
 				if (root.getBorder() != null) y -= root.getBorder().getInsets().getBottom();
-				this.show(StageMain.getInstance(), x, y);
+				this.show(MainStage.getInstance(), x, y);
 				break;
 			case DOWN:
 				x = rootBounds.getMinX();
 				y = rootBounds.getMaxY();
-				this.show(StageMain.getInstance(), x, y);
+				this.show(MainStage.getInstance(), x, y);
 				break;
 		}
 	}
