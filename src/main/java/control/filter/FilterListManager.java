@@ -10,10 +10,6 @@ public class FilterListManager {
 	private final CustomList<TagNode> whitelist = new CustomList<>();
 	private final CustomList<TagNode> blacklist = new CustomList<>();
 	
-	public FilterListManager() {
-	
-	}
-	
 	public boolean applyLists(Entity entity) {
 		CustomList<String> stringValues = new CustomList<>();
 		entity.getTagList().forEach(tag -> stringValues.add(tag.getStringValue()));
@@ -41,7 +37,7 @@ public class FilterListManager {
 		for (String stringValue : stringValues) {
 			for (TagNode whiteTagNode : whitelist) {
 				if (stringValue.contains(whiteTagNode.getStringValue())) {
-					if (whiteTagNode.getLevel() > deepestMatch) {
+					if (whiteTagNode.getLevel() >= deepestMatch) {
 						deepestMatch = whiteTagNode.getLevel();
 						ok = true;
 					}
