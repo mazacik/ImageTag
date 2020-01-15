@@ -13,27 +13,19 @@ import javafx.scene.layout.Region;
 import javafx.stage.Popup;
 import javafx.stage.WindowEvent;
 import ui.decorator.Decorator;
-import ui.main.stage.StageMain;
-import ui.node.NodeBoxSeparator;
+import ui.main.side.TagNode;
+import ui.main.stage.MainStage;
+import ui.node.BoxSeparator;
 import ui.node.NodeTemplates;
 import ui.override.VBox;
 
 public class ClickMenu extends Popup {
-	private static String name;
-	private static String group;
-	
-	public static String getName() {
-		return name;
+	private static TagNode tagNode;
+	public static TagNode getTagNode() {
+		return tagNode;
 	}
-	public static String getGroup() {
-		return group;
-	}
-	
-	public static void setName(String name) {
-		ClickMenu.name = name;
-	}
-	public static void setGroup(String group) {
-		ClickMenu.group = group;
+	public static void setTagNode(TagNode tagNode) {
+		ClickMenu.tagNode = tagNode;
 	}
 	
 	protected static final CustomList<ClickMenu> instanceList = new CustomList<>();
@@ -47,13 +39,13 @@ public class ClickMenu extends Popup {
 		list.add(NodeTemplates.ENTITY_EDIT_PAINT.get());
 		list.add(NodeTemplates.FILTER_SIMILAR.get());
 		list.add(NodeTemplates.ENTITY_REVERSE_IMAGE_SEARCH.get());
-		list.add(new NodeBoxSeparator());
+		list.add(new BoxSeparator());
 		list.add(NodeTemplates.ENTITY_COPY_NAME.get());
 		list.add(NodeTemplates.ENTITY_COPY_PATH.get());
-		list.add(new NodeBoxSeparator());
+		list.add(new BoxSeparator());
 		list.add(NodeTemplates.SELECTION_DELETE.get());
 		if (Select.getEntities().size() > 1) {
-			list.add(new NodeBoxSeparator());
+			list.add(new BoxSeparator());
 			if (EntityCollectionUtil.isCollection(Select.getEntities())) {
 				list.add(NodeTemplates.COLLECTION_DISCARD.get());
 			} else {
@@ -74,8 +66,7 @@ public class ClickMenu extends Popup {
 			super.show(root, direction);
 		}
 	};
-	private static ClickMenu clickMenuTagGroup = new ClickMenu(NodeTemplates.TAG_GROUP_WHITELIST.get(), NodeTemplates.TAG_GROUP_BLACKLIST.get(), NodeTemplates.TAG_GROUP_UNLIST.get(), new NodeBoxSeparator(), NodeTemplates.TAG_GROUP_EDIT.get(), NodeTemplates.TAG_GROUP_REMOVE.get());
-	private static ClickMenu clickMenuTagName = new ClickMenu(NodeTemplates.TAG_NAME_EDIT.get(), NodeTemplates.TAG_NAME_REMOVE.get());
+	private static ClickMenu clickMenuTag = new ClickMenu(NodeTemplates.TAG_EDIT.get(), NodeTemplates.TAG_REMOVE.get());
 	private static ClickMenu clickMenuSelect = new ClickMenu(NodeTemplates.SELECTION_SET_ALL.get(), NodeTemplates.SELECTION_SET_NONE.get());
 	
 	public static void install(Region root, Direction direction, Region... children) {
@@ -90,17 +81,10 @@ public class ClickMenu extends Popup {
 					}
 				});
 				break;
-			case TAG_GROUP:
+			case TAG:
 				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 					if (event.getButton() == mouseButton && event.getSource() == root) {
-						clickMenuTagGroup.show(root, direction);
-					}
-				});
-				break;
-			case TAG_NAME:
-				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-					if (event.getButton() == mouseButton && event.getSource() == root) {
-						clickMenuTagName.show(root, direction);
+						clickMenuTag.show(root, direction);
 					}
 				});
 				break;
@@ -122,17 +106,10 @@ public class ClickMenu extends Popup {
 					}
 				});
 				break;
-			case TAG_GROUP:
+			case TAG:
 				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 					if (event.getButton() == mouseButton && event.getSource() == root) {
-						clickMenuTagGroup.show(root, event);
-					}
-				});
-				break;
-			case TAG_NAME:
-				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-					if (event.getButton() == mouseButton && event.getSource() == root) {
-						clickMenuTagName.show(root, event);
+						clickMenuTag.show(root, event);
 					}
 				});
 				break;
@@ -204,7 +181,7 @@ public class ClickMenu extends Popup {
 		instanceList.add(this);
 	}
 	
-	public void show(Region root, Direction direction) {
+	protected void show(Region root, Direction direction) {
 		hideAll();
 		
 		double x;
@@ -216,23 +193,23 @@ public class ClickMenu extends Popup {
 				x = rootBounds.getMinX();
 				y = rootBounds.getMinY();
 				if (root.getBorder() != null) y -= root.getBorder().getInsets().getBottom();
-				this.show(StageMain.getInstance(), x, y);
+				this.show(MainStage.getInstance(), x, y);
 				this.setAnchorX(this.getAnchorX() - this.getWidth());
 				break;
 			case RIGHT:
 				x = rootBounds.getMaxX();
 				y = rootBounds.getMinY();
 				if (root.getBorder() != null) y -= root.getBorder().getInsets().getBottom();
-				this.show(StageMain.getInstance(), x, y);
+				this.show(MainStage.getInstance(), x, y);
 				break;
 			case DOWN:
 				x = rootBounds.getMinX();
 				y = rootBounds.getMaxY();
-				this.show(StageMain.getInstance(), x, y);
+				this.show(MainStage.getInstance(), x, y);
 				break;
 		}
 	}
-	public void show(Node anchor, MouseEvent event) {
+	protected void show(Node anchor, MouseEvent event) {
 		hideAll();
 		super.show(anchor, event.getScreenX(), event.getScreenY());
 	}
@@ -243,11 +220,8 @@ public class ClickMenu extends Popup {
 				case ENTITY:
 					clickMenuData.show(anchor, event.getScreenX(), event.getScreenY());
 					break;
-				case TAG_GROUP:
-					clickMenuTagGroup.show(anchor, event.getScreenX(), event.getScreenY());
-					break;
-				case TAG_NAME:
-					clickMenuTagName.show(anchor, event.getScreenX(), event.getScreenY());
+				case TAG:
+					clickMenuTag.show(anchor, event.getScreenX(), event.getScreenY());
 					break;
 				case SELECT:
 					clickMenuSelect.show(anchor, event.getScreenX(), event.getScreenY());
@@ -258,8 +232,7 @@ public class ClickMenu extends Popup {
 	
 	public enum StaticInstance {
 		ENTITY,
-		TAG_GROUP,
-		TAG_NAME,
+		TAG,
 		SELECT,
 		;
 	}

@@ -1,8 +1,8 @@
 package ui.node;
 
+import base.CustomList;
 import base.entity.EntityCollectionUtil;
 import base.entity.EntityList;
-import base.tag.Tag;
 import base.tag.TagList;
 import cache.CacheManager;
 import control.Select;
@@ -17,15 +17,12 @@ import javafx.stage.WindowEvent;
 import misc.FileUtil;
 import misc.HttpUtil;
 import misc.Project;
-import org.apache.commons.text.WordUtils;
 import ui.custom.ClickMenu;
-import ui.main.side.PaneFilter;
-import ui.main.side.PaneSelect;
-import ui.main.stage.StageMain;
-import ui.stage.StageConfirmation;
-import ui.stage.StageEditGroup;
-import ui.stage.StageEditTag;
-import ui.stage.StageSimpleMessage;
+import ui.main.side.TagNode;
+import ui.main.stage.MainStage;
+import ui.stage.ConfirmationStage;
+import ui.stage.SimpleMessageStage;
+import ui.stage.TagEditStage;
 
 import java.awt.*;
 import java.io.File;
@@ -33,10 +30,10 @@ import java.io.IOException;
 
 public enum NodeTemplates {
 	ENTITY_OPEN_FILE {
-		public NodeText get() {
-			NodeText nodeText = new NodeText("Open File", true, true, false, true);
-			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Open File", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClickMenu.hideAll();
 				
 				try {
@@ -45,14 +42,14 @@ public enum NodeTemplates {
 					e.printStackTrace();
 				}
 			});
-			return nodeText;
+			return textNode;
 		}
 	},
 	ENTITY_SHOW_EXPLORER {
-		public NodeText get() {
-			NodeText nodeText = new NodeText("Show in Explorer", true, true, false, true);
-			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Show in Explorer", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClickMenu.hideAll();
 				
 				try {
@@ -61,14 +58,14 @@ public enum NodeTemplates {
 					e.printStackTrace();
 				}
 			});
-			return nodeText;
+			return textNode;
 		}
 	},
 	ENTITY_EDIT_PAINT {
-		public NodeText get() {
-			NodeText nodeText = new NodeText("Edit in Paint", true, true, false, true);
-			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Edit in Paint", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClickMenu.hideAll();
 				
 				try {
@@ -77,276 +74,182 @@ public enum NodeTemplates {
 					e.printStackTrace();
 				}
 			});
-			return nodeText;
+			return textNode;
 		}
 	},
 	ENTITY_COPY_NAME {
-		public NodeText get() {
-			NodeText nodeText = new NodeText("Copy File Name", true, true, false, true);
-			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Copy File Name", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClickMenu.hideAll();
 				
 				ClipboardContent content = new ClipboardContent();
 				content.putString(FileUtil.getFileEntity(Select.getTarget()));
 				Clipboard.getSystemClipboard().setContent(content);
 			});
-			return nodeText;
+			return textNode;
 		}
 	},
 	ENTITY_COPY_PATH {
-		public NodeText get() {
-			NodeText nodeText = new NodeText("Copy File Path", true, true, false, true);
-			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Copy File Path", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClickMenu.hideAll();
 				
 				ClipboardContent content = new ClipboardContent();
 				content.putString(FileUtil.getFileEntity(Select.getTarget()));
 				Clipboard.getSystemClipboard().setContent(content);
 			});
-			return nodeText;
+			return textNode;
 		}
 	},
 	ENTITY_REVERSE_IMAGE_SEARCH {
-		public NodeText get() {
-			NodeText nodeText = new NodeText("Reverse Image Search", true, true, false, true);
-			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Reverse Image Search", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClickMenu.hideAll();
 				
 				HttpUtil.googleReverseImageSearch(Select.getTarget());
-				StageSimpleMessage.show("Info", "Request Sent.");
+				SimpleMessageStage.show("Info", "Request Sent.");
 			});
-			return nodeText;
+			return textNode;
 		}
 	},
 	
 	FILTER_SIMILAR {
-		public NodeText get() {
-			NodeText nodeText = new NodeText("Show Similar Files", true, true, false, true);
-			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Show Similar Files", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClickMenu.hideAll();
 				
-				StageMain.getSceneMain().viewGallery();
+				MainStage.getMainScene().viewGallery();
 				Filter.showSimilar(Select.getTarget());
 				Reload.start();
 			});
-			return nodeText;
+			return textNode;
 		}
 	},
 	
 	SELECTION_SET_ALL {
-		public NodeText get() {
-			NodeText nodeText = new NodeText("Select All", true, true, false, true);
-			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Select All", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClickMenu.hideAll();
 				
 				Select.getEntities().setAll(Filter.getEntities());
 				Reload.start();
 			});
-			return nodeText;
+			return textNode;
 		}
 	},
 	SELECTION_SET_NONE {
-		public NodeText get() {
-			NodeText nodeText = new NodeText("Select None", true, true, false, true);
-			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Select None", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClickMenu.hideAll();
 				
 				Select.getEntities().clear();
 				Reload.start();
 			});
-			return nodeText;
+			return textNode;
 		}
 	},
 	SELECTION_DELETE {
-		public NodeText get() {
-			NodeText nodeText = new NodeText("Delete Selection", true, true, false, true);
-			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Delete Selection", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClickMenu.hideAll();
 				
 				Select.getEntities().deleteFiles();
 			});
-			return nodeText;
+			return textNode;
 		}
 	},
 	
-	TAG_GROUP_EDIT {
-		public NodeText get() {
-			NodeText nodeText = new NodeText("Edit Tag Group", true, true, false, true);
-			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+	TAG_EDIT {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Edit Tag", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClickMenu.hideAll();
 				
-				String groupBefore = ClickMenu.getGroup();
-				String groupAfter = WordUtils.capitalize(StageEditGroup.show(groupBefore).toLowerCase());
+				String stringBefore = ClickMenu.getTagNode().getStringValue();
+				int countBefore = ClickMenu.getTagNode().getLevel() + 1;
+				CustomList<String> levelsAfter = TagEditStage.show(ClickMenu.getTagNode().getLevels());
 				
-				for (Tag tag : TagList.getMain()) {
-					if (groupBefore.equals(tag.getGroup())) {
-						tag.setGroup(groupAfter);
-					}
-				}
-				
-				TagList.getMain().sort();
-				
-				Reload.notify(Notifier.TAG_LIST_MAIN);
-				Reload.start();
-			});
-			return nodeText;
-		}
-	},
-	TAG_GROUP_REMOVE {
-		public NodeText get() {
-			NodeText nodeText = new NodeText("Remove Tag Group", true, true, false, true);
-			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
-				
-				String group = ClickMenu.getGroup();
-				if (StageConfirmation.show("Remove \"" + group + "\" and all of its tags?")) {
-					for (String name : TagList.getMain().getNames(group)) {
-						PaneFilter.getInstance().getGroupNode(group).removeNameNode(name);
-						PaneSelect.getInstance().getGroupNode(group).removeNameNode(name);
-						
-						Tag tag = TagList.getMain().getTag(group, name);
-						EntityList.getMain().forEach(entity -> entity.getTagList().remove(tag));
-						Filter.getListManager().unlist(tag);
-						TagList.getMain().remove(tag);
-					}
-					Reload.notify(Notifier.TAG_LIST_MAIN);
-					Reload.start();
-				}
-			});
-			return nodeText;
-		}
-	},
-	TAG_GROUP_WHITELIST {
-		public NodeText get() {
-			NodeText nodeText = new NodeText("Whitelist All", true, true, false, true);
-			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
-				
-				Filter.getListManager().whitelist(ClickMenu.getGroup());
-				Reload.start();
-			});
-			return nodeText;
-		}
-	},
-	TAG_GROUP_BLACKLIST {
-		public NodeText get() {
-			NodeText nodeText = new NodeText("Blacklist All", true, true, false, true);
-			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
-				
-				Filter.getListManager().blacklist(ClickMenu.getGroup());
-				Reload.start();
-			});
-			return nodeText;
-		}
-	},
-	TAG_GROUP_UNLIST {
-		public NodeText get() {
-			NodeText nodeText = new NodeText("Unlist All", true, true, false, true);
-			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
-				
-				Filter.getListManager().unlist(ClickMenu.getGroup());
-				Reload.start();
-			});
-			return nodeText;
-		}
-	},
-	
-	TAG_NAME_EDIT {
-		public NodeText get() {
-			NodeText nodeText = new NodeText("Edit Tag", true, true, false, true);
-			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
-				
-				Tag tag = TagList.getMain().getTag(ClickMenu.getGroup(), ClickMenu.getName());
-				StageEditTag.Result result = StageEditTag.show(ClickMenu.getGroup(), ClickMenu.getName());
-				
-				if (result != null) {
-					tag.setGroup(result.getGroup());
-					tag.setName(result.getName());
-					
+				if (levelsAfter != null) {
+					TagList.getMain().getTagsContaining(stringBefore).forEach(tag -> tag.replaceLevelsFromStart(countBefore, levelsAfter));
 					TagList.getMain().sort();
 					
-					if (result.isAddToSelect()) Select.getEntities().addTag(tag);
+					Reload.notify(Notifier.TAG_LIST_MAIN);
+					Reload.start();
+				}
+			});
+			return textNode;
+		}
+	},
+	TAG_REMOVE {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Remove Tag", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ClickMenu.hideAll();
+				
+				TagNode tagNode = ClickMenu.getTagNode();
+				if (ConfirmationStage.show("Remove \"" + tagNode.getText() + "\" ?")) {
+					TagList tagList = TagList.getMain().getTagsContaining(tagNode.getStringValue());
+					
+					tagNode.getSubNodesComplete().forEach(subNode -> Filter.getListManager().unlist(subNode));
+					EntityList.getMain().forEach(entity -> entity.removeTag(tagList));
+					TagList.getMain().removeAll(tagList);
 					
 					Reload.notify(Notifier.TAG_LIST_MAIN);
 					Reload.start();
 				}
 			});
-			return nodeText;
-		}
-	},
-	TAG_NAME_REMOVE {
-		public NodeText get() {
-			NodeText nodeText = new NodeText("Remove Tag", true, true, false, true);
-			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
-				
-				String group = ClickMenu.getGroup();
-				String name = ClickMenu.getName();
-				Tag tag = TagList.getMain().getTag(group, name);
-				
-				if (StageConfirmation.show("Remove \"" + tag.getGroup() + " - " + tag.getName() + "\" ?")) {
-					PaneFilter.getInstance().getGroupNode(group).removeNameNode(name);
-					PaneSelect.getInstance().getGroupNode(group).removeNameNode(name);
-					EntityList.getMain().forEach(entity -> entity.getTagList().remove(tag));
-					Filter.getListManager().unlist(tag);
-					TagList.getMain().remove(tag);
-					Reload.notify(Notifier.TAG_LIST_MAIN);
-					Reload.start();
-				}
-			});
-			return nodeText;
+			return textNode;
 		}
 	},
 	
 	COLLECTION_CREATE {
-		public NodeText get() {
-			NodeText nodeText = new NodeText("Create Collection", true, true, false, true);
-			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Create Collection", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClickMenu.hideAll();
 				
 				EntityCollectionUtil.create();
 				Reload.start();
 			});
-			return nodeText;
+			return textNode;
 		}
 	},
 	COLLECTION_DISCARD {
-		public NodeText get() {
-			NodeText nodeText = new NodeText("Discard Collection", true, true, false, true);
-			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Discard Collection", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClickMenu.hideAll();
 				
 				EntityCollectionUtil.discard();
 				Reload.start();
 			});
-			return nodeText;
+			return textNode;
 		}
 	},
 	
 	CACHE_RESET {
-		public NodeText get() {
-			NodeText nodeText = new NodeText("Reset Cache", true, true, false, true);
-			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Reset Cache", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClickMenu.hideAll();
 				
 				CacheManager.stopCacheThread();
@@ -357,45 +260,45 @@ public enum NodeTemplates {
 				
 				CacheManager.checkCacheInBackground(EntityList.getMain());
 			});
-			return nodeText;
+			return textNode;
 		}
 	},
 	
 	APPLICATION_SAVE {
-		public NodeText get() {
-			NodeText nodeText = new NodeText("Save", true, true, false, true);
-			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Save", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClickMenu.hideAll();
 				
 				Project.getCurrent().writeToDisk();
 			});
-			return nodeText;
+			return textNode;
 		}
 	},
 	APPLICATION_IMPORT {
-		public NodeText get() {
-			NodeText nodeText = new NodeText("Import", true, true, false, true);
-			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Import", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClickMenu.hideAll();
 				
 				FileUtil.importFiles();
 			});
-			return nodeText;
+			return textNode;
 		}
 	},
 	APPLICATION_EXIT {
-		public NodeText get() {
-			NodeText nodeText = new NodeText("Exit", true, true, false, true);
-			nodeText.setMaxWidth(Double.MAX_VALUE);
-			nodeText.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> StageMain.getInstance().fireEvent(new WindowEvent(null, WindowEvent.WINDOW_CLOSE_REQUEST)));
-			return nodeText;
+		public TextNode get() {
+			TextNode textNode = new TextNode("Exit", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> MainStage.getInstance().fireEvent(new WindowEvent(null, WindowEvent.WINDOW_CLOSE_REQUEST)));
+			return textNode;
 		}
 	},
 	;
 	
-	public NodeText get() {
+	public TextNode get() {
 		return null;
 	}
 }

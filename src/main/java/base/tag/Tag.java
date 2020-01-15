@@ -1,35 +1,42 @@
 package base.tag;
 
+import base.CustomList;
 import com.google.gson.annotations.SerializedName;
-import org.apache.commons.text.WordUtils;
+
+import java.util.Random;
 
 public class Tag {
-	@SerializedName("g") private String group;
-	@SerializedName("n") private String name;
+	@SerializedName("I") private int id;
+	@SerializedName("L") private CustomList<String> levels;
 	
-	public Tag(String group, String name) {
-		this.setGroup(group);
-		this.setName(name);
-	}
-	
-	public boolean isEmpty() {
-		return group.isEmpty() || name.isEmpty();
+	public Tag(CustomList<String> levels) {
+		this.id = new Random().nextInt();
+		this.levels = levels;
 	}
 	
-	public String getGroup() {
-		return group;
-	}
-	public String getName() {
-		return name;
-	}
-	public String getFull() {
-		return group + name;
+	public void replaceLevelsFromStart(int levelCount, CustomList<String> levels) {
+		CustomList<String> levelsNew = new CustomList<>(levels);
+		for (int i = levelCount; i < this.levels.size(); i++) {
+			levelsNew.add(this.levels.get(i));
+		}
+		this.levels.setAll(levelsNew);
+		setStringValue();
 	}
 	
-	public void setGroup(String group) {
-		this.group = WordUtils.capitalize(group, '-', '/', ' ');
+	private transient String stringValue;
+	public String getStringValue() {
+		return stringValue;
 	}
-	public void setName(String name) {
-		this.name = WordUtils.capitalize(name, '-', '/', ' ');
+	public void setStringValue() {
+		StringBuilder builder = new StringBuilder();
+		levels.forEach(builder::append);
+		stringValue = builder.toString();
+	}
+	
+	public String getLevel(int level) {
+		return levels.get(level);
+	}
+	public int getID() {
+		return id;
 	}
 }

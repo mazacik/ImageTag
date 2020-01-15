@@ -12,17 +12,17 @@ import javafx.scene.layout.Background;
 import javafx.scene.text.TextAlignment;
 import ui.decorator.Decorator;
 
-public class NodeText extends Label {
-	public NodeText() {
+public class TextNode extends Label {
+	public TextNode() {
 		this("");
 	}
-	public NodeText(String text) {
+	public TextNode(String text) {
 		this(text, false, false, false);
 	}
-	public NodeText(String text, boolean hoverBackground, boolean hoverText, boolean hoverCursor) {
+	public TextNode(String text, boolean hoverBackground, boolean hoverText, boolean hoverCursor) {
 		this(text, hoverBackground, hoverText, hoverCursor, false);
 	}
-	public NodeText(String text, boolean hoverBackground, boolean hoverText, boolean hoverCursor, boolean defaultPadding) {
+	public TextNode(String text, boolean hoverBackground, boolean hoverText, boolean hoverCursor, boolean defaultPadding) {
 		super(text);
 		this.setAlignment(Pos.CENTER);
 		this.setFont(Decorator.getFont());
@@ -38,15 +38,12 @@ public class NodeText extends Label {
 		}
 		
 		this.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
-			if (hoverBackground && hoverText) {
+			if (hoverBackground) {
 				this.setBackground(Decorator.getBackgroundSecondary());
-				this.setTextFill(Decorator.getColorSecondary());
-			} else if (hoverBackground) {
-				this.setBackground(Decorator.getBackgroundSecondary());
-			} else if (hoverText) {
+			}
+			if (hoverText) {
 				this.setTextFill(Decorator.getColorSecondary());
 			}
-			
 			if (hoverCursor) {
 				this.setCursor(Cursor.HAND);
 			}

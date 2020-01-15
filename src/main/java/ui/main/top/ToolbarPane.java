@@ -10,28 +10,28 @@ import javafx.scene.layout.BorderPane;
 import ui.custom.ClickMenu;
 import ui.custom.TitleBar;
 import ui.decorator.Decorator;
-import ui.main.stage.StageMain;
-import ui.node.NodeBoxSeparator;
+import ui.main.stage.MainStage;
+import ui.node.BoxSeparator;
 import ui.node.NodeTemplates;
-import ui.node.NodeText;
+import ui.node.TextNode;
 import ui.override.HBox;
 
-public class PaneToolbar extends BorderPane {
+public class ToolbarPane extends BorderPane {
 	public static final double PREF_HEIGHT = 30;
 	
-	private NodeText nodeTarget;
+	private TextNode nodeTarget;
 	
 	public void init() {
-		TitleBar titleBar = new TitleBar(StageMain.getInstance());
+		TitleBar titleBar = new TitleBar(MainStage.getInstance());
 		
-		NodeText nodeFile = new NodeText("File", true, true, false, true);
-		NodeText nodeSave = NodeTemplates.APPLICATION_SAVE.get();
-		NodeText nodeImport = NodeTemplates.APPLICATION_IMPORT.get();
-		NodeText nodeCacheReset = NodeTemplates.CACHE_RESET.get();
-		NodeText nodeExit = NodeTemplates.APPLICATION_EXIT.get();
-		ClickMenu.install(nodeFile, Direction.DOWN, nodeSave, nodeImport, nodeCacheReset, new NodeBoxSeparator(), nodeExit);
+		TextNode nodeFile = new TextNode("File", true, true, false, true);
+		TextNode nodeSave = NodeTemplates.APPLICATION_SAVE.get();
+		TextNode nodeImport = NodeTemplates.APPLICATION_IMPORT.get();
+		TextNode nodeCacheReset = NodeTemplates.CACHE_RESET.get();
+		TextNode nodeExit = NodeTemplates.APPLICATION_EXIT.get();
+		ClickMenu.install(nodeFile, Direction.DOWN, nodeSave, nodeImport, nodeCacheReset, new BoxSeparator(), nodeExit);
 		
-		nodeTarget = new NodeText("", true, true, false, true);
+		nodeTarget = new TextNode("", true, true, false, true);
 		ClickMenu.install(nodeTarget, Direction.DOWN, MouseButton.PRIMARY, ClickMenu.StaticInstance.ENTITY);
 		
 		HBox hBox = new HBox(nodeFile);
@@ -59,11 +59,11 @@ public class PaneToolbar extends BorderPane {
 		return true;
 	}
 	
-	private PaneToolbar() {super();}
+	private ToolbarPane() {super();}
 	private static class Loader {
-		private static final PaneToolbar INSTANCE = new PaneToolbar();
+		private static final ToolbarPane INSTANCE = new ToolbarPane();
 	}
-	public static PaneToolbar getInstance() {
+	public static ToolbarPane getInstance() {
 		return Loader.INSTANCE;
 	}
 }

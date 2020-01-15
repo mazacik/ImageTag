@@ -5,7 +5,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import misc.FileUtil;
 import misc.Project;
-import ui.node.NodeText;
+import ui.node.TextNode;
 import ui.override.VBox;
 
 public class ProjectBox extends VBox {
@@ -25,7 +25,7 @@ public class ProjectBox extends VBox {
 			projects.forEach(project -> this.getChildren().add(new ProjectNode(project)));
 		} else {
 			this.setAlignment(Pos.CENTER);
-			this.getChildren().add(new NodeText("No Projects Found"));
+			this.getChildren().add(new TextNode("No Projects Found"));
 		}
 	}
 }

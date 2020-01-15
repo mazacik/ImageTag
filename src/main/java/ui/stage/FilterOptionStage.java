@@ -8,35 +8,35 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import ui.node.NodeCheckbox;
-import ui.node.NodeEdit;
-import ui.node.NodeSwitch;
-import ui.node.NodeText;
+import ui.node.CheckboxNode;
+import ui.node.EditNode;
+import ui.node.SwitchNode;
+import ui.node.TextNode;
 import ui.override.HBox;
 import ui.override.VBox;
 
-public class StageFilterOptions extends StageBase {
-	private static final NodeCheckbox nodeImages;
-	private static final NodeCheckbox nodeGifs;
-	private static final NodeCheckbox nodeVideos;
+public class FilterOptionStage extends AbstractStage {
+	private static final CheckboxNode nodeImages;
+	private static final CheckboxNode nodeGifs;
+	private static final CheckboxNode nodeVideos;
 	
-	private static final NodeCheckbox nodeSession;
-	private static final NodeCheckbox nodeLimit;
-	private static final NodeEdit nodeLimitValue;
+	private static final CheckboxNode nodeSession;
+	private static final CheckboxNode nodeLimit;
+	private static final EditNode nodeLimitValue;
 	
 	private static final HBox boxContent;
 	
-	private static final NodeText nodeOK;
-	private static final NodeText nodeCancel;
+	private static final TextNode nodeOK;
+	private static final TextNode nodeCancel;
 	
 	static {
-		nodeImages = new NodeCheckbox("Images");
-		nodeGifs = new NodeCheckbox("Gifs");
-		nodeVideos = new NodeCheckbox("Videos");
-		nodeSession = new NodeCheckbox("Session");
+		nodeImages = new CheckboxNode("Images");
+		nodeGifs = new CheckboxNode("Gifs");
+		nodeVideos = new CheckboxNode("Videos");
+		nodeSession = new CheckboxNode("Session");
 		
-		nodeLimit = new NodeCheckbox("Limit");
-		nodeLimitValue = new NodeEdit("", NodeEdit.EditNodeType.NUMERIC_POSITIVE);
+		nodeLimit = new CheckboxNode("Limit");
+		nodeLimitValue = new EditNode("", EditNode.EditNodeType.NUMERIC_POSITIVE);
 		nodeLimit.getSelectedProperty().addListener((observable, oldValue, newValue) -> nodeLimitValue.setDisable(!newValue));
 		
 		nodeLimitValue.setPadding(new Insets(0, 1, -1, 1));
@@ -53,15 +53,15 @@ public class StageFilterOptions extends StageBase {
 		VBox boxLeft = new VBox(nodeImages, nodeGifs, nodeVideos, nodeSession, nodeLimit, nodeLimitValue);
 		boxLeft.setSpacing(5);
 		
-		NodeSwitch nodeWhitelistMode = new NodeSwitch("Whitelist Mode", "AND", "OR", 125);
+		SwitchNode nodeWhitelistMode = new SwitchNode("Whitelist Mode", "AND", "OR", 125);
 		nodeWhitelistMode.selectLeft();
-		nodeWhitelistMode.getLeft().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Filter.getSettings().setWhitelistFactor(1.00));
-		nodeWhitelistMode.getRight().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Filter.getSettings().setWhitelistFactor(0.01));
+		//nodeWhitelistMode.getLeft().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Filter.getSettings().setWhitelistFactor(1.00));
+		//nodeWhitelistMode.getRight().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Filter.getSettings().setWhitelistFactor(0.01));
 		
-		NodeSwitch nodeBlacklistMode = new NodeSwitch("Blacklist Mode", "AND", "OR", 125);
+		SwitchNode nodeBlacklistMode = new SwitchNode("Blacklist Mode", "AND", "OR", 125);
 		nodeBlacklistMode.selectRight();
-		nodeBlacklistMode.getLeft().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Filter.getSettings().setBlacklistFactor(1.00));
-		nodeBlacklistMode.getRight().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Filter.getSettings().setBlacklistFactor(0.01));
+		//nodeBlacklistMode.getLeft().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Filter.getSettings().setBlacklistFactor(1.00));
+		//nodeBlacklistMode.getRight().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Filter.getSettings().setBlacklistFactor(0.01));
 		
 		VBox boxRight = new VBox(nodeWhitelistMode, nodeBlacklistMode);
 		boxRight.setSpacing(5);
@@ -70,7 +70,7 @@ public class StageFilterOptions extends StageBase {
 		boxContent.setSpacing(100);
 		boxContent.setPadding(new Insets(5));
 		
-		nodeOK = new NodeText("OK", true, true, false, true);
+		nodeOK = new TextNode("OK", true, true, false, true);
 		nodeOK.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> {
 			FilterSettings filterSettings = Filter.getSettings();
 			filterSettings.setShowImages(nodeImages.isSelected());
@@ -85,7 +85,7 @@ public class StageFilterOptions extends StageBase {
 			getInstance().close();
 		});
 		
-		nodeCancel = new NodeText("Cancel", true, true, false, true);
+		nodeCancel = new TextNode("Cancel", true, true, false, true);
 		nodeCancel.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, getInstance()::close);
 	}
 	
@@ -104,16 +104,16 @@ public class StageFilterOptions extends StageBase {
 		}
 	}
 	
-	private StageFilterOptions() {
-		super("Filter Settings", false, true, true);
+	private FilterOptionStage() {
+		super("Filter Settings", false);
 		
 		setRoot(boxContent);
 		setButtons(nodeOK, nodeCancel);
 	}
 	private static class Loader {
-		private static final StageFilterOptions INSTANCE = new StageFilterOptions();
+		private static final FilterOptionStage INSTANCE = new FilterOptionStage();
 	}
-	public static StageFilterOptions getInstance() {
-		return StageFilterOptions.Loader.INSTANCE;
+	public static FilterOptionStage getInstance() {
+		return FilterOptionStage.Loader.INSTANCE;
 	}
 }

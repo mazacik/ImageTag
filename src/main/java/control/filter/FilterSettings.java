@@ -8,9 +8,6 @@ public class FilterSettings {
 	private boolean enableLimit = false;
 	private int limit = 0;
 	
-	private double whitelistFactor = 1.00;
-	private double blacklistFactor = 0.01;
-	
 	private double similarityFactor = 0.5;
 	
 	FilterSettings() {
@@ -35,6 +32,7 @@ public class FilterSettings {
 	public int getLimit() {
 		return limit;
 	}
+	
 	public void setShowImages(boolean showImages) {
 		this.showImages = showImages;
 	}
@@ -52,19 +50,6 @@ public class FilterSettings {
 	}
 	public void setLimit(int limit) {
 		this.limit = limit;
-	}
-	
-	public double getWhitelistFactor() {
-		return whitelistFactor;
-	}
-	public double getBlacklistFactor() {
-		return blacklistFactor;
-	}
-	public void setWhitelistFactor(double whitelistFactor) {
-		this.whitelistFactor = whitelistFactor;
-	}
-	public void setBlacklistFactor(double blacklistFactor) {
-		this.blacklistFactor = blacklistFactor;
 	}
 	
 	public double getSimilarityFactor() {

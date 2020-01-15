@@ -1,8 +1,8 @@
 package control.filter;
 
+import base.CustomList;
 import base.entity.Entity;
 import base.entity.EntityList;
-import base.tag.TagList;
 import control.reload.Notifier;
 import control.reload.Reload;
 import enums.MediaType;
@@ -13,9 +13,8 @@ public class Filter extends EntityList {
 	private static final EntityList newEntities = new EntityList();
 	
 	public static void reset() {
-		listManager.getWhitelist().clear();
-		listManager.getBlacklist().clear();
-		Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
+		listManager.unlistAll();
+		Reload.notify(Notifier.TAG_LIST_MAIN);
 	}
 	public static void refresh() {
 		getEntities().clear();
@@ -39,11 +38,11 @@ public class Filter extends EntityList {
 				continue;
 			}
 			
-			if (settings.isEnableLimit() && entity.getTagList().size() > settings.getLimit()) {
+			if (settings.isEnableLimit() && entity.getTagIDs().size() > settings.getLimit()) {
 				continue;
 			}
 			
-			if (!listManager.isWhitelistOk(entity) || !listManager.isBlacklistOk(entity)) {
+			if (!listManager.applyLists(entity)) {
 				continue;
 			}
 			
@@ -54,33 +53,29 @@ public class Filter extends EntityList {
 	}
 	
 	public static void showSimilar(Entity entity) {
-		listManager.getWhitelist().clear();
-		listManager.getBlacklist().clear();
-		Loader.INSTANCE.clear();
+		listManager.unlistAll();
+		listManager.unlistAll();
+		getEntities().clear();
 		
-		TagList query = entity.getTagList();
+		CustomList<Integer> query = entity.getTagIDs();
 		for (Entity iterator : EntityList.getMain()) {
-			if (iterator.getTagList().size() != 0) {
-				TagList sameTags = new TagList(query);
-				sameTags.retainAll(iterator.getTagList());
+			if (iterator.getTagIDs().size() != 0) {
+				CustomList<Integer> sameTags = new CustomList<>(query);
+				sameTags.retainAll(iterator.getTagIDs());
 				
 				if (!sameTags.isEmpty()) {
 					double similarity = (double) sameTags.size() / (double) query.size();
 					if (similarity >= settings.getSimilarityFactor()) {
-						Loader.INSTANCE.add(iterator);
+						getEntities().add(iterator);
 					}
 				}
 			}
 		}
 	}
 	public static EntityList applyTo(EntityList listBefore) {
-		EntityList entityList = new EntityList();
-		listBefore.forEach(entity -> {
-			if (Loader.INSTANCE.contains(entity)) {
-				entityList.add(entity);
-			}
-		});
-		return entityList;
+		EntityList returnValue = new EntityList(listBefore);
+		returnValue.retainAll(getEntities());
+		return returnValue;
 	}
 	
 	public static FilterSettings getSettings() {

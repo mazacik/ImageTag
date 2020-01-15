@@ -101,8 +101,8 @@ public abstract class Decorator {
 						labeled.setTextFill(getColorPositive());
 					} else if (textFill.equals(previousPreset.getColorNegative())) {
 						labeled.setTextFill(getColorNegative());
-					} else if (textFill.equals(previousPreset.getColorShare())) {
-						labeled.setTextFill(getColorShare());
+					} else if (textFill.equals(previousPreset.getColorUnion())) {
+						labeled.setTextFill(getColorUnion());
 					}
 				}
 			}
@@ -142,8 +142,8 @@ public abstract class Decorator {
 	public static Color getColorNegative() {
 		return colorPreset.getColorNegative();
 	}
-	public static Color getColorShare() {
-		return colorPreset.getColorShare();
+	public static Color getColorUnion() {
+		return colorPreset.getColorUnion();
 	}
 	public static Color getColorBorder() {
 		return colorPreset.getColorBorder();

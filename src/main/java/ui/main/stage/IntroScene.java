@@ -16,41 +16,41 @@ import misc.Project;
 import ui.custom.TitleBar;
 import ui.decorator.ColorPreset;
 import ui.decorator.Decorator;
-import ui.node.NodeBoxSeparator;
-import ui.node.NodeText;
+import ui.node.BoxSeparator;
+import ui.node.TextNode;
 import ui.override.HBox;
 import ui.override.Scene;
 import ui.override.VBox;
 
 import java.io.File;
 
-public class SceneIntro extends Scene {
+public class IntroScene extends Scene {
 	private ProjectBox projectBox = new ProjectBox();
 	
-	public SceneIntro() {
-		NodeText applicationNameNode = new NodeText("Tagallery", false, false, false, true);
+	public IntroScene() {
+		TextNode applicationNameNode = new TextNode("Tagallery", false, false, false, true);
 		applicationNameNode.setFont(new Font(48));
 		applicationNameNode.setPadding(new Insets(-20, 0, 20, 0));
 		
-		NodeText btnNewProject = new NodeText("Create a New Project", true, false, true, true);
+		TextNode btnNewProject = new TextNode("Create a New Project", true, false, true, true);
 		btnNewProject.setMaxWidth(Double.MAX_VALUE);
-		btnNewProject.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> StageMain.getSceneProject().show());
+		btnNewProject.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> MainStage.getProjectScene().show());
 		
-		NodeText btnOpenProject = new NodeText("Open Project", true, false, true, true);
+		TextNode btnOpenProject = new TextNode("Open Project", true, false, true, true);
 		btnOpenProject.setMaxWidth(Double.MAX_VALUE);
 		btnOpenProject.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> {
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.setTitle("Open Project");
 			fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-			File file = fileChooser.showOpenDialog(StageMain.getInstance());
+			File file = fileChooser.showOpenDialog(MainStage.getInstance());
 			if (file != null) {
-				StageMain.layoutMain();
+				MainStage.layoutMain();
 				Project.setCurrent(Project.readFromDisk(file.getAbsolutePath()));
 				Main.startDatabaseLoading();
 			}
 		});
 		
-		NodeText btnColorPreset = new NodeText("Color Preset: " + Decorator.getColorPreset().getDisplayName(), true, false, true, true);
+		TextNode btnColorPreset = new TextNode("Color Preset: " + Decorator.getColorPreset().getDisplayName(), true, false, true, true);
 		btnColorPreset.setMaxWidth(Double.MAX_VALUE);
 		btnColorPreset.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> {
 			int presetIndex = Decorator.getColorPreset().ordinal();
@@ -71,7 +71,7 @@ public class SceneIntro extends Scene {
 		vBoxStartMenu.getChildren().add(btnOpenProject);
 		vBoxStartMenu.getChildren().add(btnColorPreset);
 		
-		HBox mainBox = new HBox(projectBox, new NodeBoxSeparator(), vBoxStartMenu);
+		HBox mainBox = new HBox(projectBox, new BoxSeparator(), vBoxStartMenu);
 		mainBox.setAlignment(Pos.TOP_CENTER);
 		VBox.setVgrow(mainBox, Priority.ALWAYS);
 		
@@ -84,12 +84,12 @@ public class SceneIntro extends Scene {
 				case ENTER:
 					CustomList<Project> projects = FileUtil.getProjects();
 					if (!projects.isEmpty()) {
-						StageMain.layoutMain();
+						MainStage.layoutMain();
 						projects.sort(Project.getComparator());
 						Project.setCurrent(projects.getFirst());
 						Main.startDatabaseLoading();
 					} else {
-						StageMain.getSceneProject().show();
+						MainStage.getProjectScene().show();
 					}
 					break;
 				default:
@@ -100,7 +100,7 @@ public class SceneIntro extends Scene {
 	}
 	
 	public void show() {
-		StageMain.getInstance().setScene(this);
+		MainStage.getInstance().setScene(this);
 	}
 	
 	public ProjectBox getProjectBox() {

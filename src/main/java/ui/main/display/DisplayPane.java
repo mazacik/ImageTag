@@ -13,9 +13,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 import misc.FileUtil;
 import ui.custom.ClickMenu;
-import ui.main.gallery.PaneGallery;
-import ui.main.stage.StageMain;
-import ui.node.NodeText;
+import ui.main.gallery.GalleryPane;
+import ui.main.stage.MainStage;
+import ui.node.TextNode;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -24,7 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class PaneDisplay extends BorderPane {
+public class DisplayPane extends BorderPane {
 	private Canvas canvas;
 	private ImageView gifPlayer;
 	private VideoPlayer videoPlayer;
@@ -33,7 +33,7 @@ public class PaneDisplay extends BorderPane {
 	private Image currentImage = null;
 	private Entity currentCache = null;
 	
-	private NodeText nodeNoLibsError = null;
+	private TextNode nodeNoLibsError = null;
 	
 	public void init() {
 		canvas = new Canvas();
@@ -41,10 +41,10 @@ public class PaneDisplay extends BorderPane {
 		videoPlayer = VideoPlayer.create(canvas);
 		controls = new Controls(this, videoPlayer);
 		
-		gifPlayer.fitWidthProperty().bind(PaneGallery.getInstance().widthProperty());
-		gifPlayer.fitHeightProperty().bind(PaneGallery.getInstance().heightProperty());
+		gifPlayer.fitWidthProperty().bind(GalleryPane.getInstance().widthProperty());
+		gifPlayer.fitHeightProperty().bind(GalleryPane.getInstance().heightProperty());
 		
-		nodeNoLibsError = new NodeText("No VLC Libs found.") {{
+		nodeNoLibsError = new TextNode("No VLC Libs found.") {{
 			this.setFont(new Font(64));
 			this.minWidthProperty().bind(canvas.widthProperty());
 			this.minHeightProperty().bind(canvas.heightProperty());
@@ -57,7 +57,7 @@ public class PaneDisplay extends BorderPane {
 	
 	public boolean reload() {
 		Entity currentTarget = Select.getTarget();
-		if (!StageMain.getSceneMain().isViewGallery() && currentTarget != null) {
+		if (!MainStage.getMainScene().isViewGallery() && currentTarget != null) {
 			switch (currentTarget.getMediaType()) {
 				case IMAGE:
 					reloadAsImage(currentTarget);
@@ -179,8 +179,8 @@ public class PaneDisplay extends BorderPane {
 	}
 	
 	private void initEvents() {
-		canvas.widthProperty().bind(PaneGallery.getInstance().widthProperty());
-		canvas.heightProperty().bind(PaneGallery.getInstance().heightProperty());
+		canvas.widthProperty().bind(GalleryPane.getInstance().widthProperty());
+		canvas.heightProperty().bind(GalleryPane.getInstance().heightProperty());
 		
 		canvas.widthProperty().addListener((observable, oldValue, newValue) -> reload());
 		canvas.heightProperty().addListener((observable, oldValue, newValue) -> reload());
@@ -193,7 +193,7 @@ public class PaneDisplay extends BorderPane {
 				if (event.getClickCount() % 2 != 0) {
 					requestFocus();
 				} else {
-					StageMain.getSceneMain().viewGallery();
+					MainStage.getMainScene().viewGallery();
 					Reload.start();
 				}
 			}
@@ -215,11 +215,11 @@ public class PaneDisplay extends BorderPane {
 		return controls;
 	}
 	
-	private PaneDisplay() {}
+	private DisplayPane() {}
 	private static class Loader {
-		private static final PaneDisplay INSTANCE = new PaneDisplay();
+		private static final DisplayPane INSTANCE = new DisplayPane();
 	}
-	public static PaneDisplay getInstance() {
+	public static DisplayPane getInstance() {
 		return Loader.INSTANCE;
 	}
 }

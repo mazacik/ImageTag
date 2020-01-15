@@ -42,44 +42,44 @@ public class EntityList extends CustomList<Entity> {
 		return null;
 	}
 	
-	public void addTag(Tag tag) {
-		this.forEach(entity -> {
-			entity.getTagList().add(tag);
-			entity.getTagList().sort();
-		});
+	public void addTag(Integer tagID) {
+		this.forEach(entity -> entity.addTag(tagID));
 		Reload.notify(Notifier.TAGS_OF_SELECT);
 	}
-	public void removeTag(Tag tag) {
-		this.forEach(entity -> entity.getTagList().remove(tag));
+	public void removeTag(Integer tagID) {
+		this.forEach(entity -> entity.removeTag(tagID));
 		Reload.notify(Notifier.TAGS_OF_SELECT);
 	}
 	
-	public TagList getTags() {
+	public CustomList<Integer> getTagIDs() {
+		CustomList<Integer> tagIDs = new CustomList<>();
+		this.forEach(entity -> tagIDs.addAll(entity.getTagIDs(), true));
+		return tagIDs;
+	}
+	public TagList getTagList() {
 		TagList tagList = new TagList();
 		this.forEach(entity -> tagList.addAll(entity.getTagList(), true));
 		return tagList;
 	}
-	public TagList getTagsIntersect() {
+	public TagList getTagListIntersect() {
 		if (!this.isEmpty()) {
-			TagList tagsIntersect = new TagList();
-			
+			TagList tagListIntersect = new TagList();
 			//check every tag of the first object
 			for (Tag tag : this.getFirst().getTagList()) {
-				//check if all objects contain the tag
+				//check if all objects contain the tagID
 				for (Entity entity : this) {
 					if (entity.getTagList().contains(tag)) {
 						//if the last object contains the tag, all before do too, add
 						if (entity.equals(this.getLast())) {
-							tagsIntersect.add(tag);
+							tagListIntersect.add(tag);
 						}
-						//if any of the objects doesn't contain the tag, break
 					} else {
+						//if any of the objects doesn't contain the tag, break
 						break;
 					}
 				}
 			}
-			
-			return tagsIntersect;
+			return tagListIntersect;
 		} else {
 			return new TagList();
 		}

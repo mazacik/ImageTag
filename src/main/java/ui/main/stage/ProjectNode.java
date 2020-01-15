@@ -13,26 +13,26 @@ import main.Main;
 import misc.FileUtil;
 import misc.Project;
 import ui.decorator.Decorator;
-import ui.node.NodeText;
+import ui.node.TextNode;
 import ui.override.VBox;
-import ui.stage.StageConfirmation;
-import ui.stage.StageSimpleMessage;
+import ui.stage.ConfirmationStage;
+import ui.stage.SimpleMessageStage;
 
 import java.io.File;
 
 public class ProjectNode extends BorderPane {
 	public ProjectNode(Project project) {
-		NodeText nodeProjectName = new NodeText(project.getProjectName(), false, false, false);
-		NodeText nodeDirectorySource = new NodeText(project.getDirectorySource(), false, false, false);
+		TextNode nodeProjectName = new TextNode(project.getProjectName(), false, false, false);
+		TextNode nodeDirectorySource = new TextNode(project.getDirectorySource(), false, false, false);
 		
 		VBox vBoxLabels = new VBox(nodeProjectName, nodeDirectorySource);
 		vBoxLabels.setAlignment(Pos.CENTER_LEFT);
 		
-		NodeText nodeEdit = new NodeText("···", false, true, false);
+		TextNode nodeEdit = new TextNode("···", false, true, false);
 		nodeEdit.setFont(new Font(26));
 		nodeEdit.setVisible(false);
 		
-		NodeText nodeRemove = new NodeText("✕", false, true, false);
+		TextNode nodeRemove = new TextNode("✕", false, true, false);
 		nodeRemove.setFont(new Font(20));
 		nodeRemove.setVisible(false);
 		
@@ -59,21 +59,21 @@ public class ProjectNode extends BorderPane {
 				Node pickResult = event.getPickResult().getIntersectedNode().getParent();
 				
 				if (pickResult.equals(nodeEdit)) {
-					StageMain.getSceneProject().show(project);
+					MainStage.getProjectScene().show(project);
 				} else if (pickResult.equals(nodeRemove)) {
 					String message = "Delete project data? The source directory will not be affected";
-					if (StageConfirmation.show(message)) {
+					if (ConfirmationStage.show(message)) {
 						FileUtil.deleteFile(project.getProjectFile());
 						FileUtil.deleteFile(FileUtil.getDirectoryCache(project.getProjectName()));
-						StageMain.getSceneIntro().getProjectBox().refresh();
+						MainStage.getIntroScene().getProjectBox().refresh();
 					}
 				} else {
 					if (new File(project.getDirectorySource()).exists()) {
-						StageMain.layoutMain();
+						MainStage.layoutMain();
 						Project.setCurrent(project);
 						Main.startDatabaseLoading();
 					} else {
-						StageSimpleMessage.show("The source directory of this project could not be found.\nDirectory: " + project.getDirectorySource());
+						SimpleMessageStage.show("The source directory of this project could not be found.\nDirectory: " + project.getDirectorySource());
 					}
 				}
 			}

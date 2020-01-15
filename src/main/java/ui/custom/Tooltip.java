@@ -7,26 +7,26 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Popup;
 import javafx.util.Duration;
 import ui.decorator.Decorator;
-import ui.main.stage.StageMain;
-import ui.node.NodeText;
+import ui.main.stage.MainStage;
+import ui.node.TextNode;
 
 public class Tooltip extends Popup {
-	private NodeText nodeText;
+	private TextNode textNode;
 	
 	private Timeline timeline;
 	private double eventX;
 	private double eventY;
 	
 	public Tooltip(String text, long delay) {
-		nodeText = new NodeText(text, false, false, false, true);
-		nodeText.setBorder(Decorator.getBorder(1));
-		nodeText.setBackground(Decorator.getBackgroundPrimary());
-		Decorator.getNodeList().add(nodeText);
-		this.getContent().add(nodeText);
+		textNode = new TextNode(text, false, false, false, true);
+		textNode.setBorder(Decorator.getBorder(1));
+		textNode.setBackground(Decorator.getBackgroundPrimary());
+		Decorator.getNodeList().add(textNode);
+		this.getContent().add(textNode);
 		
 		timeline = new Timeline();
 		timeline.getKeyFrames().add(new KeyFrame(new Duration(delay), event -> {
-			this.show(StageMain.getInstance());
+			this.show(MainStage.getInstance());
 			//needs off-screen checks
 			this.setAnchorX(eventX - this.getWidth() / 2);
 			this.setAnchorY(eventY + this.getHeight());
@@ -49,7 +49,7 @@ public class Tooltip extends Popup {
 		}
 	}
 	
-	public NodeText getNodeText() {
-		return nodeText;
+	public TextNode getTextNode() {
+		return textNode;
 	}
 }

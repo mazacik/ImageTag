@@ -6,7 +6,6 @@ import base.entity.EntityList;
 import base.tag.Tag;
 import base.tag.TagList;
 import cache.CacheManager;
-import control.Select;
 import control.filter.Filter;
 import control.reload.Notifier;
 import control.reload.Reload;
@@ -15,16 +14,16 @@ import javafx.stage.Stage;
 import misc.FileUtil;
 import misc.Project;
 import misc.Settings;
-import ui.main.display.PaneDisplay;
-import ui.main.side.PaneFilter;
-import ui.main.side.PaneSelect;
-import ui.main.stage.StageMain;
-import ui.main.top.PaneToolbar;
+import ui.main.display.DisplayPane;
+import ui.main.side.FilterPane;
+import ui.main.side.SelectPane;
+import ui.main.stage.MainStage;
+import ui.main.top.ToolbarPane;
 
 import java.io.File;
 
 public class Main extends Application {
-	public static final boolean DEBUG_MAIN_QUICKSTART = false;
+	public static final boolean DEBUG_MAIN_QUICKSTART = true;
 	
 	public static final boolean DEBUG_FS_FILE_MOVE = true;
 	public static final boolean DEBUG_FS_FILE_DELETE = true;
@@ -35,16 +34,16 @@ public class Main extends Application {
 	public void start(Stage stage) {
 		System.setProperty("java.util.logging.SimpleFormatter.format", "[%4$-7s] %5$s%n");
 		
-		PaneToolbar.getInstance().init();
-		PaneDisplay.getInstance().init();
-		PaneFilter.getInstance().init();
-		PaneSelect.getInstance().init();
+		ToolbarPane.getInstance().init();
+		DisplayPane.getInstance().init();
+		FilterPane.getInstance().init();
+		SelectPane.getInstance().init();
 		
 		if (!DEBUG_MAIN_QUICKSTART || FileUtil.getProjectFiles().isEmpty()) {
-			StageMain.layoutIntro();
+			MainStage.layoutIntro();
 		} else {
 			CustomList<Project> projects = FileUtil.getProjects();
-			StageMain.layoutMain();
+			MainStage.layoutMain();
 			
 			projects.sort(Project.getComparator());
 			Project.setCurrent(projects.getFirst());
@@ -53,18 +52,12 @@ public class Main extends Application {
 	}
 	
 	public static void startDatabaseLoading() {
+		initTags();
 		initEntities();
 		initCollections();
-		initTags();
-		
-		Select.setTarget(EntityList.getMain().getFirst());
-		Select.getEntities().set(Select.getTarget());
 		
 		Reload.notify(Notifier.values());
 		Reload.start();
-		
-		PaneFilter.getInstance().collapseAll();
-		PaneSelect.getInstance().collapseAll();
 		
 		CacheManager.checkCacheInBackground();
 	}
@@ -124,6 +117,12 @@ public class Main extends Application {
 			needsSort = true;
 		}
 		if (needsSort) EntityList.getMain().sort();
+		
+		for (Entity entity : EntityList.getMain()) {
+			for (int tagID : entity.getTagIDs()) {
+				entity.getTagList().add(TagList.getMain().getTag(tagID));
+			}
+		}
 	}
 	private static void initCollections() {
 		CustomList<EntityList> collections = new CustomList<>();
@@ -152,22 +151,9 @@ public class Main extends Application {
 		TagList tagListMain = TagList.getMain();
 		if (allTags != null) tagListMain.addAll(allTags);
 		
-		for (Entity entity : EntityList.getMain()) {
-			TagList tagList = entity.getTagList();
-			
-			for (int i = 0; i < tagList.size(); i++) {
-				Tag entityTag = tagList.get(i);
-				Tag mainListTag = tagListMain.getTag(entityTag);
-				
-				if (mainListTag != null) {
-					tagList.set(i, mainListTag);
-				} else {
-					tagListMain.add(entityTag);
-				}
-			}
-		}
-		
+		tagListMain.forEach(Tag::setStringValue);
 		tagListMain.sort();
+		
 		Reload.notify(Notifier.TAG_LIST_MAIN);
 	}
 	
@@ -175,10 +161,11 @@ public class Main extends Application {
 		CacheManager.stopCacheThread();
 		FileUtil.stopImportThread();
 		
-		PaneDisplay.getInstance().disposeVideoPlayer();
-		PaneDisplay.getInstance().getControls().hide();
+		DisplayPane.getInstance().disposeVideoPlayer();
+		DisplayPane.getInstance().getControls().hide();
 		
 		Project.getCurrent().writeToDisk();
 		Settings.writeToDisk();
+		System.exit(0);
 	}
 }
