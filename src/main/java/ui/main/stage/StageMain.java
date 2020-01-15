@@ -12,7 +12,6 @@ import ui.main.side.PaneFilter;
 import ui.main.side.PaneSelect;
 import ui.main.side.SidePaneBase;
 import ui.main.top.PaneToolbar;
-import ui.stage.StageEditTag;
 
 import java.awt.*;
 
@@ -48,7 +47,6 @@ public class StageMain extends Stage {
 		
 		sceneMain = new SceneMain();
 		
-		Decorator.setScrollbarStyle(StageEditTag.getScrollPane());
 		Decorator.setScrollbarStyle(PaneGallery.getInstance());
 		Decorator.setScrollbarStyle(PaneFilter.getInstance().getScrollPane());
 		Decorator.setScrollbarStyle(PaneSelect.getInstance().getScrollPane());

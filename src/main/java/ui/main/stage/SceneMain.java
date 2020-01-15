@@ -15,7 +15,7 @@ import ui.main.gallery.PaneGallery;
 import ui.main.side.PaneFilter;
 import ui.main.side.PaneSelect;
 import ui.main.top.PaneToolbar;
-import ui.node.NodeEdit;
+import ui.node.EditNode;
 import ui.override.HBox;
 import ui.override.Scene;
 import ui.override.VBox;
@@ -35,7 +35,7 @@ public class SceneMain extends Scene {
 	
 	private void initKeybinds() {
 		this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-			if (this.getFocusOwner() instanceof NodeEdit) {
+			if (this.getFocusOwner() instanceof EditNode) {
 				if (event.getCode() == KeyCode.ESCAPE) {
 					mainBox.requestFocus();
 					event.consume();

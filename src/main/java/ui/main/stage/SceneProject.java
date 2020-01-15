@@ -12,8 +12,8 @@ import misc.FileUtil;
 import misc.Project;
 import ui.custom.TitleBar;
 import ui.decorator.Decorator;
-import ui.node.NodeEdit;
-import ui.node.NodeText;
+import ui.node.EditNode;
+import ui.node.TextNode;
 import ui.override.HBox;
 import ui.override.Scene;
 import ui.override.VBox;
@@ -21,24 +21,24 @@ import ui.override.VBox;
 import java.io.File;
 
 public class SceneProject extends Scene {
-	private final NodeEdit editProjectName;
-	private final NodeEdit editSourceDirectory;
-	private final NodeText nodeError;
+	private final EditNode editProjectName;
+	private final EditNode editSourceDirectory;
+	private final TextNode nodeError;
 	private final TitleBar titleBar;
 	
 	private Project project;
 	
 	public SceneProject() {
-		NodeText nodeProjectName = new NodeText("Project Name:");
+		TextNode nodeProjectName = new TextNode("Project Name:");
 		nodeProjectName.setAlignment(Pos.CENTER_LEFT);
-		editProjectName = new NodeEdit();
+		editProjectName = new EditNode();
 		editProjectName.setPrefWidth(400);
 		
-		NodeText nodeSourceDirectory = new NodeText("Source Directory:");
+		TextNode nodeSourceDirectory = new TextNode("Source Directory:");
 		nodeSourceDirectory.setAlignment(Pos.CENTER_LEFT);
-		editSourceDirectory = new NodeEdit("");
+		editSourceDirectory = new EditNode("");
 		editSourceDirectory.setPrefWidth(400);
-		NodeText nodeBrowseForDirectory = new NodeText("Browse", true, true, true, true);
+		TextNode nodeBrowseForDirectory = new TextNode("Browse", true, true, true, true);
 		nodeBrowseForDirectory.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
 				editSourceDirectory.setText(FileUtil.directoryChooser(this));
@@ -54,12 +54,12 @@ public class SceneProject extends Scene {
 		gridPane.setHgap(5);
 		gridPane.setVgap(5);
 		
-		nodeError = new NodeText("");
+		nodeError = new TextNode("");
 		nodeError.setTextFill(Decorator.getColorNegative());
 		
-		NodeText btnFinish = new NodeText("Finish", true, true, true, true);
+		TextNode btnFinish = new TextNode("Finish", true, true, true, true);
 		btnFinish.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> this.initProject());
-		NodeText btnCancel = new NodeText("Cancel", true, true, true, true);
+		TextNode btnCancel = new TextNode("Cancel", true, true, true, true);
 		btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> StageMain.getSceneIntro().show());
 		
 		VBox boxMain = new VBox(gridPane, nodeError, new HBox(btnCancel, btnFinish));
@@ -120,7 +120,7 @@ public class SceneProject extends Scene {
 			}
 		}
 	}
-	private boolean checkEditNodes(NodeEdit editProjectName, NodeEdit editDirectorySource, NodeText nodeError) {
+	private boolean checkEditNodes(EditNode editProjectName, EditNode editDirectorySource, TextNode nodeError) {
 		if (editProjectName.getText().isEmpty()) {
 			nodeError.setText("Project Name cannot be empty");
 			return false;

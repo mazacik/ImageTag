@@ -4,8 +4,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import ui.decorator.Decorator;
 
-public class NodeEdit extends TextField {
-	public NodeEdit(String text, EditNodeType type) {
+public class EditNode extends TextField {
+	public EditNode(String text, EditNodeType type) {
 		this.setFont(Decorator.getFont());
 		this.setBorder(Decorator.getBorder(1, 1, 1, 1));
 		this.setText(text);
@@ -33,10 +33,10 @@ public class NodeEdit extends TextField {
 				break;
 		}
 	}
-	public NodeEdit(String promptText) {
+	public EditNode(String promptText) {
 		this(promptText, EditNodeType.ANY_CHARACTERS);
 	}
-	public NodeEdit() {
+	public EditNode() {
 		this("", EditNodeType.ANY_CHARACTERS);
 	}
 	

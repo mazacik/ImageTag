@@ -9,21 +9,21 @@ import javafx.stage.WindowEvent;
 import ui.decorator.Decorator;
 import ui.override.HBox;
 
-public class NodeCheckbox extends HBox {
-	private final NodeText nodeMark;
-	private final NodeText nodeText;
+public class CheckboxNode extends HBox {
+	private final TextNode nodeMark;
+	private final TextNode textNode;
 	
 	private SimpleBooleanProperty selectedProperty;
 	
-	public NodeCheckbox(String text) {
+	public CheckboxNode(String text) {
 		this(text, Direction.LEFT, false);
 	}
-	public NodeCheckbox(String text, Direction boxPosition) {
+	public CheckboxNode(String text, Direction boxPosition) {
 		this(text, boxPosition, false);
 	}
-	public NodeCheckbox(String text, Direction boxPosition, boolean startSelected) {
-		nodeText = new NodeText(text);
-		nodeMark = new NodeText("");
+	public CheckboxNode(String text, Direction boxPosition, boolean startSelected) {
+		textNode = new TextNode(text);
+		nodeMark = new TextNode("");
 		nodeMark.setBorder(Decorator.getBorder(1));
 		selectedProperty = new SimpleBooleanProperty();
 		setSelected(startSelected);
@@ -31,9 +31,9 @@ public class NodeCheckbox extends HBox {
 		setAlignment(Pos.CENTER);
 		
 		if (boxPosition == Direction.LEFT) {
-			getChildren().addAll(nodeMark, nodeText);
+			getChildren().addAll(nodeMark, textNode);
 		} else {
-			getChildren().addAll(nodeText, nodeMark);
+			getChildren().addAll(textNode, nodeMark);
 		}
 		addEventFilter(MouseEvent.MOUSE_PRESSED, event -> setSelected(!isSelected()));
 		
@@ -58,7 +58,7 @@ public class NodeCheckbox extends HBox {
 	}
 	
 	public void setText(String text) {
-		nodeText.setText(text);
+		textNode.setText(text);
 	}
 	public void setSelected(boolean selected) {
 		selectedProperty.setValue(selected);

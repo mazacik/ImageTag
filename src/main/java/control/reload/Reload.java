@@ -22,14 +22,15 @@ public abstract class Reload {
 		try {
 			InvokeHelper ihFilterRefresh = new InvokeHelper(1, Filter.getEntities(), Filter.getEntities().getClass().getMethod("refresh"));
 			
+			InvokeHelper ihPFilterReload = new InvokeHelper(3, PaneFilter.getInstance(), PaneFilter.getInstance().getClass().getMethod("reload"));
+			InvokeHelper ihPSelectReload = new InvokeHelper(3, PaneSelect.getInstance(), PaneSelect.getInstance().getClass().getMethod("reload"));
+			
+			InvokeHelper ihPFilterRefresh = new InvokeHelper(4, PaneFilter.getInstance(), PaneFilter.getInstance().getClass().getMethod("refresh"));
+			InvokeHelper ihPSelectRefresh = new InvokeHelper(4, PaneSelect.getInstance(), PaneSelect.getInstance().getClass().getMethod("refresh"));
+			
 			InvokeHelper ihPToolbarReload = new InvokeHelper(5, PaneToolbar.getInstance(), PaneToolbar.getInstance().getClass().getMethod("reload"));
 			InvokeHelper ihPGalleryReload = new InvokeHelper(5, PaneGallery.getInstance(), PaneGallery.getInstance().getClass().getMethod("reload"));
 			InvokeHelper ihPDisplayReload = new InvokeHelper(5, PaneDisplay.getInstance(), PaneDisplay.getInstance().getClass().getMethod("reload"));
-			InvokeHelper ihPFilterReload = new InvokeHelper(5, PaneFilter.getInstance(), PaneFilter.getInstance().getClass().getMethod("reload"));
-			InvokeHelper ihPSelectReload = new InvokeHelper(5, PaneSelect.getInstance(), PaneSelect.getInstance().getClass().getMethod("reload"));
-			
-			InvokeHelper ihPFilterRefresh = new InvokeHelper(10, PaneFilter.getInstance(), PaneFilter.getInstance().getClass().getMethod("refresh"));
-			InvokeHelper ihPSelectRefresh = new InvokeHelper(10, PaneSelect.getInstance(), PaneSelect.getInstance().getClass().getMethod("refresh"));
 			
 			Notifier.FILTER_NEEDS_REFRESH.getInvokeHelpers().add(ihFilterRefresh);
 			

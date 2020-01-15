@@ -2,15 +2,11 @@ package base.tag;
 
 import base.CustomList;
 
-import java.util.Collection;
 import java.util.Comparator;
 
 public class TagList extends CustomList<Tag> {
 	public TagList() {
 	
-	}
-	public TagList(Collection<? extends Tag> c) {
-		super(c);
 	}
 	
 	public void sort() {
@@ -26,7 +22,16 @@ public class TagList extends CustomList<Tag> {
 		
 		return null;
 	}
-	public TagList getTags(String query) {
+	public Tag getTag(String stringValue) {
+		for (Tag tag : this) {
+			if (tag.getStringValue().equals(stringValue)) {
+				return tag;
+			}
+		}
+		
+		return null;
+	}
+	public TagList getTagsContaining(String query) {
 		TagList results = new TagList();
 		for (Tag tag : this) {
 			if (tag.getStringValue().contains(query)) {

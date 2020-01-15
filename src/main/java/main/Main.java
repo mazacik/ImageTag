@@ -6,7 +6,6 @@ import base.entity.EntityList;
 import base.tag.Tag;
 import base.tag.TagList;
 import cache.CacheManager;
-import control.Select;
 import control.filter.Filter;
 import control.reload.Notifier;
 import control.reload.Reload;
@@ -56,9 +55,6 @@ public class Main extends Application {
 		initTags();
 		initEntities();
 		initCollections();
-		
-		Select.setTarget(EntityList.getMain().getFirst());
-		Select.getEntities().set(Select.getTarget());
 		
 		Reload.notify(Notifier.values());
 		Reload.start();
@@ -170,5 +166,6 @@ public class Main extends Application {
 		
 		Project.getCurrent().writeToDisk();
 		Settings.writeToDisk();
+		System.exit(0);
 	}
 }

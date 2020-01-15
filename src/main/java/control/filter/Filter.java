@@ -15,7 +15,7 @@ public class Filter extends EntityList {
 	public static void reset() {
 		listManager.getWhitelist().clear();
 		listManager.getBlacklist().clear();
-		Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
+		Reload.notify(Notifier.FILTER_NEEDS_REFRESH, Notifier.TAG_LIST_MAIN);
 	}
 	public static void refresh() {
 		getEntities().clear();
@@ -74,13 +74,9 @@ public class Filter extends EntityList {
 		}
 	}
 	public static EntityList applyTo(EntityList listBefore) {
-		EntityList entityList = new EntityList();
-		listBefore.forEach(entity -> {
-			if (Loader.INSTANCE.contains(entity)) {
-				entityList.add(entity);
-			}
-		});
-		return entityList;
+		EntityList returnValue = new EntityList(listBefore);
+		returnValue.retainAll(getEntities());
+		return returnValue;
 	}
 	
 	public static FilterSettings getSettings() {

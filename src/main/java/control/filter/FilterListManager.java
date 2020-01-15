@@ -2,35 +2,55 @@ package control.filter;
 
 import base.CustomList;
 import base.entity.Entity;
-import base.tag.Tag;
 import control.reload.Notifier;
 import control.reload.Reload;
+import ui.main.side.TagNode;
 
 public class FilterListManager {
-	private final CustomList<String> whitelist = new CustomList<>();
-	private final CustomList<String> blacklist = new CustomList<>();
+	private final CustomList<TagNode> whitelist = new CustomList<>();
+	private final CustomList<TagNode> blacklist = new CustomList<>();
 	
 	protected FilterListManager() {
 	
 	}
 	
 	boolean applyLists(Entity entity) {
-		int matchLength = 0;
+		CustomList<String> stringValues = new CustomList<>();
+		entity.getTagList().forEach(tag -> stringValues.add(tag.getStringValue()));
+		
+		int deepestMatch = 0;
 		boolean ok = whitelist.isEmpty();
 		
-		for (Tag tag : entity.getTagList()) {
-			for (String string : whitelist) {
-				if (tag.getStringValue().contains(string)) {
-					if (string.length() > matchLength) {
-						matchLength = string.length();
+		for (TagNode whiteTagNode : whitelist) {
+			boolean hasThisTag = false;
+			for (String stringValue : stringValues) {
+				if (stringValue.startsWith(whiteTagNode.getStringValue())) {
+					hasThisTag = true;
+					break;
+				}
+			}
+			if (!hasThisTag) {
+				return false;
+			}
+		}
+		
+		if (!whitelist.isEmpty() && stringValues.isEmpty()) {
+			return false;
+		}
+		
+		for (String stringValue : stringValues) {
+			for (TagNode whiteTagNode : whitelist) {
+				if (stringValue.contains(whiteTagNode.getStringValue())) {
+					if (whiteTagNode.getLevel() > deepestMatch) {
+						deepestMatch = whiteTagNode.getLevel();
 						ok = true;
 					}
 				}
 			}
-			for (String string : blacklist) {
-				if (tag.getStringValue().contains(string)) {
-					if (string.length() > matchLength) {
-						matchLength = string.length();
+			for (TagNode blackTagNode : blacklist) {
+				if (stringValue.contains(blackTagNode.getStringValue())) {
+					if (blackTagNode.getLevel() >= deepestMatch) {
+						deepestMatch = blackTagNode.getLevel();
 						ok = false;
 					}
 				}
@@ -40,56 +60,33 @@ public class FilterListManager {
 		return ok;
 	}
 	
-	public void whitelist(Tag tag) {
-		whitelist(tag.getStringValue());
-	}
-	public void blacklist(Tag tag) {
-		blacklist(tag.getStringValue());
-	}
-	public void unlist(Tag tag) {
-		unlist(tag.getStringValue());
-	}
-	
-	public void whitelist(String string) {
-		whitelist.add(string, true);
-		blacklist.remove(string);
+	public void whitelist(TagNode tagNode) {
+		whitelist.add(tagNode, true);
+		blacklist.remove(tagNode);
 		Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
 	}
-	public void blacklist(String string) {
-		whitelist.remove(string);
-		blacklist.add(string, true);
+	public void blacklist(TagNode tagNode) {
+		whitelist.remove(tagNode);
+		blacklist.add(tagNode, true);
 		Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
 	}
-	public void unlist(String string) {
-		whitelist.remove(string);
-		blacklist.remove(string);
+	public void unlist(TagNode tagNode) {
+		whitelist.remove(tagNode);
+		blacklist.remove(tagNode);
 		Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
 	}
 	
-	public boolean isWhitelisted(Tag tag) {
-		return isWhitelisted(tag.getStringValue());
+	public boolean isWhitelisted(TagNode tagNode) {
+		return whitelist.contains(tagNode);
 	}
-	public boolean isBlacklisted(Tag tag) {
-		return isBlacklisted(tag.getStringValue());
-	}
-	public boolean isUnlisted(Tag tag) {
-		return !isWhitelisted(tag) && !isBlacklisted(tag);
+	public boolean isBlacklisted(TagNode tagNode) {
+		return blacklist.contains(tagNode);
 	}
 	
-	public boolean isWhitelisted(String string) {
-		return whitelist.contains(string);
-	}
-	public boolean isBlacklisted(String string) {
-		return blacklist.contains(string);
-	}
-	public boolean isUnlisted(String string) {
-		return !isWhitelisted(string) && !isBlacklisted(string);
-	}
-	
-	CustomList<String> getWhitelist() {
+	CustomList<TagNode> getWhitelist() {
 		return whitelist;
 	}
-	CustomList<String> getBlacklist() {
+	CustomList<TagNode> getBlacklist() {
 		return blacklist;
 	}
 }

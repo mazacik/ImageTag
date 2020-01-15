@@ -8,16 +8,16 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import ui.decorator.Decorator;
-import ui.node.NodeText;
+import ui.node.TextNode;
 import ui.override.HBox;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class TitleBar extends BorderPane {
-	private NodeText nodeTitle;
-	private NodeText nodeMinimize;
-	private NodeText nodeExit;
+	private TextNode nodeTitle;
+	private TextNode nodeMinimize;
+	private TextNode nodeExit;
 	
 	public TitleBar() {
 		this(null, "");
@@ -32,10 +32,10 @@ public class TitleBar extends BorderPane {
 		if (owner != null)
 			owner.titleProperty().addListener((observable, oldValue, newValue) -> nodeTitle.setText(newValue));
 		
-		nodeTitle = new NodeText(title, false, false, false, true);
+		nodeTitle = new TextNode(title, false, false, false, true);
 		BorderPane.setAlignment(nodeTitle, Pos.CENTER_LEFT);
 		
-		nodeMinimize = new NodeText("⚊", true, true, false, true);
+		nodeMinimize = new TextNode("⚊", true, true, false, true);
 		nodeMinimize.setOnMouseClicked(event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
 				nodeMinimize.setBackground(Background.EMPTY);
@@ -46,7 +46,7 @@ public class TitleBar extends BorderPane {
 		});
 		BorderPane.setAlignment(nodeMinimize, Pos.CENTER);
 		
-		nodeExit = new NodeText("✕", true, true, false, true);
+		nodeExit = new TextNode("✕", true, true, false, true);
 		nodeExit.setOnMouseClicked(event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
 				this.fireEvent(new WindowEvent(null, WindowEvent.WINDOW_CLOSE_REQUEST));

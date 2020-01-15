@@ -95,14 +95,19 @@ public class Entity {
 	
 	public void addTag(Tag tag) {
 		tagList.add(tag, true);
+		tagIDs.add(tag.getID());
 	}
 	public void addTag(int tagID) {
 		this.addTag(TagList.getMain().getTag(tagID));
 	}
 	public void removeTag(Tag tag) {
 		tagList.remove(tag);
+		tagIDs.remove((Integer) tag.getID());
 	}
 	public void removeTag(int tagID) {
 		this.removeTag(TagList.getMain().getTag(tagID));
+	}
+	public void removeTag(TagList tagList) {
+		tagList.forEach(this::removeTag);
 	}
 }

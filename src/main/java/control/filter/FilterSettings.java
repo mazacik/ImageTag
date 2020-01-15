@@ -1,5 +1,5 @@
 package control.filter;
-//todo refactor
+
 public class FilterSettings {
 	private boolean showImages = true;
 	private boolean showGifs = false;
@@ -7,12 +7,6 @@ public class FilterSettings {
 	private boolean showOnlyNewEntities = false;
 	private boolean enableLimit = false;
 	private int limit = 0;
-	
-	//0.01 = AND
-	//1.00 = OR
-	//todo actually check this
-	private double whitelistFactor = 0.01;
-	private double blacklistFactor = 0.01;
 	
 	private double similarityFactor = 0.5;
 	
@@ -56,20 +50,6 @@ public class FilterSettings {
 	}
 	public void setLimit(int limit) {
 		this.limit = limit;
-	}
-	
-	public double getWhitelistFactor() {
-		return whitelistFactor;
-	}
-	public double getBlacklistFactor() {
-		return blacklistFactor;
-	}
-	
-	public void setWhitelistFactor(double whitelistFactor) {
-		this.whitelistFactor = whitelistFactor;
-	}
-	public void setBlacklistFactor(double blacklistFactor) {
-		this.blacklistFactor = blacklistFactor;
 	}
 	
 	public double getSimilarityFactor() {

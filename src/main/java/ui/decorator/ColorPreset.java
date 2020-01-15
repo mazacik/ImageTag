@@ -16,21 +16,21 @@ public enum ColorPreset {
 	private Color colorSecondary;
 	private Color colorPositive;
 	private Color colorNegative;
-	private Color colorShare;
+	private Color colorUnion;
 	
 	private Color colorBorder;
 	
 	private Background backgroundPrimary;
 	private Background backgroundSecondary;
 	
-	ColorPreset(String displayName, Color colorPrimary, Color colorSecondary, Color colorPositive, Color colorNegative, Color colorShare, Color colorBorder, Background backgroundPrimary, Background backgroundSecondary) {
+	ColorPreset(String displayName, Color colorPrimary, Color colorSecondary, Color colorPositive, Color colorNegative, Color colorUnion, Color colorBorder, Background backgroundPrimary, Background backgroundSecondary) {
 		this.displayName = displayName;
 		
 		this.colorPrimary = colorPrimary;
 		this.colorSecondary = colorSecondary;
 		this.colorPositive = colorPositive;
 		this.colorNegative = colorNegative;
-		this.colorShare = colorShare;
+		this.colorUnion = colorUnion;
 		
 		this.colorBorder = colorBorder;
 		
@@ -61,8 +61,8 @@ public enum ColorPreset {
 	public Color getColorNegative() {
 		return colorNegative;
 	}
-	public Color getColorShare() {
-		return colorShare;
+	public Color getColorUnion() {
+		return colorUnion;
 	}
 	
 	public Color getColorBorder() {

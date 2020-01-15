@@ -15,7 +15,7 @@ import misc.FileUtil;
 import ui.custom.ClickMenu;
 import ui.main.gallery.PaneGallery;
 import ui.main.stage.StageMain;
-import ui.node.NodeText;
+import ui.node.TextNode;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -33,7 +33,7 @@ public class PaneDisplay extends BorderPane {
 	private Image currentImage = null;
 	private Entity currentCache = null;
 	
-	private NodeText nodeNoLibsError = null;
+	private TextNode nodeNoLibsError = null;
 	
 	public void init() {
 		canvas = new Canvas();
@@ -44,7 +44,7 @@ public class PaneDisplay extends BorderPane {
 		gifPlayer.fitWidthProperty().bind(PaneGallery.getInstance().widthProperty());
 		gifPlayer.fitHeightProperty().bind(PaneGallery.getInstance().heightProperty());
 		
-		nodeNoLibsError = new NodeText("No VLC Libs found.") {{
+		nodeNoLibsError = new TextNode("No VLC Libs found.") {{
 			this.setFont(new Font(64));
 			this.minWidthProperty().bind(canvas.widthProperty());
 			this.minHeightProperty().bind(canvas.heightProperty());

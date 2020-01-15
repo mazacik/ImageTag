@@ -14,8 +14,8 @@ import javafx.scene.Scene;
 import javafx.stage.DirectoryChooser;
 import main.Main;
 import ui.main.stage.StageMain;
-import ui.stage.StageConfirmation;
-import ui.stage.StageSimpleMessage;
+import ui.stage.ConfirmationStage;
+import ui.stage.SimpleMessageStage;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,7 +65,7 @@ public abstract class FileUtil {
 						//if (!abstractFile.exists()) counter++;
 						counter++;
 					} catch (IOException e) {
-						StageSimpleMessage.show("Delete failed: " + abstractFile.getAbsolutePath() + "\nCannot access the file because it is being used by another process.");
+						SimpleMessageStage.show("Delete failed: " + abstractFile.getAbsolutePath() + "\nCannot access the file because it is being used by another process.");
 						e.printStackTrace();
 					}
 				} else {
@@ -74,7 +74,7 @@ public abstract class FileUtil {
 					}
 				}
 			} else {
-				StageSimpleMessage.show("Delete failed: No OS-level file trash support");
+				SimpleMessageStage.show("Delete failed: No OS-level file trash support");
 				Logger.getGlobal().severe("No OS-level file trash support");
 			}
 			
@@ -125,7 +125,7 @@ public abstract class FileUtil {
 					}
 					
 					if (newEntities.isEmpty()) {
-						Platform.runLater(() -> StageSimpleMessage.show("Imported 0 files."));
+						Platform.runLater(() -> SimpleMessageStage.show("Imported 0 files."));
 					} else {
 						CacheManager.checkCacheInBackground(newEntities);
 						
@@ -136,7 +136,7 @@ public abstract class FileUtil {
 						
 						Platform.runLater(() -> {
 							String s = "Imported " + newEntities.size() + " files.\nWould you like to view the new files?";
-							if (StageConfirmation.show(s)) {
+							if (ConfirmationStage.show(s)) {
 								Filter.getSettings().setShowImages(true);
 								Filter.getSettings().setShowGifs(true);
 								Filter.getSettings().setShowVideos(true);

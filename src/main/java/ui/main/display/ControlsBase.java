@@ -15,28 +15,28 @@ import javafx.scene.layout.BorderPane;
 import misc.FileUtil;
 import misc.Settings;
 import ui.decorator.Decorator;
-import ui.node.NodeText;
+import ui.node.TextNode;
 import ui.override.HBox;
 
 import java.io.File;
 
 public class ControlsBase extends BorderPane {
-	private NodeText btnPlayPause;
+	private TextNode btnPlayPause;
 	
-	private NodeText btnSkipBackward;
-	private NodeText btnSkipForward;
+	private TextNode btnSkipBackward;
+	private TextNode btnSkipForward;
 	
-	private NodeText btnSkipBackward5s;
-	private NodeText btnSkipForward5s;
+	private TextNode btnSkipBackward5s;
+	private TextNode btnSkipForward5s;
 	
-	private NodeText btnMute;
-	private NodeText btnSnapshot;
+	private TextNode btnMute;
+	private TextNode btnSnapshot;
 	
-	private NodeText btnPrevious;
-	private NodeText btnNext;
+	private TextNode btnPrevious;
+	private TextNode btnNext;
 	
-	private NodeText lblTimeCurrent;
-	private NodeText lblTimeTotal;
+	private TextNode lblTimeCurrent;
+	private TextNode lblTimeTotal;
 	
 	private ProgressBar progressBar = new ProgressBar();
 	
@@ -45,19 +45,19 @@ public class ControlsBase extends BorderPane {
 		progressBar.setProgress(0);
 		progressBar.skinProperty().addListener((observable, oldValue, newValue) -> progressBar.lookup(".bar").setStyle("-fx-background-insets: 1 1 1 1; -fx-padding: 0.25em;"));
 		
-		btnSkipBackward = new NodeText("SkipBackward", true, true, false, true);
-		btnSkipBackward5s = new NodeText("SkipBackward5s", true, true, false, true);
-		btnPlayPause = new NodeText("PlayPause", true, true, false, true);
-		btnSkipForward = new NodeText("SkipForward", true, true, false, true);
-		btnSkipForward5s = new NodeText("SkipForward5s", true, true, false, true);
-		btnMute = new NodeText("Mute", true, true, false, true);
-		btnSnapshot = new NodeText("Snapshot", true, true, false, true);
+		btnSkipBackward = new TextNode("SkipBackward", true, true, false, true);
+		btnSkipBackward5s = new TextNode("SkipBackward5s", true, true, false, true);
+		btnPlayPause = new TextNode("PlayPause", true, true, false, true);
+		btnSkipForward = new TextNode("SkipForward", true, true, false, true);
+		btnSkipForward5s = new TextNode("SkipForward5s", true, true, false, true);
+		btnMute = new TextNode("Mute", true, true, false, true);
+		btnSnapshot = new TextNode("Snapshot", true, true, false, true);
 		
-		btnPrevious = new NodeText("Previous", true, true, false, true);
-		btnNext = new NodeText("Next", true, true, false, true);
+		btnPrevious = new TextNode("Previous", true, true, false, true);
+		btnNext = new TextNode("Next", true, true, false, true);
 		
-		lblTimeCurrent = new NodeText("00:00:00", true, true, false, true);
-		lblTimeTotal = new NodeText("23:59:59", true, true, false, true);
+		lblTimeCurrent = new TextNode("00:00:00", true, true, false, true);
+		lblTimeTotal = new TextNode("23:59:59", true, true, false, true);
 		
 		this.setBackground(Decorator.getBackgroundPrimary());
 		Decorator.getNodeList().add(this);

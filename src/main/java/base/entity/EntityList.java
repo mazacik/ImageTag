@@ -1,6 +1,8 @@
 package base.entity;
 
 import base.CustomList;
+import base.tag.Tag;
+import base.tag.TagList;
 import control.filter.Filter;
 import control.reload.Notifier;
 import control.reload.Reload;
@@ -54,29 +56,32 @@ public class EntityList extends CustomList<Entity> {
 		this.forEach(entity -> tagIDs.addAll(entity.getTagIDs(), true));
 		return tagIDs;
 	}
-	public CustomList<Integer> getTagsIntersect() {
+	public TagList getTagList() {
+		TagList tagList = new TagList();
+		this.forEach(entity -> tagList.addAll(entity.getTagList(), true));
+		return tagList;
+	}
+	public TagList getTagListIntersect() {
 		if (!this.isEmpty()) {
-			CustomList<Integer> tagsIntersect = new CustomList<>();
-			
+			TagList tagListIntersect = new TagList();
 			//check every tag of the first object
-			for (Integer tagID : this.getFirst().getTagIDs()) {
+			for (Tag tag : this.getFirst().getTagList()) {
 				//check if all objects contain the tagID
 				for (Entity entity : this) {
-					if (entity.getTagIDs().contains(tagID)) {
-						//if the last object contains the tagID, all before do too, add
+					if (entity.getTagList().contains(tag)) {
+						//if the last object contains the tag, all before do too, add
 						if (entity.equals(this.getLast())) {
-							tagsIntersect.add(tagID);
+							tagListIntersect.add(tag);
 						}
-						//if any of the objects doesn't contain the tagID, break
 					} else {
+						//if any of the objects doesn't contain the tag, break
 						break;
 					}
 				}
 			}
-			
-			return tagsIntersect;
+			return tagListIntersect;
 		} else {
-			return new CustomList<>();
+			return new TagList();
 		}
 	}
 	

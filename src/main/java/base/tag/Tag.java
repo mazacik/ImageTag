@@ -50,7 +50,7 @@ public class Tag {
 	
 	public void replaceLevelsFromStart(int count, CustomList<String> levels) {
 		CustomList<String> levelsNew = new CustomList<>(levels);
-		for (int i = count; count < this.levels.size(); i++) {
+		for (int i = count; i < this.levels.size(); i++) {
 			levelsNew.add(this.levels.get(i));
 		}
 		this.levels.setAll(levelsNew);

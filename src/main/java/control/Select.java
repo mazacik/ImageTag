@@ -39,12 +39,28 @@ public class Select extends EntityList {
 		return this.addAll(c, false);
 	}
 	public boolean addAll(Collection<? extends Entity> c, boolean checkDuplicates) {
-		if (super.addAll(c, checkDuplicates)) {
-			Reload.requestBorderUpdate(c);
+		int sizeBefore = this.size();
+		
+		for (Entity entity : c) {
+			if (EntityCollectionUtil.hasOpenOrNoCollection(entity)) {
+				if (super.add(entity, true)) {
+					Reload.requestBorderUpdate(entity);
+					
+				}
+			} else {
+				EntityList afterFilter = Filter.applyTo(entity.getCollection());
+				if (super.addAll(afterFilter, true)) {
+					Reload.requestBorderUpdate(afterFilter);
+				}
+			}
+		}
+		
+		if (this.size() != sizeBefore) {
 			Reload.notify(Notifier.SELECT);
 			return true;
+		} else {
+			return false;
 		}
-		return false;
 	}
 	
 	public boolean remove(Entity entity) {
@@ -85,8 +101,9 @@ public class Select extends EntityList {
 				return true;
 			}
 		} else {
-			if (super.addAll(Filter.applyTo(entity.getCollection()))) {
-				Reload.requestBorderUpdate(entity.getCollection());
+			EntityList afterFilter = Filter.applyTo(entity.getCollection());
+			if (super.addAll(afterFilter)) {
+				Reload.requestBorderUpdate(afterFilter);
 				Reload.notify(Notifier.SELECT);
 				return true;
 			}

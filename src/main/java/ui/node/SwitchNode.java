@@ -7,13 +7,13 @@ import ui.decorator.Decorator;
 import ui.override.HBox;
 import ui.override.VBox;
 
-public class NodeSwitch extends VBox {
-	protected NodeText left;
-	protected NodeText right;
+public class SwitchNode extends VBox {
+	protected TextNode left;
+	protected TextNode right;
 	
-	public NodeSwitch(String title, String text1, String text2, double prefWidth) {
-		left = new NodeText(text1, true, false, true, true);
-		right = new NodeText(text2, true, false, true, true);
+	public SwitchNode(String title, String text1, String text2, double prefWidth) {
+		left = new TextNode(text1, true, false, true, true);
+		right = new TextNode(text2, true, false, true, true);
 		
 		left.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, this::selectLeft);
 		right.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, this::selectRight);
@@ -25,7 +25,7 @@ public class NodeSwitch extends VBox {
 		}
 		
 		this.setAlignment(Pos.CENTER);
-		this.getChildren().add(new NodeText(title));
+		this.getChildren().add(new TextNode(title));
 		this.getChildren().add(new HBox(left, right));
 	}
 	
@@ -38,10 +38,10 @@ public class NodeSwitch extends VBox {
 		right.setBorder(Decorator.getBorder(1));
 	}
 	
-	public NodeText getLeft() {
+	public TextNode getLeft() {
 		return left;
 	}
-	public NodeText getRight() {
+	public TextNode getRight() {
 		return right;
 	}
 }
