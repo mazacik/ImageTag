@@ -34,7 +34,7 @@ public class TagList extends CustomList<Tag> {
 	public TagList getTagsContaining(String query) {
 		TagList results = new TagList();
 		for (Tag tag : this) {
-			if (tag.getStringValue().contains(query)) {
+			if (tag.getStringValue().startsWith(query)) {
 				results.add(tag);
 			}
 		}

@@ -12,6 +12,8 @@ public class Tag {
 	public Tag(CustomList<String> levels) {
 		this.id = new Random().nextInt();
 		this.levels = levels;
+		
+		setStringValue();
 	}
 	
 	public void replaceLevelsFromStart(int levelCount, CustomList<String> levels) {
@@ -33,10 +35,13 @@ public class Tag {
 		stringValue = builder.toString();
 	}
 	
-	public String getLevel(int level) {
-		return levels.get(level);
-	}
 	public int getID() {
 		return id;
+	}
+	public int getNumLevels() {
+		return levels.size();
+	}
+	public String getLevel(int level) {
+		return levels.get(level);
 	}
 }

@@ -181,12 +181,14 @@ public enum NodeTemplates {
 				ClickMenu.hideAll();
 				
 				String stringBefore = ClickMenu.getTagNode().getStringValue();
-				int countBefore = ClickMenu.getTagNode().getLevel() + 1;
-				CustomList<String> levelsAfter = TagEditStage.show(ClickMenu.getTagNode().getLevels());
+				int numLevelsBefore = ClickMenu.getTagNode().getNumLevels();
+				CustomList<String> listLevelsAfter = TagEditStage.show(ClickMenu.getTagNode().getLevels());
 				
-				if (levelsAfter != null) {
-					TagList.getMain().getTagsContaining(stringBefore).forEach(tag -> tag.replaceLevelsFromStart(countBefore, levelsAfter));
+				if (listLevelsAfter != null && !listLevelsAfter.isEmpty()) {
+					TagList.getMain().getTagsContaining(stringBefore).forEach(tag -> tag.replaceLevelsFromStart(numLevelsBefore, listLevelsAfter));
 					TagList.getMain().sort();
+					
+					Filter.getListManager().update(stringBefore, numLevelsBefore, listLevelsAfter);
 					
 					Reload.notify(Notifier.TAG_LIST_MAIN);
 					Reload.start();
@@ -206,7 +208,7 @@ public enum NodeTemplates {
 				if (ConfirmationStage.show("Remove \"" + tagNode.getText() + "\" ?")) {
 					TagList tagList = TagList.getMain().getTagsContaining(tagNode.getStringValue());
 					
-					tagNode.getSubNodesComplete().forEach(subNode -> Filter.getListManager().unlist(subNode));
+					tagNode.getSubNodesComplete().forEach(subNode -> Filter.getListManager().unlist(subNode.getStringValue()));
 					EntityList.getMain().forEach(entity -> entity.removeTag(tagList));
 					TagList.getMain().removeAll(tagList);
 					

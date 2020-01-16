@@ -13,7 +13,7 @@ public class Filter extends EntityList {
 	private static final EntityList newEntities = new EntityList();
 	
 	public static void reset() {
-		listManager.unlistAll();
+		listManager.clear();
 		Reload.notify(Notifier.TAG_LIST_MAIN);
 	}
 	public static void refresh() {
@@ -53,8 +53,8 @@ public class Filter extends EntityList {
 	}
 	
 	public static void showSimilar(Entity entity) {
-		listManager.unlistAll();
-		listManager.unlistAll();
+		listManager.clear();
+		listManager.clear();
 		getEntities().clear();
 		
 		CustomList<Integer> query = entity.getTagIDs();

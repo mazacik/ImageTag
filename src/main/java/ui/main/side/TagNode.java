@@ -19,7 +19,7 @@ import ui.override.VBox;
 
 public class TagNode extends VBox {
 	private static final int PADDING_DEFAULT = 10;
-	private static final int PADDING_INCREMENT = 10;
+	private static final int PADDING_INCREMENT = 20;
 	
 	private final TextNode toggleNode;
 	private final TextNode textNode;
@@ -89,14 +89,14 @@ public class TagNode extends VBox {
 	}
 	
 	private void clickFilter() {
-		if (Filter.getListManager().isWhitelisted(this)) {
-			Filter.getListManager().blacklist(this);
+		if (Filter.getListManager().isWhitelisted(stringValue)) {
+			Filter.getListManager().blacklist(stringValue, getNumLevels());
 			setTextFill(Decorator.getColorNegative());
-		} else if (Filter.getListManager().isBlacklisted(this)) {
-			Filter.getListManager().unlist(this);
+		} else if (Filter.getListManager().isBlacklisted(stringValue)) {
+			Filter.getListManager().unlist(stringValue);
 			setTextFill(Decorator.getColorPrimary());
 		} else {
-			Filter.getListManager().whitelist(this);
+			Filter.getListManager().whitelist(stringValue, getNumLevels());
 			setTextFill(Decorator.getColorPositive());
 		}
 	}
@@ -153,8 +153,8 @@ public class TagNode extends VBox {
 		}
 		
 		//look for a valid child node
-		if (!currentNode.isLast()) {
-			String nextLevelString = tag.getLevel(currentNode.getLevel() + 1);
+		if (currentNode.getNumLevels() < tag.getNumLevels()) {
+			String nextLevelString = tag.getLevel(currentNode.getNumLevels()); //this works because getLevel() starts at 0, getNumLevels() at 1
 			for (TagNode tagNode : currentNode.getSubNodesDirect()) {
 				if (tagNode.getText().equals(nextLevelString)) {
 					//child node found, repeat with next level
@@ -164,7 +164,7 @@ public class TagNode extends VBox {
 		}
 		
 		//child node not found, needs to be created
-		TagNode newNode = new TagNode(parentPane, tag, currentNode.getLevel() + 1);
+		TagNode newNode = new TagNode(parentPane, tag, currentNode.getNumLevels());
 		currentNode.getSubNodesDirect().add(newNode);
 		return getSubNodeRecursion(newNode, tag);
 	}
@@ -196,8 +196,8 @@ public class TagNode extends VBox {
 		return stringValue;
 	}
 	
-	public int getLevel() {
-		return levels.size() - 1;
+	public int getNumLevels() {
+		return levels.size();
 	}
 	public String getText() {
 		return textNode.getText();

@@ -21,7 +21,7 @@ public class FilterPane extends SidePaneBase {
 		btnCreateNewTag.prefWidthProperty().bind(this.widthProperty());
 		btnCreateNewTag.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			CustomList<String> levels = TagEditStage.show(null);
-			if (levels != null) {
+			if (levels != null && !levels.isEmpty()) {
 				TagList.getMain().add(new Tag(levels));
 				TagList.getMain().sort();
 				
