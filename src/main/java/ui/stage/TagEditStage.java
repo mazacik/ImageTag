@@ -14,7 +14,7 @@ import ui.override.VBox;
 
 public class TagEditStage extends AbstractStage {
 	private static final CustomList<LevelNode> nodeList;
-	private static final CustomList<String> returnList;
+	private static CustomList<String> returnList;
 	
 	private static final VBox boxNodes;
 	
@@ -38,53 +38,39 @@ public class TagEditStage extends AbstractStage {
 		});
 		
 		nodeOK = new TextNode("OK", true, true, false, true);
-		nodeOK.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-			if (checkEditNodes()) {
-				returnValue();
-			}
-		});
+		nodeOK.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, TagEditStage::returnValue);
 		
 		nodeCancel = new TextNode("Cancel", true, true, false, true);
 		nodeCancel.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, getInstance()::close);
 	}
 	
-	private static void returnValue() {
-		if (checkEditNodes()) {
-			nodeList.forEach(levelNode -> returnList.add(levelNode.editNode.getText()));
-			getInstance().close();
-		}
-	}
-	public static boolean checkEditNodes() {
-		for (LevelNode levelNode : nodeList) {
-			if (levelNode.editNode.getText().trim().isEmpty()) {
-				getInstance().setErrorMessage("Level " + (nodeList.indexOf(levelNode) + 1) + " is empty.");
-				return false;
-			}
-		}
-		return true;
-	}
-	
 	public static CustomList<String> show(CustomList<String> levelsBefore) {
 		nodeList.clear();
-		if (levelsBefore == null) {
-			nodeList.add(new LevelNode(""));
-		} else {
+		if (levelsBefore != null) {
 			for (String string : levelsBefore) {
-				nodeList.add(new LevelNode(string));
+				if (!string.isEmpty()) {
+					nodeList.add(new LevelNode(string));
+				}
 			}
 		}
+		nodeList.add(new LevelNode(""));
 		boxNodes.getChildren().setAll(nodeList);
 		
-		returnList.clear();
+		returnList = new CustomList<>();
 		
 		getInstance().setErrorMessage("");
 		getInstance().showAndWait();
 		
-		if (!returnList.isEmpty()) {
-			return returnList;
-		} else {
-			return null;
-		}
+		return returnList;
+	}
+	private static void returnValue() {
+		nodeList.forEach(levelNode -> {
+			String string = levelNode.editNode.getText().trim();
+			if (!string.isEmpty()) {
+				returnList.add(string);
+			}
+		});
+		getInstance().close();
 	}
 	
 	private TagEditStage() {
