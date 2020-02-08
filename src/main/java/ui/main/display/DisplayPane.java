@@ -33,27 +33,7 @@ public class DisplayPane extends BorderPane {
 	private Image currentImage = null;
 	private Entity currentCache = null;
 	
-	private TextNode nodeNoLibsError = null;
-	
-	public void init() {
-		canvas = new Canvas();
-		gifPlayer = new ImageView();
-		videoPlayer = VideoPlayer.create(canvas);
-		controls = new Controls(this, videoPlayer);
-		
-		gifPlayer.fitWidthProperty().bind(GalleryPane.getInstance().widthProperty());
-		gifPlayer.fitHeightProperty().bind(GalleryPane.getInstance().heightProperty());
-		
-		nodeNoLibsError = new TextNode("No VLC Libs found.") {{
-			this.setFont(new Font(64));
-			this.minWidthProperty().bind(canvas.widthProperty());
-			this.minHeightProperty().bind(canvas.heightProperty());
-		}};
-		
-		this.setCenter(canvas);
-		
-		this.initEvents();
-	}
+	private TextNode nodeNoLibsError;
 	
 	public boolean reload() {
 		Entity currentTarget = Select.getTarget();
@@ -215,7 +195,25 @@ public class DisplayPane extends BorderPane {
 		return controls;
 	}
 	
-	private DisplayPane() {}
+	private DisplayPane() {
+		canvas = new Canvas();
+		gifPlayer = new ImageView();
+		videoPlayer = VideoPlayer.create(canvas);
+		controls = new Controls(this, videoPlayer);
+		
+		gifPlayer.fitWidthProperty().bind(GalleryPane.getInstance().widthProperty());
+		gifPlayer.fitHeightProperty().bind(GalleryPane.getInstance().heightProperty());
+		
+		nodeNoLibsError = new TextNode("No VLC Libs found.") {{
+			this.setFont(new Font(64));
+			this.minWidthProperty().bind(canvas.widthProperty());
+			this.minHeightProperty().bind(canvas.heightProperty());
+		}};
+		
+		this.setCenter(canvas);
+		
+		this.initEvents();
+	}
 	private static class Loader {
 		private static final DisplayPane INSTANCE = new DisplayPane();
 	}

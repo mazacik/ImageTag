@@ -1,6 +1,7 @@
 package ui.stage;
 
 import base.CustomList;
+import base.tag.TagList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.input.KeyCode;
@@ -64,13 +65,21 @@ public class TagEditStage extends AbstractStage {
 		return returnList;
 	}
 	private static void returnValue() {
+		CustomList<String> helperList = new CustomList<>();
+		
 		nodeList.forEach(levelNode -> {
 			String string = levelNode.editNode.getText().trim();
 			if (!string.isEmpty()) {
-				returnList.add(string);
+				helperList.add(string);
 			}
 		});
-		getInstance().close();
+		
+		if (!TagList.getMain().containsEqual(helperList)) {
+			returnList = helperList;
+			getInstance().close();
+		} else {
+			getInstance().setErrorMessage("Tag already exists.");
+		}
 	}
 	
 	private TagEditStage() {

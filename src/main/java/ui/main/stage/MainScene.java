@@ -9,6 +9,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import main.EventUtil;
 import ui.decorator.Decorator;
 import ui.main.display.DisplayPane;
 import ui.main.gallery.GalleryPane;
@@ -16,6 +17,7 @@ import ui.main.side.FilterPane;
 import ui.main.side.SelectPane;
 import ui.main.top.ToolbarPane;
 import ui.node.EditNode;
+import ui.node.NodeTemplates;
 import ui.override.HBox;
 import ui.override.Scene;
 import ui.override.VBox;
@@ -42,8 +44,10 @@ public class MainScene extends Scene {
 				}
 			} else {
 				switch (event.getCode()) {
+					case I:
+						NodeTemplates.ENTITY_IMAGE_SIZE_INFO.get().fireEvent(EventUtil.createEventMouseClick(event));
+						break;
 					case BACK_QUOTE:
-						
 						break;
 					case ESCAPE:
 						MainStage.getMainScene().viewGallery();
@@ -61,7 +65,6 @@ public class MainScene extends Scene {
 						Reload.start();
 						break;
 					case R:
-						Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
 						Entity randomEntity = GalleryPane.getTileEntities().getRandom();
 						Select.getEntities().set(randomEntity);
 						Select.setTarget(randomEntity);

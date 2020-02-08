@@ -168,9 +168,9 @@ public class Tile extends Pane {
 	}
 	public void updateCollectionIcon() {
 		if (!EntityCollectionUtil.getOpenCollections().contains(entity.getCollectionID())) {
-			entity.getCollection().getFirst().getTile().setEffect(collectionIconPlus);
+			this.setEffect(collectionIconPlus);
 		} else {
-			entity.getCollection().getFirst().getTile().setEffect(collectionIconMinus);
+			this.setEffect(collectionIconMinus);
 		}
 	}
 	

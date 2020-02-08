@@ -4,30 +4,17 @@ import base.CustomList;
 import control.Select;
 import control.reload.Notifier;
 import control.reload.Reload;
-import ui.stage.ConfirmationStage;
 
 import java.util.Random;
 
 public abstract class EntityCollectionUtil {
 	public static void create() {
 		int collectionID = new Random().nextInt();
-		CustomList<Integer> collectionTags = Select.getEntities().getTagIDs();
 		
-		String s = "A collection of " + Select.getEntities().size() + " items will be created.\nMerge tags?";
-		if (!collectionTags.isEmpty() && ConfirmationStage.show(s)) {
-			for (Entity entity : Select.getEntities()) {
-				entity.setCollectionID(collectionID);
-				entity.setCollection(new EntityList(Select.getEntities()));
-				entity.setTagIDs(collectionTags);
-				entity.getTile().updateCollectionIcon();
-			}
-			Reload.notify(Notifier.TAGS_OF_SELECT);
-		} else {
-			for (Entity entity : Select.getEntities()) {
-				entity.setCollectionID(collectionID);
-				entity.setCollection(new EntityList(Select.getEntities()));
-				entity.getTile().updateCollectionIcon();
-			}
+		for (Entity entity : Select.getEntities()) {
+			entity.setCollectionID(collectionID);
+			entity.setCollection(new EntityList(Select.getEntities()));
+			entity.getTile().updateCollectionIcon();
 		}
 		
 		Reload.notify(Notifier.ENTITY_LIST_MAIN);
@@ -59,13 +46,18 @@ public abstract class EntityCollectionUtil {
 	private static CustomList<Integer> openCollections = new CustomList<>();
 	public static void openCollection(Entity entity) {
 		int collectionID = entity.getCollectionID();
+		
 		if (collectionID != 0) {
 			if (openCollections.contains(collectionID)) {
 				openCollections.remove((Integer) collectionID);
 			} else {
 				openCollections.add(collectionID);
 			}
-			entity.getTile().updateCollectionIcon();
+			
+			for (Entity _entity : entity.getCollection()) {
+				_entity.getTile().updateCollectionIcon();
+			}
+			
 			Reload.notify(Notifier.ENTITY_LIST_MAIN);
 		}
 	}

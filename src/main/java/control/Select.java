@@ -123,6 +123,7 @@ public class Select extends EntityList {
 	
 	public void deleteFiles() {
 		EntityList helper = new EntityList();
+		
 		getEntities().forEach(entity -> {
 			if (FileUtil.deleteFile(FileUtil.getFileEntity(entity))) {
 				FileUtil.deleteFile(FileUtil.getFileCache(entity));
@@ -136,7 +137,6 @@ public class Select extends EntityList {
 			EntityList.getMain().removeAll(helper);
 			
 			Reload.notify(Notifier.ENTITY_LIST_MAIN);
-			Reload.start();
 		}
 	}
 	
@@ -252,12 +252,14 @@ public class Select extends EntityList {
 	private static int storePos = -1;
 	private static Entity storeEntity = null;
 	public static void storeTargetPosition() {
-		if (EntityCollectionUtil.hasOpenOrNoCollection(target)) {
-			storeEntity = target;
-		} else {
-			storeEntity = target.getCollection().getFirst();
+		if (target != null) {
+			if (EntityCollectionUtil.hasOpenOrNoCollection(target)) {
+				storeEntity = target;
+			} else {
+				storeEntity = target.getCollection().getFirst();
+			}
+			storePos = GalleryPane.getTileEntities().indexOf(storeEntity);
 		}
-		storePos = GalleryPane.getTileEntities().indexOf(storeEntity);
 	}
 	public static void restoreTargetPosition() {
 		EntityList tileEntities = GalleryPane.getTileEntities();

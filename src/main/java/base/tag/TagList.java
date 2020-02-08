@@ -41,6 +41,21 @@ public class TagList extends CustomList<Tag> {
 		return results;
 	}
 	
+	public boolean containsEqual(Tag tag) {
+		return containsEqual(tag.getStringValue());
+	}
+	public boolean containsEqual(CustomList<String> levels) {
+		return containsEqual(new Tag(levels).getStringValue());
+	}
+	public boolean containsEqual(String stringValue) {
+		for (Tag tag : this) {
+			if (stringValue.equals(tag.getStringValue())) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	private static class Loader {
 		private static final TagList INSTANCE = new TagList();
 	}

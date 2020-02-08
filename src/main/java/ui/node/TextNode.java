@@ -9,10 +9,12 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
-import javafx.scene.text.TextAlignment;
 import ui.decorator.Decorator;
 
 public class TextNode extends Label {
+	private static final int PADDING_V = 3;
+	private static final int PADDING_H = 10;
+	
 	public TextNode() {
 		this("");
 	}
@@ -27,14 +29,13 @@ public class TextNode extends Label {
 		this.setAlignment(Pos.CENTER);
 		this.setFont(Decorator.getFont());
 		this.setBackground(Background.EMPTY);
-		this.setTextAlignment(TextAlignment.CENTER);
 		this.setTextFill(Decorator.getColorPrimary());
 		this.minWidthProperty().bind(this.heightProperty());
 		
 		Decorator.getNodeList().add(this);
 		
 		if (defaultPadding) {
-			this.setPadding(new Insets(5, 10, 5, 10));
+			this.setPadding(new Insets(PADDING_V, PADDING_H, PADDING_V, PADDING_H));
 		}
 		
 		this.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {

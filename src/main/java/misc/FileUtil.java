@@ -80,7 +80,7 @@ public abstract class FileUtil {
 			
 			return counter != 0;
 		} else {
-			return true;
+			return false;
 		}
 	}
 	
@@ -117,7 +117,7 @@ public abstract class FileUtil {
 						File fileAfter = new File(pathAfter);
 						if (!fileAfter.exists()) {
 							fileAfter.getParentFile().mkdirs();
-							FileUtil.moveFile(pathBefore, pathAfter);
+							moveFile(pathBefore, pathAfter);
 							newEntities.add(new Entity(fileAfter));
 						} else {
 							Logger.getGlobal().info("Could not import file " + file.getName() + ", file already exists");
@@ -199,7 +199,7 @@ public abstract class FileUtil {
 		
 		for (File abstractFile : abstractFiles) {
 			if (abstractFile.isDirectory()) {
-				actualFiles.addAll(FileUtil.getSupportedFiles(abstractFile));
+				actualFiles.addAll(getSupportedFiles(abstractFile));
 			} else {
 				actualFiles.add(abstractFile);
 			}

@@ -1,14 +1,13 @@
 package ui.node;
 
-import base.CustomList;
 import base.entity.EntityCollectionUtil;
 import base.entity.EntityList;
-import base.tag.TagList;
+import base.tag.TagUtil;
 import cache.CacheManager;
 import control.Select;
 import control.filter.Filter;
-import control.reload.Notifier;
 import control.reload.Reload;
+import javafx.scene.image.Image;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
@@ -18,11 +17,8 @@ import misc.FileUtil;
 import misc.HttpUtil;
 import misc.Project;
 import ui.custom.ClickMenu;
-import ui.main.side.TagNode;
 import ui.main.stage.MainStage;
-import ui.stage.ConfirmationStage;
 import ui.stage.SimpleMessageStage;
-import ui.stage.TagEditStage;
 
 import java.awt.*;
 import java.io.File;
@@ -118,6 +114,22 @@ public enum NodeTemplates {
 			return textNode;
 		}
 	},
+	ENTITY_IMAGE_SIZE_INFO {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Details", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ClickMenu.hideAll();
+				
+				Image entityImage = new Image("file:" + FileUtil.getFileEntity(Select.getTarget()));
+				int width = (int) entityImage.getWidth();
+				int height = (int) entityImage.getHeight();
+				
+				SimpleMessageStage.show("Details", width + "x" + height);
+			});
+			return textNode;
+		}
+	},
 	
 	FILTER_SIMILAR {
 		public TextNode get() {
@@ -168,11 +180,40 @@ public enum NodeTemplates {
 				ClickMenu.hideAll();
 				
 				Select.getEntities().deleteFiles();
+				Reload.start();
 			});
 			return textNode;
 		}
 	},
 	
+	TAG_CREATE {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Create a Tag", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ClickMenu.hideAll();
+				
+				TagUtil.create();
+				
+				Reload.start();
+			});
+			return textNode;
+		}
+	},
+	TAG_CREATE_CHILD {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Create a Tag", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ClickMenu.hideAll();
+				
+				TagUtil.create(ClickMenu.getTagNode().getLevels());
+				
+				Reload.start();
+			});
+			return textNode;
+		}
+	},
 	TAG_EDIT {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Edit Tag", true, true, false, true);
@@ -180,19 +221,9 @@ public enum NodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClickMenu.hideAll();
 				
-				String stringBefore = ClickMenu.getTagNode().getStringValue();
-				int numLevelsBefore = ClickMenu.getTagNode().getNumLevels();
-				CustomList<String> listLevelsAfter = TagEditStage.show(ClickMenu.getTagNode().getLevels());
+				TagUtil.edit(ClickMenu.getTagNode().getStringValue(), ClickMenu.getTagNode().getNumLevels());
 				
-				if (listLevelsAfter != null && !listLevelsAfter.isEmpty()) {
-					TagList.getMain().getTagsContaining(stringBefore).forEach(tag -> tag.replaceLevelsFromStart(numLevelsBefore, listLevelsAfter));
-					TagList.getMain().sort();
-					
-					Filter.getListManager().update(stringBefore, numLevelsBefore, listLevelsAfter);
-					
-					Reload.notify(Notifier.TAG_LIST_MAIN);
-					Reload.start();
-				}
+				Reload.start();
 			});
 			return textNode;
 		}
@@ -204,17 +235,9 @@ public enum NodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClickMenu.hideAll();
 				
-				TagNode tagNode = ClickMenu.getTagNode();
-				if (ConfirmationStage.show("Remove \"" + tagNode.getText() + "\" ?")) {
-					TagList tagList = TagList.getMain().getTagsContaining(tagNode.getStringValue());
-					
-					tagNode.getSubNodesComplete().forEach(subNode -> Filter.getListManager().unlist(subNode.getStringValue()));
-					EntityList.getMain().forEach(entity -> entity.removeTag(tagList));
-					TagList.getMain().removeAll(tagList);
-					
-					Reload.notify(Notifier.TAG_LIST_MAIN);
-					Reload.start();
-				}
+				TagUtil.remove();
+				
+				Reload.start();
 			});
 			return textNode;
 		}
@@ -228,6 +251,7 @@ public enum NodeTemplates {
 				ClickMenu.hideAll();
 				
 				EntityCollectionUtil.create();
+				
 				Reload.start();
 			});
 			return textNode;
@@ -241,6 +265,7 @@ public enum NodeTemplates {
 				ClickMenu.hideAll();
 				
 				EntityCollectionUtil.discard();
+				
 				Reload.start();
 			});
 			return textNode;

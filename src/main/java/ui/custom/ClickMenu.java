@@ -39,6 +39,7 @@ public class ClickMenu extends Popup {
 		list.add(NodeTemplates.ENTITY_EDIT_PAINT.get());
 		list.add(NodeTemplates.FILTER_SIMILAR.get());
 		list.add(NodeTemplates.ENTITY_REVERSE_IMAGE_SEARCH.get());
+		list.add(NodeTemplates.ENTITY_IMAGE_SIZE_INFO.get());
 		list.add(new BoxSeparator());
 		list.add(NodeTemplates.ENTITY_COPY_NAME.get());
 		list.add(NodeTemplates.ENTITY_COPY_PATH.get());
@@ -66,7 +67,7 @@ public class ClickMenu extends Popup {
 			super.show(root, direction);
 		}
 	};
-	private static ClickMenu clickMenuTag = new ClickMenu(NodeTemplates.TAG_EDIT.get(), NodeTemplates.TAG_REMOVE.get());
+	private static ClickMenu clickMenuTag = new ClickMenu(NodeTemplates.TAG_CREATE_CHILD.get(), NodeTemplates.TAG_EDIT.get(), NodeTemplates.TAG_REMOVE.get());
 	private static ClickMenu clickMenuSelect = new ClickMenu(NodeTemplates.SELECTION_SET_ALL.get(), NodeTemplates.SELECTION_SET_NONE.get());
 	
 	public static void install(Region root, Direction direction, Region... children) {

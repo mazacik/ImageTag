@@ -46,7 +46,6 @@
 package wip.lire;
 
 import base.CustomList;
-import tools.FileUtil;
 import net.semanticmetadata.lire.builders.GlobalDocumentBuilder;
 import net.semanticmetadata.lire.imageanalysis.features.global.CEDD;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -54,6 +53,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.FSDirectory;
+import tools.FileUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

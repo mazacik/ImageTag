@@ -6,6 +6,7 @@ import base.entity.EntityList;
 import base.tag.Tag;
 import base.tag.TagList;
 import cache.CacheManager;
+import control.Select;
 import control.filter.Filter;
 import control.reload.Notifier;
 import control.reload.Reload;
@@ -15,10 +16,7 @@ import misc.FileUtil;
 import misc.Project;
 import misc.Settings;
 import ui.main.display.DisplayPane;
-import ui.main.side.FilterPane;
-import ui.main.side.SelectPane;
 import ui.main.stage.MainStage;
-import ui.main.top.ToolbarPane;
 
 import java.io.File;
 
@@ -33,11 +31,6 @@ public class Main extends Application {
 	}
 	public void start(Stage stage) {
 		System.setProperty("java.util.logging.SimpleFormatter.format", "[%4$-7s] %5$s%n");
-		
-		ToolbarPane.getInstance().init();
-		DisplayPane.getInstance().init();
-		FilterPane.getInstance().init();
-		SelectPane.getInstance().init();
 		
 		if (!DEBUG_MAIN_QUICKSTART || FileUtil.getProjectFiles().isEmpty()) {
 			MainStage.layoutIntro();
@@ -55,6 +48,9 @@ public class Main extends Application {
 		initTags();
 		initEntities();
 		initCollections();
+		
+		Select.setTarget(EntityList.getMain().getFirst());
+		Select.getEntities().add(EntityList.getMain().getFirst());
 		
 		Reload.notify(Notifier.values());
 		Reload.start();
@@ -106,7 +102,6 @@ public class Main extends Application {
 			}
 		}
 		
-		boolean needsSort = false;
 		if (!entitiesWithoutFiles.isEmpty()) {
 			EntityList.getMain().removeAll(entitiesWithoutFiles);
 		}
@@ -114,9 +109,8 @@ public class Main extends Application {
 			EntityList newEntities = new EntityList(filesWithoutEntities);
 			EntityList.getMain().addAll(newEntities);
 			Filter.getNewEntities().addAll(newEntities);
-			needsSort = true;
+			EntityList.getMain().sort();
 		}
-		if (needsSort) EntityList.getMain().sort();
 		
 		for (Entity entity : EntityList.getMain()) {
 			for (int tagID : entity.getTagIDs()) {
@@ -151,7 +145,7 @@ public class Main extends Application {
 		TagList tagListMain = TagList.getMain();
 		if (allTags != null) tagListMain.addAll(allTags);
 		
-		tagListMain.forEach(Tag::setStringValue);
+		tagListMain.forEach(Tag::updateStringValue);
 		tagListMain.sort();
 		
 		Reload.notify(Notifier.TAG_LIST_MAIN);

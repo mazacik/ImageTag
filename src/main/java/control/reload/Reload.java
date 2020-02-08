@@ -3,6 +3,7 @@ package control.reload;
 import base.CustomList;
 import base.entity.Entity;
 import base.entity.EntityList;
+import control.Select;
 import control.filter.Filter;
 import ui.main.display.DisplayPane;
 import ui.main.gallery.GalleryPane;
@@ -17,6 +18,7 @@ import java.util.Comparator;
 public abstract class Reload {
 	private final static CustomList<Entity> needsBorderUpdate = new CustomList<>();
 	private final static CustomList<Notifier> notifiers = new CustomList<>();
+	private final static CustomList<InvokeHelper> invokeHelpers = new CustomList<>();
 	
 	static {
 		try {
@@ -60,20 +62,22 @@ public abstract class Reload {
 	
 	public static void notify(Notifier... notifiers) {
 		if (notifiers.length == 1) {
-			Reload.notifiers.add(notifiers[0], true);
+			invokeHelpers.addAll(notifiers[0].getInvokeHelpers(), true);
 		} else {
-			Reload.notifiers.addAll(Arrays.asList(notifiers), true);
+			Arrays.asList(notifiers).forEach(notifier -> invokeHelpers.addAll(notifier.getInvokeHelpers(), true));
 		}
-	}
-	public static void start() {
-		CustomList<InvokeHelper> invokeHelpers = new CustomList<>();
-		notifiers.forEach(notifier -> invokeHelpers.addAll(notifier.getInvokeHelpers(), true));
-		notifiers.clear();
 		
 		invokeHelpers.sort(Comparator.comparing(InvokeHelper::getPriority));
-		invokeHelpers.forEach(InvokeHelper::invoke);
+	}
+	public static void start() {
+		while (!invokeHelpers.isEmpty()) {
+			invokeHelpers.remove(0).invoke();
+		}
 		
-		if (!notifiers.isEmpty()) start();
+		if (Select.getEntities().isEmpty()) {
+			Select.setTarget(Filter.getEntities().getFirst());
+			Select.getEntities().set(Select.getTarget());
+		}
 		
 		//update tile borders
 		EntityList helper = new EntityList();

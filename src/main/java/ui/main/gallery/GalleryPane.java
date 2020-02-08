@@ -22,6 +22,7 @@ import misc.Settings;
 import ui.custom.ClickMenu;
 import ui.decorator.Decorator;
 import ui.main.stage.MainStage;
+import ui.stage.SimpleMessageStage;
 
 public class GalleryPane extends ScrollPane {
 	public static final double GAP = 5;
@@ -252,26 +253,26 @@ public class GalleryPane extends ScrollPane {
 		tiles.clear();
 		tileEntities.clear();
 		
-		CustomList<Integer> collectionIDs = new CustomList<>();
+		CustomList<Integer> helper = new CustomList<>();
 		
 		//	main loop
-		int collectionID;
-		Tile tile;
-		
 		for (Entity entity : Filter.getEntities()) {
-			tile = entity.getTile();
-			collectionID = entity.getCollectionID();
+			if (tiles.size() >= 4000) {
+				SimpleMessageStage.show("Gallery reached a limit of 4000 tiles.");
+				break;
+			}
 			
-			if (collectionID == 0) {
-				tiles.add(tile);
+			if (entity.getCollectionID() == 0) {
+				tiles.add(entity.getTile());
 				tileEntities.add(entity);
-			} else if (!collectionIDs.contains(collectionID)) {
-				//	only one object in the entity group needs to be processed
-				collectionIDs.add(collectionID);
-				if (EntityCollectionUtil.getOpenCollections().contains(collectionID)) {
+			} else if (!helper.contains(entity.getCollectionID())) {
+				//	only one object in a collection needs to be processed
+				helper.add(entity.getCollectionID());
+				
+				if (EntityCollectionUtil.getOpenCollections().contains(entity.getCollectionID())) {
 					for (Entity entityInCollection : entity.getCollection()) {
-						//	instead of letting the main loop take care of all objects in the entity group
-						//	the entity group gets processed in a separate loop to keep its objects together
+						//	instead of letting the main loop take care of all objects in a collection
+						//	the collection gets processed in a separate loop to keep its objects together
 						//	however, each object needs to be checked for Filter validity an additional time
 						if (Filter.getEntities().contains(entityInCollection)) {
 							tiles.add(entityInCollection.getTile());
@@ -280,14 +281,15 @@ public class GalleryPane extends ScrollPane {
 						}
 					}
 				} else {
-					tiles.add(tile);
+					entity.getTile().updateCollectionIcon();
+					tiles.add(entity.getTile());
 					tileEntities.add(entity);
 					Reload.requestBorderUpdate(entity);
 				}
 			}
 		}
 		
-		//	apply
+		//	apply changes
 		tilePane.getChildren().setAll(tiles);
 		
 		//  finish
