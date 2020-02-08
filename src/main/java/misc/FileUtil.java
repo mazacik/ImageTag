@@ -135,17 +135,18 @@ public abstract class FileUtil {
 						Filter.getNewEntities().setAll(newEntities);
 						
 						Platform.runLater(() -> {
-							String s = "Imported " + newEntities.size() + " files.\nWould you like to view the new files?";
+							String s = "Imported " + newEntities.size() + " files.\nWould you like to view the files?";
+							
 							if (ConfirmationStage.show(s)) {
 								Filter.getSettings().setShowImages(true);
 								Filter.getSettings().setShowGifs(true);
 								Filter.getSettings().setShowVideos(true);
 								Filter.getSettings().setShowOnlyNewEntities(true);
 								Filter.getSettings().setEnableLimit(false);
-								
-								Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
-								Reload.start();
 							}
+							
+							Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
+							Reload.start();
 						});
 					}
 					Logger.getGlobal().info("finished");

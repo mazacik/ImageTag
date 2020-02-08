@@ -12,7 +12,7 @@ public class ConfirmationStage extends AbstractStage {
 	private static boolean result;
 	
 	static {
-		labelContent = new TextNode("", false, false, false, false);
+		labelContent = new TextNode("", false, false, false, true);
 		
 		nodeYes = new TextNode("Yes", true, true, false, true);
 		nodeYes.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
@@ -27,9 +27,9 @@ public class ConfirmationStage extends AbstractStage {
 		});
 	}
 	
-	public static Boolean show(String... args) {
+	public static Boolean show(String message) {
 		result = false;
-		labelContent.setText(args[0]);
+		labelContent.setText(message);
 		
 		getInstance().showAndWait();
 		
