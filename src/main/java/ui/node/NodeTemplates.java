@@ -18,6 +18,7 @@ import misc.HttpUtil;
 import misc.Project;
 import ui.custom.ClickMenu;
 import ui.main.stage.MainStage;
+import ui.stage.CollageStage;
 import ui.stage.SimpleMessageStage;
 
 import java.awt.*;
@@ -141,6 +142,18 @@ public enum NodeTemplates {
 				MainStage.getMainScene().viewGallery();
 				Filter.showSimilar(Select.getTarget());
 				Reload.start();
+			});
+			return textNode;
+		}
+	},
+	FILTER_COLLAGE {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Create Collage", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ClickMenu.hideAll();
+				
+				new CollageStage();
 			});
 			return textNode;
 		}

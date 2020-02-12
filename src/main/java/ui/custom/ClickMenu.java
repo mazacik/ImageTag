@@ -38,6 +38,7 @@ public class ClickMenu extends Popup {
 		list.add(NodeTemplates.ENTITY_SHOW_EXPLORER.get());
 		list.add(NodeTemplates.ENTITY_EDIT_PAINT.get());
 		list.add(NodeTemplates.FILTER_SIMILAR.get());
+		list.add(NodeTemplates.FILTER_COLLAGE.get());
 		list.add(NodeTemplates.ENTITY_REVERSE_IMAGE_SEARCH.get());
 		list.add(NodeTemplates.ENTITY_IMAGE_SIZE_INFO.get());
 		list.add(new BoxSeparator());
