@@ -71,10 +71,12 @@ public class MainScene extends Scene {
 						Reload.start();
 						break;
 					case G:
-						Entity randomEntityFromCollection = Select.getTarget().getCollection().getRandom();
-						Select.getEntities().set(randomEntityFromCollection);
-						Select.setTarget(randomEntityFromCollection);
-						Reload.start();
+						if (Select.getTarget().getCollectionID() != 0) {
+							Entity randomEntityFromCollection = Select.getTarget().getCollection().getRandom();
+							Select.getEntities().set(randomEntityFromCollection);
+							Select.setTarget(randomEntityFromCollection);
+							Reload.start();
+						}
 						break;
 					case F:
 						if (this.isViewGallery()) this.viewEntity();

@@ -20,36 +20,43 @@ public class Filter extends EntityList {
 		getEntities().clear();
 		
 		for (Entity entity : EntityList.getMain()) {
-			if (entity.getMediaType() == MediaType.IMAGE) {
-				if (!settings.isShowImages()) {
-					continue;
-				}
-			} else if (entity.getMediaType() == MediaType.GIF || entity.getMediaDuration() < 30000) {
-				if (!settings.isShowGifs()) {
-					continue;
-				}
-			} else if (entity.getMediaType() == MediaType.VIDEO) {
-				if (!settings.isShowVideos()) {
-					continue;
-				}
+			if (isValid(entity)) {
+				getEntities().add(entity);
 			}
-			
-			if (settings.isShowOnlyNewEntities() && !newEntities.contains(entity)) {
-				continue;
-			}
-			
-			if (settings.isEnableLimit() && entity.getTagIDs().size() > settings.getLimit()) {
-				continue;
-			}
-			
-			if (!listManager.applyLists(entity)) {
-				continue;
-			}
-			
-			getEntities().add(entity);
 		}
 		
 		Reload.notify(Notifier.FILTER);
+	}
+	public static void resolve(Entity entity) {
+		if (!isValid(entity)) {
+			getEntities().remove(entity);
+			Reload.notify(Notifier.FILTER);
+		}
+	}
+	private static boolean isValid(Entity entity) {
+		if (entity.getMediaType() == MediaType.IMAGE) {
+			if (!settings.isShowImages()) {
+				return false;
+			}
+		} else if (entity.getMediaType() == MediaType.GIF || entity.getMediaDuration() < 30000) {
+			if (!settings.isShowGifs()) {
+				return false;
+			}
+		} else if (entity.getMediaType() == MediaType.VIDEO) {
+			if (!settings.isShowVideos()) {
+				return false;
+			}
+		}
+		
+		if (settings.isShowOnlyNewEntities() && !newEntities.contains(entity)) {
+			return false;
+		}
+		
+		if (settings.isEnableLimit() && entity.getTagIDs().size() > settings.getLimit()) {
+			return false;
+		}
+		
+		return listManager.applyLists(entity);
 	}
 	
 	public static void showSimilar(Entity entity) {
@@ -72,7 +79,7 @@ public class Filter extends EntityList {
 			}
 		}
 	}
-	public static EntityList applyTo(EntityList listBefore) {
+	public static EntityList getFilteredList(EntityList listBefore) {
 		EntityList returnValue = new EntityList(listBefore);
 		returnValue.retainAll(getEntities());
 		return returnValue;

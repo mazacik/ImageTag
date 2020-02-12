@@ -23,9 +23,6 @@ public class Entity {
 	public CustomList<Integer> getTagIDs() {
 		return tagIDs;
 	}
-	public void setTagIDs(CustomList<Integer> tagIDs) {
-		this.tagIDs = tagIDs;
-	}
 	
 	@SerializedName("s") private long size;
 	public long getSize() {

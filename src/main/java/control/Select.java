@@ -27,7 +27,7 @@ public class Select extends EntityList {
 			}
 		} else {
 			if (super.addAll(entity.getCollection(), checkDuplicates)) {
-				Reload.requestBorderUpdate((Filter.applyTo(entity.getCollection())));
+				Reload.requestBorderUpdate((Filter.getFilteredList(entity.getCollection())));
 				Reload.notify(Notifier.SELECT);
 				return true;
 			}
@@ -48,7 +48,7 @@ public class Select extends EntityList {
 					
 				}
 			} else {
-				EntityList afterFilter = Filter.applyTo(entity.getCollection());
+				EntityList afterFilter = Filter.getFilteredList(entity.getCollection());
 				if (super.addAll(afterFilter, true)) {
 					Reload.requestBorderUpdate(afterFilter);
 				}
@@ -74,7 +74,7 @@ public class Select extends EntityList {
 			}
 		} else {
 			if (this.size() != entity.getCollection().size()) {
-				if (super.removeAll((Filter.applyTo(entity.getCollection())))) {
+				if (super.removeAll((Filter.getFilteredList(entity.getCollection())))) {
 					Reload.requestBorderUpdate(entity.getCollection());
 					Reload.notify(Notifier.SELECT);
 					return true;
@@ -101,7 +101,7 @@ public class Select extends EntityList {
 				return true;
 			}
 		} else {
-			EntityList afterFilter = Filter.applyTo(entity.getCollection());
+			EntityList afterFilter = Filter.getFilteredList(entity.getCollection());
 			if (super.addAll(afterFilter)) {
 				Reload.requestBorderUpdate(afterFilter);
 				Reload.notify(Notifier.SELECT);
@@ -140,7 +140,7 @@ public class Select extends EntityList {
 		}
 	}
 	
-	public static void shiftSelect(Entity entityTo) {
+	public static void shiftSelectTo(Entity entityTo) {
 		CustomList<Entity> entities = GalleryPane.getTileEntities();
 		
 		int indexFrom = entities.indexOf(Select.getTarget());
@@ -176,7 +176,11 @@ public class Select extends EntityList {
 	}
 	public static void setTarget(Entity newTarget) {
 		if (newTarget != null && newTarget != target) {
-			Reload.requestBorderUpdate(target);
+			if (target != null) {
+				Filter.resolve(target);
+				Reload.requestBorderUpdate(target);
+			}
+			
 			Reload.requestBorderUpdate(newTarget);
 			
 			target = newTarget;

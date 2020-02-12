@@ -36,7 +36,7 @@ public class EntityList extends CustomList<Entity> {
 			if (EntityCollectionUtil.hasOpenOrNoCollection(entity)) {
 				return entity;
 			} else {
-				return new CustomList<>(Filter.applyTo(entity.getCollection())).getRandom();
+				return new CustomList<>(Filter.getFilteredList(entity.getCollection())).getRandom();
 			}
 		}
 		return null;

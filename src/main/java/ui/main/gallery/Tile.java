@@ -117,7 +117,7 @@ public class Tile extends Pane {
 									Select.getEntities().add(entity);
 								}
 							} else if (event.isShiftDown()) {
-								Select.shiftSelect(entity);
+								Select.shiftSelectTo(entity);
 							} else {
 								Select.getEntities().set(entity);
 							}
