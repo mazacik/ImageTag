@@ -136,7 +136,7 @@ public class ControlsBase extends BorderPane {
 			btnSnapshot.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				Entity target = Select.getTarget();
 				File cacheFile = new File(FileUtil.getFileCache(target));
-				int thumbSize = Settings.getTileSize();
+				int thumbSize = Settings.TILE_SIZE.getValue();
 				DisplayPane.getInstance().getVideoPlayer().snapshot(cacheFile, thumbSize, thumbSize);
 				
 				Image cache = CacheManager.get(target);

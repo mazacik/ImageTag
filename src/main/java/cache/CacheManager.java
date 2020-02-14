@@ -30,14 +30,14 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Logger;
 
 public abstract class CacheManager {
-	private static Image placeholder = new WritableImage(Settings.getTileSize(), Settings.getTileSize()) {{
+	private static Image placeholder = new WritableImage(Settings.TILE_SIZE.getValue(), Settings.TILE_SIZE.getValue()) {{
 		Label label = new Label("Placeholder");
 		label.setBackground(new Background(new BackgroundFill(Color.GRAY, null, null)));
 		label.setWrapText(true);
 		label.setFont(new Font(26));
 		label.setAlignment(Pos.CENTER);
 		
-		int size = Settings.getTileSize();
+		int size = Settings.TILE_SIZE.getValue();
 		label.setMinWidth(size);
 		label.setMinHeight(size);
 		label.setMaxWidth(size);
@@ -77,7 +77,7 @@ public abstract class CacheManager {
 		}
 	}
 	private static Image createFromImage(Entity entity) {
-		int thumbSize = Settings.getTileSize();
+		int thumbSize = Settings.TILE_SIZE.getValue();
 		Image image = new Image("file:" + FileUtil.getFileEntity(entity), thumbSize, thumbSize, false, false);
 		BufferedImage buffer = SwingFXUtils.fromFXImage(image, null);
 		
@@ -99,7 +99,7 @@ public abstract class CacheManager {
 	private static Image createFromGif(Entity entity) {
 		GifDecoder gifDecoder = new GifDecoder();
 		gifDecoder.read(FileUtil.getFileEntity(entity));
-		int thumbSize = Settings.getTileSize();
+		int thumbSize = Settings.TILE_SIZE.getValue();
 		
 		java.awt.Image frame = gifDecoder.getFrame(gifDecoder.getFrameCount() / 2).getScaledInstance(thumbSize, thumbSize, java.awt.Image.SCALE_FAST);
 		BufferedImage buffer = new BufferedImage(thumbSize, thumbSize, BufferedImage.TYPE_INT_RGB);
@@ -160,7 +160,7 @@ public abstract class CacheManager {
 					mediaPlayer.controls().setPosition(mediaPosition);
 					inPositionLatch.await(); // might wait forever if error
 					
-					int thumbSize = Settings.getTileSize();
+					int thumbSize = Settings.TILE_SIZE.getValue();
 					mediaPlayer.snapshots().save(cacheFile, thumbSize, thumbSize);
 					snapshotTakenLatch.await(); // might wait forever if error
 				} catch (InterruptedException e) {

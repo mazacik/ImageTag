@@ -40,7 +40,7 @@ public class Tile extends Pane {
 	private static final Image loadingImage;
 	
 	static {
-		int tileSize = Settings.getTileSize();
+		int tileSize = Settings.TILE_SIZE.getValue();
 		
 		Image imagePlus = new Image("/plus-16px.png");
 		Image imageMinus = new Image("/minus-16px.png");

@@ -27,13 +27,13 @@ public class CollageStage extends Stage {
 		Image originImage = new Image("file:" + FileUtil.getFileEntity(Select.getTarget()));
 		Image scaledImage = getScaledImage("file:" + FileUtil.getFileEntity(Select.getTarget()), originImage.getWidth(), originImage.getHeight(), 1800, 900);
 		
-		int miniW = (int) scaledImage.getWidth() / Settings.getCollageSize();
-		int miniH = (int) scaledImage.getHeight() / Settings.getCollageSize();
+		int miniW = (int) scaledImage.getWidth() / Settings.COLLAGE_SIZE.getValue();
+		int miniH = (int) scaledImage.getHeight() / Settings.COLLAGE_SIZE.getValue();
 		
 		CustomList<Mini> minis = getMinis(miniW, miniH);
 		
-		for (int y = 0; y < Settings.getCollageSize(); y++) {
-			for (int x = 0; x < Settings.getCollageSize(); x++) {
+		for (int y = 0; y < Settings.COLLAGE_SIZE.getValue(); y++) {
+			for (int x = 0; x < Settings.COLLAGE_SIZE.getValue(); x++) {
 				Color averageColor = getAverageColor(scaledImage, x * miniW, y * miniH, miniW, miniH);
 				
 				gridPane.add(new ImageView(getBestMini(averageColor, minis).image), x, y);

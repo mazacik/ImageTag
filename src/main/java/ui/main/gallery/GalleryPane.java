@@ -211,7 +211,7 @@ public class GalleryPane extends ScrollPane {
 		tilePane = new TilePane(GAP, GAP);
 		tilePane.setPadding(new Insets(GAP));
 		
-		double actualTileSize = Settings.getTileSize() + 2 * Tile.HIGHLIGHT_PADDING;
+		double actualTileSize = Settings.TILE_SIZE.getValue() + 2 * Tile.HIGHLIGHT_PADDING;
 		tilePane.setPrefTileWidth(actualTileSize);
 		tilePane.setPrefTileHeight(actualTileSize);
 		

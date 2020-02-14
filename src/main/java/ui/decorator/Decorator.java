@@ -14,7 +14,7 @@ import java.awt.*;
 
 public abstract class Decorator {
 	/* Font */
-	private static Font font = new Font(Settings.getFontSize());
+	private static Font font = new Font(Settings.FONT_SIZE.getValue());
 	public static Font getFont() {
 		return font;
 	}
@@ -117,7 +117,7 @@ public abstract class Decorator {
 	}
 	
 	/* Color Preset */
-	private static ColorPreset colorPreset = ColorPreset.values()[Settings.getColorPreset()];
+	private static ColorPreset colorPreset = ColorPreset.values()[Settings.COLOR_PRESET.getValue()];
 	public static ColorPreset getColorPreset() {
 		return colorPreset;
 	}
@@ -125,7 +125,7 @@ public abstract class Decorator {
 		ColorPreset previousPreset = Decorator.colorPreset;
 		
 		Decorator.colorPreset = colorPreset;
-		Settings.setColorPreset(colorPreset.ordinal());
+		Settings.COLOR_PRESET.setValue(colorPreset.ordinal());
 		
 		updateNodes(previousPreset);
 	}

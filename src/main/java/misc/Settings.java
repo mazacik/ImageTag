@@ -1,78 +1,71 @@
 package misc;
 
+import base.CustomList;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 
-public class Settings {
-	private Integer colorPreset;
-	private static final Integer colorPresetDefault = 0;
-	public static int getColorPreset() {
-		return getInstance().colorPreset;
-	}
-	public static void setColorPreset(int colorPreset) {
-		getInstance().colorPreset = colorPreset;
-	}
+public enum Settings {
+	COLOR_PRESET(0),
+	FONT_SIZE(16),
+	TILE_SIZE(200),
+	COLLAGE_SIZE(50),
+	;
 	
-	private Integer fontSize;
-	private static final Integer fontSizeDefault = 16;
-	public static int getFontSize() {
-		return getInstance().fontSize;
-	}
-	public static void setFontSize(int fontSize) {
-		getInstance().fontSize = fontSize;
-	}
-	
-	private Integer tileSize;
-	private static final Integer tileSizeDefault = 200;
-	public static int getTileSize() {
-		return getInstance().tileSize;
-	}
-	public static void setTileSize(int tileSize) {
-		getInstance().tileSize = tileSize;
-	}
-	
-	private Integer collageSize;
-	private static final Integer collageSizeDefault = 25;
-	public static int getCollageSize() {
-		return getInstance().collageSize;
-	}
-	public static void setCollageSize(Integer collageSize) {
-		getInstance().collageSize = collageSize;
-	}
-	
-	private transient static final Type typeToken = new TypeToken<Settings>() {}.getType();
-	public static void writeToDisk() {
-		JsonUtil.write(getInstance(), typeToken, FileUtil.getFileSettings());
-	}
-	private static void readFromDisk() {
-		Settings settings;
-		try {
-			settings = (Settings) JsonUtil.read(typeToken, FileUtil.getFileSettings());
-		} catch (Exception e) {
-			settings = new Settings();
-		}
-		
-		if (settings.colorPreset == null) settings.colorPreset = colorPresetDefault;
-		if (settings.fontSize == null) settings.fontSize = fontSizeDefault;
-		if (settings.tileSize == null) settings.tileSize = tileSizeDefault;
-		if (settings.collageSize == null) settings.collageSize = collageSizeDefault;
-		
-		getInstance().colorPreset = settings.colorPreset;
-		getInstance().fontSize = settings.fontSize;
-		getInstance().tileSize = settings.tileSize;
-		getInstance().collageSize = settings.collageSize;
-	}
+	private static final int ERROR_VALUE = -1;
+	private transient int defaultValue;
+	private int value = ERROR_VALUE;
 	
 	static {
 		readFromDisk();
 	}
-	
-	private Settings() {}
-	private static class Loader {
-		private static final Settings INSTANCE = new Settings();
+	public static void readFromDisk() {
+		Type type = new TypeToken<CustomList<SettingsGsonHelper>>() {}.getType();
+		CustomList<SettingsGsonHelper> list = GsonUtil.read(type, FileUtil.getFileSettings());
+		
+		if (list != null) {
+			for (SettingsGsonHelper settingHelper : list) {
+				if (settingHelper != null) {
+					Settings.valueOf(settingHelper.name).setValue(settingHelper.value);
+				}
+			}
+		}
+		
+		for (Settings setting : Settings.values()) {
+			if (setting.getValue() == ERROR_VALUE) {
+				setting.setDefaultValue();
+			}
+		}
 	}
-	public static Settings getInstance() {
-		return Loader.INSTANCE;
+	public static void writeToDisk() {
+		CustomList<SettingsGsonHelper> list = new CustomList<>();
+		for (Settings setting : Settings.values()) {
+			list.add(new SettingsGsonHelper(setting.name(), setting.getValue()));
+		}
+		GsonUtil.write(list, new TypeToken<CustomList<SettingsGsonHelper>>() {}.getType(), FileUtil.getFileSettings());
+	}
+	private static class SettingsGsonHelper {
+		private String name;
+		private Integer value;
+		
+		public SettingsGsonHelper(String name, Integer value) {
+			this.name = name;
+			this.value = value;
+		}
+	}
+	
+	Settings(int defaultValue) {
+		this.defaultValue = defaultValue;
+	}
+	
+	public int getValue() {
+		return value;
+	}
+	
+	public void setValue(int value) {
+		this.value = value;
+	}
+	public void setDefaultValue() {
+		this.value = this.defaultValue;
 	}
 }

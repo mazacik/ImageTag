@@ -26,7 +26,7 @@ public class Project {
 	
 	private transient static final Type typeToken = new TypeToken<Project>() {}.getType();
 	public static Project readFromDisk(String projectFile) {
-		Project project = (Project) JsonUtil.read(typeToken, projectFile);
+		Project project = GsonUtil.read(typeToken, projectFile);
 		project.projectName = FileUtil.getFileNameNoExtension(projectFile);
 		project.projectFile = projectFile;
 		return project;
@@ -35,7 +35,7 @@ public class Project {
 		this.msLastAccess = System.currentTimeMillis();
 		this.entityList = EntityList.getMain();
 		this.tagList = TagList.getMain();
-		JsonUtil.write(this, typeToken, projectFile);
+		GsonUtil.write(this, typeToken, projectFile);
 	}
 	
 	public void updateProject(String projectNameNew, String directorySourceNew) {
