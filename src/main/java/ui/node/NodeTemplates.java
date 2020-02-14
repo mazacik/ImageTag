@@ -19,6 +19,7 @@ import misc.Project;
 import ui.custom.ClickMenu;
 import ui.main.stage.MainStage;
 import ui.stage.CollageStage;
+import ui.stage.SettingsStage;
 import ui.stage.SimpleMessageStage;
 
 import java.awt.*;
@@ -325,6 +326,14 @@ public enum NodeTemplates {
 				
 				FileUtil.importFiles();
 			});
+			return textNode;
+		}
+	},
+	APPLICATION_SETTINGS {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Settings", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> SettingsStage.show(""));
 			return textNode;
 		}
 	},

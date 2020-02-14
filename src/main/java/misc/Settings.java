@@ -61,6 +61,9 @@ public enum Settings {
 	public int getValue() {
 		return value;
 	}
+	public int getDefaultValue() {
+		return defaultValue;
+	}
 	
 	public void setValue(int value) {
 		this.value = value;

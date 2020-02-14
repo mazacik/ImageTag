@@ -44,9 +44,10 @@ public class ToolbarPane extends BorderPane {
 		TextNode nodeFile = new TextNode("File", true, true, false, true);
 		TextNode nodeSave = NodeTemplates.APPLICATION_SAVE.get();
 		TextNode nodeImport = NodeTemplates.APPLICATION_IMPORT.get();
+		TextNode nodeSettings = NodeTemplates.APPLICATION_SETTINGS.get();
 		TextNode nodeCacheReset = NodeTemplates.CACHE_RESET.get();
 		TextNode nodeExit = NodeTemplates.APPLICATION_EXIT.get();
-		ClickMenu.install(nodeFile, Direction.DOWN, nodeSave, nodeImport, nodeCacheReset, new BoxSeparator(), nodeExit);
+		ClickMenu.install(nodeFile, Direction.DOWN, nodeSave, nodeImport, nodeSettings, nodeCacheReset, new BoxSeparator(), nodeExit);
 		
 		TextNode nodeRandom = new TextNode("Random", true, true, false, true);
 		nodeRandom.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
