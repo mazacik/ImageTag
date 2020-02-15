@@ -21,7 +21,7 @@ public class SettingsStage extends AbstractStage {
 		
 		for (Settings setting : Settings.values()) {
 			TextNode textNode = new TextNode(setting.name(), false, false, false, true);
-			EditNode editNode = new EditNode(String.valueOf(setting.getValue()), EditNode.EditNodeType.NUMERIC_POSITIVE);
+			EditNode editNode = new EditNode(String.valueOf(setting.getValue()), "", EditNode.EditNodeType.NUMERIC_POSITIVE);
 			TextNode resetNode = new TextNode("⟲", true, true, false, true);
 			resetNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> editNode.setText(String.valueOf(setting.getDefaultValue())));
 			

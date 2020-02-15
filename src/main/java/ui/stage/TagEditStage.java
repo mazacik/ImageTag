@@ -101,8 +101,8 @@ public class TagEditStage extends AbstractStage {
 	private static class LevelNode extends HBox {
 		private final EditNode editNode;
 		
-		public LevelNode(String edit) {
-			editNode = new EditNode(edit);
+		public LevelNode(String startText) {
+			editNode = new EditNode(startText, "");
 			editNode.setPrefWidth(200);
 			editNode.setBorder(Decorator.getBorder(1, 1, 1, 1));
 			

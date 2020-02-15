@@ -5,10 +5,11 @@ import javafx.scene.layout.Background;
 import ui.decorator.Decorator;
 
 public class EditNode extends TextField {
-	public EditNode(String text, EditNodeType type) {
+	public EditNode(String startText, String promptText, EditNodeType type) {
 		this.setFont(Decorator.getFont());
 		this.setBorder(Decorator.getBorder(1, 1, 1, 1));
-		this.setText(text);
+		if (!startText.isEmpty()) this.setText(startText);
+		if (!promptText.isEmpty()) this.setPromptText(promptText);
 		//this.skinProperty().addListener((observable, oldValue, newValue) -> setStyle("-fx-text-fill: " + Decorator.getColorAsStringForCss(ColorUtil.getColorPrimary()) + "; -fx-prompt-text-fill: gray;"));
 		this.setBackground(Background.EMPTY);
 		this.setStyle("-fx-text-fill: " + Decorator.getCssString(Decorator.getColorPrimary()) + ";");
@@ -33,11 +34,14 @@ public class EditNode extends TextField {
 				break;
 		}
 	}
-	public EditNode(String promptText) {
-		this(promptText, EditNodeType.ANY_CHARACTERS);
+	public EditNode(String startText, String promptText) {
+		this(startText, promptText, EditNodeType.ANY_CHARACTERS);
+	}
+	public EditNode(EditNodeType nodeType) {
+		this("", "", nodeType);
 	}
 	public EditNode() {
-		this("", EditNodeType.ANY_CHARACTERS);
+		this("", "");
 	}
 	
 	public boolean isInteger(String str) {

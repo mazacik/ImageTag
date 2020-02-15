@@ -65,9 +65,9 @@ public class TagNode extends VBox {
 		boxMain = new HBox(toggleNode, textNode);
 		this.getChildren().add(boxMain);
 		
-		boxMain.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> this.setBackground(Decorator.getBackgroundSecondary()));
-		boxMain.addEventFilter(MouseEvent.MOUSE_EXITED, event -> this.setBackground(Background.EMPTY));
-		boxMain.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+		this.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> this.setBackground(Decorator.getBackgroundSecondary()));
+		this.addEventFilter(MouseEvent.MOUSE_EXITED, event -> this.setBackground(Background.EMPTY));
+		this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			switch (event.getButton()) {
 				case PRIMARY:
 					if (event.getX() > toggleNode.getWidth()) {
@@ -85,7 +85,7 @@ public class TagNode extends VBox {
 			}
 		});
 		
-		ClickMenu.install(boxMain, MouseButton.SECONDARY, ClickMenu.StaticInstance.TAG);
+		ClickMenu.install(textNode, MouseButton.SECONDARY, ClickMenu.StaticInstance.TAG);
 	}
 	
 	private void clickFilter() {
@@ -117,29 +117,33 @@ public class TagNode extends VBox {
 	}
 	
 	public void open() {
-		parentPane.getOpenNodes().add(this.getStringValue());
-		
-		for (TagNode subNode : subNodesDirect) {
-			if (subNode.isLast()) {
-				subNode.toggleNode.setVisible(false);
+		if (!isLast()) {
+			parentPane.getOpenNodes().add(this.getStringValue());
+			
+			for (TagNode subNode : subNodesDirect) {
+				if (subNode.isLast()) {
+					subNode.toggleNode.setVisible(false);
+				}
 			}
+			
+			this.getChildren().retainAll(boxMain);
+			this.getChildren().addAll(subNodesDirect);
+			toggleNode.setText("− ");
 		}
-		
-		this.getChildren().retainAll(boxMain);
-		this.getChildren().addAll(subNodesDirect);
-		toggleNode.setText("− ");
 	}
 	public void close() {
-		parentPane.getOpenNodes().remove(this.getStringValue());
-		
-		this.getChildren().retainAll(boxMain);
-		toggleNode.setText("+ ");
+		if (!isLast()) {
+			parentPane.getOpenNodes().remove(this.getStringValue());
+			
+			this.getChildren().retainAll(boxMain);
+			toggleNode.setText("+ ");
+		}
 	}
 	
-	private boolean isOpen() {
+	public boolean isOpen() {
 		return this.getChildren().size() > 1;
 	}
-	private boolean isLast() {
+	public boolean isLast() {
 		return subNodesDirect.isEmpty();
 	}
 	
@@ -172,7 +176,7 @@ public class TagNode extends VBox {
 	public CustomList<TagNode> getSubNodesDirect() {
 		return subNodesDirect;
 	}
-	public CustomList<TagNode> getSubNodesComplete() {
+	public CustomList<TagNode> getSubNodesAll() {
 		CustomList<TagNode> subNodes = new CustomList<>();
 		getSubNodesRecursion(this, subNodes);
 		return subNodes;

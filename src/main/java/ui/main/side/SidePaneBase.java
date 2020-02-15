@@ -46,7 +46,7 @@ public abstract class SidePaneBase extends VBox {
 		
 		CustomList<String> openNodes = new CustomList<>(this.openNodes);
 		this.openNodes.clear();
-		for (TagNode tagNode : this.getTagNodesComplete()) {
+		for (TagNode tagNode : this.getTagNodesAll()) {
 			if (openNodes.contains(tagNode.getStringValue())) {
 				tagNode.open();
 			}
@@ -68,7 +68,15 @@ public abstract class SidePaneBase extends VBox {
 		return newNode.getSubNode(tag);
 	}
 	
-	protected CustomList<TagNode> getTagNodesComplete() {
+	public TagNode getTagNode(String query, int level) {
+		for (TagNode tagNode : getTagNodesAll()) {
+			if (tagNode.getNumLevels() - 1 == level && tagNode.getText().toLowerCase().equals(query)) {
+				return tagNode;
+			}
+		}
+		return null;
+	}
+	protected CustomList<TagNode> getTagNodesAll() {
 		CustomList<TagNode> returnList = new CustomList<>();
 		getTagNodesRecursion(tagNodesLevel0, returnList);
 		return returnList;

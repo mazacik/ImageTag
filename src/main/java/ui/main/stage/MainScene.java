@@ -45,7 +45,7 @@ public class MainScene extends Scene {
 			} else {
 				switch (event.getCode()) {
 					case I:
-						NodeTemplates.ENTITY_IMAGE_SIZE_INFO.get().fireEvent(EventUtil.createEventMouseClick(event));
+						NodeTemplates.ENTITY_IMAGE_SIZE_INFO.get().fireEvent(EventUtil.createMouseEvent(MouseEvent.MOUSE_CLICKED));
 						break;
 					case BACK_QUOTE:
 						break;

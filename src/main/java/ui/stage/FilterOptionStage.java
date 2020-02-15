@@ -36,7 +36,7 @@ public class FilterOptionStage extends AbstractStage {
 		nodeSession = new CheckboxNode("Session");
 		
 		nodeLimit = new CheckboxNode("Limit");
-		nodeLimitValue = new EditNode("", EditNode.EditNodeType.NUMERIC_POSITIVE);
+		nodeLimitValue = new EditNode(EditNode.EditNodeType.NUMERIC_POSITIVE);
 		nodeLimit.getSelectedProperty().addListener((observable, oldValue, newValue) -> nodeLimitValue.setDisable(!newValue));
 		
 		nodeLimitValue.setPadding(new Insets(0, 1, -1, 1));

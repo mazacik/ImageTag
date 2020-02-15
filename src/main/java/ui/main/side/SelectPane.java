@@ -2,16 +2,15 @@ package ui.main.side;
 
 import base.CustomList;
 import base.entity.Entity;
-import base.tag.Tag;
 import base.tag.TagList;
 import control.Select;
 import control.filter.Filter;
 import control.reload.Reload;
 import enums.Direction;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.layout.Background;
 import ui.custom.ClickMenu;
 import ui.decorator.Decorator;
 import ui.node.EditNode;
@@ -29,7 +28,7 @@ public class SelectPane extends SidePaneBase {
 		CustomList<String> stringListUnion = new CustomList<>();
 		Select.getEntities().getTagList().forEach(tag -> stringListUnion.add(tag.getStringValue()));
 		
-		getTagNodesComplete().forEach(tagNode -> this.refreshNodeColor(tagNode, stringListIntersect, stringListUnion));
+		getTagNodesAll().forEach(tagNode -> this.refreshNodeColor(tagNode, stringListIntersect, stringListUnion));
 		
 		return true;
 	}
@@ -63,42 +62,40 @@ public class SelectPane extends SidePaneBase {
 		nodeTitle.setText(text);
 	}
 	
-	private Tag bestMatch = null;
-	private int previousLength = 0;
-	private boolean enabled = true;
+	private TagNode bestMatch = null;
+	private TagNode getBestMatch(CustomList<TagNode> tagNodes, String query) {
+		for (TagNode tagNode : tagNodes) {
+			if (tagNode.isLast() && tagNode.getText().toLowerCase().startsWith(query)) {
+				return tagNode;
+			}
+		}
+		return null;
+	}
 	private ChangeListener<? super String> getSearchTextListener() {
 		return (ChangeListener<String>) (observable, oldValue, newValue) -> {
-			if (enabled) {
-				bestMatch = null;
-				if (newValue.length() > 3) {
-					//	simple check if the last level of any tag starts with query
-					newValue = newValue.toLowerCase();
-					for (Tag tag : TagList.getMain()) {
-						if (tag.getLevelLast().toLowerCase().startsWith(newValue)) {
-							bestMatch = tag;
-							break;
-						}
+			if (bestMatch != null) bestMatch.setBackground(Background.EMPTY);
+			
+			CustomList<TagNode> tagNodesAll = getTagNodesAll();
+			tagNodesAll.forEach(TagNode::close);
+			
+			if (newValue.length() > 0) {
+				bestMatch = getBestMatch(tagNodesAll, newValue.toLowerCase());
+				if (bestMatch != null) {
+					for (int i = 0; i < bestMatch.getLevels().size(); i++) {
+						getTagNode(bestMatch.getLevels().get(i).toLowerCase(), i).open();
 					}
-					if (bestMatch != null) {
-						int caretPos = nodeSearch.getCaretPosition();
-						enabled = false;
-						nodeSearch.setText(bestMatch.getLevelLast());
-						enabled = true;
-						if (newValue.length() > previousLength) {
-							Platform.runLater(() -> nodeSearch.selectRange(nodeSearch.getText().length(), caretPos + 1));
-						} else {
-							Platform.runLater(() -> nodeSearch.selectRange(nodeSearch.getText().length(), caretPos - 1));
-						}
-					}
+					bestMatch.setBackground(Decorator.getBackgroundSecondary());
 				}
-				previousLength = newValue.length();
 			}
 		};
 	}
 	private EventHandler<ActionEvent> getSearchOnAction() {
 		return event -> {
+			bestMatch.setBackground(Background.EMPTY);
+			getTagNodesAll().forEach(TagNode::close);
 			nodeSearch.clear();
-			Select.getEntities().addTag(bestMatch.getID());
+			Select.getEntities().addTag(TagList.getMain().getTag(bestMatch.getStringValue()).getID());
+			
 			Reload.start();
 		};
 	}
@@ -107,7 +104,7 @@ public class SelectPane extends SidePaneBase {
 		nodeTitle.setBorder(Decorator.getBorder(0, 0, 1, 0));
 		nodeTitle.prefWidthProperty().bind(this.widthProperty());
 		
-		nodeSearch = new EditNode("Quick Search");
+		nodeSearch = new EditNode("", "Quick Search");
 		nodeSearch.setBorder(Decorator.getBorder(0, 0, 1, 0));
 		nodeSearch.prefWidthProperty().bind(this.widthProperty());
 		nodeSearch.textProperty().addListener(this.getSearchTextListener());

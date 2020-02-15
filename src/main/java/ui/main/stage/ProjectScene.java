@@ -36,7 +36,7 @@ public class ProjectScene extends Scene {
 		
 		TextNode nodeSourceDirectory = new TextNode("Source Directory:");
 		nodeSourceDirectory.setAlignment(Pos.CENTER_LEFT);
-		editSourceDirectory = new EditNode("");
+		editSourceDirectory = new EditNode();
 		editSourceDirectory.setPrefWidth(400);
 		TextNode nodeBrowseForDirectory = new TextNode("Browse", true, true, true, true);
 		nodeBrowseForDirectory.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {

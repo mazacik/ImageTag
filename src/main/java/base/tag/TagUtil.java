@@ -50,7 +50,7 @@ public class TagUtil {
 	public static void remove() {
 		TagNode tagNode = ClickMenu.getTagNode();
 		if (ConfirmationStage.show("Remove \"" + tagNode.getText() + "\" ?")) {
-			tagNode.getSubNodesComplete().forEach(subNode -> Filter.getListManager().unlist(subNode.getStringValue()));
+			tagNode.getSubNodesAll().forEach(subNode -> Filter.getListManager().unlist(subNode.getStringValue()));
 			_remove(TagList.getMain().getTagsContaining(tagNode.getStringValue()));
 		}
 	}
