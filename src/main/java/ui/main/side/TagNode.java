@@ -37,7 +37,7 @@ public class TagNode extends VBox {
 		this.levels = new CustomList<>();
 		
 		for (int i = 0; i <= level; i++) {
-			levels.add(tag.getLevel(i));
+			levels.add(tag.getLevels().get(i));
 		}
 		
 		updateStringValue();
@@ -60,14 +60,14 @@ public class TagNode extends VBox {
 			}
 		});
 		
-		textNode = new TextNode(tag.getLevel(level), false, false, false, false);
+		textNode = new TextNode(tag.getLevels().get(level), false, false, false, false);
 		
 		boxMain = new HBox(toggleNode, textNode);
 		this.getChildren().add(boxMain);
 		
-		this.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> this.setBackground(Decorator.getBackgroundSecondary()));
-		this.addEventFilter(MouseEvent.MOUSE_EXITED, event -> this.setBackground(Background.EMPTY));
-		this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+		boxMain.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> this.setBackground(Decorator.getBackgroundSecondary()));
+		boxMain.addEventFilter(MouseEvent.MOUSE_EXITED, event -> this.setBackground(Background.EMPTY));
+		boxMain.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			switch (event.getButton()) {
 				case PRIMARY:
 					if (event.getX() > toggleNode.getWidth()) {
@@ -90,13 +90,13 @@ public class TagNode extends VBox {
 	
 	private void clickFilter() {
 		if (Filter.getListManager().isWhitelisted(stringValue)) {
-			Filter.getListManager().blacklist(stringValue, getNumLevels());
+			Filter.getListManager().blacklist(stringValue, getLevels().size());
 			setTextFill(Decorator.getColorNegative());
 		} else if (Filter.getListManager().isBlacklisted(stringValue)) {
 			Filter.getListManager().unlist(stringValue);
 			setTextFill(Decorator.getColorPrimary());
 		} else {
-			Filter.getListManager().whitelist(stringValue, getNumLevels());
+			Filter.getListManager().whitelist(stringValue, getLevels().size());
 			setTextFill(Decorator.getColorPositive());
 		}
 	}
@@ -157,8 +157,8 @@ public class TagNode extends VBox {
 		}
 		
 		//look for a valid child node
-		if (currentNode.getNumLevels() < tag.getNumLevels()) {
-			String nextLevelString = tag.getLevel(currentNode.getNumLevels()); //this works because getLevel() starts at 0, getNumLevels() at 1
+		if (currentNode.getLevels().size() < tag.getLevels().size()) {
+			String nextLevelString = tag.getLevels().get(currentNode.getLevels().size()); //this works because getLevel() starts at 0, getLevels().size() at 1
 			for (TagNode tagNode : currentNode.getSubNodesDirect()) {
 				if (tagNode.getText().equals(nextLevelString)) {
 					//child node found, repeat with next level
@@ -168,7 +168,7 @@ public class TagNode extends VBox {
 		}
 		
 		//child node not found, needs to be created
-		TagNode newNode = new TagNode(parentPane, tag, currentNode.getNumLevels());
+		TagNode newNode = new TagNode(parentPane, tag, currentNode.getLevels().size());
 		currentNode.getSubNodesDirect().add(newNode);
 		return getSubNodeRecursion(newNode, tag);
 	}
@@ -200,9 +200,34 @@ public class TagNode extends VBox {
 		return stringValue;
 	}
 	
-	public int getNumLevels() {
-		return levels.size();
+	public CustomList<TagNode> getParentNodes() {
+		TagNode rootNode = getTagNodeByValue(parentPane.getRootNodes(), levels.getFirst());
+		
+		CustomList<TagNode> returnList = new CustomList<>();
+		returnList.add(rootNode);
+		getParentNodesRecursion(returnList, levels, rootNode, 1);
+		
+		return returnList;
 	}
+	private void getParentNodesRecursion(CustomList<TagNode> returnList, CustomList<String> levels, TagNode currentNode, int currentLevel) {
+		if (levels.size() == currentLevel) return;
+		
+		String levelString = levels.get(currentLevel);
+		TagNode tagNode = getTagNodeByValue(currentNode.getSubNodesDirect(), levelString);
+		if (tagNode != null) {
+			returnList.add(tagNode);
+			getParentNodesRecursion(returnList, levels, tagNode, ++currentLevel);
+		}
+	}
+	private TagNode getTagNodeByValue(CustomList<TagNode> list, String stringValue) {
+		for (TagNode tagNode : list) {
+			if (tagNode.getText().equals(stringValue)) {
+				return tagNode;
+			}
+		}
+		return null;
+	}
+	
 	public String getText() {
 		return textNode.getText();
 	}

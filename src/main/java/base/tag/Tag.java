@@ -17,6 +17,7 @@ public class Tag {
 	}
 	
 	public void replaceLevelsFromStart(int numLevelsToReplace, CustomList<String> listLevelsToReplaceWith) {
+		//todo check
 		CustomList<String> listLevelsAfter = new CustomList<>(listLevelsToReplaceWith);
 		for (int i = numLevelsToReplace; i < this.levels.size(); i++) {
 			listLevelsAfter.add(this.levels.get(i));
@@ -51,13 +52,7 @@ public class Tag {
 	public int getID() {
 		return id;
 	}
-	public int getNumLevels() {
-		return levels.size();
-	}
-	public String getLevel(int level) {
-		return levels.get(level);
-	}
-	public String getLevelLast() {
-		return levels.get(levels.size() - 1);
+	public CustomList<String> getLevels() {
+		return levels;
 	}
 }

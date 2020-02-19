@@ -5,7 +5,6 @@ import base.entity.EntityCollectionUtil;
 import control.Select;
 import control.reload.Notifier;
 import control.reload.Reload;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -38,9 +37,22 @@ public class MainScene extends Scene {
 	private void initKeybinds() {
 		this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
 			if (this.getFocusOwner() instanceof EditNode) {
-				if (event.getCode() == KeyCode.ESCAPE) {
-					mainBox.requestFocus();
-					event.consume();
+				if (this.getFocusOwner() == SelectPane.getInstance().getNodeSearch()) {
+					switch (event.getCode()) {
+						case DOWN:
+							SelectPane.getInstance().nextMatch();
+							break;
+						case UP:
+							SelectPane.getInstance().previousMatch();
+							break;
+					}
+				} else {
+					switch (event.getCode()) {
+						case ESCAPE:
+							mainBox.requestFocus();
+							event.consume();
+							break;
+					}
 				}
 			} else {
 				switch (event.getCode()) {

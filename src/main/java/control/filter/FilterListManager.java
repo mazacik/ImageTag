@@ -36,16 +36,16 @@ public class FilterListManager {
 		for (String stringValue : stringValues) {
 			for (TagSimple whiteTagNode : whitelist) {
 				if (stringValue.contains(whiteTagNode.getStringValue())) {
-					if (whiteTagNode.getNumLevels() >= deepestMatch) {
-						deepestMatch = whiteTagNode.getNumLevels();
+					if (whiteTagNode.getLevelCount() >= deepestMatch) {
+						deepestMatch = whiteTagNode.getLevelCount();
 						ok = true;
 					}
 				}
 			}
 			for (TagSimple blackTagNode : blacklist) {
 				if (stringValue.contains(blackTagNode.getStringValue())) {
-					if (blackTagNode.getNumLevels() >= deepestMatch) {
-						deepestMatch = blackTagNode.getNumLevels();
+					if (blackTagNode.getLevelCount() >= deepestMatch) {
+						deepestMatch = blackTagNode.getLevelCount();
 						ok = false;
 					}
 				}
@@ -111,7 +111,7 @@ public class FilterListManager {
 			if (tagSimple.stringValue.startsWith(stringBefore)) {
 				unlist(tagSimple.stringValue);
 				String stringUnaffected = tagSimple.stringValue.substring(stringBefore.length());
-				int numLevelsUnaffected = tagSimple.numLevels - numLevelsBefore;
+				int numLevelsUnaffected = tagSimple.levelCount - numLevelsBefore;
 				whitelist(stringAfter + stringUnaffected, listLevelsAfter.size() + numLevelsUnaffected);
 			}
 		}
@@ -136,18 +136,18 @@ public class FilterListManager {
 	
 	private static class TagSimple {
 		private final String stringValue;
-		private final int numLevels;
+		private final int levelCount;
 		
-		public TagSimple(String stringValue, int numLevels) {
+		public TagSimple(String stringValue, int levelCount) {
 			this.stringValue = stringValue;
-			this.numLevels = numLevels;
+			this.levelCount = levelCount;
 		}
 		
 		public String getStringValue() {
 			return stringValue;
 		}
-		public int getNumLevels() {
-			return numLevels;
+		public int getLevelCount() {
+			return levelCount;
 		}
 	}
 }

@@ -16,6 +16,8 @@ import ui.override.HBox;
 import ui.override.VBox;
 
 public abstract class AbstractStage extends Stage {
+	private static final int DEFAULT_PADDING = 3;
+	
 	private BorderPane paneMain;
 	private TextNode errorNode;
 	private HBox buttonBox;
@@ -30,6 +32,7 @@ public abstract class AbstractStage extends Stage {
 		
 		buttonBox = new HBox();
 		buttonBox.setAlignment(Pos.CENTER);
+		buttonBox.setPadding(new Insets(0, DEFAULT_PADDING, DEFAULT_PADDING, DEFAULT_PADDING));
 		
 		this.setScene(new Scene(paneMain));
 		this.initStyle(StageStyle.UNDECORATED);
@@ -48,7 +51,7 @@ public abstract class AbstractStage extends Stage {
 	
 	public void setRoot(Region root) {
 		if (root.getPadding() == null) {
-			root.setPadding(new Insets(5));
+			root.setPadding(new Insets(DEFAULT_PADDING));
 		}
 		paneMain.setCenter(root);
 	}

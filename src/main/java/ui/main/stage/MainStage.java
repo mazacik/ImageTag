@@ -54,7 +54,7 @@ public class MainStage extends Stage {
 		getInstance().setScene(mainScene);
 		getInstance().getScene().widthProperty().addListener((observable, oldValue, newValue) -> onStageWidthChange());
 		
-		getInstance().setMinWidth(100 + SidePaneBase.MIN_WIDTH_SIDELISTS * 2 + Settings.TILE_SIZE.getValue());
+		getInstance().setMinWidth(100 + SidePaneBase.MIN_WIDTH * 2 + Settings.TILE_SIZE.getValue());
 		getInstance().setMinHeight(100 + ToolbarPane.PREF_HEIGHT + Settings.TILE_SIZE.getValue());
 		getInstance().setWidth(Decorator.getUsableScreenWidth());
 		getInstance().setHeight(Decorator.getUsableScreenHeight());
@@ -80,7 +80,7 @@ public class MainStage extends Stage {
 		double sceneWidth = MainStage.getInstance().getScene().getWidth();
 		
 		double width = 0;
-		double availableWidth = sceneWidth - 2 * SidePaneBase.MIN_WIDTH_SIDELISTS;
+		double availableWidth = sceneWidth - 2 * SidePaneBase.MIN_WIDTH;
 		
 		double increment = galleryTileSize + tiles.getHgap();
 		while (width + increment <= availableWidth) width += increment;

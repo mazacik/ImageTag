@@ -10,16 +10,16 @@ import ui.node.TextNode;
 import ui.override.VBox;
 
 public abstract class SidePaneBase extends VBox {
-	public static final double MIN_WIDTH_SIDELISTS = 250;
+	public static final double MIN_WIDTH = 250;
 	
-	protected final CustomList<TagNode> tagNodesLevel0;
+	protected final CustomList<TagNode> rootNodes;
 	
 	protected final TextNode nodeTitle;
 	protected final VBox boxNodes;
 	protected final ScrollPane scrollPane;
 	
 	protected SidePaneBase() {
-		tagNodesLevel0 = new CustomList<>();
+		rootNodes = new CustomList<>();
 		
 		nodeTitle = new TextNode("", true, true, false, true);
 		boxNodes = new VBox();
@@ -30,7 +30,7 @@ public abstract class SidePaneBase extends VBox {
 		scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 		scrollPane.setBackground(Background.EMPTY);
 		
-		this.setMinWidth(SidePaneBase.MIN_WIDTH_SIDELISTS);
+		this.setMinWidth(SidePaneBase.MIN_WIDTH);
 		this.setPrefWidth(Decorator.getUsableScreenWidth());
 	}
 	
@@ -40,13 +40,13 @@ public abstract class SidePaneBase extends VBox {
 	}
 	
 	public boolean reload() {
-		tagNodesLevel0.clear();
+		rootNodes.clear();
 		TagList.getMain().forEach(this::createTagNode);
-		boxNodes.getChildren().setAll(tagNodesLevel0);
+		boxNodes.getChildren().setAll(rootNodes);
 		
 		CustomList<String> openNodes = new CustomList<>(this.openNodes);
 		this.openNodes.clear();
-		for (TagNode tagNode : this.getTagNodesAll()) {
+		for (TagNode tagNode : getTagNodes()) {
 			if (openNodes.contains(tagNode.getStringValue())) {
 				tagNode.open();
 			}
@@ -55,8 +55,8 @@ public abstract class SidePaneBase extends VBox {
 		return true;
 	}
 	private TagNode createTagNode(Tag tag) {
-		for (TagNode tagNode : tagNodesLevel0) {
-			if (tagNode.getText().equals(tag.getLevel(0))) {
+		for (TagNode tagNode : rootNodes) {
+			if (tagNode.getText().equals(tag.getLevels().getFirst())) {
 				//child node found, repeat with next level
 				return tagNode.getSubNode(tag);
 			}
@@ -64,28 +64,31 @@ public abstract class SidePaneBase extends VBox {
 		
 		//child node not found, needs to be created
 		TagNode newNode = new TagNode(this, tag, 0);
-		tagNodesLevel0.add(newNode);
+		rootNodes.add(newNode);
 		return newNode.getSubNode(tag);
 	}
 	
-	public TagNode getTagNode(String query, int level) {
-		for (TagNode tagNode : getTagNodesAll()) {
-			if (tagNode.getNumLevels() - 1 == level && tagNode.getText().toLowerCase().equals(query)) {
+	protected TagNode getTagNode(String query, int level) {
+		for (TagNode tagNode : getTagNodes()) {
+			if (tagNode.getLevels().size() - 1 == level && tagNode.getText().toLowerCase().equals(query)) {
 				return tagNode;
 			}
 		}
 		return null;
 	}
-	protected CustomList<TagNode> getTagNodesAll() {
+	protected CustomList<TagNode> getTagNodes() {
 		CustomList<TagNode> returnList = new CustomList<>();
-		getTagNodesRecursion(tagNodesLevel0, returnList);
+		getTagNodesRecursion(rootNodes, returnList);
 		return returnList;
 	}
-	private void getTagNodesRecursion(CustomList<TagNode> subNodes, CustomList<TagNode> returnList) {
-		for (TagNode tagNode : subNodes) {
+	private void getTagNodesRecursion(CustomList<TagNode> tagNodes, CustomList<TagNode> returnList) {
+		for (TagNode tagNode : tagNodes) {
 			returnList.add(tagNode);
 			getTagNodesRecursion(tagNode.getSubNodesDirect(), returnList);
 		}
+	}
+	protected CustomList<TagNode> getRootNodes() {
+		return rootNodes;
 	}
 	
 	public ScrollPane getScrollPane() {

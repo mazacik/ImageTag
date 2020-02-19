@@ -28,7 +28,7 @@ public class SelectPane extends SidePaneBase {
 		CustomList<String> stringListUnion = new CustomList<>();
 		Select.getEntities().getTagList().forEach(tag -> stringListUnion.add(tag.getStringValue()));
 		
-		getTagNodesAll().forEach(tagNode -> this.refreshNodeColor(tagNode, stringListIntersect, stringListUnion));
+		getTagNodes().forEach(tagNode -> this.refreshNodeColor(tagNode, stringListIntersect, stringListUnion));
 		
 		return true;
 	}
@@ -62,8 +62,9 @@ public class SelectPane extends SidePaneBase {
 		nodeTitle.setText(text);
 	}
 	
-	private TagNode bestMatch = null;
-	private TagNode getBestMatch(CustomList<TagNode> tagNodes, String query) {
+	private TagNode match = null;
+	private String query = "";
+	private TagNode getTagNode(CustomList<TagNode> tagNodes, String query) {
 		for (TagNode tagNode : tagNodes) {
 			if (tagNode.isLast() && tagNode.getText().toLowerCase().startsWith(query)) {
 				return tagNode;
@@ -71,30 +72,77 @@ public class SelectPane extends SidePaneBase {
 		}
 		return null;
 	}
+	public void nextMatch() {
+		if (match != null) {
+			match.getParentNodes().forEach(TagNode::close);
+			//
+			//todo simplify
+			CustomList<TagNode> tagNodes = getTagNodes();
+			int i = tagNodes.indexOf(match);
+			do {
+				i++;
+				if (i >= tagNodes.size()) {
+					i = 0;
+				}
+			} while (!checkTagNode(tagNodes.get(i)));
+			//
+		}
+	}
+	public void previousMatch() {
+		if (match != null) {
+			match.getParentNodes().forEach(TagNode::close);
+			CustomList<TagNode> tagNodes = getTagNodes();
+			int i = tagNodes.indexOf(match);
+			do {
+				i--;
+				if (i < 0) {
+					i = tagNodes.size() - 1;
+				}
+			} while (!checkTagNode(tagNodes.get(i)));
+		}
+	}
+	private boolean checkTagNode(TagNode tagNode) {
+		if (tagNode == match) {
+			return true;
+		} else if (tagNode.isLast() && tagNode.getText().toLowerCase().startsWith(query)) {
+			match.setBackground(Background.EMPTY);
+			match = tagNode;
+			match.setBackground(Decorator.getBackgroundSecondary());
+			match.getParentNodes().forEach(TagNode::open);
+			return true;
+		} else {
+			return false;
+		}
+	}
 	private ChangeListener<? super String> getSearchTextListener() {
 		return (ChangeListener<String>) (observable, oldValue, newValue) -> {
-			if (bestMatch != null) bestMatch.setBackground(Background.EMPTY);
+			if (match != null) {
+				match.setBackground(Background.EMPTY);
+			}
 			
-			CustomList<TagNode> tagNodesAll = getTagNodesAll();
-			tagNodesAll.forEach(TagNode::close);
+			CustomList<TagNode> tagNodes = getTagNodes();
+			tagNodes.forEach(TagNode::close);
 			
 			if (newValue.length() > 0) {
-				bestMatch = getBestMatch(tagNodesAll, newValue.toLowerCase());
-				if (bestMatch != null) {
-					for (int i = 0; i < bestMatch.getLevels().size(); i++) {
-						getTagNode(bestMatch.getLevels().get(i).toLowerCase(), i).open();
+				query = newValue.toLowerCase();
+				match = getTagNode(tagNodes, query);
+				if (match != null) {
+					match.setBackground(Decorator.getBackgroundSecondary());
+					for (int i = 0; i < match.getLevels().size(); i++) {
+						getTagNode(match.getLevels().get(i).toLowerCase(), i).open();
 					}
-					bestMatch.setBackground(Decorator.getBackgroundSecondary());
 				}
+			} else {
+				match = null;
 			}
 		};
 	}
 	private EventHandler<ActionEvent> getSearchOnAction() {
 		return event -> {
-			bestMatch.setBackground(Background.EMPTY);
-			getTagNodesAll().forEach(TagNode::close);
+			match.setBackground(Background.EMPTY);
+			getTagNodes().forEach(TagNode::close);
 			nodeSearch.clear();
-			Select.getEntities().addTag(TagList.getMain().getTag(bestMatch.getStringValue()).getID());
+			Select.getEntities().addTag(TagList.getMain().getTag(match.getStringValue()).getID());
 			
 			Reload.start();
 		};

@@ -235,7 +235,7 @@ public enum NodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClickMenu.hideAll();
 				
-				TagUtil.edit(ClickMenu.getTagNode().getStringValue(), ClickMenu.getTagNode().getNumLevels());
+				TagUtil.edit(ClickMenu.getTagNode().getStringValue(), ClickMenu.getTagNode().getLevels().size());
 				
 				Reload.start();
 			});
