@@ -12,7 +12,7 @@ import ui.stage.FilterOptionStage;
 
 public class FilterPane extends SidePaneBase {
 	public boolean refresh() {
-		nodeTitle.setText("Filter: " + Filter.getEntities().size());
+		nodeText.setText("Filter: " + Filter.getEntities().size());
 		
 		return true;
 	}
@@ -27,9 +27,9 @@ public class FilterPane extends SidePaneBase {
 		TextNode btnSettings = new TextNode("⁝", true, true, false, true);
 		btnSettings.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> FilterOptionStage.show(""));
 		
-		HBox hBoxTitle = new HBox(btnReset, nodeTitle, btnSettings);
+		HBox hBoxTitle = new HBox(btnReset, nodeText, btnSettings);
 		hBoxTitle.setBorder(Decorator.getBorder(0, 0, 1, 0));
-		nodeTitle.prefWidthProperty().bind(this.widthProperty());
+		nodeText.prefWidthProperty().bind(this.widthProperty());
 		
 		TextNode btnCreateNewTag = NodeTemplates.TAG_CREATE.get();
 		btnCreateNewTag.setBorder(Decorator.getBorder(0, 0, 1, 0));

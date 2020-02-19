@@ -3,26 +3,26 @@ package misc;
 import base.CustomList;
 import javafx.util.Pair;
 
-public class CompareUtil {
-	public CustomList<Pair<String, String>> getPairs(CustomList<String> base, CustomList<String> comp) {
-		CustomList<Pair<String, String>> maps = new CustomList<>();
+public class CompareUtil<T1, T2> {
+	public static <T1, T2> CustomList<Pair<T1, T2>> getPairs(CustomList<T1> lbase, CustomList<T2> lcomp) {
+		CustomList<Pair<T1, T2>> maps = new CustomList<>();
 		
-		if (base.isEmpty() || comp.isEmpty()) return maps;
+		if (lbase == null || lcomp == null) return maps;
 		
 		int icomp = 0;
-		for (int ibase = 0; ibase < base.size(); ) {
-			String sbase = base.get(ibase);
-			String scomp = comp.get(icomp);
+		for (int ibase = 0; ibase < lbase.size(); ) {
+			T1 obase = lbase.get(ibase);
+			T2 ocomp = lcomp.get(icomp);
 			
-			if (sbase.equals(scomp)) {
-				maps.add(new Pair<>(sbase, scomp));
-				if (base.size() == maps.size()) return maps;
+			if (obase.equals(ocomp)) {
+				maps.add(new Pair<>(obase, ocomp));
+				if (lbase.size() == maps.size()) return maps;
 				ibase++;
 			}
 			
 			icomp++;
 			
-			if (icomp == comp.size()) return maps;
+			if (icomp == lcomp.size()) return maps;
 		}
 		
 		return maps;

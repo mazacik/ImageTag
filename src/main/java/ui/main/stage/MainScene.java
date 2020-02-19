@@ -40,10 +40,12 @@ public class MainScene extends Scene {
 				if (this.getFocusOwner() == SelectPane.getInstance().getNodeSearch()) {
 					switch (event.getCode()) {
 						case DOWN:
-							SelectPane.getInstance().nextMatch();
+							SelectPane.getInstance().nextMatch(+1);
+							event.consume();
 							break;
 						case UP:
-							SelectPane.getInstance().previousMatch();
+							SelectPane.getInstance().nextMatch(-1);
+							event.consume();
 							break;
 					}
 				} else {
