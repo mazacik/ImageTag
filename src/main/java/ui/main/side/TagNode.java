@@ -48,19 +48,6 @@ public class TagNode extends VBox {
 		
 		toggleNode = new TextNode("+ ", false, false, false, false);
 		toggleNode.setPadding(new Insets(0, PADDING_DEFAULT, 0, paddingLeft));
-		toggleNode.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-			switch (event.getButton()) {
-				case PRIMARY:
-					if (!this.isOpen()) {
-						this.open();
-					} else {
-						this.close();
-					}
-					break;
-				case SECONDARY:
-					break;
-			}
-		});
 		
 		textNode = new TextNode(tag.getLevels().get(level), false, false, false, false);
 		
@@ -80,12 +67,19 @@ public class TagNode extends VBox {
 		boxMain.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			switch (event.getButton()) {
 				case PRIMARY:
-					if (event.getX() > toggleNode.getWidth()) {
-						if (parentPane == FilterPane.getInstance()) {
+					if (parentPane == FilterPane.getInstance()) {
+						if (event.getX() > toggleNode.getWidth()) {
 							clickFilter();
-						} else if (parentPane == SelectPane.getInstance()) {
-							clickSelect();
+							Reload.start();
+						} else {
+							if (!this.isOpen()) {
+								this.open();
+							} else {
+								this.close();
+							}
 						}
+					} else if (parentPane == SelectPane.getInstance()) {
+						clickSelect();
 						Reload.start();
 					}
 					break;

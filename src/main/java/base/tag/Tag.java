@@ -16,27 +16,20 @@ public class Tag {
 		updateStringValue();
 	}
 	
-	public void replaceLevelsFromStart(int numLevelsToReplace, CustomList<String> listLevelsToReplaceWith) {
-		//todo check
-		CustomList<String> listLevelsAfter = new CustomList<>(listLevelsToReplaceWith);
-		for (int i = numLevelsToReplace; i < this.levels.size(); i++) {
-			listLevelsAfter.add(this.levels.get(i));
+	public void replaceLevelsFromStart(int numLevelsToReplaceFromStart, CustomList<String> listLevelsToReplaceWith) {
+		for (int i = numLevelsToReplaceFromStart; i < levels.size(); i++) {
+			listLevelsToReplaceWith.add(levels.get(i));
 		}
 		
-		StringBuilder builder = new StringBuilder();
-		listLevelsAfter.forEach(builder::append);
-		String stringValueAfter = builder.toString();
+		this.levels.setAll(listLevelsToReplaceWith);
+		updateStringValue();
 		
 		for (Tag tag : TagList.getMain()) {
-			if (stringValueAfter.startsWith(tag.getStringValue())) {
-				//todo needs testing
-				tag.levels.add("_temp_");
+			if (stringValue.startsWith(tag.getStringValue()) && tag != this) {
+				tag.levels.add(tag.levels.getLast());
 				tag.updateStringValue();
 			}
 		}
-		
-		this.levels.setAll(listLevelsAfter);
-		this.stringValue = stringValueAfter;
 	}
 	
 	private transient String stringValue;

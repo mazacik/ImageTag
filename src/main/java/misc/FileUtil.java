@@ -107,7 +107,7 @@ public abstract class FileUtil {
 					EntityList newEntities = new EntityList();
 					for (File file : getSupportedFiles(directory)) {
 						if (Thread.currentThread().isInterrupted()) {
-							Logger.getGlobal().info("interrupted");
+							Logger.getGlobal().info("IMPORT THREAD INTERRUPTED");
 							return;
 						}
 						
@@ -135,7 +135,7 @@ public abstract class FileUtil {
 						Filter.getNewEntities().setAll(newEntities);
 						
 						Platform.runLater(() -> {
-							String s = "Imported " + newEntities.size() + " files.\nWould you like to view the files?";
+							String s = "Imported " + newEntities.size() + " files.\nSet filter to recently imported files?";
 							
 							if (ConfirmationStage.show(s)) {
 								Filter.getSettings().setShowImages(true);
@@ -149,7 +149,7 @@ public abstract class FileUtil {
 							Reload.start();
 						});
 					}
-					Logger.getGlobal().info("finished");
+					Logger.getGlobal().info("IMPORT THREAD FINISHED");
 				});
 				importThread.start();
 			}

@@ -19,6 +19,7 @@ public class SelectPane extends SidePaneBase {
 	
 	private TagNode match;
 	private String query;
+	private boolean enableSearch = true;
 	
 	public boolean refresh() {
 		refreshTitle();
@@ -106,39 +107,46 @@ public class SelectPane extends SidePaneBase {
 		nodeSearch.setBorder(Decorator.getBorder(0, 0, 1, 0));
 		nodeSearch.prefWidthProperty().bind(this.widthProperty());
 		nodeSearch.textProperty().addListener((observable, oldValue, newValue) -> {
+			if (enableSearch) {
+				if (match != null) {
+					match.setBackground(Background.EMPTY);
+					match.setBackgroundLock(false);
+				}
+				closeNodes();
+				
+				if (newValue.length() > 0) {
+					query = newValue.toLowerCase();
+					
+					for (TagNode tagNode : getTagNodes()) {
+						if (tagNode.isLast() && tagNode.getText().toLowerCase().startsWith(query)) {
+							match = tagNode;
+							break;
+						}
+					}
+					
+					if (match != null) {
+						match.setBackground(Decorator.getBackgroundSecondary());
+						match.setBackgroundLock(true);
+						match.getParentNodes().forEach(TagNode::open);
+					}
+				} else {
+					match = null;
+				}
+			}
+		});
+		nodeSearch.setOnAction(event -> {
 			if (match != null) {
 				match.setBackground(Background.EMPTY);
 				match.setBackgroundLock(false);
-			}
-			closeNodes();
-			
-			if (newValue.length() > 0) {
-				query = newValue.toLowerCase();
 				
-				for (TagNode tagNode : getTagNodes()) {
-					if (tagNode.isLast() && tagNode.getText().toLowerCase().startsWith(query)) {
-						match = tagNode;
-						break;
-					}
-				}
+				enableSearch = false;
+				nodeSearch.clear();
+				enableSearch = true;
 				
-				if (match != null) {
-					match.setBackground(Decorator.getBackgroundSecondary());
-					match.setBackgroundLock(true);
-					match.getParentNodes().forEach(TagNode::open);
-				}
-			} else {
-				match = null;
+				Select.getEntities().addTag(TagList.getMain().getTag(match.getStringValue()).getID());
+				
+				Reload.start();
 			}
-		});
-		nodeSearch.onActionProperty().addListener((observable, oldValue, newValue) -> {
-			match.setBackground(Background.EMPTY);
-			match.setBackgroundLock(false);
-			closeNodes();
-			nodeSearch.clear();
-			Select.getEntities().addTag(TagList.getMain().getTag(match.getStringValue()).getID());
-			
-			Reload.start();
 		});
 		
 		TextNode nodeSelectAll = NodeTemplates.SELECTION_SET_ALL.get();
