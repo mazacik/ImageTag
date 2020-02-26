@@ -20,8 +20,8 @@ public class CollageStage extends Stage {
 			Image originImage = new Image("file:" + FileUtil.getFileEntity(Select.getTarget()));
 			Image scaledImage = getSmallerImage("file:" + FileUtil.getFileEntity(Select.getTarget()), originImage.getWidth(), originImage.getHeight(), 1800, 900);
 			
-			int miniW = (int) scaledImage.getWidth() / Settings.COLLAGE_SIZE.getValue();
-			int miniH = (int) scaledImage.getHeight() / Settings.COLLAGE_SIZE.getValue();
+			int miniW = (int) scaledImage.getWidth() / Settings.COLLAGE_SIZE.getIntegerValue();
+			int miniH = (int) scaledImage.getHeight() / Settings.COLLAGE_SIZE.getIntegerValue();
 			
 			CustomList<CollagePiece> database = new CustomList<>();
 			for (Entity entity : Filter.getEntities()) {
@@ -35,8 +35,8 @@ public class CollageStage extends Stage {
 			}
 			
 			GridPane gridPane = new GridPane();
-			for (int y = 0; y < Settings.COLLAGE_SIZE.getValue(); y++) {
-				for (int x = 0; x < Settings.COLLAGE_SIZE.getValue(); x++) {
+			for (int y = 0; y < Settings.COLLAGE_SIZE.getIntegerValue(); y++) {
+				for (int x = 0; x < Settings.COLLAGE_SIZE.getIntegerValue(); x++) {
 					Color averageColor = getAverageColor(scaledImage, x * miniW, y * miniH, miniW, miniH);
 					ImageView imageView = new ImageView(getBestPiece(averageColor, database).image);
 					int finalX = x;

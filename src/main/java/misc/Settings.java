@@ -1,74 +1,99 @@
 package misc;
 
-import base.CustomList;
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 
 public enum Settings {
-	COLOR_PRESET(0),
-	FONT_SIZE(16),
-	TILE_SIZE(200),
-	COLLAGE_SIZE(50),
+	COLOR_PRESET("ColorPreset", "0", true),
+	FONT_SIZE("FontSize", "16", true),
+	GALLERY_TILE_SIZE("GalleryTileSize", "200", true),
+	COLLAGE_SIZE("CollageSize", "50", true),
+	
+	IMPORT_LAST_PATH("ImportLastPath", System.getProperty("user.dir"), false),
 	;
 	
-	private static final int ERROR_VALUE = -1;
-	private transient int defaultValue;
-	private int value = ERROR_VALUE;
+	private String value;
+	private String defaultValue;
+	private String name;
+	private boolean modifiable;
+	
+	Settings(String name, String defaultValue, boolean modifiable) {
+		this.name = name;
+		this.defaultValue = defaultValue;
+		this.modifiable = modifiable;
+	}
 	
 	static {
 		readFromDisk();
 	}
-	public static void readFromDisk() {
-		Type type = new TypeToken<CustomList<SettingsGsonHelper>>() {}.getType();
-		CustomList<SettingsGsonHelper> list = GsonUtil.read(type, FileUtil.getFileSettings());
-		
-		if (list != null) {
-			for (SettingsGsonHelper settingHelper : list) {
-				if (settingHelper != null) {
-					Settings.valueOf(settingHelper.name).setValue(settingHelper.value);
+	private static void readFromDisk() {
+		File settingsFile = new File(FileUtil.getFileSettings());
+		if (!settingsFile.exists()) {
+			for (Settings setting : Settings.values()) setting.value = setting.defaultValue;
+			return;
+		}
+		try {
+			List<String> lines = Files.readAllLines(Paths.get(settingsFile.toURI()));
+			for (String line : lines) {
+				String[] strings = line.split("=");
+				if (strings.length > 1) {
+					for (Settings setting : Settings.values()) {
+						if (setting.name.equals(strings[0])) {
+							setting.value = strings[1];
+							break;
+						}
+					}
 				}
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		
 		for (Settings setting : Settings.values()) {
-			if (setting.getValue() == ERROR_VALUE) {
-				setting.setDefaultValue();
+			if (setting.value == null || setting.value.isEmpty()) {
+				setting.value = setting.defaultValue;
 			}
 		}
 	}
 	public static void writeToDisk() {
-		CustomList<SettingsGsonHelper> list = new CustomList<>();
-		for (Settings setting : Settings.values()) {
-			list.add(new SettingsGsonHelper(setting.name(), setting.getValue()));
+		File settingsFile = new File(FileUtil.getFileSettings());
+		if (settingsFile.exists()) {
+			settingsFile.delete();
 		}
-		GsonUtil.write(list, new TypeToken<CustomList<SettingsGsonHelper>>() {}.getType(), FileUtil.getFileSettings());
-	}
-	private static class SettingsGsonHelper {
-		private String name;
-		private Integer value;
-		
-		public SettingsGsonHelper(String name, Integer value) {
-			this.name = name;
-			this.value = value;
+		try {
+			settingsFile.createNewFile();
+			BufferedWriter writer = new BufferedWriter(new FileWriter(settingsFile));
+			
+			StringBuilder sb = new StringBuilder();
+			for (Settings setting : Settings.values()) {
+				sb.append(setting.name).append('=').append(setting.value).append('\n');
+			}
+			
+			writer.write(sb.toString());
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
-	Settings(int defaultValue) {
-		this.defaultValue = defaultValue;
-	}
-	
-	public int getValue() {
+	public String getValue() {
 		return value;
 	}
-	public int getDefaultValue() {
+	public String getDefaultValue() {
 		return defaultValue;
 	}
-	
-	public void setValue(int value) {
-		this.value = value;
+	public int getIntegerValue() {
+		return Integer.parseInt(value);
 	}
-	public void setDefaultValue() {
-		this.value = this.defaultValue;
+	public boolean isModifiable() {
+		return modifiable;
+	}
+	
+	public void setValue(String value) {
+		this.value = value;
 	}
 }

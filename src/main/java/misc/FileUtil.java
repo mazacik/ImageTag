@@ -98,10 +98,11 @@ public abstract class FileUtil {
 	public static void importFiles() {
 		DirectoryChooser directoryChooser = new DirectoryChooser();
 		directoryChooser.setTitle("Select a directory to import");
-		directoryChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+		directoryChooser.setInitialDirectory(new File(Settings.IMPORT_LAST_PATH.getValue()));
 		File directory = directoryChooser.showDialog(MainStage.getInstance());
 		
 		if (directory != null && directory.isDirectory()) {
+			Settings.IMPORT_LAST_PATH.setValue(directory.getAbsolutePath());
 			if (importThread == null || !importThread.isAlive()) {
 				importThread = new Thread(() -> {
 					EntityList newEntities = new EntityList();
@@ -257,7 +258,7 @@ public abstract class FileUtil {
 		return getDirectoryLocal() + File.separator + "cache" + File.separator + projectName;
 	}
 	public static String getFileSettings() {
-		return getDirectoryLocal() + File.separator + "settings.json";
+		return getDirectoryLocal() + File.separator + "settings.txt";
 	}
 	
 	public static String getApplicationName() {

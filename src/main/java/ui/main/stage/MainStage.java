@@ -54,8 +54,8 @@ public class MainStage extends Stage {
 		getInstance().setScene(mainScene);
 		getInstance().getScene().widthProperty().addListener((observable, oldValue, newValue) -> onStageWidthChange());
 		
-		getInstance().setMinWidth(100 + SidePaneBase.MIN_WIDTH * 2 + Settings.TILE_SIZE.getValue());
-		getInstance().setMinHeight(100 + ToolbarPane.PREF_HEIGHT + Settings.TILE_SIZE.getValue());
+		getInstance().setMinWidth(100 + SidePaneBase.MIN_WIDTH * 2 + Settings.GALLERY_TILE_SIZE.getIntegerValue());
+		getInstance().setMinHeight(100 + ToolbarPane.PREF_HEIGHT + Settings.GALLERY_TILE_SIZE.getIntegerValue());
 		getInstance().setWidth(Decorator.getUsableScreenWidth());
 		getInstance().setHeight(Decorator.getUsableScreenHeight());
 		
