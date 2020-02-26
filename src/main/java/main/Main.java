@@ -17,6 +17,7 @@ import misc.Project;
 import misc.Settings;
 import ui.main.display.DisplayPane;
 import ui.main.stage.MainStage;
+import ui.stage.ImportStage;
 
 import java.io.File;
 
@@ -108,7 +109,7 @@ public class Main extends Application {
 		if (!filesWithoutEntities.isEmpty()) {
 			EntityList newEntities = new EntityList(filesWithoutEntities);
 			EntityList.getMain().addAll(newEntities);
-			Filter.getNewEntities().addAll(newEntities);
+			Filter.getLastImport().addAll(newEntities);
 			EntityList.getMain().sort();
 		}
 		
@@ -152,8 +153,8 @@ public class Main extends Application {
 	}
 	
 	public static void exitApplication() {
-		CacheManager.stopCacheThread();
-		FileUtil.stopImportThread();
+		if (CacheManager.getThread() != null) CacheManager.getThread().interrupt();
+		if (ImportStage.getThread() != null) ImportStage.getThread().interrupt();
 		
 		DisplayPane.getInstance().disposeVideoPlayer();
 		DisplayPane.getInstance().getControls().hide();

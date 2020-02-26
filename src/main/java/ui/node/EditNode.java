@@ -5,6 +5,15 @@ import javafx.scene.layout.Background;
 import ui.decorator.Decorator;
 
 public class EditNode extends TextField {
+	public EditNode() {
+		this("", "");
+	}
+	public EditNode(EditNodeType nodeType) {
+		this("", "", nodeType);
+	}
+	public EditNode(String startText, String promptText) {
+		this(startText, promptText, EditNodeType.ANY_CHARACTERS);
+	}
 	public EditNode(String startText, String promptText, EditNodeType type) {
 		this.setFont(Decorator.getFont());
 		this.setBorder(Decorator.getBorder(1, 1, 1, 1));
@@ -33,15 +42,6 @@ public class EditNode extends TextField {
 				});
 				break;
 		}
-	}
-	public EditNode(String startText, String promptText) {
-		this(startText, promptText, EditNodeType.ANY_CHARACTERS);
-	}
-	public EditNode(EditNodeType nodeType) {
-		this("", "", nodeType);
-	}
-	public EditNode() {
-		this("", "");
 	}
 	
 	public boolean isInteger(String str) {

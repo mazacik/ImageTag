@@ -20,12 +20,12 @@ public enum Settings {
 	private String value;
 	private String defaultValue;
 	private String name;
-	private boolean modifiable;
+	private boolean userModifiable;
 	
-	Settings(String name, String defaultValue, boolean modifiable) {
+	Settings(String name, String defaultValue, boolean userModifiable) {
 		this.name = name;
 		this.defaultValue = defaultValue;
-		this.modifiable = modifiable;
+		this.userModifiable = userModifiable;
 	}
 	
 	static {
@@ -89,8 +89,8 @@ public enum Settings {
 	public int getIntegerValue() {
 		return Integer.parseInt(value);
 	}
-	public boolean isModifiable() {
-		return modifiable;
+	public boolean isUserModifiable() {
+		return userModifiable;
 	}
 	
 	public void setValue(String value) {

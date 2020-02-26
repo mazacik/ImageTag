@@ -183,13 +183,13 @@ public abstract class CacheManager {
 		}
 	}
 	
-	private static Thread cacheThread = null;
+	private static Thread thread = null;
 	public static void checkCacheInBackground() {
 		checkCacheInBackground(EntityList.getMain());
 	}
 	public static void checkCacheInBackground(EntityList entityList) {
-		if (cacheThread == null || !cacheThread.isAlive()) {
-			cacheThread = new Thread(() -> {
+		if (thread == null || !thread.isAlive()) {
+			thread = new Thread(() -> {
 				for (Entity entity : entityList) {
 					if (Thread.currentThread().isInterrupted()) {
 						Logger.getGlobal().warning("CACHE CHECK THREAD INTERRUPTED");
@@ -199,10 +199,10 @@ public abstract class CacheManager {
 				}
 				Logger.getGlobal().info("CACHE CHECK THREAD FINISHED");
 			});
-			cacheThread.start();
+			thread.start();
 		}
 	}
-	public static void stopCacheThread() {
-		if (cacheThread != null) cacheThread.interrupt();
+	public static Thread getThread() {
+		return thread;
 	}
 }

@@ -33,11 +33,11 @@ public class FilterOptionStage extends AbstractStage {
 		nodeImages = new CheckboxNode("Images");
 		nodeGifs = new CheckboxNode("Gifs");
 		nodeVideos = new CheckboxNode("Videos");
-		nodeSession = new CheckboxNode("Session");
+		nodeSession = new CheckboxNode("Session");//todo maybe rename to "Last Import"?
 		
 		nodeLimit = new CheckboxNode("Limit");
 		nodeLimitValue = new EditNode(EditNode.EditNodeType.NUMERIC_POSITIVE);
-		nodeLimit.getSelectedProperty().addListener((observable, oldValue, newValue) -> nodeLimitValue.setDisable(!newValue));
+		nodeLimit.getCheckedProperty().addListener((observable, oldValue, newValue) -> nodeLimitValue.setDisable(!newValue));
 		
 		nodeLimitValue.setPadding(new Insets(0, 1, -1, 1));
 		nodeLimitValue.setPrefWidth(100);
@@ -73,11 +73,11 @@ public class FilterOptionStage extends AbstractStage {
 		nodeOK = new TextNode("OK", true, true, false, true);
 		nodeOK.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> {
 			FilterSettings filterSettings = Filter.getSettings();
-			filterSettings.setShowImages(nodeImages.isSelected());
-			filterSettings.setShowGifs(nodeGifs.isSelected());
-			filterSettings.setShowVideos(nodeVideos.isSelected());
-			filterSettings.setShowOnlyNewEntities(nodeSession.isSelected());
-			filterSettings.setEnableLimit(nodeLimit.isSelected());
+			filterSettings.setShowImages(nodeImages.isChecked());
+			filterSettings.setShowGifs(nodeGifs.isChecked());
+			filterSettings.setShowVideos(nodeVideos.isChecked());
+			filterSettings.setShowOnlyNewEntities(nodeSession.isChecked());
+			filterSettings.setEnableLimit(nodeLimit.isChecked());
 			filterSettings.setLimit(Integer.parseInt(nodeLimitValue.getText()));
 			
 			Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
@@ -93,11 +93,11 @@ public class FilterOptionStage extends AbstractStage {
 		if (!getInstance().isShowing()) {
 			FilterSettings filterSettings = Filter.getSettings();
 			
-			nodeImages.setSelected(filterSettings.isShowImages());
-			nodeGifs.setSelected(filterSettings.isShowGifs());
-			nodeVideos.setSelected(filterSettings.isShowVideos());
-			nodeSession.setSelected(filterSettings.isShowOnlyNewEntities());
-			nodeLimit.setSelected(filterSettings.isEnableLimit());
+			nodeImages.setChecked(filterSettings.isShowImages());
+			nodeGifs.setChecked(filterSettings.isShowGifs());
+			nodeVideos.setChecked(filterSettings.isShowVideos());
+			nodeSession.setChecked(filterSettings.isShowOnlyNewEntities());
+			nodeLimit.setChecked(filterSettings.isEnableLimit());
 			nodeLimitValue.setText(String.valueOf(filterSettings.getLimit()));
 			
 			getInstance().show();

@@ -72,11 +72,11 @@ public class DisplayPane extends BorderPane {
 		double resultWidth;
 		double resultHeight;
 		
+		//todo maybe move shit like this to separate private methods for clarity and ease-of-access?
 		if (currentCache == null || !currentCache.equals(currentTarget)) {
-			currentCache = currentTarget;
-			
 			try {
-				File file = new File(FileUtil.getFileEntity(currentCache));
+				File file = new File(FileUtil.getFileEntity(currentTarget));
+				if (!file.exists()) return;
 				ImageInputStream iis = ImageIO.createImageInputStream(file);
 				Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
 				
@@ -90,11 +90,13 @@ public class DisplayPane extends BorderPane {
 				}
 				
 				iis.close();
+				
+				currentCache = currentTarget;
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			
-			String entityFilePath = FileUtil.getFileEntity(currentCache);
+			String entityFilePath = FileUtil.getFileEntity(currentTarget);
 			if (originWidth > 2 * maxWidth || originHeight > 2 * maxHeight) {
 				currentImage = new Image("file:" + entityFilePath, canvas.getWidth() * 1.5, canvas.getHeight() * 1.5, true, true);
 			} else {

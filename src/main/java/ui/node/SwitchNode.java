@@ -11,6 +11,9 @@ public class SwitchNode extends VBox {
 	protected TextNode left;
 	protected TextNode right;
 	
+	public SwitchNode(String text1, String text2, double prefWidth) {
+		this("", text1, text2, prefWidth);
+	}
 	public SwitchNode(String title, String text1, String text2, double prefWidth) {
 		left = new TextNode(text1, true, false, true, true);
 		right = new TextNode(text2, true, false, true, true);
@@ -25,7 +28,7 @@ public class SwitchNode extends VBox {
 		}
 		
 		this.setAlignment(Pos.CENTER);
-		this.getChildren().add(new TextNode(title));
+		if (!title.isEmpty()) this.getChildren().add(new TextNode(title));
 		this.getChildren().add(new HBox(left, right));
 	}
 	

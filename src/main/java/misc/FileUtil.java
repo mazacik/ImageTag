@@ -2,19 +2,11 @@ package misc;
 
 import base.CustomList;
 import base.entity.Entity;
-import base.entity.EntityList;
-import cache.CacheManager;
 import com.sun.jna.platform.FileUtils;
-import control.filter.Filter;
-import control.reload.Notifier;
-import control.reload.Reload;
 import enums.MediaType;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.DirectoryChooser;
 import main.Main;
-import ui.main.stage.MainStage;
-import ui.stage.ConfirmationStage;
 import ui.stage.SimpleMessageStage;
 
 import java.io.File;
@@ -46,6 +38,7 @@ public abstract class FileUtil {
 	public static void moveFile(String from, String to) {
 		if (Main.DEBUG_FS_FILE_MOVE) {
 			try {
+				//todo fileNew.getParentFile().mkdirs(); and remove that from using methods
 				Files.move(Paths.get(from), Paths.get(to));
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -94,70 +87,9 @@ public abstract class FileUtil {
 		return path;
 	}
 	
-	private static Thread importThread = null;
-	public static void importFiles() {
-		DirectoryChooser directoryChooser = new DirectoryChooser();
-		directoryChooser.setTitle("Select a directory to import");
-		directoryChooser.setInitialDirectory(new File(Settings.IMPORT_LAST_PATH.getValue()));
-		File directory = directoryChooser.showDialog(MainStage.getInstance());
-		
-		if (directory != null && directory.isDirectory()) {
-			Settings.IMPORT_LAST_PATH.setValue(directory.getAbsolutePath());
-			if (importThread == null || !importThread.isAlive()) {
-				importThread = new Thread(() -> {
-					EntityList newEntities = new EntityList();
-					for (File file : getSupportedFiles(directory)) {
-						if (Thread.currentThread().isInterrupted()) {
-							Logger.getGlobal().info("IMPORT THREAD INTERRUPTED");
-							return;
-						}
-						
-						String pathBefore = file.getAbsolutePath();
-						String pathAfter = Project.getCurrent().getDirectorySource() + File.separator + FileUtil.createEntityName(file, directory.getAbsolutePath());
-						
-						File fileAfter = new File(pathAfter);
-						if (!fileAfter.exists()) {
-							fileAfter.getParentFile().mkdirs();
-							moveFile(pathBefore, pathAfter);
-							newEntities.add(new Entity(fileAfter));
-						} else {
-							Logger.getGlobal().info("Could not import file " + file.getName() + ", file already exists");
-						}
-					}
-					
-					if (newEntities.isEmpty()) {
-						Platform.runLater(() -> SimpleMessageStage.show("Imported 0 files."));
-					} else {
-						CacheManager.checkCacheInBackground(newEntities);
-						
-						EntityList.getMain().addAll(newEntities);
-						EntityList.getMain().sort();
-						
-						Filter.getNewEntities().setAll(newEntities);
-						
-						Platform.runLater(() -> {
-							String s = "Imported " + newEntities.size() + " files.\nSet filter to recently imported files?";
-							
-							if (ConfirmationStage.show(s)) {
-								Filter.getSettings().setShowImages(true);
-								Filter.getSettings().setShowGifs(true);
-								Filter.getSettings().setShowVideos(true);
-								Filter.getSettings().setShowOnlyNewEntities(true);
-								Filter.getSettings().setEnableLimit(false);
-							}
-							
-							Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
-							Reload.start();
-						});
-					}
-					Logger.getGlobal().info("IMPORT THREAD FINISHED");
-				});
-				importThread.start();
-			}
-		}
-	}
-	public static void stopImportThread() {
-		if (importThread != null) importThread.interrupt();
+	//todo change other methods like this
+	public static CustomList<File> getFiles(File directory, boolean useFilter) {
+		return null;
 	}
 	
 	public static CustomList<Project> getProjects() {

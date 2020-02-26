@@ -10,7 +10,7 @@ import enums.MediaType;
 public class Filter extends EntityList {
 	private static final FilterSettings settings = new FilterSettings();
 	private static final FilterListManager listManager = new FilterListManager();
-	private static final EntityList newEntities = new EntityList();
+	private static final EntityList lastImport = new EntityList();
 	
 	public static void reset() {
 		listManager.clear();
@@ -48,7 +48,7 @@ public class Filter extends EntityList {
 			}
 		}
 		
-		if (settings.isShowOnlyNewEntities() && !newEntities.contains(entity)) {
+		if (settings.isShowOnlyNewEntities() && !lastImport.contains(entity)) {
 			return false;
 		}
 		
@@ -91,8 +91,8 @@ public class Filter extends EntityList {
 	public static FilterListManager getListManager() {
 		return listManager;
 	}
-	public static EntityList getNewEntities() {
-		return newEntities;
+	public static EntityList getLastImport() {
+		return lastImport;
 	}
 	
 	private Filter() {}

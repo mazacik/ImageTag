@@ -20,7 +20,7 @@ public class SettingsStage extends AbstractStage {
 		gridPane.setPadding(new Insets(3));
 		
 		for (Settings setting : Settings.values()) {
-			if (setting.isModifiable()) {
+			if (setting.isUserModifiable()) {
 				TextNode textNode = new TextNode(setting.name(), false, false, false, true);
 				EditNode editNode = new EditNode(String.valueOf(setting.getValue()), "", EditNode.EditNodeType.NUMERIC_POSITIVE);
 				TextNode resetNode = new TextNode("⟲", true, true, false, true);
@@ -35,8 +35,10 @@ public class SettingsStage extends AbstractStage {
 		nodeApply = new TextNode("Apply", true, true, false, true);
 		nodeApply.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			for (Settings setting : Settings.values()) {
-				EditNode editNode = (EditNode) gridPane.getNode(1, setting.ordinal());
-				setting.setValue(editNode.getText());
+				if (setting.isUserModifiable()) {
+					EditNode editNode = (EditNode) gridPane.getNode(1, setting.ordinal());
+					setting.setValue(editNode.getText());
+				}
 			}
 			getInstance().close();
 		});
@@ -49,7 +51,7 @@ public class SettingsStage extends AbstractStage {
 	
 	public static void show(String... args) {
 		for (Settings setting : Settings.values()) {
-			if (setting.isModifiable()) {
+			if (setting.isUserModifiable()) {
 				EditNode editNode = (EditNode) gridPane.getNode(1, setting.ordinal());
 				editNode.setText(String.valueOf(setting.getValue()));
 			}

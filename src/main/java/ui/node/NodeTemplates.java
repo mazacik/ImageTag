@@ -19,6 +19,7 @@ import misc.Project;
 import ui.custom.ClickMenu;
 import ui.main.stage.MainStage;
 import ui.stage.CollageStage;
+import ui.stage.ImportStage;
 import ui.stage.SettingsStage;
 import ui.stage.SimpleMessageStage;
 
@@ -293,7 +294,7 @@ public enum NodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClickMenu.hideAll();
 				
-				CacheManager.stopCacheThread();
+				if (CacheManager.getThread() != null) CacheManager.getThread().interrupt();
 				
 				EntityList.getMain().forEach(entity -> entity.getTile().setImage(null));
 				
@@ -323,8 +324,7 @@ public enum NodeTemplates {
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ClickMenu.hideAll();
-				
-				FileUtil.importFiles();
+				new ImportStage().show("");
 			});
 			return textNode;
 		}

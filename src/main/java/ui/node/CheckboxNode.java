@@ -13,7 +13,7 @@ public class CheckboxNode extends HBox {
 	private final TextNode nodeMark;
 	private final TextNode textNode;
 	
-	private SimpleBooleanProperty selectedProperty;
+	private SimpleBooleanProperty checkedProperty;
 	
 	public CheckboxNode(String text) {
 		this(text, Direction.LEFT, false);
@@ -21,13 +21,13 @@ public class CheckboxNode extends HBox {
 	public CheckboxNode(String text, Direction boxPosition) {
 		this(text, boxPosition, false);
 	}
-	public CheckboxNode(String text, Direction boxPosition, boolean startSelected) {
-		textNode = new TextNode(text);
-		nodeMark = new TextNode("");
+	public CheckboxNode(String text, Direction boxPosition, boolean startChecked) {
+		textNode = new TextNode(text, false, false, false, false);
+		nodeMark = new TextNode("", true, true, true, false);
 		nodeMark.setBorder(Decorator.getBorder(1));
-		selectedProperty = new SimpleBooleanProperty();
-		setSelected(startSelected);
-		setSpacing(3);
+		checkedProperty = new SimpleBooleanProperty();
+		setChecked(startChecked);
+		setSpacing(5);
 		setAlignment(Pos.CENTER);
 		
 		if (boxPosition == Direction.LEFT) {
@@ -35,37 +35,39 @@ public class CheckboxNode extends HBox {
 		} else {
 			getChildren().addAll(textNode, nodeMark);
 		}
-		addEventFilter(MouseEvent.MOUSE_PRESSED, event -> setSelected(!isSelected()));
+		addEventFilter(MouseEvent.MOUSE_PRESSED, event -> setChecked(!isChecked()));
 		
 		/* Silly problems require silly workarounds */
 		EventHandler<WindowEvent> eventHandler = event -> {
-			setSelected(!isSelected());
-			setSelected(!isSelected());
+			setChecked(!isChecked());
+			setChecked(!isChecked());
 		};
 		this.sceneProperty().addListener((observable, oldScene, newScene) -> {
-			if (newScene.getWindow() == null) {
-				newScene.windowProperty().addListener((observable1, oldStage, newStage) -> {
-					if (newStage != null) newStage.addEventFilter(WindowEvent.WINDOW_SHOWN, eventHandler);
-				});
-			} else {
-				newScene.getWindow().addEventFilter(WindowEvent.WINDOW_SHOWN, eventHandler);
+			if (newScene != null) {
+				if (newScene.getWindow() != null) {
+					newScene.getWindow().addEventFilter(WindowEvent.WINDOW_SHOWN, eventHandler);
+				} else {
+					newScene.windowProperty().addListener((observable1, oldStage, newStage) -> {
+						if (newStage != null) newStage.addEventFilter(WindowEvent.WINDOW_SHOWN, eventHandler);
+					});
+				}
 			}
 		});
 	}
 	
-	public boolean isSelected() {
-		return selectedProperty.getValue();
+	public boolean isChecked() {
+		return checkedProperty.getValue();
 	}
 	
 	public void setText(String text) {
 		textNode.setText(text);
 	}
-	public void setSelected(boolean selected) {
-		selectedProperty.setValue(selected);
+	public void setChecked(boolean selected) {
+		checkedProperty.setValue(selected);
 		if (selected) nodeMark.setText("✕");
 		else nodeMark.setText("");
 	}
-	public SimpleBooleanProperty getSelectedProperty() {
-		return selectedProperty;
+	public SimpleBooleanProperty getCheckedProperty() {
+		return checkedProperty;
 	}
 }
