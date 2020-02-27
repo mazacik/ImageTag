@@ -6,7 +6,6 @@ import javafx.stage.StageStyle;
 import main.Main;
 import misc.Settings;
 import ui.decorator.Decorator;
-import ui.main.display.DisplayPane;
 import ui.main.gallery.GalleryPane;
 import ui.main.side.FilterPane;
 import ui.main.side.SelectPane;
@@ -61,11 +60,6 @@ public class MainStage extends Stage {
 		
 		getInstance().centerOnScreen();
 		getInstance().setOnCloseRequest(event -> Main.exitApplication());
-		getInstance().focusedProperty().addListener((observable, oldValue, newValue) -> {
-			if (!newValue) {
-				DisplayPane.getInstance().getControls().hide();
-			}
-		});
 		
 		mainScene.getRoot().requestFocus();
 		
