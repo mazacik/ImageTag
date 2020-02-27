@@ -4,7 +4,9 @@ import base.CustomList;
 import base.tag.Tag;
 import base.tag.TagList;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Background;
+import misc.Settings;
 import ui.decorator.Decorator;
 import ui.node.TextNode;
 import ui.override.VBox;
@@ -31,6 +33,7 @@ public abstract class SidePaneBase extends VBox {
 		scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 		scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 		scrollPane.setBackground(Background.EMPTY);
+		scrollPane.addEventFilter(ScrollEvent.SCROLL, this::onScroll);
 		
 		this.setMinWidth(SidePaneBase.MIN_WIDTH);
 		this.setPrefWidth(Decorator.getUsableScreenWidth());
@@ -51,6 +54,28 @@ public abstract class SidePaneBase extends VBox {
 		}
 		
 		return true;
+	}
+	
+	private void onScroll(ScrollEvent event) {
+		event.consume();
+		
+		double rowHeight;
+		if (rootNodes.getFirst() != null) {
+			rowHeight = rootNodes.getFirst().getHeight();
+		} else {
+			rowHeight = Settings.FONT_SIZE.getIntegerValue();
+		}
+		double contentHeight = boxNodes.getHeight() - scrollPane.getViewportBounds().getHeight();
+		double rowToContentRatio = rowHeight / contentHeight;
+		double currentVvalue = scrollPane.getVvalue();
+		
+		if (event.getDeltaY() > 0) {
+			//mouse-scroll-up
+			scrollPane.setVvalue(currentVvalue - rowToContentRatio);
+		} else {
+			//mouse-scroll-down
+			scrollPane.setVvalue(currentVvalue + rowToContentRatio);
+		}
 	}
 	
 	private void createNode(Tag tag) {
