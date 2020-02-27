@@ -101,18 +101,19 @@ public class FilterListManager {
 		blacklist.removeIf(tagSimple -> tagSimple.stringValue.equals(stringValue));
 	}
 	
-	//todo needs testing
-	public void update(String stringBefore, int numLevelsBefore, CustomList<String> listLevelsAfter) {
+	//  called from tag editor, unlists all affected tags and whitelists their new versions
+	//  todo needs testing
+	public void update(String stringOld, int numLevelsOld, CustomList<String> listLevelsNew) {
 		StringBuilder sb = new StringBuilder();
-		listLevelsAfter.forEach(sb::append);
-		String stringAfter = sb.toString();
+		listLevelsNew.forEach(sb::append);
+		String stringNew = sb.toString();
 		
 		for (TagSimple tagSimple : whitelist) {
-			if (tagSimple.stringValue.startsWith(stringBefore)) {
+			if (tagSimple.stringValue.startsWith(stringOld)) {
 				unlist(tagSimple.stringValue);
-				String stringUnaffected = tagSimple.stringValue.substring(stringBefore.length());
-				int numLevelsUnaffected = tagSimple.levelCount - numLevelsBefore;
-				whitelist(stringAfter + stringUnaffected, listLevelsAfter.size() + numLevelsUnaffected);
+				String stringUnaffected = tagSimple.stringValue.substring(stringOld.length());
+				int numLevelsUnaffected = tagSimple.levelCount - numLevelsOld;
+				whitelist(stringNew + stringUnaffected, listLevelsNew.size() + numLevelsUnaffected);
 			}
 		}
 	}

@@ -17,19 +17,13 @@ public class Tag {
 	}
 	
 	public void replaceLevelsFromStart(int numLevelsToReplaceFromStart, CustomList<String> listLevelsToReplaceWith) {
+		CustomList<String> listLevelsToReplaceWithLocal = new CustomList<>(listLevelsToReplaceWith);
 		for (int i = numLevelsToReplaceFromStart; i < levels.size(); i++) {
-			listLevelsToReplaceWith.add(levels.get(i));
+			listLevelsToReplaceWithLocal.add(levels.get(i));
 		}
 		
-		this.levels.setAll(listLevelsToReplaceWith);
+		levels.setAll(listLevelsToReplaceWithLocal);
 		updateStringValue();
-		
-		for (Tag tag : TagList.getMain()) {
-			if (stringValue.startsWith(tag.getStringValue()) && tag != this) {
-				tag.levels.add(tag.levels.getLast());
-				tag.updateStringValue();
-			}
-		}
 	}
 	
 	private transient String stringValue;

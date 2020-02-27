@@ -2,20 +2,27 @@ package base.tag;
 
 import base.CustomList;
 
+import java.util.Collection;
 import java.util.Comparator;
 
 public class TagList extends CustomList<Tag> {
 	public TagList() {
 	
 	}
+	public TagList(Tag[] c) {
+		super(c);
+	}
+	public TagList(Collection<? extends Tag> c) {
+		super(c);
+	}
 	
 	public void sort() {
 		super.sort(Comparator.comparing(Tag::getStringValue));
 	}
 	
-	public Tag getTag(Integer id) {
+	public Tag getTag(Integer tagID) {
 		for (Tag tag : this) {
-			if (tag.getID() == id) {
+			if (tag.getID() == tagID) {
 				return tag;
 			}
 		}
@@ -31,7 +38,7 @@ public class TagList extends CustomList<Tag> {
 		
 		return null;
 	}
-	public TagList getTagsContaining(String query) {
+	public TagList getTagsStartingWith(String query) {
 		TagList results = new TagList();
 		for (Tag tag : this) {
 			if (tag.getStringValue().startsWith(query)) {
@@ -41,15 +48,21 @@ public class TagList extends CustomList<Tag> {
 		return results;
 	}
 	
-	public boolean containsEqual(Tag tag) {
-		return containsEqual(tag.getStringValue());
-	}
-	public boolean containsEqual(CustomList<String> levels) {
-		return containsEqual(new Tag(levels).getStringValue());
-	}
-	public boolean containsEqual(String stringValue) {
+	public boolean isAnyTagSubstringOf(CustomList<String> levels) {
+		String query = new Tag(levels).getStringValue().toLowerCase();
 		for (Tag tag : this) {
-			if (stringValue.equals(tag.getStringValue())) {
+			if (levels.size() > tag.getLevels().size()) {
+				if (query.startsWith(tag.getStringValue().toLowerCase())) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	public boolean doesAnyTagStartWith(CustomList<String> levels) {
+		String query = new Tag(levels).getStringValue().toLowerCase();
+		for (Tag tag : this) {
+			if (tag.getStringValue().toLowerCase().startsWith(query)) {
 				return true;
 			}
 		}

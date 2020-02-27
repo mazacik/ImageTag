@@ -12,51 +12,43 @@ import ui.stage.TagEditStage;
 
 public class TagUtil {
 	public static void create() {
-		CustomList<String> listLevelsAfter = TagEditStage.show(null);
-		if (!listLevelsAfter.isEmpty()) {
-			_create(listLevelsAfter);
+		create(null);
+	}
+	public static void create(CustomList<String> listLevelsOld) {
+		CustomList<String> listLevelsNew = TagEditStage.show(TagList.getMain(), listLevelsOld);
+		if (listLevelsNew != null && !listLevelsNew.isEmpty()) {
+			Tag tagNew = new Tag(listLevelsNew);
+			
+			TagList.getMain().add(tagNew);
+			TagList.getMain().sort();
+			
+			Reload.notify(Notifier.TAG_LIST_MAIN);
 		}
 	}
-	public static void create(CustomList<String> listLevelsBefore) {
-		CustomList<String> listLevelsAfter = TagEditStage.show(listLevelsBefore);
-		if (!listLevelsAfter.isEmpty()) {
-			_create(listLevelsAfter);
+	public static void edit(String stringValueOld, int numLevelsOld) {
+		TagList affectedTags = TagList.getMain().getTagsStartingWith(stringValueOld);
+		TagList tagListHelper = new TagList(TagList.getMain());
+		tagListHelper.removeAll(affectedTags);
+		
+		CustomList<String> listLevelsNew = TagEditStage.show(tagListHelper, ClickMenu.getTagNode().getLevels());
+		if (!listLevelsNew.isEmpty()) {
+			affectedTags.forEach(tag -> tag.replaceLevelsFromStart(numLevelsOld, listLevelsNew));
+			TagList.getMain().sort();
+			Filter.getListManager().update(stringValueOld, numLevelsOld, listLevelsNew);
+			
+			Reload.notify(Notifier.TAG_LIST_MAIN);
 		}
 	}
-	private static void _create(CustomList<String> listLevelsAfter) {
-		Tag tagNew = new Tag(listLevelsAfter);
-		
-		TagList.getMain().add(tagNew);
-		TagList.getMain().sort();
-		
-		Reload.notify(Notifier.TAG_LIST_MAIN);
-	}
-	
-	public static void edit(String stringValueBefore, int numLevelsBefore) {
-		CustomList<String> listLevelsAfter = TagEditStage.show(ClickMenu.getTagNode().getLevels());
-		if (!listLevelsAfter.isEmpty()) {
-			_edit(stringValueBefore, numLevelsBefore, listLevelsAfter);
-		}
-	}
-	private static void _edit(String stringValueBefore, int numLevelsBefore, CustomList<String> listLevelsAfter) {
-		TagList.getMain().getTagsContaining(stringValueBefore).forEach(tag -> tag.replaceLevelsFromStart(numLevelsBefore, listLevelsAfter));
-		TagList.getMain().sort();
-		
-		Filter.getListManager().update(stringValueBefore, numLevelsBefore, listLevelsAfter);
-		
-		Reload.notify(Notifier.TAG_LIST_MAIN);
-	}
-	
 	public static void remove() {
 		TagNode tagNode = ClickMenu.getTagNode();
 		if (ConfirmationStage.show("Remove \"" + tagNode.getText() + "\" ?")) {
 			tagNode.getSubNodesAll().forEach(subNode -> Filter.getListManager().unlist(subNode.getStringValue()));
-			_remove(TagList.getMain().getTagsContaining(tagNode.getStringValue()));
+			
+			TagList tagList = TagList.getMain().getTagsStartingWith(tagNode.getStringValue());
+			EntityList.getMain().forEach(entity -> entity.removeTag(tagList));
+			TagList.getMain().removeAll(tagList);
+			
+			Reload.notify(Notifier.TAG_LIST_MAIN);
 		}
-	}
-	private static void _remove(TagList tagList) {
-		EntityList.getMain().forEach(entity -> entity.removeTag(tagList));
-		TagList.getMain().removeAll(tagList);
-		Reload.notify(Notifier.TAG_LIST_MAIN);
 	}
 }

@@ -32,13 +32,13 @@ public class CustomList<T> extends ArrayList<T> {
 		return this.addAll(c, false);
 	}
 	public boolean addAll(Collection<? extends T> c, boolean checkDuplicates) {
-		int sizeBefore = this.size();
+		int sizeOld = this.size();
 		for (T t : c) {
 			if (!checkDuplicates || !super.contains(t)) {
 				super.add(t);
 			}
 		}
-		return sizeBefore != this.size();
+		return sizeOld != this.size();
 	}
 	
 	public boolean set(T t) {

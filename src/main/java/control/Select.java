@@ -39,7 +39,7 @@ public class Select extends EntityList {
 		return this.addAll(c, false);
 	}
 	public boolean addAll(Collection<? extends Entity> c, boolean checkDuplicates) {
-		int sizeBefore = this.size();
+		int sizeOld = this.size();
 		
 		for (Entity entity : c) {
 			if (EntityCollectionUtil.hasOpenOrNoCollection(entity)) {
@@ -55,7 +55,7 @@ public class Select extends EntityList {
 			}
 		}
 		
-		if (this.size() != sizeBefore) {
+		if (this.size() != sizeOld) {
 			Reload.notify(Notifier.SELECT);
 			return true;
 		} else {

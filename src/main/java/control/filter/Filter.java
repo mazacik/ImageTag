@@ -79,8 +79,8 @@ public class Filter extends EntityList {
 			}
 		}
 	}
-	public static EntityList getFilteredList(EntityList listBefore) {
-		EntityList returnValue = new EntityList(listBefore);
+	public static EntityList getFilteredList(EntityList listOld) {
+		EntityList returnValue = new EntityList(listOld);
 		returnValue.retainAll(getEntities());
 		return returnValue;
 	}

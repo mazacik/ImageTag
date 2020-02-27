@@ -45,10 +45,11 @@ public class TagEditStage extends AbstractStage {
 		nodeCancel.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, getInstance()::close);
 	}
 	
-	public static CustomList<String> show(CustomList<String> levelsBefore) {
+	private static TagList tagListToSearchIn;
+	public static CustomList<String> show(TagList tagListToSearchIn, CustomList<String> levelsOld) {
 		nodeList.clear();
-		if (levelsBefore != null) {
-			for (String string : levelsBefore) {
+		if (levelsOld != null) {
+			for (String string : levelsOld) {
 				if (!string.isEmpty()) {
 					nodeList.add(new LevelNode(string));
 				}
@@ -57,6 +58,7 @@ public class TagEditStage extends AbstractStage {
 		nodeList.add(new LevelNode(""));
 		boxNodes.getChildren().setAll(nodeList);
 		
+		TagEditStage.tagListToSearchIn = tagListToSearchIn;
 		returnList = new CustomList<>();
 		
 		getInstance().setErrorMessage("");
@@ -74,11 +76,13 @@ public class TagEditStage extends AbstractStage {
 			}
 		});
 		
-		if (!TagList.getMain().containsEqual(helperList)) {
+		if (tagListToSearchIn.doesAnyTagStartWith(helperList)) {
+			getInstance().setErrorMessage("Tag already exists.");
+		} else if (tagListToSearchIn.isAnyTagSubstringOf(helperList)) {
+			getInstance().setErrorMessage("Cannot extend existing tag.");
+		} else {
 			returnList = helperList;
 			getInstance().close();
-		} else {
-			getInstance().setErrorMessage("Tag already exists.");
 		}
 	}
 	
