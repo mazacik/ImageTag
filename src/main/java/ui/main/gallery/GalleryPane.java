@@ -220,6 +220,8 @@ public class GalleryPane extends ScrollPane {
 		tilePane.addEventFilter(MouseEvent.MOUSE_DRAGGED, GalleryPane::onMouseDrag);
 		tilePane.addEventFilter(MouseEvent.MOUSE_RELEASED, GalleryPane::onMouseRelease);
 		
+		tilePane.heightProperty().addListener((observable, oldValue, newValue) -> GalleryPane.moveViewportToTarget());
+		
 		selectRectangle = new Rectangle(0, 0, Color.GRAY);
 		selectRectangle.setStroke(Color.BLACK);
 		selectRectangle.setStrokeWidth(1);
@@ -303,33 +305,33 @@ public class GalleryPane extends ScrollPane {
 		if (currentTarget.getCollectionID() != 0 && !EntityCollectionUtil.getOpenCollections().contains(currentTarget.getCollectionID())) {
 			currentTarget = currentTarget.getCollection().getFirst();
 		}
-		int TargetIndex = tileEntities.indexOf(currentTarget);
-		if (TargetIndex < 0) return;
+		int targetIndex = tileEntities.indexOf(currentTarget);
+		if (targetIndex < 0) return;
 		
 		int columnCount = tilePane.getPrefColumns();
-		int TargetRow = TargetIndex / columnCount;
+		int targetRow = targetIndex / columnCount;
 		
-		Bounds buggyBounds = getInstance().getViewportBounds();
-		Bounds correctBounds = new BoundingBox(0, 0, 0, buggyBounds.getWidth(), buggyBounds.getHeight(), buggyBounds.getDepth());
-		Bounds viewportBoundsTransform = tilePane.sceneToLocal(getInstance().localToScene(correctBounds));
-		Bounds currentTargetTileBounds = tilePane.getChildren().get(TargetIndex).getBoundsInParent();
+		Bounds reverseBounds = getInstance().getViewportBounds();
+		Bounds correctBounds = new BoundingBox(Math.abs(reverseBounds.getMinX()), Math.abs(reverseBounds.getMinY()), Math.abs(reverseBounds.getMinZ()), reverseBounds.getWidth(), reverseBounds.getHeight(), reverseBounds.getDepth());
+		Bounds targetIndexTileBounds = tilePane.getChildren().get(targetIndex).getBoundsInParent();
 		
-		double viewportHeight = viewportBoundsTransform.getHeight();
+		double viewportHeight = correctBounds.getHeight();
 		double contentHeight = tilePane.getHeight() - viewportHeight;
 		double rowHeight = tilePane.getPrefTileHeight() + tilePane.getVgap();
 		
 		double rowToContentRatio = rowHeight / contentHeight;
 		double viewportToContentRatio = viewportHeight / contentHeight;
 		
-		double viewportTop = viewportBoundsTransform.getMinY();
-		double viewportBottom = viewportBoundsTransform.getMinY() + viewportBoundsTransform.getHeight();
-		double tileTop = currentTargetTileBounds.getMinY();
-		double tileBottom = currentTargetTileBounds.getMaxY();
+		double viewportTop = correctBounds.getMinY();
+		double viewportBottom = correctBounds.getMaxY();
+		
+		double tileTop = targetIndexTileBounds.getMinY();
+		double tileBottom = targetIndexTileBounds.getMaxY();
 		
 		if (tileBottom > viewportBottom) {
-			getInstance().setVvalue((TargetRow + 1) * rowToContentRatio - viewportToContentRatio);
+			getInstance().setVvalue((targetRow + 1) * rowToContentRatio - viewportToContentRatio);
 		} else if (tileTop < viewportTop) {
-			getInstance().setVvalue(TargetRow * rowToContentRatio);
+			getInstance().setVvalue(targetRow * rowToContentRatio);
 		}
 	}
 	
