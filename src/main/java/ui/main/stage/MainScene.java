@@ -36,71 +36,82 @@ public class MainScene extends Scene {
 	
 	private void initKeybinds() {
 		this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-			switch (event.getCode()) {
-				case I:
-					NodeTemplates.ENTITY_IMAGE_SIZE_INFO.get().fireEvent(EventUtil.createMouseEvent(MouseEvent.MOUSE_CLICKED)); //todo bruh
-					break;
-				case ESCAPE:
-					if (this.getFocusOwner() instanceof EditNode) {
-						mainBox.requestFocus();
-						event.consume();
-					} else {
-						MainStage.getMainScene().viewGallery();
-						Reload.start();
-					}
-					break;
-				case TAB:
-					SelectPane.getInstance().getNodeSearch().requestFocus();
-					break;
-				case DELETE:
-					Select.getEntities().deleteFiles();
-					Reload.start();
-					break;
-				case E:
-					EntityCollectionUtil.openCollection(Select.getTarget());
-					Reload.start();
-					break;
-				case R:
-					Entity randomEntity = GalleryPane.getTileEntities().getRandom();
-					Select.getEntities().set(randomEntity);
-					Select.setTarget(randomEntity);
-					Reload.start();
-					break;
-				case G:
-					if (Select.getTarget().getCollectionID() != 0) {
-						Entity randomEntityFromCollection = Select.getTarget().getCollection().getRandom();
-						Select.getEntities().set(randomEntityFromCollection);
-						Select.setTarget(randomEntityFromCollection);
-						Reload.start();
-					}
-					break;
-				case F:
-					if (this.isViewGallery()) this.viewEntity();
-					else this.viewGallery();
-					Reload.start();
-					break;
-				case W:
-				case A:
-				case S:
-				case D:
-					Select.moveTarget(event.getCode());
-					Select.getEntities().set(Select.getTarget());
-					Reload.start();
-					break;
-				case UP:
-					if (this.getFocusOwner() == SelectPane.getInstance().getNodeSearch()) {
-						SelectPane.getInstance().nextMatch(-1);
-						event.consume();
-					}
-					break;
-				case DOWN:
-					if (this.getFocusOwner() == SelectPane.getInstance().getNodeSearch()) {
-						SelectPane.getInstance().nextMatch(+1);
-						event.consume();
-					}
-					break;
+			if (this.getFocusOwner() instanceof EditNode) {
+				keybindsEditNode(event);
+			} else {
+				keybindsGlobal(event);
 			}
 		});
+	}
+	private void keybindsGlobal(KeyEvent event) {
+		switch (event.getCode()) {
+			case I:
+				NodeTemplates.ENTITY_IMAGE_SIZE_INFO.get().fireEvent(EventUtil.createMouseEvent(MouseEvent.MOUSE_CLICKED)); //todo bruh
+				break;
+			case ESCAPE:
+				MainStage.getMainScene().viewGallery();
+				Reload.start();
+				break;
+			case TAB:
+				SelectPane.getInstance().getNodeSearch().requestFocus();
+				break;
+			case DELETE:
+				Select.getEntities().deleteFiles();
+				Reload.start();
+				break;
+			case E:
+				EntityCollectionUtil.openCollection(Select.getTarget());
+				Reload.start();
+				break;
+			case R:
+				Entity randomEntity = GalleryPane.getTileEntities().getRandom();
+				Select.getEntities().set(randomEntity);
+				Select.setTarget(randomEntity);
+				Reload.start();
+				break;
+			case G:
+				if (Select.getTarget().getCollectionID() != 0) {
+					Entity randomEntityFromCollection = Select.getTarget().getCollection().getRandom();
+					Select.getEntities().set(randomEntityFromCollection);
+					Select.setTarget(randomEntityFromCollection);
+					Reload.start();
+				}
+				break;
+			case F:
+				if (this.isViewGallery()) this.viewEntity();
+				else this.viewGallery();
+				Reload.start();
+				break;
+			case W:
+			case A:
+			case S:
+			case D:
+				Select.moveTarget(event.getCode());
+				Select.getEntities().set(Select.getTarget());
+				Reload.start();
+				break;
+		}
+	}
+	private void keybindsEditNode(KeyEvent event) {
+		switch (event.getCode()) {
+			case ESCAPE:
+			case TAB:
+				mainBox.requestFocus();
+				event.consume();
+				break;
+			case UP:
+				if (this.getFocusOwner() == SelectPane.getInstance().getNodeSearch()) {
+					SelectPane.getInstance().nextMatch(-1);
+					event.consume();
+				}
+				break;
+			case DOWN:
+				if (this.getFocusOwner() == SelectPane.getInstance().getNodeSearch()) {
+					SelectPane.getInstance().nextMatch(+1);
+					event.consume();
+				}
+				break;
+		}
 	}
 	
 	public void viewGallery() {
