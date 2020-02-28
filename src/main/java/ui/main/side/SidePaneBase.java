@@ -44,11 +44,11 @@ public abstract class SidePaneBase extends VBox {
 		TagList.getMain().forEach(this::createNode);
 		boxNodes.getChildren().setAll(rootNodes);
 		
-		CustomList<String> openNodes = new CustomList<>();
-		this.openNodes.forEach(tagNode -> openNodes.add(tagNode.getStringValue()));
-		this.openNodes.clear();
+		CustomList<String> openNodesHelper = new CustomList<>();
+		openNodes.forEach(tagNode -> openNodesHelper.add(tagNode.getStringValue()));
+		openNodes.clear();
 		for (TagNode tagNode : getTagNodes()) {
-			if (openNodes.contains(tagNode.getStringValue())) {
+			if (openNodesHelper.contains(tagNode.getStringValue())) {
 				tagNode.open();
 			}
 		}

@@ -177,17 +177,13 @@ public class Select extends EntityList {
 	public static void setTarget(Entity newTarget) {
 		if (newTarget != null && newTarget != target) {
 			if (target != null) {
-				Filter.resolve(target);
+				Filter.resolve();
 				Reload.requestBorderUpdate(target);
 			}
 			
-			Reload.requestBorderUpdate(newTarget);
-			
 			target = newTarget;
-			
+			Reload.requestBorderUpdate(target);
 			GalleryPane.moveViewportToTarget();
-			
-			Reload.notify(Notifier.TARGET);
 		}
 	}
 	

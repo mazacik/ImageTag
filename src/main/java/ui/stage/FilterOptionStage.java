@@ -10,7 +10,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import ui.node.CheckboxNode;
 import ui.node.EditNode;
-import ui.node.SwitchNode;
 import ui.node.TextNode;
 import ui.override.HBox;
 import ui.override.VBox;
@@ -53,20 +52,20 @@ public class FilterOptionStage extends AbstractStage {
 		VBox boxLeft = new VBox(nodeImages, nodeGifs, nodeVideos, nodeSession, nodeLimit, nodeLimitValue);
 		boxLeft.setSpacing(5);
 		
-		SwitchNode nodeWhitelistMode = new SwitchNode("Whitelist Mode", "AND", "OR", 125);
-		nodeWhitelistMode.selectLeft();
+		//SwitchNode nodeWhitelistMode = new SwitchNode("Whitelist Mode", "AND", "OR", 125);
+		//nodeWhitelistMode.selectLeft();
 		//nodeWhitelistMode.getLeft().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Filter.getSettings().setWhitelistFactor(1.00));
 		//nodeWhitelistMode.getRight().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Filter.getSettings().setWhitelistFactor(0.01));
 		
-		SwitchNode nodeBlacklistMode = new SwitchNode("Blacklist Mode", "AND", "OR", 125);
-		nodeBlacklistMode.selectRight();
+		//SwitchNode nodeBlacklistMode = new SwitchNode("Blacklist Mode", "AND", "OR", 125);
+		//nodeBlacklistMode.selectRight();
 		//nodeBlacklistMode.getLeft().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Filter.getSettings().setBlacklistFactor(1.00));
 		//nodeBlacklistMode.getRight().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Filter.getSettings().setBlacklistFactor(0.01));
 		
-		VBox boxRight = new VBox(nodeWhitelistMode, nodeBlacklistMode);
-		boxRight.setSpacing(5);
+		//VBox boxRight = new VBox(nodeWhitelistMode, nodeBlacklistMode);
+		//boxRight.setSpacing(5);
 		
-		boxContent = new HBox(boxLeft, boxRight);
+		boxContent = new HBox(boxLeft);//, boxRight);
 		boxContent.setSpacing(100);
 		boxContent.setPadding(new Insets(5));
 		

@@ -3,6 +3,7 @@ package control.filter;
 import base.CustomList;
 import base.entity.Entity;
 import base.entity.EntityList;
+import control.Select;
 import control.reload.Notifier;
 import control.reload.Reload;
 import enums.MediaType;
@@ -27,9 +28,22 @@ public class Filter extends EntityList {
 		
 		Reload.notify(Notifier.FILTER);
 	}
-	public static void resolve(Entity entity) {
-		if (!isValid(entity)) {
-			getEntities().remove(entity);
+	public static void resolve() {
+		int filterSizeOld = getEntities().size();
+		EntityList entities = Select.getEntities();
+		if (!entities.isEmpty()) {
+			entities.forEach(entity -> {
+				if (!isValid(entity)) {
+					getEntities().remove(entity);
+				}
+			});
+		} else {
+			Entity entity = Select.getTarget();
+			if (entity != null && !isValid(entity)) {
+				getEntities().remove(entity);
+			}
+		}
+		if (filterSizeOld != getEntities().size()) {
 			Reload.notify(Notifier.FILTER);
 		}
 	}
