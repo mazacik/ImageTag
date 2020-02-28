@@ -42,7 +42,7 @@ public class TagUtil {
 	public static void remove() {
 		TagNode tagNode = ClickMenu.getTagNode();
 		if (ConfirmationStage.show("Remove \"" + tagNode.getText() + "\" ?")) {
-			tagNode.getSubNodesAll().forEach(subNode -> Filter.getListManager().unlist(subNode.getStringValue()));
+			tagNode.getSubNodesDeepest().forEach(subNode -> Filter.getListManager().unlist(subNode.getStringValue()));
 			
 			TagList tagList = TagList.getMain().getTagsStartingWith(tagNode.getStringValue());
 			EntityList.getMain().forEach(entity -> entity.removeTag(tagList));

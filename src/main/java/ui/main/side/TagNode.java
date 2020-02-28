@@ -68,20 +68,11 @@ public class TagNode extends VBox {
 			switch (event.getButton()) {
 				case PRIMARY:
 					if (parentPane == FilterPane.getInstance()) {
-						if (event.getX() > toggleNode.getWidth()) {
-							clickFilter();
-							Reload.start();
-						} else {
-							if (!this.isOpen()) {
-								this.open();
-							} else {
-								this.close();
-							}
-						}
+						clickFilter(event);
 					} else if (parentPane == SelectPane.getInstance()) {
-						clickSelect();
-						Reload.start();
+						clickSelect(event);
 					}
+					Reload.start();
 					break;
 				case SECONDARY:
 					ClickMenu.setTagNode(this);
@@ -92,19 +83,35 @@ public class TagNode extends VBox {
 		ClickMenu.install(textNode, MouseButton.SECONDARY, ClickMenu.StaticInstance.TAG);
 	}
 	
-	private void clickFilter() {
-		if (Filter.getListManager().isWhitelisted(stringValue)) {
-			Filter.getListManager().blacklist(stringValue, getLevels().size());
-			setTextFill(Decorator.getColorNegative());
-		} else if (Filter.getListManager().isBlacklisted(stringValue)) {
-			Filter.getListManager().unlist(stringValue);
-			setTextFill(Decorator.getColorPrimary());
+	private void clickFilter(MouseEvent event) {
+		if (event.getX() > toggleNode.getWidth()) {
+			if (Filter.getListManager().isWhitelisted(stringValue)) {
+				Filter.getListManager().blacklist(stringValue, getLevels().size());
+				setTextFill(Decorator.getColorNegative());
+			} else if (Filter.getListManager().isBlacklisted(stringValue)) {
+				Filter.getListManager().unlist(stringValue);
+				setTextFill(Decorator.getColorPrimary());
+			} else {
+				Filter.getListManager().whitelist(stringValue, getLevels().size());
+				setTextFill(Decorator.getColorPositive());
+			}
 		} else {
-			Filter.getListManager().whitelist(stringValue, getLevels().size());
-			setTextFill(Decorator.getColorPositive());
+			if (event.isShiftDown()) {
+				if (this.isOpen()) {
+					this.getSubNodesAll().forEach(TagNode::close);
+				} else {
+					this.getSubNodesAll().forEach(TagNode::open);
+				}
+			} else {
+				if (this.isOpen()) {
+					this.close();
+				} else {
+					this.open();
+				}
+			}
 		}
 	}
-	private void clickSelect() {
+	private void clickSelect(MouseEvent event) {
 		if (this.isLast()) {
 			if (textNode.getTextFill().equals(Decorator.getColorPositive()) || textNode.getTextFill().equals(Decorator.getColorUnion())) {
 				Select.getEntities().removeTag(TagList.getMain().getTag(this.getStringValue()).getID());
@@ -112,10 +119,18 @@ public class TagNode extends VBox {
 				Select.getEntities().addTag(TagList.getMain().getTag(this.getStringValue()).getID());
 			}
 		} else {
-			if (this.isOpen()) {
-				this.close();
+			if (event.isShiftDown()) {
+				if (this.isOpen()) {
+					this.getSubNodesAll().forEach(TagNode::close);
+				} else {
+					this.getSubNodesAll().forEach(TagNode::open);
+				}
 			} else {
-				this.open();
+				if (this.isOpen()) {
+					this.close();
+				} else {
+					this.open();
+				}
 			}
 		}
 	}
@@ -146,16 +161,28 @@ public class TagNode extends VBox {
 	public CustomList<TagNode> getChildrenDirect() {
 		return childrenDirect;
 	}
+	
 	public CustomList<TagNode> getSubNodesAll() {
 		CustomList<TagNode> subNodes = new CustomList<>();
-		getSubNodesRecursion(this, subNodes);
+		getSubNodesAllRecursion(this, subNodes);
 		return subNodes;
 	}
-	private void getSubNodesRecursion(TagNode currentNode, CustomList<TagNode> tagNodes) {
+	private void getSubNodesAllRecursion(TagNode currentNode, CustomList<TagNode> tagNodes) {
+		tagNodes.add(currentNode);
+		if (!currentNode.isLast()) {
+			currentNode.getChildrenDirect().forEach(subNode -> getSubNodesAllRecursion(subNode, tagNodes));
+		}
+	}
+	public CustomList<TagNode> getSubNodesDeepest() {
+		CustomList<TagNode> subNodes = new CustomList<>();
+		getSubNodesDeepestRecursion(this, subNodes);
+		return subNodes;
+	}
+	private void getSubNodesDeepestRecursion(TagNode currentNode, CustomList<TagNode> tagNodes) {
 		if (currentNode.isLast()) {
 			tagNodes.add(currentNode);
 		} else {
-			currentNode.getChildrenDirect().forEach(subNode -> getSubNodesRecursion(subNode, tagNodes));
+			currentNode.getChildrenDirect().forEach(subNode -> getSubNodesDeepestRecursion(subNode, tagNodes));
 		}
 	}
 	
