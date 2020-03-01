@@ -3,10 +3,12 @@ package ui.custom;
 import base.CustomList;
 import enums.Direction;
 import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.stage.Popup;
+import javafx.stage.PopupWindow;
 import ui.decorator.Decorator;
 import ui.main.stage.MainStage;
 import ui.override.VBox;
@@ -39,71 +41,80 @@ public class ClickMenu extends Popup {
 	public static void register(Class<?> c, Direction direction, MouseButton mouseButton, Region... children) {
 		staticInstances.add(new ClickMenu(c, direction, mouseButton, children));
 	}
-	public static void install(Region root) {
+	public static ClickMenu install(Region root) {
+		return install(root, 0, -1);
+	}
+	public static ClickMenu install(Region root, double offsetX, double offsetY) {
 		for (ClickMenu staticInstance : staticInstances) {
 			if (staticInstance.c == root.getClass()) {
 				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 					if (event.getButton() == staticInstance.mouseButton) {
-						staticInstance.show(event, root, staticInstance.direction);
+						staticInstance.show(event, root, staticInstance.direction, offsetX, offsetY);
 					}
 				});
-				break;
+				return staticInstance;
 			}
 		}
+		return null;
 	}
 	
 	private ClickMenu(Region... children) {
 		this(null, null, null, children);
 	}
 	public static ClickMenu install(Region root, Direction direction, MouseButton mouseButton, Region... children) {
+		return install(root, direction, mouseButton, 0, -1, children);
+	}
+	public static ClickMenu install(Region root, Direction direction, MouseButton mouseButton, double offsetX, double offsetY, Region... children) {
 		ClickMenu clickMenu = new ClickMenu(children);
 		root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			if (event.getButton() == mouseButton) {
-				clickMenu.show(event, root, direction);
+				clickMenu.show(event, root, direction, offsetX, offsetY);
 			}
 		});
 		return clickMenu;
 	}
 	
-	private void show(MouseEvent event, Region root, Direction direction) {
+	private void show(MouseEvent event, Region root, Direction direction, double offsetX, double offsetY) {
 		hideMenus();
 		
-		double x;
-		double y;
-		Bounds rootBounds = root.localToScreen(root.getBoundsInLocal());//todo don't do bounds + mainstage.getinstance(), figure out something more simple
-		
-		switch (direction) {
-			case POINT:
-				this.show(root, event.getSceneX(), event.getSceneY());
-				break;
-			case UP:
-				break;
-			case DOWN:
-				x = rootBounds.getMinX();
-				y = rootBounds.getMaxY();
-				this.show(MainStage.getInstance(), x, y);
-				break;
-			case LEFT:
-				x = rootBounds.getMinX();
-				y = rootBounds.getMinY();
-				if (root.getBorder() != null) y -= root.getBorder().getInsets().getBottom();
-				this.show(MainStage.getInstance(), x, y);
-				this.setAnchorX(this.getAnchorX() - this.getWidth());
-				break;
-			case RIGHT:
-				x = rootBounds.getMaxX();
-				y = rootBounds.getMinY();
-				if (root.getBorder() != null) y -= root.getBorder().getInsets().getBottom();
-				this.show(MainStage.getInstance(), x, y);
-				break;
+		if (!this.isShowing()) {
+			Bounds onScreenBounds;
+			
+			double x = 0;
+			double y = 0;
+			
+			switch (direction) {
+				case POINT:
+					Point2D point = root.localToScreen(event.getX(), event.getY());
+					x = point.getX() + offsetX;
+					y = point.getY() + offsetY;
+					break;
+				case UP:
+					onScreenBounds = root.localToScreen(root.getBoundsInLocal());
+					//coords = new Coords();
+					break;
+				case DOWN:
+					onScreenBounds = root.localToScreen(root.getBoundsInLocal());
+					x = onScreenBounds.getMinX() + offsetX;
+					y = onScreenBounds.getMaxY() + offsetY;
+					break;
+				case LEFT:
+					onScreenBounds = root.localToScreen(root.getBoundsInLocal());
+					x = onScreenBounds.getMinX() + offsetX;
+					y = onScreenBounds.getMinY() + offsetY;
+					break;
+				case RIGHT:
+					onScreenBounds = root.localToScreen(root.getBoundsInLocal());
+					x = onScreenBounds.getMaxX() + offsetX;
+					y = onScreenBounds.getMinY() + offsetY;
+					break;
+			}
+			
+			this.show(MainStage.getInstance(), x, y);
 		}
 	}
 	
 	public static void hideMenus() {
-		instances.forEach(clickMenu -> {
-			if (clickMenu.isShowing()) {
-				clickMenu.hide();
-			}
-		});
+		instances.forEach(PopupWindow::hide);
 	}
 }

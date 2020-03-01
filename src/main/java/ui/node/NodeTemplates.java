@@ -36,7 +36,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("File", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
-			new HoverMenu(textNode, Direction.RIGHT, 0, -1
+			HoverMenu.install(textNode, Direction.RIGHT
 					, FILE_OPEN.get()
 					, FILE_EDIT.get()
 					, FILE_BROWSE.get()
@@ -147,7 +147,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Tags", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
-			new HoverMenu(textNode, Direction.RIGHT, 0, -1
+			HoverMenu.install(textNode, Direction.RIGHT
 					, NodeTemplates.FILE_TAGS_COPY.get()
 					, NodeTemplates.FILE_TAGS_PASTE.get()
 					, NodeTemplates.FILE_TAGS_CLEAR.get()
@@ -202,11 +202,11 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Selection", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
-			new HoverMenu(textNode, Direction.RIGHT, 0, -1
+			HoverMenu.install(textNode, Direction.RIGHT
 					, SELECTION_TAGS.get()
 					, new SeparatorNode()
 					, SELECTION_DELETE.get()
-			              //TODO NodeTemplates.COLLECTION_CREATE.get() and NodeTemplates.COLLECTION_DISCARD.get()
+			                  //TODO NodeTemplates.COLLECTION_CREATE.get() and NodeTemplates.COLLECTION_DISCARD.get()
 			);
 			return textNode;
 		}
@@ -216,7 +216,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Tags", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
-			new HoverMenu(textNode, Direction.RIGHT, 0, -1
+			HoverMenu.install(textNode, Direction.RIGHT
 					, NodeTemplates.SELECTION_TAG_COPY.get()
 					, NodeTemplates.SELECTION_TAG_PASTE.get()
 					, NodeTemplates.SELECTION_TAG_CLEAR.get()
