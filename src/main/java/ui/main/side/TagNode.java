@@ -3,9 +3,11 @@ package ui.main.side;
 import base.CustomList;
 import base.tag.Tag;
 import base.tag.TagList;
+import base.tag.TagUtil;
 import control.Select;
 import control.filter.Filter;
 import control.reload.Reload;
+import enums.Direction;
 import javafx.geometry.Insets;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -13,6 +15,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
 import ui.custom.ClickMenu;
 import ui.decorator.Decorator;
+import ui.node.NodeTemplates;
 import ui.node.TextNode;
 import ui.override.HBox;
 import ui.override.VBox;
@@ -32,6 +35,14 @@ public class TagNode extends VBox {
 	private String stringValue;
 	
 	private boolean backgroundLock = false;
+	
+	static {
+		ClickMenu.register(TagNode.class, Direction.POINT, MouseButton.SECONDARY
+				, NodeTemplates.TAG_CREATE_CHILD.get()
+				, NodeTemplates.TAG_EDIT.get()
+				, NodeTemplates.TAG_REMOVE.get()
+		);
+	}
 	
 	public TagNode(SidePaneBase parentPane, Tag tag, int level) {
 		this.parentPane = parentPane;
@@ -75,12 +86,12 @@ public class TagNode extends VBox {
 					Reload.start();
 					break;
 				case SECONDARY:
-					ClickMenu.setTagNode(this);
+					TagUtil.setCurrentTagNode(this);
 					break;
 			}
 		});
 		
-		ClickMenu.install(textNode, MouseButton.SECONDARY, ClickMenu.StaticInstance.TAG);
+		ClickMenu.install(this);
 	}
 	
 	private void clickFilter(MouseEvent event) {

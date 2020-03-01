@@ -139,6 +139,19 @@ public class Select extends EntityList {
 			Reload.notify(Notifier.ENTITY_LIST_MAIN);
 		}
 	}
+	public static void deleteTarget() {
+		Entity target = getTarget();
+		
+		if (FileUtil.deleteFile(FileUtil.getFileEntity(target))) {
+			FileUtil.deleteFile(FileUtil.getFileCache(target));
+			
+			Select.getEntities().remove(target);
+			Filter.getEntities().remove(target);
+			EntityList.getMain().remove(target);
+			
+			Reload.notify(Notifier.ENTITY_LIST_MAIN);
+		}
+	}
 	
 	public static void shiftSelectTo(Entity entityTo) {
 		CustomList<Entity> entities = GalleryPane.getTileEntities();
@@ -184,6 +197,8 @@ public class Select extends EntityList {
 			target = newTarget;
 			Reload.requestBorderUpdate(target);
 			GalleryPane.moveViewportToTarget();
+			
+			Reload.notify(Notifier.TARGET);
 		}
 	}
 	

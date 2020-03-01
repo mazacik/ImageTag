@@ -2,11 +2,14 @@ package ui.node;
 
 import base.entity.EntityCollectionUtil;
 import base.entity.EntityList;
+import base.tag.TagList;
 import base.tag.TagUtil;
 import cache.CacheManager;
 import control.Select;
 import control.filter.Filter;
+import control.reload.Notifier;
 import control.reload.Reload;
+import enums.Direction;
 import javafx.scene.image.Image;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -17,6 +20,7 @@ import misc.FileUtil;
 import misc.HttpUtil;
 import misc.Project;
 import ui.custom.ClickMenu;
+import ui.custom.HoverMenu;
 import ui.main.stage.MainStage;
 import ui.stage.CollageStage;
 import ui.stage.ImportStage;
@@ -28,12 +32,33 @@ import java.io.File;
 import java.io.IOException;
 
 public enum NodeTemplates {
-	ENTITY_OPEN_FILE {
+	FILE {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Open File", true, true, false, true);
+			TextNode textNode = new TextNode("File", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			new HoverMenu(textNode, Direction.RIGHT, 0, -1
+					, FILE_OPEN.get()
+					, FILE_EDIT.get()
+					, FILE_BROWSE.get()
+					, FILE_DELETE.get()
+					, new SeparatorNode()
+					, FILE_TAGS.get()
+					, new SeparatorNode()
+					, FILE_COPYFILENAME.get()
+					, FILE_COPYFILEPATH.get()
+					, new SeparatorNode()
+					, FILE_GOOGLE_RIS.get()
+					, FILE_DETAILS.get()
+			);
+			return textNode;
+		}
+	},
+	FILE_OPEN {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Open", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
+				hideMenus();
 				
 				try {
 					Desktop.getDesktop().open(new File(FileUtil.getFileEntity(Select.getTarget())));
@@ -44,28 +69,12 @@ public enum NodeTemplates {
 			return textNode;
 		}
 	},
-	ENTITY_SHOW_EXPLORER {
+	FILE_EDIT {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Show in Explorer", true, true, false, true);
+			TextNode textNode = new TextNode("Edit", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
-				
-				try {
-					Runtime.getRuntime().exec("explorer.exe /select," + new File(FileUtil.getFileEntity(Select.getTarget())));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			});
-			return textNode;
-		}
-	},
-	ENTITY_EDIT_PAINT {
-		public TextNode get() {
-			TextNode textNode = new TextNode("Edit in Paint", true, true, false, true);
-			textNode.setMaxWidth(Double.MAX_VALUE);
-			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
+				hideMenus();
 				
 				try {
 					Runtime.getRuntime().exec("mspaint.exe " + FileUtil.getFileEntity(Select.getTarget()));
@@ -76,12 +85,28 @@ public enum NodeTemplates {
 			return textNode;
 		}
 	},
-	ENTITY_COPY_NAME {
+	FILE_BROWSE {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Browse", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				hideMenus();
+				
+				try {
+					Runtime.getRuntime().exec("explorer.exe /select," + new File(FileUtil.getFileEntity(Select.getTarget())));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+			return textNode;
+		}
+	},
+	FILE_COPYFILENAME {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Copy File Name", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
+				hideMenus();
 				
 				ClipboardContent content = new ClipboardContent();
 				content.putString(FileUtil.getFileEntity(Select.getTarget()));
@@ -90,12 +115,12 @@ public enum NodeTemplates {
 			return textNode;
 		}
 	},
-	ENTITY_COPY_PATH {
+	FILE_COPYFILEPATH {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Copy File Path", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
+				hideMenus();
 				
 				ClipboardContent content = new ClipboardContent();
 				content.putString(FileUtil.getFileEntity(Select.getTarget()));
@@ -104,12 +129,150 @@ public enum NodeTemplates {
 			return textNode;
 		}
 	},
-	ENTITY_REVERSE_IMAGE_SEARCH {
+	FILE_DELETE {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Reverse Image Search", true, true, false, true);
+			TextNode textNode = new TextNode("Delete", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
+				hideMenus();
+				
+				Select.deleteTarget();
+				Reload.start();
+			});
+			return textNode;
+		}
+	},
+	
+	FILE_TAGS {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Tags", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			new HoverMenu(textNode, Direction.RIGHT, 0, -1
+					, NodeTemplates.FILE_TAGS_COPY.get()
+					, NodeTemplates.FILE_TAGS_PASTE.get()
+					, NodeTemplates.FILE_TAGS_CLEAR.get()
+			);
+			return textNode;
+		}
+	},
+	FILE_TAGS_COPY {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Copy", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				hideMenus();
+				
+				TagUtil.setClipboard(new TagList(Select.getTarget().getTagList()));
+			});
+			return textNode;
+		}
+	},
+	FILE_TAGS_PASTE {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Paste", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				hideMenus();
+				
+				Select.getTarget().getTagList().setAll(new TagList(TagUtil.getClipboard()));
+				
+				Reload.notify(Notifier.TAGS_OF_SELECT);
+				Reload.start();
+			});
+			return textNode;
+		}
+	},
+	FILE_TAGS_CLEAR {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Clear", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				hideMenus();
+				
+				Select.getTarget().getTagList().clear();
+				
+				Reload.notify(Notifier.TAGS_OF_SELECT);
+				Reload.start();
+			});
+			return textNode;
+		}
+	},
+	
+	SELECTION {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Selection", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			new HoverMenu(textNode, Direction.RIGHT, 0, -1
+					, SELECTION_TAGS.get()
+					, new SeparatorNode()
+					, SELECTION_DELETE.get()
+			              //TODO NodeTemplates.COLLECTION_CREATE.get() and NodeTemplates.COLLECTION_DISCARD.get()
+			);
+			return textNode;
+		}
+	},
+	
+	SELECTION_TAGS {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Tags", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			new HoverMenu(textNode, Direction.RIGHT, 0, -1
+					, NodeTemplates.SELECTION_TAG_COPY.get()
+					, NodeTemplates.SELECTION_TAG_PASTE.get()
+					, NodeTemplates.SELECTION_TAG_CLEAR.get()
+			);
+			return textNode;
+		}
+	},
+	SELECTION_TAG_COPY {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Copy", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				hideMenus();
+				
+				TagUtil.setClipboard(new TagList(Select.getEntities().getTagList()));
+			});
+			return textNode;
+		}
+	},
+	SELECTION_TAG_PASTE {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Paste", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				hideMenus();
+				
+				Select.getEntities().forEach(entity -> entity.getTagList().setAll(new TagList(TagUtil.getClipboard())));
+				
+				Reload.notify(Notifier.TAGS_OF_SELECT);
+				Reload.start();
+			});
+			return textNode;
+		}
+	},
+	SELECTION_TAG_CLEAR {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Clear", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				hideMenus();
+				
+				Select.getEntities().forEach(entity -> entity.getTagList().clear());
+				
+				Reload.notify(Notifier.TAGS_OF_SELECT);
+				Reload.start();
+			});
+			return textNode;
+		}
+	},
+	
+	FILE_GOOGLE_RIS {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Google RIS", true, true, false, true);
+			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				hideMenus();
 				
 				HttpUtil.googleReverseImageSearch(Select.getTarget());
 				SimpleMessageStage.show("Info", "Request Sent.");
@@ -117,12 +280,12 @@ public enum NodeTemplates {
 			return textNode;
 		}
 	},
-	ENTITY_IMAGE_SIZE_INFO {
+	FILE_DETAILS {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Details", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
+				hideMenus();
 				
 				Image entityImage = new Image("file:" + FileUtil.getFileEntity(Select.getTarget()));
 				int width = (int) entityImage.getWidth();
@@ -136,10 +299,10 @@ public enum NodeTemplates {
 	
 	FILTER_SIMILAR {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Show Similar Files", true, true, false, true);
+			TextNode textNode = new TextNode("Filter Similar", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
+				hideMenus();
 				
 				MainStage.getMainScene().viewGallery();
 				Filter.showSimilar(Select.getTarget());
@@ -153,7 +316,7 @@ public enum NodeTemplates {
 			TextNode textNode = new TextNode("Create Collage", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
+				hideMenus();
 				
 				new CollageStage();
 			});
@@ -166,7 +329,7 @@ public enum NodeTemplates {
 			TextNode textNode = new TextNode("Select All", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
+				hideMenus();
 				
 				Select.getEntities().setAll(Filter.getEntities());
 				Reload.start();
@@ -179,7 +342,7 @@ public enum NodeTemplates {
 			TextNode textNode = new TextNode("Select None", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
+				hideMenus();
 				
 				Select.getEntities().clear();
 				Reload.start();
@@ -189,10 +352,10 @@ public enum NodeTemplates {
 	},
 	SELECTION_DELETE {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Delete Selection", true, true, false, true);
+			TextNode textNode = new TextNode("Delete", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
+				hideMenus();
 				
 				Select.getEntities().deleteFiles();
 				Reload.start();
@@ -206,7 +369,7 @@ public enum NodeTemplates {
 			TextNode textNode = new TextNode("Create a Tag", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
+				hideMenus();
 				
 				TagUtil.create();
 				
@@ -220,9 +383,9 @@ public enum NodeTemplates {
 			TextNode textNode = new TextNode("Create a Tag", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
+				hideMenus();
 				
-				TagUtil.create(ClickMenu.getTagNode().getLevels());
+				TagUtil.create(TagUtil.getCurrentTagNode().getLevels());
 				
 				Reload.start();
 			});
@@ -234,9 +397,9 @@ public enum NodeTemplates {
 			TextNode textNode = new TextNode("Edit Tag", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
+				hideMenus();
 				
-				TagUtil.edit(ClickMenu.getTagNode().getStringValue(), ClickMenu.getTagNode().getLevels().size());
+				TagUtil.edit(TagUtil.getCurrentTagNode().getStringValue(), TagUtil.getCurrentTagNode().getLevels().size());
 				
 				Reload.start();
 			});
@@ -248,7 +411,7 @@ public enum NodeTemplates {
 			TextNode textNode = new TextNode("Remove Tag", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
+				hideMenus();
 				
 				TagUtil.remove();
 				
@@ -263,7 +426,7 @@ public enum NodeTemplates {
 			TextNode textNode = new TextNode("Create Collection", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
+				hideMenus();
 				
 				EntityCollectionUtil.create();
 				
@@ -277,7 +440,7 @@ public enum NodeTemplates {
 			TextNode textNode = new TextNode("Discard Collection", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
+				hideMenus();
 				
 				EntityCollectionUtil.discard();
 				
@@ -292,7 +455,7 @@ public enum NodeTemplates {
 			TextNode textNode = new TextNode("Reset Cache", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
+				hideMenus();
 				
 				if (CacheManager.getThread() != null) CacheManager.getThread().interrupt();
 				
@@ -311,7 +474,7 @@ public enum NodeTemplates {
 			TextNode textNode = new TextNode("Save", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
+				hideMenus();
 				
 				Project.getCurrent().writeToDisk();
 			});
@@ -323,7 +486,7 @@ public enum NodeTemplates {
 			TextNode textNode = new TextNode("Import", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ClickMenu.hideAll();
+				hideMenus();
 				new ImportStage().show("");
 			});
 			return textNode;
@@ -349,5 +512,10 @@ public enum NodeTemplates {
 	
 	public TextNode get() {
 		return null;
+	}
+	
+	public static void hideMenus() {
+		ClickMenu.hideMenus();
+		HoverMenu.hideMenus();
 	}
 }

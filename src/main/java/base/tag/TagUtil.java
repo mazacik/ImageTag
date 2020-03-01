@@ -5,12 +5,19 @@ import base.entity.EntityList;
 import control.filter.Filter;
 import control.reload.Notifier;
 import control.reload.Reload;
-import ui.custom.ClickMenu;
 import ui.main.side.TagNode;
 import ui.stage.ConfirmationStage;
 import ui.stage.TagEditStage;
 
 public class TagUtil {
+	public static TagNode currentTagNode;
+	public static TagNode getCurrentTagNode() {
+		return currentTagNode;
+	}
+	public static void setCurrentTagNode(TagNode currentTagNode) {
+		TagUtil.currentTagNode = currentTagNode;
+	}
+	
 	public static void create() {
 		create(null);
 	}
@@ -30,7 +37,7 @@ public class TagUtil {
 		TagList tagListHelper = new TagList(TagList.getMain());
 		tagListHelper.removeAll(affectedTags);
 		
-		CustomList<String> listLevelsNew = TagEditStage.show(tagListHelper, ClickMenu.getTagNode().getLevels());
+		CustomList<String> listLevelsNew = TagEditStage.show(tagListHelper, getCurrentTagNode().getLevels());
 		if (!listLevelsNew.isEmpty()) {
 			affectedTags.forEach(tag -> tag.replaceLevelsFromStart(numLevelsOld, listLevelsNew));
 			TagList.getMain().sort();
@@ -40,7 +47,7 @@ public class TagUtil {
 		}
 	}
 	public static void remove() {
-		TagNode tagNode = ClickMenu.getTagNode();
+		TagNode tagNode = getCurrentTagNode();
 		if (ConfirmationStage.show("Remove \"" + tagNode.getText() + "\" ?")) {
 			tagNode.getSubNodesDeepest().forEach(subNode -> Filter.getListManager().unlist(subNode.getStringValue()));
 			
@@ -50,5 +57,13 @@ public class TagUtil {
 			
 			Reload.notify(Notifier.TAG_LIST_MAIN);
 		}
+	}
+	
+	private static TagList clipboard = null;
+	public static TagList getClipboard() {
+		return clipboard;
+	}
+	public static void setClipboard(TagList clipboard) {
+		TagUtil.clipboard = clipboard;
 	}
 }

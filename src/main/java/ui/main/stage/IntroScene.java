@@ -16,7 +16,7 @@ import misc.Project;
 import ui.custom.TitleBar;
 import ui.decorator.ColorPreset;
 import ui.decorator.Decorator;
-import ui.node.BoxSeparator;
+import ui.node.SeparatorNode;
 import ui.node.TextNode;
 import ui.override.HBox;
 import ui.override.Scene;
@@ -71,7 +71,7 @@ public class IntroScene extends Scene {
 		vBoxStartMenu.getChildren().add(btnOpenProject);
 		vBoxStartMenu.getChildren().add(btnColorPreset);
 		
-		HBox mainBox = new HBox(projectBox, new BoxSeparator(), vBoxStartMenu);
+		HBox mainBox = new HBox(projectBox, new SeparatorNode(), vBoxStartMenu);
 		mainBox.setAlignment(Pos.TOP_CENTER);
 		VBox.setVgrow(mainBox, Priority.ALWAYS);
 		

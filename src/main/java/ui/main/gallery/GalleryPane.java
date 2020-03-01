@@ -19,7 +19,6 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import misc.Settings;
-import ui.custom.ClickMenu;
 import ui.decorator.Decorator;
 import ui.main.stage.MainStage;
 import ui.stage.SimpleMessageStage;
@@ -56,16 +55,6 @@ public class GalleryPane extends ScrollPane {
 		return entityList;
 	}
 	
-	private static void onMouseClick(MouseEvent event) {
-		switch (event.getButton()) {
-			case PRIMARY:
-				ClickMenu.hideAll();
-				break;
-			case SECONDARY:
-				ClickMenu.show(tilePane, event, ClickMenu.StaticInstance.SELECT);
-				break;
-		}
-	}
 	private static void onMousePress(MouseEvent event) {
 		switch (event.getButton()) {
 			case PRIMARY:
@@ -215,7 +204,6 @@ public class GalleryPane extends ScrollPane {
 		tilePane.setPrefTileWidth(actualTileSize);
 		tilePane.setPrefTileHeight(actualTileSize);
 		
-		tilePane.addEventFilter(MouseEvent.MOUSE_CLICKED, GalleryPane::onMouseClick);
 		tilePane.addEventFilter(MouseEvent.MOUSE_PRESSED, GalleryPane::onMousePress);
 		tilePane.addEventFilter(MouseEvent.MOUSE_DRAGGED, GalleryPane::onMouseDrag);
 		tilePane.addEventFilter(MouseEvent.MOUSE_RELEASED, GalleryPane::onMouseRelease);

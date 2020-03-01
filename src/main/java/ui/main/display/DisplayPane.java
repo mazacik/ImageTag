@@ -3,6 +3,7 @@ package ui.main.display;
 import base.entity.Entity;
 import control.Select;
 import control.reload.Reload;
+import enums.Direction;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -15,6 +16,7 @@ import misc.FileUtil;
 import ui.custom.ClickMenu;
 import ui.main.gallery.GalleryPane;
 import ui.main.stage.MainStage;
+import ui.node.NodeTemplates;
 import ui.node.TextNode;
 
 import javax.imageio.ImageIO;
@@ -167,10 +169,9 @@ public class DisplayPane extends BorderPane {
 		canvas.widthProperty().addListener((observable, oldValue, newValue) -> reload());
 		canvas.heightProperty().addListener((observable, oldValue, newValue) -> reload());
 		
-		ClickMenu.install(this, MouseButton.SECONDARY, ClickMenu.StaticInstance.ENTITY);
 		this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
-				ClickMenu.hideAll();
+				NodeTemplates.hideMenus();
 				
 				if (event.getClickCount() % 2 != 0) {
 					requestFocus();
@@ -180,6 +181,10 @@ public class DisplayPane extends BorderPane {
 				}
 			}
 		});
+		ClickMenu.install(this, Direction.POINT, MouseButton.SECONDARY
+				, NodeTemplates.FILE.get()
+				, NodeTemplates.SELECTION.get()
+		);
 	}
 	
 	public void interruptVideoPlayer() {

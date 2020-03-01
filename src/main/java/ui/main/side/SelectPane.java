@@ -7,12 +7,12 @@ import control.Select;
 import control.filter.Filter;
 import control.reload.Reload;
 import enums.Direction;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Background;
 import ui.custom.ClickMenu;
 import ui.decorator.Decorator;
 import ui.node.EditNode;
 import ui.node.NodeTemplates;
-import ui.node.TextNode;
 
 public class SelectPane extends SidePaneBase {
 	private EditNode nodeSearch;
@@ -149,9 +149,10 @@ public class SelectPane extends SidePaneBase {
 			}
 		});
 		
-		TextNode nodeSelectAll = NodeTemplates.SELECTION_SET_ALL.get();
-		TextNode nodeSelectNone = NodeTemplates.SELECTION_SET_NONE.get();
-		ClickMenu.install(nodeText, Direction.LEFT, nodeSelectAll, nodeSelectNone);
+		ClickMenu.install(nodeText, Direction.LEFT, MouseButton.PRIMARY
+				, NodeTemplates.SELECTION_SET_ALL.get()
+				, NodeTemplates.SELECTION_SET_NONE.get()
+		);
 		
 		this.setBorder(Decorator.getBorder(0, 0, 0, 1));
 		this.getChildren().addAll(nodeText, nodeSearch, scrollPane);

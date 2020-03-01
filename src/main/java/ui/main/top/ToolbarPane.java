@@ -15,8 +15,8 @@ import ui.custom.TitleBar;
 import ui.decorator.Decorator;
 import ui.main.gallery.GalleryPane;
 import ui.main.stage.MainStage;
-import ui.node.BoxSeparator;
 import ui.node.NodeTemplates;
+import ui.node.SeparatorNode;
 import ui.node.TextNode;
 import ui.override.HBox;
 
@@ -47,7 +47,7 @@ public class ToolbarPane extends BorderPane {
 		TextNode nodeSettings = NodeTemplates.APPLICATION_SETTINGS.get();
 		TextNode nodeCacheReset = NodeTemplates.CACHE_RESET.get();
 		TextNode nodeExit = NodeTemplates.APPLICATION_EXIT.get();
-		ClickMenu.install(nodeFile, Direction.DOWN, nodeSave, nodeImport, nodeSettings, nodeCacheReset, new BoxSeparator(), nodeExit);
+		ClickMenu.install(nodeFile, Direction.DOWN, MouseButton.PRIMARY, nodeSave, nodeImport, nodeSettings, nodeCacheReset, new SeparatorNode(), nodeExit);
 		
 		TextNode nodeRandom = new TextNode("Random", true, true, false, true);
 		nodeRandom.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
@@ -59,7 +59,10 @@ public class ToolbarPane extends BorderPane {
 		});
 		
 		nodeTarget = new TextNode("", true, true, false, true);
-		ClickMenu.install(nodeTarget, Direction.DOWN, MouseButton.PRIMARY, ClickMenu.StaticInstance.ENTITY);
+		ClickMenu.install(nodeTarget, Direction.DOWN, MouseButton.PRIMARY
+				, NodeTemplates.FILE.get()
+				, NodeTemplates.SELECTION.get()
+		);
 		
 		HBox hBox = new HBox(nodeFile, nodeRandom);
 		hBox.setAlignment(Pos.CENTER);

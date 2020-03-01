@@ -4,6 +4,7 @@ import base.entity.Entity;
 import base.entity.EntityCollectionUtil;
 import control.Select;
 import control.reload.Reload;
+import enums.Direction;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -23,6 +24,7 @@ import javafx.scene.text.Font;
 import misc.Settings;
 import ui.custom.ClickMenu;
 import ui.main.stage.MainStage;
+import ui.node.NodeTemplates;
 
 public class Tile extends Pane {
 	public static final double HIGHLIGHT_PADDING = 10;
@@ -76,6 +78,11 @@ public class Tile extends Pane {
 			scene.setFill(Color.GRAY);
 			scene.snapshot(this);
 		}};
+		
+		ClickMenu.register(Tile.class, Direction.POINT, MouseButton.SECONDARY
+				, NodeTemplates.FILE.get()
+				, NodeTemplates.SELECTION.get()
+		);
 	}
 	
 	private final Entity entity;
@@ -102,7 +109,7 @@ public class Tile extends Pane {
 			if (!event.isStillSincePress()) return;
 			switch (event.getButton()) {
 				case PRIMARY:
-					ClickMenu.hideAll();
+					ClickMenu.hideMenus();
 					
 					boolean hitWidth = event.getX() >= collectionIconX && event.getX() <= collectionIconX + collectionIconSize;
 					boolean hitHeight = event.getY() <= collectionIconY + collectionIconSize && event.getY() >= collectionIconY;
@@ -156,7 +163,7 @@ public class Tile extends Pane {
 			}
 		});
 		
-		ClickMenu.install(imageView, MouseButton.SECONDARY, ClickMenu.StaticInstance.ENTITY);
+		ClickMenu.install(this);
 	}
 	
 	public void updateHighlight() {

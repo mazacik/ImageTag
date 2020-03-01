@@ -46,7 +46,7 @@ public class MainScene extends Scene {
 	private void keybindsGlobal(KeyEvent event) {
 		switch (event.getCode()) {
 			case I:
-				NodeTemplates.ENTITY_IMAGE_SIZE_INFO.get().fireEvent(EventUtil.createMouseEvent(MouseEvent.MOUSE_CLICKED)); //todo bruh
+				NodeTemplates.FILE_DETAILS.get().fireEvent(EventUtil.createMouseEvent(MouseEvent.MOUSE_CLICKED)); //todo bruh
 				break;
 			case ESCAPE:
 				MainStage.getMainScene().viewGallery();
