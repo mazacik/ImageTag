@@ -79,7 +79,7 @@ public class Tile extends Pane {
 			scene.snapshot(this);
 		}};
 		
-		ClickMenu.register(Tile.class, Direction.POINT, MouseButton.SECONDARY
+		ClickMenu.register(Tile.class, Direction.NONE, MouseButton.SECONDARY
 				, NodeTemplates.FILE.get()
 				, NodeTemplates.SELECTION.get()
 		);

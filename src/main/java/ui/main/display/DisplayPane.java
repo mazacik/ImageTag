@@ -181,7 +181,7 @@ public class DisplayPane extends BorderPane {
 				}
 			}
 		});
-		ClickMenu.install(this, Direction.POINT, MouseButton.SECONDARY
+		ClickMenu.install(this, Direction.NONE, MouseButton.SECONDARY
 				, NodeTemplates.FILE.get()
 				, NodeTemplates.SELECTION.get()
 		);

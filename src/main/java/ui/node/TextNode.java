@@ -14,6 +14,7 @@ import ui.decorator.Decorator;
 public class TextNode extends Label {
 	private static final int PADDING_V = 3;
 	private static final int PADDING_H = 10;
+	private static final Insets insets = new Insets(PADDING_V, PADDING_H, PADDING_V, PADDING_H);
 	
 	public TextNode(String text, boolean hoverBackground, boolean hoverText, boolean hoverCursor, boolean defaultPadding) {
 		super(text);
@@ -25,9 +26,7 @@ public class TextNode extends Label {
 		
 		Decorator.getNodeList().add(this);
 		
-		if (defaultPadding) {
-			this.setPadding(new Insets(PADDING_V, PADDING_H, PADDING_V, PADDING_H));
-		}
+		if (defaultPadding) this.setPadding(insets);
 		
 		this.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
 			if (hoverBackground) {

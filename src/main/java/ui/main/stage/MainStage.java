@@ -10,7 +10,6 @@ import ui.main.gallery.GalleryPane;
 import ui.main.side.FilterPane;
 import ui.main.side.SelectPane;
 import ui.main.side.SidePaneBase;
-import ui.main.top.ToolbarPane;
 
 import java.awt.*;
 
@@ -54,7 +53,7 @@ public class MainStage extends Stage {
 		getInstance().getScene().widthProperty().addListener((observable, oldValue, newValue) -> onStageWidthChange());
 		
 		getInstance().setMinWidth(100 + SidePaneBase.MIN_WIDTH * 2 + Settings.GALLERY_TILE_SIZE.getIntegerValue());
-		getInstance().setMinHeight(100 + ToolbarPane.PREF_HEIGHT + Settings.GALLERY_TILE_SIZE.getIntegerValue());
+		getInstance().setMinHeight(100 + Settings.GALLERY_TILE_SIZE.getIntegerValue());
 		getInstance().setWidth(Decorator.getUsableScreenWidth());
 		getInstance().setHeight(Decorator.getUsableScreenHeight());
 		

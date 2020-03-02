@@ -21,8 +21,6 @@ import ui.node.TextNode;
 import ui.override.HBox;
 
 public class ToolbarPane extends BorderPane {
-	public static final double PREF_HEIGHT = 30;
-	
 	private TextNode nodeTarget;
 	
 	public boolean reload() {
@@ -71,7 +69,6 @@ public class ToolbarPane extends BorderPane {
 		titleBar.setBorder(null);
 		
 		this.setBorder(Decorator.getBorder(0, 0, 1, 0));
-		this.setPrefHeight(PREF_HEIGHT);
 		this.setLeft(hBox);
 		this.setCenter(titleBar);
 	}

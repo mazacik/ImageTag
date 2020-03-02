@@ -53,7 +53,7 @@ public class HoverMenu extends Popup {
 			double y;
 			
 			switch (direction) {
-				case POINT:
+				case NONE:
 					Point2D point = root.localToScreen(event.getX(), event.getY());
 					x = point.getX() + offsetX;
 					y = point.getY() + offsetY;

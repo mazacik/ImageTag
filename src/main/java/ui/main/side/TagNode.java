@@ -37,7 +37,7 @@ public class TagNode extends VBox {
 	private boolean backgroundLock = false;
 	
 	static {
-		ClickMenu.register(TagNode.class, Direction.POINT, MouseButton.SECONDARY
+		ClickMenu.register(TagNode.class, Direction.NONE, MouseButton.SECONDARY
 				, NodeTemplates.TAG_CREATE_CHILD.get()
 				, NodeTemplates.TAG_EDIT.get()
 				, NodeTemplates.TAG_REMOVE.get()

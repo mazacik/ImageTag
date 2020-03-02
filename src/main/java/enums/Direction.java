@@ -1,7 +1,7 @@
 package enums;
 
 public enum Direction {
-	POINT,
+	NONE,
 	UP,
 	DOWN,
 	LEFT,
