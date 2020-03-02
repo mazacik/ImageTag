@@ -80,37 +80,42 @@ public class ClickMenu extends Popup {
 		if (!this.isShowing()) {
 			Bounds onScreenBounds;
 			
-			double x = 0;
-			double y = 0;
+			double x;
+			double y;
 			
 			switch (direction) {
 				case POINT:
 					Point2D point = root.localToScreen(event.getX(), event.getY());
 					x = point.getX() + offsetX;
 					y = point.getY() + offsetY;
+					this.show(MainStage.getInstance(), x, y);
 					break;
 				case UP:
-					onScreenBounds = root.localToScreen(root.getBoundsInLocal());
-					//coords = new Coords();
+					//onScreenBounds = root.localToScreen(root.getBoundsInLocal());
+					//x =
+					//y =
+					//this.show(MainStage.getInstance(), x, y);
 					break;
 				case DOWN:
 					onScreenBounds = root.localToScreen(root.getBoundsInLocal());
 					x = onScreenBounds.getMinX() + offsetX;
 					y = onScreenBounds.getMaxY() + offsetY;
+					this.show(MainStage.getInstance(), x, y);
 					break;
 				case LEFT:
 					onScreenBounds = root.localToScreen(root.getBoundsInLocal());
 					x = onScreenBounds.getMinX() + offsetX;
 					y = onScreenBounds.getMinY() + offsetY;
+					this.show(MainStage.getInstance(), x, y);
+					this.setAnchorX(this.getAnchorX() - this.getWidth());
 					break;
 				case RIGHT:
 					onScreenBounds = root.localToScreen(root.getBoundsInLocal());
 					x = onScreenBounds.getMaxX() + offsetX;
 					y = onScreenBounds.getMinY() + offsetY;
+					this.show(MainStage.getInstance(), x, y);
 					break;
 			}
-			
-			this.show(MainStage.getInstance(), x, y);
 		}
 	}
 	
