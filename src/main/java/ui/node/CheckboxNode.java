@@ -3,7 +3,6 @@ package ui.node;
 import enums.Direction;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.WindowEvent;
 import ui.decorator.Decorator;
@@ -18,9 +17,6 @@ public class CheckboxNode extends HBox {
 	public CheckboxNode(String text) {
 		this(text, Direction.LEFT, false);
 	}
-	public CheckboxNode(String text, Direction boxPosition) {
-		this(text, boxPosition, false);
-	}
 	public CheckboxNode(String text, Direction boxPosition, boolean startChecked) {
 		textNode = new TextNode(text, false, false, false, false);
 		nodeMark = new TextNode("", true, true, true, false);
@@ -28,7 +24,6 @@ public class CheckboxNode extends HBox {
 		checkedProperty = new SimpleBooleanProperty();
 		setChecked(startChecked);
 		setSpacing(5);
-		setAlignment(Pos.CENTER);
 		
 		if (boxPosition == Direction.LEFT) {
 			getChildren().addAll(nodeMark, textNode);

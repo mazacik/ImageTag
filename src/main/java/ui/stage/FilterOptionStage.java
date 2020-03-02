@@ -67,6 +67,7 @@ public class FilterOptionStage extends AbstractStage {
 		
 		boxContent = new HBox(boxLeft);//, boxRight);
 		boxContent.setSpacing(100);
+		boxContent.setMinWidth(300);
 		boxContent.setPadding(new Insets(5));
 		
 		nodeOK = new TextNode("OK", true, true, false, true);

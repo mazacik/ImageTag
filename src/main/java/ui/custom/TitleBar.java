@@ -59,6 +59,14 @@ public class TitleBar extends BorderPane {
 		this.setBorder(Decorator.getBorder(0, 0, 1, 0));
 		
 		initDragEvents();
+		
+		//todo
+		//		if (owner != null) {
+		//			owner.addEventFilter(WindowEvent.WINDOW_SHOWN, event -> {
+		//				nodeMinimize.setPrefWidth(nodeMinimize.getWidth());
+		//				nodeExit.setPrefWidth(nodeExit.getWidth());
+		//			});
+		//		}
 	}
 	
 	private void initDragEvents() {

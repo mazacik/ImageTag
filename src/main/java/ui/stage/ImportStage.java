@@ -20,6 +20,7 @@ import ui.node.CheckboxNode;
 import ui.node.EditNode;
 import ui.node.SwitchNode;
 import ui.node.TextNode;
+import ui.override.GridPane;
 import ui.override.HBox;
 import ui.override.VBox;
 
@@ -58,8 +59,10 @@ public class ImportStage extends AbstractStage {
 		HBox boxPath = new HBox(nodeTextPath, nodeEditPath, nodeBrowse);
 		boxPath.setAlignment(Pos.CENTER);
 		
+		SwitchNode nodeMode = new SwitchNode("Copy", "Move", 150);
 		CheckboxNode nodeEmptyFolders = new CheckboxNode("Remove Empty Folders", Direction.LEFT, true);
-		SwitchNode nodeMode = new SwitchNode("Copy", "Move", 125);
+		CheckboxNode nodeThread = new CheckboxNode("Work in Background", Direction.LEFT, true);
+		
 		nodeMode.selectRight();
 		nodeMode.getLeft().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			setImportMode(ImportMode.COPY);
@@ -71,14 +74,19 @@ public class ImportStage extends AbstractStage {
 			nodeEmptyFolders.setDisable(false);
 			nodeMode.selectRight();
 		});
-		CheckboxNode nodeThread = new CheckboxNode("Work in Background", Direction.LEFT, true);
 		
-		boxStage1 = new VBox(boxPath, nodeMode, nodeEmptyFolders, nodeThread);
+		GridPane paneOptions = new GridPane();
+		paneOptions.setVgap(3);
+		paneOptions.setAlignment(Pos.CENTER);
+		paneOptions.add(nodeEmptyFolders, 0, 0);
+		paneOptions.add(nodeThread, 0, 1);
+		
+		boxStage1 = new VBox(boxPath, nodeMode, paneOptions);
 		boxStage1.setAlignment(Pos.CENTER);
 		boxStage1.setSpacing(3);
 		boxStage1.setPadding(new Insets(3));
 		
-		nodeOK = new TextNode("Import", true, true, true, true);
+		nodeOK = new TextNode("Import", true, true, false, true);
 		nodeOK.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			File directory = new File(nodeEditPath.getText());
 			if (directory.exists() && directory.isDirectory()) {
@@ -96,14 +104,14 @@ public class ImportStage extends AbstractStage {
 				setErrorMessage("Import Path Invalid");
 			}
 		});
-		nodeCancel = new TextNode("Cancel", true, true, true, true);
+		nodeCancel = new TextNode("Cancel", true, true, false, true);
 		nodeCancel.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, this::close);
 	}
 	private void createStage2() {
 		nodeMessage = new TextNode("", false, false, false, true);
 		nodeSetupFilter = new CheckboxNode("Filter Imported Files", Direction.LEFT, true);
 		
-		nodeFinish = new TextNode("Finish", true, true, true, true);
+		nodeFinish = new TextNode("Finish", true, true, false, true);
 		nodeFinish.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			if (nodeSetupFilter.isChecked()) setupFilter();
 			

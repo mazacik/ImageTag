@@ -1,6 +1,7 @@
 package ui.stage;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import misc.Settings;
@@ -18,6 +19,7 @@ public class SettingsStage extends AbstractStage {
 		gridPane.setVgap(3);
 		gridPane.setHgap(3);
 		gridPane.setPadding(new Insets(3));
+		gridPane.setAlignment(Pos.CENTER);
 		
 		for (Settings setting : Settings.values()) {
 			if (setting.isUserModifiable()) {
