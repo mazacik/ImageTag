@@ -25,7 +25,7 @@ public class ProjectBox extends VBox {
 			projects.forEach(project -> this.getChildren().add(new ProjectNode(project)));
 		} else {
 			this.setAlignment(Pos.CENTER);
-			this.getChildren().add(new TextNode("No Projects Found"));
+			this.getChildren().add(new TextNode("No Projects Found", false, false, false, false));
 		}
 	}
 }

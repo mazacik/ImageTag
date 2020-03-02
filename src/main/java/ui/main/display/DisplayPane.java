@@ -211,7 +211,7 @@ public class DisplayPane extends BorderPane {
 		gifPlayer.fitWidthProperty().bind(GalleryPane.getInstance().widthProperty());
 		gifPlayer.fitHeightProperty().bind(GalleryPane.getInstance().heightProperty());
 		
-		nodeNoLibsError = new TextNode("No VLC Libs found.") {{
+		nodeNoLibsError = new TextNode("Error: No VLC Library", false, false, false, false) {{
 			this.setFont(new Font(64));
 			this.minWidthProperty().bind(canvas.widthProperty());
 			this.minHeightProperty().bind(canvas.heightProperty());

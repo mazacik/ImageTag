@@ -29,12 +29,12 @@ public class ProjectScene extends Scene {
 	private Project project;
 	
 	public ProjectScene() {
-		TextNode nodeProjectName = new TextNode("Project Name:");
+		TextNode nodeProjectName = new TextNode("Project Name:", false, false, false, false);
 		nodeProjectName.setAlignment(Pos.CENTER_LEFT);
 		editProjectName = new EditNode();
 		editProjectName.setPrefWidth(400);
 		
-		TextNode nodeSourceDirectory = new TextNode("Source Directory:");
+		TextNode nodeSourceDirectory = new TextNode("Source Directory:", false, false, false, false);
 		nodeSourceDirectory.setAlignment(Pos.CENTER_LEFT);
 		editSourceDirectory = new EditNode();
 		editSourceDirectory.setPrefWidth(400);
@@ -54,7 +54,7 @@ public class ProjectScene extends Scene {
 		gridPane.setHgap(5);
 		gridPane.setVgap(5);
 		
-		nodeError = new TextNode("");
+		nodeError = new TextNode("", false, false, false, false);
 		nodeError.setTextFill(Decorator.getColorNegative());
 		
 		TextNode btnFinish = new TextNode("Finish", true, true, true, true);

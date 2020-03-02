@@ -22,17 +22,17 @@ import java.io.File;
 
 public class ProjectNode extends BorderPane {
 	public ProjectNode(Project project) {
-		TextNode nodeProjectName = new TextNode(project.getProjectName(), false, false, false);
-		TextNode nodeDirectorySource = new TextNode(project.getDirectorySource(), false, false, false);
+		TextNode nodeProjectName = new TextNode(project.getProjectName(), false, false, false, false);
+		TextNode nodeDirectorySource = new TextNode(project.getDirectorySource(), false, false, false, false);
 		
 		VBox vBoxLabels = new VBox(nodeProjectName, nodeDirectorySource);
 		vBoxLabels.setAlignment(Pos.CENTER_LEFT);
 		
-		TextNode nodeEdit = new TextNode("···", false, true, false);
+		TextNode nodeEdit = new TextNode("···", false, true, false, false);
 		nodeEdit.setFont(new Font(26));
 		nodeEdit.setVisible(false);
 		
-		TextNode nodeRemove = new TextNode("✕", false, true, false);
+		TextNode nodeRemove = new TextNode("✕", false, true, false, false);
 		nodeRemove.setFont(new Font(20));
 		nodeRemove.setVisible(false);
 		

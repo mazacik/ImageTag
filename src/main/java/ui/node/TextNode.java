@@ -15,53 +15,7 @@ public class TextNode extends Label {
 	private static final int PADDING_V = 3;
 	private static final int PADDING_H = 10;
 	
-	public TextNode() {
-		this("");
-	}
-	public TextNode(String text) {
-		this(text, false, false, false);
-	}
-	public TextNode(String text, boolean hoverBackground, boolean hoverText, boolean hoverCursor) {
-		this(text, hoverBackground, hoverText, hoverCursor, false);
-	}
 	public TextNode(String text, boolean hoverBackground, boolean hoverText, boolean hoverCursor, boolean defaultPadding) {
-		super(text);
-		this.setAlignment(Pos.CENTER);
-		this.setFont(Decorator.getFont());
-		this.setBackground(Background.EMPTY);
-		this.setTextFill(Decorator.getColorPrimary());
-		this.minWidthProperty().bind(this.heightProperty());
-		
-		Decorator.getNodeList().add(this);
-		
-		if (defaultPadding) {
-			this.setPadding(new Insets(PADDING_V, PADDING_H, PADDING_V, PADDING_H));
-		}
-		
-		this.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
-			if (hoverBackground) {
-				this.setBackground(Decorator.getBackgroundSecondary());
-			}
-			if (hoverText) {
-				this.setTextFill(Decorator.getColorSecondary());
-			}
-			if (hoverCursor) {
-				this.setCursor(Cursor.HAND);
-			}
-		});
-		this.addEventFilter(MouseEvent.MOUSE_EXITED, event -> {
-			if (hoverBackground) {
-				this.setBackground(Background.EMPTY);
-			}
-			if (hoverText) {
-				this.setTextFill(Decorator.getColorPrimary());
-			}
-			if (hoverCursor) {
-				this.setCursor(Cursor.DEFAULT);
-			}
-		});
-	}
-	public TextNode(String text, boolean hoverBackground, boolean hoverText, boolean hoverCursor, boolean defaultPadding, boolean test) {
 		super(text);
 		this.setAlignment(Pos.CENTER);
 		this.setFont(Decorator.getFont());

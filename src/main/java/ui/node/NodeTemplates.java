@@ -10,6 +10,7 @@ import control.filter.Filter;
 import control.reload.Notifier;
 import control.reload.Reload;
 import enums.Direction;
+import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -36,6 +37,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("File", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			HoverMenu.install(textNode, Direction.RIGHT
 					, FILE_OPEN.get()
 					, FILE_EDIT.get()
@@ -57,6 +59,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Open", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -73,6 +76,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Edit", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -89,6 +93,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Browse", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -105,6 +110,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Copy File Name", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -119,6 +125,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Copy File Path", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -133,6 +140,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Delete", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -147,6 +155,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Tags", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			HoverMenu.install(textNode, Direction.RIGHT
 					, NodeTemplates.FILE_TAGS_COPY.get()
 					, NodeTemplates.FILE_TAGS_PASTE.get()
@@ -159,6 +168,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Copy", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -171,6 +181,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Paste", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -186,6 +197,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Clear", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -202,6 +214,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Selection", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			HoverMenu.install(textNode, Direction.RIGHT
 					, SELECTION_TAGS.get()
 					, new SeparatorNode()
@@ -216,6 +229,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Tags", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			HoverMenu.install(textNode, Direction.RIGHT
 					, NodeTemplates.SELECTION_TAG_COPY.get()
 					, NodeTemplates.SELECTION_TAG_PASTE.get()
@@ -228,6 +242,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Copy", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -240,6 +255,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Paste", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -255,6 +271,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Clear", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -271,6 +288,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Google RIS", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -284,6 +302,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Details", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -301,6 +320,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Filter Similar", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -315,6 +335,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Create Collage", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -328,6 +349,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Select All", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -341,6 +363,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Select None", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -354,6 +377,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Delete", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -368,6 +392,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Create a Tag", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -382,6 +407,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Create a Tag", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -396,6 +422,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Edit Tag", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -410,6 +437,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Remove Tag", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -425,6 +453,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Create Collection", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -439,6 +468,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Discard Collection", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -454,6 +484,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Reset Cache", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -473,6 +504,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Save", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
@@ -485,6 +517,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Import", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				new ImportStage().show("");
@@ -496,6 +529,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Settings", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> SettingsStage.show(""));
 			return textNode;
 		}
@@ -504,6 +538,7 @@ public enum NodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Exit", true, true, false, true);
 			textNode.setMaxWidth(Double.MAX_VALUE);
+			textNode.setAlignment(Pos.CENTER_LEFT);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> MainStage.getInstance().fireEvent(new WindowEvent(null, WindowEvent.WINDOW_CLOSE_REQUEST)));
 			return textNode;
 		}

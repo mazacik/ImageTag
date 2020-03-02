@@ -28,7 +28,7 @@ public class SwitchNode extends VBox {
 		}
 		
 		this.setAlignment(Pos.CENTER);
-		if (!title.isEmpty()) this.getChildren().add(new TextNode(title));
+		if (!title.isEmpty()) this.getChildren().add(new TextNode(title, false, false, false, false));
 		this.getChildren().add(new HBox(left, right));
 	}
 	
