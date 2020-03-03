@@ -3,7 +3,6 @@ package ui.node.textnodewitharrow;
 import javafx.event.Event;
 import javafx.event.EventType;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
@@ -25,8 +24,6 @@ public class ArrowTextNode extends BorderPane {
 		nodeMain = new TextNode(text, false, false, false, false);
 		nodeArrow = new TextNode("▶", false, false, false, false);
 		
-		nodeMain.setAlignment(Pos.CENTER_LEFT);
-		nodeArrow.setAlignment(Pos.CENTER_RIGHT);
 		nodeMain.minWidthProperty().unbind();
 		nodeArrow.minWidthProperty().unbind();
 		
@@ -57,7 +54,7 @@ public class ArrowTextNode extends BorderPane {
 			}
 		});
 		
-		this.setCenter(nodeMain);
+		this.setLeft(nodeMain);
 		this.setRight(nodeArrow);
 	}
 	
