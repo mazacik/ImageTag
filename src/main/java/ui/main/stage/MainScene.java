@@ -90,9 +90,6 @@ public class MainScene extends Scene {
 				Select.getEntities().set(Select.getTarget());
 				Reload.start();
 				break;
-			case ALT:
-				DisplayPane.getInstance().getControls().hide();
-				break;
 		}
 	}
 	private void keybindsEditNode(KeyEvent event) {

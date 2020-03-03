@@ -3,13 +3,15 @@ package ui.main.display;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.geometry.Bounds;
-import javafx.stage.Popup;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import ui.main.stage.MainStage;
+import ui.override.Scene;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class Controls extends Popup {
+public class Controls extends Stage {
 	private final ControlsBase controlsBase;
 	private final PauseTransition autoHideDelay;
 	
@@ -34,7 +36,9 @@ public class Controls extends Popup {
 			if (!initDone.get() && !initBeingDone.get()) {
 				initBeingDone.set(true);
 				setOpacity(0);
-				this.show(MainStage.getInstance(), x, y);
+				this.setX(x);
+				this.setY(y);
+				this.show();
 				Platform.runLater(() -> {
 					setOpacity(1);
 					this.hide();
@@ -42,14 +46,18 @@ public class Controls extends Popup {
 				});
 			} else if (initDone.get()) {
 				autoHideDelay.playFromStart();
-				this.show(MainStage.getInstance(), x, y);
+				this.setX(x);
+				this.setY(y);
+				this.show();
 			}
 		});
 		
 		controlsBase.setOnMouseEntered(event -> autoHideDelay.stop());
 		controlsBase.setOnMouseExited(event -> autoHideDelay.playFromStart());
 		
-		this.getContent().setAll(controlsBase);
+		this.initStyle(StageStyle.UNDECORATED);
+		this.initOwner(MainStage.getInstance());
+		this.setScene(new Scene(controlsBase));
 	}
 	
 	public void setVideoMode(boolean enabled) {
