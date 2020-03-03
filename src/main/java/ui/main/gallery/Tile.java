@@ -130,7 +130,7 @@ public class Tile extends Pane {
 							}
 							Select.setTarget(entity);
 						} else {
-							MainStage.getMainScene().viewEntity();
+							MainStage.getMainScene().viewDisplay();
 						}
 					}
 					

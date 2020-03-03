@@ -1,10 +1,13 @@
 package ui.main.display;
 
 import javafx.animation.PauseTransition;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.application.Platform;
+import javafx.geometry.Bounds;
 import javafx.stage.Popup;
 import javafx.util.Duration;
+import ui.main.stage.MainStage;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Controls extends Popup {
 	private final ControlsBase controlsBase;
@@ -16,22 +19,31 @@ public class Controls extends Popup {
 		
 		controlsBase.prefWidthProperty().bind(entityPane.widthProperty());
 		
-		BooleanProperty mouseMoving = new SimpleBooleanProperty();
-		mouseMoving.addListener((obs, wasMoving, isNowMoving) -> {
-			if (!isNowMoving) {
-				this.hide();
-			}
-		});
+		autoHideDelay.setOnFinished(e -> this.hide());
 		
-		autoHideDelay.setOnFinished(e -> mouseMoving.set(false));
+		MainStage.getInstance().xProperty().addListener((observable, oldValue, newValue) -> this.hide());
+		MainStage.getInstance().yProperty().addListener((observable, oldValue, newValue) -> this.hide());
+		
+		AtomicBoolean initDone = new AtomicBoolean(false);
+		AtomicBoolean initBeingDone = new AtomicBoolean(false);
 		entityPane.setOnMouseMoved(event -> {
-			mouseMoving.set(true);
-			autoHideDelay.playFromStart();
+			Bounds boundsInScene = entityPane.localToScreen(entityPane.getBoundsInLocal());
+			double x = boundsInScene.getMinX();
+			double y = boundsInScene.getMinY();
 			
-			double x = entityPane.localToScreen(entityPane.getBoundsInLocal()).getMinX();
-			double y = entityPane.localToScreen(entityPane.getBoundsInLocal()).getMinY();
-			
-			this.show(entityPane, x, y);
+			if (!initDone.get() && !initBeingDone.get()) {
+				initBeingDone.set(true);
+				setOpacity(0);
+				this.show(MainStage.getInstance(), x, y);
+				Platform.runLater(() -> {
+					setOpacity(1);
+					this.hide();
+					initDone.set(true);
+				});
+			} else if (initDone.get()) {
+				autoHideDelay.playFromStart();
+				this.show(MainStage.getInstance(), x, y);
+			}
 		});
 		
 		controlsBase.setOnMouseEntered(event -> autoHideDelay.stop());

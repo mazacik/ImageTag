@@ -21,7 +21,7 @@ public class SelectPane extends SidePaneBase {
 	
 	private TagNode match;
 	private String query;
-	private boolean enableSearch = true;
+	private boolean searchLock = false;
 	
 	public boolean refresh() {
 		refreshTitle();
@@ -65,14 +65,23 @@ public class SelectPane extends SidePaneBase {
 		nodeText.setText(text);
 	}
 	
-	public void nextMatch(int searchOffset) {
+	public void nextMatch(Direction searchDirection, boolean isControlDown) {
 		if (match != null) {
 			CustomList<TagNode> tagNodes = getTagNodes();
 			int i = tagNodes.indexOf(match);
 			TagNode tagNode;
 			
-			do {
-				i += searchOffset;
+			while (true) {
+				switch (searchDirection) {
+					case UP:
+						i--;
+						break;
+					case DOWN:
+						i++;
+						break;
+					default:
+						throw new IllegalArgumentException("Invalid search direction: " + searchDirection.name());
+				}
 				
 				if (i == 0) {
 					i = tagNodes.size() - 1;
@@ -81,7 +90,17 @@ public class SelectPane extends SidePaneBase {
 				}
 				
 				tagNode = tagNodes.get(i);
-			} while (tagNode != match && (!tagNode.isLast() || !tagNode.getText().toLowerCase().startsWith(query)));
+				
+				if (isControlDown) {
+					if (tagNode == match || (tagNode.isLast() && tagNode.getText().toLowerCase().contains(query))) {
+						break;
+					}
+				} else {
+					if (tagNode == match || tagNode.isLast()) {
+						break;
+					}
+				}
+			}
 			
 			closeNodes();
 			match.setBackground(Background.EMPTY);
@@ -110,20 +129,26 @@ public class SelectPane extends SidePaneBase {
 		nodeSearch.setBorder(Decorator.getBorder(0, 0, 1, 0));
 		nodeSearch.prefWidthProperty().bind(this.widthProperty());
 		nodeSearch.textProperty().addListener((observable, oldValue, newValue) -> {
-			if (enableSearch) {
+			if (!searchLock) {
 				if (match != null) {
 					match.setBackground(Background.EMPTY);
 					match.setBackgroundLock(false);
+					match = null;
 				}
+				
 				closeNodes();
 				
 				if (newValue.length() > 0) {
 					query = newValue.toLowerCase();
 					
-					for (TagNode tagNode : getTagNodes()) {
-						if (tagNode.isLast() && tagNode.getText().toLowerCase().startsWith(query)) {
-							match = tagNode;
-							break;
+					for (TagNode tagNode : this.getTagNodes()) {
+						if (tagNode.getText().toLowerCase().contains(query)) {
+							if (tagNode.isLast()) {
+								match = tagNode;
+								break;
+							} else if (match == null) {
+								match = tagNode;
+							}
 						}
 					}
 					
@@ -142,9 +167,9 @@ public class SelectPane extends SidePaneBase {
 				match.setBackground(Background.EMPTY);
 				match.setBackgroundLock(false);
 				
-				enableSearch = false;
+				searchLock = true;
 				nodeSearch.clear();
-				enableSearch = true;
+				searchLock = false;
 				
 				Select.getEntities().addTag(TagList.getMain().getTag(match.getStringValue()).getID());
 				

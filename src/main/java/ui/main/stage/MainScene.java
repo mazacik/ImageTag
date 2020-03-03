@@ -5,8 +5,8 @@ import base.entity.EntityCollectionUtil;
 import control.Select;
 import control.reload.Notifier;
 import control.reload.Reload;
+import enums.Direction;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import main.EventUtil;
 import ui.decorator.Decorator;
@@ -78,7 +78,7 @@ public class MainScene extends Scene {
 				}
 				break;
 			case F:
-				if (this.isViewGallery()) this.viewEntity();
+				if (this.isViewGallery()) this.viewDisplay();
 				else this.viewGallery();
 				Reload.start();
 				break;
@@ -89,6 +89,9 @@ public class MainScene extends Scene {
 				Select.moveTarget(event.getCode());
 				Select.getEntities().set(Select.getTarget());
 				Reload.start();
+				break;
+			case ALT:
+				DisplayPane.getInstance().getControls().hide();
 				break;
 		}
 	}
@@ -101,13 +104,13 @@ public class MainScene extends Scene {
 				break;
 			case UP:
 				if (this.getFocusOwner() == SelectPane.getInstance().getNodeSearch()) {
-					SelectPane.getInstance().nextMatch(-1);
+					SelectPane.getInstance().nextMatch(Direction.UP, event.isControlDown());
 					event.consume();
 				}
 				break;
 			case DOWN:
 				if (this.getFocusOwner() == SelectPane.getInstance().getNodeSearch()) {
-					SelectPane.getInstance().nextMatch(+1);
+					SelectPane.getInstance().nextMatch(Direction.DOWN, event.isControlDown());
 					event.consume();
 				}
 				break;
@@ -126,12 +129,10 @@ public class MainScene extends Scene {
 			Reload.notify(Notifier.VIEWMODE);
 		}
 	}
-	public void viewEntity() {
+	public void viewDisplay() {
 		if (isViewGallery()) {
 			mainBox.getChildren().set(1, DisplayPane.getInstance());
-			
 			DisplayPane.getInstance().requestFocus();
-			DisplayPane.getInstance().fireEvent(new MouseEvent(MouseEvent.MOUSE_MOVED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, false, false, false, false, false, false, false, false, false, false, null));
 			
 			Reload.notify(Notifier.VIEWMODE);
 		}
