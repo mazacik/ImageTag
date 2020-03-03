@@ -17,8 +17,8 @@ import ui.custom.ClickMenu;
 import ui.custom.HoverMenu;
 import ui.main.gallery.GalleryPane;
 import ui.main.stage.MainStage;
+import ui.node.arrowtextnode.ArrowTextNodeTemplates;
 import ui.node.textnode.TextNode;
-import ui.node.textnodewitharrow.ArrowTextNodeTemplates;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;

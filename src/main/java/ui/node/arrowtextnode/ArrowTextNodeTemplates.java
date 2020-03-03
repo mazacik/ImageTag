@@ -1,4 +1,4 @@
-package ui.node.textnodewitharrow;
+package ui.node.arrowtextnode;
 
 import enums.Direction;
 import ui.custom.HoverMenu;

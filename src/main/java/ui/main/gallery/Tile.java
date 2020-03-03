@@ -24,7 +24,7 @@ import javafx.scene.text.Font;
 import misc.Settings;
 import ui.custom.ClickMenu;
 import ui.main.stage.MainStage;
-import ui.node.textnodewitharrow.ArrowTextNodeTemplates;
+import ui.node.arrowtextnode.ArrowTextNodeTemplates;
 
 public class Tile extends Pane {
 	public static final double HIGHLIGHT_PADDING = 10;

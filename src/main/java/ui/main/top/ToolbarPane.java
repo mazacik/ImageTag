@@ -16,9 +16,9 @@ import ui.decorator.Decorator;
 import ui.main.gallery.GalleryPane;
 import ui.main.stage.MainStage;
 import ui.node.SeparatorNode;
+import ui.node.arrowtextnode.ArrowTextNodeTemplates;
 import ui.node.textnode.TextNode;
 import ui.node.textnode.TextNodeTemplates;
-import ui.node.textnodewitharrow.ArrowTextNodeTemplates;
 import ui.override.HBox;
 
 public class ToolbarPane extends BorderPane {

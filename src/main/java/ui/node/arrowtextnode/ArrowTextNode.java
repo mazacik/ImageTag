@@ -1,4 +1,4 @@
-package ui.node.textnodewitharrow;
+package ui.node.arrowtextnode;
 
 import javafx.event.Event;
 import javafx.event.EventType;
