@@ -6,8 +6,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import ui.decorator.Decorator;
-import ui.node.textnode.Templates_TextNode;
 import ui.node.textnode.TextNode;
+import ui.node.textnode.TextNodeTemplates;
 import ui.stage.FilterOptionStage;
 
 public class FilterPane extends SidePaneBase {
@@ -38,7 +38,7 @@ public class FilterPane extends SidePaneBase {
 		paneTitle.setCenter(nodeText);
 		paneTitle.setRight(btnSettings);
 		
-		TextNode btnCreateNewTag = Templates_TextNode.TAG_CREATE.get();
+		TextNode btnCreateNewTag = TextNodeTemplates.TAG_CREATE.get();
 		btnCreateNewTag.setBorder(Decorator.getBorder(0, 0, 1, 0));
 		btnCreateNewTag.prefWidthProperty().bind(this.widthProperty());
 		

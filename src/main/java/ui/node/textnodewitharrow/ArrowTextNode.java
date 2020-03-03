@@ -13,7 +13,7 @@ import javafx.scene.layout.BorderPane;
 import ui.decorator.Decorator;
 import ui.node.textnode.TextNode;
 
-public class TextNodeWithArrow extends BorderPane {
+public class ArrowTextNode extends BorderPane {
 	private static final int PADDING_V = 3;
 	private static final int PADDING_H = 10;
 	private static final Insets insets = new Insets(PADDING_V, PADDING_H, PADDING_V, PADDING_H);
@@ -21,7 +21,7 @@ public class TextNodeWithArrow extends BorderPane {
 	private Label nodeMain;
 	private Label nodeArrow;
 	
-	public TextNodeWithArrow(String text, boolean hoverBackground, boolean hoverText, boolean hoverCursor, boolean defaultPadding) {
+	public ArrowTextNode(String text, boolean hoverBackground, boolean hoverText, boolean hoverCursor, boolean defaultPadding) {
 		nodeMain = new TextNode(text, false, false, false, false);
 		nodeArrow = new TextNode("▶", false, false, false, false);
 		

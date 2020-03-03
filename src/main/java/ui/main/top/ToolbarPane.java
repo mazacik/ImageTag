@@ -16,9 +16,9 @@ import ui.decorator.Decorator;
 import ui.main.gallery.GalleryPane;
 import ui.main.stage.MainStage;
 import ui.node.SeparatorNode;
-import ui.node.textnode.Templates_TextNode;
 import ui.node.textnode.TextNode;
-import ui.node.textnodewitharrow.Templates_TextNodeWithArrow;
+import ui.node.textnode.TextNodeTemplates;
+import ui.node.textnodewitharrow.ArrowTextNodeTemplates;
 import ui.override.HBox;
 
 public class ToolbarPane extends BorderPane {
@@ -41,11 +41,11 @@ public class ToolbarPane extends BorderPane {
 		TitleBar titleBar = new TitleBar(MainStage.getInstance());
 		
 		TextNode nodeFile = new TextNode("File", true, true, false, true);
-		TextNode nodeSave = Templates_TextNode.APPLICATION_SAVE.get();
-		TextNode nodeImport = Templates_TextNode.APPLICATION_IMPORT.get();
-		TextNode nodeSettings = Templates_TextNode.APPLICATION_SETTINGS.get();
-		TextNode nodeCacheReset = Templates_TextNode.CACHE_RESET.get();
-		TextNode nodeExit = Templates_TextNode.APPLICATION_EXIT.get();
+		TextNode nodeSave = TextNodeTemplates.APPLICATION_SAVE.get();
+		TextNode nodeImport = TextNodeTemplates.APPLICATION_IMPORT.get();
+		TextNode nodeSettings = TextNodeTemplates.APPLICATION_SETTINGS.get();
+		TextNode nodeCacheReset = TextNodeTemplates.CACHE_RESET.get();
+		TextNode nodeExit = TextNodeTemplates.APPLICATION_EXIT.get();
 		ClickMenu.install(nodeFile, Direction.DOWN, MouseButton.PRIMARY, nodeSave, nodeImport, nodeSettings, nodeCacheReset, new SeparatorNode(), nodeExit);
 		
 		TextNode nodeRandom = new TextNode("Random", true, true, false, true);
@@ -59,8 +59,8 @@ public class ToolbarPane extends BorderPane {
 		
 		nodeTarget = new TextNode("", true, true, false, true);
 		ClickMenu.install(nodeTarget, Direction.DOWN, MouseButton.PRIMARY
-				, Templates_TextNodeWithArrow.FILE.get()
-				, Templates_TextNodeWithArrow.SELECTION.get()
+				, ArrowTextNodeTemplates.FILE.get()
+				, ArrowTextNodeTemplates.SELECTION.get()
 		);
 		
 		HBox hBox = new HBox(nodeFile, nodeRandom);

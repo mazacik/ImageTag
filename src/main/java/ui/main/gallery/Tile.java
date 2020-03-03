@@ -24,7 +24,7 @@ import javafx.scene.text.Font;
 import misc.Settings;
 import ui.custom.ClickMenu;
 import ui.main.stage.MainStage;
-import ui.node.textnodewitharrow.Templates_TextNodeWithArrow;
+import ui.node.textnodewitharrow.ArrowTextNodeTemplates;
 
 public class Tile extends Pane {
 	public static final double HIGHLIGHT_PADDING = 10;
@@ -80,8 +80,8 @@ public class Tile extends Pane {
 		}};
 		
 		ClickMenu.register(Tile.class, Direction.NONE, MouseButton.SECONDARY
-				, Templates_TextNodeWithArrow.FILE.get()
-				, Templates_TextNodeWithArrow.SELECTION.get()
+				, ArrowTextNodeTemplates.FILE.get()
+				, ArrowTextNodeTemplates.SELECTION.get()
 		);
 	}
 	

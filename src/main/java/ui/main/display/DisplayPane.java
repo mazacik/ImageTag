@@ -14,11 +14,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 import misc.FileUtil;
 import ui.custom.ClickMenu;
+import ui.custom.HoverMenu;
 import ui.main.gallery.GalleryPane;
 import ui.main.stage.MainStage;
-import ui.node.textnode.Templates_TextNode;
 import ui.node.textnode.TextNode;
-import ui.node.textnodewitharrow.Templates_TextNodeWithArrow;
+import ui.node.textnodewitharrow.ArrowTextNodeTemplates;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -172,7 +172,8 @@ public class DisplayPane extends BorderPane {
 		
 		this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
-				Templates_TextNode.hideMenus();
+				ClickMenu.hideMenus();
+				HoverMenu.hideMenus();
 				
 				if (event.getClickCount() % 2 != 0) {
 					requestFocus();
@@ -183,8 +184,8 @@ public class DisplayPane extends BorderPane {
 			}
 		});
 		ClickMenu.install(this, Direction.NONE, MouseButton.SECONDARY
-				, Templates_TextNodeWithArrow.FILE.get()
-				, Templates_TextNodeWithArrow.SELECTION.get()
+				, ArrowTextNodeTemplates.FILE.get()
+				, ArrowTextNodeTemplates.SELECTION.get()
 		);
 	}
 	

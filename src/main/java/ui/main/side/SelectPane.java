@@ -12,8 +12,8 @@ import javafx.scene.layout.Background;
 import ui.custom.ClickMenu;
 import ui.decorator.Decorator;
 import ui.node.EditNode;
-import ui.node.textnode.Templates_TextNode;
 import ui.node.textnode.TextNode;
+import ui.node.textnode.TextNodeTemplates;
 
 public class SelectPane extends SidePaneBase {
 	private final TextNode nodeText;
@@ -153,8 +153,8 @@ public class SelectPane extends SidePaneBase {
 		});
 		
 		ClickMenu.install(nodeText, Direction.LEFT, MouseButton.PRIMARY, 0, -1
-				, Templates_TextNode.SELECTION_SET_ALL.get()
-				, Templates_TextNode.SELECTION_SET_NONE.get()
+				, TextNodeTemplates.SELECTION_SET_ALL.get()
+				, TextNodeTemplates.SELECTION_SET_NONE.get()
 		);
 		
 		this.setBorder(Decorator.getBorder(0, 0, 0, 1));
