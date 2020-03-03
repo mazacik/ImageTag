@@ -42,7 +42,7 @@ public class ClickMenu extends Popup {
 		staticInstances.add(new ClickMenu(c, direction, mouseButton, children));
 	}
 	public static ClickMenu install(Region root) {
-		return install(root, 0, -1);
+		return install(root, 0, 0);
 	}
 	public static ClickMenu install(Region root, double offsetX, double offsetY) {
 		for (ClickMenu staticInstance : staticInstances) {
@@ -62,7 +62,7 @@ public class ClickMenu extends Popup {
 		this(null, null, null, children);
 	}
 	public static ClickMenu install(Region root, Direction direction, MouseButton mouseButton, Region... children) {
-		return install(root, direction, mouseButton, 0, -1, children);
+		return install(root, direction, mouseButton, 0, 0, children);
 	}
 	public static ClickMenu install(Region root, Direction direction, MouseButton mouseButton, double offsetX, double offsetY, Region... children) {
 		ClickMenu clickMenu = new ClickMenu(children);

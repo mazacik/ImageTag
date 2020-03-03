@@ -8,7 +8,7 @@ import javafx.stage.Popup;
 import javafx.util.Duration;
 import ui.decorator.Decorator;
 import ui.main.stage.MainStage;
-import ui.node.TextNode;
+import ui.node.textnode.TextNode;
 
 public class Tooltip extends Popup {
 	private TextNode textNode;

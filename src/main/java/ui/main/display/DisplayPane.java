@@ -16,8 +16,9 @@ import misc.FileUtil;
 import ui.custom.ClickMenu;
 import ui.main.gallery.GalleryPane;
 import ui.main.stage.MainStage;
-import ui.node.NodeTemplates;
-import ui.node.TextNode;
+import ui.node.textnode.Templates_TextNode;
+import ui.node.textnode.TextNode;
+import ui.node.textnodewitharrow.Templates_TextNodeWithArrow;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -171,7 +172,7 @@ public class DisplayPane extends BorderPane {
 		
 		this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
-				NodeTemplates.hideMenus();
+				Templates_TextNode.hideMenus();
 				
 				if (event.getClickCount() % 2 != 0) {
 					requestFocus();
@@ -182,8 +183,8 @@ public class DisplayPane extends BorderPane {
 			}
 		});
 		ClickMenu.install(this, Direction.NONE, MouseButton.SECONDARY
-				, NodeTemplates.FILE.get()
-				, NodeTemplates.SELECTION.get()
+				, Templates_TextNodeWithArrow.FILE.get()
+				, Templates_TextNodeWithArrow.SELECTION.get()
 		);
 	}
 	

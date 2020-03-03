@@ -12,10 +12,12 @@ import javafx.scene.layout.Background;
 import ui.custom.ClickMenu;
 import ui.decorator.Decorator;
 import ui.node.EditNode;
-import ui.node.NodeTemplates;
+import ui.node.textnode.Templates_TextNode;
+import ui.node.textnode.TextNode;
 
 public class SelectPane extends SidePaneBase {
-	private EditNode nodeSearch;
+	private final TextNode nodeText;
+	private final EditNode nodeSearch;
 	
 	private TagNode match;
 	private String query;
@@ -100,6 +102,7 @@ public class SelectPane extends SidePaneBase {
 	}
 	
 	private SelectPane() {
+		nodeText = new TextNode("", true, true, false, true);
 		nodeText.setBorder(Decorator.getBorder(0, 0, 1, 0));
 		nodeText.prefWidthProperty().bind(this.widthProperty());
 		
@@ -149,9 +152,9 @@ public class SelectPane extends SidePaneBase {
 			}
 		});
 		
-		ClickMenu.install(nodeText, Direction.LEFT, MouseButton.PRIMARY
-				, NodeTemplates.SELECTION_SET_ALL.get()
-				, NodeTemplates.SELECTION_SET_NONE.get()
+		ClickMenu.install(nodeText, Direction.LEFT, MouseButton.PRIMARY, 0, -1
+				, Templates_TextNode.SELECTION_SET_ALL.get()
+				, Templates_TextNode.SELECTION_SET_NONE.get()
 		);
 		
 		this.setBorder(Decorator.getBorder(0, 0, 0, 1));

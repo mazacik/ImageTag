@@ -6,7 +6,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import misc.Settings;
 import ui.node.EditNode;
-import ui.node.TextNode;
+import ui.node.textnode.TextNode;
 import ui.override.GridPane;
 
 public class SettingsStage extends AbstractStage {

@@ -8,7 +8,6 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Background;
 import misc.Settings;
 import ui.decorator.Decorator;
-import ui.node.TextNode;
 import ui.override.VBox;
 
 public abstract class SidePaneBase extends VBox {
@@ -18,14 +17,12 @@ public abstract class SidePaneBase extends VBox {
 	protected final CustomList<TagNode> openNodes;
 	
 	protected final ScrollPane scrollPane;
-	protected final TextNode nodeText;
 	protected final VBox boxNodes;
 	
 	protected SidePaneBase() {
 		rootNodes = new CustomList<>();
 		openNodes = new CustomList<>();
 		
-		nodeText = new TextNode("", true, true, false, true);
 		boxNodes = new VBox();
 		scrollPane = new ScrollPane(boxNodes);
 		scrollPane.setFitToWidth(true);

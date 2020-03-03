@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import ui.custom.TitleBar;
 import ui.decorator.Decorator;
-import ui.node.TextNode;
+import ui.node.textnode.TextNode;
 import ui.override.HBox;
 import ui.override.VBox;
 

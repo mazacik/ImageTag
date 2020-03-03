@@ -15,7 +15,7 @@ import javafx.scene.layout.BorderPane;
 import misc.FileUtil;
 import misc.Settings;
 import ui.decorator.Decorator;
-import ui.node.TextNode;
+import ui.node.textnode.TextNode;
 import ui.override.HBox;
 
 import java.io.File;

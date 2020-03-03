@@ -16,7 +16,7 @@ import ui.main.side.FilterPane;
 import ui.main.side.SelectPane;
 import ui.main.top.ToolbarPane;
 import ui.node.EditNode;
-import ui.node.NodeTemplates;
+import ui.node.textnode.Templates_TextNode;
 import ui.override.HBox;
 import ui.override.Scene;
 import ui.override.VBox;
@@ -46,7 +46,7 @@ public class MainScene extends Scene {
 	private void keybindsGlobal(KeyEvent event) {
 		switch (event.getCode()) {
 			case I:
-				NodeTemplates.FILE_DETAILS.get().fireEvent(EventUtil.createMouseEvent(MouseEvent.MOUSE_CLICKED)); //todo bruh
+				Templates_TextNode.FILE_DETAILS.get().fireEvent(EventUtil.createMouseEvent(MouseEvent.MOUSE_CLICKED)); //todo bruh
 				break;
 			case ESCAPE:
 				MainStage.getMainScene().viewGallery();

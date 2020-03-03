@@ -13,7 +13,7 @@ import misc.Project;
 import ui.custom.TitleBar;
 import ui.decorator.Decorator;
 import ui.node.EditNode;
-import ui.node.TextNode;
+import ui.node.textnode.TextNode;
 import ui.override.HBox;
 import ui.override.Scene;
 import ui.override.VBox;

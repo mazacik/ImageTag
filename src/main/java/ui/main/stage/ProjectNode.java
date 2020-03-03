@@ -13,7 +13,7 @@ import main.Main;
 import misc.FileUtil;
 import misc.Project;
 import ui.decorator.Decorator;
-import ui.node.TextNode;
+import ui.node.textnode.TextNode;
 import ui.override.VBox;
 import ui.stage.ConfirmationStage;
 import ui.stage.SimpleMessageStage;

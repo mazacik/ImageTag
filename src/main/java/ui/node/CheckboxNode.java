@@ -6,6 +6,7 @@ import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.WindowEvent;
 import ui.decorator.Decorator;
+import ui.node.textnode.TextNode;
 import ui.override.HBox;
 
 public class CheckboxNode extends HBox {

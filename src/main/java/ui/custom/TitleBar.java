@@ -8,7 +8,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import ui.decorator.Decorator;
-import ui.node.TextNode;
+import ui.node.textnode.TextNode;
 import ui.override.HBox;
 
 import java.util.concurrent.atomic.AtomicBoolean;

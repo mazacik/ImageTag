@@ -19,7 +19,7 @@ import misc.Settings;
 import ui.node.CheckboxNode;
 import ui.node.EditNode;
 import ui.node.SwitchNode;
-import ui.node.TextNode;
+import ui.node.textnode.TextNode;
 import ui.override.GridPane;
 import ui.override.HBox;
 import ui.override.VBox;

@@ -5,7 +5,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import misc.FileUtil;
 import misc.Project;
-import ui.node.TextNode;
+import ui.node.textnode.TextNode;
 import ui.override.VBox;
 
 public class ProjectBox extends VBox {

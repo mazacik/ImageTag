@@ -2,7 +2,7 @@ package ui.stage;
 
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import ui.node.TextNode;
+import ui.node.textnode.TextNode;
 
 public class SimpleMessageStage extends AbstractStage {
 	private static final TextNode nodeMessage;

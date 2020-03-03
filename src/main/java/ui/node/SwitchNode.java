@@ -4,6 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import ui.decorator.Decorator;
+import ui.node.textnode.TextNode;
 import ui.override.HBox;
 import ui.override.VBox;
 

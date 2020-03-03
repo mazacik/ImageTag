@@ -15,8 +15,8 @@ import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
 import ui.custom.ClickMenu;
 import ui.decorator.Decorator;
-import ui.node.NodeTemplates;
-import ui.node.TextNode;
+import ui.node.textnode.Templates_TextNode;
+import ui.node.textnode.TextNode;
 import ui.override.HBox;
 import ui.override.VBox;
 
@@ -38,9 +38,9 @@ public class TagNode extends VBox {
 	
 	static {
 		ClickMenu.register(TagNode.class, Direction.NONE, MouseButton.SECONDARY
-				, NodeTemplates.TAG_CREATE_CHILD.get()
-				, NodeTemplates.TAG_EDIT.get()
-				, NodeTemplates.TAG_REMOVE.get()
+				, Templates_TextNode.TAG_CREATE_CHILD.get()
+				, Templates_TextNode.TAG_EDIT.get()
+				, Templates_TextNode.TAG_REMOVE.get()
 		);
 	}
 	

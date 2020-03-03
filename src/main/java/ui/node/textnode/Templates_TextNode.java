@@ -1,4 +1,4 @@
-package ui.node;
+package ui.node.textnode;
 
 import base.entity.EntityCollectionUtil;
 import base.entity.EntityList;
@@ -9,7 +9,6 @@ import control.Select;
 import control.filter.Filter;
 import control.reload.Notifier;
 import control.reload.Reload;
-import enums.Direction;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.input.Clipboard;
@@ -32,29 +31,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-public enum NodeTemplates {
-	FILE {
-		public TextNode get() {
-			TextNode textNode = new TextNode("File", true, true, false, true);
-			textNode.setMaxWidth(Double.MAX_VALUE);
-			textNode.setAlignment(Pos.CENTER_LEFT);
-			HoverMenu.install(textNode, Direction.RIGHT
-					, FILE_OPEN.get()
-					, FILE_EDIT.get()
-					, FILE_BROWSE.get()
-					, FILE_DELETE.get()
-					, new SeparatorNode()
-					, FILE_TAGS.get()
-					, new SeparatorNode()
-					, FILE_COPYFILENAME.get()
-					, FILE_COPYFILEPATH.get()
-					, new SeparatorNode()
-					, FILE_GOOGLE_RIS.get()
-					, FILE_DETAILS.get()
-			);
-			return textNode;
-		}
-	},
+public enum Templates_TextNode {
 	FILE_OPEN {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Open", true, true, false, true);
@@ -151,19 +128,6 @@ public enum NodeTemplates {
 		}
 	},
 	
-	FILE_TAGS {
-		public TextNode get() {
-			TextNode textNode = new TextNode("Tags", true, true, false, true);
-			textNode.setMaxWidth(Double.MAX_VALUE);
-			textNode.setAlignment(Pos.CENTER_LEFT);
-			HoverMenu.install(textNode, Direction.RIGHT
-					, NodeTemplates.FILE_TAGS_COPY.get()
-					, NodeTemplates.FILE_TAGS_PASTE.get()
-					, NodeTemplates.FILE_TAGS_CLEAR.get()
-			);
-			return textNode;
-		}
-	},
 	FILE_TAGS_COPY {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Copy", true, true, false, true);
@@ -210,34 +174,6 @@ public enum NodeTemplates {
 		}
 	},
 	
-	SELECTION {
-		public TextNode get() {
-			TextNode textNode = new TextNode("Selection", true, true, false, true);
-			textNode.setMaxWidth(Double.MAX_VALUE);
-			textNode.setAlignment(Pos.CENTER_LEFT);
-			HoverMenu.install(textNode, Direction.RIGHT
-					, SELECTION_TAGS.get()
-					, new SeparatorNode()
-					, SELECTION_DELETE.get()
-			                  //TODO NodeTemplates.COLLECTION_CREATE.get() and NodeTemplates.COLLECTION_DISCARD.get()
-			);
-			return textNode;
-		}
-	},
-	
-	SELECTION_TAGS {
-		public TextNode get() {
-			TextNode textNode = new TextNode("Tags", true, true, false, true);
-			textNode.setMaxWidth(Double.MAX_VALUE);
-			textNode.setAlignment(Pos.CENTER_LEFT);
-			HoverMenu.install(textNode, Direction.RIGHT
-					, NodeTemplates.SELECTION_TAG_COPY.get()
-					, NodeTemplates.SELECTION_TAG_PASTE.get()
-					, NodeTemplates.SELECTION_TAG_CLEAR.get()
-			);
-			return textNode;
-		}
-	},
 	SELECTION_TAG_COPY {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Copy", true, true, false, true);

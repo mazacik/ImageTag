@@ -1,4 +1,4 @@
-package ui.node;
+package ui.node.textnode;
 
 import javafx.event.Event;
 import javafx.event.EventType;
@@ -11,6 +11,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import ui.decorator.Decorator;
 
+//todo starting alignment
 public class TextNode extends Label {
 	private static final int PADDING_V = 3;
 	private static final int PADDING_H = 10;

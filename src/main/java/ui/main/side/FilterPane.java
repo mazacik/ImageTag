@@ -4,13 +4,15 @@ import control.filter.Filter;
 import control.reload.Reload;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import ui.decorator.Decorator;
-import ui.node.NodeTemplates;
-import ui.node.TextNode;
-import ui.override.HBox;
+import ui.node.textnode.Templates_TextNode;
+import ui.node.textnode.TextNode;
 import ui.stage.FilterOptionStage;
 
 public class FilterPane extends SidePaneBase {
+	private final TextNode nodeText;
+	
 	public boolean refresh() {
 		nodeText.setText("Filter: " + Filter.getEntities().size());
 		
@@ -24,19 +26,24 @@ public class FilterPane extends SidePaneBase {
 			Reload.start();
 		});
 		
+		nodeText = new TextNode("", false, false, false, true);
+		nodeText.setMaxWidth(Double.MAX_VALUE);
+		
 		TextNode btnSettings = new TextNode("⁝", true, true, false, true);
 		btnSettings.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> FilterOptionStage.show(""));
 		
-		HBox hBoxTitle = new HBox(btnReset, nodeText, btnSettings);
-		hBoxTitle.setBorder(Decorator.getBorder(0, 0, 1, 0));
-		nodeText.prefWidthProperty().bind(this.widthProperty());
+		BorderPane paneTitle = new BorderPane();
+		paneTitle.setBorder(Decorator.getBorder(0, 0, 1, 0));
+		paneTitle.setLeft(btnReset);
+		paneTitle.setCenter(nodeText);
+		paneTitle.setRight(btnSettings);
 		
-		TextNode btnCreateNewTag = NodeTemplates.TAG_CREATE.get();
+		TextNode btnCreateNewTag = Templates_TextNode.TAG_CREATE.get();
 		btnCreateNewTag.setBorder(Decorator.getBorder(0, 0, 1, 0));
 		btnCreateNewTag.prefWidthProperty().bind(this.widthProperty());
 		
 		this.setBorder(Decorator.getBorder(0, 1, 0, 0));
-		this.getChildren().addAll(hBoxTitle, btnCreateNewTag, scrollPane);
+		this.getChildren().addAll(paneTitle, btnCreateNewTag, scrollPane);
 	}
 	private static class Loader {
 		private static final FilterPane INSTANCE = new FilterPane();
