@@ -38,7 +38,7 @@ public abstract class FileUtil {
 	public static void moveFile(String from, String to) {
 		if (Main.DEBUG_FS_FILE_MOVE) {
 			try {
-				//todo fileNew.getParentFile().mkdirs(); and remove that from using methods
+				new File(to).getParentFile().mkdirs();
 				Files.move(Paths.get(from), Paths.get(to));
 			} catch (IOException e) {
 				e.printStackTrace();

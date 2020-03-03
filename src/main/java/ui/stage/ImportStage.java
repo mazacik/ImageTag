@@ -170,7 +170,6 @@ public class ImportStage extends AbstractStage {
 		
 		File fileNew = new File(pathNew);
 		if (!fileNew.exists()) {
-			fileNew.getParentFile().mkdirs();
 			FileUtil.moveFile(pathOld, pathNew);
 			return new Entity(fileNew);
 		} else {
