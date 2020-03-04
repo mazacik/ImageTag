@@ -145,13 +145,15 @@ public class Select extends EntityList {
 		if (FileUtil.deleteFile(FileUtil.getFileEntity(target))) {
 			FileUtil.deleteFile(FileUtil.getFileCache(target));
 			
-			if (target.getCollectionID() != 0) target.getCollection().remove(target);
+			if (target.getCollectionID() != 0) {
+				target.getCollection().remove(target);
+			}
 			
 			Select.getEntities().remove(target);
 			Filter.getEntities().remove(target);
 			EntityList.getMain().remove(target);
 			
-			Reload.notify(Notifier.ENTITY_LIST_MAIN);
+			Reload.notify(Notifier.TARGET, Notifier.ENTITY_LIST_MAIN);
 		}
 	}
 	

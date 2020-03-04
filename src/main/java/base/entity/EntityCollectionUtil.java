@@ -10,16 +10,14 @@ import java.util.Random;
 public abstract class EntityCollectionUtil {
 	public static void create() {
 		int collectionID = new Random().nextInt();
-		
-		//todo add option to merge tags
-		
+		EntityList collection = new EntityList(Select.getEntities());
 		for (Entity entity : Select.getEntities()) {
 			entity.setCollectionID(collectionID);
-			entity.setCollection(new EntityList(Select.getEntities()));
+			entity.setCollection(collection);
 			entity.getTile().updateCollectionIcon();
 		}
 		
-		Select.setTarget(Select.getEntities().getFirst());
+		Select.setTarget(collection.getFirst());
 		
 		Reload.notify(Notifier.ENTITY_LIST_MAIN);
 	}
@@ -30,6 +28,7 @@ public abstract class EntityCollectionUtil {
 			entity.getTile().setEffect(null);
 		}
 		
+		//todo ping SELECT_COLLECTION (or something) to refresh ToolbarPane
 		Reload.notify(Notifier.ENTITY_LIST_MAIN);
 	}
 	
@@ -48,7 +47,7 @@ public abstract class EntityCollectionUtil {
 	}
 	
 	private static CustomList<Integer> openCollections = new CustomList<>();
-	public static void openCollection(Entity entity) {
+	public static void toggleCollection(Entity entity) {
 		int collectionID = entity.getCollectionID();
 		
 		if (collectionID != 0) {

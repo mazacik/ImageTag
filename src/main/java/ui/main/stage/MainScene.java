@@ -60,7 +60,7 @@ public class MainScene extends Scene {
 				Reload.start();
 				break;
 			case E:
-				EntityCollectionUtil.openCollection(Select.getTarget());
+				EntityCollectionUtil.toggleCollection(Select.getTarget());
 				Reload.start();
 				break;
 			case R:

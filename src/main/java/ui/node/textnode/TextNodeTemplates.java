@@ -372,6 +372,7 @@ public enum TextNodeTemplates {
 				hideMenus();
 				
 				EntityCollectionUtil.create();
+				//todo add an option to merge tags
 				
 				Reload.start();
 			});
