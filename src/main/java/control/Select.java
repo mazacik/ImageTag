@@ -145,6 +145,8 @@ public class Select extends EntityList {
 		if (FileUtil.deleteFile(FileUtil.getFileEntity(target))) {
 			FileUtil.deleteFile(FileUtil.getFileCache(target));
 			
+			if (target.getCollectionID() != 0) target.getCollection().remove(target);
+			
 			Select.getEntities().remove(target);
 			Filter.getEntities().remove(target);
 			EntityList.getMain().remove(target);
@@ -181,9 +183,7 @@ public class Select extends EntityList {
 		return Loader.INSTANCE;
 	}
 	
-	/* Target */
 	private static Entity target;
-	
 	public static Entity getTarget() {
 		return target;
 	}
