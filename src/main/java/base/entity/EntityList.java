@@ -50,6 +50,10 @@ public class EntityList extends CustomList<Entity> {
 		this.forEach(entity -> entity.removeTag(tagID));
 		Reload.notify(Notifier.TAGS_OF_SELECT);
 	}
+	public void clearTags() {
+		this.forEach(Entity::clearTags);
+		Reload.notify(Notifier.TAGS_OF_SELECT);
+	}
 	
 	public CustomList<Integer> getTagIDs() {
 		CustomList<Integer> tagIDs = new CustomList<>();

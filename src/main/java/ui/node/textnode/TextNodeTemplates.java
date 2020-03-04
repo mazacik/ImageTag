@@ -141,7 +141,8 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
-				Select.getTarget().getTagList().setAll(new TagList(TagUtil.getClipboard()));
+				Select.getTarget().clearTags();
+				TagUtil.getClipboard().forEach(tag -> Select.getTarget().addTag(tag.getID()));
 				
 				Reload.notify(Notifier.TAGS_OF_SELECT);
 				Reload.start();
@@ -165,7 +166,7 @@ public enum TextNodeTemplates {
 		}
 	},
 	
-	SELECTION_TAG_COPY {
+	SELECTION_TAGS_COPY {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Copy", true, true, false, true);
 			setupNode(textNode);
@@ -177,14 +178,15 @@ public enum TextNodeTemplates {
 			return textNode;
 		}
 	},
-	SELECTION_TAG_PASTE {
+	SELECTION_TAGS_PASTE {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Paste", true, true, false, true);
 			setupNode(textNode);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
-				Select.getEntities().forEach(entity -> entity.getTagList().setAll(new TagList(TagUtil.getClipboard())));
+				Select.getEntities().clearTags();
+				TagUtil.getClipboard().forEach(tag -> Select.getEntities().addTag(tag.getID()));
 				
 				Reload.notify(Notifier.TAGS_OF_SELECT);
 				Reload.start();
@@ -192,7 +194,7 @@ public enum TextNodeTemplates {
 			return textNode;
 		}
 	},
-	SELECTION_TAG_CLEAR {
+	SELECTION_TAGS_CLEAR {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Clear", true, true, false, true);
 			setupNode(textNode);

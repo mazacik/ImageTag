@@ -107,4 +107,8 @@ public class Entity {
 	public void removeTag(TagList tagList) {
 		tagList.forEach(this::removeTag);
 	}
+	public void clearTags() {
+		getTagList().clear();
+		tagList.clear();
+	}
 }
