@@ -43,17 +43,19 @@
  * This file has been modified.
  */
 
-package wip.lire;
+package lire;
 
 import base.CustomList;
+import misc.FileUtil;
 import net.semanticmetadata.lire.builders.GlobalDocumentBuilder;
+import net.semanticmetadata.lire.imageanalysis.features.global.AutoColorCorrelogram;
 import net.semanticmetadata.lire.imageanalysis.features.global.CEDD;
+import net.semanticmetadata.lire.imageanalysis.features.global.FCTH;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.FSDirectory;
-import tools.FileUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -64,7 +66,7 @@ import java.nio.file.Paths;
 import java.util.logging.Logger;
 
 public class LireIndexer {
-	public LireIndexer(String directory) {
+	public LireIndexer(File directory) {
 		CustomList<File> files = FileUtil.getSupportedFiles(directory);
 		CustomList<String> images = new CustomList<>();
 		files.forEach(file -> {
@@ -75,19 +77,21 @@ public class LireIndexer {
 			}
 		});
 		
-		GlobalDocumentBuilder globalDocumentBuilder = new GlobalDocumentBuilder(false, true);
+		GlobalDocumentBuilder globalDocumentBuilder = new GlobalDocumentBuilder(false, GlobalDocumentBuilder.HashingMode.BitSampling, true);
 		globalDocumentBuilder.addExtractor(CEDD.class);
+		globalDocumentBuilder.addExtractor(FCTH.class);
+		globalDocumentBuilder.addExtractor(AutoColorCorrelogram.class);
 		
 		IndexWriterConfig conf = new IndexWriterConfig(new StandardAnalyzer());
 		conf.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
 		IndexWriter iw = null;
 		try {
-			iw = new IndexWriter(FSDirectory.open(Paths.get("index")), conf);
+			iw = new IndexWriter(FSDirectory.open(Paths.get(LireUtil.LIRE_INDEX_PATH)), conf);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		for (String imageFilePath : images) {
-			Logger.getGlobal().info(images.indexOf(imageFilePath) + "/" + images.size() + "\tIndexing " + imageFilePath);
+			Logger.getGlobal().info((images.indexOf(imageFilePath) + 1) + "/" + images.size() + "\tIndexing " + imageFilePath);
 			try {
 				BufferedImage img = ImageIO.read(new FileInputStream(imageFilePath));
 				Document document = globalDocumentBuilder.createDocument(img, imageFilePath);

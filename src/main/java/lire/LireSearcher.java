@@ -41,11 +41,12 @@
  * This file has been modified.
  */
 
-package wip.lire;
+package lire;
 
 import net.semanticmetadata.lire.builders.DocumentBuilder;
 import net.semanticmetadata.lire.imageanalysis.features.global.CEDD;
 import net.semanticmetadata.lire.searchers.GenericDocValuesImageSearcher;
+import net.semanticmetadata.lire.searchers.GenericFastImageSearcher;
 import net.semanticmetadata.lire.searchers.ImageSearchHits;
 import net.semanticmetadata.lire.searchers.ImageSearcher;
 import org.apache.lucene.document.Document;
@@ -66,8 +67,8 @@ public class LireSearcher {
 	
 	public static ArrayList<String> search(Document document, double similarity) throws IOException {
 		if (ir == null || searcher == null) {
-			ir = DirectoryReader.open(FSDirectory.open(Paths.get("index")));
-			searcher = new GenericDocValuesImageSearcher(10, CEDD.class, ir);
+			ir = DirectoryReader.open(FSDirectory.open(Paths.get(LireUtil.LIRE_INDEX_PATH)));
+			searcher = new GenericDocValuesImageSearcher(100, CEDD.class, ir);
 		}
 		
 		ImageSearchHits hits = searcher.search(document, ir);
@@ -82,12 +83,11 @@ public class LireSearcher {
 		}
 		return results;
 	}
-	public static ArrayList<String> search(String file, double similarity) throws IOException {
+	public static ArrayList<String> search(File file, double similarity) throws IOException {
 		BufferedImage img;
-		File f = new File(file);
-		if (f.exists() && f.isFile()) {
+		if (file.exists() && file.isFile()) {
 			try {
-				img = ImageIO.read(f);
+				img = ImageIO.read(file);
 			} catch (IOException e) {
 				e.printStackTrace();
 				return null;
@@ -95,9 +95,8 @@ public class LireSearcher {
 		} else return null;
 		
 		if (ir == null || searcher == null) {
-			ir = DirectoryReader.open(FSDirectory.open(Paths.get("index")));
-			//searcher = new GenericFastImageSearcher(10, CEDD.class);
-			searcher = new GenericDocValuesImageSearcher(10, CEDD.class, ir);
+			ir = DirectoryReader.open(FSDirectory.open(Paths.get(LireUtil.LIRE_INDEX_PATH)));
+			searcher = new GenericFastImageSearcher(10, CEDD.class);
 		}
 		
 		ImageSearchHits hits = searcher.search(img, ir);
@@ -110,6 +109,7 @@ public class LireSearcher {
 				results.add(fileName);
 			}
 		}
+		
 		return results;
 	}
 }
