@@ -110,6 +110,7 @@ public class ImportStage extends AbstractStage {
 	private void createStage2() {
 		nodeMessage = new TextNode("", false, false, false, true);
 		nodeSetupFilter = new CheckboxNode("Filter Imported Files", Direction.LEFT, true);
+		nodeSetupFilter.setAlignment(Pos.CENTER);
 		
 		nodeFinish = new TextNode("Finish", true, true, false, true);
 		nodeFinish.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
@@ -122,6 +123,11 @@ public class ImportStage extends AbstractStage {
 		});
 		
 		boxStage2 = new VBox(nodeMessage, nodeSetupFilter);
+		boxStage2.setAlignment(Pos.CENTER);
+		boxStage2.setSpacing(3);
+		boxStage2.setPadding(new Insets(3));
+		
+		//todo if there was a problem importing a file, show a message
 	}
 	
 	private void importFilesUsingThread(File directory) {
@@ -210,7 +216,7 @@ public class ImportStage extends AbstractStage {
 	}
 	
 	private String getMessageImportCount(int importCount) {
-		return importCount + "files were imported.";
+		return "Imported " + importCount + " files.";
 	}
 	private void setupFilter() {
 		Filter.getSettings().setShowImages(true);
