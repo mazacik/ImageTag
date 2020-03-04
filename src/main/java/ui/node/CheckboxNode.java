@@ -35,6 +35,7 @@ public class CheckboxNode extends HBox {
 		
 		/* Silly problems require silly workarounds */
 		EventHandler<WindowEvent> eventHandler = event -> {
+			//todo properly fix this
 			setChecked(!isChecked());
 			setChecked(!isChecked());
 		};

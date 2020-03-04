@@ -114,6 +114,7 @@ public class Tile extends Pane {
 					boolean hitWidth = event.getX() >= collectionIconX && event.getX() <= collectionIconX + collectionIconSize;
 					boolean hitHeight = event.getY() <= collectionIconY + collectionIconSize && event.getY() >= collectionIconY;
 					if (entity.getCollectionID() != 0 && hitWidth && hitHeight) {
+						//todo make entity Target/Selection
 						EntityCollectionUtil.openCollection(entity);
 					} else {
 						if (event.getClickCount() % 2 != 0) {

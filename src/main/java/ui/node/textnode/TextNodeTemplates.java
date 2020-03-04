@@ -366,7 +366,7 @@ public enum TextNodeTemplates {
 	
 	COLLECTION_CREATE {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Create Collection", true, true, false, true);
+			TextNode textNode = new TextNode("Create", true, true, false, true);
 			setupNode(textNode);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
@@ -380,7 +380,7 @@ public enum TextNodeTemplates {
 	},
 	COLLECTION_DISCARD {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Discard Collection", true, true, false, true);
+			TextNode textNode = new TextNode("Discard", true, true, false, true);
 			setupNode(textNode);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();

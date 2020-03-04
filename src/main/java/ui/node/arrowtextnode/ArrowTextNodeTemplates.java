@@ -8,9 +8,9 @@ import ui.node.textnode.TextNodeTemplates;
 public enum ArrowTextNodeTemplates {
 	FILE {
 		public ArrowTextNode get() {
-			ArrowTextNode textNode = new ArrowTextNode("File", true, true, false, true);
-			textNode.setMaxWidth(Double.MAX_VALUE);
-			HoverMenu.install(textNode, Direction.RIGHT
+			ArrowTextNode arrowTextNode = new ArrowTextNode("File", true, true, false, true);
+			setupNode(arrowTextNode);
+			HoverMenu.install(arrowTextNode, Direction.RIGHT
 					, TextNodeTemplates.FILE_OPEN.get()
 					, TextNodeTemplates.FILE_EDIT.get()
 					, TextNodeTemplates.FILE_BROWSE.get()
@@ -24,48 +24,64 @@ public enum ArrowTextNodeTemplates {
 					, TextNodeTemplates.FILE_GOOGLE_RIS.get()
 					, TextNodeTemplates.FILE_DETAILS.get()
 			);
-			return textNode;
+			return arrowTextNode;
 		}
 	},
 	FILE_TAGS {
 		public ArrowTextNode get() {
-			ArrowTextNode textNode = new ArrowTextNode("Tags", true, true, false, true);
-			textNode.setMaxWidth(Double.MAX_VALUE);
-			HoverMenu.install(textNode, Direction.RIGHT
+			ArrowTextNode arrowTextNode = new ArrowTextNode("Tags", true, true, false, true);
+			setupNode(arrowTextNode);
+			HoverMenu.install(arrowTextNode, Direction.RIGHT
 					, TextNodeTemplates.FILE_TAGS_COPY.get()
 					, TextNodeTemplates.FILE_TAGS_PASTE.get()
 					, TextNodeTemplates.FILE_TAGS_CLEAR.get()
 			);
-			return textNode;
+			return arrowTextNode;
 		}
 	},
 	
 	SELECTION {
 		public ArrowTextNode get() {
-			ArrowTextNode textNode = new ArrowTextNode("Selection", true, true, false, true);
-			textNode.setMaxWidth(Double.MAX_VALUE);
-			HoverMenu.install(textNode, Direction.RIGHT
+			ArrowTextNode arrowTextNode = new ArrowTextNode("Selection", true, true, false, true);
+			setupNode(arrowTextNode);
+			HoverMenu.install(arrowTextNode, Direction.RIGHT
 					, SELECTION_TAGS.get()
 					, new SeparatorNode()
 					, TextNodeTemplates.SELECTION_DELETE.get()
-			                  //TODO NodeTemplates.COLLECTION_CREATE.get() and NodeTemplates.COLLECTION_DISCARD.get()
+					, COLLECTION.get()
 			);
-			return textNode;
+			return arrowTextNode;
 		}
 	},
 	SELECTION_TAGS {
 		public ArrowTextNode get() {
-			ArrowTextNode textNode = new ArrowTextNode("Tags", true, true, false, true);
-			textNode.setMaxWidth(Double.MAX_VALUE);
-			HoverMenu.install(textNode, Direction.RIGHT
-					, TextNodeTemplates.SELECTION_TAG_COPY.get()
-					, TextNodeTemplates.SELECTION_TAG_PASTE.get()
-					, TextNodeTemplates.SELECTION_TAG_CLEAR.get()
+			ArrowTextNode arrowTextNode = new ArrowTextNode("Tags", true, true, false, true);
+			setupNode(arrowTextNode);
+			HoverMenu.install(arrowTextNode, Direction.RIGHT
+					, TextNodeTemplates.SELECTION_TAGS_COPY.get()
+					, TextNodeTemplates.SELECTION_TAGS_PASTE.get()
+					, TextNodeTemplates.SELECTION_TAGS_CLEAR.get()
 			);
-			return textNode;
+			return arrowTextNode;
+		}
+	},
+	
+	COLLECTION {
+		public ArrowTextNode get() {
+			ArrowTextNode arrowTextNode = new ArrowTextNode("Collection", true, true, false, true);
+			setupNode(arrowTextNode);
+			HoverMenu.install(arrowTextNode, Direction.RIGHT
+					, TextNodeTemplates.COLLECTION_CREATE.get()
+					, TextNodeTemplates.COLLECTION_DISCARD.get()
+			);
+			return arrowTextNode;
 		}
 	},
 	;
+	
+	void setupNode(ArrowTextNode arrowTextNode) {
+		arrowTextNode.setMaxWidth(Double.MAX_VALUE);
+	}
 	
 	public ArrowTextNode get() {
 		return null;

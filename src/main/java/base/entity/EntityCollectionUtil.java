@@ -11,11 +11,15 @@ public abstract class EntityCollectionUtil {
 	public static void create() {
 		int collectionID = new Random().nextInt();
 		
+		//todo add option to merge tags
+		
 		for (Entity entity : Select.getEntities()) {
 			entity.setCollectionID(collectionID);
 			entity.setCollection(new EntityList(Select.getEntities()));
 			entity.getTile().updateCollectionIcon();
 		}
+		
+		Select.setTarget(Select.getEntities().getFirst());
 		
 		Reload.notify(Notifier.ENTITY_LIST_MAIN);
 	}
