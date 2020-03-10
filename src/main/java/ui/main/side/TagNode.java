@@ -44,26 +44,32 @@ public class TagNode extends VBox {
 		);
 	}
 	
-	public TagNode(SidePaneBase parentPane, Tag tag, int level) {
+	public TagNode(SidePaneBase parentPane, Tag tag, int depth) {
 		this.parentPane = parentPane;
 		this.childrenDirect = new CustomList<>();
 		this.levels = new CustomList<>();
 		
-		for (int i = 0; i <= level; i++) {
-			levels.add(tag.getLevels().get(i));
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i <= depth; i++) {
+			String level = tag.getLevels().get(i);
+			levels.add(level);
+			sb.append(level);
 		}
-		
-		updateStringValue();
-		
-		int paddingLeft = PADDING_DEFAULT + PADDING_INCREMENT * level;
+		stringValue = sb.toString();
 		
 		toggleNode = new TextNode("+ ", false, false, false, false);
-		toggleNode.setPadding(new Insets(0, PADDING_DEFAULT, 0, paddingLeft));
+		toggleNode.setPadding(new Insets(0, PADDING_DEFAULT, 0, PADDING_DEFAULT + PADDING_INCREMENT * depth));
 		
-		textNode = new TextNode(tag.getLevels().get(level), false, false, false, false);
+		textNode = new TextNode(tag.getLevels().get(depth), false, false, false, false);
 		
 		boxMain = new HBox(toggleNode, textNode);
 		this.getChildren().add(boxMain);
+		
+		if (Filter.getListManager().isWhitelisted(stringValue)) {
+			setTextFill(Decorator.getColorPositive());
+		} else if (Filter.getListManager().isBlacklisted(stringValue)) {
+			setTextFill(Decorator.getColorNegative());
+		}
 		
 		boxMain.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
 			if (!backgroundLock) {
@@ -197,13 +203,6 @@ public class TagNode extends VBox {
 		}
 	}
 	
-	private void updateStringValue() {
-		StringBuilder string = new StringBuilder();
-		for (String level : levels) {
-			string.append(level);
-		}
-		stringValue = string.toString();
-	}
 	public String getStringValue() {
 		return stringValue;
 	}

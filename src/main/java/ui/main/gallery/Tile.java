@@ -42,7 +42,7 @@ public class Tile extends Pane {
 	private static final Image loadingImage;
 	
 	static {
-		int tileSize = Settings.GALLERY_TILE_SIZE.getIntegerValue();
+		int tileSize = Settings.GALLERY_TILE_SIZE.getValueInteger();
 		
 		Image imagePlus = new Image("/plus-16px.png");
 		Image imageMinus = new Image("/minus-16px.png");
@@ -114,7 +114,8 @@ public class Tile extends Pane {
 					boolean hitWidth = event.getX() >= collectionIconX && event.getX() <= collectionIconX + collectionIconSize;
 					boolean hitHeight = event.getY() <= collectionIconY + collectionIconSize && event.getY() >= collectionIconY;
 					if (entity.getCollectionID() != 0 && hitWidth && hitHeight) {
-						//todo make entity Target/Selection
+						Select.setTarget(entity);
+						//Select.getEntities().setAll(entity.getCollection());
 						EntityCollectionUtil.toggleCollection(entity);
 					} else {
 						if (event.getClickCount() % 2 != 0) {

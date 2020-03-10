@@ -102,18 +102,26 @@ public class FilterListManager {
 	}
 	
 	//  called from tag editor, unlists all affected tags and whitelists their new versions
-	//  todo needs testing
 	public void update(String stringOld, int numLevelsOld, CustomList<String> listLevelsNew) {
 		StringBuilder sb = new StringBuilder();
 		listLevelsNew.forEach(sb::append);
 		String stringNew = sb.toString();
 		
-		for (TagSimple tagSimple : whitelist) {
+		for (TagSimple tagSimple : new CustomList<>(whitelist)) {
 			if (tagSimple.stringValue.startsWith(stringOld)) {
 				unlist(tagSimple.stringValue);
 				String stringUnaffected = tagSimple.stringValue.substring(stringOld.length());
 				int numLevelsUnaffected = tagSimple.levelCount - numLevelsOld;
 				whitelist(stringNew + stringUnaffected, listLevelsNew.size() + numLevelsUnaffected);
+			}
+		}
+		
+		for (TagSimple tagSimple : new CustomList<>(blacklist)) {
+			if (tagSimple.stringValue.startsWith(stringOld)) {
+				unlist(tagSimple.stringValue);
+				String stringUnaffected = tagSimple.stringValue.substring(stringOld.length());
+				int numLevelsUnaffected = tagSimple.levelCount - numLevelsOld;
+				blacklist(stringNew + stringUnaffected, listLevelsNew.size() + numLevelsUnaffected);
 			}
 		}
 	}

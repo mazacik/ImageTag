@@ -75,7 +75,6 @@ public class DisplayPane extends BorderPane {
 		double resultWidth;
 		double resultHeight;
 		
-		//todo maybe move shit like this to separate private methods for clarity and ease-of-access?
 		if (currentCache == null || !currentCache.equals(currentTarget)) {
 			try {
 				File file = new File(FileUtil.getFileEntity(currentTarget));

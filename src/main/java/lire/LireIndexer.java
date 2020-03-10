@@ -67,11 +67,10 @@ import java.util.logging.Logger;
 
 public class LireIndexer {
 	public LireIndexer(File directory) {
-		CustomList<File> files = FileUtil.getSupportedFiles(directory);
-		CustomList<String> images = new CustomList<>();
-		files.forEach(file -> {
+		CustomList<String> imagePaths = new CustomList<>();
+		FileUtil.getFiles(directory, true).forEach(file -> {
 			try {
-				images.add(file.getCanonicalPath());
+				imagePaths.add(file.getCanonicalPath());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -90,8 +89,8 @@ public class LireIndexer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		for (String imageFilePath : images) {
-			Logger.getGlobal().info((images.indexOf(imageFilePath) + 1) + "/" + images.size() + "\tIndexing " + imageFilePath);
+		for (String imageFilePath : imagePaths) {
+			Logger.getGlobal().info((imagePaths.indexOf(imageFilePath) + 1) + "/" + imagePaths.size() + "\tIndexing " + imageFilePath);
 			try {
 				BufferedImage img = ImageIO.read(new FileInputStream(imageFilePath));
 				Document document = globalDocumentBuilder.createDocument(img, imageFilePath);

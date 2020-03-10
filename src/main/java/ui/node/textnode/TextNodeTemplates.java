@@ -10,7 +10,6 @@ import control.filter.Filter;
 import control.reload.Notifier;
 import control.reload.Reload;
 import javafx.geometry.Pos;
-import javafx.scene.image.Image;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
@@ -19,6 +18,7 @@ import javafx.stage.WindowEvent;
 import misc.FileUtil;
 import misc.HttpUtil;
 import misc.Project;
+import ui.EntityDetailsUtil;
 import ui.custom.ClickMenu;
 import ui.custom.HoverMenu;
 import ui.main.stage.MainStage;
@@ -144,7 +144,7 @@ public enum TextNodeTemplates {
 				Select.getTarget().clearTags();
 				TagUtil.getClipboard().forEach(tag -> Select.getTarget().addTag(tag.getID()));
 				
-				Reload.notify(Notifier.TAGS_OF_SELECT);
+				Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
 				Reload.start();
 			});
 			return textNode;
@@ -159,7 +159,7 @@ public enum TextNodeTemplates {
 				
 				Select.getTarget().getTagList().clear();
 				
-				Reload.notify(Notifier.TAGS_OF_SELECT);
+				Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
 				Reload.start();
 			});
 			return textNode;
@@ -188,7 +188,7 @@ public enum TextNodeTemplates {
 				Select.getEntities().clearTags();
 				TagUtil.getClipboard().forEach(tag -> Select.getEntities().addTag(tag.getID()));
 				
-				Reload.notify(Notifier.TAGS_OF_SELECT);
+				Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
 				Reload.start();
 			});
 			return textNode;
@@ -203,7 +203,7 @@ public enum TextNodeTemplates {
 				
 				Select.getEntities().forEach(entity -> entity.getTagList().clear());
 				
-				Reload.notify(Notifier.TAGS_OF_SELECT);
+				Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
 				Reload.start();
 			});
 			return textNode;
@@ -230,11 +230,7 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
-				Image entityImage = new Image("file:" + FileUtil.getFileEntity(Select.getTarget()));
-				int width = (int) entityImage.getWidth();
-				int height = (int) entityImage.getHeight();
-				
-				SimpleMessageStage.show("Details", width + "x" + height);
+				EntityDetailsUtil.show();
 			});
 			return textNode;
 		}
@@ -300,7 +296,7 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
-				Select.getEntities().deleteFiles();
+				Select.getEntities().deleteSelect();
 				Reload.start();
 			});
 			return textNode;

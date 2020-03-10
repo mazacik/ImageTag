@@ -111,7 +111,7 @@ public class ProjectScene extends Scene {
 				newProject.writeToDisk();
 				MainStage.layoutMain();
 				Project.setCurrent(newProject);
-				Main.startDatabaseLoading();
+				Main.startProjectDatabaseLoading();
 			} else {
 				project.updateProject(editProjectName.getText(), editSourceDirectory.getText());
 				

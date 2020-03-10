@@ -22,7 +22,7 @@ import ui.stage.ImportStage;
 import java.io.File;
 
 public class Main extends Application {
-	public static final boolean DEBUG_MAIN_QUICKSTART = true;
+	public static final boolean DEBUG_MAIN_QUICKSTART = false;
 	
 	public static final boolean DEBUG_FS_FILE_MOVE = true;
 	public static final boolean DEBUG_FS_FILE_DELETE = true;
@@ -33,19 +33,18 @@ public class Main extends Application {
 	public void start(Stage stage) {
 		System.setProperty("java.util.logging.SimpleFormatter.format", "[%4$-7s] %5$s%n");
 		
+		Settings.readFromDisk();
+		
 		if (!DEBUG_MAIN_QUICKSTART || FileUtil.getProjectFiles().isEmpty()) {
 			MainStage.layoutIntro();
 		} else {
-			CustomList<Project> projects = FileUtil.getProjects();
+			Project.setFirstAsCurrent();
 			MainStage.layoutMain();
-			
-			projects.sort(Project.getComparator());
-			Project.setCurrent(projects.getFirst());
-			startDatabaseLoading();
+			startProjectDatabaseLoading();
 		}
 	}
 	
-	public static void startDatabaseLoading() {
+	public static void startProjectDatabaseLoading() {
 		initTags();
 		initEntities();
 		initCollections();
@@ -56,14 +55,14 @@ public class Main extends Application {
 		Reload.notify(Notifier.values());
 		Reload.start();
 		
-		CacheManager.checkCacheInBackground();
+		CacheManager.checkCacheInBackground(EntityList.getMain());
 	}
 	
 	private static void initEntities() {
 		EntityList.getMain().setAll(Project.getCurrent().getEntityList());
 		
 		EntityList entitiesWithoutFiles = new EntityList(EntityList.getMain());
-		CustomList<File> filesWithoutEntities = FileUtil.getSupportedFiles();
+		CustomList<File> filesWithoutEntities = FileUtil.getFiles(new File(Project.getCurrent().getDirectorySource()), true);
 		
 		CustomList<String> newFileNames = new CustomList<>();
 		filesWithoutEntities.forEach(file -> newFileNames.add(FileUtil.createEntityName(file)));
@@ -149,7 +148,7 @@ public class Main extends Application {
 		tagListMain.forEach(Tag::updateStringValue);
 		tagListMain.sort();
 		
-		Reload.notify(Notifier.TAG_LIST_MAIN);
+		Reload.notify(Notifier.TAGLIST_CHANGED);
 	}
 	
 	public static void exitApplication() {

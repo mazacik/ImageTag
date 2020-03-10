@@ -46,7 +46,7 @@ public class IntroScene extends Scene {
 			if (file != null) {
 				MainStage.layoutMain();
 				Project.setCurrent(Project.readFromDisk(file.getAbsolutePath()));
-				Main.startDatabaseLoading();
+				Main.startProjectDatabaseLoading();
 			}
 		});
 		
@@ -87,7 +87,7 @@ public class IntroScene extends Scene {
 						MainStage.layoutMain();
 						projects.sort(Project.getComparator());
 						Project.setCurrent(projects.getFirst());
-						Main.startDatabaseLoading();
+						Main.startProjectDatabaseLoading();
 					} else {
 						MainStage.getProjectScene().show();
 					}

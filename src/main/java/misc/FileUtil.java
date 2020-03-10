@@ -10,6 +10,7 @@ import main.Main;
 import ui.stage.SimpleMessageStage;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -87,59 +88,58 @@ public abstract class FileUtil {
 		return path;
 	}
 	
-	//todo change other methods like this
-	public static CustomList<File> getFiles(File directory, boolean useFilter) {
-		return null;
-	}
-	
-	public static CustomList<Project> getProjects() {
-		CustomList<File> projectFiles = new CustomList<>(new File(getDirectoryProject()).listFiles(file -> file.isFile() && file.getName().endsWith(".json")));
-		CustomList<Project> projects = new CustomList<>();
-		projectFiles.forEach(projectFile -> projects.add(Project.readFromDisk(projectFile.getAbsolutePath())));
-		return projects;
-	}
-	public static CustomList<File> getProjectFiles() {
-		return new CustomList<>(new File(getDirectoryProject()).listFiles(file -> file.isFile() && file.getName().endsWith(".json")));
-	}
-	public static CustomList<File> getSupportedFiles() {
-		return getSupportedFiles(new File(Project.getCurrent().getDirectorySource()));
-	}
-	public static CustomList<File> getSupportedFiles(File directorySource) {
-		CustomList<File> actualFiles = new CustomList<>();
-		CustomList<File> abstractFiles = new CustomList<>(directorySource.listFiles(file -> {
-			if (file.isDirectory()) {
+	private static FileFilter fileFilter = file -> {
+		if (file.isDirectory()) {
+			return true;
+		}
+		
+		String fileName = file.getName().toLowerCase();
+		for (String ext : EXTENSIONS_IMAGE) {
+			if (fileName.endsWith(ext)) {
 				return true;
 			}
-			
-			String fileName = file.getName().toLowerCase();
-			for (String ext : EXTENSIONS_IMAGE) {
-				if (fileName.endsWith(ext)) {
-					return true;
-				}
+		}
+		for (String ext : EXTENSIONS_GIF) {
+			if (fileName.endsWith(ext)) {
+				return true;
 			}
-			for (String ext : EXTENSIONS_GIF) {
-				if (fileName.endsWith(ext)) {
-					return true;
-				}
+		}
+		for (String ext : EXTENSIONS_VIDEO) {
+			if (fileName.endsWith(ext)) {
+				return true;
 			}
-			for (String ext : EXTENSIONS_VIDEO) {
-				if (fileName.endsWith(ext)) {
-					return true;
-				}
-			}
-			
-			return false;
-		}));
+		}
+		
+		return false;
+	};
+	public static CustomList<File> getFiles(File directory, boolean useFilter) {
+		CustomList<File> actualFiles = new CustomList<>();
+		CustomList<File> abstractFiles;
+		
+		if (useFilter) {
+			abstractFiles = new CustomList<>(directory.listFiles(fileFilter));
+		} else {
+			abstractFiles = new CustomList<>(directory.listFiles());
+		}
 		
 		for (File abstractFile : abstractFiles) {
 			if (abstractFile.isDirectory()) {
-				actualFiles.addAll(getSupportedFiles(abstractFile));
+				actualFiles.addAll(FileUtil.getFiles(abstractFile, useFilter));
 			} else {
 				actualFiles.add(abstractFile);
 			}
 		}
 		
 		return actualFiles;
+	}
+	
+	public static CustomList<Project> getProjects() {
+		CustomList<Project> projects = new CustomList<>();
+		FileUtil.getProjectFiles().forEach(projectFile -> projects.add(Project.readFromDisk(projectFile.getAbsolutePath())));
+		return projects;
+	}
+	public static CustomList<File> getProjectFiles() {
+		return new CustomList<>(new File(FileUtil.getDirectoryProject()).listFiles(file -> file.isFile() && file.getName().endsWith(".json")));
 	}
 	
 	public static String createEntityName(File file) {

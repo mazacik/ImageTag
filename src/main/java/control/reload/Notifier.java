@@ -3,17 +3,19 @@ package control.reload;
 import base.CustomList;
 
 public enum Notifier {
+	ENTITYLIST_CHANGED,
+	TAGLIST_CHANGED,
+	
+	FILTER_CHANGED,
 	FILTER_NEEDS_REFRESH,
 	
-	FILTER,
-	SELECT,
-	TARGET,
+	SELECT_CHANGED,
+	SELECT_TAGLIST_CHANGED,
 	
-	ENTITY_LIST_MAIN,
-	TAG_LIST_MAIN,
+	TARGET_CHANGED,
+	TARGET_COLLECTION_CHANGED,
 	
-	TAGS_OF_SELECT,
-	VIEWMODE,
+	VIEWMODE_CHANGED,
 	;
 	
 	private CustomList<InvokeHelper> invokeHelpers;

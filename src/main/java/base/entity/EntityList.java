@@ -4,8 +4,6 @@ import base.CustomList;
 import base.tag.Tag;
 import base.tag.TagList;
 import control.filter.Filter;
-import control.reload.Notifier;
-import control.reload.Reload;
 
 import java.io.File;
 import java.util.Arrays;
@@ -44,22 +42,14 @@ public class EntityList extends CustomList<Entity> {
 	
 	public void addTag(Integer tagID) {
 		this.forEach(entity -> entity.addTag(tagID));
-		Reload.notify(Notifier.TAGS_OF_SELECT);
 	}
 	public void removeTag(Integer tagID) {
 		this.forEach(entity -> entity.removeTag(tagID));
-		Reload.notify(Notifier.TAGS_OF_SELECT);
 	}
 	public void clearTags() {
 		this.forEach(Entity::clearTags);
-		Reload.notify(Notifier.TAGS_OF_SELECT);
 	}
 	
-	public CustomList<Integer> getTagIDs() {
-		CustomList<Integer> tagIDs = new CustomList<>();
-		this.forEach(entity -> tagIDs.addAll(entity.getTagIDs(), true));
-		return tagIDs;
-	}
 	public TagList getTagList() {
 		TagList tagList = new TagList();
 		this.forEach(entity -> tagList.addAll(entity.getTagList(), true));

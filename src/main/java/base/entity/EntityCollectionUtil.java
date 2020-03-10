@@ -19,7 +19,7 @@ public abstract class EntityCollectionUtil {
 		
 		Select.setTarget(collection.getFirst());
 		
-		Reload.notify(Notifier.ENTITY_LIST_MAIN);
+		Reload.notify(Notifier.TARGET_COLLECTION_CHANGED);
 	}
 	public static void discard() {
 		for (Entity entity : Select.getEntities().getFirst().getCollection()) {
@@ -28,8 +28,7 @@ public abstract class EntityCollectionUtil {
 			entity.getTile().setEffect(null);
 		}
 		
-		//todo ping SELECT_COLLECTION (or something) to refresh ToolbarPane
-		Reload.notify(Notifier.ENTITY_LIST_MAIN);
+		Reload.notify(Notifier.TARGET_COLLECTION_CHANGED);
 	}
 	
 	public static boolean isCollection(EntityList entityList) {
@@ -47,6 +46,10 @@ public abstract class EntityCollectionUtil {
 	}
 	
 	private static CustomList<Integer> openCollections = new CustomList<>();
+	public static CustomList<Integer> getOpenCollections() {
+		return openCollections;
+	}
+	
 	public static void toggleCollection(Entity entity) {
 		int collectionID = entity.getCollectionID();
 		
@@ -61,10 +64,7 @@ public abstract class EntityCollectionUtil {
 				_entity.getTile().updateCollectionIcon();
 			}
 			
-			Reload.notify(Notifier.ENTITY_LIST_MAIN);
+			Reload.notify(Notifier.ENTITYLIST_CHANGED);
 		}
-	}
-	public static CustomList<Integer> getOpenCollections() {
-		return openCollections;
 	}
 }

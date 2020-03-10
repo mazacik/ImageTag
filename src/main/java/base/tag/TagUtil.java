@@ -24,12 +24,10 @@ public class TagUtil {
 	public static void create(CustomList<String> listLevelsOld) {
 		CustomList<String> listLevelsNew = TagEditStage.show(TagList.getMain(), listLevelsOld);
 		if (listLevelsNew != null && !listLevelsNew.isEmpty()) {
-			Tag tagNew = new Tag(listLevelsNew);
-			
-			TagList.getMain().add(tagNew);
+			TagList.getMain().add(new Tag(listLevelsNew));
 			TagList.getMain().sort();
 			
-			Reload.notify(Notifier.TAG_LIST_MAIN);
+			Reload.notify(Notifier.TAGLIST_CHANGED);
 		}
 	}
 	public static void edit(String stringValueOld, int numLevelsOld) {
@@ -43,7 +41,7 @@ public class TagUtil {
 			TagList.getMain().sort();
 			Filter.getListManager().update(stringValueOld, numLevelsOld, listLevelsNew);
 			
-			Reload.notify(Notifier.TAG_LIST_MAIN);
+			Reload.notify(Notifier.TAGLIST_CHANGED);
 		}
 	}
 	public static void remove() {
@@ -55,7 +53,7 @@ public class TagUtil {
 			EntityList.getMain().forEach(entity -> entity.removeTag(tagList));
 			TagList.getMain().removeAll(tagList);
 			
-			Reload.notify(Notifier.TAG_LIST_MAIN);
+			Reload.notify(Notifier.TAGLIST_CHANGED);
 		}
 	}
 	

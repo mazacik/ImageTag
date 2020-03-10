@@ -1,5 +1,6 @@
 package misc;
 
+import base.CustomList;
 import base.entity.EntityList;
 import base.tag.TagList;
 import com.google.gson.annotations.SerializedName;
@@ -89,5 +90,10 @@ public class Project {
 	}
 	public static void setCurrent(Project project) {
 		Project.current = project;
+	}
+	public static void setFirstAsCurrent() {
+		CustomList<Project> projects = FileUtil.getProjects();
+		projects.sort(Project.getComparator());
+		setCurrent(projects.getFirst());
 	}
 }

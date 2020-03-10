@@ -163,7 +163,7 @@ public class ImportStage extends AbstractStage {
 		String directoryPath = directory.getAbsolutePath();
 		
 		EntityList entities = new EntityList();
-		for (File file : FileUtil.getSupportedFiles(directory)) {
+		for (File file : FileUtil.getFiles(directory, true)) {
 			if (useThread && Thread.currentThread().isInterrupted()) return null;
 			entities.add(this.importEntity(file, directoryPath));
 		}

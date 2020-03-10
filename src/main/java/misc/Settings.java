@@ -17,30 +17,29 @@ public enum Settings {
 	IMPORT_LAST_PATH("ImportLastPath", System.getProperty("user.dir"), false),
 	;
 	
-	private String value;
-	private String defaultValue;
+	private static final String delimiter = "=";
+	
 	private String name;
+	private String value;
+	private String valueDefault;
 	private boolean userModifiable;
 	
-	Settings(String name, String defaultValue, boolean userModifiable) {
+	Settings(String name, String valueDefault, boolean userModifiable) {
 		this.name = name;
-		this.defaultValue = defaultValue;
+		this.valueDefault = valueDefault;
 		this.userModifiable = userModifiable;
 	}
 	
-	static {
-		readFromDisk();
-	}
-	private static void readFromDisk() {
+	public static void readFromDisk() {
 		File settingsFile = new File(FileUtil.getFileSettings());
 		if (!settingsFile.exists()) {
-			for (Settings setting : Settings.values()) setting.value = setting.defaultValue;
+			for (Settings setting : Settings.values()) setting.value = setting.valueDefault;
 			return;
 		}
 		try {
 			List<String> lines = Files.readAllLines(Paths.get(settingsFile.toURI()));
 			for (String line : lines) {
-				String[] strings = line.split("=");
+				String[] strings = line.split(delimiter);
 				if (strings.length > 1) {
 					for (Settings setting : Settings.values()) {
 						if (setting.name.equals(strings[0])) {
@@ -55,7 +54,7 @@ public enum Settings {
 		}
 		for (Settings setting : Settings.values()) {
 			if (setting.value == null || setting.value.isEmpty()) {
-				setting.value = setting.defaultValue;
+				setting.value = setting.valueDefault;
 			}
 		}
 	}
@@ -70,7 +69,7 @@ public enum Settings {
 			
 			StringBuilder sb = new StringBuilder();
 			for (Settings setting : Settings.values()) {
-				sb.append(setting.name).append('=').append(setting.value).append('\n');
+				sb.append(setting.name).append(delimiter).append(setting.value).append('\n');
 			}
 			
 			writer.write(sb.toString());
@@ -80,13 +79,16 @@ public enum Settings {
 		}
 	}
 	
+	public String getName() {
+		return name;
+	}
 	public String getValue() {
 		return value;
 	}
-	public String getDefaultValue() {
-		return defaultValue;
+	public String getValueDefault() {
+		return valueDefault;
 	}
-	public int getIntegerValue() {
+	public int getValueInteger() {
 		return Integer.parseInt(value);
 	}
 	public boolean isUserModifiable() {

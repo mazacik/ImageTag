@@ -7,8 +7,7 @@ import control.reload.Notifier;
 import control.reload.Reload;
 import enums.Direction;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-import main.EventUtil;
+import ui.EntityDetailsUtil;
 import ui.decorator.Decorator;
 import ui.main.display.DisplayPane;
 import ui.main.gallery.GalleryPane;
@@ -16,7 +15,6 @@ import ui.main.side.FilterPane;
 import ui.main.side.SelectPane;
 import ui.main.top.ToolbarPane;
 import ui.node.EditNode;
-import ui.node.textnode.TextNodeTemplates;
 import ui.override.HBox;
 import ui.override.Scene;
 import ui.override.VBox;
@@ -46,7 +44,7 @@ public class MainScene extends Scene {
 	private void keybindsGlobal(KeyEvent event) {
 		switch (event.getCode()) {
 			case I:
-				TextNodeTemplates.FILE_DETAILS.get().fireEvent(EventUtil.createMouseEvent(MouseEvent.MOUSE_CLICKED)); //todo bruh
+				EntityDetailsUtil.show();
 				break;
 			case ESCAPE:
 				MainStage.getMainScene().viewGallery();
@@ -56,7 +54,7 @@ public class MainScene extends Scene {
 				SelectPane.getInstance().getNodeSearch().requestFocus();
 				break;
 			case DELETE:
-				Select.getEntities().deleteFiles();
+				Select.getEntities().deleteSelect();
 				Reload.start();
 				break;
 			case E:
@@ -126,7 +124,7 @@ public class MainScene extends Scene {
 			GalleryPane.getInstance().requestFocus();
 			GalleryPane.moveViewportToTarget();
 			
-			Reload.notify(Notifier.VIEWMODE);
+			Reload.notify(Notifier.VIEWMODE_CHANGED);
 		}
 	}
 	public void viewDisplay() {
@@ -134,7 +132,7 @@ public class MainScene extends Scene {
 			mainBox.getChildren().set(1, DisplayPane.getInstance());
 			DisplayPane.getInstance().requestFocus();
 			
-			Reload.notify(Notifier.VIEWMODE);
+			Reload.notify(Notifier.VIEWMODE_CHANGED);
 		}
 	}
 	

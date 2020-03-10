@@ -14,7 +14,7 @@ import java.awt.*;
 
 public abstract class Decorator {
 	/* Font */
-	private static Font font = new Font(Settings.FONT_SIZE.getIntegerValue());
+	private static Font font = new Font(Settings.FONT_SIZE.getValueInteger());
 	public static Font getFont() {
 		return font;
 	}
@@ -117,7 +117,7 @@ public abstract class Decorator {
 	}
 	
 	/* Color Preset */
-	private static ColorPreset colorPreset = ColorPreset.values()[Settings.COLOR_PRESET.getIntegerValue()];
+	private static ColorPreset colorPreset = ColorPreset.values()[Settings.COLOR_PRESET.getValueInteger()];
 	public static ColorPreset getColorPreset() {
 		return colorPreset;
 	}

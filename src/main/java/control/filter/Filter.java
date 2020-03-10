@@ -15,7 +15,7 @@ public class Filter extends EntityList {
 	
 	public static void reset() {
 		listManager.clear();
-		Reload.notify(Notifier.TAG_LIST_MAIN);
+		Reload.notify(Notifier.TAGLIST_CHANGED);
 	}
 	public static void refresh() {
 		getEntities().clear();
@@ -26,7 +26,7 @@ public class Filter extends EntityList {
 			}
 		}
 		
-		Reload.notify(Notifier.FILTER);
+		Reload.notify(Notifier.FILTER_CHANGED);
 	}
 	public static void resolve() {
 		int filterSizeOld = getEntities().size();
@@ -44,7 +44,7 @@ public class Filter extends EntityList {
 			}
 		}
 		if (filterSizeOld != getEntities().size()) {
-			Reload.notify(Notifier.FILTER);
+			Reload.notify(Notifier.FILTER_CHANGED);
 		}
 	}
 	private static boolean isValid(Entity entity) {

@@ -23,10 +23,10 @@ public class SettingsStage extends AbstractStage {
 		
 		for (Settings setting : Settings.values()) {
 			if (setting.isUserModifiable()) {
-				TextNode textNode = new TextNode(setting.name(), false, false, false, true);
+				TextNode textNode = new TextNode(setting.getName(), false, false, false, true);
 				EditNode editNode = new EditNode(String.valueOf(setting.getValue()), "", EditNode.EditNodeType.NUMERIC_POSITIVE);
 				TextNode resetNode = new TextNode("⟲", true, true, false, true);
-				resetNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> editNode.setText(String.valueOf(setting.getDefaultValue())));
+				resetNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> editNode.setText(String.valueOf(setting.getValueDefault())));
 				
 				gridPane.add(textNode, 0, setting.ordinal());
 				gridPane.add(editNode, 1, setting.ordinal());

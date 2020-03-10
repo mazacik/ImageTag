@@ -60,7 +60,7 @@ public abstract class SidePaneBase extends VBox {
 		if (rootNodes.getFirst() != null) {
 			rowHeight = rootNodes.getFirst().getHeight();
 		} else {
-			rowHeight = Settings.FONT_SIZE.getIntegerValue();
+			rowHeight = Settings.FONT_SIZE.getValueInteger();
 		}
 		double contentHeight = boxNodes.getHeight() - scrollPane.getViewportBounds().getHeight();
 		double rowToContentRatio = rowHeight / contentHeight;

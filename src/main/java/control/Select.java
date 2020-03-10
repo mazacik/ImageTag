@@ -22,13 +22,13 @@ public class Select extends EntityList {
 		if (EntityCollectionUtil.hasOpenOrNoCollection(entity)) {
 			if (super.add(entity, checkDuplicates)) {
 				Reload.requestBorderUpdate(entity);
-				Reload.notify(Notifier.SELECT);
+				Reload.notify(Notifier.SELECT_CHANGED);
 				return true;
 			}
 		} else {
 			if (super.addAll(entity.getCollection(), checkDuplicates)) {
 				Reload.requestBorderUpdate((Filter.getFilteredList(entity.getCollection())));
-				Reload.notify(Notifier.SELECT);
+				Reload.notify(Notifier.SELECT_CHANGED);
 				return true;
 			}
 		}
@@ -56,7 +56,7 @@ public class Select extends EntityList {
 		}
 		
 		if (this.size() != sizeOld) {
-			Reload.notify(Notifier.SELECT);
+			Reload.notify(Notifier.SELECT_CHANGED);
 			return true;
 		} else {
 			return false;
@@ -68,7 +68,7 @@ public class Select extends EntityList {
 			if (this.size() != 1) {
 				if (super.remove(entity)) {
 					Reload.requestBorderUpdate(entity);
-					Reload.notify(Notifier.SELECT);
+					Reload.notify(Notifier.SELECT_CHANGED);
 					return true;
 				}
 			}
@@ -76,7 +76,7 @@ public class Select extends EntityList {
 			if (this.size() != entity.getCollection().size()) {
 				if (super.removeAll((Filter.getFilteredList(entity.getCollection())))) {
 					Reload.requestBorderUpdate(entity.getCollection());
-					Reload.notify(Notifier.SELECT);
+					Reload.notify(Notifier.SELECT_CHANGED);
 					return true;
 				}
 			}
@@ -86,7 +86,7 @@ public class Select extends EntityList {
 	public boolean removeAll(Collection<?> c) {
 		if (super.removeAll(c)) {
 			Reload.requestBorderUpdate((EntityList) c);
-			Reload.notify(Notifier.SELECT);
+			Reload.notify(Notifier.SELECT_CHANGED);
 			return true;
 		}
 		return false;
@@ -97,14 +97,14 @@ public class Select extends EntityList {
 		if (EntityCollectionUtil.hasOpenOrNoCollection(entity)) {
 			if (super.add(entity)) {
 				Reload.requestBorderUpdate(entity);
-				Reload.notify(Notifier.SELECT);
+				Reload.notify(Notifier.SELECT_CHANGED);
 				return true;
 			}
 		} else {
 			EntityList afterFilter = Filter.getFilteredList(entity.getCollection());
 			if (super.addAll(afterFilter)) {
 				Reload.requestBorderUpdate(afterFilter);
-				Reload.notify(Notifier.SELECT);
+				Reload.notify(Notifier.SELECT_CHANGED);
 				return true;
 			}
 		}
@@ -117,11 +117,11 @@ public class Select extends EntityList {
 	
 	public void clear() {
 		Reload.requestBorderUpdate(this);
-		Reload.notify(Notifier.SELECT);
+		Reload.notify(Notifier.SELECT_CHANGED);
 		super.clear();
 	}
 	
-	public void deleteFiles() {
+	public void deleteSelect() {
 		EntityList helper = new EntityList();
 		
 		getEntities().forEach(entity -> {
@@ -136,24 +136,7 @@ public class Select extends EntityList {
 			Filter.getEntities().removeAll(helper);
 			EntityList.getMain().removeAll(helper);
 			
-			Reload.notify(Notifier.ENTITY_LIST_MAIN);
-		}
-	}
-	public static void deleteTarget() {
-		Entity target = getTarget();
-		
-		if (FileUtil.deleteFile(FileUtil.getFileEntity(target))) {
-			FileUtil.deleteFile(FileUtil.getFileCache(target));
-			
-			if (target.getCollectionID() != 0) {
-				target.getCollection().remove(target);
-			}
-			
-			Select.getEntities().remove(target);
-			Filter.getEntities().remove(target);
-			EntityList.getMain().remove(target);
-			
-			Reload.notify(Notifier.TARGET, Notifier.ENTITY_LIST_MAIN);
+			Reload.notify(Notifier.ENTITYLIST_CHANGED);
 		}
 	}
 	
@@ -175,6 +158,19 @@ public class Select extends EntityList {
 		}
 		
 		getEntities().addAll(entities.subList(indexLower, indexHigher + 1), true);
+	}
+	
+	public void addTag(Integer tagID) {
+		super.addTag(tagID);
+		Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
+	}
+	public void removeTag(Integer tagID) {
+		super.removeTag(tagID);
+		Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
+	}
+	public void clearTags() {
+		super.clearTags();
+		Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
 	}
 	
 	private Select() {}
@@ -200,7 +196,7 @@ public class Select extends EntityList {
 			Reload.requestBorderUpdate(target);
 			GalleryPane.moveViewportToTarget();
 			
-			Reload.notify(Notifier.TARGET);
+			Reload.notify(Notifier.TARGET_CHANGED);
 		}
 	}
 	
@@ -263,6 +259,24 @@ public class Select extends EntityList {
 			case D:
 				moveTarget(Direction.RIGHT);
 				break;
+		}
+	}
+	
+	public static void deleteTarget() {
+		Entity target = getTarget();
+		
+		if (FileUtil.deleteFile(FileUtil.getFileEntity(target))) {
+			FileUtil.deleteFile(FileUtil.getFileCache(target));
+			
+			if (target.getCollectionID() != 0) {
+				target.getCollection().remove(target);
+			}
+			
+			Select.getEntities().remove(target);
+			Filter.getEntities().remove(target);
+			EntityList.getMain().remove(target);
+			
+			Reload.notify(Notifier.TARGET_CHANGED, Notifier.ENTITYLIST_CHANGED);
 		}
 	}
 	

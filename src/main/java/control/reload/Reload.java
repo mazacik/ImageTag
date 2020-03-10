@@ -17,46 +17,43 @@ import java.util.Comparator;
 
 public abstract class Reload {
 	private final static CustomList<Entity> needsBorderUpdate = new CustomList<>();
-	private final static CustomList<Notifier> notifiers = new CustomList<>();
 	private final static CustomList<InvokeHelper> invokeHelpers = new CustomList<>();
 	
 	static {
 		try {
-			InvokeHelper ihFilterRefresh = new InvokeHelper(1, Filter.getEntities(), Filter.getEntities().getClass().getMethod("refresh"));
+			InvokeHelper filterRefresh = new InvokeHelper(1, Filter.getEntities(), Filter.getEntities().getClass().getMethod("refresh"));
 			
-			InvokeHelper ihPFilterReload = new InvokeHelper(3, FilterPane.getInstance(), FilterPane.getInstance().getClass().getMethod("reload"));
-			InvokeHelper ihPSelectReload = new InvokeHelper(3, SelectPane.getInstance(), SelectPane.getInstance().getClass().getMethod("reload"));
+			InvokeHelper paneFilterReload = new InvokeHelper(3, FilterPane.getInstance(), FilterPane.getInstance().getClass().getMethod("reload"));
+			InvokeHelper paneSelectReload = new InvokeHelper(3, SelectPane.getInstance(), SelectPane.getInstance().getClass().getMethod("reload"));
 			
-			InvokeHelper ihPFilterRefresh = new InvokeHelper(4, FilterPane.getInstance(), FilterPane.getInstance().getClass().getMethod("refresh"));
-			InvokeHelper ihPSelectRefresh = new InvokeHelper(4, SelectPane.getInstance(), SelectPane.getInstance().getClass().getMethod("refresh"));
+			InvokeHelper paneFilterRefresh = new InvokeHelper(4, FilterPane.getInstance(), FilterPane.getInstance().getClass().getMethod("refresh"));
+			InvokeHelper paneSelectRefresh = new InvokeHelper(4, SelectPane.getInstance(), SelectPane.getInstance().getClass().getMethod("refresh"));
 			
-			InvokeHelper ihPToolbarReload = new InvokeHelper(5, ToolbarPane.getInstance(), ToolbarPane.getInstance().getClass().getMethod("reload"));
-			InvokeHelper ihPGalleryReload = new InvokeHelper(5, GalleryPane.getInstance(), GalleryPane.getInstance().getClass().getMethod("reload"));
-			InvokeHelper ihPDisplayReload = new InvokeHelper(5, DisplayPane.getInstance(), DisplayPane.getInstance().getClass().getMethod("reload"));
+			InvokeHelper paneToolbarReload = new InvokeHelper(5, ToolbarPane.getInstance(), ToolbarPane.getInstance().getClass().getMethod("reload"));
+			InvokeHelper paneGalleryReload = new InvokeHelper(5, GalleryPane.getInstance(), GalleryPane.getInstance().getClass().getMethod("reload"));
+			InvokeHelper paneDisplayReload = new InvokeHelper(5, DisplayPane.getInstance(), DisplayPane.getInstance().getClass().getMethod("reload"));
 			
-			Notifier.FILTER_NEEDS_REFRESH.getInvokeHelpers().add(ihFilterRefresh);
+			link(Notifier.ENTITYLIST_CHANGED, paneGalleryReload);
+			link(Notifier.TAGLIST_CHANGED, paneFilterReload, paneSelectReload, paneFilterRefresh, paneSelectRefresh);
 			
-			Notifier.FILTER.getInvokeHelpers().add(ihPGalleryReload);
-			Notifier.FILTER.getInvokeHelpers().add(ihPFilterRefresh);
-			Notifier.FILTER.getInvokeHelpers().add(ihPSelectRefresh);
+			link(Notifier.FILTER_CHANGED, paneGalleryReload, paneFilterRefresh, paneSelectRefresh);
+			link(Notifier.FILTER_NEEDS_REFRESH, filterRefresh);
 			
-			Notifier.SELECT.getInvokeHelpers().add(ihPSelectRefresh);
+			link(Notifier.SELECT_CHANGED, paneSelectRefresh);
+			link(Notifier.SELECT_TAGLIST_CHANGED, paneSelectRefresh);
 			
-			Notifier.TARGET.getInvokeHelpers().add(ihPToolbarReload);
-			Notifier.TARGET.getInvokeHelpers().add(ihPDisplayReload);
-			Notifier.TARGET.getInvokeHelpers().add(ihPSelectRefresh);
+			link(Notifier.TARGET_CHANGED, paneToolbarReload, paneDisplayReload, paneSelectRefresh);
+			link(Notifier.TARGET_COLLECTION_CHANGED, paneToolbarReload);
 			
-			Notifier.ENTITY_LIST_MAIN.getInvokeHelpers().add(ihPGalleryReload);
-			
-			Notifier.TAG_LIST_MAIN.getInvokeHelpers().add(ihPFilterReload);
-			Notifier.TAG_LIST_MAIN.getInvokeHelpers().add(ihPSelectReload);
-			Notifier.TAG_LIST_MAIN.getInvokeHelpers().add(ihPFilterRefresh);
-			Notifier.TAG_LIST_MAIN.getInvokeHelpers().add(ihPSelectRefresh);
-			
-			Notifier.TAGS_OF_SELECT.getInvokeHelpers().add(ihPSelectRefresh);
-			Notifier.VIEWMODE.getInvokeHelpers().add(ihPDisplayReload);
+			link(Notifier.VIEWMODE_CHANGED, paneDisplayReload);
 		} catch (NoSuchMethodException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	private static void link(Notifier notifier, InvokeHelper... invokeHelpers) {
+		for (InvokeHelper invokeHelper : invokeHelpers) {
+			notifier.getInvokeHelpers().add(invokeHelper);
 		}
 	}
 	
