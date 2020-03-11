@@ -29,12 +29,12 @@ public class EntityList extends CustomList<Entity> {
 	}
 	
 	public Entity getRandom() {
-		Entity entity = super.getRandom();
+		Entity entity = super.getRandomImpl();
 		if (entity != null) {
-			if (EntityCollectionUtil.hasOpenOrNoCollection(entity)) {
+			if (entity.getCollectionID() == 0) {
 				return entity;
 			} else {
-				return new CustomList<>(Filter.getFilteredList(entity.getCollection())).getRandom();
+				return Filter.getFilteredList(entity.getCollection()).getRandomImpl();
 			}
 		}
 		return null;

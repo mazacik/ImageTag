@@ -3,6 +3,7 @@ package ui.main.stage;
 import base.entity.Entity;
 import base.entity.EntityCollectionUtil;
 import control.Select;
+import control.filter.Filter;
 import control.reload.Notifier;
 import control.reload.Reload;
 import enums.Direction;
@@ -62,7 +63,10 @@ public class MainScene extends Scene {
 				Reload.start();
 				break;
 			case R:
-				Entity randomEntity = GalleryPane.getTileEntities().getRandom();
+				Entity randomEntity = null;
+				while (!Filter.isValid(randomEntity)) {
+					randomEntity = Filter.getEntities().getRandom();
+				}
 				Select.getEntities().set(randomEntity);
 				Select.setTarget(randomEntity);
 				Reload.start();

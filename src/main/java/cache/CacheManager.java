@@ -187,7 +187,7 @@ public abstract class CacheManager {
 	public static void checkCacheInBackground(EntityList entityList) {
 		if (thread == null || !thread.isAlive()) {
 			thread = new Thread(() -> {
-				for (Entity entity : entityList) {
+				for (Entity entity : new EntityList(entityList)) {
 					if (Thread.currentThread().isInterrupted()) {
 						Logger.getGlobal().warning("CACHE CHECK THREAD INTERRUPTED");
 						return;

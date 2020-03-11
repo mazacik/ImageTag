@@ -24,7 +24,7 @@ import ui.main.stage.MainStage;
 import ui.stage.SimpleMessageStage;
 
 public class GalleryPane extends ScrollPane {
-	public static final double GAP = 5;
+	public static final double GAP = 1;
 	
 	private static final TilePane tilePane;
 	

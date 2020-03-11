@@ -33,7 +33,7 @@ public abstract class Reload {
 			InvokeHelper paneGalleryReload = new InvokeHelper(5, GalleryPane.getInstance(), GalleryPane.getInstance().getClass().getMethod("reload"));
 			InvokeHelper paneDisplayReload = new InvokeHelper(5, DisplayPane.getInstance(), DisplayPane.getInstance().getClass().getMethod("reload"));
 			
-			link(Notifier.ENTITYLIST_CHANGED, paneGalleryReload);
+			link(Notifier.ENTITYLIST_CHANGED, paneGalleryReload, paneFilterRefresh);
 			link(Notifier.TAGLIST_CHANGED, paneFilterReload, paneSelectReload, paneFilterRefresh, paneSelectRefresh);
 			
 			link(Notifier.FILTER_CHANGED, paneGalleryReload, paneFilterRefresh, paneSelectRefresh);
@@ -58,6 +58,8 @@ public abstract class Reload {
 	}
 	
 	public static void notify(Notifier... notifiers) {
+		//todo create notify(InvokeHelper... ihs)
+		//better performance, low level methods can notify without lagging the app
 		if (notifiers.length == 1) {
 			invokeHelpers.addAll(notifiers[0].getInvokeHelpers(), true);
 		} else {

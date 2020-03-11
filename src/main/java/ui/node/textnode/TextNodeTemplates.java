@@ -56,7 +56,7 @@ public enum TextNodeTemplates {
 				hideMenus();
 				
 				try {
-					Runtime.getRuntime().exec("mspaint.exe " + FileUtil.getFileEntity(Select.getTarget()));
+					Runtime.getRuntime().exec("mspaint.exe \"" + FileUtil.getFileEntity(Select.getTarget()) + "\"");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -72,7 +72,7 @@ public enum TextNodeTemplates {
 				hideMenus();
 				
 				try {
-					Runtime.getRuntime().exec("explorer.exe /select," + new File(FileUtil.getFileEntity(Select.getTarget())));
+					Runtime.getRuntime().exec("explorer.exe /select,\"" + FileUtil.getFileEntity(Select.getTarget()) + "\"");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

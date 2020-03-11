@@ -110,10 +110,6 @@ public class Select extends EntityList {
 		}
 		return false;
 	}
-	public boolean setAll(Collection<? extends Entity> c) {
-		this.clear();
-		return this.addAll(c);
-	}
 	
 	public void clear() {
 		Reload.requestBorderUpdate(this);
@@ -188,7 +184,7 @@ public class Select extends EntityList {
 	public static void setTarget(Entity newTarget) {
 		if (newTarget != null && newTarget != target) {
 			if (target != null) {
-				Filter.resolve();
+				Filter.resolve(target);
 				Reload.requestBorderUpdate(target);
 			}
 			
@@ -263,13 +259,14 @@ public class Select extends EntityList {
 	}
 	
 	public static void deleteTarget() {
-		Entity target = getTarget();
+		Entity target = Select.getTarget();
 		
 		if (FileUtil.deleteFile(FileUtil.getFileEntity(target))) {
 			FileUtil.deleteFile(FileUtil.getFileCache(target));
 			
 			if (target.getCollectionID() != 0) {
 				target.getCollection().remove(target);
+				Reload.notify(Notifier.TARGET_COLLECTION_CHANGED);//todo move to collection.remove
 			}
 			
 			Select.getEntities().remove(target);

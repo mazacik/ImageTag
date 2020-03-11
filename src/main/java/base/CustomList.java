@@ -56,7 +56,7 @@ public class CustomList<T> extends ArrayList<T> {
 	public T getLast() {
 		return (!this.isEmpty()) ? this.get(this.size() - 1) : null;
 	}
-	public T getRandom() {
+	protected T getRandomImpl() {
 		return (!this.isEmpty()) ? this.get(new Random().nextInt(this.size())) : null;
 	}
 }

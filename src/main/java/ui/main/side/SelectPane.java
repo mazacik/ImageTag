@@ -2,6 +2,7 @@ package ui.main.side;
 
 import base.CustomList;
 import base.entity.Entity;
+import base.tag.Tag;
 import base.tag.TagList;
 import control.Select;
 import control.filter.Filter;
@@ -171,7 +172,12 @@ public class SelectPane extends SidePaneBase {
 				nodeSearch.clear();
 				searchLock = false;
 				
-				Select.getEntities().addTag(TagList.getMain().getTag(match.getStringValue()).getID());
+				Tag tag = TagList.getMain().getTag(match.getStringValue());
+				if (Select.getEntities().getTagListIntersect().contains(tag)) {
+					Select.getEntities().removeTag(tag.getID());
+				} else {
+					Select.getEntities().addTag(tag.getID());
+				}
 				
 				Reload.start();
 			}

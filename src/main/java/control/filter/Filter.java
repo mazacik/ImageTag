@@ -28,26 +28,32 @@ public class Filter extends EntityList {
 		
 		Reload.notify(Notifier.FILTER_CHANGED);
 	}
+	
 	public static void resolve() {
-		int filterSizeOld = getEntities().size();
-		EntityList entities = Select.getEntities();
-		if (!entities.isEmpty()) {
-			entities.forEach(entity -> {
-				if (!isValid(entity)) {
-					getEntities().remove(entity);
-				}
-			});
+		if (Select.getEntities().isEmpty()) {
+			Filter.resolve(Select.getTarget());
 		} else {
-			Entity entity = Select.getTarget();
-			if (entity != null && !isValid(entity)) {
-				getEntities().remove(entity);
-			}
-		}
-		if (filterSizeOld != getEntities().size()) {
-			Reload.notify(Notifier.FILTER_CHANGED);
+			Filter.resolve(Select.getEntities());
 		}
 	}
-	private static boolean isValid(Entity entity) {
+	public static void resolve(Entity entity) {
+		boolean contains = Filter.getEntities().contains(entity);
+		boolean valid = Filter.isValid(entity);
+		
+		if (contains && !valid) {
+			Filter.getEntities().remove(entity);
+			Reload.notify(Notifier.FILTER_CHANGED);
+		} else if (!contains && valid) {
+			Filter.getEntities().add(entity);
+			Reload.notify(Notifier.FILTER_CHANGED);//todo move to getEntities().add()
+		}
+	}
+	public static void resolve(EntityList entities) {
+		entities.forEach(Filter::resolve);
+	}
+	public static boolean isValid(Entity entity) {
+		if (entity == null) return false;
+		
 		if (entity.getMediaType() == MediaType.IMAGE) {
 			if (!settings.isShowImages()) {
 				return false;

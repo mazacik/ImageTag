@@ -27,7 +27,7 @@ import ui.main.stage.MainStage;
 import ui.node.arrowtextnode.ArrowTextNodeTemplates;
 
 public class Tile extends Pane {
-	public static final double HIGHLIGHT_PADDING = 10;
+	public static final double HIGHLIGHT_PADDING = 5;
 	
 	private static final double collectionIconSize;
 	private static final double collectionIconX;
