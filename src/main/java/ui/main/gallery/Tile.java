@@ -176,10 +176,12 @@ public class Tile extends Pane {
 		}
 	}
 	public void updateCollectionIcon() {
-		if (!EntityCollectionUtil.getOpenCollections().contains(entity.getCollectionID())) {
-			this.setEffect(collectionIconPlus);
-		} else {
-			this.setEffect(collectionIconMinus);
+		if (entity.getCollectionID() != 0) {
+			if (!EntityCollectionUtil.getOpenCollections().contains(entity.getCollectionID())) {
+				this.setEffect(collectionIconPlus);
+			} else {
+				this.setEffect(collectionIconMinus);
+			}
 		}
 	}
 	

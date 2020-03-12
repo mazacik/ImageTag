@@ -25,6 +25,7 @@ import ui.stage.SimpleMessageStage;
 
 public class GalleryPane extends ScrollPane {
 	public static final double GAP = 1;
+	public static final int TILE_LIMIT = 4000;
 	
 	private static final TilePane tilePane;
 	
@@ -237,47 +238,22 @@ public class GalleryPane extends ScrollPane {
 	private static CustomList<Tile> tiles = new CustomList<>();
 	
 	public boolean reload() {
-		//	prepare
-		tiles.clear();
-		tileEntities.clear();
-		
-		CustomList<Integer> helper = new CustomList<>();
-		
-		//	main loop
-		for (Entity entity : Filter.getEntities()) {
-			if (tiles.size() >= 4000) {
-				SimpleMessageStage.show("Gallery reached a limit of 4000 tiles.");
-				break;
-			}
-			
-			if (entity.getCollectionID() == 0) {
-				tiles.addImpl(entity.getTile());
-				tileEntities.addImpl(entity);
-			} else if (!helper.contains(entity.getCollectionID())) {
-				//	only one object in a collection needs to be processed
-				helper.addImpl(entity.getCollectionID());
-				
-				if (EntityCollectionUtil.getOpenCollections().contains(entity.getCollectionID())) {
-					for (Entity entityInCollection : entity.getCollection()) {
-						//	instead of letting the main loop take care of all objects in a collection
-						//	the collection gets processed in a separate loop to keep its objects together
-						//	however, each object needs to be checked for Filter validity an additional time
-						if (Filter.getEntities().contains(entityInCollection)) {
-							tiles.addImpl(entityInCollection.getTile());
-							tileEntities.addImpl(entityInCollection);
-							Reload.requestBorderUpdate(entityInCollection);
-						}
-					}
-				} else {
-					entity.getTile().updateCollectionIcon();
-					tiles.addImpl(entity.getTile());
-					tileEntities.addImpl(entity);
-					Reload.requestBorderUpdate(entity);
-				}
-			}
+		EntityList representingEntityList = EntityCollectionUtil.getRepresentingEntityList(Filter.getEntities());
+		if (representingEntityList.size() > TILE_LIMIT) {
+			tileEntities.setAllImpl(representingEntityList.subList(0, TILE_LIMIT));
+			SimpleMessageStage.show("Gallery reached a limit of " + TILE_LIMIT + " tiles.");
+		} else {
+			tileEntities.setAllImpl(representingEntityList);
 		}
 		
-		//	apply changes
+		tiles.clear();
+		
+		for (Entity entity : tileEntities) {
+			tiles.add(entity.getTile());
+			entity.getTile().updateCollectionIcon();
+			Reload.requestBorderUpdate(entity);
+		}
+		
 		tilePane.getChildren().setAll(tiles);
 		
 		return true;
