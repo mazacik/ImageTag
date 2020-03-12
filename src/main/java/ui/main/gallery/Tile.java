@@ -168,7 +168,7 @@ public class Tile extends Pane {
 		ClickMenu.install(this);
 	}
 	
-	public void updateHighlight() {
+	public void updateBorder() {
 		if (Select.getEntities().contains(entity)) {
 			this.setBackground(highlightSelect);
 		} else {

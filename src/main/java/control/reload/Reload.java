@@ -81,7 +81,7 @@ public abstract class Reload {
 		//update tile borders
 		EntityList helper = new EntityList();
 		for (Entity entity : needsBorderUpdate) {
-			entity.getTile().updateHighlight();
+			entity.getTile().updateBorder();
 			helper.addImpl(entity);
 		}
 		needsBorderUpdate.removeAll(helper);

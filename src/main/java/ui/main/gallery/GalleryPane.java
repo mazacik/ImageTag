@@ -250,8 +250,8 @@ public class GalleryPane extends ScrollPane {
 		
 		for (Entity entity : tileEntities) {
 			tiles.add(entity.getTile());
-			entity.getTile().updateCollectionIcon();
 			Reload.requestBorderUpdate(entity);
+			entity.getTile().updateCollectionIcon();
 		}
 		
 		tilePane.getChildren().setAll(tiles);
