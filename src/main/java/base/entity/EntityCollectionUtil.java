@@ -2,6 +2,7 @@ package base.entity;
 
 import base.CustomList;
 import control.Select;
+import control.filter.Filter;
 import control.reload.Notifier;
 import control.reload.Reload;
 
@@ -29,6 +30,29 @@ public abstract class EntityCollectionUtil {
 		}
 		
 		Reload.notify(Notifier.TARGET_COLLECTION_CHANGED);
+	}
+	
+	public static Entity getRepresentingEntity(Entity entity) {
+		if (EntityCollectionUtil.hasOpenOrNoCollection(entity)) {
+			return entity;
+		} else {
+			return Filter.getFilteredList(entity.getCollection()).getFirstImpl();
+		}
+	}
+	public static EntityList getRepresentingEntityList(EntityList entityList) {
+		EntityList representingEntityList = new EntityList();
+		CustomList<Integer> collections = new CustomList<>();
+		
+		for (Entity entity : entityList) {
+			if (EntityCollectionUtil.hasOpenOrNoCollection(entity)) {
+				representingEntityList.addImpl(entity);
+			} else if (!collections.contains(entity.getCollectionID())) {
+				collections.addImpl(entity.getCollectionID());
+				representingEntityList.addImpl(entity);
+			}
+		}
+		
+		return representingEntityList;
 	}
 	
 	public static boolean isCollection(EntityList entityList) {

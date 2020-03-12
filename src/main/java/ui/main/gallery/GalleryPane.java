@@ -238,8 +238,6 @@ public class GalleryPane extends ScrollPane {
 	
 	public boolean reload() {
 		//	prepare
-		Select.storeTargetPosition();
-		
 		tiles.clear();
 		tileEntities.clear();
 		
@@ -281,9 +279,6 @@ public class GalleryPane extends ScrollPane {
 		
 		//	apply changes
 		tilePane.getChildren().setAll(tiles);
-		
-		//  finish
-		Select.restoreTargetPosition();
 		
 		return true;
 	}

@@ -117,6 +117,12 @@ public class Select extends EntityList {
 		getEntities().forEach(entity -> {
 			if (FileUtil.deleteFile(FileUtil.getFileEntity(entity))) {
 				FileUtil.deleteFile(FileUtil.getFileCache(entity));
+				
+				if (entity.getCollectionID() != 0) {
+					entity.getCollection().remove(entity);
+					Reload.notify(Notifier.TARGET_COLLECTION_CHANGED);//todo move to collection.remove
+				}
+				
 				helper.addImpl(entity);
 			}
 		});
@@ -126,7 +132,7 @@ public class Select extends EntityList {
 			Filter.getEntities().removeAll(helper);
 			EntityList.getMain().removeAll(helper);
 			
-			Reload.notify(Notifier.ENTITYLIST_CHANGED);
+			Reload.notify(Notifier.ENTITYLIST_CHANGED); //todo move to entitylist.getmain.removeall
 		}
 	}
 	
@@ -254,9 +260,10 @@ public class Select extends EntityList {
 	
 	public static void deleteTarget() {
 		Entity target = Select.getTarget();
-		
 		if (FileUtil.deleteFile(FileUtil.getFileEntity(target))) {
 			FileUtil.deleteFile(FileUtil.getFileCache(target));
+			
+			Select.storeTargetPosition();
 			
 			if (target.getCollectionID() != 0) {
 				target.getCollection().remove(target);
@@ -267,36 +274,40 @@ public class Select extends EntityList {
 			Filter.getEntities().remove(target);
 			EntityList.getMain().remove(target);
 			
+			Select.restoreTargetPosition();
+			
 			Reload.notify(Notifier.TARGET_CHANGED, Notifier.ENTITYLIST_CHANGED);
 		}
 	}
 	
-	private static int storePos = -1;
-	private static Entity storeEntity = null;
+	private static Entity memEntity = null;
+	private static int memIndex = -1;
 	public static void storeTargetPosition() {
-		if (target != null) {
-			if (EntityCollectionUtil.hasOpenOrNoCollection(target)) {
-				storeEntity = target;
-			} else {
-				storeEntity = target.getCollection().getFirstImpl();
+		if (target == null) {
+			memEntity = null;
+			memIndex = -1;
+		} else {
+			memEntity = EntityCollectionUtil.getRepresentingEntity(target);
+			EntityList representingEntities = EntityCollectionUtil.getRepresentingEntityList(Filter.getEntities());
+			if (!representingEntities.isEmpty()) {
+				memIndex = representingEntities.indexOf(memEntity);
 			}
-			storePos = GalleryPane.getTileEntities().indexOf(storeEntity);
 		}
 	}
 	public static void restoreTargetPosition() {
-		EntityList tileEntities = GalleryPane.getTileEntities();
-		if (!tileEntities.isEmpty()) {
-			if (!tileEntities.contains(storeEntity) && storePos >= 0) {
-				if (storePos <= tileEntities.size() - 1) {
-					setTarget(tileEntities.get(storePos));
+		EntityList representingEntities = EntityCollectionUtil.getRepresentingEntityList(Filter.getEntities());
+		if (!representingEntities.isEmpty()) {
+			if (!representingEntities.contains(memEntity) && memIndex >= 0) {
+				if (memIndex <= representingEntities.size() - 1) {
+					Select.setTarget(representingEntities.get(memIndex));
 				} else {
-					setTarget(tileEntities.getLastImpl());
+					Select.setTarget(representingEntities.getLastImpl());
 				}
 				
 				if (EntityCollectionUtil.hasOpenOrNoCollection(target)) {
-					getEntities().setImpl(target);
+					Select.getEntities().setImpl(target);
 				} else {
-					getEntities().setAllImpl(target.getCollection());
+					Select.getEntities().setAllImpl(Filter.getFilteredList(target.getCollection()));
 				}
 			}
 		}

@@ -68,14 +68,16 @@ public class Filter extends EntityList {
 		Reload.notify(Notifier.FILTER_CHANGED);
 	}
 	public static void refresh() {
-		getEntities().clear();
+		Select.storeTargetPosition();
 		
+		Filter.getEntities().clear();
 		for (Entity entity : EntityList.getMain()) {
-			if (isValid(entity)) {
-				getEntities().addImpl(entity);
+			if (Filter.isValid(entity)) {
+				Filter.getEntities().addImpl(entity);
 			}
 		}
 		
+		Select.restoreTargetPosition();
 		Reload.notify(Notifier.FILTER_CHANGED);
 	}
 	

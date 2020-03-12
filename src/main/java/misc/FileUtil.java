@@ -68,8 +68,8 @@ public abstract class FileUtil {
 					}
 				}
 			} else {
-				SimpleMessageStage.show("Delete failed: No OS-level file trash support");
-				Logger.getGlobal().severe("No OS-level file trash support");
+				SimpleMessageStage.show("Delete failed: No OS-level recycle bin support");
+				Logger.getGlobal().severe("No OS-level recycle bin support");
 			}
 			
 			return counter != 0;

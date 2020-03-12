@@ -29,7 +29,7 @@ public class EntityList extends CustomList<Entity> {
 	}
 	
 	public Entity getRandom() {
-		Entity entity = super.getRandomImpl();
+		Entity entity = EntityCollectionUtil.getRepresentingEntityList(this).getRandomImpl();
 		if (entity != null) {
 			if (entity.getCollectionID() == 0) {
 				return entity;
