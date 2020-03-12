@@ -124,9 +124,9 @@ public abstract class FileUtil {
 		
 		for (File abstractFile : abstractFiles) {
 			if (abstractFile.isDirectory()) {
-				actualFiles.addAll(FileUtil.getFiles(abstractFile, useFilter));
+				actualFiles.addAllImpl(FileUtil.getFiles(abstractFile, useFilter));
 			} else {
-				actualFiles.add(abstractFile);
+				actualFiles.addImpl(abstractFile);
 			}
 		}
 		
@@ -135,7 +135,7 @@ public abstract class FileUtil {
 	
 	public static CustomList<Project> getProjects() {
 		CustomList<Project> projects = new CustomList<>();
-		FileUtil.getProjectFiles().forEach(projectFile -> projects.add(Project.readFromDisk(projectFile.getAbsolutePath())));
+		FileUtil.getProjectFiles().forEach(projectFile -> projects.addImpl(Project.readFromDisk(projectFile.getAbsolutePath())));
 		return projects;
 	}
 	public static CustomList<File> getProjectFiles() {

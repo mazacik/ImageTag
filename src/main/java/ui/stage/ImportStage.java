@@ -149,10 +149,10 @@ public class ImportStage extends AbstractStage {
 		if (!entities.isEmpty()) {
 			CacheManager.checkCacheInBackground(entities);
 			
-			EntityList.getMain().addAll(entities);
+			EntityList.getMain().addAllImpl(entities);
 			EntityList.getMain().sort();
 			
-			Filter.getLastImport().setAll(entities);
+			Filter.getLastImport().setAllImpl(entities);
 		}
 		
 		displayResults(entities, usingThread);
@@ -165,7 +165,7 @@ public class ImportStage extends AbstractStage {
 		EntityList entities = new EntityList();
 		for (File file : FileUtil.getFiles(directory, true)) {
 			if (useThread && Thread.currentThread().isInterrupted()) return null;
-			entities.add(this.importEntity(file, directoryPath));
+			entities.addImpl(this.importEntity(file, directoryPath));
 		}
 		
 		return entities;

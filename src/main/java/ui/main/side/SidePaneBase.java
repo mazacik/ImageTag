@@ -42,7 +42,7 @@ public abstract class SidePaneBase extends VBox {
 		boxNodes.getChildren().setAll(rootNodes);
 		
 		CustomList<String> openNodesHelper = new CustomList<>();
-		openNodes.forEach(tagNode -> openNodesHelper.add(tagNode.getStringValue()));
+		openNodes.forEach(tagNode -> openNodesHelper.addImpl(tagNode.getStringValue()));
 		openNodes.clear();
 		for (TagNode tagNode : getTagNodes()) {
 			if (openNodesHelper.contains(tagNode.getStringValue())) {
@@ -57,8 +57,8 @@ public abstract class SidePaneBase extends VBox {
 		event.consume();
 		
 		double rowHeight;
-		if (rootNodes.getFirst() != null) {
-			rowHeight = rootNodes.getFirst().getHeight();
+		if (rootNodes.getFirstImpl() != null) {
+			rowHeight = rootNodes.getFirstImpl().getHeight();
 		} else {
 			rowHeight = Settings.FONT_SIZE.getValueInteger();
 		}
@@ -78,7 +78,7 @@ public abstract class SidePaneBase extends VBox {
 	private void createNode(Tag tag) {
 		//check root nodes
 		for (TagNode tagNode : rootNodes) {
-			if (tagNode.getText().equals(tag.getLevels().getFirst())) {
+			if (tagNode.getText().equals(tag.getLevels().getFirstImpl())) {
 				//root node found, continue with child nodes
 				createNodeRecursion(tagNode, tag);
 				return;
@@ -87,7 +87,7 @@ public abstract class SidePaneBase extends VBox {
 		
 		//root node not found, create
 		TagNode rootNode = new TagNode(this, tag, 0);
-		rootNodes.add(rootNode);
+		rootNodes.addImpl(rootNode);
 		
 		//continue with child nodes
 		createNodeRecursion(rootNode, tag);
@@ -114,7 +114,7 @@ public abstract class SidePaneBase extends VBox {
 		
 		//child node not found, create
 		TagNode newNode = new TagNode(this, tag, tagNode.getLevels().size());
-		tagNode.getChildrenDirect().add(newNode);
+		tagNode.getChildrenDirect().addImpl(newNode);
 		
 		//continue with continue with next level
 		createNodeRecursion(newNode, tag);
@@ -127,7 +127,7 @@ public abstract class SidePaneBase extends VBox {
 	}
 	private void getTagNodesRecursion(CustomList<TagNode> tagNodes, CustomList<TagNode> returnList) {
 		for (TagNode tagNode : tagNodes) {
-			returnList.add(tagNode);
+			returnList.addImpl(tagNode);
 			getTagNodesRecursion(tagNode.getChildrenDirect(), returnList);
 		}
 	}

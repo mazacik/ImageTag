@@ -270,7 +270,7 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				hideMenus();
 				
-				Select.getEntities().setAll(Filter.getEntities());
+				Select.getEntities().setAllImpl(Filter.getEntities());
 				Reload.start();
 			});
 			return textNode;

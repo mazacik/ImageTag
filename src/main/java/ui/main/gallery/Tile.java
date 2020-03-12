@@ -95,7 +95,7 @@ public class Tile extends Pane {
 		imageView.setY(HIGHLIGHT_PADDING);
 		
 		if (entity.getCollectionID() != 0) {
-			if (entity.getCollection().getFirst() == entity) {
+			if (entity.getCollection().getFirstImpl() == entity) {
 				this.setEffect(collectionIconPlus);
 			} else {
 				this.setEffect(collectionIconMinus);
@@ -123,12 +123,12 @@ public class Tile extends Pane {
 								if (Select.getEntities().contains(entity)) {
 									Select.getEntities().remove(entity);
 								} else {
-									Select.getEntities().add(entity);
+									Select.getEntities().addImpl(entity);
 								}
 							} else if (event.isShiftDown()) {
 								Select.shiftSelectTo(entity);
 							} else {
-								Select.getEntities().set(entity);
+								Select.getEntities().setImpl(entity);
 							}
 							Select.setTarget(entity);
 						} else {
@@ -140,7 +140,7 @@ public class Tile extends Pane {
 					break;
 				case SECONDARY:
 					if (!Select.getEntities().contains(entity)) {
-						Select.getEntities().set(entity);
+						Select.getEntities().setImpl(entity);
 					}
 					
 					//additional functionality from ClickMenu

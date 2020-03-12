@@ -49,8 +49,8 @@ public class Main extends Application {
 		initEntities();
 		initCollections();
 		
-		Select.setTarget(EntityList.getMain().getFirst());
-		Select.getEntities().add(EntityList.getMain().getFirst());
+		Select.setTarget(EntityList.getMain().getFirstImpl());
+		Select.getEntities().addImpl(EntityList.getMain().getFirstImpl());
 		
 		Reload.notify(Notifier.values());
 		Reload.start();
@@ -59,13 +59,13 @@ public class Main extends Application {
 	}
 	
 	private static void initEntities() {
-		EntityList.getMain().setAll(Project.getCurrent().getEntityList());
+		EntityList.getMain().setAllImpl(Project.getCurrent().getEntityList());
 		
 		EntityList entitiesWithoutFiles = new EntityList(EntityList.getMain());
 		CustomList<File> filesWithoutEntities = FileUtil.getFiles(new File(Project.getCurrent().getDirectorySource()), true);
 		
 		CustomList<String> newFileNames = new CustomList<>();
-		filesWithoutEntities.forEach(file -> newFileNames.add(FileUtil.createEntityName(file)));
+		filesWithoutEntities.forEach(file -> newFileNames.addImpl(FileUtil.createEntityName(file)));
 		
 		/* match files in the source directory with known entities in the database */
 		for (int i = 0; i < entitiesWithoutFiles.size(); i++) {
@@ -107,14 +107,14 @@ public class Main extends Application {
 		}
 		if (!filesWithoutEntities.isEmpty()) {
 			EntityList newEntities = new EntityList(filesWithoutEntities);
-			EntityList.getMain().addAll(newEntities);
-			Filter.getLastImport().addAll(newEntities);
+			EntityList.getMain().addAllImpl(newEntities);
+			Filter.getLastImport().addAllImpl(newEntities);
 			EntityList.getMain().sort();
 		}
 		
 		for (Entity entity : EntityList.getMain()) {
 			for (int tagID : entity.getTagIDs()) {
-				entity.getTagList().add(TagList.getMain().getTag(tagID));
+				entity.getTagList().addImpl(TagList.getMain().getTag(tagID));
 			}
 		}
 	}
@@ -125,8 +125,8 @@ public class Main extends Application {
 			if (collectionID != 0) {
 				boolean collectionExists = false;
 				for (EntityList collection : collections) {
-					if (collection.getFirst().getCollectionID() == collectionID) {
-						collection.add(entity);
+					if (collection.getFirstImpl().getCollectionID() == collectionID) {
+						collection.addImpl(entity);
 						entity.setCollection(collection);
 						collectionExists = true;
 						break;
@@ -135,7 +135,7 @@ public class Main extends Application {
 				if (!collectionExists) {
 					EntityList collection = new EntityList(entity);
 					entity.setCollection(collection);
-					collections.add(collection);
+					collections.addImpl(collection);
 				}
 			}
 		}
@@ -143,7 +143,7 @@ public class Main extends Application {
 	private static void initTags() {
 		TagList allTags = Project.getCurrent().getTagList();
 		TagList tagListMain = TagList.getMain();
-		if (allTags != null) tagListMain.addAll(allTags);
+		if (allTags != null) tagListMain.addAllImpl(allTags);
 		
 		tagListMain.forEach(Tag::updateStringValue);
 		tagListMain.sort();

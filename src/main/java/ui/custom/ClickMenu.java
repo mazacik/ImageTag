@@ -36,10 +36,10 @@ public class ClickMenu extends Popup {
 		this.setAutoHide(true);
 		this.setHideOnEscape(true);
 		
-		instances.add(this);
+		instances.addImpl(this);
 	}
 	public static void register(Class<?> c, Direction direction, MouseButton mouseButton, Region... children) {
-		staticInstances.add(new ClickMenu(c, direction, mouseButton, children));
+		staticInstances.addImpl(new ClickMenu(c, direction, mouseButton, children));
 	}
 	public static ClickMenu install(Region root) {
 		return install(root, 0, 0);

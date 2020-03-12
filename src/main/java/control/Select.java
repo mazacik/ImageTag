@@ -19,20 +19,24 @@ public class Select extends EntityList {
 		return this.add(entity, false);
 	}
 	public boolean add(Entity entity, boolean checkDuplicates) {
+		int sizeOld = this.size();
+		
 		if (EntityCollectionUtil.hasOpenOrNoCollection(entity)) {
-			if (super.add(entity, checkDuplicates)) {
+			if (super.addImpl(entity, checkDuplicates)) {
 				Reload.requestBorderUpdate(entity);
-				Reload.notify(Notifier.SELECT_CHANGED);
-				return true;
 			}
 		} else {
-			if (super.addAll(entity.getCollection(), checkDuplicates)) {
-				Reload.requestBorderUpdate((Filter.getFilteredList(entity.getCollection())));
-				Reload.notify(Notifier.SELECT_CHANGED);
-				return true;
+			if (super.addAllImpl(entity.getCollection(), checkDuplicates)) {
+				Reload.requestBorderUpdate(Filter.getFilteredList(entity.getCollection()));
 			}
 		}
-		return false;
+		
+		if (this.size() != sizeOld) {
+			Reload.notify(Notifier.SELECT_CHANGED);
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	public boolean addAll(Collection<? extends Entity> c) {
@@ -43,13 +47,12 @@ public class Select extends EntityList {
 		
 		for (Entity entity : c) {
 			if (EntityCollectionUtil.hasOpenOrNoCollection(entity)) {
-				if (super.add(entity, true)) {
+				if (super.addImpl(entity, checkDuplicates)) {
 					Reload.requestBorderUpdate(entity);
-					
 				}
 			} else {
 				EntityList afterFilter = Filter.getFilteredList(entity.getCollection());
-				if (super.addAll(afterFilter, true)) {
+				if (super.addAllImpl(afterFilter, checkDuplicates)) {
 					Reload.requestBorderUpdate(afterFilter);
 				}
 			}
@@ -63,52 +66,43 @@ public class Select extends EntityList {
 		}
 	}
 	
+	public boolean set(Entity entity) {
+		this.clear();
+		return this.add(entity);
+	}
+	public boolean setAll(Collection<? extends Entity> c) {
+		this.clear();
+		return this.addAll(c);
+	}
+	
 	public boolean remove(Entity entity) {
+		int sizeOld = this.size();
+		
 		if (EntityCollectionUtil.hasOpenOrNoCollection(entity)) {
-			if (this.size() != 1) {
-				if (super.remove(entity)) {
-					Reload.requestBorderUpdate(entity);
-					Reload.notify(Notifier.SELECT_CHANGED);
-					return true;
-				}
+			if (super.removeImpl(entity)) {
+				Reload.requestBorderUpdate(entity);
 			}
 		} else {
-			if (this.size() != entity.getCollection().size()) {
-				if (super.removeAll((Filter.getFilteredList(entity.getCollection())))) {
-					Reload.requestBorderUpdate(entity.getCollection());
-					Reload.notify(Notifier.SELECT_CHANGED);
-					return true;
-				}
+			if (super.removeAllImpl(entity.getCollection())) {
+				Reload.requestBorderUpdate(Filter.getFilteredList(entity.getCollection()));
 			}
 		}
-		return false;
+		
+		if (this.size() != sizeOld) {
+			Reload.notify(Notifier.SELECT_CHANGED);
+			return true;
+		} else {
+			return false;
+		}
 	}
 	public boolean removeAll(Collection<?> c) {
-		if (super.removeAll(c)) {
+		if (super.removeAllImpl(c)) {
 			Reload.requestBorderUpdate((EntityList) c);
 			Reload.notify(Notifier.SELECT_CHANGED);
 			return true;
-		}
-		return false;
-	}
-	
-	public boolean set(Entity entity) {
-		this.clear();
-		if (EntityCollectionUtil.hasOpenOrNoCollection(entity)) {
-			if (super.add(entity)) {
-				Reload.requestBorderUpdate(entity);
-				Reload.notify(Notifier.SELECT_CHANGED);
-				return true;
-			}
 		} else {
-			EntityList afterFilter = Filter.getFilteredList(entity.getCollection());
-			if (super.addAll(afterFilter)) {
-				Reload.requestBorderUpdate(afterFilter);
-				Reload.notify(Notifier.SELECT_CHANGED);
-				return true;
-			}
+			return false;
 		}
-		return false;
 	}
 	
 	public void clear() {
@@ -123,7 +117,7 @@ public class Select extends EntityList {
 		getEntities().forEach(entity -> {
 			if (FileUtil.deleteFile(FileUtil.getFileEntity(entity))) {
 				FileUtil.deleteFile(FileUtil.getFileCache(entity));
-				helper.add(entity);
+				helper.addImpl(entity);
 			}
 		});
 		
@@ -153,7 +147,7 @@ public class Select extends EntityList {
 			indexHigher = indexTo;
 		}
 		
-		getEntities().addAll(entities.subList(indexLower, indexHigher + 1), true);
+		getEntities().addAllImpl(entities.subList(indexLower, indexHigher + 1), true);
 	}
 	
 	public void addTag(Integer tagID) {
@@ -209,7 +203,7 @@ public class Select extends EntityList {
 			if (EntityCollectionUtil.getOpenCollections().contains(target.getCollectionID())) {
 				currentTargetIndex = entities.indexOf(target);
 			} else {
-				Entity groupFirst = target.getCollection().getFirst();
+				Entity groupFirst = target.getCollection().getFirstImpl();
 				if (entities.contains(groupFirst)) {
 					currentTargetIndex = entities.indexOf(groupFirst);
 				} else {
@@ -284,7 +278,7 @@ public class Select extends EntityList {
 			if (EntityCollectionUtil.hasOpenOrNoCollection(target)) {
 				storeEntity = target;
 			} else {
-				storeEntity = target.getCollection().getFirst();
+				storeEntity = target.getCollection().getFirstImpl();
 			}
 			storePos = GalleryPane.getTileEntities().indexOf(storeEntity);
 		}
@@ -296,13 +290,13 @@ public class Select extends EntityList {
 				if (storePos <= tileEntities.size() - 1) {
 					setTarget(tileEntities.get(storePos));
 				} else {
-					setTarget(tileEntities.getLast());
+					setTarget(tileEntities.getLastImpl());
 				}
 				
 				if (EntityCollectionUtil.hasOpenOrNoCollection(target)) {
-					getEntities().set(target);
+					getEntities().setImpl(target);
 				} else {
-					getEntities().setAll(target.getCollection());
+					getEntities().setAllImpl(target.getCollection());
 				}
 			}
 		}

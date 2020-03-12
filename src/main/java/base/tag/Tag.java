@@ -19,10 +19,10 @@ public class Tag {
 	public void replaceLevelsFromStart(int numLevelsToReplaceFromStart, CustomList<String> listLevelsToReplaceWith) {
 		CustomList<String> listLevelsToReplaceWithLocal = new CustomList<>(listLevelsToReplaceWith);
 		for (int i = numLevelsToReplaceFromStart; i < levels.size(); i++) {
-			listLevelsToReplaceWithLocal.add(levels.get(i));
+			listLevelsToReplaceWithLocal.addImpl(levels.get(i));
 		}
 		
-		levels.setAll(listLevelsToReplaceWithLocal);
+		levels.setAllImpl(listLevelsToReplaceWithLocal);
 		updateStringValue();
 	}
 	

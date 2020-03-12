@@ -42,7 +42,7 @@ public class TagList extends CustomList<Tag> {
 		TagList results = new TagList();
 		for (Tag tag : this) {
 			if (tag.getStringValue().startsWith(query)) {
-				results.add(tag);
+				results.addImpl(tag);
 			}
 		}
 		return results;

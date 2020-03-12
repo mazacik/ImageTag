@@ -17,12 +17,12 @@ public abstract class EntityCollectionUtil {
 			entity.getTile().updateCollectionIcon();
 		}
 		
-		Select.setTarget(collection.getFirst());
+		Select.setTarget(collection.getFirstImpl());
 		
 		Reload.notify(Notifier.TARGET_COLLECTION_CHANGED);
 	}
 	public static void discard() {
-		for (Entity entity : Select.getEntities().getFirst().getCollection()) {
+		for (Entity entity : Select.getEntities().getFirstImpl().getCollection()) {
 			entity.setCollectionID(0);
 			entity.setCollection(null);
 			entity.getTile().setEffect(null);
@@ -32,7 +32,7 @@ public abstract class EntityCollectionUtil {
 	}
 	
 	public static boolean isCollection(EntityList entityList) {
-		int collectionID = entityList.getFirst().getCollectionID();
+		int collectionID = entityList.getFirstImpl().getCollectionID();
 		if (collectionID == 0) return false;
 		for (Entity entity : entityList) {
 			if (entity.getCollectionID() != collectionID) {
@@ -57,7 +57,7 @@ public abstract class EntityCollectionUtil {
 			if (openCollections.contains(collectionID)) {
 				openCollections.remove((Integer) collectionID);
 			} else {
-				openCollections.add(collectionID);
+				openCollections.addImpl(collectionID);
 			}
 			
 			for (Entity _entity : entity.getCollection()) {

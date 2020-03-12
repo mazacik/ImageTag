@@ -11,7 +11,7 @@ public class FilterListManager {
 	
 	public boolean applyLists(Entity entity) {
 		CustomList<String> stringValues = new CustomList<>();
-		entity.getTagList().forEach(tag -> stringValues.add(tag.getStringValue()));
+		entity.getTagList().forEach(tag -> stringValues.addImpl(tag.getStringValue()));
 		
 		int deepestMatch = 0;
 		boolean ok = whitelist.isEmpty();
@@ -83,7 +83,7 @@ public class FilterListManager {
 			}
 		}
 		
-		whitelist.add(new TagSimple(stringValue, numLevels));
+		whitelist.addImpl(new TagSimple(stringValue, numLevels));
 	}
 	private void blacklistAdd(String stringValue, int numLevels) {
 		for (TagSimple tagSimple : blacklist) {
@@ -92,7 +92,7 @@ public class FilterListManager {
 			}
 		}
 		
-		blacklist.add(new TagSimple(stringValue, numLevels));
+		blacklist.addImpl(new TagSimple(stringValue, numLevels));
 	}
 	private void whitelistRemove(String stringValue) {
 		whitelist.removeIf(tagSimple -> tagSimple.stringValue.equals(stringValue));

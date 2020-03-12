@@ -24,7 +24,7 @@ public class TagUtil {
 	public static void create(CustomList<String> listLevelsOld) {
 		CustomList<String> listLevelsNew = TagEditStage.show(TagList.getMain(), listLevelsOld);
 		if (listLevelsNew != null && !listLevelsNew.isEmpty()) {
-			TagList.getMain().add(new Tag(listLevelsNew));
+			TagList.getMain().addImpl(new Tag(listLevelsNew));
 			TagList.getMain().sort();
 			
 			Reload.notify(Notifier.TAGLIST_CHANGED);

@@ -60,7 +60,7 @@ public class ControlsBase extends BorderPane {
 		lblTimeTotal = new TextNode("23:59:59", true, true, false, true);
 		
 		this.setBackground(Decorator.getBackgroundPrimary());
-		Decorator.getNodeList().add(this);
+		Decorator.getNodeList().addImpl(this);
 		
 		initEvents(videoPlayer);
 	}
@@ -146,12 +146,12 @@ public class ControlsBase extends BorderPane {
 		
 		btnPrevious.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			Select.moveTarget(Direction.LEFT);
-			Select.getEntities().set(Select.getTarget());
+			Select.getEntities().setImpl(Select.getTarget());
 			Reload.start();
 		});
 		btnNext.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			Select.moveTarget(Direction.RIGHT);
-			Select.getEntities().set(Select.getTarget());
+			Select.getEntities().setImpl(Select.getTarget());
 			Reload.start();
 		});
 	}

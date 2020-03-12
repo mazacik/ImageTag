@@ -52,7 +52,7 @@ public class ToolbarPane extends BorderPane {
 		nodeRandom.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
 			Entity randomEntity = GalleryPane.getTileEntities().getRandom();
-			Select.getEntities().set(randomEntity);
+			Select.getEntities().setImpl(randomEntity);
 			Select.setTarget(randomEntity);
 			Reload.start();
 		});

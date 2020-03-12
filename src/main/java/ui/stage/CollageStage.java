@@ -27,7 +27,7 @@ public class CollageStage extends Stage {
 			for (Entity entity : Filter.getEntities()) {
 				Image image = new Image("file:" + FileUtil.getFileCache(entity), miniW, miniH, false, false);
 				Color averageColor = getAverageColor(image, 0, 0, image.getWidth(), image.getHeight());
-				database.add(new CollagePiece(image, averageColor));
+				database.addImpl(new CollagePiece(image, averageColor));
 				Platform.runLater(() -> {
 					int progress = (int) ((double) Filter.getEntities().indexOf(entity) / (double) Filter.getEntities().size() * 100);
 					SimpleMessageStage.show("Collage Progress", progress + "%");

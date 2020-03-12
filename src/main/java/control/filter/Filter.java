@@ -8,21 +8,71 @@ import control.reload.Notifier;
 import control.reload.Reload;
 import enums.MediaType;
 
+import java.util.Collection;
+
 public class Filter extends EntityList {
 	private static final FilterSettings settings = new FilterSettings();
 	private static final FilterListManager listManager = new FilterListManager();
 	private static final EntityList lastImport = new EntityList();
 	
+	public boolean add(Entity entity) {
+		if (super.addImpl(entity)) {
+			Reload.notify(Notifier.FILTER_CHANGED);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public boolean addAll(Collection<? extends Entity> c) {
+		if (super.addAllImpl(c)) {
+			Reload.notify(Notifier.FILTER_CHANGED);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean remove(Entity entity) {
+		if (super.removeImpl(entity)) {
+			Reload.notify(Notifier.FILTER_CHANGED);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public boolean removeAll(Collection<?> c) {
+		if (super.removeAllImpl(c)) {
+			Reload.notify(Notifier.FILTER_CHANGED);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean set(Entity entity) {
+		this.clear();
+		return this.add(entity);
+	}
+	public boolean setAll(Collection<? extends Entity> c) {
+		this.clear();
+		return this.addAll(c);
+	}
+	
+	public void clear() {
+		super.clear();
+		Reload.notify(Notifier.FILTER_CHANGED);
+	}
+	
 	public static void reset() {
 		listManager.clear();
-		Reload.notify(Notifier.TAGLIST_CHANGED);
+		Reload.notify(Notifier.FILTER_CHANGED);
 	}
 	public static void refresh() {
 		getEntities().clear();
 		
 		for (Entity entity : EntityList.getMain()) {
 			if (isValid(entity)) {
-				getEntities().add(entity);
+				getEntities().addImpl(entity);
 			}
 		}
 		
@@ -44,7 +94,7 @@ public class Filter extends EntityList {
 			Filter.getEntities().remove(entity);
 			Reload.notify(Notifier.FILTER_CHANGED);
 		} else if (!contains && valid) {
-			Filter.getEntities().add(entity);
+			Filter.getEntities().addImpl(entity);
 			Reload.notify(Notifier.FILTER_CHANGED);//todo move to getEntities().add()
 		}
 	}
@@ -93,7 +143,7 @@ public class Filter extends EntityList {
 				if (!sameTags.isEmpty()) {
 					double similarity = (double) sameTags.size() / (double) query.size();
 					if (similarity >= settings.getSimilarityFactor()) {
-						getEntities().add(iterator);
+						getEntities().addImpl(iterator);
 					}
 				}
 			}

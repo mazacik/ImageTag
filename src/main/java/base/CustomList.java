@@ -16,10 +16,10 @@ public class CustomList<T> extends ArrayList<T> {
 		super(c);
 	}
 	
-	public boolean add(T t) {
-		return this.add(t, false);
+	public boolean addImpl(T t) {
+		return this.addImpl(t, false);
 	}
-	public boolean add(T t, boolean checkDuplicates) {
+	public boolean addImpl(T t, boolean checkDuplicates) {
 		if (t != null) {
 			if (!checkDuplicates || !super.contains(t)) {
 				return super.add(t);
@@ -28,10 +28,10 @@ public class CustomList<T> extends ArrayList<T> {
 		return false;
 	}
 	
-	public boolean addAll(Collection<? extends T> c) {
-		return this.addAll(c, false);
+	public boolean addAllImpl(Collection<? extends T> c) {
+		return this.addAllImpl(c, false);
 	}
-	public boolean addAll(Collection<? extends T> c, boolean checkDuplicates) {
+	public boolean addAllImpl(Collection<? extends T> c, boolean checkDuplicates) {
 		int sizeOld = this.size();
 		for (T t : c) {
 			if (!checkDuplicates || !super.contains(t)) {
@@ -41,22 +41,29 @@ public class CustomList<T> extends ArrayList<T> {
 		return sizeOld != this.size();
 	}
 	
-	public boolean set(T t) {
+	public boolean setImpl(T t) {
 		this.clear();
-		return this.add(t);
+		return this.addImpl(t);
 	}
-	public boolean setAll(Collection<? extends T> c) {
+	public boolean setAllImpl(Collection<? extends T> c) {
 		this.clear();
-		return this.addAll(c);
+		return this.addAllImpl(c);
 	}
 	
-	public T getFirst() {
+	public boolean removeImpl(T t) {
+		return super.remove(t);
+	}
+	public boolean removeAllImpl(Collection<?> c) {
+		return super.removeAll(c);
+	}
+	
+	public T getFirstImpl() {
 		return (!this.isEmpty()) ? this.get(0) : null;
 	}
-	public T getLast() {
+	public T getLastImpl() {
 		return (!this.isEmpty()) ? this.get(this.size() - 1) : null;
 	}
-	protected T getRandomImpl() {
+	public T getRandomImpl() {
 		return (!this.isEmpty()) ? this.get(new Random().nextInt(this.size())) : null;
 	}
 }

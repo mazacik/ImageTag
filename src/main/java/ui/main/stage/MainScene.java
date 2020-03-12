@@ -67,14 +67,14 @@ public class MainScene extends Scene {
 				while (!Filter.isValid(randomEntity)) {
 					randomEntity = Filter.getEntities().getRandom();
 				}
-				Select.getEntities().set(randomEntity);
+				Select.getEntities().setImpl(randomEntity);
 				Select.setTarget(randomEntity);
 				Reload.start();
 				break;
 			case G:
 				if (Select.getTarget().getCollectionID() != 0) {
 					Entity randomEntityFromCollection = Select.getTarget().getCollection().getRandom();
-					Select.getEntities().set(randomEntityFromCollection);
+					Select.getEntities().setImpl(randomEntityFromCollection);
 					Select.setTarget(randomEntityFromCollection);
 					Reload.start();
 				}
@@ -89,7 +89,7 @@ public class MainScene extends Scene {
 			case S:
 			case D:
 				Select.moveTarget(event.getCode());
-				Select.getEntities().set(Select.getTarget());
+				Select.getEntities().setImpl(Select.getTarget());
 				Reload.start();
 				break;
 			case ALT:

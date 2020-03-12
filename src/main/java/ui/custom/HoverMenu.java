@@ -32,7 +32,7 @@ public class HoverMenu extends Popup {
 		this.setAutoHide(true);
 		this.setHideOnEscape(true);
 		
-		instances.add(this);
+		instances.addImpl(this);
 	}
 	public static HoverMenu install(Region root, Direction direction, Region... children) {
 		return install(root, direction, 0, -1, children);

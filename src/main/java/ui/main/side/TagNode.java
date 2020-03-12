@@ -52,7 +52,7 @@ public class TagNode extends VBox {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i <= depth; i++) {
 			String level = tag.getLevels().get(i);
-			levels.add(level);
+			levels.addImpl(level);
 			sb.append(level);
 		}
 		stringValue = sb.toString();
@@ -154,7 +154,7 @@ public class TagNode extends VBox {
 	
 	public void open() {
 		if (!isLast()) {
-			parentPane.getOpenNodes().add(this);
+			parentPane.getOpenNodes().addImpl(this);
 			this.getChildren().retainAll(boxMain);
 			this.getChildren().addAll(childrenDirect);
 			toggleNode.setText("− ");
@@ -185,7 +185,7 @@ public class TagNode extends VBox {
 		return subNodes;
 	}
 	private void getSubNodesAllRecursion(TagNode currentNode, CustomList<TagNode> tagNodes) {
-		tagNodes.add(currentNode);
+		tagNodes.addImpl(currentNode);
 		if (!currentNode.isLast()) {
 			currentNode.getChildrenDirect().forEach(subNode -> getSubNodesAllRecursion(subNode, tagNodes));
 		}
@@ -197,7 +197,7 @@ public class TagNode extends VBox {
 	}
 	private void getSubNodesDeepestRecursion(TagNode currentNode, CustomList<TagNode> tagNodes) {
 		if (currentNode.isLast()) {
-			tagNodes.add(currentNode);
+			tagNodes.addImpl(currentNode);
 		} else {
 			currentNode.getChildrenDirect().forEach(subNode -> getSubNodesDeepestRecursion(subNode, tagNodes));
 		}
@@ -208,10 +208,10 @@ public class TagNode extends VBox {
 	}
 	
 	public CustomList<TagNode> getParentNodes() {
-		TagNode rootNode = getTagNode(parentPane.getRootNodes(), levels.getFirst());
+		TagNode rootNode = getTagNode(parentPane.getRootNodes(), levels.getFirstImpl());
 		
 		CustomList<TagNode> returnList = new CustomList<>();
-		returnList.add(rootNode);
+		returnList.addImpl(rootNode);
 		getParentNodesRecursion(returnList, levels, rootNode, 1);
 		
 		return returnList;
@@ -224,7 +224,7 @@ public class TagNode extends VBox {
 		
 		TagNode tagNode = getTagNode(currentNode.getChildrenDirect(), levels.get(index));
 		if (tagNode != null) {
-			returnList.add(tagNode);
+			returnList.addImpl(tagNode);
 			getParentNodesRecursion(returnList, levels, tagNode, ++index);
 		}
 	}

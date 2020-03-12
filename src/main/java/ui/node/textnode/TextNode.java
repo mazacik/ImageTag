@@ -24,7 +24,7 @@ public class TextNode extends Label {
 		this.setTextFill(Decorator.getColorPrimary());
 		this.minWidthProperty().bind(this.heightProperty());
 		
-		Decorator.getNodeList().add(this);
+		Decorator.getNodeList().addImpl(this);
 		
 		if (defaultPadding) this.setPadding(insets);
 		

@@ -28,9 +28,9 @@ public class SelectPane extends SidePaneBase {
 		refreshTitle();
 		
 		CustomList<String> stringListIntersect = new CustomList<>();
-		Select.getEntities().getTagListIntersect().forEach(tag -> stringListIntersect.add(tag.getStringValue()));
+		Select.getEntities().getTagListIntersect().forEach(tag -> stringListIntersect.addImpl(tag.getStringValue()));
 		CustomList<String> stringListUnion = new CustomList<>();
-		Select.getEntities().getTagList().forEach(tag -> stringListUnion.add(tag.getStringValue()));
+		Select.getEntities().getTagList().forEach(tag -> stringListUnion.addImpl(tag.getStringValue()));
 		
 		getTagNodes().forEach(tagNode -> this.refreshNodeColor(tagNode, stringListIntersect, stringListUnion));
 		

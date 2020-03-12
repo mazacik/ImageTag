@@ -91,8 +91,8 @@ public class Entity {
 	}
 	
 	public void addTag(Tag tag) {
-		getTagList().add(tag, true);
-		tagIDs.add(tag.getID());
+		getTagList().addImpl(tag, true);
+		tagIDs.addImpl(tag.getID());
 	}
 	public void addTag(int tagID) {
 		this.addTag(TagList.getMain().getTag(tagID));

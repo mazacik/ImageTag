@@ -45,9 +45,9 @@ public class GalleryPane extends ScrollPane {
 			if (selectRectangle.localToScene(selectRectangle.getBoundsInLocal()).intersects(tile.localToScene(tile.getBoundsInLocal()))) {
 				Entity entity = tile.getEntity();
 				if (EntityCollectionUtil.hasOpenOrNoCollection(entity)) {
-					entityList.add(entity);
+					entityList.addImpl(entity);
 				} else {
-					entityList.addAll(entity.getCollection());
+					entityList.addAllImpl(entity.getCollection());
 				}
 				
 			}
@@ -66,7 +66,7 @@ public class GalleryPane extends ScrollPane {
 				localCursorPositionX = x;
 				localCursorPositionY = y;
 				
-				selectRectangleHelper.setAll(Select.getEntities());
+				selectRectangleHelper.setAllImpl(Select.getEntities());
 				break;
 			case SECONDARY:
 				break;
@@ -93,8 +93,8 @@ public class GalleryPane extends ScrollPane {
 				Select.getEntities().clear();
 				
 				if (event.isControlDown()) {
-					Select.getEntities().addAll(selectRectangleHelper, true);
-					Select.getEntities().addAll(selectRectangleEntities, true);
+					Select.getEntities().addAllImpl(selectRectangleHelper, true);
+					Select.getEntities().addAllImpl(selectRectangleEntities, true);
 					for (Entity entity : new EntityList(Select.getEntities())) {
 						if (entity != Select.getTarget() && selectRectangleHelper.contains(entity) && selectRectangleEntities.contains(entity)) {
 							Select.getEntities().remove(entity);
@@ -102,11 +102,11 @@ public class GalleryPane extends ScrollPane {
 					}
 				} else if (event.isShiftDown()) {
 					selectRectangleHelper.removeAll(selectRectangleEntities);
-					Select.getEntities().addAll(selectRectangleHelper, true);
-					Select.getEntities().addAll(selectRectangleEntities, true);
+					Select.getEntities().addAllImpl(selectRectangleHelper, true);
+					Select.getEntities().addAllImpl(selectRectangleEntities, true);
 				} else {
 					selectRectangleHelper.removeAll(selectRectangleEntities);
-					Select.getEntities().addAll(selectRectangleEntities);
+					Select.getEntities().addAllImpl(selectRectangleEntities);
 				}
 				
 				Reload.start();
@@ -253,11 +253,11 @@ public class GalleryPane extends ScrollPane {
 			}
 			
 			if (entity.getCollectionID() == 0) {
-				tiles.add(entity.getTile());
-				tileEntities.add(entity);
+				tiles.addImpl(entity.getTile());
+				tileEntities.addImpl(entity);
 			} else if (!helper.contains(entity.getCollectionID())) {
 				//	only one object in a collection needs to be processed
-				helper.add(entity.getCollectionID());
+				helper.addImpl(entity.getCollectionID());
 				
 				if (EntityCollectionUtil.getOpenCollections().contains(entity.getCollectionID())) {
 					for (Entity entityInCollection : entity.getCollection()) {
@@ -265,15 +265,15 @@ public class GalleryPane extends ScrollPane {
 						//	the collection gets processed in a separate loop to keep its objects together
 						//	however, each object needs to be checked for Filter validity an additional time
 						if (Filter.getEntities().contains(entityInCollection)) {
-							tiles.add(entityInCollection.getTile());
-							tileEntities.add(entityInCollection);
+							tiles.addImpl(entityInCollection.getTile());
+							tileEntities.addImpl(entityInCollection);
 							Reload.requestBorderUpdate(entityInCollection);
 						}
 					}
 				} else {
 					entity.getTile().updateCollectionIcon();
-					tiles.add(entity.getTile());
-					tileEntities.add(entity);
+					tiles.addImpl(entity.getTile());
+					tileEntities.addImpl(entity);
 					Reload.requestBorderUpdate(entity);
 				}
 			}
@@ -291,7 +291,7 @@ public class GalleryPane extends ScrollPane {
 		Entity currentTarget = Select.getTarget();
 		if (!MainStage.getMainScene().isViewGallery() || currentTarget == null) return;
 		if (currentTarget.getCollectionID() != 0 && !EntityCollectionUtil.getOpenCollections().contains(currentTarget.getCollectionID())) {
-			currentTarget = currentTarget.getCollection().getFirst();
+			currentTarget = currentTarget.getCollection().getFirstImpl();
 		}
 		int targetIndex = tileEntities.indexOf(currentTarget);
 		if (targetIndex < 0) return;

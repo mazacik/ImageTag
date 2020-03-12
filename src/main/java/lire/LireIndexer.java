@@ -70,7 +70,7 @@ public class LireIndexer {
 		CustomList<String> imagePaths = new CustomList<>();
 		FileUtil.getFiles(directory, true).forEach(file -> {
 			try {
-				imagePaths.add(file.getCanonicalPath());
+				imagePaths.addImpl(file.getCanonicalPath());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

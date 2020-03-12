@@ -21,7 +21,7 @@ public class EntityList extends CustomList<Entity> {
 		super(Arrays.asList(entities));
 	}
 	public EntityList(CustomList<File> fileList) {
-		fileList.forEach(file -> this.add(new Entity(file)));
+		fileList.forEach(file -> this.addImpl(new Entity(file)));
 	}
 	
 	public void sort() {
@@ -52,20 +52,20 @@ public class EntityList extends CustomList<Entity> {
 	
 	public TagList getTagList() {
 		TagList tagList = new TagList();
-		this.forEach(entity -> tagList.addAll(entity.getTagList(), true));
+		this.forEach(entity -> tagList.addAllImpl(entity.getTagList(), true));
 		return tagList;
 	}
 	public TagList getTagListIntersect() {
 		if (!this.isEmpty()) {
 			TagList tagListIntersect = new TagList();
 			//check every tag of the first object
-			for (Tag tag : this.getFirst().getTagList()) {
+			for (Tag tag : this.getFirstImpl().getTagList()) {
 				//check if all objects contain the tagID
 				for (Entity entity : this) {
 					if (entity.getTagList().contains(tag)) {
 						//if the last object contains the tag, all before do too, add
-						if (entity.equals(this.getLast())) {
-							tagListIntersect.add(tag);
+						if (entity.equals(this.getLastImpl())) {
+							tagListIntersect.addImpl(tag);
 						}
 					} else {
 						//if any of the objects doesn't contain the tag, break

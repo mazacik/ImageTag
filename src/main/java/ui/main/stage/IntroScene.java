@@ -86,7 +86,7 @@ public class IntroScene extends Scene {
 					if (!projects.isEmpty()) {
 						MainStage.layoutMain();
 						projects.sort(Project.getComparator());
-						Project.setCurrent(projects.getFirst());
+						Project.setCurrent(projects.getFirstImpl());
 						Main.startProjectDatabaseLoading();
 					} else {
 						MainStage.getProjectScene().show();

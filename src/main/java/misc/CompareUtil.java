@@ -15,7 +15,7 @@ public class CompareUtil<T1, T2> {
 			T2 ocomp = lcomp.get(icomp);
 			
 			if (obase.equals(ocomp)) {
-				maps.add(new Pair<>(obase, ocomp));
+				maps.addImpl(new Pair<>(obase, ocomp));
 				if (lbase.size() == maps.size()) return maps;
 				ibase++;
 			}

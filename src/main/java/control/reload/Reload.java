@@ -53,7 +53,7 @@ public abstract class Reload {
 	
 	private static void link(Notifier notifier, InvokeHelper... invokeHelpers) {
 		for (InvokeHelper invokeHelper : invokeHelpers) {
-			notifier.getInvokeHelpers().add(invokeHelper);
+			notifier.getInvokeHelpers().addImpl(invokeHelper);
 		}
 	}
 	
@@ -61,9 +61,9 @@ public abstract class Reload {
 		//todo create notify(InvokeHelper... ihs)
 		//better performance, low level methods can notify without lagging the app
 		if (notifiers.length == 1) {
-			invokeHelpers.addAll(notifiers[0].getInvokeHelpers(), true);
+			invokeHelpers.addAllImpl(notifiers[0].getInvokeHelpers(), true);
 		} else {
-			Arrays.asList(notifiers).forEach(notifier -> invokeHelpers.addAll(notifier.getInvokeHelpers(), true));
+			Arrays.asList(notifiers).forEach(notifier -> invokeHelpers.addAllImpl(notifier.getInvokeHelpers(), true));
 		}
 		
 		invokeHelpers.sort(Comparator.comparing(InvokeHelper::getPriority));
@@ -74,23 +74,23 @@ public abstract class Reload {
 		}
 		
 		if (Select.getEntities().isEmpty()) {
-			Select.setTarget(Filter.getEntities().getFirst());
-			Select.getEntities().set(Select.getTarget());
+			Select.setTarget(Filter.getEntities().getFirstImpl());
+			Select.getEntities().setImpl(Select.getTarget());
 		}
 		
 		//update tile borders
 		EntityList helper = new EntityList();
 		for (Entity entity : needsBorderUpdate) {
 			entity.getTile().updateHighlight();
-			helper.add(entity);
+			helper.addImpl(entity);
 		}
 		needsBorderUpdate.removeAll(helper);
 	}
 	
 	public static void requestBorderUpdate(Collection<? extends Entity> c) {
-		needsBorderUpdate.addAll(c);
+		needsBorderUpdate.addAllImpl(c);
 	}
 	public static void requestBorderUpdate(Entity entity) {
-		needsBorderUpdate.add(entity);
+		needsBorderUpdate.addImpl(entity);
 	}
 }
