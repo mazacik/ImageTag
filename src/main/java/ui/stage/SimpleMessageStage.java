@@ -5,39 +5,23 @@ import javafx.scene.input.MouseEvent;
 import ui.node.textnode.TextNode;
 
 public class SimpleMessageStage extends AbstractStage {
-	private static final TextNode nodeMessage;
-	private static final TextNode nodeOK;
+	private TextNode nodeMessage;
 	
-	static {
-		nodeMessage = new TextNode("", false, false, false, true);
-		
-		nodeOK = new TextNode("OK", true, true, false, true);
-		nodeOK.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, getInstance()::close);
-	}
-	
-	public static void show(String... args) {
-		if (args.length > 0) {
-			if (args.length == 1) {
-				getInstance().setTitle("Error");
-				nodeMessage.setText(args[0]);
-			} else {
-				getInstance().setTitle(args[0]);
-				nodeMessage.setText(args[1]);
-			}
-			getInstance().showAndWait();
-		}
-	}
-	
-	private SimpleMessageStage() {
+	public SimpleMessageStage(String title, String message) {
 		super("", false);
 		
-		setRoot(nodeMessage);
-		setButtons(nodeOK);
+		nodeMessage = new TextNode("", false, false, false, true);
+		nodeMessage.setText(message);
+		
+		TextNode nodeOK = new TextNode("OK", true, true, false, true);
+		nodeOK.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, this::close);
+		
+		this.setTitle(title);
+		this.setRoot(nodeMessage);
+		this.setButtons(nodeOK);
 	}
-	private static class Loader {
-		private static final SimpleMessageStage INSTANCE = new SimpleMessageStage();
-	}
-	public static SimpleMessageStage getInstance() {
-		return Loader.INSTANCE;
+	
+	public void setText(String message) {
+		nodeMessage.setText(message);
 	}
 }

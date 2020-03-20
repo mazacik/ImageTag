@@ -44,6 +44,7 @@ public class ProgressNode extends ProgressBar {
 	public void setup(Object caller, double total) {
 		this.caller = caller;
 		this.total = total;
+		this.current = 0;
 	}
 	
 	public void advance(Object caller) {

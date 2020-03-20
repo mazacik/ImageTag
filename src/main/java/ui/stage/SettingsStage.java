@@ -10,12 +10,10 @@ import ui.node.textnode.TextNode;
 import ui.override.GridPane;
 
 public class SettingsStage extends AbstractStage {
-	private static final GridPane gridPane;
-	private static final TextNode nodeApply;
-	private static final TextNode nodeCancel;
-	
-	static {
-		gridPane = new GridPane();
+	public SettingsStage() {
+		super("Settings", false);
+		
+		GridPane gridPane = new GridPane();
 		gridPane.setVgap(3);
 		gridPane.setHgap(3);
 		gridPane.setPadding(new Insets(3));
@@ -34,7 +32,7 @@ public class SettingsStage extends AbstractStage {
 			}
 		}
 		
-		nodeApply = new TextNode("Apply", true, true, false, true);
+		TextNode nodeApply = new TextNode("Apply", true, true, false, true);
 		nodeApply.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			for (Settings setting : Settings.values()) {
 				if (setting.isUserModifiable()) {
@@ -42,35 +40,13 @@ public class SettingsStage extends AbstractStage {
 					setting.setValue(editNode.getText());
 				}
 			}
-			getInstance().close();
+			this.close();
 		});
 		
-		nodeCancel = new TextNode("Cancel", true, true, false, true);
-		nodeCancel.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-			getInstance().close();
-		});
-	}
-	
-	public static void show(String... args) {
-		for (Settings setting : Settings.values()) {
-			if (setting.isUserModifiable()) {
-				EditNode editNode = (EditNode) gridPane.getNode(1, setting.ordinal());
-				editNode.setText(String.valueOf(setting.getValue()));
-			}
-		}
+		TextNode nodeCancel = new TextNode("Cancel", true, true, false, true);
+		nodeCancel.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, this::close);
 		
-		getInstance().showAndWait();
-	}
-	
-	private SettingsStage() {
-		super("Settings", false);
-		setRoot(gridPane);
-		setButtons(nodeApply, nodeCancel);
-	}
-	private static class Loader {
-		private static final SettingsStage INSTANCE = new SettingsStage();
-	}
-	public static SettingsStage getInstance() {
-		return Loader.INSTANCE;
+		this.setRoot(gridPane);
+		this.setButtons(nodeApply, nodeCancel);
 	}
 }

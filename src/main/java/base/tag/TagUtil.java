@@ -22,7 +22,7 @@ public class TagUtil {
 		create(null);
 	}
 	public static void create(CustomList<String> levelsOld) {
-		CustomList<String> listLevelsNew = TagEditStage.showCreate(levelsOld);
+		CustomList<String> listLevelsNew = new TagEditStage().showCreate(levelsOld);
 		if (listLevelsNew != null && !listLevelsNew.isEmpty()) {
 			TagList.getMain().addImpl(new Tag(listLevelsNew));
 			TagList.getMain().sort();
@@ -35,7 +35,7 @@ public class TagUtil {
 		TagList tagListHelper = new TagList(TagList.getMain());
 		tagListHelper.removeAll(affectedTags);
 		
-		CustomList<String> listLevelsNew = TagEditStage.showEdit(tagListHelper, currentTagNode.getLevels());
+		CustomList<String> listLevelsNew = new TagEditStage().showEdit(tagListHelper, currentTagNode.getLevels());
 		if (!listLevelsNew.isEmpty()) {
 			affectedTags.forEach(tag -> tag.replaceLevelsFromStart(numLevelsOld, listLevelsNew));
 			TagList.getMain().sort();
@@ -45,7 +45,7 @@ public class TagUtil {
 		}
 	}
 	public static void remove() {
-		if (ConfirmationStage.show("Remove \"" + currentTagNode.getText() + "\" ?")) {
+		if (new ConfirmationStage("Remove \"" + currentTagNode.getText() + "\" ?").getResult()) {
 			currentTagNode.getSubNodesDeepest().forEach(subNode -> Root.FILTER.getListManager().unlist(subNode.getStringValue()));
 			
 			TagList tagList = TagList.getMain().getTagsStartingWith(currentTagNode.getStringValue());

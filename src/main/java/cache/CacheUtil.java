@@ -2,7 +2,6 @@ package cache;
 
 import base.entity.Entity;
 import base.entity.EntityList;
-import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -17,7 +16,7 @@ import javafx.scene.text.Font;
 import main.Root;
 import misc.FileUtil;
 import misc.Settings;
-import org.apache.commons.lang3.StringUtils;
+import thread.Thread;
 import ui.main.display.VideoPlayer;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
@@ -29,7 +28,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
-import java.util.logging.Logger;
 
 public abstract class CacheUtil {
 	private static Image placeholder = new WritableImage(Settings.GALLERY_TILE_SIZE.getValueInteger(), Settings.GALLERY_TILE_SIZE.getValueInteger()) {{
@@ -50,22 +48,25 @@ public abstract class CacheUtil {
 		scene.snapshot(this);
 	}};
 	
-	public static Image get(Entity entity) {
+	public static Image getCache(Entity entity) {
+		return getCache(entity, false);
+	}
+	public static Image getCache(Entity entity, boolean recreate) {
 		File cacheFile = new File(FileUtil.getFileCache(entity));
 		Image image;
 		
-		if (cacheFile.exists()) {
-			image = new Image("file:" + cacheFile.getAbsolutePath());
+		if (recreate || !cacheFile.exists()) {
+			image = createCache(entity);
 		} else {
-			image = create(entity);
+			image = new Image("file:" + cacheFile.getAbsolutePath());
 		}
 		
 		return (image == null) ? placeholder : image;
 	}
 	
-	public static Image create(Entity entity) {
-		String entityIndex = StringUtils.right("00000000" + (EntityList.getMain().indexOf(entity) + 1), String.valueOf(EntityList.getMain().size()).length());
-		Logger.getGlobal().info(String.format("[%s/%s] %s", entityIndex, EntityList.getMain().size(), entity.getName()));
+	public static Image createCache(Entity entity) {
+		//String entityIndex = StringUtils.right("00000000" + (EntityList.getMain().indexOf(entity) + 1), String.valueOf(EntityList.getMain().size()).length());
+		//Logger.getGlobal().info(String.format("[%s/%s] %s", entityIndex, EntityList.getMain().size(), entity.getName()));
 		
 		switch (entity.getMediaType()) {
 			case IMAGE:
@@ -92,8 +93,6 @@ public abstract class CacheUtil {
 				e.printStackTrace();
 				return null;
 			}
-		} else {
-			Logger.getGlobal().warning(entity.getName());
 		}
 		
 		return image;
@@ -185,26 +184,35 @@ public abstract class CacheUtil {
 		}
 	}
 	
-	private static Thread thread = null;
-	public static void checkCacheInBackground(EntityList entityList) {
-		if (thread == null || !thread.isAlive()) {
-			thread = new Thread(() -> {
-				Root.MAIN_STAGE.getMainScene().showLoadingBar(thread, entityList.size());
-				for (Entity entity : new EntityList(entityList)) {
-					if (Thread.currentThread().isInterrupted()) {
-						Logger.getGlobal().warning("CACHE CHECK THREAD INTERRUPTED");
-						return;
-					}
-					entity.getTile().setImage(CacheUtil.get(entity));
-					Root.MAIN_STAGE.getMainScene().advanceLoadingBar(thread);
-				}
-				Logger.getGlobal().info("CACHE CHECK THREAD FINISHED");
-				Platform.runLater(() -> Root.MAIN_STAGE.getMainScene().hideLoadingBar(thread));
-			});
-			thread.start();
-		}
+	public static void reset() {
+		EntityList.getMain().forEach(entity -> entity.getTile().setImage(null));
+		CacheUtil.loadCache(EntityList.getMain(), true);
 	}
-	public static Thread getThread() {
-		return thread;
+	
+	private static Thread thread = null;
+	public static void loadCache(EntityList entityList) {
+		loadCache(entityList, false);
+	}
+	public static void loadCache(EntityList entityList, boolean recreate) {
+		if (thread != null && thread.isAlive()) {
+			thread.interrupt();
+		}
+		
+		thread = new Thread(() -> {
+			Root.MAIN_STAGE.getMainScene().showLoadingBar(entityList, entityList.size());
+			
+			for (Entity entity : new EntityList(entityList)) {
+				if (Thread.currentThread().isInterrupted()) {
+					return;
+				}
+				
+				entity.getTile().setImage(CacheUtil.getCache(entity, recreate));
+				Root.MAIN_STAGE.getMainScene().advanceLoadingBar(entityList);
+			}
+			
+			Root.MAIN_STAGE.getMainScene().hideLoadingBar(entityList);
+		});
+		
+		thread.start();
 	}
 }

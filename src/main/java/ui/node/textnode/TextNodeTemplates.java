@@ -23,10 +23,7 @@ import misc.HttpUtil;
 import misc.Project;
 import ui.EntityDetailsUtil;
 import ui.custom.ListMenu;
-import ui.stage.CollageStage;
-import ui.stage.ImportStage;
-import ui.stage.SettingsStage;
-import ui.stage.SimpleMessageStage;
+import ui.stage.*;
 
 import java.awt.*;
 import java.io.File;
@@ -161,10 +158,12 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				Root.SELECT.getTarget().getTagList().clear();
-				
-				Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
-				Reload.start();
+				if (new ConfirmationStage("Clear tags of \"" + Root.SELECT.getTarget().getName() + "\"?").getResult()) {
+					Root.SELECT.getTarget().getTagList().clear();
+					
+					Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
+					Reload.start();
+				}
 			});
 			return textNode;
 		}
@@ -243,10 +242,12 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				Root.SELECT.forEach(entity -> entity.getTagList().clear());
-				
-				Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
-				Reload.start();
+				if (new ConfirmationStage("Clear tags of " + Root.SELECT.size() + " entities?").getResult()) {
+					Root.SELECT.forEach(entity -> entity.getTagList().clear());
+					
+					Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
+					Reload.start();
+				}
 			});
 			return textNode;
 		}
@@ -260,7 +261,7 @@ public enum TextNodeTemplates {
 				ListMenu.hideMenus();
 				
 				HttpUtil.googleReverseImageSearch(Root.SELECT.getTarget());
-				SimpleMessageStage.show("Info", "Request Sent.");
+				new SimpleMessageStage("Google RIS", "Request Sent.");
 			});
 			return textNode;
 		}
@@ -448,13 +449,7 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				if (CacheUtil.getThread() != null) CacheUtil.getThread().interrupt();
-				
-				EntityList.getMain().forEach(entity -> entity.getTile().setImage(null));
-				
-				FileUtil.deleteFile(FileUtil.getDirectoryCache());
-				
-				CacheUtil.checkCacheInBackground(EntityList.getMain());
+				CacheUtil.reset();
 			});
 			return textNode;
 		}
@@ -478,7 +473,7 @@ public enum TextNodeTemplates {
 			setupNode(textNode);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
-				new ImportStage().show("");
+				new ImportStage().show();
 			});
 			return textNode;
 		}
@@ -504,7 +499,7 @@ public enum TextNodeTemplates {
 				if (!entitiesDisk.isEmpty()) {
 					EntityList entities = new EntityList();
 					entitiesDisk.forEach(path -> entities.addImpl(new Entity(new File(path))));
-					CacheUtil.checkCacheInBackground(entities);
+					CacheUtil.loadCache(entities);
 					
 					EntityList.getMain().addAllImpl(entities);
 					EntityList.getMain().sort();
@@ -519,7 +514,7 @@ public enum TextNodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Settings", true, true, false, true, this);
 			setupNode(textNode);
-			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> SettingsStage.show(""));
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> new SettingsStage().show());
 			return textNode;
 		}
 	},

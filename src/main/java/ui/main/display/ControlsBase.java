@@ -139,7 +139,7 @@ public class ControlsBase extends BorderPane {
 				int thumbSize = Settings.GALLERY_TILE_SIZE.getValueInteger();
 				Root.DISPLAY_PANE.getVideoPlayer().snapshot(cacheFile, thumbSize, thumbSize);
 				
-				Image cache = CacheUtil.get(target);
+				Image cache = CacheUtil.getCache(target);
 				target.getTile().setImage(cache);
 			});
 		}

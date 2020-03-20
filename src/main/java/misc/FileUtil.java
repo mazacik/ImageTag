@@ -48,19 +48,27 @@ public abstract class FileUtil {
 	}
 	public static boolean deleteFile(String path) {
 		if (Main.DEBUG_FS_ALLOW_FILE_DELETE) {
-			int counter = 0;
+			int counterDone = 0;
+			int counterFail = 0;
 			File abstractFile = new File(path);
+			
+			SimpleMessageStage simpleMessageStage = null;
 			
 			if (abstractFile.exists()) {
 				if (FileUtils.getInstance().hasTrash()) {
 					if (abstractFile.isFile()) {
 						try {
 							FileUtils.getInstance().moveToTrash(new File[]{abstractFile});
-							//if (!abstractFile.exists()) counter++;
-							counter++;
+							//if (!abstractFile.exists()) counterDone++;
+							counterDone++;
 						} catch (IOException e) {
-							SimpleMessageStage.show("Delete failed: " + abstractFile.getAbsolutePath() + "\nCannot access the file because it is being used by another process.");
-							e.printStackTrace();
+							counterFail++;
+							if (simpleMessageStage == null) {
+								simpleMessageStage = new SimpleMessageStage("Error", "Failed to delete \"" + abstractFile.getAbsolutePath() + "\"");
+								simpleMessageStage.show();
+							} else {
+								simpleMessageStage.setText("Failed to delete " + counterFail + " files.");
+							}
 						}
 					} else {
 						for (File _abstractFile : new CustomList<>(abstractFile.listFiles())) {
@@ -68,12 +76,13 @@ public abstract class FileUtil {
 						}
 					}
 				} else {
-					SimpleMessageStage.show("Delete failed: No OS-level recycle bin support");
+					simpleMessageStage = new SimpleMessageStage("Error", "Delete failed: No OS-level recycle bin support");
+					simpleMessageStage.show();
 					Logger.getGlobal().severe("No OS-level recycle bin support");
 				}
 			}
 			
-			return counter != 0;
+			return counterDone != 0;
 		} else {
 			return false;
 		}

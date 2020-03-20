@@ -14,7 +14,6 @@ import javafx.stage.Stage;
 import misc.FileUtil;
 import misc.Project;
 import misc.Settings;
-import ui.stage.ImportStage;
 
 import java.io.File;
 
@@ -59,7 +58,7 @@ public class Main extends Application {
 		Reload.notify(Notifier.values());
 		Reload.start();
 		
-		CacheUtil.checkCacheInBackground(EntityList.getMain());
+		CacheUtil.loadCache(EntityList.getMain());
 	}
 	
 	private static void initEntities() {
@@ -155,8 +154,13 @@ public class Main extends Application {
 	}
 	
 	public static void exitApplication() {
-		if (CacheUtil.getThread() != null) CacheUtil.getThread().interrupt();
-		if (ImportStage.getThread() != null) ImportStage.getThread().interrupt();
+		Thread[] threads = new Thread[Root.THREADPOOL.activeCount()];
+		Root.THREADPOOL.enumerate(threads);
+		for (Thread thread : threads) {
+			if (thread.isAlive()) {
+				thread.interrupt();
+			}
+		}
 		
 		Root.DISPLAY_PANE.disposeVideoPlayer();
 		Root.DISPLAY_PANE.getControls().hide();

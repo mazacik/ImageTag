@@ -12,6 +12,8 @@ import ui.main.stage.MainStage;
 import ui.main.top.ToolbarPane;
 
 public abstract class Root {
+	public static final ThreadGroup THREADPOOL;
+	
 	public static final EntityList ENTITYLIST;
 	public static final TagList TAGLIST;
 	
@@ -27,6 +29,8 @@ public abstract class Root {
 	public static final SelectPane SELECT_PANE;
 	
 	static {
+		THREADPOOL = new ThreadGroup("ROOT");
+		
 		ENTITYLIST = new EntityList();
 		TAGLIST = new TagList();
 		

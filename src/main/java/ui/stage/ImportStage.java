@@ -17,6 +17,7 @@ import main.Root;
 import misc.FileUtil;
 import misc.Project;
 import misc.Settings;
+import thread.Thread;
 import ui.node.CheckboxNode;
 import ui.node.EditNode;
 import ui.node.SwitchNode;
@@ -30,10 +31,6 @@ import java.util.logging.Logger;
 
 public class ImportStage extends AbstractStage {
 	private static final int MIN_FILE_COUNT_TO_SHOW_LOADING_BAR = 10;
-	
-	private VBox boxStage1;
-	private TextNode nodeOK;
-	private TextNode nodeCancel;
 	
 	private VBox boxStage2;
 	private TextNode nodeMessage;
@@ -84,31 +81,33 @@ public class ImportStage extends AbstractStage {
 		paneOptions.add(nodeEmptyFolders, 0, 0);
 		paneOptions.add(nodeThread, 0, 1);
 		
-		boxStage1 = new VBox(boxPath, nodeMode, paneOptions);
+		VBox boxStage1 = new VBox(boxPath, nodeMode, paneOptions);
 		boxStage1.setAlignment(Pos.CENTER);
 		boxStage1.setSpacing(3);
 		boxStage1.setPadding(new Insets(3));
 		
-		nodeOK = new TextNode("Import", true, true, false, true);
+		TextNode nodeOK = new TextNode("Import", true, true, false, true);
 		nodeOK.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			File directory = new File(nodeEditPath.getText());
 			if (directory.exists() && directory.isDirectory()) {
 				Settings.IMPORT_LAST_PATH.setValue(directory.getAbsolutePath());
 				
-				boolean useThread = nodeThread.isChecked();
-				if (!useThread) {
-					setRoot(boxStage2);
-					importFiles(directory, useThread);
-				} else {
+				if (nodeThread.isChecked()) {
 					close();
 					importFilesUsingThread(directory);
+				} else {
+					setRoot(boxStage2);
+					importFiles(directory);
 				}
 			} else {
 				setErrorMessage("Import Path Invalid");
 			}
 		});
-		nodeCancel = new TextNode("Cancel", true, true, false, true);
+		TextNode nodeCancel = new TextNode("Cancel", true, true, false, true);
 		nodeCancel.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, this::close);
+		
+		this.setRoot(boxStage1);
+		this.setButtons(nodeOK, nodeCancel);
 	}
 	private void createStage2() {
 		nodeMessage = new TextNode("", false, false, false, true);
@@ -133,24 +132,12 @@ public class ImportStage extends AbstractStage {
 		//todo if there was a problem importing a file, show a message
 	}
 	
-	private void importFilesUsingThread(File directory) {
-		if (thread == null || !thread.isAlive()) {
-			thread = new Thread(() -> {
-				if (importFiles(directory, true)) {
-					Logger.getGlobal().info("IMPORT: THREAD FINISHED");
-				} else {
-					Logger.getGlobal().info("IMPORT: THREAD INTERRUPTED");
-				}
-			});
-			thread.start();
-		}
-	}
-	private boolean importFiles(File directory, boolean usingThread) {
-		EntityList entities = this.importEntities(directory, usingThread);
+	private boolean importFiles(File directory) {
+		EntityList entities = this.importEntities(directory);
 		if (entities == null) return false;
 		
 		if (!entities.isEmpty()) {
-			CacheUtil.checkCacheInBackground(entities);
+			CacheUtil.loadCache(entities);
 			
 			EntityList.getMain().addAllImpl(entities);
 			EntityList.getMain().sort();
@@ -158,11 +145,20 @@ public class ImportStage extends AbstractStage {
 			Root.FILTER.getLastImport().setAllImpl(entities);
 		}
 		
-		displayResults(entities, usingThread);
+		displayResults(entities);
 		return true;
 	}
+	private void importFilesUsingThread(File directory) {
+		new Thread(() -> {
+			if (this.importFiles(directory)) {
+				Logger.getGlobal().info("IMPORT: THREAD FINISHED");
+			} else {
+				Logger.getGlobal().info("IMPORT: THREAD INTERRUPTED");
+			}
+		}).start();
+	}
 	
-	private EntityList importEntities(File directory, boolean useThread) {
+	private EntityList importEntities(File directory) {
 		String directoryPath = directory.getAbsolutePath();
 		CustomList<File> files = FileUtil.getFiles(directory, true);
 		
@@ -171,7 +167,9 @@ public class ImportStage extends AbstractStage {
 		
 		EntityList entities = new EntityList();
 		for (File file : files) {
-			if (useThread && Thread.currentThread().isInterrupted()) return null;
+			if (!Platform.isFxApplicationThread() && Thread.currentThread().isInterrupted()) {
+				return null;
+			}
 			entities.addImpl(this.importEntity(file, directoryPath));
 			if (needLoadingBar) Root.MAIN_STAGE.getMainScene().advanceLoadingBar(this);
 		}
@@ -195,38 +193,34 @@ public class ImportStage extends AbstractStage {
 		}
 	}
 	
-	private void displayResults(EntityList entities, boolean usingThread) {
-		if (!usingThread) {
-			_displayResults(entities);
-		} else {
-			_displayResultsUsingThread(entities);
-		}
-	}
-	private void _displayResults(EntityList entities) {
-		setErrorMessage("");
-		setButtons(nodeFinish);
-		nodeMessage.setText(getMessageImportCount(entities.size()));
-		
-		if (entities.isEmpty()) {
-			nodeSetupFilter.setDisable(true);
-			nodeSetupFilter.setChecked(false);
-		}
-		
-		Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
-		Reload.start();
-	}
-	private void _displayResultsUsingThread(EntityList entities) {
-		Platform.runLater(() -> {
-			if (!entities.isEmpty()) {
-				String message = getMessageImportCount(entities.size()) + "\nSet filter to recently imported files?";
-				if (ConfirmationStage.show(message)) setupFilter();
-				
-				Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
-				Reload.start();
-			} else {
-				SimpleMessageStage.show(getMessageImportCount(entities.size()));
+	private void displayResults(EntityList entities) {
+		if (Platform.isFxApplicationThread()) {
+			setErrorMessage("");
+			setButtons(nodeFinish);
+			nodeMessage.setText(getMessageImportCount(entities.size()));
+			
+			if (entities.isEmpty()) {
+				nodeSetupFilter.setDisable(true);
+				nodeSetupFilter.setChecked(false);
 			}
-		});
+			
+			Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
+			Reload.start();
+		} else {
+			Platform.runLater(() -> {
+				if (!entities.isEmpty()) {
+					String message = getMessageImportCount(entities.size()) + "\nSet filter to only show the imported files?";
+					if (new ConfirmationStage("Import Result", message).getResult()) {
+						setupFilter();
+					}
+					
+					Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
+					Reload.start();
+				} else {
+					new SimpleMessageStage("Import Result", this.getMessageImportCount(entities.size())).show();
+				}
+			});
+		}
 	}
 	
 	private String getMessageImportCount(int importCount) {
@@ -238,17 +232,6 @@ public class ImportStage extends AbstractStage {
 		Root.FILTER.getSettings().setShowVideos(true);
 		Root.FILTER.getSettings().setShowOnlyNewEntities(true);
 		Root.FILTER.getSettings().setEnableLimit(false);
-	}
-	
-	public void show(@SuppressWarnings("unused") String... args) {
-		setRoot(boxStage1);
-		setButtons(nodeOK, nodeCancel);
-		showAndWait();
-	}
-	
-	private static Thread thread = null;
-	public static Thread getThread() {
-		return thread;
 	}
 	
 	ImportMode importMode = ImportMode.MOVE;

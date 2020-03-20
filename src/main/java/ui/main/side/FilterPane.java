@@ -24,7 +24,7 @@ public class FilterPane extends SidePaneBase {
 		nodeText.setMaxWidth(Double.MAX_VALUE);
 		
 		TextNode btnSettings = new TextNode("⁝", true, true, false, true);
-		btnSettings.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> FilterOptionStage.show(""));
+		btnSettings.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> new FilterOptionStage().showAndWait());
 		
 		BorderPane paneTitle = new BorderPane();
 		paneTitle.setBorder(Decorator.getBorder(0, 0, 1, 0));

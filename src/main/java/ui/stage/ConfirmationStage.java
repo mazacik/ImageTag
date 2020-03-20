@@ -5,46 +5,34 @@ import javafx.scene.input.MouseEvent;
 import ui.node.textnode.TextNode;
 
 public class ConfirmationStage extends AbstractStage {
-	private static final TextNode labelContent;
-	private static final TextNode nodeYes;
-	private static final TextNode nodeNo;
+	private boolean result;
 	
-	private static boolean result;
-	
-	static {
-		labelContent = new TextNode("", false, false, false, true);
+	public ConfirmationStage(String message) {
+		this("Confirmation", message);
+	}
+	public ConfirmationStage(String title, String message) {
+		super(title, false);
 		
-		nodeYes = new TextNode("Yes", true, true, false, true);
+		TextNode labelContent = new TextNode(message, false, false, false, true);
+		
+		TextNode nodeYes = new TextNode("Yes", true, true, false, true);
 		nodeYes.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			result = true;
-			getInstance().close();
+			this.close();
 		});
 		
-		nodeNo = new TextNode("No", true, true, false, true);
+		TextNode nodeNo = new TextNode("No", true, true, false, true);
 		nodeNo.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			result = false;
-			getInstance().close();
+			this.close();
 		});
+		
+		this.setRoot(labelContent);
+		this.setButtons(nodeYes, nodeNo);
 	}
 	
-	public static Boolean show(String message) {
-		result = false;
-		labelContent.setText(message);
-		
-		getInstance().showAndWait();
-		
+	public boolean getResult() {
+		this.showAndWait();
 		return result;
-	}
-	
-	private ConfirmationStage() {
-		super("Confirmation", false);
-		setRoot(labelContent);
-		setButtons(nodeYes, nodeNo);
-	}
-	private static class Loader {
-		private static final ConfirmationStage INSTANCE = new ConfirmationStage();
-	}
-	public static ConfirmationStage getInstance() {
-		return Loader.INSTANCE;
 	}
 }

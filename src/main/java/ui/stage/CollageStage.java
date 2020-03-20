@@ -22,16 +22,18 @@ public class CollageStage extends Stage {
 			int miniW = (int) scaledImage.getWidth() / Settings.COLLAGE_SIZE.getValueInteger();
 			int miniH = (int) scaledImage.getHeight() / Settings.COLLAGE_SIZE.getValueInteger();
 			
+			Root.MAIN_STAGE.getMainScene().showLoadingBar(this, Root.FILTER.size());
+			
 			CustomList<CollagePiece> database = new CustomList<>();
 			for (Entity entity : Root.FILTER) {
 				Image image = new Image("file:" + FileUtil.getFileCache(entity), miniW, miniH, false, false);
 				Color averageColor = getAverageColor(image, 0, 0, image.getWidth(), image.getHeight());
 				database.addImpl(new CollagePiece(image, averageColor));
-				Platform.runLater(() -> {
-					int progress = (int) ((double) Root.FILTER.indexOf(entity) / (double) Root.FILTER.size() * 100);
-					SimpleMessageStage.show("Collage Progress", progress + "%");
-				});
+				
+				Root.MAIN_STAGE.getMainScene().advanceLoadingBar(this);
 			}
+			
+			Root.MAIN_STAGE.getMainScene().hideLoadingBar(this);
 			
 			GridPane gridPane = new GridPane();
 			for (int y = 0; y < Settings.COLLAGE_SIZE.getValueInteger(); y++) {
@@ -47,7 +49,6 @@ public class CollageStage extends Stage {
 			Platform.runLater(() -> {
 				this.setScene(new Scene(gridPane));
 				this.show();
-				SimpleMessageStage.getInstance().close();
 			});
 		}).start();
 	}

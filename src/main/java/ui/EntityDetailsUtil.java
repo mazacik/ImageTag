@@ -11,6 +11,6 @@ public abstract class EntityDetailsUtil {
 		int width = (int) entityImage.getWidth();
 		int height = (int) entityImage.getHeight();
 		
-		SimpleMessageStage.show("Details", width + "x" + height);
+		new SimpleMessageStage("Details", width + "x" + height).show();
 	}
 }

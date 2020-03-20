@@ -63,7 +63,7 @@ public class ProjectNode extends BorderPane {
 					Root.MAIN_STAGE.getProjectScene().show(project);
 				} else if (pickResult.equals(nodeRemove)) {
 					String message = "Delete project data? The source directory will not be affected";
-					if (ConfirmationStage.show(message)) {
+					if (new ConfirmationStage(message).getResult()) {
 						FileUtil.deleteFile(project.getProjectFile());
 						FileUtil.deleteFile(FileUtil.getDirectoryCache(project.getProjectName()));
 						Root.MAIN_STAGE.getIntroScene().getProjectBox().refresh();
@@ -74,7 +74,7 @@ public class ProjectNode extends BorderPane {
 						Project.setCurrent(project);
 						Main.startProjectDatabaseLoading();
 					} else {
-						SimpleMessageStage.show("The source directory of this project could not be found.\nDirectory: " + project.getDirectorySource());
+						new SimpleMessageStage("Error", "The source directory of this project could not be found.\nDirectory: " + project.getDirectorySource()).show();
 					}
 				}
 			}

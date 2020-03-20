@@ -14,15 +14,14 @@ import ui.override.HBox;
 import ui.override.VBox;
 
 public class TagEditStage extends AbstractStage {
-	private static final CustomList<LevelNode> nodeList;
-	private static CustomList<String> returnList;
+	private final CustomList<LevelNode> nodeList;
+	private CustomList<String> returnList;
 	
-	private static final VBox boxNodes;
+	private final VBox boxNodes;
 	
-	private static final TextNode nodeOK;
-	private static final TextNode nodeCancel;
-	
-	static {
+	public TagEditStage() {
+		super("Tag Editor", true);
+		
 		returnList = new CustomList<>();
 		nodeList = new CustomList<>();
 		
@@ -32,27 +31,33 @@ public class TagEditStage extends AbstractStage {
 		boxNodes.setPadding(new Insets(5));
 		boxNodes.setOnKeyPressed(event -> {
 			if (event.getCode() == KeyCode.ENTER) {
-				returnValue();
+				this.returnValue();
 			} else if (event.getCode() == KeyCode.ESCAPE) {
-				getInstance().close();
+				this.close();
 			}
 		});
 		
-		nodeOK = new TextNode("OK", true, true, false, true);
-		nodeOK.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, TagEditStage::returnValue);
+		TextNode nodeOK = new TextNode("OK", true, true, false, true);
+		nodeOK.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, this::returnValue);
 		
-		nodeCancel = new TextNode("Cancel", true, true, false, true);
-		nodeCancel.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, getInstance()::close);
+		TextNode nodeCancel = new TextNode("Cancel", true, true, false, true);
+		nodeCancel.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, this::close);
+		
+		this.setWidth(640);
+		this.setHeight(480);
+		
+		setRoot(boxNodes);
+		setButtons(nodeOK, nodeCancel);
 	}
 	
-	private static TagList tagListToSearchIn;
-	public static CustomList<String> showCreate(CustomList<String> levels) {
+	private TagList tagListToSearchIn;
+	public CustomList<String> showCreate(CustomList<String> levels) {
 		return show(TagList.getMain(), levels, Mode.CREATE);
 	}
-	public static CustomList<String> showEdit(TagList tagListToSearchIn, CustomList<String> levels) {
+	public CustomList<String> showEdit(TagList tagListToSearchIn, CustomList<String> levels) {
 		return show(tagListToSearchIn, levels, Mode.EDIT);
 	}
-	private static CustomList<String> show(TagList tagListToSearchIn, CustomList<String> levels, Mode mode) {
+	private CustomList<String> show(TagList tagListToSearchIn, CustomList<String> levels, Mode mode) {
 		nodeList.clear();
 		if (levels != null) {
 			for (String level : levels) {
@@ -73,15 +78,15 @@ public class TagEditStage extends AbstractStage {
 			}
 		}
 		
-		TagEditStage.tagListToSearchIn = tagListToSearchIn;
-		returnList = new CustomList<>();
+		this.tagListToSearchIn = tagListToSearchIn;
+		this.returnList = new CustomList<>();
 		
-		getInstance().setErrorMessage("");
-		getInstance().showAndWait();
+		this.setErrorMessage("");
+		this.showAndWait();
 		
 		return returnList;
 	}
-	private static void returnValue() {
+	private void returnValue() {
 		CustomList<String> helperList = new CustomList<>();
 		
 		nodeList.forEach(levelNode -> {
@@ -92,32 +97,16 @@ public class TagEditStage extends AbstractStage {
 		});
 		
 		if (tagListToSearchIn.doesAnyTagStartWith(helperList)) {
-			getInstance().setErrorMessage("Tag already exists.");
+			this.setErrorMessage("Tag already exists.");
 		} else if (tagListToSearchIn.isAnyTagSubstringOf(helperList)) {
-			getInstance().setErrorMessage("Cannot extend existing tag.");
+			this.setErrorMessage("Cannot extend existing tag.");
 		} else {
-			returnList = helperList;
-			getInstance().close();
+			this.returnList = helperList;
+			this.close();
 		}
 	}
 	
-	private TagEditStage() {
-		super("Tag Editor", true);
-		
-		this.setWidth(640);
-		this.setHeight(480);
-		
-		setRoot(boxNodes);
-		setButtons(nodeOK, nodeCancel);
-	}
-	private static class Loader {
-		private static final TagEditStage INSTANCE = new TagEditStage();
-	}
-	public static TagEditStage getInstance() {
-		return Loader.INSTANCE;
-	}
-	
-	private static class LevelNode extends HBox {
+	private class LevelNode extends HBox {
 		private final EditNode editNode;
 		
 		public LevelNode(String startText) {

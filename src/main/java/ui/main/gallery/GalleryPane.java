@@ -240,7 +240,7 @@ public class GalleryPane extends ScrollPane {
 		EntityList representingEntityList = CollectionUtil.getRepresentingEntityList(Root.FILTER);
 		if (representingEntityList.size() > TILE_LIMIT) {
 			tileEntities.setAllImpl(representingEntityList.subList(0, TILE_LIMIT));
-			SimpleMessageStage.show("Gallery reached a limit of " + TILE_LIMIT + " tiles.");
+			new SimpleMessageStage("Error", "Gallery reached a limit of " + TILE_LIMIT + " tiles.").show();
 		} else {
 			tileEntities.setAllImpl(representingEntityList);
 		}
