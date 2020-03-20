@@ -2,16 +2,21 @@ package ui.stage;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import ui.decorator.Decorator;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class ProgressNode extends ProgressBar {
+public class ProgressNode extends StackPane {
 	private Object caller;
 	
 	private double total;
 	private double current;
+	
+	private ProgressBar progressBar;
+	private Text progressText;
 	
 	private String barColor;
 	private String borderColor;
@@ -20,7 +25,14 @@ public class ProgressNode extends ProgressBar {
 		this.total = 1;
 		this.current = 1;
 		
-		this.setMaxWidth(Double.MAX_VALUE);
+		progressBar = new ProgressBar();
+		progressBar.setMaxWidth(Double.MAX_VALUE);
+		
+		progressText = new Text();
+		progressText.setFill(Decorator.getColorPrimary());
+		progressText.setStyle("-fx-blend-mode: difference;");
+		
+		this.getChildren().addAll(progressBar, progressText);
 		this.setPadding(new Insets(5));
 		this.setOpacity(0);
 		
@@ -28,7 +40,7 @@ public class ProgressNode extends ProgressBar {
 		setBorderColor(Decorator.getColorBorder());
 		
 		AtomicBoolean deco = new AtomicBoolean(false);
-		this.progressProperty().addListener(event -> {
+		progressBar.progressProperty().addListener(event -> {
 			if (!deco.get()) {
 				try {
 					//this.lookup(".progress-bar").setStyle("-fx-border-color:" + borderColor + ";");
@@ -55,7 +67,8 @@ public class ProgressNode extends ProgressBar {
 			current += increment;
 			if (current > total) return;
 			final double progress = current / total;
-			this.setProgress(progress);
+			progressBar.setProgress(progress);
+			progressText.setText((int) (progress * 100) + "%");
 		}
 	}
 	
