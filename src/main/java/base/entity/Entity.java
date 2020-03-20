@@ -36,6 +36,9 @@ public class Entity {
 	public void setCollectionID(int collectionID) {
 		this.collectionID = collectionID;
 	}
+	public boolean hasCollection() {
+		return collectionID != 0;
+	}
 	
 	@SerializedName("f") private MediaType mediaType;
 	public MediaType getMediaType() {
@@ -53,11 +56,11 @@ public class Entity {
 		this.mediaDuration = mediaDuration;
 	}
 	
-	private transient EntityList collection;
-	public EntityList getCollection() {
+	private transient Collection collection;
+	public Collection getCollection() {
 		return collection;
 	}
-	public void setCollection(EntityList collection) {
+	public void setCollection(Collection collection) {
 		this.collection = collection;
 	}
 	
@@ -71,9 +74,7 @@ public class Entity {
 	
 	private transient Tile tile;
 	public Tile getTile() {
-		if (tile == null) {
-			tile = new Tile(this);
-		}
+		if (tile == null) tile = new Tile(this);
 		return tile;
 	}
 	

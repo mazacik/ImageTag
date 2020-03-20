@@ -4,12 +4,11 @@ import base.CustomList;
 import base.entity.Entity;
 import base.tag.Tag;
 import base.tag.TagList;
-import control.Select;
-import control.filter.Filter;
 import control.reload.Reload;
 import enums.Direction;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Background;
+import main.Root;
 import ui.custom.ClickMenu;
 import ui.decorator.Decorator;
 import ui.node.EditNode;
@@ -24,13 +23,83 @@ public class SelectPane extends SidePaneBase {
 	private String query;
 	private boolean searchLock = false;
 	
+	public SelectPane() {
+		nodeText = new TextNode("", true, true, false, true);
+		nodeText.setBorder(Decorator.getBorder(0, 0, 1, 0));
+		nodeText.setMaxWidth(Double.MAX_VALUE);
+		
+		nodeSearch = new EditNode("", "Quick Search");
+		nodeSearch.setBorder(Decorator.getBorder(0, 0, 1, 0));
+		nodeSearch.textProperty().addListener((observable, oldValue, newValue) -> {
+			if (!searchLock) {
+				if (match != null) {
+					match.setBackground(Background.EMPTY);
+					match.setBackgroundLock(false);
+					match = null;
+				}
+				
+				closeNodes();
+				
+				if (newValue.length() > 0) {
+					query = newValue.toLowerCase();
+					
+					for (TagNode tagNode : this.getTagNodes()) {
+						if (tagNode.getText().toLowerCase().contains(query)) {
+							if (tagNode.isLast()) {
+								match = tagNode;
+								break;
+							} else if (match == null) {
+								match = tagNode;
+							}
+						}
+					}
+					
+					if (match != null) {
+						match.setBackground(Decorator.getBackgroundSecondary());
+						match.setBackgroundLock(true);
+						match.getParentNodes().forEach(TagNode::open);
+					}
+				} else {
+					match = null;
+				}
+			}
+		});
+		nodeSearch.setOnAction(event -> {
+			if (match != null) {
+				match.setBackground(Background.EMPTY);
+				match.setBackgroundLock(false);
+				
+				searchLock = true;
+				nodeSearch.clear();
+				searchLock = false;
+				
+				Tag tag = TagList.getMain().getTag(match.getStringValue());
+				if (Root.SELECT.getTagListIntersect().contains(tag)) {
+					Root.SELECT.removeTag(tag.getID());
+				} else {
+					Root.SELECT.addTag(tag.getID());
+				}
+				
+				Reload.start();
+			}
+		});
+		
+		ClickMenu.install(nodeText, Direction.LEFT, MouseButton.PRIMARY, 0, -1,
+		                  TextNodeTemplates.SELECTION_SET_ALL.get(),
+		                  TextNodeTemplates.SELECTION_SET_NONE.get()
+		);
+		
+		this.setBorder(Decorator.getBorder(0, 0, 0, 1));
+		this.getChildren().addAll(nodeText, nodeSearch, scrollPane);
+	}
+	
 	public boolean refresh() {
 		refreshTitle();
 		
 		CustomList<String> stringListIntersect = new CustomList<>();
-		Select.getEntities().getTagListIntersect().forEach(tag -> stringListIntersect.addImpl(tag.getStringValue()));
+		Root.SELECT.getTagListIntersect().forEach(tag -> stringListIntersect.addImpl(tag.getStringValue()));
 		CustomList<String> stringListUnion = new CustomList<>();
-		Select.getEntities().getTagList().forEach(tag -> stringListUnion.addImpl(tag.getStringValue()));
+		Root.SELECT.getTagList().forEach(tag -> stringListUnion.addImpl(tag.getStringValue()));
 		
 		getTagNodes().forEach(tagNode -> this.refreshNodeColor(tagNode, stringListIntersect, stringListUnion));
 		
@@ -54,13 +123,13 @@ public class SelectPane extends SidePaneBase {
 	}
 	private void refreshTitle() {
 		int hiddenTilesCount = 0;
-		for (Entity entity : Select.getEntities()) {
-			if (!Filter.getEntities().contains(entity)) {
+		for (Entity entity : Root.SELECT) {
+			if (!Root.FILTER.contains(entity)) {
 				hiddenTilesCount++;
 			}
 		}
 		
-		String text = "Selection: " + Select.getEntities().size();
+		String text = "Selection: " + Root.SELECT.size();
 		if (hiddenTilesCount > 0) text += " (" + hiddenTilesCount + " hidden)";
 		
 		nodeText.setText(text);
@@ -119,82 +188,5 @@ public class SelectPane extends SidePaneBase {
 	
 	public EditNode getNodeSearch() {
 		return nodeSearch;
-	}
-	
-	private SelectPane() {
-		nodeText = new TextNode("", true, true, false, true);
-		nodeText.setBorder(Decorator.getBorder(0, 0, 1, 0));
-		nodeText.prefWidthProperty().bind(this.widthProperty());
-		
-		nodeSearch = new EditNode("", "Quick Search");
-		nodeSearch.setBorder(Decorator.getBorder(0, 0, 1, 0));
-		nodeSearch.prefWidthProperty().bind(this.widthProperty());
-		nodeSearch.textProperty().addListener((observable, oldValue, newValue) -> {
-			if (!searchLock) {
-				if (match != null) {
-					match.setBackground(Background.EMPTY);
-					match.setBackgroundLock(false);
-					match = null;
-				}
-				
-				closeNodes();
-				
-				if (newValue.length() > 0) {
-					query = newValue.toLowerCase();
-					
-					for (TagNode tagNode : this.getTagNodes()) {
-						if (tagNode.getText().toLowerCase().contains(query)) {
-							if (tagNode.isLast()) {
-								match = tagNode;
-								break;
-							} else if (match == null) {
-								match = tagNode;
-							}
-						}
-					}
-					
-					if (match != null) {
-						match.setBackground(Decorator.getBackgroundSecondary());
-						match.setBackgroundLock(true);
-						match.getParentNodes().forEach(TagNode::open);
-					}
-				} else {
-					match = null;
-				}
-			}
-		});
-		nodeSearch.setOnAction(event -> {
-			if (match != null) {
-				match.setBackground(Background.EMPTY);
-				match.setBackgroundLock(false);
-				
-				searchLock = true;
-				nodeSearch.clear();
-				searchLock = false;
-				
-				Tag tag = TagList.getMain().getTag(match.getStringValue());
-				if (Select.getEntities().getTagListIntersect().contains(tag)) {
-					Select.getEntities().removeTag(tag.getID());
-				} else {
-					Select.getEntities().addTag(tag.getID());
-				}
-				
-				Reload.start();
-			}
-		});
-		
-		ClickMenu.install(nodeText, Direction.LEFT, MouseButton.PRIMARY, 0, -1
-				, TextNodeTemplates.SELECTION_SET_ALL.get()
-				, TextNodeTemplates.SELECTION_SET_NONE.get()
-		);
-		
-		this.setBorder(Decorator.getBorder(0, 0, 0, 1));
-		this.getChildren().addAll(nodeText, nodeSearch, scrollPane);
-	}
-	private static class Loader {
-		private static final SelectPane INSTANCE = new SelectPane();
-	}
-	public static SelectPane getInstance() {
-		return Loader.INSTANCE;
 	}
 }

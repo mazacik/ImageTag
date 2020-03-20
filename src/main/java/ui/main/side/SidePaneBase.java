@@ -7,7 +7,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Background;
 import misc.Settings;
-import ui.decorator.Decorator;
 import ui.override.VBox;
 
 public abstract class SidePaneBase extends VBox {
@@ -31,9 +30,6 @@ public abstract class SidePaneBase extends VBox {
 		scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 		scrollPane.setBackground(Background.EMPTY);
 		scrollPane.addEventFilter(ScrollEvent.SCROLL, this::onScroll);
-		
-		this.setMinWidth(SidePaneBase.MIN_WIDTH);
-		this.setPrefWidth(Decorator.getUsableScreenWidth());
 	}
 	
 	public boolean reload() {

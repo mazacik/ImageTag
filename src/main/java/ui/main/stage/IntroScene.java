@@ -11,6 +11,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import main.Main;
+import main.Root;
 import misc.FileUtil;
 import misc.Project;
 import ui.custom.TitleBar;
@@ -34,7 +35,7 @@ public class IntroScene extends Scene {
 		
 		TextNode btnNewProject = new TextNode("Create a New Project", true, false, true, true);
 		btnNewProject.setMaxWidth(Double.MAX_VALUE);
-		btnNewProject.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> MainStage.getProjectScene().show());
+		btnNewProject.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> Root.MAIN_STAGE.getProjectScene().show());
 		
 		TextNode btnOpenProject = new TextNode("Open Project", true, false, true, true);
 		btnOpenProject.setMaxWidth(Double.MAX_VALUE);
@@ -42,9 +43,9 @@ public class IntroScene extends Scene {
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.setTitle("Open Project");
 			fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-			File file = fileChooser.showOpenDialog(MainStage.getInstance());
+			File file = fileChooser.showOpenDialog(Root.MAIN_STAGE);
 			if (file != null) {
-				MainStage.layoutMain();
+				Root.MAIN_STAGE.layoutMain();
 				Project.setCurrent(Project.readFromDisk(file.getAbsolutePath()));
 				Main.startProjectDatabaseLoading();
 			}
@@ -84,12 +85,12 @@ public class IntroScene extends Scene {
 				case ENTER:
 					CustomList<Project> projects = FileUtil.getProjects();
 					if (!projects.isEmpty()) {
-						MainStage.layoutMain();
+						Root.MAIN_STAGE.layoutMain();
 						projects.sort(Project.getComparator());
 						Project.setCurrent(projects.getFirstImpl());
 						Main.startProjectDatabaseLoading();
 					} else {
-						MainStage.getProjectScene().show();
+						Root.MAIN_STAGE.getProjectScene().show();
 					}
 					break;
 				default:
@@ -100,7 +101,7 @@ public class IntroScene extends Scene {
 	}
 	
 	public void show() {
-		MainStage.getInstance().setScene(this);
+		Root.MAIN_STAGE.setScene(this);
 	}
 	
 	public ProjectBox getProjectBox() {

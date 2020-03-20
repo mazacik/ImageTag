@@ -1,8 +1,7 @@
 package ui.main.display;
 
 import base.entity.Entity;
-import cache.CacheManager;
-import control.Select;
+import cache.CacheUtil;
 import control.reload.Reload;
 import enums.Direction;
 import javafx.application.Platform;
@@ -12,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import main.Root;
 import misc.FileUtil;
 import misc.Settings;
 import ui.decorator.Decorator;
@@ -134,24 +134,24 @@ public class ControlsBase extends BorderPane {
 			
 			btnMute.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, videoPlayer::swapMute);
 			btnSnapshot.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				Entity target = Select.getTarget();
+				Entity target = Root.SELECT.getTarget();
 				File cacheFile = new File(FileUtil.getFileCache(target));
 				int thumbSize = Settings.GALLERY_TILE_SIZE.getValueInteger();
-				DisplayPane.getInstance().getVideoPlayer().snapshot(cacheFile, thumbSize, thumbSize);
+				Root.DISPLAY_PANE.getVideoPlayer().snapshot(cacheFile, thumbSize, thumbSize);
 				
-				Image cache = CacheManager.get(target);
+				Image cache = CacheUtil.get(target);
 				target.getTile().setImage(cache);
 			});
 		}
 		
 		btnPrevious.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-			Select.moveTarget(Direction.LEFT);
-			Select.getEntities().setImpl(Select.getTarget());
+			Root.SELECT.moveTarget(Direction.LEFT);
+			Root.SELECT.set(Root.SELECT.getTarget());
 			Reload.start();
 		});
 		btnNext.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-			Select.moveTarget(Direction.RIGHT);
-			Select.getEntities().setImpl(Select.getTarget());
+			Root.SELECT.moveTarget(Direction.RIGHT);
+			Root.SELECT.set(Root.SELECT.getTarget());
 			Reload.start();
 		});
 	}
@@ -180,8 +180,8 @@ public class ControlsBase extends BorderPane {
 			this.setCenter(hBoxCenter);
 			this.setBottom(progressBar);
 		} else {
-			if (DisplayPane.getInstance().getVideoPlayer() != null)
-				DisplayPane.getInstance().getVideoPlayer().pause();
+			if (Root.DISPLAY_PANE.getVideoPlayer() != null)
+				Root.DISPLAY_PANE.getVideoPlayer().pause();
 			
 			this.setLeft(btnPrevious);
 			this.setRight(btnNext);

@@ -10,6 +10,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 import main.Main;
+import main.Root;
 import misc.FileUtil;
 import misc.Project;
 import ui.decorator.Decorator;
@@ -59,17 +60,17 @@ public class ProjectNode extends BorderPane {
 				Node pickResult = event.getPickResult().getIntersectedNode().getParent();
 				
 				if (pickResult.equals(nodeEdit)) {
-					MainStage.getProjectScene().show(project);
+					Root.MAIN_STAGE.getProjectScene().show(project);
 				} else if (pickResult.equals(nodeRemove)) {
 					String message = "Delete project data? The source directory will not be affected";
 					if (ConfirmationStage.show(message)) {
 						FileUtil.deleteFile(project.getProjectFile());
 						FileUtil.deleteFile(FileUtil.getDirectoryCache(project.getProjectName()));
-						MainStage.getIntroScene().getProjectBox().refresh();
+						Root.MAIN_STAGE.getIntroScene().getProjectBox().refresh();
 					}
 				} else {
 					if (new File(project.getDirectorySource()).exists()) {
-						MainStage.layoutMain();
+						Root.MAIN_STAGE.layoutMain();
 						Project.setCurrent(project);
 						Main.startProjectDatabaseLoading();
 					} else {

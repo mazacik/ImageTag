@@ -1,7 +1,6 @@
 package ui.main.display;
 
 import base.entity.Entity;
-import control.Select;
 import control.reload.Reload;
 import enums.Direction;
 import javafx.scene.canvas.Canvas;
@@ -12,12 +11,10 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
+import main.Root;
 import misc.FileUtil;
 import ui.custom.ClickMenu;
-import ui.custom.HoverMenu;
-import ui.main.gallery.GalleryPane;
-import ui.main.stage.MainStage;
-import ui.node.arrowtextnode.ArrowTextNodeTemplates;
+import ui.custom.ListMenu;
 import ui.node.textnode.TextNode;
 
 import javax.imageio.ImageIO;
@@ -38,9 +35,29 @@ public class DisplayPane extends BorderPane {
 	
 	private TextNode nodeNoLibsError;
 	
+	public DisplayPane() {
+		canvas = new Canvas();
+		gifPlayer = new ImageView();
+		videoPlayer = VideoPlayer.create(canvas);
+		controls = new Controls(this, videoPlayer);
+		
+		gifPlayer.fitWidthProperty().bind(Root.GALLERY_PANE.widthProperty());
+		gifPlayer.fitHeightProperty().bind(Root.GALLERY_PANE.heightProperty());
+		
+		nodeNoLibsError = new TextNode("Error: No VLC Library", false, false, false, false) {{
+			this.setFont(new Font(64));
+			this.minWidthProperty().bind(canvas.widthProperty());
+			this.minHeightProperty().bind(canvas.heightProperty());
+		}};
+		
+		this.setCenter(canvas);
+		
+		this.initEvents();
+	}
+	
 	public boolean reload() {
-		Entity currentTarget = Select.getTarget();
-		if (!MainStage.getMainScene().isViewGallery() && currentTarget != null) {
+		Entity currentTarget = Root.SELECT.getTarget();
+		if (!Root.MAIN_STAGE.getMainScene().isViewGallery() && currentTarget != null) {
 			switch (currentTarget.getMediaType()) {
 				case IMAGE:
 					reloadAsImage(currentTarget);
@@ -163,29 +180,24 @@ public class DisplayPane extends BorderPane {
 	}
 	
 	private void initEvents() {
-		canvas.widthProperty().bind(GalleryPane.getInstance().widthProperty());
-		canvas.heightProperty().bind(GalleryPane.getInstance().heightProperty());
+		canvas.widthProperty().bind(Root.GALLERY_PANE.widthProperty());
+		canvas.heightProperty().bind(Root.GALLERY_PANE.heightProperty());
 		
 		canvas.widthProperty().addListener((observable, oldValue, newValue) -> reload());
 		canvas.heightProperty().addListener((observable, oldValue, newValue) -> reload());
 		
 		this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
-				ClickMenu.hideMenus();
-				HoverMenu.hideMenus();
-				
 				if (event.getClickCount() % 2 != 0) {
-					requestFocus();
+					this.requestFocus();
 				} else {
-					MainStage.getMainScene().viewGallery();
+					Root.MAIN_STAGE.getMainScene().viewGallery();
 					Reload.start();
 				}
 			}
 		});
-		ClickMenu.install(this, Direction.NONE, MouseButton.SECONDARY
-				, ArrowTextNodeTemplates.FILE.get()
-				, ArrowTextNodeTemplates.SELECTION.get()
-		);
+		
+		ClickMenu.install(this, Direction.NONE, MouseButton.SECONDARY, ListMenu.Preset.ENTITY);
 	}
 	
 	public void interruptVideoPlayer() {
@@ -201,31 +213,5 @@ public class DisplayPane extends BorderPane {
 	}
 	public Controls getControls() {
 		return controls;
-	}
-	
-	private DisplayPane() {
-		canvas = new Canvas();
-		gifPlayer = new ImageView();
-		videoPlayer = VideoPlayer.create(canvas);
-		controls = new Controls(this, videoPlayer);
-		
-		gifPlayer.fitWidthProperty().bind(GalleryPane.getInstance().widthProperty());
-		gifPlayer.fitHeightProperty().bind(GalleryPane.getInstance().heightProperty());
-		
-		nodeNoLibsError = new TextNode("Error: No VLC Library", false, false, false, false) {{
-			this.setFont(new Font(64));
-			this.minWidthProperty().bind(canvas.widthProperty());
-			this.minHeightProperty().bind(canvas.heightProperty());
-		}};
-		
-		this.setCenter(canvas);
-		
-		this.initEvents();
-	}
-	private static class Loader {
-		private static final DisplayPane INSTANCE = new DisplayPane();
-	}
-	public static DisplayPane getInstance() {
-		return Loader.INSTANCE;
 	}
 }

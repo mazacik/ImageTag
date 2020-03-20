@@ -6,8 +6,8 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Popup;
 import javafx.util.Duration;
+import main.Root;
 import ui.decorator.Decorator;
-import ui.main.stage.MainStage;
 import ui.node.textnode.TextNode;
 
 public class Tooltip extends Popup {
@@ -26,7 +26,7 @@ public class Tooltip extends Popup {
 		
 		timeline = new Timeline();
 		timeline.getKeyFrames().add(new KeyFrame(new Duration(delay), event -> {
-			this.show(MainStage.getInstance());
+			this.show(Root.MAIN_STAGE);
 			//needs off-screen checks
 			this.setAnchorX(eventX - this.getWidth() / 2);
 			this.setAnchorY(eventY + this.getHeight());

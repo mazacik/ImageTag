@@ -46,17 +46,32 @@ public class TagEditStage extends AbstractStage {
 	}
 	
 	private static TagList tagListToSearchIn;
-	public static CustomList<String> show(TagList tagListToSearchIn, CustomList<String> levelsOld) {
+	public static CustomList<String> showCreate(CustomList<String> levels) {
+		return show(TagList.getMain(), levels, Mode.CREATE);
+	}
+	public static CustomList<String> showEdit(TagList tagListToSearchIn, CustomList<String> levels) {
+		return show(tagListToSearchIn, levels, Mode.EDIT);
+	}
+	private static CustomList<String> show(TagList tagListToSearchIn, CustomList<String> levels, Mode mode) {
 		nodeList.clear();
-		if (levelsOld != null) {
-			for (String string : levelsOld) {
-				if (!string.isEmpty()) {
-					nodeList.addImpl(new LevelNode(string));
+		if (levels != null) {
+			for (String level : levels) {
+				if (!level.isEmpty()) {
+					nodeList.addImpl(new LevelNode(level));
 				}
 			}
 		}
 		nodeList.addImpl(new LevelNode(""));
 		boxNodes.getChildren().setAll(nodeList);
+		if (levels != null) {
+			if (mode == Mode.CREATE) {
+				nodeList.get(levels.size()).editNode.requestFocus();
+			} else {
+				EditNode editNode = nodeList.get(levels.size() - 1).editNode;
+				editNode.selectAll();
+				editNode.requestFocus();
+			}
+		}
 		
 		TagEditStage.tagListToSearchIn = tagListToSearchIn;
 		returnList = new CustomList<>();
@@ -174,5 +189,10 @@ public class TagEditStage extends AbstractStage {
 				boxNodes.getChildren().remove(this);
 			}
 		}
+	}
+	
+	enum Mode {
+		CREATE,
+		EDIT
 	}
 }

@@ -7,28 +7,21 @@ import javafx.geometry.Point2D;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
-import javafx.stage.Popup;
-import javafx.stage.PopupWindow;
+import main.Root;
 import ui.decorator.Decorator;
-import ui.main.stage.MainStage;
 import ui.override.VBox;
 
-public class ClickMenu extends Popup {
-	private static final CustomList<ClickMenu> instances = new CustomList<>();
+public class ClickMenu extends ListMenu {
 	private static final CustomList<ClickMenu> staticInstances = new CustomList<>();
 	
-	private final Class<?> c;
-	private final Direction direction;
-	private final MouseButton mouseButton;
+	private Class<?> c;
 	
-	private ClickMenu(Class<?> c, Direction direction, MouseButton mouseButton, Region... children) {
+	private ClickMenu(Class<?> c, Region... children) {
 		this.c = c;
-		this.direction = direction;
-		this.mouseButton = mouseButton;
+		this.children = new CustomList<>(children);
 		
-		VBox vBox = new VBox();
+		vBox = new VBox();
 		vBox.setMinWidth(200);
-		vBox.getChildren().setAll(children);
 		vBox.setBorder(Decorator.getBorder(1));
 		vBox.setBackground(Decorator.getBackgroundPrimary());
 		
@@ -38,18 +31,15 @@ public class ClickMenu extends Popup {
 		
 		instances.addImpl(this);
 	}
-	public static void register(Class<?> c, Direction direction, MouseButton mouseButton, Region... children) {
-		staticInstances.addImpl(new ClickMenu(c, direction, mouseButton, children));
+	public static void register(Class<?> c, Preset si) {
+		staticInstances.addImpl(new ClickMenu(c, si.regions));
 	}
-	public static ClickMenu install(Region root) {
-		return install(root, 0, 0);
-	}
-	public static ClickMenu install(Region root, double offsetX, double offsetY) {
+	public static ClickMenu install(Region root, Direction direction, MouseButton mouseButton) {
 		for (ClickMenu staticInstance : staticInstances) {
 			if (staticInstance.c == root.getClass()) {
 				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-					if (event.getButton() == staticInstance.mouseButton) {
-						staticInstance.show(event, root, staticInstance.direction, offsetX, offsetY);
+					if (event.getButton() == mouseButton) {
+						staticInstance.show(root, event, direction, 0, 0);
 					}
 				});
 				return staticInstance;
@@ -59,7 +49,21 @@ public class ClickMenu extends Popup {
 	}
 	
 	private ClickMenu(Region... children) {
-		this(null, null, null, children);
+		this.children = new CustomList<>(children);
+		
+		vBox = new VBox();
+		vBox.setMinWidth(200);
+		vBox.setBorder(Decorator.getBorder(1));
+		vBox.setBackground(Decorator.getBackgroundPrimary());
+		
+		this.getContent().setAll(vBox);
+		this.setAutoHide(true);
+		this.setHideOnEscape(true);
+		
+		instances.addImpl(this);
+	}
+	public static ClickMenu install(Region root, Direction direction, MouseButton mouseButton, Preset preset) {
+		return install(root, direction, mouseButton, 0, 0, preset.regions);
 	}
 	public static ClickMenu install(Region root, Direction direction, MouseButton mouseButton, Region... children) {
 		return install(root, direction, mouseButton, 0, 0, children);
@@ -68,14 +72,15 @@ public class ClickMenu extends Popup {
 		ClickMenu clickMenu = new ClickMenu(children);
 		root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			if (event.getButton() == mouseButton) {
-				clickMenu.show(event, root, direction, offsetX, offsetY);
+				clickMenu.show(root, event, direction, offsetX, offsetY);
 			}
 		});
 		return clickMenu;
 	}
 	
-	private void show(MouseEvent event, Region root, Direction direction, double offsetX, double offsetY) {
+	private void show(Region root, MouseEvent event, Direction direction, double offsetX, double offsetY) {
 		hideMenus();
+		resolveChildren();
 		
 		if (!this.isShowing()) {
 			Bounds onScreenBounds;
@@ -88,38 +93,34 @@ public class ClickMenu extends Popup {
 					Point2D point = root.localToScreen(event.getX(), event.getY());
 					x = point.getX() + offsetX;
 					y = point.getY() + offsetY;
-					this.show(MainStage.getInstance(), x, y);
+					this.show(Root.MAIN_STAGE, x, y);
 					break;
 				case UP:
 					//onScreenBounds = root.localToScreen(root.getBoundsInLocal());
 					//x =
 					//y =
-					//this.show(MainStage.getInstance(), x, y);
+					//this.show(Root.MAIN_STAGE, x, y);
 					break;
 				case DOWN:
 					onScreenBounds = root.localToScreen(root.getBoundsInLocal());
 					x = onScreenBounds.getMinX() + offsetX;
 					y = onScreenBounds.getMaxY() + offsetY;
-					this.show(MainStage.getInstance(), x, y);
+					this.show(Root.MAIN_STAGE, x, y);
 					break;
 				case LEFT:
 					onScreenBounds = root.localToScreen(root.getBoundsInLocal());
 					x = onScreenBounds.getMinX() + offsetX;
 					y = onScreenBounds.getMinY() + offsetY;
-					this.show(MainStage.getInstance(), x, y);
+					this.show(Root.MAIN_STAGE, x, y);
 					this.setAnchorX(this.getAnchorX() - this.getWidth());
 					break;
 				case RIGHT:
 					onScreenBounds = root.localToScreen(root.getBoundsInLocal());
 					x = onScreenBounds.getMaxX() + offsetX;
 					y = onScreenBounds.getMinY() + offsetY;
-					this.show(MainStage.getInstance(), x, y);
+					this.show(Root.MAIN_STAGE, x, y);
 					break;
 			}
 		}
-	}
-	
-	public static void hideMenus() {
-		instances.forEach(PopupWindow::hide);
 	}
 }

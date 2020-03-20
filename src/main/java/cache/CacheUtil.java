@@ -2,6 +2,7 @@ package cache;
 
 import base.entity.Entity;
 import base.entity.EntityList;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -13,6 +14,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import main.Root;
 import misc.FileUtil;
 import misc.Settings;
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +31,7 @@ import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Logger;
 
-public abstract class CacheManager {
+public abstract class CacheUtil {
 	private static Image placeholder = new WritableImage(Settings.GALLERY_TILE_SIZE.getValueInteger(), Settings.GALLERY_TILE_SIZE.getValueInteger()) {{
 		Label label = new Label("Placeholder");
 		label.setBackground(new Background(new BackgroundFill(Color.GRAY, null, null)));
@@ -187,14 +189,17 @@ public abstract class CacheManager {
 	public static void checkCacheInBackground(EntityList entityList) {
 		if (thread == null || !thread.isAlive()) {
 			thread = new Thread(() -> {
+				Root.MAIN_STAGE.getMainScene().showLoadingBar(thread, entityList.size());
 				for (Entity entity : new EntityList(entityList)) {
 					if (Thread.currentThread().isInterrupted()) {
 						Logger.getGlobal().warning("CACHE CHECK THREAD INTERRUPTED");
 						return;
 					}
-					entity.getTile().setImage(CacheManager.get(entity));
+					entity.getTile().setImage(CacheUtil.get(entity));
+					Root.MAIN_STAGE.getMainScene().advanceLoadingBar(thread);
 				}
 				Logger.getGlobal().info("CACHE CHECK THREAD FINISHED");
+				Platform.runLater(() -> Root.MAIN_STAGE.getMainScene().hideLoadingBar(thread));
 			});
 			thread.start();
 		}

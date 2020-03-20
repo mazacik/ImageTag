@@ -98,4 +98,8 @@ public enum Settings {
 	public void setValue(String value) {
 		this.value = value;
 	}
+	public String resetValue() {
+		value = valueDefault;
+		return value;
+	}
 }

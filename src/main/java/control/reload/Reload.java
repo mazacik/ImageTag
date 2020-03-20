@@ -3,13 +3,7 @@ package control.reload;
 import base.CustomList;
 import base.entity.Entity;
 import base.entity.EntityList;
-import control.Select;
-import control.filter.Filter;
-import ui.main.display.DisplayPane;
-import ui.main.gallery.GalleryPane;
-import ui.main.side.FilterPane;
-import ui.main.side.SelectPane;
-import ui.main.top.ToolbarPane;
+import main.Root;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,17 +15,17 @@ public abstract class Reload {
 	
 	static {
 		try {
-			InvokeHelper filterRefresh = new InvokeHelper(1, Filter.getEntities(), Filter.getEntities().getClass().getMethod("refresh"));
+			InvokeHelper filterRefresh = new InvokeHelper(1, Root.FILTER, Root.FILTER.getClass().getMethod("refresh"));
 			
-			InvokeHelper paneFilterReload = new InvokeHelper(3, FilterPane.getInstance(), FilterPane.getInstance().getClass().getMethod("reload"));
-			InvokeHelper paneSelectReload = new InvokeHelper(3, SelectPane.getInstance(), SelectPane.getInstance().getClass().getMethod("reload"));
+			InvokeHelper paneFilterReload = new InvokeHelper(3, Root.FILTER_PANE, Root.FILTER_PANE.getClass().getMethod("reload"));
+			InvokeHelper paneSelectReload = new InvokeHelper(3, Root.SELECT_PANE, Root.SELECT_PANE.getClass().getMethod("reload"));
 			
-			InvokeHelper paneFilterRefresh = new InvokeHelper(4, FilterPane.getInstance(), FilterPane.getInstance().getClass().getMethod("refresh"));
-			InvokeHelper paneSelectRefresh = new InvokeHelper(4, SelectPane.getInstance(), SelectPane.getInstance().getClass().getMethod("refresh"));
+			InvokeHelper paneFilterRefresh = new InvokeHelper(4, Root.FILTER_PANE, Root.FILTER_PANE.getClass().getMethod("refresh"));
+			InvokeHelper paneSelectRefresh = new InvokeHelper(4, Root.SELECT_PANE, Root.SELECT_PANE.getClass().getMethod("refresh"));
 			
-			InvokeHelper paneToolbarReload = new InvokeHelper(5, ToolbarPane.getInstance(), ToolbarPane.getInstance().getClass().getMethod("reload"));
-			InvokeHelper paneGalleryReload = new InvokeHelper(5, GalleryPane.getInstance(), GalleryPane.getInstance().getClass().getMethod("reload"));
-			InvokeHelper paneDisplayReload = new InvokeHelper(5, DisplayPane.getInstance(), DisplayPane.getInstance().getClass().getMethod("reload"));
+			InvokeHelper paneToolbarReload = new InvokeHelper(5, Root.TOOLBAR_PANE, Root.TOOLBAR_PANE.getClass().getMethod("reload"));
+			InvokeHelper paneGalleryReload = new InvokeHelper(5, Root.GALLERY_PANE, Root.GALLERY_PANE.getClass().getMethod("reload"));
+			InvokeHelper paneDisplayReload = new InvokeHelper(5, Root.DISPLAY_PANE, Root.DISPLAY_PANE.getClass().getMethod("reload"));
 			
 			link(Notifier.ENTITYLIST_CHANGED, paneGalleryReload, paneFilterRefresh);
 			link(Notifier.TAGLIST_CHANGED, paneFilterReload, paneSelectReload, paneFilterRefresh, paneSelectRefresh);
@@ -73,9 +67,16 @@ public abstract class Reload {
 			invokeHelpers.remove(0).invoke();
 		}
 		
-		if (Select.getEntities().isEmpty()) {
-			Select.setTarget(Filter.getEntities().getFirstImpl());
-			Select.getEntities().setImpl(Select.getTarget());
+		if (Root.SELECT.isEmpty()) {
+			Entity target = Root.FILTER.getFirst();
+			if (target != null) {
+				Root.SELECT.setTarget(target);
+				if (target.hasCollection()) {
+					Root.SELECT.setAll(target.getCollection());
+				} else {
+					Root.SELECT.set(target);
+				}
+			}
 		}
 		
 		//update tile borders

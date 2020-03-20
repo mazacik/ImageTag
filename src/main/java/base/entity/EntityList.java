@@ -3,7 +3,7 @@ package base.entity;
 import base.CustomList;
 import base.tag.Tag;
 import base.tag.TagList;
-import control.filter.Filter;
+import main.Root;
 
 import java.io.File;
 import java.util.Arrays;
@@ -28,13 +28,21 @@ public class EntityList extends CustomList<Entity> {
 		super.sort(Comparator.comparing(Entity::getName));
 	}
 	
+	public Entity getFirst() {
+		this.sort();
+		return (!this.isEmpty()) ? this.get(0) : null;
+	}
+	public Entity getLast() {
+		this.sort();
+		return (!this.isEmpty()) ? this.get(this.size() - 1) : null;
+	}
 	public Entity getRandom() {
-		Entity entity = EntityCollectionUtil.getRepresentingEntityList(this).getRandomImpl();
+		Entity entity = CollectionUtil.getRepresentingEntityList(this).getRandomImpl();
 		if (entity != null) {
-			if (entity.getCollectionID() == 0) {
-				return entity;
+			if (entity.hasCollection()) {
+				return Root.FILTER.getFilteredList(entity.getCollection()).getRandomImpl();
 			} else {
-				return Filter.getFilteredList(entity.getCollection()).getRandomImpl();
+				return entity;
 			}
 		}
 		return null;
@@ -65,7 +73,7 @@ public class EntityList extends CustomList<Entity> {
 					if (entity.getTagList().contains(tag)) {
 						//if the last object contains the tag, all before do too, add
 						if (entity.equals(this.getLastImpl())) {
-							tagListIntersect.addImpl(tag);
+							tagListIntersect.addImpl(tag, true);
 						}
 					} else {
 						//if any of the objects doesn't contain the tag, break

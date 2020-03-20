@@ -8,6 +8,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import main.Main;
+import main.Root;
 import misc.FileUtil;
 import misc.Project;
 import ui.custom.TitleBar;
@@ -60,7 +61,7 @@ public class ProjectScene extends Scene {
 		TextNode btnFinish = new TextNode("Finish", true, true, true, true);
 		btnFinish.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> this.initProject());
 		TextNode btnCancel = new TextNode("Cancel", true, true, true, true);
-		btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> MainStage.getIntroScene().show());
+		btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> Root.MAIN_STAGE.getIntroScene().show());
 		
 		VBox boxMain = new VBox(gridPane, nodeError, new HBox(btnCancel, btnFinish));
 		boxMain.setSpacing(5);
@@ -77,7 +78,7 @@ public class ProjectScene extends Scene {
 			if (event.getCode() == KeyCode.ENTER) {
 				this.initProject();
 			} else if (event.getCode() == KeyCode.ESCAPE) {
-				MainStage.getIntroScene().show();
+				Root.MAIN_STAGE.getIntroScene().show();
 			}
 		});
 		this.setRoot(vBox);
@@ -90,7 +91,7 @@ public class ProjectScene extends Scene {
 		
 		titleBar.setTitle("Create a New Project");
 		
-		MainStage.getInstance().setScene(this);
+		Root.MAIN_STAGE.setScene(this);
 	}
 	public void show(Project project) {
 		this.project = project;
@@ -101,7 +102,7 @@ public class ProjectScene extends Scene {
 		
 		titleBar.setTitle("Edit Project");
 		
-		MainStage.getInstance().setScene(this);
+		Root.MAIN_STAGE.setScene(this);
 	}
 	
 	private void initProject() {
@@ -109,14 +110,14 @@ public class ProjectScene extends Scene {
 			if (project == null) {
 				Project newProject = new Project(editProjectName.getText(), editSourceDirectory.getText());
 				newProject.writeToDisk();
-				MainStage.layoutMain();
+				Root.MAIN_STAGE.layoutMain();
 				Project.setCurrent(newProject);
 				Main.startProjectDatabaseLoading();
 			} else {
 				project.updateProject(editProjectName.getText(), editSourceDirectory.getText());
 				
-				MainStage.getIntroScene().getProjectBox().refresh();
-				MainStage.getIntroScene().show();
+				Root.MAIN_STAGE.getIntroScene().getProjectBox().refresh();
+				Root.MAIN_STAGE.getIntroScene().show();
 			}
 		}
 	}

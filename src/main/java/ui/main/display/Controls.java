@@ -5,7 +5,7 @@ import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.stage.Popup;
 import javafx.util.Duration;
-import ui.main.stage.MainStage;
+import main.Root;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -21,8 +21,8 @@ public class Controls extends Popup {
 		
 		autoHideDelay.setOnFinished(e -> this.hide());
 		
-		MainStage.getInstance().xProperty().addListener((observable, oldValue, newValue) -> this.hide());
-		MainStage.getInstance().yProperty().addListener((observable, oldValue, newValue) -> this.hide());
+		Root.MAIN_STAGE.xProperty().addListener((observable, oldValue, newValue) -> this.hide());
+		Root.MAIN_STAGE.yProperty().addListener((observable, oldValue, newValue) -> this.hide());
 		
 		AtomicBoolean initDone = new AtomicBoolean(false);
 		AtomicBoolean initBeingDone = new AtomicBoolean(false);
@@ -35,7 +35,7 @@ public class Controls extends Popup {
 				if (!initDone.get() && !initBeingDone.get()) {
 					initBeingDone.set(true);
 					setOpacity(0);
-					this.show(MainStage.getInstance(), x, y);
+					this.show(Root.MAIN_STAGE, x, y);
 					Platform.runLater(() -> {
 						setOpacity(1);
 						this.hide();
@@ -43,7 +43,7 @@ public class Controls extends Popup {
 					});
 				} else if (initDone.get()) {
 					autoHideDelay.playFromStart();
-					this.show(MainStage.getInstance(), x, y);
+					this.show(Root.MAIN_STAGE, x, y);
 				}
 			}
 		});

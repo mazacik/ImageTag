@@ -7,6 +7,7 @@ import javafx.scene.image.PixelFormat;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.image.WritablePixelFormat;
+import main.Root;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.factory.discovery.NativeDiscovery;
 import uk.co.caprica.vlcj.player.base.ControlsApi;
@@ -64,27 +65,27 @@ public class VideoPlayer {
 			@Override
 			public void timeChanged(MediaPlayer mediaPlayer, long newTime) {
 				super.timeChanged(mediaPlayer, newTime);
-				DisplayPane.getInstance().getControls().setTimeCurrent(newTime);
+				Root.DISPLAY_PANE.getControls().setTimeCurrent(newTime);
 			}
 			@Override
 			public void positionChanged(MediaPlayer mediaPlayer, float newPosition) {
 				super.positionChanged(mediaPlayer, newPosition);
-				DisplayPane.getInstance().getControls().setVideoProgress(newPosition);
+				Root.DISPLAY_PANE.getControls().setVideoProgress(newPosition);
 			}
 			@Override
 			public void lengthChanged(MediaPlayer mediaPlayer, long newLength) {
 				super.lengthChanged(mediaPlayer, newLength);
-				DisplayPane.getInstance().getControls().setTimeTotal(newLength);
+				Root.DISPLAY_PANE.getControls().setTimeTotal(newLength);
 			}
 			@Override
 			public void opening(MediaPlayer mediaPlayer) {
 				super.opening(mediaPlayer);
-				DisplayPane.getInstance().getControls().setVideoProgress(0);
+				Root.DISPLAY_PANE.getControls().setVideoProgress(0);
 			}
 			@Override
 			public void finished(MediaPlayer mediaPlayer) {
 				super.finished(mediaPlayer);
-				DisplayPane.getInstance().getControls().setVideoProgress(1);
+				Root.DISPLAY_PANE.getControls().setVideoProgress(1);
 			}
 		});
 	}

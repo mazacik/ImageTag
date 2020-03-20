@@ -37,7 +37,7 @@ public abstract class FileUtil {
 	}
 	
 	public static void moveFile(String from, String to) {
-		if (Main.DEBUG_FS_FILE_MOVE) {
+		if (Main.DEBUG_FS_ALLOW_FILE_MOVE) {
 			try {
 				new File(to).getParentFile().mkdirs();
 				Files.move(Paths.get(from), Paths.get(to));
@@ -47,29 +47,30 @@ public abstract class FileUtil {
 		}
 	}
 	public static boolean deleteFile(String path) {
-		if (Main.DEBUG_FS_FILE_DELETE) {
+		if (Main.DEBUG_FS_ALLOW_FILE_DELETE) {
 			int counter = 0;
-			FileUtils fileUtils = FileUtils.getInstance();
 			File abstractFile = new File(path);
 			
-			if (fileUtils.hasTrash()) {
-				if (abstractFile.isFile()) {
-					try {
-						fileUtils.moveToTrash(new File[]{abstractFile});
-						//if (!abstractFile.exists()) counter++;
-						counter++;
-					} catch (IOException e) {
-						SimpleMessageStage.show("Delete failed: " + abstractFile.getAbsolutePath() + "\nCannot access the file because it is being used by another process.");
-						e.printStackTrace();
+			if (abstractFile.exists()) {
+				if (FileUtils.getInstance().hasTrash()) {
+					if (abstractFile.isFile()) {
+						try {
+							FileUtils.getInstance().moveToTrash(new File[]{abstractFile});
+							//if (!abstractFile.exists()) counter++;
+							counter++;
+						} catch (IOException e) {
+							SimpleMessageStage.show("Delete failed: " + abstractFile.getAbsolutePath() + "\nCannot access the file because it is being used by another process.");
+							e.printStackTrace();
+						}
+					} else {
+						for (File _abstractFile : new CustomList<>(abstractFile.listFiles())) {
+							deleteFile(_abstractFile.getAbsolutePath());
+						}
 					}
 				} else {
-					for (File _abstractFile : new CustomList<>(abstractFile.listFiles())) {
-						deleteFile(_abstractFile.getAbsolutePath());
-					}
+					SimpleMessageStage.show("Delete failed: No OS-level recycle bin support");
+					Logger.getGlobal().severe("No OS-level recycle bin support");
 				}
-			} else {
-				SimpleMessageStage.show("Delete failed: No OS-level recycle bin support");
-				Logger.getGlobal().severe("No OS-level recycle bin support");
 			}
 			
 			return counter != 0;
@@ -175,6 +176,15 @@ public abstract class FileUtil {
 		}
 		
 		throw new RuntimeException("MediaType " + ext.toUpperCase() + " is not supported");
+	}
+	
+	public static File getLastImportDirectory() {
+		File lastImportDirectory = new File(Settings.IMPORT_LAST_PATH.getValue());
+		if (lastImportDirectory.exists() && lastImportDirectory.isDirectory()) {
+			return lastImportDirectory;
+		} else {
+			return new File(Settings.IMPORT_LAST_PATH.resetValue());
+		}
 	}
 	
 	public static String getDirectoryLocal() {

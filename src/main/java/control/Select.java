@@ -1,33 +1,44 @@
 package control;
 
 import base.CustomList;
+import base.entity.CollectionUtil;
 import base.entity.Entity;
-import base.entity.EntityCollectionUtil;
 import base.entity.EntityList;
-import control.filter.Filter;
 import control.reload.Notifier;
 import control.reload.Reload;
 import enums.Direction;
-import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import main.Root;
 import misc.FileUtil;
-import ui.main.gallery.GalleryPane;
 
 import java.util.Collection;
+import java.util.List;
 
 public class Select extends EntityList {
+	//todo a lot of shit here is bound to GalleryPane, remove that
+	public Select() {
+	
+	}
+	
 	public boolean add(Entity entity) {
 		return this.add(entity, false);
 	}
 	public boolean add(Entity entity, boolean checkDuplicates) {
 		int sizeOld = this.size();
 		
-		if (EntityCollectionUtil.hasOpenOrNoCollection(entity)) {
-			if (super.addImpl(entity, checkDuplicates)) {
-				Reload.requestBorderUpdate(entity);
+		if (entity.hasCollection()) {
+			if (entity.getCollection().isOpen()) {
+				if (super.addImpl(entity, checkDuplicates)) {
+					Reload.requestBorderUpdate(entity);
+				}
+			} else {
+				if (super.addAllImpl(entity.getCollection(), checkDuplicates)) {
+					Reload.requestBorderUpdate(Root.FILTER.getFilteredList(entity.getCollection()));
+				}
 			}
 		} else {
-			if (super.addAllImpl(entity.getCollection(), checkDuplicates)) {
-				Reload.requestBorderUpdate(Filter.getFilteredList(entity.getCollection()));
+			if (super.addImpl(entity, checkDuplicates)) {
+				Reload.requestBorderUpdate(entity);
 			}
 		}
 		
@@ -46,14 +57,20 @@ public class Select extends EntityList {
 		int sizeOld = this.size();
 		
 		for (Entity entity : c) {
-			if (EntityCollectionUtil.hasOpenOrNoCollection(entity)) {
-				if (super.addImpl(entity, checkDuplicates)) {
-					Reload.requestBorderUpdate(entity);
+			if (entity.hasCollection()) {
+				if (entity.getCollection().isOpen()) {
+					if (super.addImpl(entity, checkDuplicates)) {
+						Reload.requestBorderUpdate(entity);
+					}
+				} else {
+					EntityList afterFilter = Root.FILTER.getFilteredList(entity.getCollection());
+					if (super.addAllImpl(afterFilter, checkDuplicates)) {
+						Reload.requestBorderUpdate(afterFilter);
+					}
 				}
 			} else {
-				EntityList afterFilter = Filter.getFilteredList(entity.getCollection());
-				if (super.addAllImpl(afterFilter, checkDuplicates)) {
-					Reload.requestBorderUpdate(afterFilter);
+				if (super.addImpl(entity, checkDuplicates)) {
+					Reload.requestBorderUpdate(entity);
 				}
 			}
 		}
@@ -78,13 +95,19 @@ public class Select extends EntityList {
 	public boolean remove(Entity entity) {
 		int sizeOld = this.size();
 		
-		if (EntityCollectionUtil.hasOpenOrNoCollection(entity)) {
-			if (super.removeImpl(entity)) {
-				Reload.requestBorderUpdate(entity);
+		if (entity.hasCollection()) {
+			if (entity.getCollection().isOpen()) {
+				if (super.removeImpl(entity)) {
+					Reload.requestBorderUpdate(entity);
+				}
+			} else {
+				if (super.removeAllImpl(entity.getCollection())) {
+					Reload.requestBorderUpdate(Root.FILTER.getFilteredList(entity.getCollection()));
+				}
 			}
 		} else {
-			if (super.removeAllImpl(entity.getCollection())) {
-				Reload.requestBorderUpdate(Filter.getFilteredList(entity.getCollection()));
+			if (super.removeImpl(entity)) {
+				Reload.requestBorderUpdate(entity);
 			}
 		}
 		
@@ -114,11 +137,14 @@ public class Select extends EntityList {
 	public void deleteSelect() {
 		EntityList helper = new EntityList();
 		
-		getEntities().forEach(entity -> {
+		this.storePosition();
+		
+		this.forEach(entity -> {
+			//todo somehow show loading bar
 			if (FileUtil.deleteFile(FileUtil.getFileEntity(entity))) {
 				FileUtil.deleteFile(FileUtil.getFileCache(entity));
 				
-				if (entity.getCollectionID() != 0) {
+				if (entity.hasCollection()) {
 					entity.getCollection().remove(entity);
 					Reload.notify(Notifier.TARGET_COLLECTION_CHANGED);//todo move to collection.remove
 				}
@@ -128,18 +154,22 @@ public class Select extends EntityList {
 		});
 		
 		if (!helper.isEmpty()) {
-			Select.getEntities().removeAll(helper);
-			Filter.getEntities().removeAll(helper);
+			this.removeAll(helper);
+			Root.FILTER.removeAll(helper);
 			EntityList.getMain().removeAll(helper);
+			
+			this.restorePosition();
 			
 			Reload.notify(Notifier.ENTITYLIST_CHANGED); //todo move to entitylist.getmain.removeall
 		}
 	}
 	
-	public static void shiftSelectTo(Entity entityTo) {
-		CustomList<Entity> entities = GalleryPane.getTileEntities();
+	private Entity entityFrom = null;
+	private EntityList selectBefore = new EntityList();
+	public void shiftSelectTo(Entity entityTo) {
+		CustomList<Entity> entities = CollectionUtil.getRepresentingEntityList(Root.FILTER);
 		
-		int indexFrom = entities.indexOf(Select.getTarget());
+		int indexFrom = entities.indexOf(entityFrom);
 		int indexTo = entities.indexOf(entityTo);
 		
 		int indexLower;
@@ -153,7 +183,24 @@ public class Select extends EntityList {
 			indexHigher = indexTo;
 		}
 		
-		getEntities().addAllImpl(entities.subList(indexLower, indexHigher + 1), true);
+		List<Entity> shiftSelect = entities.subList(indexLower, indexHigher + 1);
+		selectBefore.removeAll(shiftSelect);
+		
+		this.setAll(selectBefore);
+		this.addAll(shiftSelect, true);
+	}
+	public void setupShiftSelect() {
+		entityFrom = target;
+		selectBefore.setAllImpl(this);
+	}
+	
+	public void setRandom() {
+		Entity randomEntity = null;
+		while (!Root.FILTER.isValid(randomEntity)) {
+			randomEntity = Root.FILTER.getRandom();
+		}
+		this.set(randomEntity);
+		this.setTarget(randomEntity);
 	}
 	
 	public void addTag(Integer tagID) {
@@ -169,146 +216,146 @@ public class Select extends EntityList {
 		Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
 	}
 	
-	private Select() {}
-	private static class Loader {
-		private static final Select INSTANCE = new Select();
-	}
-	public static Select getEntities() {
-		return Loader.INSTANCE;
-	}
-	
-	private static Entity target;
-	public static Entity getTarget() {
+	private Entity target;
+	public Entity getTarget() {
 		return target;
 	}
-	public static void setTarget(Entity newTarget) {
+	public void setTarget(Entity newTarget) {
 		if (newTarget != null && newTarget != target) {
 			if (target != null) {
-				Filter.resolve(target);
+				Root.FILTER.resolve(target);
 				Reload.requestBorderUpdate(target);
 			}
 			
 			target = newTarget;
 			Reload.requestBorderUpdate(target);
-			GalleryPane.moveViewportToTarget();
+			Root.GALLERY_PANE.moveViewportToTarget();
 			
 			Reload.notify(Notifier.TARGET_CHANGED);
 		}
 	}
 	
-	public static void moveTarget(Direction direction) {
+	public void moveTarget(KeyEvent event) {
+		switch (event.getCode()) {
+			case W:
+				moveTarget(Direction.UP, event.isShiftDown(), event.isControlDown());
+				break;
+			case A:
+				moveTarget(Direction.LEFT, event.isShiftDown(), event.isControlDown());
+				break;
+			case S:
+				moveTarget(Direction.DOWN, event.isShiftDown(), event.isControlDown());
+				break;
+			case D:
+				moveTarget(Direction.RIGHT, event.isShiftDown(), event.isControlDown());
+				break;
+		}
+	}
+	public void moveTarget(Direction direction) {
+		moveTarget(direction, false, false);
+	}
+	public void moveTarget(Direction direction, boolean isShiftDown, boolean isControlDown) {
 		if (target == null) return;
 		
-		EntityList entities = GalleryPane.getTileEntities();
+		CustomList<Entity> entities = CollectionUtil.getRepresentingEntityList(Root.FILTER);
 		if (entities.isEmpty()) return;
 		
 		int currentTargetIndex;
-		if (target.getCollectionID() == 0) {
-			currentTargetIndex = entities.indexOf(target);
-		} else {
-			if (EntityCollectionUtil.getOpenCollections().contains(target.getCollectionID())) {
+		if (target.hasCollection()) {
+			if (target.getCollection().isOpen()) {
 				currentTargetIndex = entities.indexOf(target);
 			} else {
-				Entity groupFirst = target.getCollection().getFirstImpl();
-				if (entities.contains(groupFirst)) {
-					currentTargetIndex = entities.indexOf(groupFirst);
+				Entity collectionFirst = Root.FILTER.getFilteredList(target.getCollection()).getFirst();
+				if (entities.contains(collectionFirst)) {
+					currentTargetIndex = entities.indexOf(collectionFirst);
 				} else {
 					currentTargetIndex = entities.indexOf(target);
 				}
 			}
+		} else {
+			currentTargetIndex = entities.indexOf(target);
 		}
-		
-		int columnCount = GalleryPane.getTilePane().getPrefColumns();
 		
 		int newTargetIndex = currentTargetIndex;
 		switch (direction) {
 			case UP:
-				newTargetIndex -= columnCount;
+				newTargetIndex -= Root.GALLERY_PANE.getTilePane().getPrefColumns();
 				break;
 			case LEFT:
 				newTargetIndex -= 1;
 				break;
 			case DOWN:
-				newTargetIndex += columnCount;
+				newTargetIndex += Root.GALLERY_PANE.getTilePane().getPrefColumns();
 				break;
 			case RIGHT:
 				newTargetIndex += 1;
 				break;
+			default:
+				break;
 		}
 		
-		if (newTargetIndex < 0) newTargetIndex = 0;
-		if (newTargetIndex >= entities.size()) newTargetIndex = entities.size() - 1;
+		if (newTargetIndex < 0) {
+			newTargetIndex = 0;
+		} else if (newTargetIndex >= entities.size()) {
+			newTargetIndex = entities.size() - 1;
+		}
 		
-		setTarget(entities.get(newTargetIndex));
-	}
-	public static void moveTarget(KeyCode keyCode) {
-		switch (keyCode) {
-			case W:
-				moveTarget(Direction.UP);
-				break;
-			case A:
-				moveTarget(Direction.LEFT);
-				break;
-			case S:
-				moveTarget(Direction.DOWN);
-				break;
-			case D:
-				moveTarget(Direction.RIGHT);
-				break;
+		if (isShiftDown) {
+			Entity entityTo = entities.get(newTargetIndex);
+			this.shiftSelectTo(entityTo);
+			this.setTarget(entityTo);
+		} else if (isControlDown) {
+			this.setTarget(entities.get(newTargetIndex));
+			this.add(target);
+			this.entityFrom = target;
+		} else {
+			this.setTarget(entities.get(newTargetIndex));
+			this.set(target);
+			this.entityFrom = target;
 		}
 	}
 	
-	public static void deleteTarget() {
-		Entity target = Select.getTarget();
+	public void deleteTarget() {
+		Entity target = this.getTarget();
 		if (FileUtil.deleteFile(FileUtil.getFileEntity(target))) {
 			FileUtil.deleteFile(FileUtil.getFileCache(target));
 			
-			Select.storeTargetPosition();
+			this.storePosition();
 			
-			if (target.getCollectionID() != 0) {
+			if (target.hasCollection()) {
 				target.getCollection().remove(target);
 				Reload.notify(Notifier.TARGET_COLLECTION_CHANGED);//todo move to collection.remove
 			}
 			
-			Select.getEntities().remove(target);
-			Filter.getEntities().remove(target);
+			this.remove(target);
+			Root.FILTER.remove(target);
 			EntityList.getMain().remove(target);
 			
-			Select.restoreTargetPosition();
+			this.restorePosition();
 			
 			Reload.notify(Notifier.TARGET_CHANGED, Notifier.ENTITYLIST_CHANGED);
 		}
 	}
 	
-	private static Entity memEntity = null;
-	private static int memIndex = -1;
-	public static void storeTargetPosition() {
-		if (target == null) {
-			memEntity = null;
-			memIndex = -1;
-		} else {
-			memEntity = EntityCollectionUtil.getRepresentingEntity(target);
-			EntityList representingEntities = EntityCollectionUtil.getRepresentingEntityList(Filter.getEntities());
-			if (!representingEntities.isEmpty()) {
-				memIndex = representingEntities.indexOf(memEntity);
-			}
-		}
+	private Entity memEntity = null;
+	private int memIndex = -1;
+	public void storePosition() {
+		memEntity = Root.SELECT.getFirst();
+		memIndex = CollectionUtil.getRepresentingEntityList(Root.FILTER).indexOf(memEntity);
 	}
-	public static void restoreTargetPosition() {
-		EntityList representingEntities = EntityCollectionUtil.getRepresentingEntityList(Filter.getEntities());
+	public void restorePosition() {
+		EntityList representingEntities = CollectionUtil.getRepresentingEntityList(Root.FILTER);
 		if (!representingEntities.isEmpty()) {
 			if (!representingEntities.contains(memEntity) && memIndex >= 0) {
 				if (memIndex <= representingEntities.size() - 1) {
-					Select.setTarget(representingEntities.get(memIndex));
+					this.setTarget(representingEntities.get(memIndex));
 				} else {
-					Select.setTarget(representingEntities.getLastImpl());
+					this.setTarget(representingEntities.getLast());
 				}
-				
-				if (EntityCollectionUtil.hasOpenOrNoCollection(target)) {
-					Select.getEntities().setImpl(target);
-				} else {
-					Select.getEntities().setAllImpl(Filter.getFilteredList(target.getCollection()));
-				}
+			}
+			
+			if (!Root.SELECT.contains(target)) {
+				this.set(target);
 			}
 		}
 	}

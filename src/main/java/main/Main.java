@@ -1,13 +1,12 @@
 package main;
 
 import base.CustomList;
+import base.entity.Collection;
 import base.entity.Entity;
 import base.entity.EntityList;
 import base.tag.Tag;
 import base.tag.TagList;
-import cache.CacheManager;
-import control.Select;
-import control.filter.Filter;
+import cache.CacheUtil;
 import control.reload.Notifier;
 import control.reload.Reload;
 import javafx.application.Application;
@@ -15,17 +14,15 @@ import javafx.stage.Stage;
 import misc.FileUtil;
 import misc.Project;
 import misc.Settings;
-import ui.main.display.DisplayPane;
-import ui.main.stage.MainStage;
 import ui.stage.ImportStage;
 
 import java.io.File;
 
 public class Main extends Application {
-	public static final boolean DEBUG_MAIN_QUICKSTART = false;
+	public static final boolean DEBUG_MAIN_QUICKSTART = true;
 	
-	public static final boolean DEBUG_FS_FILE_MOVE = true;
-	public static final boolean DEBUG_FS_FILE_DELETE = true;
+	public static final boolean DEBUG_FS_ALLOW_FILE_MOVE = true;
+	public static final boolean DEBUG_FS_ALLOW_FILE_DELETE = true;
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -36,10 +33,10 @@ public class Main extends Application {
 		Settings.readFromDisk();
 		
 		if (!DEBUG_MAIN_QUICKSTART || FileUtil.getProjectFiles().isEmpty()) {
-			MainStage.layoutIntro();
+			Root.MAIN_STAGE.layoutIntro();
 		} else {
 			Project.setFirstAsCurrent();
-			MainStage.layoutMain();
+			Root.MAIN_STAGE.layoutMain();
 			startProjectDatabaseLoading();
 		}
 	}
@@ -49,13 +46,20 @@ public class Main extends Application {
 		initEntities();
 		initCollections();
 		
-		Select.setTarget(EntityList.getMain().getFirstImpl());
-		Select.getEntities().addImpl(EntityList.getMain().getFirstImpl());
+		Entity target = EntityList.getMain().getFirst();
+		if (target != null) {
+			Root.SELECT.setTarget(target);
+			if (target.hasCollection()) {
+				Root.SELECT.addAll(target.getCollection());
+			} else {
+				Root.SELECT.add(target);
+			}
+		}
 		
 		Reload.notify(Notifier.values());
 		Reload.start();
 		
-		CacheManager.checkCacheInBackground(EntityList.getMain());
+		CacheUtil.checkCacheInBackground(EntityList.getMain());
 	}
 	
 	private static void initEntities() {
@@ -108,7 +112,7 @@ public class Main extends Application {
 		if (!filesWithoutEntities.isEmpty()) {
 			EntityList newEntities = new EntityList(filesWithoutEntities);
 			EntityList.getMain().addAllImpl(newEntities);
-			Filter.getLastImport().addAllImpl(newEntities);
+			Root.FILTER.getLastImport().addAllImpl(newEntities);
 			EntityList.getMain().sort();
 		}
 		
@@ -119,13 +123,12 @@ public class Main extends Application {
 		}
 	}
 	private static void initCollections() {
-		CustomList<EntityList> collections = new CustomList<>();
+		CustomList<Collection> collections = new CustomList<>();
 		for (Entity entity : EntityList.getMain()) {
-			int collectionID = entity.getCollectionID();
-			if (collectionID != 0) {
+			if (entity.hasCollection()) {
 				boolean collectionExists = false;
-				for (EntityList collection : collections) {
-					if (collection.getFirstImpl().getCollectionID() == collectionID) {
+				for (Collection collection : collections) {
+					if (collection.getFirst().getCollectionID() == entity.getCollectionID()) {
 						collection.addImpl(entity);
 						entity.setCollection(collection);
 						collectionExists = true;
@@ -133,7 +136,7 @@ public class Main extends Application {
 					}
 				}
 				if (!collectionExists) {
-					EntityList collection = new EntityList(entity);
+					Collection collection = new Collection(entity);
 					entity.setCollection(collection);
 					collections.addImpl(collection);
 				}
@@ -152,11 +155,11 @@ public class Main extends Application {
 	}
 	
 	public static void exitApplication() {
-		if (CacheManager.getThread() != null) CacheManager.getThread().interrupt();
+		if (CacheUtil.getThread() != null) CacheUtil.getThread().interrupt();
 		if (ImportStage.getThread() != null) ImportStage.getThread().interrupt();
 		
-		DisplayPane.getInstance().disposeVideoPlayer();
-		DisplayPane.getInstance().getControls().hide();
+		Root.DISPLAY_PANE.disposeVideoPlayer();
+		Root.DISPLAY_PANE.getControls().hide();
 		
 		Project.getCurrent().writeToDisk();
 		Settings.writeToDisk();

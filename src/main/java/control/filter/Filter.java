@@ -3,17 +3,21 @@ package control.filter;
 import base.CustomList;
 import base.entity.Entity;
 import base.entity.EntityList;
-import control.Select;
 import control.reload.Notifier;
 import control.reload.Reload;
 import enums.MediaType;
+import main.Root;
 
 import java.util.Collection;
 
 public class Filter extends EntityList {
-	private static final FilterSettings settings = new FilterSettings();
-	private static final FilterListManager listManager = new FilterListManager();
-	private static final EntityList lastImport = new EntityList();
+	private final FilterSettings settings = new FilterSettings();
+	private final FilterListManager listManager = new FilterListManager();
+	private final EntityList lastImport = new EntityList();
+	
+	public Filter() {
+	
+	}
 	
 	public boolean add(Entity entity) {
 		if (super.addImpl(entity)) {
@@ -63,48 +67,50 @@ public class Filter extends EntityList {
 		Reload.notify(Notifier.FILTER_CHANGED);
 	}
 	
-	public static void reset() {
+	public void reset() {
 		listManager.clear();
 		Reload.notify(Notifier.FILTER_CHANGED);
 	}
-	public static void refresh() {
-		Select.storeTargetPosition();
+	public void refresh() {
+		Root.SELECT.storePosition();
 		
-		Filter.getEntities().clear();
+		this.clear();
 		for (Entity entity : EntityList.getMain()) {
-			if (Filter.isValid(entity)) {
-				Filter.getEntities().addImpl(entity);
+			if (this.isValid(entity)) {
+				this.addImpl(entity);
 			}
 		}
 		
-		Select.restoreTargetPosition();
+		Root.SELECT.restorePosition();
 		Reload.notify(Notifier.FILTER_CHANGED);
 	}
 	
-	public static void resolve() {
-		if (Select.getEntities().isEmpty()) {
-			Filter.resolve(Select.getTarget());
+	public void resolve() {
+		if (Root.SELECT.isEmpty()) {
+			this.resolve(Root.SELECT.getTarget());
 		} else {
-			Filter.resolve(Select.getEntities());
+			this.resolve(Root.SELECT);
 		}
 	}
-	public static void resolve(Entity entity) {
-		boolean contains = Filter.getEntities().contains(entity);
-		boolean valid = Filter.isValid(entity);
-		
-		if (contains && !valid) {
-			Filter.getEntities().remove(entity);
-			Reload.notify(Notifier.FILTER_CHANGED);
-		} else if (!contains && valid) {
-			Filter.getEntities().addImpl(entity);
-			Reload.notify(Notifier.FILTER_CHANGED);//todo move to getEntities().add()
+	public void resolve(Entity entity) {
+		if (EntityList.getMain().contains(entity)) {
+			boolean contains = this.contains(entity);
+			boolean valid = this.isValid(entity);
+			
+			if (contains && !valid) {
+				this.remove(entity);
+				Reload.notify(Notifier.FILTER_CHANGED);
+			} else if (!contains && valid) {
+				this.addImpl(entity);
+				Reload.notify(Notifier.FILTER_CHANGED);//todo move to getEntities().add()
+			}
 		}
 	}
-	public static void resolve(EntityList entities) {
-		entities.forEach(Filter::resolve);
+	public void resolve(EntityList entities) {
+		entities.forEach(this::resolve);
 	}
-	public static boolean isValid(Entity entity) {
-		if (entity == null) return false;
+	public boolean isValid(Entity entity) {
+		if (entity == null || !EntityList.getMain().contains(entity)) return false;
 		
 		if (entity.getMediaType() == MediaType.IMAGE) {
 			if (!settings.isShowImages()) {
@@ -131,10 +137,10 @@ public class Filter extends EntityList {
 		return listManager.applyLists(entity);
 	}
 	
-	public static void showSimilar(Entity entity) {
+	public void showSimilar(Entity entity) {
 		listManager.clear();
 		listManager.clear();
-		getEntities().clear();
+		this.clear();
 		
 		CustomList<Integer> query = entity.getTagIDs();
 		for (Entity iterator : EntityList.getMain()) {
@@ -145,33 +151,25 @@ public class Filter extends EntityList {
 				if (!sameTags.isEmpty()) {
 					double similarity = (double) sameTags.size() / (double) query.size();
 					if (similarity >= settings.getSimilarityFactor()) {
-						getEntities().addImpl(iterator);
+						this.addImpl(iterator);
 					}
 				}
 			}
 		}
 	}
-	public static EntityList getFilteredList(EntityList listOld) {
+	public EntityList getFilteredList(EntityList listOld) {
 		EntityList returnValue = new EntityList(listOld);
-		returnValue.retainAll(getEntities());
+		returnValue.retainAll(this);
 		return returnValue;
 	}
 	
-	public static FilterSettings getSettings() {
+	public FilterSettings getSettings() {
 		return settings;
 	}
-	public static FilterListManager getListManager() {
+	public FilterListManager getListManager() {
 		return listManager;
 	}
-	public static EntityList getLastImport() {
+	public EntityList getLastImport() {
 		return lastImport;
-	}
-	
-	private Filter() {}
-	private static class Loader {
-		private static final Filter INSTANCE = new Filter();
-	}
-	public static Filter getEntities() {
-		return Loader.INSTANCE;
 	}
 }

@@ -2,13 +2,12 @@ package ui.stage;
 
 import base.CustomList;
 import base.entity.Entity;
-import control.Select;
-import control.filter.Filter;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import main.Root;
 import misc.FileUtil;
 import misc.Settings;
 import ui.override.GridPane;
@@ -17,19 +16,19 @@ import ui.override.Scene;
 public class CollageStage extends Stage {
 	public CollageStage() {
 		new Thread(() -> {
-			Image originImage = new Image("file:" + FileUtil.getFileEntity(Select.getTarget()));
-			Image scaledImage = getSmallerImage("file:" + FileUtil.getFileEntity(Select.getTarget()), originImage.getWidth(), originImage.getHeight(), 1800, 900);
+			Image originImage = new Image("file:" + FileUtil.getFileEntity(Root.SELECT.getTarget()));
+			Image scaledImage = getSmallerImage("file:" + FileUtil.getFileEntity(Root.SELECT.getTarget()), originImage.getWidth(), originImage.getHeight(), 1800, 900);
 			
 			int miniW = (int) scaledImage.getWidth() / Settings.COLLAGE_SIZE.getValueInteger();
 			int miniH = (int) scaledImage.getHeight() / Settings.COLLAGE_SIZE.getValueInteger();
 			
 			CustomList<CollagePiece> database = new CustomList<>();
-			for (Entity entity : Filter.getEntities()) {
+			for (Entity entity : Root.FILTER) {
 				Image image = new Image("file:" + FileUtil.getFileCache(entity), miniW, miniH, false, false);
 				Color averageColor = getAverageColor(image, 0, 0, image.getWidth(), image.getHeight());
 				database.addImpl(new CollagePiece(image, averageColor));
 				Platform.runLater(() -> {
-					int progress = (int) ((double) Filter.getEntities().indexOf(entity) / (double) Filter.getEntities().size() * 100);
+					int progress = (int) ((double) Root.FILTER.indexOf(entity) / (double) Root.FILTER.size() * 100);
 					SimpleMessageStage.show("Collage Progress", progress + "%");
 				});
 			}

@@ -1,9 +1,9 @@
 package ui.stage;
 
+import base.CustomList;
 import base.entity.Entity;
 import base.entity.EntityList;
-import cache.CacheManager;
-import control.filter.Filter;
+import cache.CacheUtil;
 import control.reload.Notifier;
 import control.reload.Reload;
 import enums.Direction;
@@ -13,6 +13,7 @@ import javafx.geometry.Pos;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
+import main.Root;
 import misc.FileUtil;
 import misc.Project;
 import misc.Settings;
@@ -28,6 +29,8 @@ import java.io.File;
 import java.util.logging.Logger;
 
 public class ImportStage extends AbstractStage {
+	private static final int MIN_FILE_COUNT_TO_SHOW_LOADING_BAR = 10;
+	
 	private VBox boxStage1;
 	private TextNode nodeOK;
 	private TextNode nodeCancel;
@@ -50,7 +53,7 @@ public class ImportStage extends AbstractStage {
 		nodeBrowse.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			DirectoryChooser directoryChooser = new DirectoryChooser();
 			directoryChooser.setTitle("Select a directory to import");
-			directoryChooser.setInitialDirectory(new File(Settings.IMPORT_LAST_PATH.getValue()));
+			directoryChooser.setInitialDirectory(FileUtil.getLastImportDirectory());
 			File directory = directoryChooser.showDialog(this);
 			if (directory != null) {
 				nodeEditPath.setText(directory.getAbsolutePath());
@@ -147,12 +150,12 @@ public class ImportStage extends AbstractStage {
 		if (entities == null) return false;
 		
 		if (!entities.isEmpty()) {
-			CacheManager.checkCacheInBackground(entities);
+			CacheUtil.checkCacheInBackground(entities);
 			
 			EntityList.getMain().addAllImpl(entities);
 			EntityList.getMain().sort();
 			
-			Filter.getLastImport().setAllImpl(entities);
+			Root.FILTER.getLastImport().setAllImpl(entities);
 		}
 		
 		displayResults(entities, usingThread);
@@ -161,12 +164,19 @@ public class ImportStage extends AbstractStage {
 	
 	private EntityList importEntities(File directory, boolean useThread) {
 		String directoryPath = directory.getAbsolutePath();
+		CustomList<File> files = FileUtil.getFiles(directory, true);
+		
+		boolean needLoadingBar = files.size() >= MIN_FILE_COUNT_TO_SHOW_LOADING_BAR;
+		if (needLoadingBar) Root.MAIN_STAGE.getMainScene().showLoadingBar(this, files.size());
 		
 		EntityList entities = new EntityList();
-		for (File file : FileUtil.getFiles(directory, true)) {
+		for (File file : files) {
 			if (useThread && Thread.currentThread().isInterrupted()) return null;
 			entities.addImpl(this.importEntity(file, directoryPath));
+			if (needLoadingBar) Root.MAIN_STAGE.getMainScene().advanceLoadingBar(this);
 		}
+		
+		if (needLoadingBar) Root.MAIN_STAGE.getMainScene().hideLoadingBar(this);
 		
 		return entities;
 	}
@@ -176,6 +186,7 @@ public class ImportStage extends AbstractStage {
 		
 		File fileNew = new File(pathNew);
 		if (!fileNew.exists()) {
+			//todo respect ImportMode
 			FileUtil.moveFile(pathOld, pathNew);
 			return new Entity(fileNew);
 		} else {
@@ -200,6 +211,9 @@ public class ImportStage extends AbstractStage {
 			nodeSetupFilter.setDisable(true);
 			nodeSetupFilter.setChecked(false);
 		}
+		
+		Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
+		Reload.start();
 	}
 	private void _displayResultsUsingThread(EntityList entities) {
 		Platform.runLater(() -> {
@@ -219,11 +233,11 @@ public class ImportStage extends AbstractStage {
 		return "Imported " + importCount + " files.";
 	}
 	private void setupFilter() {
-		Filter.getSettings().setShowImages(true);
-		Filter.getSettings().setShowGifs(true);
-		Filter.getSettings().setShowVideos(true);
-		Filter.getSettings().setShowOnlyNewEntities(true);
-		Filter.getSettings().setEnableLimit(false);
+		Root.FILTER.getSettings().setShowImages(true);
+		Root.FILTER.getSettings().setShowGifs(true);
+		Root.FILTER.getSettings().setShowVideos(true);
+		Root.FILTER.getSettings().setShowOnlyNewEntities(true);
+		Root.FILTER.getSettings().setEnableLimit(false);
 	}
 	
 	public void show(@SuppressWarnings("unused") String... args) {

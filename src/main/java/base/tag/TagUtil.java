@@ -2,9 +2,9 @@ package base.tag;
 
 import base.CustomList;
 import base.entity.EntityList;
-import control.filter.Filter;
 import control.reload.Notifier;
 import control.reload.Reload;
+import main.Root;
 import ui.main.side.TagNode;
 import ui.stage.ConfirmationStage;
 import ui.stage.TagEditStage;
@@ -21,8 +21,8 @@ public class TagUtil {
 	public static void create() {
 		create(null);
 	}
-	public static void create(CustomList<String> listLevelsOld) {
-		CustomList<String> listLevelsNew = TagEditStage.show(TagList.getMain(), listLevelsOld);
+	public static void create(CustomList<String> levelsOld) {
+		CustomList<String> listLevelsNew = TagEditStage.showCreate(levelsOld);
 		if (listLevelsNew != null && !listLevelsNew.isEmpty()) {
 			TagList.getMain().addImpl(new Tag(listLevelsNew));
 			TagList.getMain().sort();
@@ -35,21 +35,20 @@ public class TagUtil {
 		TagList tagListHelper = new TagList(TagList.getMain());
 		tagListHelper.removeAll(affectedTags);
 		
-		CustomList<String> listLevelsNew = TagEditStage.show(tagListHelper, getCurrentTagNode().getLevels());
+		CustomList<String> listLevelsNew = TagEditStage.showEdit(tagListHelper, currentTagNode.getLevels());
 		if (!listLevelsNew.isEmpty()) {
 			affectedTags.forEach(tag -> tag.replaceLevelsFromStart(numLevelsOld, listLevelsNew));
 			TagList.getMain().sort();
-			Filter.getListManager().update(stringValueOld, numLevelsOld, listLevelsNew);
+			Root.FILTER.getListManager().update(stringValueOld, numLevelsOld, listLevelsNew);
 			
 			Reload.notify(Notifier.TAGLIST_CHANGED);
 		}
 	}
 	public static void remove() {
-		TagNode tagNode = getCurrentTagNode();
-		if (ConfirmationStage.show("Remove \"" + tagNode.getText() + "\" ?")) {
-			tagNode.getSubNodesDeepest().forEach(subNode -> Filter.getListManager().unlist(subNode.getStringValue()));
+		if (ConfirmationStage.show("Remove \"" + currentTagNode.getText() + "\" ?")) {
+			currentTagNode.getSubNodesDeepest().forEach(subNode -> Root.FILTER.getListManager().unlist(subNode.getStringValue()));
 			
-			TagList tagList = TagList.getMain().getTagsStartingWith(tagNode.getStringValue());
+			TagList tagList = TagList.getMain().getTagsStartingWith(currentTagNode.getStringValue());
 			EntityList.getMain().forEach(entity -> entity.removeTag(tagList));
 			TagList.getMain().removeAll(tagList);
 			

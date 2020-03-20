@@ -4,8 +4,6 @@ import base.CustomList;
 import base.tag.Tag;
 import base.tag.TagList;
 import base.tag.TagUtil;
-import control.Select;
-import control.filter.Filter;
 import control.reload.Reload;
 import enums.Direction;
 import javafx.geometry.Insets;
@@ -13,10 +11,11 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
+import main.Root;
 import ui.custom.ClickMenu;
+import ui.custom.ListMenu;
 import ui.decorator.Decorator;
 import ui.node.textnode.TextNode;
-import ui.node.textnode.TextNodeTemplates;
 import ui.override.HBox;
 import ui.override.VBox;
 
@@ -37,11 +36,7 @@ public class TagNode extends VBox {
 	private boolean backgroundLock = false;
 	
 	static {
-		ClickMenu.register(TagNode.class, Direction.NONE, MouseButton.SECONDARY
-				, TextNodeTemplates.TAG_CREATE_CHILD.get()
-				, TextNodeTemplates.TAG_EDIT.get()
-				, TextNodeTemplates.TAG_REMOVE.get()
-		);
+		ClickMenu.register(TagNode.class, ListMenu.Preset.TAG);
 	}
 	
 	public TagNode(SidePaneBase parentPane, Tag tag, int depth) {
@@ -65,9 +60,9 @@ public class TagNode extends VBox {
 		boxMain = new HBox(toggleNode, textNode);
 		this.getChildren().add(boxMain);
 		
-		if (Filter.getListManager().isWhitelisted(stringValue)) {
+		if (Root.FILTER.getListManager().isWhitelisted(stringValue)) {
 			setTextFill(Decorator.getColorPositive());
-		} else if (Filter.getListManager().isBlacklisted(stringValue)) {
+		} else if (Root.FILTER.getListManager().isBlacklisted(stringValue)) {
 			setTextFill(Decorator.getColorNegative());
 		}
 		
@@ -84,9 +79,9 @@ public class TagNode extends VBox {
 		boxMain.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			switch (event.getButton()) {
 				case PRIMARY:
-					if (parentPane == FilterPane.getInstance()) {
+					if (parentPane == Root.FILTER_PANE) {
 						clickFilter(event);
-					} else if (parentPane == SelectPane.getInstance()) {
+					} else if (parentPane == Root.SELECT_PANE) {
 						clickSelect(event);
 					}
 					Reload.start();
@@ -97,19 +92,19 @@ public class TagNode extends VBox {
 			}
 		});
 		
-		ClickMenu.install(this);
+		ClickMenu.install(this, Direction.NONE, MouseButton.SECONDARY);
 	}
 	
 	private void clickFilter(MouseEvent event) {
 		if (event.getX() > toggleNode.getWidth()) {
-			if (Filter.getListManager().isWhitelisted(stringValue)) {
-				Filter.getListManager().blacklist(stringValue, getLevels().size());
+			if (Root.FILTER.getListManager().isWhitelisted(stringValue)) {
+				Root.FILTER.getListManager().blacklist(stringValue, getLevels().size());
 				setTextFill(Decorator.getColorNegative());
-			} else if (Filter.getListManager().isBlacklisted(stringValue)) {
-				Filter.getListManager().unlist(stringValue);
+			} else if (Root.FILTER.getListManager().isBlacklisted(stringValue)) {
+				Root.FILTER.getListManager().unlist(stringValue);
 				setTextFill(Decorator.getColorPrimary());
 			} else {
-				Filter.getListManager().whitelist(stringValue, getLevels().size());
+				Root.FILTER.getListManager().whitelist(stringValue, getLevels().size());
 				setTextFill(Decorator.getColorPositive());
 			}
 		} else {
@@ -131,9 +126,9 @@ public class TagNode extends VBox {
 	private void clickSelect(MouseEvent event) {
 		if (this.isLast()) {
 			if (textNode.getTextFill().equals(Decorator.getColorPositive()) || textNode.getTextFill().equals(Decorator.getColorUnion())) {
-				Select.getEntities().removeTag(TagList.getMain().getTag(this.getStringValue()).getID());
+				Root.SELECT.removeTag(TagList.getMain().getTag(this.getStringValue()).getID());
 			} else {
-				Select.getEntities().addTag(TagList.getMain().getTag(this.getStringValue()).getID());
+				Root.SELECT.addTag(TagList.getMain().getTag(this.getStringValue()).getID());
 			}
 		} else {
 			if (event.isShiftDown()) {

@@ -1,35 +1,14 @@
 package ui.node.arrowtextnode;
 
 import enums.Direction;
+import main.Root;
 import ui.custom.HoverMenu;
-import ui.node.SeparatorNode;
 import ui.node.textnode.TextNodeTemplates;
 
 public enum ArrowTextNodeTemplates {
-	FILE {
-		public ArrowTextNode get() {
-			ArrowTextNode arrowTextNode = new ArrowTextNode("File", true, true, false, true);
-			setupNode(arrowTextNode);
-			HoverMenu.install(arrowTextNode, Direction.RIGHT
-					, TextNodeTemplates.FILE_OPEN.get()
-					, TextNodeTemplates.FILE_EDIT.get()
-					, TextNodeTemplates.FILE_BROWSE.get()
-					, TextNodeTemplates.FILE_DELETE.get()
-					, new SeparatorNode()
-					, FILE_TAGS.get()
-					, new SeparatorNode()
-					, TextNodeTemplates.FILE_COPYFILENAME.get()
-					, TextNodeTemplates.FILE_COPYFILEPATH.get()
-					, new SeparatorNode()
-					, TextNodeTemplates.FILE_GOOGLE_RIS.get()
-					, TextNodeTemplates.FILE_DETAILS.get()
-			);
-			return arrowTextNode;
-		}
-	},
 	FILE_TAGS {
-		public ArrowTextNode get() {
-			ArrowTextNode arrowTextNode = new ArrowTextNode("Tags", true, true, false, true);
+		@Override public ArrowTextNode get() {
+			ArrowTextNode arrowTextNode = new ArrowTextNode("Tags", true, true, false, true, this);
 			setupNode(arrowTextNode);
 			HoverMenu.install(arrowTextNode, Direction.RIGHT
 					, TextNodeTemplates.FILE_TAGS_COPY.get()
@@ -38,24 +17,13 @@ public enum ArrowTextNodeTemplates {
 			);
 			return arrowTextNode;
 		}
-	},
-	
-	SELECTION {
-		public ArrowTextNode get() {
-			ArrowTextNode arrowTextNode = new ArrowTextNode("Selection", true, true, false, true);
-			setupNode(arrowTextNode);
-			HoverMenu.install(arrowTextNode, Direction.RIGHT
-					, SELECTION_TAGS.get()
-					, new SeparatorNode()
-					, TextNodeTemplates.SELECTION_DELETE.get()
-					, COLLECTION.get()
-			);
-			return arrowTextNode;
+		@Override public boolean resolve() {
+			return Root.SELECT.size() <= 1;
 		}
 	},
 	SELECTION_TAGS {
-		public ArrowTextNode get() {
-			ArrowTextNode arrowTextNode = new ArrowTextNode("Tags", true, true, false, true);
+		@Override public ArrowTextNode get() {
+			ArrowTextNode arrowTextNode = new ArrowTextNode("Tags", true, true, false, true, this);
 			setupNode(arrowTextNode);
 			HoverMenu.install(arrowTextNode, Direction.RIGHT
 					, TextNodeTemplates.SELECTION_TAGS_COPY.get()
@@ -64,15 +32,19 @@ public enum ArrowTextNodeTemplates {
 			);
 			return arrowTextNode;
 		}
+		@Override public boolean resolve() {
+			return Root.SELECT.size() > 1;
+		}
 	},
 	
-	COLLECTION {
-		public ArrowTextNode get() {
-			ArrowTextNode arrowTextNode = new ArrowTextNode("Collection", true, true, false, true);
+	TOOLS {
+		@Override public ArrowTextNode get() {
+			ArrowTextNode arrowTextNode = new ArrowTextNode("Tools", true, true, false, true, this);
 			setupNode(arrowTextNode);
 			HoverMenu.install(arrowTextNode, Direction.RIGHT
-					, TextNodeTemplates.COLLECTION_CREATE.get()
-					, TextNodeTemplates.COLLECTION_DISCARD.get()
+					, TextNodeTemplates.SELECTION_DESELECT_LARGEST.get()
+					, TextNodeTemplates.FILE_GOOGLE_RIS.get()
+					, TextNodeTemplates.FILE_DETAILS.get()
 			);
 			return arrowTextNode;
 		}
@@ -85,5 +57,8 @@ public enum ArrowTextNodeTemplates {
 	
 	public ArrowTextNode get() {
 		return null;
+	}
+	public boolean resolve() {
+		return true;
 	}
 }

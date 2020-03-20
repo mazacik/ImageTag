@@ -1,6 +1,5 @@
 package ui.stage;
 
-import control.filter.Filter;
 import control.filter.FilterSettings;
 import control.reload.Notifier;
 import control.reload.Reload;
@@ -8,6 +7,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import main.Root;
 import ui.node.CheckboxNode;
 import ui.node.EditNode;
 import ui.node.textnode.TextNode;
@@ -54,13 +54,13 @@ public class FilterOptionStage extends AbstractStage {
 		
 		//SwitchNode nodeWhitelistMode = new SwitchNode("Whitelist Mode", "AND", "OR", 125);
 		//nodeWhitelistMode.selectLeft();
-		//nodeWhitelistMode.getLeft().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Filter.getSettings().setWhitelistFactor(1.00));
-		//nodeWhitelistMode.getRight().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Filter.getSettings().setWhitelistFactor(0.01));
+		//nodeWhitelistMode.getLeft().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Root.FILTER.getSettings().setWhitelistFactor(1.00));
+		//nodeWhitelistMode.getRight().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Root.FILTER.getSettings().setWhitelistFactor(0.01));
 		
 		//SwitchNode nodeBlacklistMode = new SwitchNode("Blacklist Mode", "AND", "OR", 125);
 		//nodeBlacklistMode.selectRight();
-		//nodeBlacklistMode.getLeft().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Filter.getSettings().setBlacklistFactor(1.00));
-		//nodeBlacklistMode.getRight().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Filter.getSettings().setBlacklistFactor(0.01));
+		//nodeBlacklistMode.getLeft().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Root.FILTER.getSettings().setBlacklistFactor(1.00));
+		//nodeBlacklistMode.getRight().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Root.FILTER.getSettings().setBlacklistFactor(0.01));
 		
 		//VBox boxRight = new VBox(nodeWhitelistMode, nodeBlacklistMode);
 		//boxRight.setSpacing(5);
@@ -72,7 +72,7 @@ public class FilterOptionStage extends AbstractStage {
 		
 		nodeOK = new TextNode("OK", true, true, false, true);
 		nodeOK.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> {
-			FilterSettings filterSettings = Filter.getSettings();
+			FilterSettings filterSettings = Root.FILTER.getSettings();
 			filterSettings.setShowImages(nodeImages.isChecked());
 			filterSettings.setShowGifs(nodeGifs.isChecked());
 			filterSettings.setShowVideos(nodeVideos.isChecked());
@@ -91,7 +91,7 @@ public class FilterOptionStage extends AbstractStage {
 	
 	public static void show(String... args) {
 		if (!getInstance().isShowing()) {
-			FilterSettings filterSettings = Filter.getSettings();
+			FilterSettings filterSettings = Root.FILTER.getSettings();
 			
 			nodeImages.setChecked(filterSettings.isShowImages());
 			nodeGifs.setChecked(filterSettings.isShowGifs());

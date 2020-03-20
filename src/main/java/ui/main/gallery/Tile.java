@@ -1,8 +1,7 @@
 package ui.main.gallery;
 
+import base.entity.CollectionUtil;
 import base.entity.Entity;
-import base.entity.EntityCollectionUtil;
-import control.Select;
 import control.reload.Reload;
 import enums.Direction;
 import javafx.geometry.Insets;
@@ -21,10 +20,10 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import main.Root;
 import misc.Settings;
 import ui.custom.ClickMenu;
-import ui.main.stage.MainStage;
-import ui.node.arrowtextnode.ArrowTextNodeTemplates;
+import ui.custom.ListMenu;
 
 public class Tile extends Pane {
 	public static final double HIGHLIGHT_PADDING = 5;
@@ -79,10 +78,7 @@ public class Tile extends Pane {
 			scene.snapshot(this);
 		}};
 		
-		ClickMenu.register(Tile.class, Direction.NONE, MouseButton.SECONDARY
-				, ArrowTextNodeTemplates.FILE.get()
-				, ArrowTextNodeTemplates.SELECTION.get()
-		);
+		ClickMenu.register(Tile.class, ListMenu.Preset.ENTITY);
 	}
 	
 	private final Entity entity;
@@ -90,97 +86,101 @@ public class Tile extends Pane {
 	public Tile(Entity entity) {
 		this.entity = entity;
 		
+		this.updateBorder();
+		this.updateCollectionIcon();
+		
 		ImageView imageView = new ImageView(loadingImage);
 		imageView.setX(HIGHLIGHT_PADDING);
 		imageView.setY(HIGHLIGHT_PADDING);
-		
-		if (entity.getCollectionID() != 0) {
-			if (entity.getCollection().getFirstImpl() == entity) {
-				this.setEffect(collectionIconPlus);
-			} else {
-				this.setEffect(collectionIconMinus);
-			}
-		}
 		
 		this.getChildren().add(imageView);
 		this.setPadding(new Insets(HIGHLIGHT_PADDING));
 		
 		this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-			if (!event.isStillSincePress()) return;
-			switch (event.getButton()) {
-				case PRIMARY:
-					ClickMenu.hideMenus();
-					
-					boolean hitWidth = event.getX() >= collectionIconX && event.getX() <= collectionIconX + collectionIconSize;
-					boolean hitHeight = event.getY() <= collectionIconY + collectionIconSize && event.getY() >= collectionIconY;
-					if (entity.getCollectionID() != 0 && hitWidth && hitHeight) {
-						Select.setTarget(entity);
-						//Select.getEntities().setAll(entity.getCollection());
-						EntityCollectionUtil.toggleCollection(entity);
-					} else {
-						if (event.getClickCount() % 2 != 0) {
-							if (event.isControlDown()) {
-								if (Select.getEntities().contains(entity)) {
-									Select.getEntities().remove(entity);
-								} else {
-									Select.getEntities().addImpl(entity);
-								}
-							} else if (event.isShiftDown()) {
-								Select.shiftSelectTo(entity);
-							} else {
-								Select.getEntities().setImpl(entity);
-							}
-							Select.setTarget(entity);
+			if (event.isStillSincePress()) {
+				switch (event.getButton()) {
+					case PRIMARY:
+						ListMenu.hideMenus();
+						
+						boolean hitWidth = event.getX() >= collectionIconX && event.getX() <= collectionIconX + collectionIconSize;
+						boolean hitHeight = event.getY() <= collectionIconY + collectionIconSize && event.getY() >= collectionIconY;
+						
+						if (entity.hasCollection() && hitWidth && hitHeight) {
+							this.clickOnCollectionIcon();
 						} else {
-							MainStage.getMainScene().viewDisplay();
+							this.clickOnTile(event);
 						}
-					}
-					
-					Reload.start();
-					break;
-				case SECONDARY:
-					if (!Select.getEntities().contains(entity)) {
-						Select.getEntities().setImpl(entity);
-					}
-					
-					//additional functionality from ClickMenu
-					
-					Select.setTarget(entity);
-					Reload.start();
-					break;
+						
+						Reload.start();
+						break;
+					case SECONDARY:
+						//additional functionality from ClickMenu
+						
+						if (!Root.SELECT.contains(entity)) Root.SELECT.set(entity);
+						Root.SELECT.setTarget(entity);
+						
+						Reload.start();
+						break;
+				}
 			}
 		});
 		this.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
-			if (Select.getEntities().contains(entity)) {
+			if (Root.SELECT.contains(entity)) {
 				this.setBackground(highlightSelectHover);
 			} else {
 				this.setBackground(highlightHover);
 			}
 		});
 		this.addEventFilter(MouseEvent.MOUSE_EXITED, event -> {
-			if (Select.getEntities().contains(entity)) {
+			if (Root.SELECT.contains(entity)) {
 				this.setBackground(highlightSelect);
 			} else {
 				this.setBackground(null);
 			}
 		});
 		
-		ClickMenu.install(this);
+		ClickMenu.install(this, Direction.NONE, MouseButton.SECONDARY);
+	}
+	
+	private void clickOnTile(MouseEvent event) {
+		if (event.getClickCount() % 2 == 0) {
+			Root.MAIN_STAGE.getMainScene().viewDisplay();
+		} else {
+			if (event.isShiftDown()) {
+				Root.SELECT.shiftSelectTo(entity);
+			} else if (event.isControlDown()) {
+				if (Root.SELECT.contains(entity)) {
+					Root.SELECT.remove(entity);
+				} else {
+					Root.SELECT.add(entity);
+				}
+				Root.SELECT.setupShiftSelect();
+			} else {
+				Root.SELECT.set(entity);
+				Root.SELECT.setupShiftSelect();
+			}
+			Root.SELECT.setTarget(entity);
+		}
+	}
+	private void clickOnCollectionIcon() {
+		Root.SELECT.setTarget(entity);
+		//Root.SELECT.setAll(entity.getCollection());
+		CollectionUtil.toggleCollection(entity);
 	}
 	
 	public void updateBorder() {
-		if (Select.getEntities().contains(entity)) {
+		if (Root.SELECT.contains(entity)) {
 			this.setBackground(highlightSelect);
 		} else {
 			this.setBackground(null);
 		}
 	}
 	public void updateCollectionIcon() {
-		if (entity.getCollectionID() != 0) {
-			if (!EntityCollectionUtil.getOpenCollections().contains(entity.getCollectionID())) {
-				this.setEffect(collectionIconPlus);
-			} else {
+		if (entity.hasCollection()) {
+			if (entity.getCollection().isOpen()) {
 				this.setEffect(collectionIconMinus);
+			} else {
+				this.setEffect(collectionIconPlus);
 			}
 		}
 	}

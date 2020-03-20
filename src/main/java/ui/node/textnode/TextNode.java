@@ -16,8 +16,16 @@ public class TextNode extends Label {
 	private static final int PADDING_H = 10;
 	private static final Insets insets = new Insets(PADDING_V, PADDING_H, PADDING_V, PADDING_H);
 	
+	private TextNodeTemplates template;
+	
 	public TextNode(String text, boolean hoverBackground, boolean hoverText, boolean hoverCursor, boolean defaultPadding) {
+		this(text, hoverBackground, hoverText, hoverCursor, defaultPadding, null);
+	}
+	public TextNode(String text, boolean hoverBackground, boolean hoverText, boolean hoverCursor, boolean defaultPadding, TextNodeTemplates template) {
 		super(text);
+		
+		this.template = template;
+		
 		this.setAlignment(Pos.CENTER);
 		this.setFont(Decorator.getFont());
 		this.setBackground(Background.EMPTY);
@@ -61,5 +69,9 @@ public class TextNode extends Label {
 				}
 			}
 		});
+	}
+	
+	public TextNodeTemplates getTemplate() {
+		return template;
 	}
 }
