@@ -35,7 +35,10 @@ public class ProgressNode extends StackPane {
 		
 		this.getChildren().addAll(progressBar, progressText);
 		this.setPadding(new Insets(5));
+		this.setMouseTransparent(true);
 		this.setOpacity(0);
+		this.setBackground(Decorator.getBackgroundPrimary());
+		this.maxHeightProperty().bind(progressBar.heightProperty());
 		
 		this.setBarColor(Decorator.getColorPrimary());
 		this.setBorderColor(Decorator.getColorBorder());
@@ -44,7 +47,7 @@ public class ProgressNode extends StackPane {
 		progressBar.progressProperty().addListener(event -> {
 			if (!deco.get()) {
 				try {
-					//this.lookup(".progress-bar").setStyle("-fx-border-color:" + borderColor + ";");
+					//this.lookup(".progress-bar").setStyle("-fx-background-color:" + barColor + ";");
 					this.lookup(".bar").setStyle("-fx-background-color: " + barColor + "; -fx-background-insets: 1; -fx-background-radius: 0;");
 					this.lookup(".track").setStyle("-fx-border-color:" + borderColor + ";-fx-background-color: transparent; -fx-background-radius: 0;");
 					this.setOpacity(1);

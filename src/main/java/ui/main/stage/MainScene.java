@@ -6,9 +6,11 @@ import control.reload.Notifier;
 import control.reload.Reload;
 import enums.Direction;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import lire.LireUtil;
 import main.Root;
 import ui.EntityDetailsUtil;
@@ -33,11 +35,15 @@ public class MainScene extends Scene {
 		borderPane.setCenter(new HBox(Root.GALLERY_PANE));
 		HBox.setHgrow(Root.GALLERY_PANE, Priority.NEVER);
 		borderPane.setRight(Root.SELECT_PANE);
-		
 		borderPane.setBackground(Decorator.getBackgroundPrimary());
 		
+		StackPane stackPane = new StackPane();
+		stackPane.getChildren().add(borderPane);
+		stackPane.getChildren().add(loadingBar);
+		stackPane.setAlignment(Pos.BOTTOM_CENTER);
+		
 		this.getStylesheets().add("/ScrollPane.css");
-		this.setRoot(borderPane);
+		this.setRoot(stackPane);
 		this.initKeybinds();
 	}
 	
@@ -158,20 +164,20 @@ public class MainScene extends Scene {
 	public void showLoadingBar(Object caller, int total) {
 		if (Platform.isFxApplicationThread()) {
 			loadingBar.setup(caller, total);
-			borderPane.setBottom(loadingBar);
+			loadingBar.setVisible(true);
 		} else {
 			Platform.runLater(() -> {
 				loadingBar.setup(caller, total);
-				borderPane.setBottom(loadingBar);
+				loadingBar.setVisible(true);
 			});
 		}
 	}
 	public void hideLoadingBar(Object caller) {
 		if (loadingBar.getCaller() == caller) {
 			if (Platform.isFxApplicationThread()) {
-				borderPane.setBottom(null);
+				loadingBar.setVisible(false);
 			} else {
-				Platform.runLater(() -> borderPane.setBottom(null));
+				Platform.runLater(() -> loadingBar.setVisible(false));
 			}
 		}
 	}
