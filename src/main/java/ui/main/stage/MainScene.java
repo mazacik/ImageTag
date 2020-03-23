@@ -13,11 +13,11 @@ import lire.LireUtil;
 import main.Root;
 import ui.EntityDetailsUtil;
 import ui.custom.ListMenu;
+import ui.custom.ProgressNode;
 import ui.decorator.Decorator;
 import ui.node.EditNode;
 import ui.override.HBox;
 import ui.override.Scene;
-import ui.stage.ProgressNode;
 
 public class MainScene extends Scene {
 	private ProgressNode loadingBar;
@@ -36,6 +36,7 @@ public class MainScene extends Scene {
 		
 		borderPane.setBackground(Decorator.getBackgroundPrimary());
 		
+		this.getStylesheets().add("/ScrollPane.css");
 		this.setRoot(borderPane);
 		this.initKeybinds();
 	}

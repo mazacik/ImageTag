@@ -48,26 +48,19 @@ public class MainStage extends Stage {
 		
 		mainScene = new MainScene();
 		mainScene.getRoot().requestFocus();
-		mainScene.widthProperty().addListener((observable, oldValue, newValue) -> onStageWidthChange());
-		
-		Root.GALLERY_PANE.widthProperty().addListener((observable, oldValue, newValue) -> {
-			double availableWidth = MainStage.this.getScene().getWidth() - newValue.doubleValue();
-			double width = availableWidth / 2;
-			Root.FILTER_PANE.setPrefWidth(width);
-			Root.SELECT_PANE.setPrefWidth(width);
-		});
-		
-		Decorator.setScrollbarStyle(Root.GALLERY_PANE);
-		Decorator.setScrollbarStyle(Root.FILTER_PANE.getScrollPane());
-		Decorator.setScrollbarStyle(Root.SELECT_PANE.getScrollPane());
+		mainScene.widthProperty().addListener((observable, oldValue, newValue) -> this.onStageWidthChange());
 		
 		this.setScene(mainScene);
-		
-		this.setMinWidth(100 + SidePaneBase.MIN_WIDTH * 2 + Settings.GALLERY_TILE_SIZE.getValueInteger());
-		this.setMinHeight(100 + Settings.GALLERY_TILE_SIZE.getValueInteger());
-		this.setWidth(Decorator.getUsableScreenWidth());
-		this.setHeight(Decorator.getUsableScreenHeight());
-		
+		if (Main.DEBUG_UI_SCALING) {
+			this.setWidth(Decorator.getUsableScreenWidth());
+			this.setHeight(Decorator.getUsableScreenHeight());
+			Root.GALLERY_PANE.widthProperty().addListener((observable, oldValue, newValue) -> {
+				double availableWidth = MainStage.this.getScene().getWidth() - newValue.doubleValue();
+				double width = availableWidth / 2;
+				Root.FILTER_PANE.setPrefWidth(width);
+				Root.SELECT_PANE.setPrefWidth(width);
+			});
+		}
 		this.centerOnScreen();
 		this.setOnCloseRequest(event -> Main.exitApplication());
 		
@@ -83,11 +76,15 @@ public class MainStage extends Stage {
 		double width = 0;
 		double availableWidth = sceneWidth - 2 * SidePaneBase.MIN_WIDTH;
 		
+		if (!Main.DEBUG_UI_SCALING) availableWidth = 300;
+		
 		double increment = galleryTileSize + tiles.getHgap();
 		while (width + increment <= availableWidth) width += increment;
 		
 		int prefColumnsNew = (int) (width / galleryTileSize);
 		int prefColumnsOld = tiles.getPrefColumns();
+		
+		if (prefColumnsNew <= 0) prefColumnsNew = 1;
 		
 		if (prefColumnsNew != prefColumnsOld) {
 			tiles.setPrefColumns(prefColumnsNew);

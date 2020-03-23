@@ -4,7 +4,7 @@ public class FilterSettings {
 	private boolean showImages = true;
 	private boolean showGifs = false;
 	private boolean showVideos = false;
-	private boolean showOnlyNewEntities = false;
+	private boolean onlySession = false;
 	private boolean enableLimit = false;
 	private int limit = 0;
 	
@@ -23,8 +23,8 @@ public class FilterSettings {
 	public boolean isShowVideos() {
 		return showVideos;
 	}
-	public boolean isShowOnlyNewEntities() {
-		return showOnlyNewEntities;
+	public boolean isOnlySession() {
+		return onlySession;
 	}
 	public boolean isEnableLimit() {
 		return enableLimit;
@@ -42,8 +42,8 @@ public class FilterSettings {
 	public void setShowVideos(boolean showVideos) {
 		this.showVideos = showVideos;
 	}
-	public void setShowOnlyNewEntities(boolean showOnlyNewEntities) {
-		this.showOnlyNewEntities = showOnlyNewEntities;
+	public void setOnlySession(boolean onlySession) {
+		this.onlySession = onlySession;
 	}
 	public void setEnableLimit(boolean enableLimit) {
 		this.enableLimit = enableLimit;

@@ -261,7 +261,7 @@ public enum TextNodeTemplates {
 				ListMenu.hideMenus();
 				
 				HttpUtil.googleReverseImageSearch(Root.SELECT.getTarget());
-				new SimpleMessageStage("Google RIS", "Request Sent.");
+				new SimpleMessageStage("Google RIS", "Request Sent.").show();
 			});
 			return textNode;
 		}
@@ -506,6 +506,9 @@ public enum TextNodeTemplates {
 					
 					Root.FILTER.getLastImport().setAllImpl(entities);
 				}
+				
+				Reload.notify(Notifier.ENTITYLIST_CHANGED);
+				Reload.start();
 			});
 			return textNode;
 		}

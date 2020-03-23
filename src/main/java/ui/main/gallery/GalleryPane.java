@@ -18,7 +18,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import main.Root;
 import misc.Settings;
-import ui.decorator.Decorator;
 import ui.stage.SimpleMessageStage;
 
 public class GalleryPane extends ScrollPane {
@@ -66,12 +65,13 @@ public class GalleryPane extends ScrollPane {
 		
 		selectRectangleHelper = new EntityList();
 		
+		this.setMinViewportWidth(actualTileSize);
+		this.setMinViewportHeight(actualTileSize + 2 * GAP);
 		this.setContent(tilePane);
 		this.getChildren().add(tilePane);
 		this.setBackground(Background.EMPTY);
 		this.setHbarPolicy(ScrollBarPolicy.NEVER);
 		this.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
-		this.setPrefViewportHeight(Decorator.getUsableScreenHeight());
 		this.addEventFilter(ScrollEvent.SCROLL, this::onScroll);
 	}
 	

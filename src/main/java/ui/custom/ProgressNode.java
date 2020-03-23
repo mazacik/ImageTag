@@ -1,4 +1,4 @@
-package ui.stage;
+package ui.custom;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.ProgressBar;
@@ -28,16 +28,17 @@ public class ProgressNode extends StackPane {
 		progressBar = new ProgressBar();
 		progressBar.setMaxWidth(Double.MAX_VALUE);
 		
-		progressText = new Text();
-		progressText.setFill(Decorator.getColorPrimary());
+		progressText = new Text("");
+		progressText.setFont(Decorator.getFont());
+		progressText.setFill(Color.WHITE);
 		progressText.setStyle("-fx-blend-mode: difference;");
 		
 		this.getChildren().addAll(progressBar, progressText);
 		this.setPadding(new Insets(5));
 		this.setOpacity(0);
 		
-		setBarColor(Decorator.getColorPrimary());
-		setBorderColor(Decorator.getColorBorder());
+		this.setBarColor(Decorator.getColorPrimary());
+		this.setBorderColor(Decorator.getColorBorder());
 		
 		AtomicBoolean deco = new AtomicBoolean(false);
 		progressBar.progressProperty().addListener(event -> {

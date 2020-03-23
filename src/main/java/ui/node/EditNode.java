@@ -8,16 +8,19 @@ public class EditNode extends TextField {
 	public EditNode() {
 		this("", "");
 	}
-	public EditNode(EditNodeType nodeType) {
-		this("", "", nodeType);
+	public EditNode(EditNodeType type) {
+		this("", "", type);
 	}
-	public EditNode(String startText, String promptText) {
-		this(startText, promptText, EditNodeType.ANY_CHARACTERS);
+	public EditNode(String text, String promptText) {
+		this(text, promptText, EditNodeType.ANY_CHARACTERS);
 	}
-	public EditNode(String startText, String promptText, EditNodeType type) {
+	public EditNode(String text, EditNodeType type) {
+		this(text, "", type);
+	}
+	public EditNode(String text, String promptText, EditNodeType type) {
 		this.setFont(Decorator.getFont());
 		this.setBorder(Decorator.getBorder(1, 1, 1, 1));
-		if (!startText.isEmpty()) this.setText(startText);
+		if (!text.isEmpty()) this.setText(text);
 		if (!promptText.isEmpty()) this.setPromptText(promptText);
 		//this.skinProperty().addListener((observable, oldValue, newValue) -> setStyle("-fx-text-fill: " + Decorator.getColorAsStringForCss(ColorUtil.getColorPrimary()) + "; -fx-prompt-text-fill: gray;"));
 		this.setBackground(Background.EMPTY);

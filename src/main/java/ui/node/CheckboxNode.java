@@ -18,6 +18,9 @@ public class CheckboxNode extends HBox {
 	public CheckboxNode(String text) {
 		this(text, Direction.LEFT, false);
 	}
+	public CheckboxNode(String text, boolean startChecked) {
+		this(text, Direction.LEFT, startChecked);
+	}
 	public CheckboxNode(String text, Direction boxPosition, boolean startChecked) {
 		textNode = new TextNode(text, false, false, false, false);
 		nodeMark = new TextNode("", true, true, true, false);

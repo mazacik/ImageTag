@@ -230,7 +230,7 @@ public class ImportStage extends AbstractStage {
 		Root.FILTER.getSettings().setShowImages(true);
 		Root.FILTER.getSettings().setShowGifs(true);
 		Root.FILTER.getSettings().setShowVideos(true);
-		Root.FILTER.getSettings().setShowOnlyNewEntities(true);
+		Root.FILTER.getSettings().setOnlySession(true);
 		Root.FILTER.getSettings().setEnableLimit(false);
 	}
 	

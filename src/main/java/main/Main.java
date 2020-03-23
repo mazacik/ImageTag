@@ -19,6 +19,7 @@ import java.io.File;
 
 public class Main extends Application {
 	public static final boolean DEBUG_MAIN_QUICKSTART = true;
+	public static final boolean DEBUG_UI_SCALING = true;
 	
 	public static final boolean DEBUG_FS_ALLOW_FILE_MOVE = true;
 	public static final boolean DEBUG_FS_ALLOW_FILE_DELETE = true;

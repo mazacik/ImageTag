@@ -26,9 +26,10 @@ public abstract class SidePaneBase extends VBox {
 		scrollPane = new ScrollPane(boxNodes);
 		scrollPane.setFitToWidth(true);
 		scrollPane.setFitToHeight(true);
+		scrollPane.setMinViewportWidth(MIN_WIDTH);
+		scrollPane.setBackground(Background.EMPTY);
 		scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 		scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-		scrollPane.setBackground(Background.EMPTY);
 		scrollPane.addEventFilter(ScrollEvent.SCROLL, this::onScroll);
 	}
 	
@@ -133,9 +134,5 @@ public abstract class SidePaneBase extends VBox {
 	}
 	public CustomList<TagNode> getOpenNodes() {
 		return openNodes;
-	}
-	
-	public ScrollPane getScrollPane() {
-		return scrollPane;
 	}
 }

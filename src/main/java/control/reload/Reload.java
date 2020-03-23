@@ -37,7 +37,7 @@ public abstract class Reload {
 			link(Notifier.SELECT_TAGLIST_CHANGED, paneSelectRefresh);
 			
 			link(Notifier.TARGET_CHANGED, paneToolbarReload, paneDisplayReload, paneSelectRefresh);
-			link(Notifier.TARGET_COLLECTION_CHANGED, paneToolbarReload);
+			link(Notifier.TARGET_COLLECTION_CHANGED, paneToolbarReload, paneGalleryReload);
 			
 			link(Notifier.VIEWMODE_CHANGED, paneDisplayReload);
 		} catch (NoSuchMethodException e) {

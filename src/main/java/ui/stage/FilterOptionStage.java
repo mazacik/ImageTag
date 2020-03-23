@@ -18,13 +18,15 @@ public class FilterOptionStage extends AbstractStage {
 	public FilterOptionStage() {
 		super("Filter Settings", false);
 		
-		CheckboxNode nodeImages = new CheckboxNode("Images");
-		CheckboxNode nodeGifs = new CheckboxNode("Gifs");
-		CheckboxNode nodeVideos = new CheckboxNode("Videos");
-		CheckboxNode nodeSession = new CheckboxNode("Session");//todo maybe rename to "Last Import"?
+		FilterSettings filterSettings = Root.FILTER.getSettings();
 		
-		CheckboxNode nodeLimit = new CheckboxNode("Limit");
-		EditNode nodeLimitValue = new EditNode(EditNode.EditNodeType.NUMERIC_POSITIVE);
+		CheckboxNode nodeImages = new CheckboxNode("Images", filterSettings.isShowImages());
+		CheckboxNode nodeGifs = new CheckboxNode("Gifs", filterSettings.isShowGifs());
+		CheckboxNode nodeVideos = new CheckboxNode("Videos", filterSettings.isShowVideos());
+		CheckboxNode nodeSession = new CheckboxNode("Session", filterSettings.isOnlySession());//todo maybe rename to "Last Import"?
+		
+		CheckboxNode nodeLimit = new CheckboxNode("Limit", filterSettings.isEnableLimit());
+		EditNode nodeLimitValue = new EditNode(String.valueOf(filterSettings.getLimit()), EditNode.EditNodeType.NUMERIC_POSITIVE);
 		nodeLimit.getCheckedProperty().addListener((observable, oldValue, newValue) -> nodeLimitValue.setDisable(!newValue));
 		
 		nodeLimitValue.setPadding(new Insets(0, 1, -1, 1));
@@ -63,13 +65,17 @@ public class FilterOptionStage extends AbstractStage {
 		nodeOK.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> {
 			this.close();
 			
-			FilterSettings fs = Root.FILTER.getSettings();
-			fs.setShowImages(nodeImages.isChecked());
-			fs.setShowGifs(nodeGifs.isChecked());
-			fs.setShowVideos(nodeVideos.isChecked());
-			fs.setShowOnlyNewEntities(nodeSession.isChecked());
-			fs.setEnableLimit(nodeLimit.isChecked());
-			fs.setLimit(Integer.parseInt(nodeLimitValue.getText()));
+			filterSettings.setShowImages(nodeImages.isChecked());
+			filterSettings.setShowGifs(nodeGifs.isChecked());
+			filterSettings.setShowVideos(nodeVideos.isChecked());
+			filterSettings.setOnlySession(nodeSession.isChecked());
+			if (nodeLimitValue.getText().isEmpty()) {
+				nodeLimitValue.setText(String.valueOf(filterSettings.getLimit()));
+				filterSettings.setEnableLimit(false);
+			} else {
+				filterSettings.setEnableLimit(nodeLimit.isChecked());
+				filterSettings.setLimit(Integer.parseInt(nodeLimitValue.getText()));
+			}
 			
 			Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
 			Reload.start();
@@ -78,17 +84,7 @@ public class FilterOptionStage extends AbstractStage {
 		TextNode nodeCancel = new TextNode("Cancel", true, true, false, true);
 		nodeCancel.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, this::close);
 		
-		this.onShowingProperty().addListener((observable, oldValue, newValue) -> {
-			FilterSettings fs = Root.FILTER.getSettings();
-			nodeImages.setChecked(fs.isShowImages());
-			nodeGifs.setChecked(fs.isShowGifs());
-			nodeVideos.setChecked(fs.isShowVideos());
-			nodeSession.setChecked(fs.isShowOnlyNewEntities());
-			nodeLimit.setChecked(fs.isEnableLimit());
-			nodeLimitValue.setText(String.valueOf(fs.getLimit()));
-		});
-		
-		setRoot(boxContent);
-		setButtons(nodeOK, nodeCancel);
+		this.setRoot(boxContent);
+		this.setButtons(nodeOK, nodeCancel);
 	}
 }

@@ -126,7 +126,7 @@ public class Filter extends EntityList {
 			}
 		}
 		
-		if (settings.isShowOnlyNewEntities() && !lastImport.contains(entity)) {
+		if (settings.isOnlySession() && !lastImport.contains(entity)) {
 			return false;
 		}
 		
