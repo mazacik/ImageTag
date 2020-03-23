@@ -164,7 +164,6 @@ public class Main extends Application {
 		}
 		
 		Root.DISPLAY_PANE.disposeVideoPlayer();
-		Root.DISPLAY_PANE.getControls().hide();
 		
 		Project.getCurrent().writeToDisk();
 		Settings.writeToDisk();

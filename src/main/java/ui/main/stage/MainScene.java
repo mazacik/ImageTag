@@ -110,9 +110,6 @@ public class MainScene extends Scene {
 				Root.SELECT.moveTarget(event);
 				Reload.start();
 				break;
-			case ALT:
-				Root.DISPLAY_PANE.getControls().hide();
-				break;
 		}
 	}
 	private void keybindsEditNode(KeyEvent event) {

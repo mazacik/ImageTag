@@ -3,6 +3,7 @@ package ui.main.display;
 import base.entity.Entity;
 import control.reload.Reload;
 import enums.Direction;
+import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -10,6 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import main.Root;
 import misc.FileUtil;
@@ -24,7 +26,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class DisplayPane extends BorderPane {
+public class DisplayPane extends StackPane {
+	private BorderPane borderPane;
+	
 	private Canvas canvas;
 	private ImageView gifPlayer;
 	private VideoPlayer videoPlayer;
@@ -36,10 +40,12 @@ public class DisplayPane extends BorderPane {
 	private TextNode nodeNoLibsError;
 	
 	public DisplayPane() {
+		borderPane = new BorderPane();
+		
 		canvas = new Canvas();
 		gifPlayer = new ImageView();
 		videoPlayer = VideoPlayer.create(canvas);
-		controls = new Controls(this, videoPlayer);
+		controls = new Controls(borderPane, videoPlayer);
 		
 		gifPlayer.fitWidthProperty().bind(Root.GALLERY_PANE.widthProperty());
 		gifPlayer.fitHeightProperty().bind(Root.GALLERY_PANE.heightProperty());
@@ -50,7 +56,11 @@ public class DisplayPane extends BorderPane {
 			this.minHeightProperty().bind(canvas.heightProperty());
 		}};
 		
-		this.setCenter(canvas);
+		borderPane.setCenter(canvas);
+		
+		this.getChildren().add(borderPane);
+		this.getChildren().add(controls);
+		this.setAlignment(Pos.TOP_CENTER);
 		
 		this.initEvents();
 	}
@@ -78,8 +88,8 @@ public class DisplayPane extends BorderPane {
 	private void reloadAsImage(Entity currentTarget) {
 		controls.setVideoMode(false);
 		
-		if (this.getCenter() != canvas) {
-			this.setCenter(canvas);
+		if (borderPane.getCenter() != canvas) {
+			borderPane.setCenter(canvas);
 		}
 		
 		double originWidth = 0;
@@ -152,7 +162,7 @@ public class DisplayPane extends BorderPane {
 	private void reloadAsGif(Entity currentTarget) {
 		controls.setVideoMode(false);
 		
-		if (this.getCenter() != gifPlayer) this.setCenter(gifPlayer);
+		if (borderPane.getCenter() != gifPlayer) borderPane.setCenter(gifPlayer);
 		
 		if (currentCache == null || !currentCache.equals(currentTarget)) {
 			currentCache = currentTarget;
@@ -162,7 +172,7 @@ public class DisplayPane extends BorderPane {
 		gifPlayer.setImage(currentImage);
 	}
 	private void reloadAsVideo(Entity currentTarget) {
-		if (this.getCenter() != canvas) this.setCenter(canvas);
+		if (borderPane.getCenter() != canvas) borderPane.setCenter(canvas);
 		
 		if (VideoPlayer.hasLibs()) {
 			controls.setVideoMode(true);
@@ -175,7 +185,7 @@ public class DisplayPane extends BorderPane {
 			}
 		} else {
 			controls.setVideoMode(false);
-			this.setCenter(nodeNoLibsError);
+			borderPane.setCenter(nodeNoLibsError);
 		}
 	}
 	
@@ -186,10 +196,10 @@ public class DisplayPane extends BorderPane {
 		canvas.widthProperty().addListener((observable, oldValue, newValue) -> reload());
 		canvas.heightProperty().addListener((observable, oldValue, newValue) -> reload());
 		
-		this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+		borderPane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
 				if (event.getClickCount() % 2 != 0) {
-					this.requestFocus();
+					borderPane.requestFocus();
 				} else {
 					Root.MAIN_STAGE.getMainScene().viewGallery();
 					Reload.start();
@@ -197,11 +207,10 @@ public class DisplayPane extends BorderPane {
 			}
 		});
 		
-		ClickMenu.install(this, Direction.NONE, MouseButton.SECONDARY, ListMenu.Preset.ENTITY);
+		ClickMenu.install(borderPane, Direction.NONE, MouseButton.SECONDARY, ListMenu.Preset.ENTITY);
 	}
 	
 	public void interruptVideoPlayer() {
-		if (controls.isShowing()) controls.hide();
 		if (videoPlayer != null && videoPlayer.isPlaying()) videoPlayer.pause();
 	}
 	public void disposeVideoPlayer() {

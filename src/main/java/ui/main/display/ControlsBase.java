@@ -60,6 +60,7 @@ public class ControlsBase extends BorderPane {
 		lblTimeTotal = new TextNode("23:59:59", true, true, false, true);
 		
 		this.setBackground(Decorator.getBackgroundPrimary());
+		this.maxHeightProperty().bind(btnPlayPause.heightProperty());
 		Decorator.getNodeList().addImpl(this);
 		
 		initEvents(videoPlayer);
