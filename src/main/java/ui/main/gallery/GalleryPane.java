@@ -254,43 +254,45 @@ public class GalleryPane extends ScrollPane {
 		
 		tilePane.getChildren().setAll(tiles);
 		
-		moveViewportToTarget();
+		this.moveViewportToTarget();
 		
 		return true;
 	}
 	public void moveViewportToTarget() {
-		Entity currentTarget = Root.SELECT.getTarget();
-		if (!Root.PSC.MAIN_STAGE.isViewGallery() || currentTarget == null) return;
-		if (currentTarget.hasCollection() && !currentTarget.getCollection().isOpen()) {
-			currentTarget = currentTarget.getCollection().getFirst();
-		}
-		int targetIndex = tileEntities.indexOf(currentTarget);
-		if (targetIndex < 0) return;
-		
-		int columnCount = tilePane.getPrefColumns();
-		int targetRow = targetIndex / columnCount;
-		
-		Bounds reverseBounds = this.getViewportBounds();
-		Bounds correctBounds = new BoundingBox(Math.abs(reverseBounds.getMinX()), Math.abs(reverseBounds.getMinY()), Math.abs(reverseBounds.getMinZ()), reverseBounds.getWidth(), reverseBounds.getHeight(), reverseBounds.getDepth());
-		Bounds targetIndexTileBounds = tilePane.getChildren().get(targetIndex).getBoundsInParent();
-		
-		double viewportHeight = correctBounds.getHeight();
-		double contentHeight = tilePane.getHeight() - viewportHeight;
-		double rowHeight = tilePane.getPrefTileHeight() + tilePane.getVgap();
-		
-		double rowToContentRatio = rowHeight / contentHeight;
-		double viewportToContentRatio = viewportHeight / contentHeight;
-		
-		double viewportTop = correctBounds.getMinY();
-		double viewportBottom = correctBounds.getMaxY();
-		
-		double tileTop = targetIndexTileBounds.getMinY();
-		double tileBottom = targetIndexTileBounds.getMaxY();
-		
-		if (tileBottom > viewportBottom) {
-			this.setVvalue((targetRow + 1) * rowToContentRatio - viewportToContentRatio);
-		} else if (tileTop < viewportTop) {
-			this.setVvalue(targetRow * rowToContentRatio);
+		if (this.getHeight() > 0) {
+			Entity currentTarget = Root.SELECT.getTarget();
+			if (!Root.PSC.MAIN_STAGE.isViewGallery() || currentTarget == null) return;
+			if (currentTarget.hasCollection() && !currentTarget.getCollection().isOpen()) {
+				currentTarget = currentTarget.getCollection().getFirst();
+			}
+			int targetIndex = tileEntities.indexOf(currentTarget);
+			if (targetIndex >= 0) {
+				int columnCount = tilePane.getPrefColumns();
+				int targetRow = targetIndex / columnCount;
+				
+				Bounds reverseBounds = this.getViewportBounds();
+				Bounds correctBounds = new BoundingBox(Math.abs(reverseBounds.getMinX()), Math.abs(reverseBounds.getMinY()), Math.abs(reverseBounds.getMinZ()), reverseBounds.getWidth(), reverseBounds.getHeight(), reverseBounds.getDepth());
+				Bounds targetIndexTileBounds = tilePane.getChildren().get(targetIndex).getBoundsInParent();
+				
+				double viewportHeight = correctBounds.getHeight();
+				double contentHeight = tilePane.getHeight() - viewportHeight;
+				double rowHeight = tilePane.getPrefTileHeight() + tilePane.getVgap();
+				
+				double rowToContentRatio = rowHeight / contentHeight;
+				double viewportToContentRatio = viewportHeight / contentHeight;
+				
+				double viewportTop = correctBounds.getMinY();
+				double viewportBottom = correctBounds.getMaxY();
+				
+				double tileTop = targetIndexTileBounds.getMinY();
+				double tileBottom = targetIndexTileBounds.getMaxY();
+				
+				if (tileBottom > viewportBottom) {
+					this.setVvalue((targetRow + 1) * rowToContentRatio - viewportToContentRatio);
+				} else if (tileTop < viewportTop) {
+					this.setVvalue(targetRow * rowToContentRatio);
+				}
+			}
 		}
 	}
 	
