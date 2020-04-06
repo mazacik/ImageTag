@@ -1,6 +1,5 @@
-package ui.main.stage;
+package ui.stage.primary;
 
-import base.entity.CollectionUtil;
 import base.entity.Entity;
 import control.reload.Notifier;
 import control.reload.Reload;
@@ -11,22 +10,74 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.TilePane;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import lire.LireUtil;
+import main.Main;
 import main.Root;
 import ui.EntityDetailsUtil;
 import ui.custom.ListMenu;
 import ui.custom.ProgressNode;
 import ui.decorator.Decorator;
+import ui.main.side.SidePaneBase;
 import ui.node.EditNode;
 import ui.override.HBox;
 import ui.override.Scene;
 
-public class MainScene extends Scene {
-	private ProgressNode loadingBar;
+public class MainStage extends Stage {
+	public MainStage() {
+		Scene mainScene = this.getMainScene();
+		
+		mainScene.getRoot().requestFocus();
+		mainScene.widthProperty().addListener((observable, oldValue, newValue) -> this.onStageWidthChange());
+		
+		if (Main.DEBUG_UI_SCALING) {
+			this.setWidth(Decorator.getUsableScreenWidth());
+			this.setHeight(Decorator.getUsableScreenHeight());
+			Root.GALLERY_PANE.widthProperty().addListener((observable, oldValue, newValue) -> {
+				double availableWidth = MainStage.this.getScene().getWidth() - newValue.doubleValue();
+				double width = availableWidth / 2;
+				Root.FILTER_PANE.setPrefWidth(width);
+				Root.SELECT_PANE.setPrefWidth(width);
+			});
+		}
+		
+		this.setScene(mainScene);
+		this.centerOnScreen();
+		this.setOnCloseRequest(event -> Main.exitApplication());
+		this.initStyle(StageStyle.UNDECORATED);
+	}
+	
+	private void onStageWidthChange() {
+		TilePane tiles = Root.GALLERY_PANE.getTilePane();
+		
+		double galleryTileSize = tiles.getPrefTileWidth();
+		double sceneWidth = MainStage.this.getScene().getWidth();
+		
+		double width = 0;
+		double availableWidth = sceneWidth - 2 * SidePaneBase.MIN_WIDTH;
+		
+		if (!Main.DEBUG_UI_SCALING) availableWidth = 300;
+		
+		double increment = galleryTileSize + tiles.getHgap();
+		while (width + increment <= availableWidth) width += increment;
+		
+		int prefColumnsNew = (int) (width / galleryTileSize);
+		int prefColumnsOld = tiles.getPrefColumns();
+		
+		if (prefColumnsNew <= 0) prefColumnsNew = 1;
+		
+		if (prefColumnsNew != prefColumnsOld) {
+			tiles.setPrefColumns(prefColumnsNew);
+			Root.GALLERY_PANE.setPrefViewportWidth(width);
+		}
+	}
 	
 	private BorderPane borderPane;
+	private ProgressNode loadingBar;
 	
-	public MainScene() {
+	private Scene getMainScene() {
 		loadingBar = new ProgressNode();
 		
 		borderPane = new BorderPane();
@@ -42,15 +93,18 @@ public class MainScene extends Scene {
 		stackPane.getChildren().add(loadingBar);
 		stackPane.setAlignment(Pos.BOTTOM_CENTER);
 		
-		this.getStylesheets().add("/ScrollPane.css");
-		this.setRoot(stackPane);
-		this.initKeybinds();
+		Scene mainScene = new Scene(stackPane);
+		mainScene.getStylesheets().add("/ScrollPane.css");
+		
+		this.initKeybinds(mainScene);
+		
+		return mainScene;
 	}
 	
-	private void initKeybinds() {
+	private void initKeybinds(Scene mainScene) {
 		this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-			if (this.getFocusOwner() instanceof EditNode) {
-				keybindsEditNode(event);
+			if (mainScene.getFocusOwner() instanceof EditNode) {
+				keybindsEditNode(event, mainScene);
 			} else {
 				keybindsGlobal(event);
 			}
@@ -72,7 +126,7 @@ public class MainScene extends Scene {
 				EntityDetailsUtil.show();
 				break;
 			case ESCAPE:
-				Root.MAIN_STAGE.getMainScene().viewGallery();
+				Root.PSC.MAIN_STAGE.viewGallery();
 				Reload.start();
 				break;
 			case TAB:
@@ -83,7 +137,9 @@ public class MainScene extends Scene {
 				Reload.start();
 				break;
 			case E:
-				CollectionUtil.toggleCollection(Root.SELECT.getTarget());
+				if (Root.SELECT.getTarget().hasCollection()) {
+					Root.SELECT.getTarget().getCollection().toggle();
+				}
 				Reload.start();
 				break;
 			case R:
@@ -93,8 +149,13 @@ public class MainScene extends Scene {
 			case G:
 				if (Root.SELECT.getTarget().hasCollection()) {
 					Entity randomEntityFromCollection = Root.SELECT.getTarget().getCollection().getRandom();
-					Root.SELECT.set(randomEntityFromCollection);
+					if (randomEntityFromCollection == null) {
+						int i = 0;
+					}
 					Root.SELECT.setTarget(randomEntityFromCollection);
+					if (!Root.SELECT.contains(randomEntityFromCollection)) {
+						Root.SELECT.set(randomEntityFromCollection);
+					}
 					Reload.start();
 				}
 				break;
@@ -112,7 +173,7 @@ public class MainScene extends Scene {
 				break;
 		}
 	}
-	private void keybindsEditNode(KeyEvent event) {
+	private void keybindsEditNode(KeyEvent event, Scene mainScene) {
 		switch (event.getCode()) {
 			case ESCAPE:
 			case TAB:
@@ -120,13 +181,13 @@ public class MainScene extends Scene {
 				event.consume();
 				break;
 			case UP:
-				if (this.getFocusOwner() == Root.SELECT_PANE.getNodeSearch()) {
+				if (mainScene.getFocusOwner() == Root.SELECT_PANE.getNodeSearch()) {
 					Root.SELECT_PANE.nextMatch(Direction.UP, event.isControlDown());
 					event.consume();
 				}
 				break;
 			case DOWN:
-				if (this.getFocusOwner() == Root.SELECT_PANE.getNodeSearch()) {
+				if (mainScene.getFocusOwner() == Root.SELECT_PANE.getNodeSearch()) {
 					Root.SELECT_PANE.nextMatch(Direction.DOWN, event.isControlDown());
 					event.consume();
 				}

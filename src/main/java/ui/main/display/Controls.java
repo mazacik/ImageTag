@@ -11,25 +11,15 @@ public class Controls extends ControlsBase {
 		super(videoPlayer);
 		
 		autoHideDelay = new PauseTransition(new Duration(1000));
-		autoHideDelay.setOnFinished(event -> {
-			System.out.println("timer finished");
-			this.setVisible(false);
-		});
+		autoHideDelay.setOnFinished(event -> this.setVisible(false));
 		
 		ownerPane.setOnMouseMoved(event -> {
-			System.out.println("entitypane mouse moved");
 			autoHideDelay.playFromStart();
 			this.setVisible(true);
 		});
 		
 		this.prefWidthProperty().bind(ownerPane.widthProperty());
-		this.setOnMouseEntered(event -> {
-			System.out.println("ctrls mouse entered");
-			autoHideDelay.stop();
-		});
-		this.setOnMouseExited(event -> {
-			System.out.println("ctrls mouse exited");
-			autoHideDelay.playFromStart();
-		});
+		this.setOnMouseEntered(event -> autoHideDelay.stop());
+		this.setOnMouseExited(event -> autoHideDelay.playFromStart());
 	}
 }

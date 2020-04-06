@@ -1,4 +1,4 @@
-package ui.main.stage;
+package ui.stage.primary.project;
 
 import javafx.geometry.Pos;
 import javafx.scene.input.KeyCode;
@@ -7,10 +7,12 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
-import main.Main;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import main.Root;
 import misc.FileUtil;
 import misc.Project;
+import misc.Settings;
 import ui.custom.TitleBar;
 import ui.decorator.Decorator;
 import ui.node.EditNode;
@@ -19,17 +21,37 @@ import ui.override.HBox;
 import ui.override.Scene;
 import ui.override.VBox;
 
+import java.awt.*;
 import java.io.File;
 
-public class ProjectScene extends Scene {
-	private final EditNode editProjectName;
-	private final EditNode editSourceDirectory;
-	private final TextNode nodeError;
-	private final TitleBar titleBar;
+public class ProjectStage extends Stage {
+	public ProjectStage() {
+		Rectangle usableScreenBounds = Decorator.getUsableScreenBounds();
+		double width = usableScreenBounds.getWidth() / 2;
+		double height = usableScreenBounds.getHeight() / 2;
+		
+		Scene projectScene = this.createProjectScene();
+		projectScene.getRoot().requestFocus();
+		
+		this.setScene(projectScene);
+		this.setWidth(width);
+		this.setHeight(height);
+		this.setMinWidth(width);
+		this.setMinHeight(height);
+		this.initStyle(StageStyle.UNDECORATED);
+		this.centerOnScreen();
+		
+		this.setOnCloseRequest(event -> Settings.writeToDisk());
+	}
+	
+	private EditNode editProjectName;
+	private EditNode editSourceDirectory;
+	private TextNode nodeError;
+	private TitleBar titleBar;
 	
 	private Project project;
 	
-	public ProjectScene() {
+	private Scene createProjectScene() {
 		TextNode nodeProjectName = new TextNode("Project Name:", false, false, false, false);
 		nodeProjectName.setAlignment(Pos.CENTER_LEFT);
 		editProjectName = new EditNode();
@@ -42,7 +64,13 @@ public class ProjectScene extends Scene {
 		TextNode nodeBrowseForDirectory = new TextNode("Browse", true, true, true, true);
 		nodeBrowseForDirectory.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
-				editSourceDirectory.setText(FileUtil.directoryChooser(this));
+				String path = FileUtil.directoryChooser(this.getScene());
+				if (editProjectName.getText().isEmpty()) {
+					String name = new File(path).getName();
+					editProjectName.setText(name);
+					editProjectName.selectPositionCaret(name.length());
+				}
+				editSourceDirectory.setText(path);
 			}
 		});
 		
@@ -59,9 +87,9 @@ public class ProjectScene extends Scene {
 		nodeError.setTextFill(Decorator.getColorNegative());
 		
 		TextNode btnFinish = new TextNode("Finish", true, true, true, true);
-		btnFinish.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> this.initProject());
+		btnFinish.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> this.tryFinish());
 		TextNode btnCancel = new TextNode("Cancel", true, true, true, true);
-		btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> Root.MAIN_STAGE.getIntroScene().show());
+		btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> Root.PSC.showIntroStage());
 		
 		VBox boxMain = new VBox(gridPane, nodeError, new HBox(btnCancel, btnFinish));
 		boxMain.setSpacing(5);
@@ -76,24 +104,25 @@ public class ProjectScene extends Scene {
 		
 		this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
 			if (event.getCode() == KeyCode.ENTER) {
-				this.initProject();
+				this.tryFinish();
 			} else if (event.getCode() == KeyCode.ESCAPE) {
-				Root.MAIN_STAGE.getIntroScene().show();
+				Root.PSC.showIntroStage();
 			}
 		});
-		this.setRoot(vBox);
+		
+		return new Scene(vBox);
 	}
 	
-	public void show() {
+	public void initNodes() {
+		project = null;
+		
 		editProjectName.setText("");
 		editSourceDirectory.setText("");
 		nodeError.setText("");
 		
 		titleBar.setTitle("Create a New Project");
-		
-		Root.MAIN_STAGE.setScene(this);
 	}
-	public void show(Project project) {
+	public void initNodes(Project project) {
 		this.project = project;
 		
 		editProjectName.setText(project.getProjectName());
@@ -101,37 +130,31 @@ public class ProjectScene extends Scene {
 		nodeError.setText("");
 		
 		titleBar.setTitle("Edit Project");
-		
-		Root.MAIN_STAGE.setScene(this);
 	}
 	
-	private void initProject() {
-		if (this.checkEditNodes(editProjectName, editSourceDirectory, nodeError)) {
+	private void tryFinish() {
+		if (this.checkUserInput()) {
 			if (project == null) {
 				Project newProject = new Project(editProjectName.getText(), editSourceDirectory.getText());
 				newProject.writeToDisk();
-				Root.MAIN_STAGE.layoutMain();
-				Project.setCurrent(newProject);
-				Main.startProjectDatabaseLoading();
+				Root.PSC.showMainStage(project);
 			} else {
 				project.updateProject(editProjectName.getText(), editSourceDirectory.getText());
-				
-				Root.MAIN_STAGE.getIntroScene().getProjectBox().refresh();
-				Root.MAIN_STAGE.getIntroScene().show();
+				Root.PSC.showIntroStage();
 			}
 		}
 	}
-	private boolean checkEditNodes(EditNode editProjectName, EditNode editDirectorySource, TextNode nodeError) {
+	private boolean checkUserInput() {
 		if (editProjectName.getText().isEmpty()) {
 			nodeError.setText("Project Name cannot be empty");
 			return false;
 		}
-		if (editDirectorySource.getText().isEmpty()) {
+		if (editSourceDirectory.getText().isEmpty()) {
 			nodeError.setText("Source Directory cannot be empty");
 			return false;
 		}
 		
-		File directorySource = new File(editDirectorySource.getText());
+		File directorySource = new File(editSourceDirectory.getText());
 		if (!directorySource.exists() || !directorySource.isDirectory()) {
 			nodeError.setText("Project Directory invalid or not found");
 			return false;

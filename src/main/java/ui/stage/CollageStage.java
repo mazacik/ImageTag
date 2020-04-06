@@ -19,10 +19,10 @@ public class CollageStage extends Stage {
 			Image originImage = new Image("file:" + FileUtil.getFileEntity(Root.SELECT.getTarget()));
 			Image scaledImage = getSmallerImage("file:" + FileUtil.getFileEntity(Root.SELECT.getTarget()), originImage.getWidth(), originImage.getHeight(), 1800, 900);
 			
-			int miniW = (int) scaledImage.getWidth() / Settings.COLLAGE_SIZE.getValueInteger();
-			int miniH = (int) scaledImage.getHeight() / Settings.COLLAGE_SIZE.getValueInteger();
+			int miniW = (int) scaledImage.getWidth() / Settings.COLLAGE_SIZE.getInteger();
+			int miniH = (int) scaledImage.getHeight() / Settings.COLLAGE_SIZE.getInteger();
 			
-			Root.MAIN_STAGE.getMainScene().showLoadingBar(this, Root.FILTER.size());
+			Root.PSC.MAIN_STAGE.showLoadingBar(this, Root.FILTER.size());
 			
 			CustomList<CollagePiece> database = new CustomList<>();
 			for (Entity entity : Root.FILTER) {
@@ -30,14 +30,14 @@ public class CollageStage extends Stage {
 				Color averageColor = getAverageColor(image, 0, 0, image.getWidth(), image.getHeight());
 				database.addImpl(new CollagePiece(image, averageColor));
 				
-				Root.MAIN_STAGE.getMainScene().advanceLoadingBar(this);
+				Root.PSC.MAIN_STAGE.advanceLoadingBar(this);
 			}
 			
-			Root.MAIN_STAGE.getMainScene().hideLoadingBar(this);
+			Root.PSC.MAIN_STAGE.hideLoadingBar(this);
 			
 			GridPane gridPane = new GridPane();
-			for (int y = 0; y < Settings.COLLAGE_SIZE.getValueInteger(); y++) {
-				for (int x = 0; x < Settings.COLLAGE_SIZE.getValueInteger(); x++) {
+			for (int y = 0; y < Settings.COLLAGE_SIZE.getInteger(); y++) {
+				for (int x = 0; x < Settings.COLLAGE_SIZE.getInteger(); x++) {
 					Color averageColor = getAverageColor(scaledImage, x * miniW, y * miniH, miniW, miniH);
 					ImageView imageView = new ImageView(getBestPiece(averageColor, database).image);
 					int finalX = x;

@@ -4,7 +4,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import ui.node.textnode.TextNode;
 
-public class SimpleMessageStage extends AbstractStage {
+public class SimpleMessageStage extends AbstractStageBase {
 	private TextNode nodeMessage;
 	
 	public SimpleMessageStage(String title, String message) {

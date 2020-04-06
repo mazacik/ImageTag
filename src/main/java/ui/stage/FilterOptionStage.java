@@ -14,7 +14,7 @@ import ui.node.textnode.TextNode;
 import ui.override.HBox;
 import ui.override.VBox;
 
-public class FilterOptionStage extends AbstractStage {
+public class FilterOptionStage extends AbstractStageBase {
 	public FilterOptionStage() {
 		super("Filter Settings", false);
 		
@@ -23,7 +23,7 @@ public class FilterOptionStage extends AbstractStage {
 		CheckboxNode nodeImages = new CheckboxNode("Images", filterSettings.isShowImages());
 		CheckboxNode nodeGifs = new CheckboxNode("Gifs", filterSettings.isShowGifs());
 		CheckboxNode nodeVideos = new CheckboxNode("Videos", filterSettings.isShowVideos());
-		CheckboxNode nodeSession = new CheckboxNode("Session", filterSettings.isOnlySession());//todo maybe rename to "Last Import"?
+		CheckboxNode nodeSession = new CheckboxNode("Last Import", filterSettings.isOnlySession());
 		
 		CheckboxNode nodeLimit = new CheckboxNode("Limit", filterSettings.isEnableLimit());
 		EditNode nodeLimitValue = new EditNode(String.valueOf(filterSettings.getLimit()), EditNode.EditNodeType.NUMERIC_POSITIVE);

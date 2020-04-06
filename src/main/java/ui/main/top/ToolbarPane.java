@@ -22,7 +22,7 @@ public class ToolbarPane extends BorderPane {
 	private TextNode nodeTarget;
 	
 	public ToolbarPane() {
-		TitleBar titleBar = new TitleBar(Root.MAIN_STAGE);
+		TitleBar titleBar = new TitleBar();
 		
 		TextNode nodeFile = new TextNode("File", true, true, false, true);
 		ClickMenu.install(nodeFile, Direction.DOWN, MouseButton.PRIMARY,
@@ -32,12 +32,12 @@ public class ToolbarPane extends BorderPane {
 		                  TextNodeTemplates.APPLICATION_SETTINGS.get(),
 		                  TextNodeTemplates.CACHE_RESET.get(),
 		                  new SeparatorNode(),
+		                  TextNodeTemplates.APPLICATION_SAVE_AND_CLOSE.get(),
 		                  TextNodeTemplates.APPLICATION_EXIT.get()
 		);
 		
 		TextNode nodeRandom = new TextNode("Random", true, true, false, true);
 		nodeRandom.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-			//Reload.notify(Notifier.FILTER_NEEDS_REFRESH); //todo ?
 			Root.SELECT.setRandom();
 			Reload.start();
 		});

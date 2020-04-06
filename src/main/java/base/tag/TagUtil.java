@@ -1,7 +1,6 @@
 package base.tag;
 
 import base.CustomList;
-import base.entity.EntityList;
 import control.reload.Notifier;
 import control.reload.Reload;
 import main.Root;
@@ -24,21 +23,21 @@ public class TagUtil {
 	public static void create(CustomList<String> levelsOld) {
 		CustomList<String> listLevelsNew = new TagEditStage().showCreate(levelsOld);
 		if (listLevelsNew != null && !listLevelsNew.isEmpty()) {
-			TagList.getMain().addImpl(new Tag(listLevelsNew));
-			TagList.getMain().sort();
+			Root.TAGLIST.addImpl(new Tag(listLevelsNew));
+			Root.TAGLIST.sort();
 			
 			Reload.notify(Notifier.TAGLIST_CHANGED);
 		}
 	}
 	public static void edit(String stringValueOld, int numLevelsOld) {
-		TagList affectedTags = TagList.getMain().getTagsStartingWith(stringValueOld);
-		TagList tagListHelper = new TagList(TagList.getMain());
+		TagList affectedTags = Root.TAGLIST.getTagsStartingWith(stringValueOld);
+		TagList tagListHelper = new TagList(Root.TAGLIST);
 		tagListHelper.removeAll(affectedTags);
 		
 		CustomList<String> listLevelsNew = new TagEditStage().showEdit(tagListHelper, currentTagNode.getLevels());
 		if (!listLevelsNew.isEmpty()) {
 			affectedTags.forEach(tag -> tag.replaceLevelsFromStart(numLevelsOld, listLevelsNew));
-			TagList.getMain().sort();
+			Root.TAGLIST.sort();
 			Root.FILTER.getListManager().update(stringValueOld, numLevelsOld, listLevelsNew);
 			
 			Reload.notify(Notifier.TAGLIST_CHANGED);
@@ -48,9 +47,9 @@ public class TagUtil {
 		if (new ConfirmationStage("Remove \"" + currentTagNode.getText() + "\" ?").getResult()) {
 			currentTagNode.getSubNodesDeepest().forEach(subNode -> Root.FILTER.getListManager().unlist(subNode.getStringValue()));
 			
-			TagList tagList = TagList.getMain().getTagsStartingWith(currentTagNode.getStringValue());
-			EntityList.getMain().forEach(entity -> entity.removeTag(tagList));
-			TagList.getMain().removeAll(tagList);
+			TagList tagList = Root.TAGLIST.getTagsStartingWith(currentTagNode.getStringValue());
+			Root.ENTITYLIST.forEach(entity -> entity.removeTag(tagList));
+			Root.TAGLIST.removeAll(tagList);
 			
 			Reload.notify(Notifier.TAGLIST_CHANGED);
 		}

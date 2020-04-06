@@ -15,6 +15,7 @@ public enum Settings {
 	COLLAGE_SIZE("CollageSize", "50", true),
 	
 	IMPORT_LAST_PATH("ImportLastPath", System.getProperty("user.dir"), false),
+	
 	;
 	
 	private static final String delimiter = "=";
@@ -85,12 +86,16 @@ public enum Settings {
 	public String getValue() {
 		return value;
 	}
-	public String getValueDefault() {
+	public String getDefault() {
 		return valueDefault;
 	}
-	public int getValueInteger() {
+	public int getInteger() {
 		return Integer.parseInt(value);
 	}
+	public boolean getBoolean() {
+		return value.equals("1");
+	}
+	
 	public boolean isUserModifiable() {
 		return userModifiable;
 	}

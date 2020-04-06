@@ -9,7 +9,7 @@ import ui.node.EditNode;
 import ui.node.textnode.TextNode;
 import ui.override.GridPane;
 
-public class SettingsStage extends AbstractStage {
+public class SettingsStage extends AbstractStageBase {
 	public SettingsStage() {
 		super("Settings", false);
 		
@@ -24,7 +24,7 @@ public class SettingsStage extends AbstractStage {
 				TextNode textNode = new TextNode(setting.getName(), false, false, false, true);
 				EditNode editNode = new EditNode(String.valueOf(setting.getValue()), "", EditNode.EditNodeType.NUMERIC_POSITIVE);
 				TextNode resetNode = new TextNode("⟲", true, true, false, true);
-				resetNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> editNode.setText(String.valueOf(setting.getValueDefault())));
+				resetNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> editNode.setText(String.valueOf(setting.getDefault())));
 				
 				gridPane.add(textNode, 0, setting.ordinal());
 				gridPane.add(editNode, 1, setting.ordinal());

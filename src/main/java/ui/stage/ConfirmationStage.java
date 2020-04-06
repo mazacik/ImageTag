@@ -4,7 +4,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import ui.node.textnode.TextNode;
 
-public class ConfirmationStage extends AbstractStage {
+public class ConfirmationStage extends AbstractStageBase {
 	private boolean result;
 	
 	public ConfirmationStage(String message) {

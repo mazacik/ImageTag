@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 import java.util.logging.Logger;
 
 public abstract class GsonUtil {
-	public static void write(Object object, Type type, String path) {
+	public static boolean write(Object object, Type type, String path) {
 		GsonBuilder GSONBuilder = new GsonBuilder();
 		String JSON = GSONBuilder.serializeNulls().setPrettyPrinting().create().toJson(object, type);
 		try {
@@ -23,8 +23,10 @@ public abstract class GsonUtil {
 			writer.write(JSON);
 			writer.close();
 			Logger.getGlobal().config("GSON WRITE \"" + path + "\" OK");
+			return true;
 		} catch (IOException e) {
 			Logger.getGlobal().severe("GSON WRITE \"" + path + "\" ERROR NO ACCESS");
+			return false;
 		}
 	}
 	public static <T> T read(Type type, String path) {

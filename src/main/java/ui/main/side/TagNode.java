@@ -2,7 +2,6 @@ package ui.main.side;
 
 import base.CustomList;
 import base.tag.Tag;
-import base.tag.TagList;
 import base.tag.TagUtil;
 import control.reload.Reload;
 import enums.Direction;
@@ -126,9 +125,9 @@ public class TagNode extends VBox {
 	private void clickSelect(MouseEvent event) {
 		if (this.isLast()) {
 			if (textNode.getTextFill().equals(Decorator.getColorPositive()) || textNode.getTextFill().equals(Decorator.getColorUnion())) {
-				Root.SELECT.removeTag(TagList.getMain().getTag(this.getStringValue()).getID());
+				Root.SELECT.removeTag(Root.TAGLIST.getTag(this.getStringValue()).getID());
 			} else {
-				Root.SELECT.addTag(TagList.getMain().getTag(this.getStringValue()).getID());
+				Root.SELECT.addTag(Root.TAGLIST.getTag(this.getStringValue()).getID());
 			}
 		} else {
 			if (event.isShiftDown()) {

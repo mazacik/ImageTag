@@ -1,4 +1,4 @@
-package ui.main.stage;
+package ui.stage.primary;
 
 import base.CustomList;
 import javafx.geometry.Insets;
@@ -10,10 +10,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
-import main.Main;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import main.Root;
 import misc.FileUtil;
 import misc.Project;
+import misc.Settings;
 import ui.custom.TitleBar;
 import ui.decorator.ColorPreset;
 import ui.decorator.Decorator;
@@ -22,20 +24,42 @@ import ui.node.textnode.TextNode;
 import ui.override.HBox;
 import ui.override.Scene;
 import ui.override.VBox;
+import ui.stage.primary.project.ProjectBox;
 
+import java.awt.*;
 import java.io.File;
 
-public class IntroScene extends Scene {
+public class IntroStage extends Stage {
+	public IntroStage() {
+		Rectangle usableScreenBounds = Decorator.getUsableScreenBounds();
+		double width = usableScreenBounds.getWidth() / 2;
+		double height = usableScreenBounds.getHeight() / 2;
+		
+		Scene introScene = this.createIntroScene();
+		introScene.getRoot().requestFocus();
+		
+		this.setScene(introScene);
+		this.setWidth(width);
+		this.setHeight(height);
+		this.setMinWidth(width);
+		this.setMinHeight(height);
+		this.initStyle(StageStyle.UNDECORATED);
+		this.centerOnScreen();
+		
+		this.setOnCloseRequest(event -> Settings.writeToDisk());
+	}
+	
 	private ProjectBox projectBox = new ProjectBox();
 	
-	public IntroScene() {
+	private Scene createIntroScene() {
 		TextNode applicationNameNode = new TextNode("Tagallery", false, false, false, true);
 		applicationNameNode.setFont(new Font(48));
-		applicationNameNode.setPadding(new Insets(-20, 0, 20, 0));
+		applicationNameNode.setPadding(new javafx.geometry.Insets(-20, 0, 20, 0));
 		
 		TextNode btnNewProject = new TextNode("Create a New Project", true, false, true, true);
 		btnNewProject.setMaxWidth(Double.MAX_VALUE);
-		btnNewProject.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> Root.MAIN_STAGE.getProjectScene().show());
+		//noinspection Convert2MethodRef
+		btnNewProject.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> Root.PSC.showProjectStage());
 		
 		TextNode btnOpenProject = new TextNode("Open Project", true, false, true, true);
 		btnOpenProject.setMaxWidth(Double.MAX_VALUE);
@@ -43,11 +67,9 @@ public class IntroScene extends Scene {
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.setTitle("Open Project");
 			fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-			File file = fileChooser.showOpenDialog(Root.MAIN_STAGE);
+			File file = fileChooser.showOpenDialog(Root.PSC.MAIN_STAGE);
 			if (file != null) {
-				Root.MAIN_STAGE.layoutMain();
-				Project.setCurrent(Project.readFromDisk(file.getAbsolutePath()));
-				Main.startProjectDatabaseLoading();
+				Root.PSC.showMainStage(Project.readFromDisk(file.getAbsolutePath()));//todo check if valid
 			}
 		});
 		
@@ -85,26 +107,21 @@ public class IntroScene extends Scene {
 				case ENTER:
 					CustomList<Project> projects = FileUtil.getProjects();
 					if (!projects.isEmpty()) {
-						Root.MAIN_STAGE.layoutMain();
 						projects.sort(Project.getComparator());
-						Project.setCurrent(projects.getFirstImpl());
-						Main.startProjectDatabaseLoading();
+						Root.PSC.showMainStage(projects.getFirstImpl());
 					} else {
-						Root.MAIN_STAGE.getProjectScene().show();
+						Root.PSC.showProjectStage();
 					}
 					break;
 				default:
 					break;
 			}
 		});
-		this.setRoot(vBox);
+		
+		return new Scene(vBox);
 	}
 	
-	public void show() {
-		Root.MAIN_STAGE.setScene(this);
-	}
-	
-	public ProjectBox getProjectBox() {
-		return projectBox;
+	public void initNodes() {
+		projectBox.refresh();
 	}
 }

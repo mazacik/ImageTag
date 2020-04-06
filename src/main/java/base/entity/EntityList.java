@@ -37,7 +37,7 @@ public class EntityList extends CustomList<Entity> {
 		return (!this.isEmpty()) ? this.get(this.size() - 1) : null;
 	}
 	public Entity getRandom() {
-		Entity entity = CollectionUtil.getRepresentingEntityList(this).getRandomImpl();
+		Entity entity = this.getRepresentingEntityList().getRandomImpl();
 		if (entity != null) {
 			if (entity.hasCollection()) {
 				return Root.FILTER.getFilteredList(entity.getCollection()).getRandomImpl();
@@ -87,10 +87,40 @@ public class EntityList extends CustomList<Entity> {
 		}
 	}
 	
-	private static class Loader {
-		private static final EntityList INSTANCE = new EntityList();
+	public boolean isCollection() {
+		if (this.isEmpty()) {
+			return false;
+		} else {
+			int collectionID = this.getFirst().getCollectionID();
+			if (collectionID == 0) return false;
+			for (Entity entity : this) {
+				if (entity.getCollectionID() != collectionID) {
+					return false;
+				}
+			}
+			return true;
+		}
 	}
-	public static EntityList getMain() {
-		return Loader.INSTANCE;
+	public EntityList getRepresentingEntityList() {
+		EntityList representingEntityList = new EntityList();
+		CustomList<Integer> collections = new CustomList<>();
+		
+		for (Entity entity : this) {
+			if (entity.hasCollection()) {
+				if (!collections.contains(entity.getCollectionID())) {
+					if (entity.getCollection().isOpen()) {
+						collections.addImpl(entity.getCollectionID());
+						representingEntityList.addAllImpl(Root.FILTER.getFilteredList(entity.getCollection()));
+					} else {
+						collections.addImpl(entity.getCollectionID());
+						representingEntityList.addImpl(entity);
+					}
+				}
+			} else {
+				representingEntityList.addImpl(entity);
+			}
+		}
+		
+		return representingEntityList;
 	}
 }

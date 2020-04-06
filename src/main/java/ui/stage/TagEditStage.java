@@ -7,13 +7,14 @@ import javafx.geometry.Pos;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import main.Root;
 import ui.decorator.Decorator;
 import ui.node.EditNode;
 import ui.node.textnode.TextNode;
 import ui.override.HBox;
 import ui.override.VBox;
 
-public class TagEditStage extends AbstractStage {
+public class TagEditStage extends AbstractStageBase {
 	private final CustomList<LevelNode> nodeList;
 	private CustomList<String> returnList;
 	
@@ -52,7 +53,7 @@ public class TagEditStage extends AbstractStage {
 	
 	private TagList tagListToSearchIn;
 	public CustomList<String> showCreate(CustomList<String> levels) {
-		return show(TagList.getMain(), levels, Mode.CREATE);
+		return show(Root.TAGLIST, levels, Mode.CREATE);
 	}
 	public CustomList<String> showEdit(TagList tagListToSearchIn, CustomList<String> levels) {
 		return show(tagListToSearchIn, levels, Mode.EDIT);

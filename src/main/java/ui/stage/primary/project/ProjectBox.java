@@ -1,4 +1,4 @@
-package ui.main.stage;
+package ui.stage.primary.project;
 
 import base.CustomList;
 import javafx.geometry.Insets;

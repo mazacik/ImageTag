@@ -5,6 +5,7 @@ import base.entity.EntityList;
 import base.tag.TagList;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
+import main.Root;
 
 import java.io.File;
 import java.lang.reflect.Type;
@@ -32,11 +33,11 @@ public class Project {
 		project.projectFile = projectFile;
 		return project;
 	}
-	public void writeToDisk() {
+	public boolean writeToDisk() {
 		this.msLastAccess = System.currentTimeMillis();
-		this.entityList = EntityList.getMain();
-		this.tagList = TagList.getMain();
-		GsonUtil.write(this, typeToken, projectFile);
+		this.entityList = Root.ENTITYLIST;
+		this.tagList = Root.TAGLIST;
+		return GsonUtil.write(this, typeToken, projectFile);
 	}
 	
 	public void updateProject(String projectNameNew, String directorySourceNew) {

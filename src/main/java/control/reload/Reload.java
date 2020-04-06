@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Comparator;
 
 public abstract class Reload {
+	private final static CustomList<Entity> needsFilterCheck = new CustomList<>();
 	private final static CustomList<Entity> needsBorderUpdate = new CustomList<>();
 	private final static CustomList<InvokeHelper> invokeHelpers = new CustomList<>();
 	
@@ -86,6 +87,16 @@ public abstract class Reload {
 			helper.addImpl(entity);
 		}
 		needsBorderUpdate.removeAll(helper);
+	}
+	
+	public static void requestFilterCheck(Collection<? extends Entity> c) {
+		needsFilterCheck.addAllImpl(c);
+	}
+	public static void requestFilterCheck(Entity entity) {
+		needsFilterCheck.addImpl(entity);
+	}
+	public static CustomList<Entity> getNeedsFilterCheck() {
+		return needsFilterCheck;
 	}
 	
 	public static void requestBorderUpdate(Collection<? extends Entity> c) {

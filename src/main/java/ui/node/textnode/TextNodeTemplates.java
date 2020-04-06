@@ -1,7 +1,7 @@
 package ui.node.textnode;
 
 import base.CustomList;
-import base.entity.CollectionUtil;
+import base.collection.Collection;
 import base.entity.Entity;
 import base.entity.EntityList;
 import base.tag.TagList;
@@ -15,7 +15,6 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.WindowEvent;
 import javafx.util.Pair;
 import main.Root;
 import misc.FileUtil;
@@ -260,8 +259,8 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				HttpUtil.googleReverseImageSearch(Root.SELECT.getTarget());
-				new SimpleMessageStage("Google RIS", "Request Sent.").show();
+				HttpUtil.googleRIS(Root.SELECT.getTarget());
+				new SimpleMessageStage("Google RIS", "Request sent.").show();
 			});
 			return textNode;
 		}
@@ -286,7 +285,7 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				Root.MAIN_STAGE.getMainScene().viewGallery();
+				Root.PSC.MAIN_STAGE.viewGallery();
 				Root.FILTER.showSimilar(Root.SELECT.getTarget());
 				Reload.start();
 			});
@@ -413,7 +412,7 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				CollectionUtil.create();
+				Collection.create(Root.SELECT);
 				//todo add an option to merge tags
 				
 				Reload.start();
@@ -421,7 +420,7 @@ public enum TextNodeTemplates {
 			return textNode;
 		}
 		@Override public boolean resolve() {
-			return !CollectionUtil.isCollection(Root.SELECT);
+			return !Root.SELECT.isCollection();
 		}
 	},
 	COLLECTION_DISCARD {
@@ -431,14 +430,16 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				CollectionUtil.discard();
+				if (Root.SELECT.isCollection()) {
+					Root.SELECT.getFirst().getCollection().discard();
+				}
 				
 				Reload.start();
 			});
 			return textNode;
 		}
 		@Override public boolean resolve() {
-			return CollectionUtil.isCollection(Root.SELECT);
+			return Root.SELECT.isCollection();
 		}
 	},
 	
@@ -462,7 +463,11 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				Project.getCurrent().writeToDisk();
+				if (Project.getCurrent().writeToDisk()) {
+					new SimpleMessageStage("Save", "Done.").showAndWait();
+				} else {
+					new SimpleMessageStage("Save", "Error.").showAndWait();
+				}
 			});
 			return textNode;
 		}
@@ -484,7 +489,7 @@ public enum TextNodeTemplates {
 			setupNode(textNode);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				CustomList<String> entitiesMain = new CustomList<>();
-				EntityList.getMain().forEach(entity -> entitiesMain.add(FileUtil.getFileEntity(entity)));
+				Root.ENTITYLIST.forEach(entity -> entitiesMain.add(FileUtil.getFileEntity(entity)));
 				
 				CustomList<String> entitiesDisk = new CustomList<>();
 				File directorySource = new File(Project.getCurrent().getDirectorySource());
@@ -501,8 +506,8 @@ public enum TextNodeTemplates {
 					entitiesDisk.forEach(path -> entities.addImpl(new Entity(new File(path))));
 					CacheUtil.loadCache(entities);
 					
-					EntityList.getMain().addAllImpl(entities);
-					EntityList.getMain().sort();
+					Root.ENTITYLIST.addAllImpl(entities);
+					Root.ENTITYLIST.sort();
 					
 					Root.FILTER.getLastImport().setAllImpl(entities);
 				}
@@ -521,11 +526,24 @@ public enum TextNodeTemplates {
 			return textNode;
 		}
 	},
+	APPLICATION_SAVE_AND_CLOSE {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Save and Close", true, true, false, true, this);
+			setupNode(textNode);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ListMenu.hideMenus();
+				Root.THREADPOOL.interruptAll();
+				Root.PSC.showIntroStage();
+			});
+			return textNode;
+		}
+	},
 	APPLICATION_EXIT {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Exit", true, true, false, true, this);
 			setupNode(textNode);
-			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Root.MAIN_STAGE.fireEvent(new WindowEvent(null, WindowEvent.WINDOW_CLOSE_REQUEST)));
+			//noinspection Convert2MethodRef
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Root.PSC.requestExit());
 			return textNode;
 		}
 	},

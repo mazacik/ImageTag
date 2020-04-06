@@ -2,10 +2,10 @@ package ui.main.side;
 
 import base.CustomList;
 import base.tag.Tag;
-import base.tag.TagList;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Background;
+import main.Root;
 import misc.Settings;
 import ui.override.VBox;
 
@@ -35,7 +35,7 @@ public abstract class SidePaneBase extends VBox {
 	
 	public boolean reload() {
 		rootNodes.clear();
-		TagList.getMain().forEach(this::createNode);
+		Root.TAGLIST.forEach(this::createNode);
 		boxNodes.getChildren().setAll(rootNodes);
 		
 		CustomList<String> openNodesHelper = new CustomList<>();
@@ -57,7 +57,7 @@ public abstract class SidePaneBase extends VBox {
 		if (rootNodes.getFirstImpl() != null) {
 			rowHeight = rootNodes.getFirstImpl().getHeight();
 		} else {
-			rowHeight = Settings.FONT_SIZE.getValueInteger();
+			rowHeight = Settings.FONT_SIZE.getInteger();
 		}
 		double contentHeight = boxNodes.getHeight() - scrollPane.getViewportBounds().getHeight();
 		double rowToContentRatio = rowHeight / contentHeight;

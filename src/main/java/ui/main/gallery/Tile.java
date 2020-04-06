@@ -1,6 +1,5 @@
 package ui.main.gallery;
 
-import base.entity.CollectionUtil;
 import base.entity.Entity;
 import control.reload.Reload;
 import enums.Direction;
@@ -41,7 +40,7 @@ public class Tile extends Pane {
 	private static final Image loadingImage;
 	
 	static {
-		int tileSize = Settings.GALLERY_TILE_SIZE.getValueInteger();
+		int tileSize = Settings.GALLERY_TILE_SIZE.getInteger();
 		
 		Image imagePlus = new Image("/plus-16px.png");
 		Image imageMinus = new Image("/minus-16px.png");
@@ -144,7 +143,7 @@ public class Tile extends Pane {
 	
 	private void clickOnTile(MouseEvent event) {
 		if (event.getClickCount() % 2 == 0) {
-			Root.MAIN_STAGE.getMainScene().viewDisplay();
+			Root.PSC.MAIN_STAGE.viewDisplay();
 		} else {
 			if (event.isShiftDown()) {
 				Root.SELECT.shiftSelectTo(entity);
@@ -165,7 +164,9 @@ public class Tile extends Pane {
 	private void clickOnCollectionIcon() {
 		Root.SELECT.setTarget(entity);
 		//Root.SELECT.setAll(entity.getCollection());
-		CollectionUtil.toggleCollection(entity);
+		if (entity.hasCollection()) {
+			entity.getCollection().toggle();
+		}
 	}
 	
 	public void updateBorder() {

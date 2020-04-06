@@ -13,6 +13,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import main.Main;
 import main.Root;
 import misc.FileUtil;
 import misc.Settings;
@@ -30,14 +31,14 @@ import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
 public abstract class CacheUtil {
-	private static Image placeholder = new WritableImage(Settings.GALLERY_TILE_SIZE.getValueInteger(), Settings.GALLERY_TILE_SIZE.getValueInteger()) {{
+	private static Image placeholder = new WritableImage(Settings.GALLERY_TILE_SIZE.getInteger(), Settings.GALLERY_TILE_SIZE.getInteger()) {{
 		Label label = new Label("Placeholder");
 		label.setBackground(new Background(new BackgroundFill(Color.GRAY, null, null)));
 		label.setWrapText(true);
 		label.setFont(new Font(26));
 		label.setAlignment(Pos.CENTER);
 		
-		int size = Settings.GALLERY_TILE_SIZE.getValueInteger();
+		int size = Settings.GALLERY_TILE_SIZE.getInteger();
 		label.setMinWidth(size);
 		label.setMinHeight(size);
 		label.setMaxWidth(size);
@@ -65,8 +66,8 @@ public abstract class CacheUtil {
 	}
 	
 	public static Image createCache(Entity entity) {
-		//String entityIndex = StringUtils.right("00000000" + (EntityList.getMain().indexOf(entity) + 1), String.valueOf(EntityList.getMain().size()).length());
-		//Logger.getGlobal().info(String.format("[%s/%s] %s", entityIndex, EntityList.getMain().size(), entity.getName()));
+		//String entityIndex = StringUtils.right("00000000" + (Root.ENTITYLIST.indexOf(entity) + 1), String.valueOf(Root.ENTITYLIST.size()).length());
+		//Logger.getGlobal().info(String.format("[%s/%s] %s", entityIndex, Root.ENTITYLIST.size(), entity.getName()));
 		
 		switch (entity.getMediaType()) {
 			case IMAGE:
@@ -80,7 +81,7 @@ public abstract class CacheUtil {
 		}
 	}
 	private static Image createFromImage(Entity entity) {
-		int thumbSize = Settings.GALLERY_TILE_SIZE.getValueInteger();
+		int thumbSize = Settings.GALLERY_TILE_SIZE.getInteger();
 		Image image = new Image("file:" + FileUtil.getFileEntity(entity), thumbSize, thumbSize, false, false);
 		BufferedImage buffer = SwingFXUtils.fromFXImage(image, null);
 		
@@ -100,7 +101,7 @@ public abstract class CacheUtil {
 	private static Image createFromGif(Entity entity) {
 		GifDecoder gifDecoder = new GifDecoder();
 		gifDecoder.read(FileUtil.getFileEntity(entity));
-		int thumbSize = Settings.GALLERY_TILE_SIZE.getValueInteger();
+		int thumbSize = Settings.GALLERY_TILE_SIZE.getInteger();
 		
 		java.awt.Image frame = gifDecoder.getFrame(gifDecoder.getFrameCount() / 2).getScaledInstance(thumbSize, thumbSize, java.awt.Image.SCALE_FAST);
 		BufferedImage buffer = new BufferedImage(thumbSize, thumbSize, BufferedImage.TYPE_INT_RGB);
@@ -161,7 +162,7 @@ public abstract class CacheUtil {
 					mediaPlayer.controls().setPosition(mediaPosition);
 					inPositionLatch.await(); // might wait forever if error
 					
-					int thumbSize = Settings.GALLERY_TILE_SIZE.getValueInteger();
+					int thumbSize = Settings.GALLERY_TILE_SIZE.getInteger();
 					mediaPlayer.snapshots().save(cacheFile, thumbSize, thumbSize);
 					snapshotTakenLatch.await(); // might wait forever if error
 				} catch (InterruptedException e) {
@@ -185,8 +186,8 @@ public abstract class CacheUtil {
 	}
 	
 	public static void reset() {
-		EntityList.getMain().forEach(entity -> entity.getTile().setImage(null));
-		CacheUtil.loadCache(EntityList.getMain(), true);
+		Root.ENTITYLIST.forEach(entity -> entity.getTile().setImage(null));
+		CacheUtil.loadCache(Root.ENTITYLIST, true);
 	}
 	
 	private static Thread thread = null;
@@ -194,25 +195,27 @@ public abstract class CacheUtil {
 		loadCache(entityList, false);
 	}
 	public static void loadCache(EntityList entityList, boolean recreate) {
-		if (thread != null && thread.isAlive()) {
-			thread.interrupt();
-		}
-		
-		thread = new Thread(() -> {
-			Root.MAIN_STAGE.getMainScene().showLoadingBar(entityList, entityList.size());
-			
-			for (Entity entity : new EntityList(entityList)) {
-				if (Thread.currentThread().isInterrupted()) {
-					return;
-				}
-				
-				entity.getTile().setImage(CacheUtil.getCache(entity, recreate));
-				Root.MAIN_STAGE.getMainScene().advanceLoadingBar(entityList);
+		if (Main.DEBUG_USE_CACHE) {
+			if (thread != null && thread.isAlive()) {
+				thread.interrupt();
 			}
 			
-			Root.MAIN_STAGE.getMainScene().hideLoadingBar(entityList);
-		});
-		
-		thread.start();
+			thread = new Thread(() -> {
+				Root.PSC.MAIN_STAGE.showLoadingBar(entityList, entityList.size());
+				
+				for (Entity entity : new EntityList(entityList)) {
+					if (Thread.currentThread().isInterrupted()) {
+						return;
+					}
+					
+					entity.getTile().setImage(CacheUtil.getCache(entity, recreate));
+					Root.PSC.MAIN_STAGE.advanceLoadingBar(entityList);
+				}
+				
+				Root.PSC.MAIN_STAGE.hideLoadingBar(entityList);
+			});
+			
+			thread.start();
+		}
 	}
 }

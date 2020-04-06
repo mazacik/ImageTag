@@ -1,7 +1,6 @@
 package ui.main.gallery;
 
 import base.CustomList;
-import base.entity.CollectionUtil;
 import base.entity.Entity;
 import base.entity.EntityList;
 import control.reload.Reload;
@@ -40,7 +39,7 @@ public class GalleryPane extends ScrollPane {
 		tilePane = new TilePane(GAP, GAP);
 		tilePane.setPadding(new Insets(GAP));
 		
-		double actualTileSize = Settings.GALLERY_TILE_SIZE.getValueInteger() + 2 * Tile.HIGHLIGHT_PADDING;
+		double actualTileSize = Settings.GALLERY_TILE_SIZE.getInteger() + 2 * Tile.HIGHLIGHT_PADDING;
 		tilePane.setPrefTileWidth(actualTileSize);
 		tilePane.setPrefTileHeight(actualTileSize);
 		
@@ -148,7 +147,7 @@ public class GalleryPane extends ScrollPane {
 					Root.SELECT.addAll(selectRectangleEntities, true);
 				} else {
 					selectRectangleHelper.removeAll(selectRectangleEntities);
-					Root.SELECT.addAll(selectRectangleEntities);
+					Root.SELECT.addAll(selectRectangleEntities, true);
 				}
 				
 				Reload.start();
@@ -237,7 +236,7 @@ public class GalleryPane extends ScrollPane {
 	}
 	
 	public boolean reload() {
-		EntityList representingEntityList = CollectionUtil.getRepresentingEntityList(Root.FILTER);
+		EntityList representingEntityList = Root.FILTER.getRepresentingEntityList();
 		if (representingEntityList.size() > TILE_LIMIT) {
 			tileEntities.setAllImpl(representingEntityList.subList(0, TILE_LIMIT));
 			new SimpleMessageStage("Error", "Gallery reached a limit of " + TILE_LIMIT + " tiles.").show();
@@ -261,7 +260,7 @@ public class GalleryPane extends ScrollPane {
 	}
 	public void moveViewportToTarget() {
 		Entity currentTarget = Root.SELECT.getTarget();
-		if (!Root.MAIN_STAGE.getMainScene().isViewGallery() || currentTarget == null) return;
+		if (!Root.PSC.MAIN_STAGE.isViewGallery() || currentTarget == null) return;
 		if (currentTarget.hasCollection() && !currentTarget.getCollection().isOpen()) {
 			currentTarget = currentTarget.getCollection().getFirst();
 		}

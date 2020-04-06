@@ -75,7 +75,7 @@ public class Filter extends EntityList {
 		Root.SELECT.storePosition();
 		
 		this.clear();
-		for (Entity entity : EntityList.getMain()) {
+		for (Entity entity : Root.ENTITYLIST) {
 			if (this.isValid(entity)) {
 				this.addImpl(entity);
 			}
@@ -86,31 +86,23 @@ public class Filter extends EntityList {
 	}
 	
 	public void resolve() {
-		if (Root.SELECT.isEmpty()) {
-			this.resolve(Root.SELECT.getTarget());
-		} else {
-			this.resolve(Root.SELECT);
-		}
+		Reload.getNeedsFilterCheck().forEach(this::resolve);
+		Reload.getNeedsFilterCheck().clear();
 	}
 	public void resolve(Entity entity) {
-		if (EntityList.getMain().contains(entity)) {
+		if (Root.ENTITYLIST.contains(entity)) {
 			boolean contains = this.contains(entity);
 			boolean valid = this.isValid(entity);
 			
 			if (contains && !valid) {
 				this.remove(entity);
-				Reload.notify(Notifier.FILTER_CHANGED);
 			} else if (!contains && valid) {
 				this.addImpl(entity);
-				Reload.notify(Notifier.FILTER_CHANGED);//todo move to getEntities().add()
 			}
 		}
 	}
-	public void resolve(EntityList entities) {
-		entities.forEach(this::resolve);
-	}
 	public boolean isValid(Entity entity) {
-		if (entity == null || !EntityList.getMain().contains(entity)) return false;
+		if (entity == null || !Root.ENTITYLIST.contains(entity)) return false;
 		
 		if (entity.getMediaType() == MediaType.IMAGE) {
 			if (!settings.isShowImages()) {
@@ -143,7 +135,7 @@ public class Filter extends EntityList {
 		this.clear();
 		
 		CustomList<Integer> query = entity.getTagIDs();
-		for (Entity iterator : EntityList.getMain()) {
+		for (Entity iterator : Root.ENTITYLIST) {
 			if (iterator.getTagIDs().size() != 0) {
 				CustomList<Integer> sameTags = new CustomList<>(query);
 				sameTags.retainAll(iterator.getTagIDs());

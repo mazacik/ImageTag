@@ -68,11 +68,4 @@ public class TagList extends CustomList<Tag> {
 		}
 		return false;
 	}
-	
-	private static class Loader {
-		private static final TagList INSTANCE = new TagList();
-	}
-	public static TagList getMain() {
-		return Loader.INSTANCE;
-	}
 }

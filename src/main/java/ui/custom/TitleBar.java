@@ -29,8 +29,9 @@ public class TitleBar extends BorderPane {
 		this(owner, "");
 	}
 	public TitleBar(Stage owner, String title) {
-		if (owner != null)
+		if (owner != null) {
 			owner.titleProperty().addListener((observable, oldValue, newValue) -> nodeTitle.setText(newValue));
+		}
 		
 		nodeTitle = new TextNode(title, false, false, false, true);
 		BorderPane.setAlignment(nodeTitle, Pos.CENTER_LEFT);

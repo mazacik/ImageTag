@@ -29,7 +29,7 @@ import ui.override.VBox;
 import java.io.File;
 import java.util.logging.Logger;
 
-public class ImportStage extends AbstractStage {
+public class ImportStage extends AbstractStageBase {
 	private static final int MIN_FILE_COUNT_TO_SHOW_LOADING_BAR = 10;
 	
 	private VBox boxStage2;
@@ -139,8 +139,8 @@ public class ImportStage extends AbstractStage {
 		if (!entities.isEmpty()) {
 			CacheUtil.loadCache(entities);
 			
-			EntityList.getMain().addAllImpl(entities);
-			EntityList.getMain().sort();
+			Root.ENTITYLIST.addAllImpl(entities);
+			Root.ENTITYLIST.sort();
 			
 			Root.FILTER.getLastImport().setAllImpl(entities);
 		}
@@ -163,7 +163,7 @@ public class ImportStage extends AbstractStage {
 		CustomList<File> files = FileUtil.getFiles(directory, true);
 		
 		boolean needLoadingBar = files.size() >= MIN_FILE_COUNT_TO_SHOW_LOADING_BAR;
-		if (needLoadingBar) Root.MAIN_STAGE.getMainScene().showLoadingBar(this, files.size());
+		if (needLoadingBar) Root.PSC.MAIN_STAGE.showLoadingBar(this, files.size());
 		
 		EntityList entities = new EntityList();
 		for (File file : files) {
@@ -171,10 +171,10 @@ public class ImportStage extends AbstractStage {
 				return null;
 			}
 			entities.addImpl(this.importEntity(file, directoryPath));
-			if (needLoadingBar) Root.MAIN_STAGE.getMainScene().advanceLoadingBar(this);
+			if (needLoadingBar) Root.PSC.MAIN_STAGE.advanceLoadingBar(this);
 		}
 		
-		if (needLoadingBar) Root.MAIN_STAGE.getMainScene().hideLoadingBar(this);
+		if (needLoadingBar) Root.PSC.MAIN_STAGE.hideLoadingBar(this);
 		
 		return entities;
 	}
@@ -188,6 +188,7 @@ public class ImportStage extends AbstractStage {
 			FileUtil.moveFile(pathOld, pathNew);
 			return new Entity(fileNew);
 		} else {
+			//todo rename the new file if they are not identical, don't import if they are identical
 			Logger.getGlobal().info("IMPORT: COULD NOT IMPORT \"" + file.getName() + "\", ALREADY EXISTS");
 			return null;
 		}

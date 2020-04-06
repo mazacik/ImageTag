@@ -1,7 +1,6 @@
 package control;
 
 import base.CustomList;
-import base.entity.CollectionUtil;
 import base.entity.Entity;
 import base.entity.EntityList;
 import control.reload.Notifier;
@@ -156,7 +155,7 @@ public class Select extends EntityList {
 		if (!helper.isEmpty()) {
 			this.removeAll(helper);
 			Root.FILTER.removeAll(helper);
-			EntityList.getMain().removeAll(helper);
+			Root.ENTITYLIST.removeAll(helper);
 			
 			this.restorePosition();
 			
@@ -167,7 +166,7 @@ public class Select extends EntityList {
 	private Entity entityFrom = null;
 	private EntityList selectBefore = new EntityList();
 	public void shiftSelectTo(Entity entityTo) {
-		CustomList<Entity> entities = CollectionUtil.getRepresentingEntityList(Root.FILTER);
+		CustomList<Entity> entities = Root.FILTER.getRepresentingEntityList();
 		
 		int indexFrom = entities.indexOf(entityFrom);
 		int indexTo = entities.indexOf(entityTo);
@@ -196,8 +195,12 @@ public class Select extends EntityList {
 	
 	public void setRandom() {
 		Entity randomEntity = null;
-		while (!Root.FILTER.isValid(randomEntity)) {
-			randomEntity = Root.FILTER.getRandom();
+		if (Root.FILTER.size() == 1) {
+			randomEntity = Root.FILTER.getFirst();
+		} else if (Root.FILTER.size() > 1) {
+			do {
+				randomEntity = Root.FILTER.getRandom();
+			} while (!Root.FILTER.isValid(randomEntity));
 		}
 		this.set(randomEntity);
 		this.setTarget(randomEntity);
@@ -205,14 +208,17 @@ public class Select extends EntityList {
 	
 	public void addTag(Integer tagID) {
 		super.addTag(tagID);
+		Reload.requestFilterCheck(this);
 		Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
 	}
 	public void removeTag(Integer tagID) {
 		super.removeTag(tagID);
+		Reload.requestFilterCheck(this);
 		Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
 	}
 	public void clearTags() {
 		super.clearTags();
+		Reload.requestFilterCheck(this);
 		Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
 	}
 	
@@ -223,7 +229,7 @@ public class Select extends EntityList {
 	public void setTarget(Entity newTarget) {
 		if (newTarget != null && newTarget != target) {
 			if (target != null) {
-				Root.FILTER.resolve(target);
+				Root.FILTER.resolve();
 				Reload.requestBorderUpdate(target);
 			}
 			
@@ -257,23 +263,23 @@ public class Select extends EntityList {
 	public void moveTarget(Direction direction, boolean isShiftDown, boolean isControlDown) {
 		if (target == null) return;
 		
-		CustomList<Entity> entities = CollectionUtil.getRepresentingEntityList(Root.FILTER);
-		if (entities.isEmpty()) return;
+		EntityList entityList = Root.FILTER.getRepresentingEntityList();
+		if (entityList.isEmpty()) return;
 		
 		int currentTargetIndex;
 		if (target.hasCollection()) {
 			if (target.getCollection().isOpen()) {
-				currentTargetIndex = entities.indexOf(target);
+				currentTargetIndex = entityList.indexOf(target);
 			} else {
 				Entity collectionFirst = Root.FILTER.getFilteredList(target.getCollection()).getFirst();
-				if (entities.contains(collectionFirst)) {
-					currentTargetIndex = entities.indexOf(collectionFirst);
+				if (entityList.contains(collectionFirst)) {
+					currentTargetIndex = entityList.indexOf(collectionFirst);
 				} else {
-					currentTargetIndex = entities.indexOf(target);
+					currentTargetIndex = entityList.indexOf(target);
 				}
 			}
 		} else {
-			currentTargetIndex = entities.indexOf(target);
+			currentTargetIndex = entityList.indexOf(target);
 		}
 		
 		int newTargetIndex = currentTargetIndex;
@@ -296,20 +302,20 @@ public class Select extends EntityList {
 		
 		if (newTargetIndex < 0) {
 			newTargetIndex = 0;
-		} else if (newTargetIndex >= entities.size()) {
-			newTargetIndex = entities.size() - 1;
+		} else if (newTargetIndex >= entityList.size()) {
+			newTargetIndex = entityList.size() - 1;
 		}
 		
 		if (isShiftDown) {
-			Entity entityTo = entities.get(newTargetIndex);
+			Entity entityTo = entityList.get(newTargetIndex);
 			this.shiftSelectTo(entityTo);
 			this.setTarget(entityTo);
 		} else if (isControlDown) {
-			this.setTarget(entities.get(newTargetIndex));
+			this.setTarget(entityList.get(newTargetIndex));
 			this.add(target);
 			this.entityFrom = target;
 		} else {
-			this.setTarget(entities.get(newTargetIndex));
+			this.setTarget(entityList.get(newTargetIndex));
 			this.set(target);
 			this.entityFrom = target;
 		}
@@ -329,7 +335,7 @@ public class Select extends EntityList {
 			
 			this.remove(target);
 			Root.FILTER.remove(target);
-			EntityList.getMain().remove(target);
+			Root.ENTITYLIST.remove(target);
 			
 			this.restorePosition();
 			
@@ -341,10 +347,10 @@ public class Select extends EntityList {
 	private int memIndex = -1;
 	public void storePosition() {
 		memEntity = Root.SELECT.getFirst();
-		memIndex = CollectionUtil.getRepresentingEntityList(Root.FILTER).indexOf(memEntity);
+		memIndex = Root.FILTER.getRepresentingEntityList().indexOf(memEntity);
 	}
 	public void restorePosition() {
-		EntityList representingEntities = CollectionUtil.getRepresentingEntityList(Root.FILTER);
+		EntityList representingEntities = Root.FILTER.getRepresentingEntityList();
 		if (!representingEntities.isEmpty()) {
 			if (!representingEntities.contains(memEntity) && memIndex >= 0) {
 				if (memIndex <= representingEntities.size() - 1) {

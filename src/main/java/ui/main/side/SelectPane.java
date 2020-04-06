@@ -3,7 +3,6 @@ package ui.main.side;
 import base.CustomList;
 import base.entity.Entity;
 import base.tag.Tag;
-import base.tag.TagList;
 import control.reload.Reload;
 import enums.Direction;
 import javafx.scene.input.MouseButton;
@@ -73,7 +72,7 @@ public class SelectPane extends SidePaneBase {
 				nodeSearch.clear();
 				searchLock = false;
 				
-				Tag tag = TagList.getMain().getTag(match.getStringValue());
+				Tag tag = Root.TAGLIST.getTag(match.getStringValue());
 				if (Root.SELECT.getTagListIntersect().contains(tag)) {
 					Root.SELECT.removeTag(tag.getID());
 				} else {

@@ -12,7 +12,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public abstract class HttpUtil {
-	public static void googleReverseImageSearch(Entity entity) {
+	public static void googleRIS(Entity entity) {
 		new Thread(() -> {
 			try {
 				File file = new File(FileUtil.getFileEntity(entity));

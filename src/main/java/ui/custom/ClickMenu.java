@@ -93,7 +93,7 @@ public class ClickMenu extends ListMenu {
 					Point2D point = root.localToScreen(event.getX(), event.getY());
 					x = point.getX() + offsetX;
 					y = point.getY() + offsetY;
-					this.show(Root.MAIN_STAGE, x, y);
+					this.show(Root.PSC.MAIN_STAGE, x, y);
 					break;
 				case UP:
 					//onScreenBounds = root.localToScreen(root.getBoundsInLocal());
@@ -105,20 +105,20 @@ public class ClickMenu extends ListMenu {
 					onScreenBounds = root.localToScreen(root.getBoundsInLocal());
 					x = onScreenBounds.getMinX() + offsetX;
 					y = onScreenBounds.getMaxY() + offsetY;
-					this.show(Root.MAIN_STAGE, x, y);
+					this.show(Root.PSC.MAIN_STAGE, x, y);
 					break;
 				case LEFT:
 					onScreenBounds = root.localToScreen(root.getBoundsInLocal());
 					x = onScreenBounds.getMinX() + offsetX;
 					y = onScreenBounds.getMinY() + offsetY;
-					this.show(Root.MAIN_STAGE, x, y);
+					this.show(Root.PSC.MAIN_STAGE, x, y);
 					this.setAnchorX(this.getAnchorX() - this.getWidth());
 					break;
 				case RIGHT:
 					onScreenBounds = root.localToScreen(root.getBoundsInLocal());
 					x = onScreenBounds.getMaxX() + offsetX;
 					y = onScreenBounds.getMinY() + offsetY;
-					this.show(Root.MAIN_STAGE, x, y);
+					this.show(Root.PSC.MAIN_STAGE, x, y);
 					break;
 			}
 		}

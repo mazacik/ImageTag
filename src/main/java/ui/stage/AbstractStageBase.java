@@ -15,14 +15,14 @@ import ui.node.textnode.TextNode;
 import ui.override.HBox;
 import ui.override.VBox;
 
-public abstract class AbstractStage extends Stage {
+public abstract class AbstractStageBase extends Stage {
 	private static final int DEFAULT_PADDING = 3;
 	
 	private BorderPane paneMain;
 	private TextNode errorNode;
 	private HBox buttonBox;
 	
-	public AbstractStage(String title, boolean showErrorNode) {
+	public AbstractStageBase(String title, boolean showErrorNode) {
 		paneMain = new BorderPane();
 		paneMain.setBackground(Decorator.getBackgroundPrimary());
 		paneMain.setBorder(Decorator.getBorder(1));
