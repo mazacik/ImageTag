@@ -1,6 +1,6 @@
 package server.misc;
 
-import client.ui.stage.SimpleMessageStage;
+import client.stage.SimpleMessageStage;
 import com.sun.jna.platform.FileUtils;
 import javafx.scene.Scene;
 import javafx.stage.DirectoryChooser;
@@ -22,11 +22,11 @@ public abstract class FileUtil {
 	public static final String DIR_NAME_DATA = "data";
 	public static final String FILE_NAME_SETTINGS = "settings.txt";
 	
-	public static final String EXTENSION_CACHE = ".jpg";
+	public static final String EXT_CACHE = "jpg";
 	
-	public static final String[] EXTENSIONS_IMG = new String[]{".jpg", ".jpeg", ".png"};
-	public static final String[] EXTENSIONS_GIF = new String[]{".gif"};
-	public static final String[] EXTENSIONS_VID = new String[]{".mp4", ".m4v", ".mov", ".wmv", ".avi", ".webm"};
+	public static final String[] EXT_IMG = new String[]{"jpg", "jpeg", "png"};
+	public static final String[] EXT_GIF = new String[]{"gif"};
+	public static final String[] EXT_VID = new String[]{"mp4", "m4v", "mov", "wmv", "avi", "webm"};
 	
 	public static String directoryChooser(Scene ownerScene) {
 		if (ownerScene == null || ownerScene.getWindow() == null) throw new NullPointerException();
@@ -41,15 +41,18 @@ public abstract class FileUtil {
 		return directory.getAbsolutePath();
 	}
 	
-	public static void moveFile(String from, String to) {
+	public static boolean moveFile(String from, String to) {
 		if (Main.DEBUG_FS_ALLOW_FILE_MOVE) {
 			try {
 				new File(to).getParentFile().mkdirs();
 				Files.move(Paths.get(from), Paths.get(to));
+				return !new File(from).exists() && new File(to).exists();
 			} catch (IOException e) {
 				e.printStackTrace();
+				return false;
 			}
 		}
+		return true;
 	}
 	public static boolean deleteFile(String path) {
 		if (Main.DEBUG_FS_ALLOW_FILE_DELETE) {
@@ -107,7 +110,7 @@ public abstract class FileUtil {
 	}
 	public static String getFileExtension(String path) {
 		if (path.contains(".")) {
-			path = path.substring(path.lastIndexOf("."));
+			return path.substring(path.lastIndexOf(".") + 1);
 		}
 		return path;
 	}
@@ -118,17 +121,17 @@ public abstract class FileUtil {
 		}
 		
 		String fileName = file.getName().toLowerCase();
-		for (String ext : EXTENSIONS_IMG) {
+		for (String ext : EXT_IMG) {
 			if (fileName.endsWith(ext)) {
 				return true;
 			}
 		}
-		for (String ext : EXTENSIONS_GIF) {
+		for (String ext : EXT_GIF) {
 			if (fileName.endsWith(ext)) {
 				return true;
 			}
 		}
-		for (String ext : EXTENSIONS_VID) {
+		for (String ext : EXT_VID) {
 			if (fileName.endsWith(ext)) {
 				return true;
 			}
@@ -177,22 +180,22 @@ public abstract class FileUtil {
 		return Project.getCurrent().getDirectorySource() + File.separator + entity.getName();
 	}
 	public static String getFileCache(Entity entity) {
-		return getDirectoryCache(Project.getCurrent().getProjectName()) + File.separator + entity.getName() + "-" + entity.getSize() + EXTENSION_CACHE;
+		return getDirectoryCache(Project.getCurrent().getProjectName()) + File.separator + entity.getName() + "-" + entity.getSize() + "." + EXT_CACHE;
 	}
 	public static MediaType getMediaType(Entity entity) {
-		String ext = entity.getName().toLowerCase().substring(entity.getName().lastIndexOf('.'));
+		String ext = entity.getName().toLowerCase().substring(entity.getName().lastIndexOf('.') + 1);
 		
-		for (String _ext : EXTENSIONS_IMG) {
+		for (String _ext : EXT_IMG) {
 			if (ext.equals(_ext)) {
 				return MediaType.IMG;
 			}
 		}
-		for (String _ext : EXTENSIONS_GIF) {
+		for (String _ext : EXT_GIF) {
 			if (ext.equals(_ext)) {
 				return MediaType.GIF;
 			}
 		}
-		for (String _ext : EXTENSIONS_VID) {
+		for (String _ext : EXT_VID) {
 			if (ext.equals(_ext)) {
 				return MediaType.VID;
 			}

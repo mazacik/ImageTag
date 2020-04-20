@@ -7,7 +7,7 @@ import server.misc.Project;
 import server.misc.Settings;
 
 public class Main extends Application {
-	public static final boolean DEBUG_MAIN_QUICKSTART = false;
+	public static final boolean DEBUG_AUTOLOAD_LATEST_PROJECT = false;
 	public static final boolean DEBUG_UI_SCALING = true;
 	public static final boolean DEBUG_USE_CACHE = true;
 	
@@ -22,7 +22,7 @@ public class Main extends Application {
 		
 		Settings.readFromDisk();
 		
-		if (!DEBUG_MAIN_QUICKSTART || FileUtil.getProjectFiles().isEmpty()) {
+		if (!DEBUG_AUTOLOAD_LATEST_PROJECT || FileUtil.getProjectFiles().isEmpty()) {
 			Root.PSC.showIntroStage();
 		} else {
 			Root.PSC.showMainStage();

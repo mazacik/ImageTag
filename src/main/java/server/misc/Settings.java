@@ -20,10 +20,10 @@ public enum Settings {
 	
 	private static final String delimiter = "=";
 	
-	private String name;
 	private String value;
-	private String valueDefault;
-	private boolean userModifiable;
+	private final String name;
+	private final String valueDefault;
+	private final boolean userModifiable;
 	
 	Settings(String name, String valueDefault, boolean userModifiable) {
 		this.name = name;

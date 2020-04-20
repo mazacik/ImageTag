@@ -1,12 +1,12 @@
 package main;
 
-import client.cache.CacheUtil;
-import client.ui.main.display.DisplayPane;
-import client.ui.main.gallery.GalleryPane;
-import client.ui.main.side.FilterPane;
-import client.ui.main.side.SelectPane;
-import client.ui.main.top.ToolbarPane;
-import client.ui.stage.primary.PrimaryStageController;
+import client.cache.CacheLoader;
+import client.component.display.DisplayPane;
+import client.component.gallery.GalleryPane;
+import client.component.side.FilterPane;
+import client.component.side.SelectPane;
+import client.component.top.ToolbarPane;
+import client.stage.primary.PrimaryStageController;
 import server.base.CustomList;
 import server.base.collection.Collection;
 import server.base.entity.Entity;
@@ -76,7 +76,7 @@ public abstract class Root {
 		Reload.notify(Notifier.values());
 		Reload.start();
 		
-		CacheUtil.loadCache(Root.ENTITYLIST);
+		CacheLoader.init(Root.ENTITYLIST);
 	}
 	private static void initEntities() {
 		Root.ENTITYLIST.setAllImpl(Project.getCurrent().getEntityList());

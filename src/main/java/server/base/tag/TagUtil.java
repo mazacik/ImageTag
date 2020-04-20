@@ -1,8 +1,8 @@
 package server.base.tag;
 
-import client.ui.main.side.TagNode;
-import client.ui.stage.ConfirmationStage;
-import client.ui.stage.TagEditStage;
+import client.component.side.TagNode;
+import client.stage.ConfirmationStage;
+import client.stage.TagEditStage;
 import main.Root;
 import server.base.CustomList;
 import server.control.reload.Notifier;

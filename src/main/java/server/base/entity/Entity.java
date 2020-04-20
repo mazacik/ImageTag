@@ -1,6 +1,6 @@
 package server.base.entity;
 
-import client.ui.main.gallery.Tile;
+import client.component.gallery.Tile;
 import com.google.gson.annotations.SerializedName;
 import main.Root;
 import server.base.CustomList;

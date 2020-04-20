@@ -35,6 +35,7 @@ import java.util.ArrayList;
  * @version 1.03 November 2003
  */
 
+@SuppressWarnings("unused")
 public class GifDecoder {
 	
 	/**

@@ -108,7 +108,7 @@ public class Filter extends EntityList {
 			if (!FilterOption.ENABLE_IMG.getBooleanValue()) {
 				return false;
 			}
-			String s = "ENABLE_IMG_" + FileUtil.getFileExtension(entity).substring(1).toUpperCase();
+			String s = "ENABLE_IMG_" + FileUtil.getFileExtension(entity).toUpperCase();
 			FilterOption fs = FilterOption.valueOf(s);
 			if (!fs.getBooleanValue()) {
 				return false;
@@ -117,7 +117,7 @@ public class Filter extends EntityList {
 			if (!FilterOption.ENABLE_VID.getBooleanValue()) {
 				return false;
 			}
-			String s = "ENABLE_VID_" + FileUtil.getFileExtension(entity).substring(1).toUpperCase();
+			String s = "ENABLE_VID_" + FileUtil.getFileExtension(entity).toUpperCase();
 			FilterOption fs = FilterOption.valueOf(s);
 			if (!fs.getBooleanValue()) {
 				return false;
@@ -129,7 +129,7 @@ public class Filter extends EntityList {
 			if (!FilterOption.ENABLE_VID.getBooleanValue()) {
 				return false;
 			}
-			String s = "ENABLE_VID_" + FileUtil.getFileExtension(entity).substring(1).toUpperCase();
+			String s = "ENABLE_VID_" + FileUtil.getFileExtension(entity).toUpperCase();
 			FilterOption fs = FilterOption.valueOf(s);
 			if (!fs.getBooleanValue()) {
 				return false;
