@@ -94,7 +94,7 @@ public class MainStage extends Stage {
 		stackPane.setAlignment(Pos.BOTTOM_CENTER);
 		
 		Scene mainScene = new Scene(stackPane);
-		mainScene.getStylesheets().add("/ScrollPane.css");
+		mainScene.getStylesheets().add("/css/ScrollPane.css");
 		
 		this.initKeybinds(mainScene);
 		

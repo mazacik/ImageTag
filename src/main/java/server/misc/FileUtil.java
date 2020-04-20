@@ -17,7 +17,12 @@ import java.nio.file.Paths;
 import java.util.logging.Logger;
 
 public abstract class FileUtil {
-	public static final String APPLICATION_NAME = "Tagallery";
+	public static final String APP_NAME = "Tagallery";
+	public static final String DIR_NAME_CACHE = "cache";
+	public static final String DIR_NAME_DATA = "data";
+	public static final String FILE_NAME_SETTINGS = "settings.txt";
+	
+	public static final String EXTENSION_CACHE = ".jpg";
 	
 	public static final String[] EXTENSIONS_IMG = new String[]{".jpg", ".jpeg", ".png"};
 	public static final String[] EXTENSIONS_GIF = new String[]{".gif"};
@@ -107,7 +112,7 @@ public abstract class FileUtil {
 		return path;
 	}
 	
-	private static FileFilter fileFilter = file -> {
+	private static final FileFilter fileFilter = file -> {
 		if (file.isDirectory()) {
 			return true;
 		}
@@ -172,7 +177,7 @@ public abstract class FileUtil {
 		return Project.getCurrent().getDirectorySource() + File.separator + entity.getName();
 	}
 	public static String getFileCache(Entity entity) {
-		return getDirectoryCache(Project.getCurrent().getProjectName()) + File.separator + entity.getName() + "-" + entity.getSize() + ".jpg";
+		return getDirectoryCache(Project.getCurrent().getProjectName()) + File.separator + entity.getName() + "-" + entity.getSize() + EXTENSION_CACHE;
 	}
 	public static MediaType getMediaType(Entity entity) {
 		String ext = entity.getName().toLowerCase().substring(entity.getName().lastIndexOf('.'));
@@ -206,22 +211,18 @@ public abstract class FileUtil {
 	}
 	
 	public static String getDirectoryLocal() {
-		return System.getenv("APPDATA") + File.separator + APPLICATION_NAME;
+		return System.getenv("APPDATA") + File.separator + APP_NAME;
 	}
 	public static String getDirectoryProject() {
-		return getDirectoryLocal() + File.separator + "data";
+		return getDirectoryLocal() + File.separator + DIR_NAME_DATA;
 	}
 	public static String getDirectoryCache() {
 		return getDirectoryCache(Project.getCurrent().getProjectName());
 	}
 	public static String getDirectoryCache(String projectName) {
-		return getDirectoryLocal() + File.separator + "client/cache" + File.separator + projectName;
+		return getDirectoryLocal() + File.separator + DIR_NAME_CACHE + File.separator + projectName;
 	}
 	public static String getFileSettings() {
-		return getDirectoryLocal() + File.separator + "settings.txt";
-	}
-	
-	public static String getApplicationName() {
-		return APPLICATION_NAME;
+		return getDirectoryLocal() + File.separator + FILE_NAME_SETTINGS;
 	}
 }

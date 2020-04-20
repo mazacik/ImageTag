@@ -96,5 +96,10 @@
             <artifactId>lucene-core</artifactId>
             <version>8.4.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.zengde</groupId>
+            <artifactId>lire</artifactId>
+            <version>1.0b2</version>
+        </dependency>
     </dependencies>
 </project>

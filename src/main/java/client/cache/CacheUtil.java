@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
 public abstract class CacheUtil {
-	private static Image placeholder = new WritableImage(Settings.GALLERY_TILE_SIZE.getInteger(), Settings.GALLERY_TILE_SIZE.getInteger()) {{
+	private static final Image placeholder = new WritableImage(Settings.GALLERY_TILE_SIZE.getInteger(), Settings.GALLERY_TILE_SIZE.getInteger()) {{
 		Label label = new Label("Placeholder");
 		label.setBackground(new Background(new BackgroundFill(Color.GRAY, null, null)));
 		label.setWrapText(true);

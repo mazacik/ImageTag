@@ -98,7 +98,7 @@ public class IntroStage extends Stage {
 		mainBox.setAlignment(Pos.TOP_CENTER);
 		VBox.setVgrow(mainBox, Priority.ALWAYS);
 		
-		VBox vBox = new VBox(new TitleBar("Welcome to " + FileUtil.getApplicationName()), mainBox);
+		VBox vBox = new VBox(new TitleBar("Welcome to " + FileUtil.APP_NAME), mainBox);
 		vBox.setBackground(Decorator.getBackgroundPrimary());
 		vBox.setBorder(Decorator.getBorder(1));
 		
