@@ -1,25 +1,25 @@
 package main;
 
-import base.CustomList;
-import base.collection.Collection;
-import base.entity.Entity;
-import base.entity.EntityList;
-import base.tag.Tag;
-import base.tag.TagList;
-import cache.CacheUtil;
-import control.Select;
-import control.filter.Filter;
-import control.reload.Notifier;
-import control.reload.Reload;
-import misc.FileUtil;
-import misc.Project;
-import thread.Threadpool;
-import ui.main.display.DisplayPane;
-import ui.main.gallery.GalleryPane;
-import ui.main.side.FilterPane;
-import ui.main.side.SelectPane;
-import ui.main.top.ToolbarPane;
-import ui.stage.primary.PrimaryStageController;
+import client.cache.CacheUtil;
+import client.ui.main.display.DisplayPane;
+import client.ui.main.gallery.GalleryPane;
+import client.ui.main.side.FilterPane;
+import client.ui.main.side.SelectPane;
+import client.ui.main.top.ToolbarPane;
+import client.ui.stage.primary.PrimaryStageController;
+import server.base.CustomList;
+import server.base.collection.Collection;
+import server.base.entity.Entity;
+import server.base.entity.EntityList;
+import server.base.tag.Tag;
+import server.base.tag.TagList;
+import server.control.Select;
+import server.control.filter.Filter;
+import server.control.reload.Notifier;
+import server.control.reload.Reload;
+import server.misc.FileUtil;
+import server.misc.Project;
+import server.thread.Threadpool;
 
 import java.io.File;
 
@@ -106,7 +106,7 @@ public abstract class Root {
 			for (int j = 0; j < entitiesWithoutFiles.size(); j++) {
 				Entity orphanEntity = entitiesWithoutFiles.get(j);
 				if (newFileLength == orphanEntity.getSize()) {
-					/* rename the object and cache file */
+					/* rename the object and client.cache file */
 					File oldCacheFile = new File(FileUtil.getFileCache(orphanEntity));
 					orphanEntity.setName(FileUtil.createEntityName(newFile));
 					File newCacheFile = new File(FileUtil.getFileCache(orphanEntity));
