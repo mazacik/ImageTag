@@ -1,10 +1,10 @@
 package main;
 
+import backend.misc.FileUtil;
+import backend.misc.Project;
+import backend.misc.Settings;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import server.misc.FileUtil;
-import server.misc.Project;
-import server.misc.Settings;
 
 public class Main extends Application {
 	public static final boolean DEBUG_AUTOLOAD_LATEST_PROJECT = false;

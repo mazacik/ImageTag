@@ -1,25 +1,25 @@
 package main;
 
-import client.cache.CacheLoader;
-import client.component.display.DisplayPane;
-import client.component.gallery.GalleryPane;
-import client.component.side.FilterPane;
-import client.component.side.SelectPane;
-import client.component.top.ToolbarPane;
-import client.stage.primary.PrimaryStageController;
-import server.base.CustomList;
-import server.base.collection.Collection;
-import server.base.entity.Entity;
-import server.base.entity.EntityList;
-import server.base.tag.Tag;
-import server.base.tag.TagList;
-import server.control.Select;
-import server.control.filter.Filter;
-import server.control.reload.Notifier;
-import server.control.reload.Reload;
-import server.misc.FileUtil;
-import server.misc.Project;
-import server.thread.Threadpool;
+import backend.cache.CacheLoader;
+import backend.control.filter.Filter;
+import backend.control.reload.Notifier;
+import backend.control.reload.Reload;
+import backend.control.select.Select;
+import backend.list.BaseList;
+import backend.list.collection.Collection;
+import backend.list.entity.Entity;
+import backend.list.entity.EntityList;
+import backend.list.tag.Tag;
+import backend.list.tag.TagList;
+import backend.misc.FileUtil;
+import backend.misc.Project;
+import backend.override.Threadpool;
+import frontend.component.display.DisplayPane;
+import frontend.component.gallery.GalleryPane;
+import frontend.component.side.FilterPane;
+import frontend.component.side.SelectPane;
+import frontend.component.top.ToolbarPane;
+import frontend.stage.primary.PrimaryStageController;
 
 import java.io.File;
 
@@ -76,15 +76,15 @@ public abstract class Root {
 		Reload.notify(Notifier.values());
 		Reload.start();
 		
-		CacheLoader.init(Root.ENTITYLIST);
+		CacheLoader.startCacheThread(Root.ENTITYLIST);
 	}
 	private static void initEntities() {
 		Root.ENTITYLIST.setAllImpl(Project.getCurrent().getEntityList());
 		
 		EntityList entitiesWithoutFiles = new EntityList(Root.ENTITYLIST);
-		CustomList<File> filesWithoutEntities = FileUtil.getFiles(new File(Project.getCurrent().getDirectorySource()), true);
+		BaseList<File> filesWithoutEntities = FileUtil.getFiles(new File(Project.getCurrent().getDirectorySource()), true);
 		
-		CustomList<String> newFileNames = new CustomList<>();
+		BaseList<String> newFileNames = new BaseList<>();
 		filesWithoutEntities.forEach(file -> newFileNames.addImpl(FileUtil.createEntityName(file)));
 		
 		/* match files in the source directory with known entities in the database */
@@ -139,7 +139,7 @@ public abstract class Root {
 		}
 	}
 	private static void initCollections() {
-		CustomList<Collection> collections = new CustomList<>();
+		BaseList<Collection> collections = new BaseList<>();
 		for (Entity entity : Root.ENTITYLIST) {
 			if (entity.hasCollection()) {
 				boolean collectionExists = false;

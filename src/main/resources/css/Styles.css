@@ -1,0 +1,44 @@
+/* ScrollPane */
+.track {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0em;
+    -fx-padding: 0 0 0 0;
+}
+
+.scroll-bar {
+    -fx-background-color: transparent;
+    -fx-pref-width: 16;
+    -fx-padding: 2 1 2 2;
+}
+
+.increment-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0em;
+    -fx-padding: 0 0 0 0;
+}
+
+.decrement-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0em;
+    -fx-padding: 0 0 0 0;
+}
+
+.increment-arrow {
+    -fx-padding: 0em;
+}
+
+.decrement-arrow {
+    -fx-padding: 0em;
+}
+
+.thumb {
+    -fx-background-color: derive(black, 90.0%);
+    -fx-background-insets: 0, 0, 0, 0;
+    -fx-background-radius: 0em;
+}
+
+.viewport {
+    -fx-background-color: transparent;
+}
+/* ScrollPane */
