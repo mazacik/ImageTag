@@ -21,7 +21,7 @@ public class TagEditStage extends BaseStage {
 	private final VBox boxNodes;
 	
 	public TagEditStage() {
-		super("Tag Editor", true);
+		super("Tag Editor");
 		
 		returnList = new BaseList<>();
 		nodeList = new BaseList<>();
@@ -82,7 +82,6 @@ public class TagEditStage extends BaseStage {
 		this.tagListToSearchIn = tagListToSearchIn;
 		this.returnList = new BaseList<>();
 		
-		this.setErrorMessage("");
 		this.showAndWait();
 		
 		return returnList;
@@ -98,9 +97,9 @@ public class TagEditStage extends BaseStage {
 		});
 		
 		if (tagListToSearchIn.doesAnyTagStartWith(helperList)) {
-			this.setErrorMessage("Tag already exists.");
+			new SimpleMessageStage("Error", "Tag already exists.").showAndWait();
 		} else if (tagListToSearchIn.isAnyTagSubstringOf(helperList)) {
-			this.setErrorMessage("Cannot extend existing tag.");
+			new SimpleMessageStage("Error", "Cannot extend existing tag.").showAndWait();
 		} else {
 			this.returnList = helperList;
 			this.close();

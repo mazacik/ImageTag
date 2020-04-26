@@ -8,7 +8,7 @@ public class SimpleMessageStage extends BaseStage {
 	private TextNode nodeMessage;
 	
 	public SimpleMessageStage(String title, String message) {
-		super("", false);
+		super("");
 		
 		nodeMessage = new TextNode("", false, false, false, true);
 		nodeMessage.setText(message);

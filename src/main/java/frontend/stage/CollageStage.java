@@ -4,6 +4,7 @@ import backend.list.BaseList;
 import backend.list.entity.Entity;
 import backend.misc.FileUtil;
 import backend.misc.Settings;
+import backend.override.Thread;
 import frontend.node.override.GridPane;
 import frontend.node.override.Scene;
 import javafx.application.Platform;
@@ -22,7 +23,7 @@ public class CollageStage extends Stage {
 			int miniW = (int) scaledImage.getWidth() / Settings.COLLAGE_SIZE.getInteger();
 			int miniH = (int) scaledImage.getHeight() / Settings.COLLAGE_SIZE.getInteger();
 			
-			Root.PSC.MAIN_STAGE.showLoadingBar(this, Root.FILTER.size());
+			Root.PSC.MAIN_STAGE.showLoadingBar(Thread.currentThread(), Root.FILTER.size());
 			
 			BaseList<CollagePiece> database = new BaseList<>();
 			for (Entity entity : Root.FILTER) {
@@ -30,10 +31,10 @@ public class CollageStage extends Stage {
 				Color averageColor = getAverageColor(image, 0, 0, image.getWidth(), image.getHeight());
 				database.addImpl(new CollagePiece(image, averageColor));
 				
-				Root.PSC.MAIN_STAGE.advanceLoadingBar(this);
+				Root.PSC.MAIN_STAGE.advanceLoadingBar(Thread.currentThread());
 			}
 			
-			Root.PSC.MAIN_STAGE.hideLoadingBar(this);
+			Root.PSC.MAIN_STAGE.hideLoadingBar(Thread.currentThread());
 			
 			GridPane gridPane = new GridPane();
 			for (int y = 0; y < Settings.COLLAGE_SIZE.getInteger(); y++) {
