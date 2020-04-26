@@ -80,6 +80,7 @@ public class MainStage extends Stage {
 	
 	private Scene getMainScene() {
 		loadingBar = new ProgressNode();
+		loadingBar.setVisible(false);
 		
 		borderPane = new BorderPane();
 		borderPane.setTop(Root.TOOLBAR_PANE);
@@ -223,7 +224,7 @@ public class MainStage extends Stage {
 		return borderPane.getCenter() != Root.DISPLAY_PANE;
 	}
 	
-	public void showLoadingBar(Object caller, int total) {
+	public void showLoadingBar(Thread caller, int total) {
 		if (Platform.isFxApplicationThread()) {
 			loadingBar.setup(caller, total);
 			loadingBar.setVisible(true);
@@ -234,7 +235,7 @@ public class MainStage extends Stage {
 			});
 		}
 	}
-	public void hideLoadingBar(Object caller) {
+	public void hideLoadingBar(Thread caller) {
 		if (loadingBar.getCaller() == caller) {
 			if (Platform.isFxApplicationThread()) {
 				loadingBar.setVisible(false);
@@ -243,7 +244,7 @@ public class MainStage extends Stage {
 			}
 		}
 	}
-	public void advanceLoadingBar(Object caller) {
+	public void advanceLoadingBar(Thread caller) {
 		if (Platform.isFxApplicationThread()) {
 			loadingBar.advance(caller);
 		} else {
