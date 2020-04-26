@@ -13,12 +13,12 @@ public class SwitchNode extends VBox {
 	protected TextNode left;
 	protected TextNode right;
 	
-	public SwitchNode(String text1, String text2, double prefWidth) {
-		this("", text1, text2, prefWidth);
+	public SwitchNode(String textLeft, String textRight, double prefWidth) {
+		this("", textLeft, textRight, prefWidth);
 	}
-	public SwitchNode(String title, String text1, String text2, double prefWidth) {
-		left = new TextNode(text1, true, false, true, true);
-		right = new TextNode(text2, true, false, true, true);
+	public SwitchNode(String title, String textLeft, String textRight, double prefWidth) {
+		left = new TextNode(textLeft, true, false, true, true);
+		right = new TextNode(textRight, true, false, true, true);
 		
 		left.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, this::selectLeft);
 		right.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, this::selectRight);
