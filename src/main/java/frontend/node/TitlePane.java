@@ -38,7 +38,7 @@ public class TitlePane extends BorderPane {
 		thisOffsetHelper.setPadding(new Insets(8, 0, 0, 0));
 		
 		stackPane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-			if (event.getButton() == MouseButton.PRIMARY) {
+			if (event.getButton() == MouseButton.PRIMARY && event.isStillSincePress()) {
 				if (stackPane.getChildren().contains(contentOffsetHelper)) {
 					if (event.getY() >= -8 && event.getY() <= 8) {
 						stackPane.getChildren().remove(contentOffsetHelper);
