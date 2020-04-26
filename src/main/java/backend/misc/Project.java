@@ -29,8 +29,10 @@ public class Project {
 	private transient static final Type typeToken = new TypeToken<Project>() {}.getType();
 	public static Project readFromDisk(String projectFile) {
 		Project project = GsonUtil.read(typeToken, projectFile);
-		project.projectName = FileUtil.getFileNameNoExtension(projectFile);
-		project.projectFile = projectFile;
+		if (project != null) {
+			project.projectName = FileUtil.getFileNameNoExtension(projectFile);
+			project.projectFile = projectFile;
+		}
 		return project;
 	}
 	public boolean writeToDisk() {
