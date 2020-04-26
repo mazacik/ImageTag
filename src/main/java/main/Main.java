@@ -31,6 +31,7 @@ public class Main extends Application {
 	
 	public static void exitApplication() {
 		Root.THREADPOOL.interruptAll();
+		Root.DISPLAY_PANE.disposeVideoPlayer();
 		
 		Project.getCurrent().writeToDisk();
 		Settings.writeToDisk();
