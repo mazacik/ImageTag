@@ -82,7 +82,7 @@ public abstract class Root {
 		Root.ENTITYLIST.setAllImpl(Project.getCurrent().getEntityList());
 		
 		EntityList entitiesWithoutFiles = new EntityList(Root.ENTITYLIST);
-		BaseList<File> filesWithoutEntities = FileUtil.getFiles(new File(Project.getCurrent().getDirectorySource()), true);
+		BaseList<File> filesWithoutEntities = FileUtil.getFiles(new File(Project.getCurrent().getDirectory()), true);
 		
 		BaseList<String> newFileNames = new BaseList<>();
 		filesWithoutEntities.forEach(file -> newFileNames.addImpl(FileUtil.createEntityName(file)));

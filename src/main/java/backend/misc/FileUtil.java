@@ -182,14 +182,14 @@ public abstract class FileUtil {
 	}
 	
 	public static String createEntityName(File file) {
-		return createEntityName(file, Project.getCurrent().getDirectorySource());
+		return createEntityName(file, Project.getCurrent().getDirectory());
 	}
 	public static String createEntityName(File file, String directorySource) {
 		return file.getAbsolutePath().substring((directorySource + File.separator).length());
 	}
 	
 	public static String getFileEntity(Entity entity) {
-		return Project.getCurrent().getDirectorySource() + File.separator + entity.getName();
+		return Project.getCurrent().getDirectory() + File.separator + entity.getName();
 	}
 	public static String getFileCache(Entity entity) {
 		return getDirectoryCache(Project.getCurrent().getProjectName()) + File.separator + entity.getName() + "-" + entity.getSize() + "." + EXT_CACHE;

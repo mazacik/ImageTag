@@ -506,34 +506,43 @@ public enum TextNodeTemplates {
 	},
 	APPLICATION_REFRESH {
 		@Override public TextNode get() {
-			TextNode textNode = new TextNode("Refresh", true, true, false, true, this);
+			TextNode textNode = new TextNode("Rescan", true, true, false, true, this);
 			setupNode(textNode);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				BaseList<String> entitiesMain = new BaseList<>();
-				Root.ENTITYLIST.forEach(entity -> entitiesMain.add(FileUtil.getFileEntity(entity)));
+				BaseList<String> entitiesInApp = new BaseList<>();
+				Root.ENTITYLIST.forEach(entity -> entitiesInApp.add(FileUtil.getFileEntity(entity)));
 				
-				BaseList<String> entitiesDisk = new BaseList<>();
-				File directorySource = new File(Project.getCurrent().getDirectorySource());
-				FileUtil.getFiles(directorySource, true).forEach(file -> entitiesDisk.add(file.getAbsolutePath()));
+				BaseList<String> entitiesOnDisk = new BaseList<>();
+				File projectDirectory = new File(Project.getCurrent().getDirectory());
+				FileUtil.getFiles(projectDirectory, true).forEach(file -> entitiesOnDisk.add(file.getAbsolutePath()));
 				
-				BaseList<String> helperMain = new BaseList<>(entitiesMain);
-				entitiesMain.removeAll(entitiesDisk);
-				entitiesDisk.removeAll(helperMain);
+				//add entitiesOnDiskNotInApp
+				BaseList<String> entitiesOnDiskNotInApp = new BaseList<>(entitiesOnDisk);
+				entitiesOnDiskNotInApp.removeAll(entitiesInApp);
 				
-				//todo remove orphans
-				
-				if (!entitiesDisk.isEmpty()) {
-					EntityList entities = new EntityList();
-					entitiesDisk.forEach(path -> entities.addImpl(new Entity(new File(path))));
-					CacheLoader.startCacheThread(entities);
+				if (!entitiesOnDiskNotInApp.isEmpty()) {
+					EntityList entityList = new EntityList();
+					entitiesOnDiskNotInApp.forEach(path -> entityList.addImpl(new Entity(new File(path))));
+					CacheLoader.startCacheThread(entityList);
 					
-					Root.ENTITYLIST.addAllImpl(entities);
+					Root.ENTITYLIST.addAllImpl(entityList);
 					Root.ENTITYLIST.sort();
 					
-					Root.FILTER.getLastImport().setAllImpl(entities);
+					Root.FILTER.getLastImport().setAllImpl(entityList);
+					
+					Reload.notify(Notifier.ENTITYLIST_CHANGED);
 				}
 				
-				Reload.notify(Notifier.ENTITYLIST_CHANGED);
+				//remove entitiesInAppNotOnDisk
+				BaseList<String> entitiesInAppNotOnDisk = new BaseList<>(entitiesInApp);
+				entitiesInAppNotOnDisk.removeAll(entitiesOnDisk);
+				
+				if (!entitiesInAppNotOnDisk.isEmpty()) {
+					Root.ENTITYLIST.removeAllImpl(entitiesInAppNotOnDisk);
+					
+					Reload.notify(Notifier.ENTITYLIST_CHANGED);
+				}
+				
 				Reload.start();
 			});
 			return textNode;

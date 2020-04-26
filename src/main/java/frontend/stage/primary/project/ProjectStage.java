@@ -125,7 +125,7 @@ public class ProjectStage extends Stage {
 		this.project = project;
 		
 		editProjectName.setText(project.getProjectName());
-		editSourceDirectory.setText(project.getDirectorySource());
+		editSourceDirectory.setText(project.getDirectory());
 		nodeError.setText("");
 		
 		this.setTitle("Edit Project");

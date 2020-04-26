@@ -52,7 +52,7 @@ public abstract class ImportUtil {
 	}
 	private static Entity importFile(ImportMode importMode, String directory, File fileFrom) {
 		String pathFrom = fileFrom.getAbsolutePath();
-		String pathTo = Project.getCurrent().getDirectorySource() + File.separator + FileUtil.createEntityName(fileFrom, directory);
+		String pathTo = Project.getCurrent().getDirectory() + File.separator + FileUtil.createEntityName(fileFrom, directory);
 		
 		File fileTo = new File(pathTo);
 		
@@ -63,7 +63,7 @@ public abstract class ImportUtil {
 		} else {
 			if (fileTo.length() != fileFrom.length()) {
 				//it's a different file with the same name, prepend it with it's size and import it
-				pathTo = Project.getCurrent().getDirectorySource() + File.separator + fileFrom.length() + "-" + FileUtil.createEntityName(fileFrom, directory);
+				pathTo = Project.getCurrent().getDirectory() + File.separator + fileFrom.length() + "-" + FileUtil.createEntityName(fileFrom, directory);
 				if (ImportUtil.doImport(importMode, pathFrom, pathTo)) {
 					return new Entity(new File(pathTo));
 				}

@@ -17,7 +17,7 @@ public class LireUtil {
 	public static final String LIRE_INDEX_PATH = "lire_index";
 	
 	public static void index() {
-		index(Project.getCurrent().getDirectorySource());
+		index(Project.getCurrent().getDirectory());
 	}
 	public static void index(String directory) {
 		File f = new File(directory);

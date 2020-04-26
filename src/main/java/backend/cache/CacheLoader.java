@@ -45,6 +45,7 @@ public abstract class CacheLoader {
 	}
 	public static void startCacheThread(EntityList entityList, boolean recreate) {
 		if (Main.DEBUG_USE_CACHE) {
+			//todo what if intro cache loading is running and we start import
 			if (cacheThread != null && cacheThread.isAlive()) {
 				cacheThread.interrupt();
 			}

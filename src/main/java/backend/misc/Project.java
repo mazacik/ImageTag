@@ -16,14 +16,14 @@ public class Project {
 	private transient String projectFile;
 	
 	@SerializedName("a") private long msLastAccess;
-	@SerializedName("s") private String directorySource;
+	@SerializedName("s") private String directory;
 	@SerializedName("e") private EntityList entityList;
 	@SerializedName("t") private TagList tagList;
 	
-	public Project(String projectName, String directorySource) {
+	public Project(String projectName, String directory) {
 		this.projectName = projectName;
 		this.projectFile = createProjectFilePath(projectName);
-		this.directorySource = directorySource;
+		this.directory = directory;
 	}
 	
 	private transient static final Type typeToken = new TypeToken<Project>() {}.getType();
@@ -44,7 +44,7 @@ public class Project {
 	
 	public void updateProject(String projectNameNew, String directorySourceNew) {
 		if (projectName.equals(projectNameNew)) {
-			this.directorySource = directorySourceNew;
+			this.directory = directorySourceNew;
 			this.writeToDisk();
 		} else {
 			String projectFileNew = createProjectFilePath(projectNameNew);
@@ -54,7 +54,7 @@ public class Project {
 				
 				this.projectName = projectNameNew;
 				this.projectFile = projectFileNew;
-				this.directorySource = directorySourceNew;
+				this.directory = directorySourceNew;
 			}
 		}
 	}
@@ -73,8 +73,8 @@ public class Project {
 	public long getMsLastAccess() {
 		return msLastAccess;
 	}
-	public String getDirectorySource() {
-		return directorySource;
+	public String getDirectory() {
+		return directory;
 	}
 	public EntityList getEntityList() {
 		return entityList;

@@ -23,7 +23,7 @@ import java.io.File;
 public class ProjectNode extends BorderPane {
 	public ProjectNode(Project project) {
 		TextNode nodeProjectName = new TextNode(project.getProjectName(), false, false, false, false);
-		TextNode nodeDirectorySource = new TextNode(project.getDirectorySource(), false, false, false, false);
+		TextNode nodeDirectorySource = new TextNode(project.getDirectory(), false, false, false, false);
 		
 		VBox vBoxLabels = new VBox(nodeProjectName, nodeDirectorySource);
 		vBoxLabels.setAlignment(Pos.CENTER_LEFT);
@@ -67,10 +67,10 @@ public class ProjectNode extends BorderPane {
 						FileUtil.deleteFile(FileUtil.getDirectoryCache(project.getProjectName()));
 					}
 				} else {
-					if (new File(project.getDirectorySource()).exists()) {
+					if (new File(project.getDirectory()).exists()) {
 						Root.PSC.showMainStage(project);
 					} else {
-						new SimpleMessageStage("Error", "The source directory of this project could not be found.\nDirectory: " + project.getDirectorySource()).show();
+						new SimpleMessageStage("Error", "The source directory of this project could not be found.\nDirectory: " + project.getDirectory()).show();
 					}
 				}
 			}
