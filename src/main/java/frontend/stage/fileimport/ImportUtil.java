@@ -14,9 +14,9 @@ import java.io.File;
 import java.util.logging.Logger;
 
 public abstract class ImportUtil {
-	public static void startImportThread(String directoryPath, BaseList<File> filesToImport) {
+	public static void startImportThread(ImportMode importMode, String directory, BaseList<File> fileList) {
 		new Thread(() -> {
-			EntityList entityList = ImportUtil.importFiles(directoryPath, filesToImport);
+			EntityList entityList = ImportUtil.importFiles(importMode, directory, fileList);
 			
 			if (entityList != null && !entityList.isEmpty()) {
 				CacheLoader.startCacheThread(entityList);
@@ -31,33 +31,57 @@ public abstract class ImportUtil {
 		}).start();
 	}
 	
-	private static EntityList importFiles(String directoryPath, BaseList<File> filesToImport) {
-		Root.PSC.MAIN_STAGE.showLoadingBar(filesToImport, filesToImport.size());
+	private static EntityList importFiles(ImportMode importMode, String directory, BaseList<File> fileList) {
+		Root.PSC.MAIN_STAGE.showLoadingBar(Thread.currentThread(), fileList.size());
 		
 		EntityList entityList = new EntityList();
-		for (File file : filesToImport) {
+		for (File fileFrom : fileList) {
 			if (Thread.currentThread().isInterrupted()) return null;
-			entityList.addImpl(ImportUtil.importFile(directoryPath, file));
-			Root.PSC.MAIN_STAGE.advanceLoadingBar(filesToImport);
+			
+			Entity entity = ImportUtil.importFile(importMode, directory, fileFrom);
+			if (entity != null) {
+				entityList.addImpl(entity);
+			}
+			
+			Root.PSC.MAIN_STAGE.advanceLoadingBar(Thread.currentThread());
 		}
 		
-		Root.PSC.MAIN_STAGE.hideLoadingBar(filesToImport);
+		Root.PSC.MAIN_STAGE.hideLoadingBar(Thread.currentThread());
 		
 		return entityList;
 	}
-	private static Entity importFile(String directoryPath, File file) {
-		String pathOld = file.getAbsolutePath();
-		String pathNew = Project.getCurrent().getDirectorySource() + File.separator + FileUtil.createEntityName(file, directoryPath);
+	private static Entity importFile(ImportMode importMode, String directory, File fileFrom) {
+		String pathFrom = fileFrom.getAbsolutePath();
+		String pathTo = Project.getCurrent().getDirectorySource() + File.separator + FileUtil.createEntityName(fileFrom, directory);
 		
-		File fileNew = new File(pathNew);
-		if (!fileNew.exists()) {
-			//todo respect ImportMode
-			FileUtil.moveFile(pathOld, pathNew);
-			return new Entity(fileNew);
+		File fileTo = new File(pathTo);
+		
+		if (!fileTo.exists()) {
+			if (ImportUtil.doImport(importMode, pathFrom, pathTo)) {
+				return new Entity(fileTo);
+			}
 		} else {
-			//todo rename the new file if they are not identical, don't import if they are identical
-			Logger.getGlobal().info("IMPORT: COULD NOT IMPORT \"" + file.getName() + "\", ALREADY EXISTS");
-			return null;
+			if (fileTo.length() != fileFrom.length()) {
+				//it's a different file with the same name, prepend it with it's size and import it
+				pathTo = Project.getCurrent().getDirectorySource() + File.separator + fileFrom.length() + "-" + FileUtil.createEntityName(fileFrom, directory);
+				if (ImportUtil.doImport(importMode, pathFrom, pathTo)) {
+					return new Entity(new File(pathTo));
+				}
+			} else {
+				Logger.getGlobal().info("IMPORT: Identical file already exists:\n" + fileFrom.getName());
+			}
+		}
+		
+		return null;
+	}
+	private static boolean doImport(ImportMode importMode, String pathFrom, String pathTo) {
+		switch (importMode) {
+			case COPY:
+				return FileUtil.copyFile(pathFrom, pathTo);
+			case MOVE:
+				return FileUtil.moveFile(pathFrom, pathTo);
+			default:
+				return false;
 		}
 	}
 }

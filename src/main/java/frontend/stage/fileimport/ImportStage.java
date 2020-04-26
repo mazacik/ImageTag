@@ -5,10 +5,7 @@ import backend.list.BaseList;
 import backend.list.entity.EntityList;
 import backend.misc.FileUtil;
 import backend.misc.Settings;
-import frontend.node.CheckBox;
-import frontend.node.EditNode;
-import frontend.node.ListBox;
-import frontend.node.SeparatorNode;
+import frontend.node.*;
 import frontend.node.override.HBox;
 import frontend.node.override.VBox;
 import frontend.node.textnode.TextNode;
@@ -23,6 +20,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
 
 import java.io.File;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ImportStage extends BaseStage {
 	private HBox boxBrowseForDirectory;
@@ -39,7 +37,7 @@ public class ImportStage extends BaseStage {
 	private TextNode nodeImport;
 	
 	public ImportStage() {
-		super("Import", true);
+		super("Import");
 		
 		this.getScene().getStylesheets().add("/css/Styles.css");
 		
@@ -77,7 +75,7 @@ public class ImportStage extends BaseStage {
 				this.directory = directory;
 				showListFilesToImport();
 			} else {
-				setErrorMessage("Import Path Invalid");
+				new SimpleMessageStage("Error", "Import Path Invalid").showAndWait();
 			}
 		});
 		
@@ -91,25 +89,25 @@ public class ImportStage extends BaseStage {
 		listBoxFilesInDirectory = new ListBox();
 		listBoxFilesInDirectory.setPrefWidth(this.getWidth() * 0.75);
 		
-		//		SwitchNode nodeMode = new SwitchNode("Copy", "Move", 150);
-		//		nodeMode.selectRight();
-		//		nodeMode.getLeft().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-		//			setImportMode(ImportMode.COPY);
-		//			nodeEmptyFolders.setDisable(true);
-		//			nodeMode.selectLeft();
-		//		});
-		//		nodeMode.getRight().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-		//			setImportMode(ImportMode.MOVE);
-		//			nodeEmptyFolders.setDisable(false);
-		//			nodeMode.selectRight();
-		//		});
-		
 		CheckBox nodeEmptyFolders = new CheckBox("Remove Empty Folders", true);
+		
+		AtomicReference<ImportMode> importMode = new AtomicReference<>();
+		SwitchNode nodeImportMode = new SwitchNode("Copy", "Move", 150);
+		nodeImportMode.getLeft().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+			importMode.set(ImportMode.COPY);
+			nodeEmptyFolders.setDisable(true);
+			nodeImportMode.selectLeft();
+		});
+		nodeImportMode.getRight().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+			importMode.set(ImportMode.MOVE);
+			nodeEmptyFolders.setDisable(false);
+			nodeImportMode.selectRight();
+		});
+		nodeImportMode.selectRight();
 		
 		VBox boxOptions = new VBox();
 		boxOptions.setAlignment(Pos.CENTER);
-		//		boxOptions.getChildren().addAll(nodeMode, nodeEmptyFolders);
-		boxOptions.getChildren().addAll(nodeEmptyFolders);
+		boxOptions.getChildren().addAll(nodeImportMode, nodeEmptyFolders);
 		boxOptions.setPrefWidth(this.getWidth() * 0.25);
 		
 		boxListFilesToImport = new HBox(boxOptions, listBoxFilesInDirectory);
@@ -132,7 +130,7 @@ public class ImportStage extends BaseStage {
 				}
 			});
 			
-			this.startImport(directoryPath, filesToImport);
+			this.startImport(importMode.get(), directoryPath, filesToImport);
 		});
 		
 		nodeBack = new TextNode("Back", true, true, false, true);
@@ -162,8 +160,8 @@ public class ImportStage extends BaseStage {
 		this.setButtons(nodeBack, nodeImport);
 	}
 	
-	private void startImport(String directory, BaseList<File> files) {
-		ImportUtil.startImportThread(directory, files);
+	private void startImport(ImportMode importMode, String directory, BaseList<File> files) {
+		ImportUtil.startImportThread(importMode, directory, files);
 		this.close();
 	}
 	
