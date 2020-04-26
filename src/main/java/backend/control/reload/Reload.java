@@ -63,7 +63,7 @@ public abstract class Reload {
 		}
 	}
 	
-	public static void notify(InvokeHelper... invokeHelpers) {
+	public static void request(InvokeHelper... invokeHelpers) {
 		if (invokeHelpers.length == 1) {
 			Reload.invokeHelpers.addImpl(invokeHelpers[0]);
 		} else {

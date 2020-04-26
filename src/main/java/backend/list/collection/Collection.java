@@ -1,5 +1,6 @@
 package backend.list.collection;
 
+import backend.control.reload.InvokeHelper;
 import backend.control.reload.Notifier;
 import backend.control.reload.Reload;
 import backend.list.BaseList;
@@ -10,8 +11,6 @@ import main.Root;
 import java.util.Random;
 
 public class Collection extends EntityList {
-	//todo look for other methods that do shit with collection and
-	//todo either move everything here or create factory and util class
 	private static final BaseList<Collection> openCollections = new BaseList<>();
 	
 	public Collection(Entity... entities) {
@@ -43,7 +42,7 @@ public class Collection extends EntityList {
 			entity.setCollection(null);
 			entity.getTile().setEffect(null);
 		}
-		//todo change to target?
+		
 		Reload.notify(Notifier.TARGET_COLLECTION_CHANGED);
 	}
 	
@@ -63,11 +62,9 @@ public class Collection extends EntityList {
 			openCollections.addImpl(this);
 		}
 		
-		for (Entity entity : this) {
-			entity.getTile().updateCollectionIcon();
-		}
+		this.forEach(entity -> entity.getTile().updateCollectionIcon());
 		
-		Reload.notify(Notifier.ENTITYLIST_CHANGED);//todo gallery reload, not like this
+		Reload.request(InvokeHelper.PANE_GALLERY_RELOAD);
 	}
 	public boolean isOpen() {
 		return openCollections.contains(this);
