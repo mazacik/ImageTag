@@ -27,6 +27,7 @@ public class FilterPreferences extends VBox {
 		this.getChildren().add(this.getPaneImages());
 		this.getChildren().add(this.getPaneVideos());
 		this.getChildren().add(this.getPaneTagCount());
+		this.getChildren().add(this.getPaneCollectionSize());
 		this.getChildren().add(this.getPaneMedia());
 		this.getChildren().add(this.getPaneOther());
 	}
@@ -122,6 +123,31 @@ public class FilterPreferences extends VBox {
 		boxTagLimit.setPadding(new Insets(0, 5, 5, 7));
 		
 		TitlePane titlePane = new TitlePane("Tag Count", boxTagLimit);
+		titlePane.setPadding(new Insets(3, 5, 0, 5));
+		
+		return titlePane;
+	}
+	private TitlePane getPaneCollectionSize() {
+		EditNode nodeCollectionSizeMin = new EditNode(String.valueOf(FilterOption.COLLECTION_SIZE_MIN.getIntValue()), EditNode.EditNodeType.NUMERIC_POSITIVE);
+		editNodes.add(new Pair<>(FilterOption.COLLECTION_SIZE_MIN, nodeCollectionSizeMin));
+		EditNode nodeCollectionSizeMax = new EditNode(String.valueOf(FilterOption.COLLECTION_SIZE_MAX.getIntValue()), EditNode.EditNodeType.NUMERIC_POSITIVE);
+		editNodes.add(new Pair<>(FilterOption.COLLECTION_SIZE_MAX, nodeCollectionSizeMax));
+		
+		TextNode nodeTagLimitMinText = new TextNode("Min");
+		TextNode nodeTagLimitMaxText = new TextNode("Max");
+		
+		HBox boxCollectionSizeMin = new HBox(nodeTagLimitMinText, nodeCollectionSizeMin);
+		boxCollectionSizeMin.setSpacing(5);
+		boxCollectionSizeMin.setAlignment(Pos.CENTER);
+		HBox boxCollectionSizeMax = new HBox(nodeTagLimitMaxText, nodeCollectionSizeMax);
+		boxCollectionSizeMax.setSpacing(5);
+		boxCollectionSizeMax.setAlignment(Pos.CENTER);
+		
+		HBox boxCollectionSize = new HBox(boxCollectionSizeMin, boxCollectionSizeMax);
+		boxCollectionSize.setSpacing(15);
+		boxCollectionSize.setPadding(new Insets(0, 5, 5, 7));
+		
+		TitlePane titlePane = new TitlePane("Collection Size", boxCollectionSize);
 		titlePane.setPadding(new Insets(3, 5, 0, 5));
 		
 		return titlePane;
