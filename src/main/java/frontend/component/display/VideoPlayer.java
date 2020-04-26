@@ -118,11 +118,11 @@ public class VideoPlayer {
 		}
 	}
 	public void dispose() {
-		if (hasMedia()) {
-			playing = false;
-			frameTimer.stop();
-			mediaPlayer.controls().stop();
-		}
+		//		if (hasMedia()) {
+		//			playing = false;
+		//			frameTimer.stop();
+		//			mediaPlayer.controls().stop();
+		//		}
 		mediaPlayer.release();
 		mediaPlayerFactory.release();
 	}
