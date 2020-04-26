@@ -7,6 +7,7 @@ import backend.misc.FileUtil;
 import frontend.node.menu.ClickMenu;
 import frontend.node.menu.ListMenu;
 import frontend.node.textnode.TextNode;
+import javafx.animation.PauseTransition;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -27,30 +28,29 @@ import java.io.IOException;
 import java.util.Iterator;
 
 public class DisplayPane extends StackPane {
-	private BorderPane borderPane;
+	private final Canvas canvas;
+	private final ImageView gifPlayer;
+	private final VideoPlayer videoPlayer;
+	private final Controls controls;
 	
-	private Canvas canvas;
-	private ImageView gifPlayer;
-	private VideoPlayer videoPlayer;
-	private Controls controls;
+	private final BorderPane holderPane;
+	
+	private final TextNode nodeNoLibsError;
 	
 	private Image currentImage = null;
-	private Entity currentCache = null;
-	
-	private TextNode nodeNoLibsError;
+	private Entity currentEntity = null;
 	
 	public DisplayPane() {
-		borderPane = new BorderPane();
-		
 		canvas = new Canvas();
-		gifPlayer = new ImageView();
-		videoPlayer = VideoPlayer.create(canvas);
-		controls = new Controls(borderPane, videoPlayer);
+		holderPane = new BorderPane(canvas);
 		
+		gifPlayer = new ImageView();
 		gifPlayer.fitWidthProperty().bind(Root.GALLERY_PANE.widthProperty());
 		gifPlayer.fitHeightProperty().bind(Root.GALLERY_PANE.heightProperty());
 		
-		nodeNoLibsError = new TextNode("Error: No VLC Library", false, false, false, false) {{
+		videoPlayer = VideoPlayer.create(canvas);
+		
+		nodeNoLibsError = new TextNode("Error: libvlc.dll and libvlccore.dll not found.\nVLC Media Player is not installed.", false, false, false, false) {{
 			this.setFont(new Font(64));
 			this.minWidthProperty().bind(canvas.widthProperty());
 			this.minHeightProperty().bind(canvas.heightProperty());
@@ -100,12 +100,11 @@ public class DisplayPane extends StackPane {
 		
 		return false;
 	}
-	
-	private void reloadAsImage(Entity currentTarget) {
+	private void reloadAsImage(Entity entity) {
 		controls.setVideoMode(false);
 		
-		if (borderPane.getCenter() != canvas) {
-			borderPane.setCenter(canvas);
+		if (holderPane.getCenter() != canvas) {
+			holderPane.setCenter(canvas);
 		}
 		
 		double originWidth = 0;
@@ -118,9 +117,9 @@ public class DisplayPane extends StackPane {
 		double resultWidth;
 		double resultHeight;
 		
-		if (currentCache == null || !currentCache.equals(currentTarget)) {
+		if (currentEntity == null || !currentEntity.equals(entity)) {
 			try {
-				File file = new File(FileUtil.getFileEntity(currentTarget));
+				File file = new File(FileUtil.getFileEntity(entity));
 				if (!file.exists()) return;
 				ImageInputStream iis = ImageIO.createImageInputStream(file);
 				Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
@@ -136,12 +135,12 @@ public class DisplayPane extends StackPane {
 				
 				iis.close();
 				
-				currentCache = currentTarget;
+				currentEntity = entity;
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			
-			String entityFilePath = FileUtil.getFileEntity(currentTarget);
+			String entityFilePath = FileUtil.getFileEntity(entity);
 			if (originWidth > 2 * maxWidth || originHeight > 2 * maxHeight) {
 				currentImage = new Image("file:" + entityFilePath, canvas.getWidth() * 1.5, canvas.getHeight() * 1.5, true, true);
 			} else {
@@ -175,33 +174,33 @@ public class DisplayPane extends StackPane {
 		gc.clearRect(0, 0, maxWidth, maxHeight);
 		gc.drawImage(currentImage, resultX, resultY, resultWidth, resultHeight);
 	}
-	private void reloadAsGif(Entity currentTarget) {
+	private void reloadAsGif(Entity entity) {
 		controls.setVideoMode(false);
 		
-		if (borderPane.getCenter() != gifPlayer) borderPane.setCenter(gifPlayer);
+		if (holderPane.getCenter() != gifPlayer) holderPane.setCenter(gifPlayer);
 		
-		if (currentCache == null || !currentCache.equals(currentTarget)) {
-			currentCache = currentTarget;
-			currentImage = new Image("file:" + FileUtil.getFileEntity(currentCache));
+		if (currentEntity == null || !currentEntity.equals(entity)) {
+			currentEntity = entity;
+			currentImage = new Image("file:" + FileUtil.getFileEntity(currentEntity));
 		}
 		
 		gifPlayer.setImage(currentImage);
 	}
-	private void reloadAsVideo(Entity currentTarget) {
-		if (borderPane.getCenter() != canvas) borderPane.setCenter(canvas);
+	private void reloadAsVideo(Entity entity) {
+		if (holderPane.getCenter() != canvas) holderPane.setCenter(canvas);
 		
 		if (VideoPlayer.hasLibs()) {
 			controls.setVideoMode(true);
 			
-			if (currentCache == null || !currentCache.equals(currentTarget)) {
-				currentCache = currentTarget;
-				videoPlayer.start(FileUtil.getFileEntity(currentCache));
+			if (currentEntity == null || !currentEntity.equals(entity)) {
+				currentEntity = entity;
+				videoPlayer.start(FileUtil.getFileEntity(currentEntity));
 			} else {
 				videoPlayer.resume();
 			}
 		} else {
 			controls.setVideoMode(false);
-			borderPane.setCenter(nodeNoLibsError);
+			holderPane.setCenter(nodeNoLibsError);
 		}
 	}
 	
@@ -212,10 +211,10 @@ public class DisplayPane extends StackPane {
 		canvas.widthProperty().addListener((observable, oldValue, newValue) -> reload());
 		canvas.heightProperty().addListener((observable, oldValue, newValue) -> reload());
 		
-		borderPane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+		holderPane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
 				if (event.getClickCount() % 2 != 0) {
-					borderPane.requestFocus();
+					holderPane.requestFocus();
 				} else {
 					Root.PSC.MAIN_STAGE.viewGallery();
 					Reload.start();
@@ -223,7 +222,7 @@ public class DisplayPane extends StackPane {
 			}
 		});
 		
-		ClickMenu.install(borderPane, Direction.NONE, MouseButton.SECONDARY, ListMenu.Preset.ENTITY);
+		ClickMenu.install(holderPane, Direction.NONE, MouseButton.SECONDARY, ListMenu.Preset.ENTITY);
 	}
 	
 	public void interruptVideoPlayer() {
