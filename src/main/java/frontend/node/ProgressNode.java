@@ -10,7 +10,7 @@ import javafx.scene.text.Text;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ProgressNode extends StackPane {
-	private Object caller;
+	private Thread caller;
 	
 	private double total;
 	private double current;
@@ -57,16 +57,16 @@ public class ProgressNode extends StackPane {
 		});
 	}
 	
-	public void setup(Object caller, double total) {
+	public void setup(Thread caller, double total) {
 		this.caller = caller;
 		this.total = total;
 		this.current = 0;
 	}
 	
-	public void advance(Object caller) {
+	public void advance(Thread caller) {
 		advance(caller, 1);
 	}
-	public void advance(Object caller, double increment) {
+	public void advance(Thread caller, double increment) {
 		if (caller == this.caller) {
 			current += increment;
 			if (current > total) return;
@@ -76,7 +76,7 @@ public class ProgressNode extends StackPane {
 		}
 	}
 	
-	public Object getCaller() {
+	public Thread getCaller() {
 		return caller;
 	}
 	
