@@ -326,6 +326,10 @@ public class Select extends EntityList {
 	public void deleteTarget() {
 		Entity target = this.getTarget();
 		
+		if (Root.DISPLAY_PANE.getVideoPlayer().hasMedia()) {
+			Root.DISPLAY_PANE.getVideoPlayer().release();
+		}
+		
 		if (FileUtil.deleteFile(FileUtil.getFileEntity(target))) {
 			FileUtil.deleteFile(FileUtil.getFileCache(target));
 			

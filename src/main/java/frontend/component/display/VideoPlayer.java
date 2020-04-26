@@ -94,6 +94,10 @@ public class VideoPlayer {
 		else return null;
 	}
 	
+	public void release() {
+		mediaPlayer.media().prepare("");
+	}
+	
 	public void start(String videoFilePath) {
 		playing = true;
 		frameTimer.start();
