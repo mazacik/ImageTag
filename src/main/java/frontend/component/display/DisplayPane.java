@@ -56,9 +56,23 @@ public class DisplayPane extends StackPane {
 			this.minHeightProperty().bind(canvas.heightProperty());
 		}};
 		
-		borderPane.setCenter(canvas);
+		/* Controls */
+		controls = new Controls(videoPlayer);
+		controls.setVisible(false);
+		controls.prefWidthProperty().bind(this.widthProperty());
 		
-		this.getChildren().add(borderPane);
+		PauseTransition autoHideDelay = new PauseTransition();
+		autoHideDelay.setOnFinished(event -> controls.setVisible(false));
+		
+		holderPane.setOnMouseMoved(event -> {
+			if (!controls.isVisible()) controls.setVisible(true);
+			autoHideDelay.playFromStart();
+		});
+		controls.setOnMouseEntered(event -> autoHideDelay.stop());
+		controls.setOnMouseExited(event -> autoHideDelay.playFromStart());
+		/* Controls */
+		
+		this.getChildren().add(holderPane);
 		this.getChildren().add(controls);
 		this.setAlignment(Pos.TOP_CENTER);
 		
