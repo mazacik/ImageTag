@@ -40,6 +40,19 @@ public abstract class FileUtil {
 		return directory.getAbsolutePath();
 	}
 	
+	public static boolean copyFile(String from, String to) {
+		if (Main.DEBUG_FS_ALLOW_FILE_MOVE) {
+			try {
+				new File(to).getParentFile().mkdirs();
+				Files.copy(Paths.get(from), Paths.get(to));
+				return new File(from).length() == new File(to).length();
+			} catch (IOException e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
+		return true;
+	}
 	public static boolean moveFile(String from, String to) {
 		if (Main.DEBUG_FS_ALLOW_FILE_MOVE) {
 			try {
