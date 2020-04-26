@@ -6,8 +6,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 public enum DecoratorTemplate {
-	PRESET_BRIGHT("Bright", Color.BLACK, Color.DARKORANGE, Color.GREEN, Color.RED, Color.CORNFLOWERBLUE, Color.GRAY, getBackground("#DDDEEE"), getBackground("#CCCDDD")),
-	PRESET_DARK("Dark", Color.LIGHTGRAY, Color.ORANGE, Color.LIGHTGREEN, Color.ORANGERED, Color.CORNFLOWERBLUE, Color.GRAY, getBackground("#3C3F41"), getBackground("#313335")),
+	PRESET_BRIGHT("Bright", Color.BLACK, Color.DARKORANGE, Color.GREEN, Color.RED, Color.CORNFLOWERBLUE, Color.rgb(96, 94, 92), getBackground("#DDDEEE"), getBackground("#CCCDDD")),
+	PRESET_DARK("Dark", Color.LIGHTGRAY, Color.ORANGE, Color.LIGHTGREEN, Color.ORANGERED, Color.CORNFLOWERBLUE, Color.rgb(96, 94, 92), getBackground("#3C3F41"), getBackground("#313335")),
 	;
 	
 	private final String displayName;
