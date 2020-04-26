@@ -15,35 +15,46 @@ public abstract class Reload {
 	private final static BaseList<InvokeHelper> invokeHelpers = new BaseList<>();
 	
 	static {
-		try {
-			InvokeHelper filterRefresh = new InvokeHelper(1, Root.FILTER, Root.FILTER.getClass().getMethod("refresh"));
-			
-			InvokeHelper paneFilterReload = new InvokeHelper(3, Root.FILTER_PANE, Root.FILTER_PANE.getClass().getMethod("reload"));
-			InvokeHelper paneSelectReload = new InvokeHelper(3, Root.SELECT_PANE, Root.SELECT_PANE.getClass().getMethod("reload"));
-			
-			InvokeHelper paneFilterRefresh = new InvokeHelper(4, Root.FILTER_PANE, Root.FILTER_PANE.getClass().getMethod("refresh"));
-			InvokeHelper paneSelectRefresh = new InvokeHelper(4, Root.SELECT_PANE, Root.SELECT_PANE.getClass().getMethod("refresh"));
-			
-			InvokeHelper paneToolbarReload = new InvokeHelper(5, Root.TOOLBAR_PANE, Root.TOOLBAR_PANE.getClass().getMethod("reload"));
-			InvokeHelper paneGalleryReload = new InvokeHelper(5, Root.GALLERY_PANE, Root.GALLERY_PANE.getClass().getMethod("reload"));
-			InvokeHelper paneDisplayReload = new InvokeHelper(5, Root.DISPLAY_PANE, Root.DISPLAY_PANE.getClass().getMethod("reload"));
-			
-			link(Notifier.ENTITYLIST_CHANGED, paneGalleryReload, paneFilterRefresh);
-			link(Notifier.TAGLIST_CHANGED, paneFilterReload, paneSelectReload, paneFilterRefresh, paneSelectRefresh);
-			
-			link(Notifier.FILTER_CHANGED, paneGalleryReload, paneFilterRefresh, paneSelectRefresh);
-			link(Notifier.FILTER_NEEDS_REFRESH, filterRefresh);
-			
-			link(Notifier.SELECT_CHANGED, paneSelectRefresh);
-			link(Notifier.SELECT_TAGLIST_CHANGED, paneSelectRefresh);
-			
-			link(Notifier.TARGET_CHANGED, paneToolbarReload, paneDisplayReload, paneSelectRefresh);
-			link(Notifier.TARGET_COLLECTION_CHANGED, paneToolbarReload, paneGalleryReload);
-			
-			link(Notifier.VIEWMODE_CHANGED, paneDisplayReload);
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
-		}
+		link(Notifier.ENTITYLIST_CHANGED,
+		     InvokeHelper.PANE_GALLERY_RELOAD,
+		     InvokeHelper.PANE_FILTER_REFRESH
+		);
+		link(Notifier.TAGLIST_CHANGED,
+		     InvokeHelper.PANE_FILTER_RELOAD,
+		     InvokeHelper.PANE_SELECT_RELOAD,
+		     InvokeHelper.PANE_FILTER_REFRESH,
+		     InvokeHelper.PANE_SELECT_REFRESH
+		);
+		
+		link(Notifier.FILTER_CHANGED,
+		     InvokeHelper.PANE_GALLERY_RELOAD,
+		     InvokeHelper.PANE_FILTER_REFRESH,
+		     InvokeHelper.PANE_SELECT_REFRESH
+		);
+		link(Notifier.FILTER_NEEDS_REFRESH,
+		     InvokeHelper.FILTER_REFRESH
+		);
+		
+		link(Notifier.SELECT_CHANGED,
+		     InvokeHelper.PANE_SELECT_REFRESH
+		);
+		link(Notifier.SELECT_TAGLIST_CHANGED,
+		     InvokeHelper.PANE_SELECT_REFRESH
+		);
+		
+		link(Notifier.TARGET_CHANGED,
+		     InvokeHelper.PANE_TOOLBAR_RELOAD,
+		     InvokeHelper.PANE_DISPLAY_RELOAD,
+		     InvokeHelper.PANE_SELECT_REFRESH
+		);
+		link(Notifier.TARGET_COLLECTION_CHANGED,
+		     InvokeHelper.PANE_TOOLBAR_RELOAD,
+		     InvokeHelper.PANE_GALLERY_RELOAD
+		);
+		
+		link(Notifier.VIEWMODE_CHANGED,
+		     InvokeHelper.PANE_DISPLAY_RELOAD
+		);
 	}
 	
 	private static void link(Notifier notifier, InvokeHelper... invokeHelpers) {
@@ -52,9 +63,16 @@ public abstract class Reload {
 		}
 	}
 	
+	public static void notify(InvokeHelper... invokeHelpers) {
+		if (invokeHelpers.length == 1) {
+			Reload.invokeHelpers.addImpl(invokeHelpers[0]);
+		} else {
+			Arrays.asList(invokeHelpers).forEach(invokeHelper -> Reload.invokeHelpers.addImpl(invokeHelper, true));
+		}
+		
+		Reload.invokeHelpers.sort(Comparator.comparing(InvokeHelper::getPriority));
+	}
 	public static void notify(Notifier... notifiers) {
-		//todo create notify(InvokeHelper... ihs)
-		//better performance, low level methods can notify without lagging the app
 		if (notifiers.length == 1) {
 			invokeHelpers.addAllImpl(notifiers[0].getInvokeHelpers(), true);
 		} else {
