@@ -58,6 +58,35 @@ public class EntityList extends BaseList<Entity> {
 		this.forEach(Entity::clearTags);
 	}
 	
+	public BaseList<Integer> getTagIDList() {
+		BaseList<Integer> tagIDList = new BaseList<>();
+		this.forEach(entity -> tagIDList.addAllImpl(entity.getTagIDList(), true));
+		return tagIDList;
+	}
+	public BaseList<Integer> getTagIDListIntersect() {
+		if (!this.isEmpty()) {
+			BaseList<Integer> tagIDList = new BaseList<>();
+			//check every tag of the first object
+			for (int tagID : this.getFirstImpl().getTagIDList()) {
+				//check if all objects contain the tagID
+				for (Entity entity : this) {
+					if (entity.getTagIDList().contains(tagID)) {
+						//if the last object contains the tagID, all before do too, add
+						if (entity.equals(this.getLastImpl())) {
+							tagIDList.addImpl(tagID, true);
+						}
+					} else {
+						//if any of the objects doesn't contain the tag, break
+						break;
+					}
+				}
+			}
+			return tagIDList;
+		} else {
+			return new BaseList<>();
+		}
+	}
+	
 	public TagList getTagList() {
 		TagList tagList = new TagList();
 		this.forEach(entity -> tagList.addAllImpl(entity.getTagList(), true));

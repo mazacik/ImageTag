@@ -1,7 +1,6 @@
-package frontend.node.arrowtextnode;
+package frontend.node.textnode;
 
 import frontend.decorator.DecoratorUtil;
-import frontend.node.textnode.TextNode;
 import javafx.event.Event;
 import javafx.event.EventType;
 import javafx.geometry.Insets;

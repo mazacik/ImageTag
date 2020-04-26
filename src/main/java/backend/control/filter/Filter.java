@@ -150,7 +150,7 @@ public class Filter extends EntityList {
 			return false;
 		}
 		
-		int entityTagCount = entity.getTagIDs().size();
+		int entityTagCount = entity.getTagIDList().size();
 		if (entityTagCount < FilterOption.TAG_COUNT_MIN.getIntValue() || entityTagCount > FilterOption.TAG_COUNT_MAX.getIntValue()) {
 			return false;
 		}
@@ -174,11 +174,11 @@ public class Filter extends EntityList {
 		filterListManager.clear();
 		this.clear();
 		
-		BaseList<Integer> query = entity.getTagIDs();
+		BaseList<Integer> query = entity.getTagIDList();
 		for (Entity iterator : Root.ENTITYLIST) {
-			if (iterator.getTagIDs().size() != 0) {
+			if (iterator.getTagIDList().size() != 0) {
 				BaseList<Integer> sameTags = new BaseList<>(query);
-				sameTags.retainAll(iterator.getTagIDs());
+				sameTags.retainAll(iterator.getTagIDList());
 				
 				if (!sameTags.isEmpty()) {
 					double similarity = (double) sameTags.size() / (double) query.size();

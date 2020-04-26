@@ -133,9 +133,7 @@ public abstract class Root {
 		}
 		
 		for (Entity entity : Root.ENTITYLIST) {
-			for (int tagID : entity.getTagIDs()) {
-				entity.getTagList().addImpl(Root.TAGLIST.getTag(tagID));
-			}
+			entity.initTags();
 		}
 	}
 	private static void initCollections() {

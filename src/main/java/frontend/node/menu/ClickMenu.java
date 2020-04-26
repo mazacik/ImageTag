@@ -80,7 +80,7 @@ public class ClickMenu extends ListMenu {
 	
 	private void show(Region root, MouseEvent event, Direction direction, double offsetX, double offsetY) {
 		hideMenus();
-		resolveChildren();
+		resolveChildrenVisibility();
 		
 		if (!this.isShowing()) {
 			Bounds onScreenBounds;

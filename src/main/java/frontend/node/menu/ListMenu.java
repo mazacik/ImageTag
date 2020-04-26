@@ -2,9 +2,9 @@ package frontend.node.menu;
 
 import backend.list.BaseList;
 import frontend.node.SeparatorNode;
-import frontend.node.arrowtextnode.ArrowTextNode;
-import frontend.node.arrowtextnode.ArrowTextNodeTemplates;
 import frontend.node.override.VBox;
+import frontend.node.textnode.ArrowTextNode;
+import frontend.node.textnode.ArrowTextNodeTemplates;
 import frontend.node.textnode.TextNode;
 import frontend.node.textnode.TextNodeTemplates;
 import javafx.scene.layout.Region;
@@ -17,7 +17,7 @@ public abstract class ListMenu extends Popup {
 	protected BaseList<Region> children;
 	protected VBox vBox;
 	
-	protected void resolveChildren() {
+	protected void resolveChildrenVisibility() {
 		BaseList<Region> resultList = new BaseList<>();
 		
 		for (Region child : children) {
@@ -25,7 +25,7 @@ public abstract class ListMenu extends Popup {
 				TextNode textNode = (TextNode) child;
 				for (TextNodeTemplates template : TextNodeTemplates.values()) {
 					if (textNode.getTemplate() == template) {
-						if (template.resolve()) {
+						if (template.shouldBeVisible()) {
 							resultList.add(textNode);
 						}
 						break;
@@ -35,7 +35,7 @@ public abstract class ListMenu extends Popup {
 				ArrowTextNode arrowTextNode = (ArrowTextNode) child;
 				for (ArrowTextNodeTemplates template : ArrowTextNodeTemplates.values()) {
 					if (arrowTextNode.getTemplate() == template) {
-						if (template.resolve()) {
+						if (template.shouldBeVisible()) {
 							resultList.add(arrowTextNode);
 						}
 						break;
@@ -71,8 +71,7 @@ public abstract class ListMenu extends Popup {
 		       new SeparatorNode(),
 		       ArrowTextNodeTemplates.FILE_TAGS.get(),
 		       ArrowTextNodeTemplates.SELECTION_TAGS.get(),
-		       TextNodeTemplates.COLLECTION_CREATE.get(),
-		       TextNodeTemplates.COLLECTION_DISCARD.get(),
+		       ArrowTextNodeTemplates.COLLECTION.get(),
 		       new SeparatorNode(),
 		       TextNodeTemplates.FILE_COPYFILENAME.get(),
 		       TextNodeTemplates.FILE_COPYFILEPATH.get(),

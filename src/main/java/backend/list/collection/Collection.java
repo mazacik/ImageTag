@@ -12,7 +12,7 @@ import java.util.Random;
 public class Collection extends EntityList {
 	//todo look for other methods that do shit with collection and
 	//todo either move everything here or create factory and util class
-	private static BaseList<Collection> openCollections = new BaseList<>();
+	private static final BaseList<Collection> openCollections = new BaseList<>();
 	
 	public Collection(Entity... entities) {
 		super(entities);
@@ -45,6 +45,15 @@ public class Collection extends EntityList {
 		}
 		//todo change to target?
 		Reload.notify(Notifier.TARGET_COLLECTION_CHANGED);
+	}
+	
+	public void mergeTags() {
+		BaseList<Integer> tagIDs = this.getTagIDList();
+		
+		this.forEach(entity -> {
+			entity.getTagIDList().setAllImpl(new BaseList<>(tagIDs));
+			entity.initTags();
+		});
 	}
 	
 	public void toggle() {

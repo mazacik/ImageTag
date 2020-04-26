@@ -14,8 +14,8 @@ import java.io.File;
 
 public class Entity {
 	@SerializedName("n") private String name;
-	@SerializedName("t") private BaseList<Integer> tagIDs;
-	@SerializedName("s") private long size;
+	@SerializedName("t") private final BaseList<Integer> tagIDs;
+	@SerializedName("s") private final long size;
 	@SerializedName("c") private int collectionID;
 	@SerializedName("f") private EntityType entityType;
 	@SerializedName("d") private long mediaDuration;
@@ -58,6 +58,12 @@ public class Entity {
 		tagList.clear();
 	}
 	
+	public void initTags() {
+		for (int tagID : this.getTagIDList()) {
+			this.getTagList().addImpl(Root.TAGLIST.getTag(tagID));
+		}
+	}
+	
 	public Entity getRepresentingEntity() {
 		if (this.hasCollection()) {
 			if (collection.isOpen()) {
@@ -77,7 +83,7 @@ public class Entity {
 	public String getName() {
 		return name;
 	}
-	public BaseList<Integer> getTagIDs() {
+	public BaseList<Integer> getTagIDList() {
 		return tagIDs;
 	}
 	public long getSize() {

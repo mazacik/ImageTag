@@ -121,7 +121,7 @@ public enum TextNodeTemplates {
 			});
 			return textNode;
 		}
-		@Override public boolean resolve() {
+		@Override public boolean shouldBeVisible() {
 			return Root.SELECT.size() <= 1;
 		}
 	},
@@ -205,7 +205,7 @@ public enum TextNodeTemplates {
 			
 			return textNode;
 		}
-		@Override public boolean resolve() {
+		@Override public boolean shouldBeVisible() {
 			return Root.SELECT.size() > 1;
 		}
 	},
@@ -347,7 +347,7 @@ public enum TextNodeTemplates {
 			});
 			return textNode;
 		}
-		@Override public boolean resolve() {
+		@Override public boolean shouldBeVisible() {
 			return Root.SELECT.size() > 1;
 		}
 	},
@@ -411,25 +411,24 @@ public enum TextNodeTemplates {
 	
 	COLLECTION_CREATE {
 		@Override public TextNode get() {
-			TextNode textNode = new TextNode("Create Collection", true, true, false, true, this);
+			TextNode textNode = new TextNode("Create", true, true, false, true, this);
 			setupNode(textNode);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
 				Collection.create(Root.SELECT);
-				//todo add an option to merge tags
 				
 				Reload.start();
 			});
 			return textNode;
 		}
-		@Override public boolean resolve() {
+		@Override public boolean shouldBeVisible() {
 			return !Root.SELECT.isCollection();
 		}
 	},
 	COLLECTION_DISCARD {
 		@Override public TextNode get() {
-			TextNode textNode = new TextNode("Discard Collection", true, true, false, true, this);
+			TextNode textNode = new TextNode("Discard", true, true, false, true, this);
 			setupNode(textNode);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
@@ -442,7 +441,25 @@ public enum TextNodeTemplates {
 			});
 			return textNode;
 		}
-		@Override public boolean resolve() {
+		@Override public boolean shouldBeVisible() {
+			return Root.SELECT.isCollection();
+		}
+	},
+	
+	COLLECTION_MERGE_TAGS {
+		@Override public TextNode get() {
+			TextNode textNode = new TextNode("Merge Tags", true, true, false, true, this);
+			setupNode(textNode);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ListMenu.hideMenus();
+				
+				Root.SELECT.getTarget().getCollection().mergeTags();
+				
+				Reload.start();
+			});
+			return textNode;
+		}
+		@Override public boolean shouldBeVisible() {
 			return Root.SELECT.isCollection();
 		}
 	},
@@ -556,7 +573,7 @@ public enum TextNodeTemplates {
 	public TextNode get() {
 		return null;
 	}
-	public boolean resolve() {
+	public boolean shouldBeVisible() {
 		return true;
 	}
 	
