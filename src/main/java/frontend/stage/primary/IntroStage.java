@@ -11,6 +11,7 @@ import frontend.node.override.HBox;
 import frontend.node.override.Scene;
 import frontend.node.override.VBox;
 import frontend.node.textnode.TextNode;
+import frontend.stage.SimpleMessageStage;
 import frontend.stage.primary.project.ProjectBox;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -48,7 +49,7 @@ public class IntroStage extends Stage {
 		this.setOnCloseRequest(event -> Settings.writeToDisk());
 	}
 	
-	private ProjectBox projectBox = new ProjectBox();
+	private final ProjectBox projectBox = new ProjectBox();
 	
 	private Scene createIntroScene() {
 		TextNode applicationNameNode = new TextNode("Tagallery", false, false, false, true);
@@ -67,8 +68,16 @@ public class IntroStage extends Stage {
 			fileChooser.setTitle("Open Project");
 			fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
 			File file = fileChooser.showOpenDialog(Root.PSC.MAIN_STAGE);
+			
+			Project project = null;
 			if (file != null) {
-				Root.PSC.showMainStage(Project.readFromDisk(file.getAbsolutePath()));//todo check if valid
+				project = Project.readFromDisk(file.getAbsolutePath());
+			}
+			
+			if (project != null) {
+				Root.PSC.showMainStage(project);
+			} else {
+				new SimpleMessageStage("Error", "Error opening project file.").showAndWait();
 			}
 		});
 		
