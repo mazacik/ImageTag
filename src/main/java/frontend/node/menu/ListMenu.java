@@ -17,7 +17,7 @@ public abstract class ListMenu extends Popup {
 	protected BaseList<Region> children;
 	protected VBox vBox;
 	
-	protected void resolveChildrenVisibility() {
+	protected void resolveChildrenVisible() {
 		BaseList<Region> resultList = new BaseList<>();
 		
 		for (Region child : children) {
@@ -25,7 +25,7 @@ public abstract class ListMenu extends Popup {
 				TextNode textNode = (TextNode) child;
 				for (TextNodeTemplates template : TextNodeTemplates.values()) {
 					if (textNode.getTemplate() == template) {
-						if (template.shouldBeVisible()) {
+						if (template.resolveVisible()) {
 							resultList.add(textNode);
 						}
 						break;
@@ -35,7 +35,7 @@ public abstract class ListMenu extends Popup {
 				ArrowTextNode arrowTextNode = (ArrowTextNode) child;
 				for (ArrowTextNodeTemplates template : ArrowTextNodeTemplates.values()) {
 					if (arrowTextNode.getTemplate() == template) {
-						if (template.shouldBeVisible()) {
+						if (template.resolveVisible()) {
 							resultList.add(arrowTextNode);
 						}
 						break;

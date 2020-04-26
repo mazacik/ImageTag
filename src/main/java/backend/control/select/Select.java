@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.List;
 
 public class Select extends EntityList {
-	//todo a lot of shit here is bound to GalleryPane, remove that
 	public Select() {
 	
 	}
@@ -141,13 +140,12 @@ public class Select extends EntityList {
 		this.storePosition();
 		
 		this.forEach(entity -> {
-			//todo somehow show loading bar
 			if (FileUtil.deleteFile(FileUtil.getFileEntity(entity))) {
 				FileUtil.deleteFile(FileUtil.getFileCache(entity));
 				
 				if (entity.hasCollection()) {
 					entity.getCollection().remove(entity);
-					Reload.notify(Notifier.TARGET_COLLECTION_CHANGED);//todo move to collection.remove
+					Reload.notify(Notifier.TARGET_COLLECTION_CHANGED);
 				}
 				
 				helper.addImpl(entity);
@@ -158,15 +156,14 @@ public class Select extends EntityList {
 			this.removeAll(helper);
 			Root.FILTER.removeAll(helper);
 			Root.ENTITYLIST.removeAll(helper);
+			Reload.notify(Notifier.ENTITYLIST_CHANGED);
 			
 			this.restorePosition();
-			
-			Reload.notify(Notifier.ENTITYLIST_CHANGED); //todo move to entitylist.getmain.removeall
 		}
 	}
 	
 	private Entity entityFrom = null;
-	private EntityList selectBefore = new EntityList();
+	private final EntityList selectBefore = new EntityList();
 	public void shiftSelectTo(Entity entityTo) {
 		BaseList<Entity> entities = Root.FILTER.getRepresentingEntityList();
 		
@@ -337,7 +334,7 @@ public class Select extends EntityList {
 			
 			if (target.hasCollection()) {
 				target.getCollection().remove(target);
-				Reload.notify(Notifier.TARGET_COLLECTION_CHANGED);//todo move to collection.remove
+				Reload.notify(Notifier.TARGET_COLLECTION_CHANGED);
 			}
 			
 			this.remove(target);

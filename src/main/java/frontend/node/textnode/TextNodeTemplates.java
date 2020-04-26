@@ -121,7 +121,7 @@ public enum TextNodeTemplates {
 			});
 			return textNode;
 		}
-		@Override public boolean shouldBeVisible() {
+		@Override public boolean resolveVisible() {
 			return Root.SELECT.size() <= 1;
 		}
 	},
@@ -205,7 +205,7 @@ public enum TextNodeTemplates {
 			
 			return textNode;
 		}
-		@Override public boolean shouldBeVisible() {
+		@Override public boolean resolveVisible() {
 			return Root.SELECT.size() > 1;
 		}
 	},
@@ -347,7 +347,7 @@ public enum TextNodeTemplates {
 			});
 			return textNode;
 		}
-		@Override public boolean shouldBeVisible() {
+		@Override public boolean resolveVisible() {
 			return Root.SELECT.size() > 1;
 		}
 	},
@@ -422,7 +422,7 @@ public enum TextNodeTemplates {
 			});
 			return textNode;
 		}
-		@Override public boolean shouldBeVisible() {
+		@Override public boolean resolveVisible() {
 			return !Root.SELECT.isCollection();
 		}
 	},
@@ -441,7 +441,7 @@ public enum TextNodeTemplates {
 			});
 			return textNode;
 		}
-		@Override public boolean shouldBeVisible() {
+		@Override public boolean resolveVisible() {
 			return Root.SELECT.isCollection();
 		}
 	},
@@ -459,7 +459,7 @@ public enum TextNodeTemplates {
 			});
 			return textNode;
 		}
-		@Override public boolean shouldBeVisible() {
+		@Override public boolean resolveVisible() {
 			return Root.SELECT.isCollection();
 		}
 	},
@@ -562,7 +562,7 @@ public enum TextNodeTemplates {
 			setupNode(textNode);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
-				Root.THREADPOOL.interruptAll();
+				Root.THREADS.interrupt();
 				Root.PSC.showIntroStage();
 			});
 			return textNode;
@@ -582,7 +582,7 @@ public enum TextNodeTemplates {
 	public TextNode get() {
 		return null;
 	}
-	public boolean shouldBeVisible() {
+	public boolean resolveVisible() {
 		return true;
 	}
 	

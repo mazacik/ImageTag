@@ -13,7 +13,6 @@ import backend.list.tag.Tag;
 import backend.list.tag.TagList;
 import backend.misc.FileUtil;
 import backend.misc.Project;
-import backend.override.Threadpool;
 import frontend.component.display.DisplayPane;
 import frontend.component.gallery.GalleryPane;
 import frontend.component.side.FilterPane;
@@ -24,7 +23,8 @@ import frontend.stage.primary.PrimaryStageController;
 import java.io.File;
 
 public abstract class Root {
-	public static final Threadpool THREADPOOL;
+	public static final Thread THREAD_MAIN;
+	public static final ThreadGroup THREADS;
 	
 	public static final EntityList ENTITYLIST;
 	public static final TagList TAGLIST;
@@ -41,7 +41,8 @@ public abstract class Root {
 	public static final PrimaryStageController PSC;
 	
 	static {
-		THREADPOOL = new Threadpool("ROOT");
+		THREAD_MAIN = Thread.currentThread();
+		THREADS = new ThreadGroup("ROOT");
 		
 		ENTITYLIST = new EntityList();
 		TAGLIST = new TagList();

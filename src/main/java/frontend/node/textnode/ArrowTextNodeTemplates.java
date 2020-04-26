@@ -16,7 +16,7 @@ public enum ArrowTextNodeTemplates {
 			);
 			return arrowTextNode;
 		}
-		@Override public boolean shouldBeVisible() {
+		@Override public boolean resolveVisible() {
 			return Root.SELECT.size() <= 1;
 		}
 	},
@@ -31,7 +31,7 @@ public enum ArrowTextNodeTemplates {
 			);
 			return arrowTextNode;
 		}
-		@Override public boolean shouldBeVisible() {
+		@Override public boolean resolveVisible() {
 			return Root.SELECT.size() > 1;
 		}
 	},
@@ -47,7 +47,7 @@ public enum ArrowTextNodeTemplates {
 			);
 			return arrowTextNode;
 		}
-		@Override public boolean shouldBeVisible() {
+		@Override public boolean resolveVisible() {
 			return Root.SELECT.size() > 1;
 		}
 	},
@@ -73,7 +73,7 @@ public enum ArrowTextNodeTemplates {
 	public ArrowTextNode get() {
 		return null;
 	}
-	public boolean shouldBeVisible() {
+	public boolean resolveVisible() {
 		return true;
 	}
 }

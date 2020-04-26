@@ -36,7 +36,7 @@ public class HoverMenu extends ListMenu {
 	
 	private void show(Region root, MouseEvent event, Direction direction, double offsetX, double offsetY) {
 		hideMenus(this);
-		resolveChildrenVisibility();
+		resolveChildrenVisible();
 		
 		if (!this.isShowing()) {
 			Bounds onScreenBounds;

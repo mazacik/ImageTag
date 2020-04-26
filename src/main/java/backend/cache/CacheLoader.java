@@ -39,18 +39,12 @@ public abstract class CacheLoader {
 		scene.snapshot(this);
 	}};
 	
-	private static Thread cacheThread = null;
 	public static void startCacheThread(EntityList entityList) {
 		startCacheThread(entityList, false);
 	}
 	public static void startCacheThread(EntityList entityList, boolean recreate) {
 		if (Main.DEBUG_USE_CACHE) {
-			//todo what if intro cache loading is running and we start import
-			if (cacheThread != null && cacheThread.isAlive()) {
-				cacheThread.interrupt();
-			}
-			
-			cacheThread = new Thread(() -> {
+			new Thread(() -> {
 				Root.PSC.MAIN_STAGE.showLoadingBar(Thread.currentThread(), entityList.size());
 				
 				for (Entity entity : new EntityList(entityList)) {
@@ -63,9 +57,7 @@ public abstract class CacheLoader {
 				}
 				
 				Root.PSC.MAIN_STAGE.hideLoadingBar(Thread.currentThread());
-			});
-			
-			cacheThread.start();
+			}).start();
 		}
 	}
 	
