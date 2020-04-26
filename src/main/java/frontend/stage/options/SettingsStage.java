@@ -10,7 +10,7 @@ import javafx.scene.input.MouseEvent;
 
 public class SettingsStage extends BaseStage {
 	public SettingsStage() {
-		super("Settings", false);
+		super("Settings");
 		
 		TextNode settingsFilterNode = new TextNode("Filter", false, false, false, true);
 		
