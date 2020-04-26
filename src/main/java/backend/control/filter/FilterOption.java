@@ -18,6 +18,9 @@ public enum FilterOption {
 	TAG_COUNT_MIN(0, 0, Integer.MAX_VALUE),
 	TAG_COUNT_MAX(Integer.MAX_VALUE, 0, Integer.MAX_VALUE),
 	
+	COLLECTION_SIZE_MIN(0, 0, Integer.MAX_VALUE),
+	COLLECTION_SIZE_MAX(Integer.MAX_VALUE, 0, Integer.MAX_VALUE),
+	
 	MEDIA_LENGTH_MIN(0, 0, Integer.MAX_VALUE),
 	MEDIA_LENGTH_MAX(Integer.MAX_VALUE, 0, Integer.MAX_VALUE),
 	

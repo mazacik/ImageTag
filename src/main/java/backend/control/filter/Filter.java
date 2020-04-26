@@ -155,6 +155,17 @@ public class Filter extends EntityList {
 			return false;
 		}
 		
+		if (!entity.hasCollection()) {
+			if (FilterOption.COLLECTION_SIZE_MIN.getIntValue() > 0) {
+				return false;
+			}
+		} else {
+			int entityCollectionSize = entity.getCollection().size();
+			if (entityCollectionSize < FilterOption.COLLECTION_SIZE_MIN.getIntValue() || entityCollectionSize > FilterOption.COLLECTION_SIZE_MAX.getIntValue()) {
+				return false;
+			}
+		}
+		
 		return filterListManager.applyLists(entity);
 	}
 	
