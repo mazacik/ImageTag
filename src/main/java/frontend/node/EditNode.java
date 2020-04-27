@@ -27,7 +27,7 @@ public class EditNode extends TextField {
 		this.setBackground(Background.EMPTY);
 		this.setStyle("-fx-text-fill: " + DecoratorUtil.getCssString(DecoratorUtil.getColorPrimary()) + ";");
 		this.setPadding(new Insets(2));
-		DecoratorUtil.getNodeList().addImpl(this);
+		DecoratorUtil.getNodeList().add(this);
 		
 		switch (type) {
 			case ANY_CHARACTERS:

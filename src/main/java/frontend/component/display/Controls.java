@@ -61,7 +61,7 @@ public class Controls extends BorderPane {
 		
 		this.setBackground(DecoratorUtil.getBackgroundPrimary());
 		this.maxHeightProperty().bind(btnPlayPause.heightProperty());
-		DecoratorUtil.getNodeList().addImpl(this);
+		DecoratorUtil.getNodeList().add(this);
 		
 		initEvents(videoPlayer);
 	}

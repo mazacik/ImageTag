@@ -50,7 +50,7 @@ public class Collection extends EntityList {
 		BaseList<Integer> tagIDs = this.getTagIDList();
 		
 		this.forEach(entity -> {
-			entity.getTagIDList().setAllImpl(new BaseList<>(tagIDs));
+			entity.getTagIDList().setAll(new BaseList<>(tagIDs));
 			entity.initTags();
 		});
 	}
@@ -59,7 +59,7 @@ public class Collection extends EntityList {
 		if (openCollections.contains(this)) {
 			openCollections.remove(this);
 		} else {
-			openCollections.addImpl(this);
+			openCollections.add(this);
 		}
 		
 		this.forEach(entity -> entity.getTile().updateCollectionIcon());

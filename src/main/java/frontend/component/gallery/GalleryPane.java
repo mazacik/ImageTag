@@ -84,12 +84,12 @@ public class GalleryPane extends ScrollPane {
 				Entity entity = tile.getEntity();
 				if (entity.hasCollection()) {
 					if (entity.getCollection().isOpen()) {
-						entityList.addImpl(entity);
+						entityList.add(entity);
 					} else {
-						entityList.addAllImpl(Root.FILTER.getFilteredList(entity.getCollection()));
+						entityList.addAll(Root.FILTER.getFilteredList(entity.getCollection()));
 					}
 				} else {
-					entityList.addImpl(entity);
+					entityList.add(entity);
 				}
 			}
 		}
@@ -107,7 +107,7 @@ public class GalleryPane extends ScrollPane {
 				localCursorPositionX = x;
 				localCursorPositionY = y;
 				
-				selectRectangleHelper.setAllImpl(Root.SELECT);
+				selectRectangleHelper.setAll(Root.SELECT);
 				break;
 			case SECONDARY:
 				break;
@@ -238,10 +238,10 @@ public class GalleryPane extends ScrollPane {
 	public boolean reload() {
 		EntityList representingEntityList = Root.FILTER.getRepresentingEntityList();
 		if (representingEntityList.size() > TILE_LIMIT) {
-			tileEntities.setAllImpl(representingEntityList.subList(0, TILE_LIMIT));
+			tileEntities.setAll(representingEntityList.subList(0, TILE_LIMIT));
 			new SimpleMessageStage("Error", "Gallery reached a limit of " + TILE_LIMIT + " tiles.").show();
 		} else {
-			tileEntities.setAllImpl(representingEntityList);
+			tileEntities.setAll(representingEntityList);
 		}
 		
 		tiles.clear();

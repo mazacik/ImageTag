@@ -7,10 +7,10 @@ import javafx.scene.Node;
 public class HBox extends javafx.scene.layout.HBox {
 	public HBox() {
 		super();
-		Platform.runLater(() -> DecoratorUtil.getNodeList().addImpl(this));
+		Platform.runLater(() -> DecoratorUtil.getNodeList().add(this));
 	}
 	public HBox(Node... children) {
 		super(children);
-		Platform.runLater(() -> DecoratorUtil.getNodeList().addImpl(this));
+		Platform.runLater(() -> DecoratorUtil.getNodeList().add(this));
 	}
 }

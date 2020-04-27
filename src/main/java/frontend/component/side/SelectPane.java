@@ -96,9 +96,9 @@ public class SelectPane extends SidePaneBase {
 		refreshTitle();
 		
 		BaseList<String> stringListIntersect = new BaseList<>();
-		Root.SELECT.getTagListIntersect().forEach(tag -> stringListIntersect.addImpl(tag.getStringValue()));
+		Root.SELECT.getTagListIntersect().forEach(tag -> stringListIntersect.add(tag.getStringValue()));
 		BaseList<String> stringListUnion = new BaseList<>();
-		Root.SELECT.getTagList().forEach(tag -> stringListUnion.addImpl(tag.getStringValue()));
+		Root.SELECT.getTagList().forEach(tag -> stringListUnion.add(tag.getStringValue()));
 		
 		getTagNodes().forEach(tagNode -> this.refreshNodeColor(tagNode, stringListIntersect, stringListUnion));
 		

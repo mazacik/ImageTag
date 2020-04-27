@@ -28,16 +28,16 @@ public class Select extends EntityList {
 		
 		if (entity.hasCollection()) {
 			if (entity.getCollection().isOpen()) {
-				if (super.addImpl(entity, checkDuplicates)) {
+				if (super.add(entity, checkDuplicates)) {
 					Reload.requestBorderUpdate(entity);
 				}
 			} else {
-				if (super.addAllImpl(entity.getCollection(), checkDuplicates)) {
+				if (super.addAll(entity.getCollection(), checkDuplicates)) {
 					Reload.requestBorderUpdate(Root.FILTER.getFilteredList(entity.getCollection()));
 				}
 			}
 		} else {
-			if (super.addImpl(entity, checkDuplicates)) {
+			if (super.add(entity, checkDuplicates)) {
 				Reload.requestBorderUpdate(entity);
 			}
 		}
@@ -59,17 +59,17 @@ public class Select extends EntityList {
 		for (Entity entity : c) {
 			if (entity.hasCollection()) {
 				if (entity.getCollection().isOpen()) {
-					if (super.addImpl(entity, checkDuplicates)) {
+					if (super.add(entity, checkDuplicates)) {
 						Reload.requestBorderUpdate(entity);
 					}
 				} else {
 					EntityList afterFilter = Root.FILTER.getFilteredList(entity.getCollection());
-					if (super.addAllImpl(afterFilter, checkDuplicates)) {
+					if (super.addAll(afterFilter, checkDuplicates)) {
 						Reload.requestBorderUpdate(afterFilter);
 					}
 				}
 			} else {
-				if (super.addImpl(entity, checkDuplicates)) {
+				if (super.add(entity, checkDuplicates)) {
 					Reload.requestBorderUpdate(entity);
 				}
 			}
@@ -97,16 +97,16 @@ public class Select extends EntityList {
 		
 		if (entity.hasCollection()) {
 			if (entity.getCollection().isOpen()) {
-				if (super.removeImpl(entity)) {
+				if (super.remove(entity)) {
 					Reload.requestBorderUpdate(entity);
 				}
 			} else {
-				if (super.removeAllImpl(entity.getCollection())) {
+				if (super.removeAll(entity.getCollection())) {
 					Reload.requestBorderUpdate(Root.FILTER.getFilteredList(entity.getCollection()));
 				}
 			}
 		} else {
-			if (super.removeImpl(entity)) {
+			if (super.remove(entity)) {
 				Reload.requestBorderUpdate(entity);
 			}
 		}
@@ -119,7 +119,7 @@ public class Select extends EntityList {
 		}
 	}
 	public boolean removeAll(Collection<?> c) {
-		if (super.removeAllImpl(c)) {
+		if (super.removeAll(c)) {
 			Reload.requestBorderUpdate((EntityList) c);
 			Reload.notify(Notifier.SELECT_CHANGED);
 			return true;
@@ -148,7 +148,7 @@ public class Select extends EntityList {
 					Reload.notify(Notifier.TARGET_COLLECTION_CHANGED);
 				}
 				
-				helper.addImpl(entity);
+				helper.add(entity);
 			}
 		});
 		
@@ -189,7 +189,7 @@ public class Select extends EntityList {
 	}
 	public void setupShiftSelect() {
 		entityFrom = target;
-		selectBefore.setAllImpl(this);
+		selectBefore.setAll(this);
 	}
 	
 	public void setRandom() {

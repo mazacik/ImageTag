@@ -522,13 +522,13 @@ public enum TextNodeTemplates {
 				
 				if (!entitiesOnDiskNotInApp.isEmpty()) {
 					EntityList entityList = new EntityList();
-					entitiesOnDiskNotInApp.forEach(path -> entityList.addImpl(new Entity(new File(path))));
+					entitiesOnDiskNotInApp.forEach(path -> entityList.add(new Entity(new File(path))));
 					CacheLoader.startCacheThread(entityList);
 					
-					Root.ENTITYLIST.addAllImpl(entityList);
+					Root.ENTITYLIST.addAll(entityList);
 					Root.ENTITYLIST.sort();
 					
-					Root.FILTER.getLastImport().setAllImpl(entityList);
+					Root.FILTER.getLastImport().setAll(entityList);
 					
 					Reload.notify(Notifier.ENTITYLIST_CHANGED);
 				}
@@ -538,7 +538,8 @@ public enum TextNodeTemplates {
 				entitiesInAppNotOnDisk.removeAll(entitiesOnDisk);
 				
 				if (!entitiesInAppNotOnDisk.isEmpty()) {
-					Root.ENTITYLIST.removeAllImpl(entitiesInAppNotOnDisk);
+					//todo fixme
+					Root.ENTITYLIST.removeAll(entitiesInAppNotOnDisk);
 					
 					Reload.notify(Notifier.ENTITYLIST_CHANGED);
 				}

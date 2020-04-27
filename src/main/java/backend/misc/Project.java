@@ -97,6 +97,6 @@ public class Project {
 	public static void setFirstAsCurrent() {
 		BaseList<Project> projects = FileUtil.getProjects();
 		projects.sort(Project.getComparator());
-		setCurrent(projects.getFirstImpl());
+		setCurrent(projects.getFirst());
 	}
 }

@@ -23,7 +23,7 @@ public class HoverMenu extends ListMenu {
 		this.setAutoHide(true);
 		this.setHideOnEscape(true);
 		
-		instances.addImpl(this);
+		instances.add(this);
 	}
 	public static HoverMenu install(Region root, Direction direction, Region... children) {
 		return install(root, direction, 0, -1, children);

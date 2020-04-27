@@ -225,14 +225,12 @@ public class MainStage extends Stage {
 	}
 	
 	public void showLoadingBar(Thread caller, int total) {
+		loadingBar.setup(caller, total);
+		
 		if (Platform.isFxApplicationThread()) {
-			loadingBar.setup(caller, total);
 			loadingBar.setVisible(true);
 		} else {
-			Platform.runLater(() -> {
-				loadingBar.setup(caller, total);
-				loadingBar.setVisible(true);
-			});
+			Platform.runLater(() -> loadingBar.setVisible(true));
 		}
 	}
 	public void hideLoadingBar(Thread caller) {

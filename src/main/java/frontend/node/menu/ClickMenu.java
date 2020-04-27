@@ -29,10 +29,10 @@ public class ClickMenu extends ListMenu {
 		this.setAutoHide(true);
 		this.setHideOnEscape(true);
 		
-		instances.addImpl(this);
+		instances.add(this);
 	}
 	public static void register(Class<?> c, Preset si) {
-		staticInstances.addImpl(new ClickMenu(c, si.regions));
+		staticInstances.add(new ClickMenu(c, si.regions));
 	}
 	public static ClickMenu install(Region root, Direction direction, MouseButton mouseButton) {
 		for (ClickMenu staticInstance : staticInstances) {
@@ -60,7 +60,7 @@ public class ClickMenu extends ListMenu {
 		this.setAutoHide(true);
 		this.setHideOnEscape(true);
 		
-		instances.addImpl(this);
+		instances.add(this);
 	}
 	public static ClickMenu install(Region root, Direction direction, MouseButton mouseButton, Preset preset) {
 		return install(root, direction, mouseButton, 0, 0, preset.regions);

@@ -63,11 +63,11 @@ public class TagEditStage extends BaseStage {
 		if (levels != null) {
 			for (String level : levels) {
 				if (!level.isEmpty()) {
-					nodeList.addImpl(new LevelNode(level));
+					nodeList.add(new LevelNode(level));
 				}
 			}
 		}
-		nodeList.addImpl(new LevelNode(""));
+		nodeList.add(new LevelNode(""));
 		boxNodes.getChildren().setAll(nodeList);
 		if (levels != null) {
 			if (mode == Mode.CREATE) {
@@ -92,7 +92,7 @@ public class TagEditStage extends BaseStage {
 		nodeList.forEach(levelNode -> {
 			String string = levelNode.editNode.getText().trim();
 			if (!string.isEmpty()) {
-				helperList.addImpl(string);
+				helperList.add(string);
 			}
 		});
 		
@@ -115,10 +115,10 @@ public class TagEditStage extends BaseStage {
 			editNode.setBorder(DecoratorUtil.getBorder(1, 1, 1, 1));
 			
 			editNode.textProperty().addListener((observable, oldValue, newValue) -> {
-				if (nodeList.getLastImpl() == this) {
+				if (nodeList.getLast() == this) {
 					if (!newValue.isEmpty()) {
 						LevelNode levelNode = new LevelNode("");
-						nodeList.addImpl(levelNode);
+						nodeList.add(levelNode);
 						boxNodes.getChildren().add(levelNode);
 					}
 				}
@@ -150,9 +150,9 @@ public class TagEditStage extends BaseStage {
 					boxNodes.getChildren().remove(this);
 					boxNodes.getChildren().add(currentIndex + 1, this);
 					
-					if (nodeList.getLastImpl() == this && !this.editNode.getText().isEmpty()) {
+					if (nodeList.getLast() == this && !this.editNode.getText().isEmpty()) {
 						LevelNode levelNode = new LevelNode("");
-						nodeList.addImpl(levelNode);
+						nodeList.add(levelNode);
 						boxNodes.getChildren().add(levelNode);
 					}
 				}
@@ -171,7 +171,7 @@ public class TagEditStage extends BaseStage {
 		private void removeLevelNode() {
 			if (nodeList.size() == 1) {
 				this.editNode.setText("");
-			} else if (nodeList.getLastImpl() == this && !nodeList.get(nodeList.indexOf(this) - 1).editNode.getText().isEmpty()) {
+			} else if (nodeList.getLast() == this && !nodeList.get(nodeList.indexOf(this) - 1).editNode.getText().isEmpty()) {
 				this.editNode.setText("");
 			} else {
 				nodeList.remove(this);

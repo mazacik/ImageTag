@@ -29,7 +29,7 @@ public class CollageStage extends Stage {
 			for (Entity entity : Root.FILTER) {
 				Image image = new Image("file:" + FileUtil.getFileCache(entity), miniW, miniH, false, false);
 				Color averageColor = getAverageColor(image, 0, 0, image.getWidth(), image.getHeight());
-				database.addImpl(new CollagePiece(image, averageColor));
+				database.add(new CollagePiece(image, averageColor));
 				
 				Root.PSC.MAIN_STAGE.advanceLoadingBar(Thread.currentThread());
 			}

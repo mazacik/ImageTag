@@ -42,7 +42,7 @@ public class TagList extends BaseList<Tag> {
 		TagList results = new TagList();
 		for (Tag tag : this) {
 			if (tag.getStringValue().startsWith(query)) {
-				results.addImpl(tag);
+				results.add(tag);
 			}
 		}
 		return results;

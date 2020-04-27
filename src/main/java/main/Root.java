@@ -80,13 +80,13 @@ public abstract class Root {
 		CacheLoader.startCacheThread(Root.ENTITYLIST);
 	}
 	private static void initEntities() {
-		Root.ENTITYLIST.setAllImpl(Project.getCurrent().getEntityList());
+		Root.ENTITYLIST.setAll(Project.getCurrent().getEntityList());
 		
 		EntityList entitiesWithoutFiles = new EntityList(Root.ENTITYLIST);
 		BaseList<File> filesWithoutEntities = FileUtil.getFiles(new File(Project.getCurrent().getDirectory()), true);
 		
 		BaseList<String> newFileNames = new BaseList<>();
-		filesWithoutEntities.forEach(file -> newFileNames.addImpl(FileUtil.createEntityName(file)));
+		filesWithoutEntities.forEach(file -> newFileNames.add(FileUtil.createEntityName(file)));
 		
 		/* match files in the source directory with known entities in the database */
 		for (int i = 0; i < entitiesWithoutFiles.size(); i++) {
@@ -128,8 +128,8 @@ public abstract class Root {
 		}
 		if (!filesWithoutEntities.isEmpty()) {
 			EntityList newEntities = new EntityList(filesWithoutEntities);
-			Root.ENTITYLIST.addAllImpl(newEntities);
-			FILTER.getLastImport().addAllImpl(newEntities);
+			Root.ENTITYLIST.addAll(newEntities);
+			FILTER.getLastImport().addAll(newEntities);
 			Root.ENTITYLIST.sort();
 		}
 		
@@ -144,7 +144,7 @@ public abstract class Root {
 				boolean collectionExists = false;
 				for (Collection collection : collections) {
 					if (collection.getFirst().getCollectionID() == entity.getCollectionID()) {
-						collection.addImpl(entity);
+						collection.add(entity);
 						entity.setCollection(collection);
 						collectionExists = true;
 						break;
@@ -153,14 +153,14 @@ public abstract class Root {
 				if (!collectionExists) {
 					Collection collection = new Collection(entity);
 					entity.setCollection(collection);
-					collections.addImpl(collection);
+					collections.add(collection);
 				}
 			}
 		}
 	}
 	private static void initTags() {
 		TagList projectTags = Project.getCurrent().getTagList();
-		if (projectTags != null) Root.TAGLIST.setAllImpl(projectTags);
+		if (projectTags != null) Root.TAGLIST.setAll(projectTags);
 		
 		Root.TAGLIST.forEach(Tag::updateStringValue);
 		Root.TAGLIST.sort();

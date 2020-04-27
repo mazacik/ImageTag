@@ -21,10 +21,10 @@ public abstract class ImportUtil {
 			if (entityList != null && !entityList.isEmpty()) {
 				CacheLoader.startCacheThread(entityList);
 				
-				Root.ENTITYLIST.addAllImpl(entityList);
+				Root.ENTITYLIST.addAll(entityList);
 				Root.ENTITYLIST.sort();
 				
-				Root.FILTER.getLastImport().setAllImpl(entityList);
+				Root.FILTER.getLastImport().setAll(entityList);
 			}
 			
 			Platform.runLater(() -> ImportStage.displayResults(entityList));
@@ -40,7 +40,7 @@ public abstract class ImportUtil {
 			
 			Entity entity = ImportUtil.importFile(importMode, directory, fileFrom);
 			if (entity != null) {
-				entityList.addImpl(entity);
+				entityList.add(entity);
 			}
 			
 			Root.PSC.MAIN_STAGE.advanceLoadingBar(Thread.currentThread());

@@ -23,7 +23,7 @@ public class TagUtil {
 	public static void create(BaseList<String> levelsOld) {
 		BaseList<String> listLevelsNew = new TagEditStage().showCreate(levelsOld);
 		if (listLevelsNew != null && !listLevelsNew.isEmpty()) {
-			Root.TAGLIST.addImpl(new Tag(listLevelsNew));
+			Root.TAGLIST.add(new Tag(listLevelsNew));
 			Root.TAGLIST.sort();
 			
 			Reload.notify(Notifier.TAGLIST_CHANGED);

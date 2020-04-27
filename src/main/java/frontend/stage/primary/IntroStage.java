@@ -115,7 +115,7 @@ public class IntroStage extends Stage {
 					BaseList<Project> projects = FileUtil.getProjects();
 					if (!projects.isEmpty()) {
 						projects.sort(Project.getComparator());
-						Root.PSC.showMainStage(projects.getFirstImpl());
+						Root.PSC.showMainStage(projects.getFirst());
 					} else {
 						Root.PSC.showProjectStage();
 					}

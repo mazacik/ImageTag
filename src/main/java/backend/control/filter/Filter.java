@@ -21,7 +21,7 @@ public class Filter extends EntityList {
 	}
 	
 	public boolean add(Entity entity) {
-		if (super.addImpl(entity)) {
+		if (super.add(entity)) {
 			Reload.notify(Notifier.FILTER_CHANGED);
 			return true;
 		} else {
@@ -29,7 +29,7 @@ public class Filter extends EntityList {
 		}
 	}
 	public boolean addAll(Collection<? extends Entity> c) {
-		if (super.addAllImpl(c)) {
+		if (super.addAll(c)) {
 			Reload.notify(Notifier.FILTER_CHANGED);
 			return true;
 		} else {
@@ -38,7 +38,7 @@ public class Filter extends EntityList {
 	}
 	
 	public boolean remove(Entity entity) {
-		if (super.removeImpl(entity)) {
+		if (super.remove(entity)) {
 			Reload.notify(Notifier.FILTER_CHANGED);
 			return true;
 		} else {
@@ -46,7 +46,7 @@ public class Filter extends EntityList {
 		}
 	}
 	public boolean removeAll(Collection<?> c) {
-		if (super.removeAllImpl(c)) {
+		if (super.removeAll(c)) {
 			Reload.notify(Notifier.FILTER_CHANGED);
 			return true;
 		} else {
@@ -78,7 +78,7 @@ public class Filter extends EntityList {
 		this.clear();
 		for (Entity entity : Root.ENTITYLIST) {
 			if (this.isValid(entity)) {
-				this.addImpl(entity);
+				this.add(entity);
 			}
 		}
 		
@@ -98,7 +98,7 @@ public class Filter extends EntityList {
 			if (contains && !valid) {
 				this.remove(entity);
 			} else if (!contains && valid) {
-				this.addImpl(entity);
+				this.add(entity);
 			}
 		}
 	}
@@ -183,7 +183,7 @@ public class Filter extends EntityList {
 				if (!sameTags.isEmpty()) {
 					double similarity = (double) sameTags.size() / (double) query.size();
 					if (similarity >= FilterOption.SIMILARITY_FACTOR.getIntValue()) {
-						this.addImpl(iterator);
+						this.add(iterator);
 					}
 				}
 			}

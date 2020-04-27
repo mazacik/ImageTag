@@ -37,8 +37,8 @@ public class Entity {
 	}
 	
 	public void addTag(Tag tag) {
-		getTagList().addImpl(tag, true);
-		tagIDs.addImpl(tag.getID());
+		getTagList().add(tag, true);
+		tagIDs.add(tag.getID());
 	}
 	public void addTag(int tagID) {
 		this.addTag(Root.TAGLIST.getTag(tagID));
@@ -60,7 +60,7 @@ public class Entity {
 	
 	public void initTags() {
 		for (int tagID : this.getTagIDList()) {
-			this.getTagList().addImpl(Root.TAGLIST.getTag(tagID));
+			this.getTagList().add(Root.TAGLIST.getTag(tagID));
 		}
 	}
 	

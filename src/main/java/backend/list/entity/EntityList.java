@@ -21,7 +21,7 @@ public class EntityList extends BaseList<Entity> {
 		super(Arrays.asList(entities));
 	}
 	public EntityList(BaseList<File> fileList) {
-		fileList.forEach(file -> this.addImpl(new Entity(file)));
+		fileList.forEach(file -> this.add(new Entity(file)));
 	}
 	
 	public void sort() {
@@ -37,10 +37,10 @@ public class EntityList extends BaseList<Entity> {
 		return (!this.isEmpty()) ? this.get(this.size() - 1) : null;
 	}
 	public Entity getRandom() {
-		Entity entity = this.getRepresentingEntityList().getRandomImpl();
+		Entity entity = this.getRepresentingEntityList().getRandom();
 		if (entity != null) {
 			if (entity.hasCollection()) {
-				return Root.FILTER.getFilteredList(entity.getCollection()).getRandomImpl();
+				return Root.FILTER.getFilteredList(entity.getCollection()).getRandom();
 			} else {
 				return entity;
 			}
@@ -60,20 +60,20 @@ public class EntityList extends BaseList<Entity> {
 	
 	public BaseList<Integer> getTagIDList() {
 		BaseList<Integer> tagIDList = new BaseList<>();
-		this.forEach(entity -> tagIDList.addAllImpl(entity.getTagIDList(), true));
+		this.forEach(entity -> tagIDList.addAll(entity.getTagIDList(), true));
 		return tagIDList;
 	}
 	public BaseList<Integer> getTagIDListIntersect() {
 		if (!this.isEmpty()) {
 			BaseList<Integer> tagIDList = new BaseList<>();
 			//check every tag of the first object
-			for (int tagID : this.getFirstImpl().getTagIDList()) {
+			for (int tagID : this.getFirst().getTagIDList()) {
 				//check if all objects contain the tagID
 				for (Entity entity : this) {
 					if (entity.getTagIDList().contains(tagID)) {
 						//if the last object contains the tagID, all before do too, add
-						if (entity.equals(this.getLastImpl())) {
-							tagIDList.addImpl(tagID, true);
+						if (entity.equals(this.getLast())) {
+							tagIDList.add(tagID, true);
 						}
 					} else {
 						//if any of the objects doesn't contain the tag, break
@@ -89,20 +89,20 @@ public class EntityList extends BaseList<Entity> {
 	
 	public TagList getTagList() {
 		TagList tagList = new TagList();
-		this.forEach(entity -> tagList.addAllImpl(entity.getTagList(), true));
+		this.forEach(entity -> tagList.addAll(entity.getTagList(), true));
 		return tagList;
 	}
 	public TagList getTagListIntersect() {
 		if (!this.isEmpty()) {
 			TagList tagListIntersect = new TagList();
 			//check every tag of the first object
-			for (Tag tag : this.getFirstImpl().getTagList()) {
+			for (Tag tag : this.getFirst().getTagList()) {
 				//check if all objects contain the tagID
-				for (Entity entity : this) {
+				for (Entity entity : new EntityList(this)) {
 					if (entity.getTagList().contains(tag)) {
 						//if the last object contains the tag, all before do too, add
-						if (entity.equals(this.getLastImpl())) {
-							tagListIntersect.addImpl(tag, true);
+						if (entity.equals(this.getLast())) {
+							tagListIntersect.add(tag, true);
 						}
 					} else {
 						//if any of the objects doesn't contain the tag, break
@@ -138,15 +138,15 @@ public class EntityList extends BaseList<Entity> {
 			if (entity.hasCollection()) {
 				if (!collections.contains(entity.getCollectionID())) {
 					if (entity.getCollection().isOpen()) {
-						collections.addImpl(entity.getCollectionID());
-						representingEntityList.addAllImpl(Root.FILTER.getFilteredList(entity.getCollection()));
+						collections.add(entity.getCollectionID());
+						representingEntityList.addAll(Root.FILTER.getFilteredList(entity.getCollection()));
 					} else {
-						collections.addImpl(entity.getCollectionID());
-						representingEntityList.addImpl(entity);
+						collections.add(entity.getCollectionID());
+						representingEntityList.add(entity);
 					}
 				}
 			} else {
-				representingEntityList.addImpl(entity);
+				representingEntityList.add(entity);
 			}
 		}
 		

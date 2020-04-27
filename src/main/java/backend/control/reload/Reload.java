@@ -59,24 +59,24 @@ public abstract class Reload {
 	
 	private static void link(Notifier notifier, InvokeHelper... invokeHelpers) {
 		for (InvokeHelper invokeHelper : invokeHelpers) {
-			notifier.getInvokeHelpers().addImpl(invokeHelper);
+			notifier.getInvokeHelpers().add(invokeHelper);
 		}
 	}
 	
 	public static void request(InvokeHelper... invokeHelpers) {
 		if (invokeHelpers.length == 1) {
-			Reload.invokeHelpers.addImpl(invokeHelpers[0]);
+			Reload.invokeHelpers.add(invokeHelpers[0]);
 		} else {
-			Arrays.asList(invokeHelpers).forEach(invokeHelper -> Reload.invokeHelpers.addImpl(invokeHelper, true));
+			Arrays.asList(invokeHelpers).forEach(invokeHelper -> Reload.invokeHelpers.add(invokeHelper, true));
 		}
 		
 		Reload.invokeHelpers.sort(Comparator.comparing(InvokeHelper::getPriority));
 	}
 	public static void notify(Notifier... notifiers) {
 		if (notifiers.length == 1) {
-			invokeHelpers.addAllImpl(notifiers[0].getInvokeHelpers(), true);
+			invokeHelpers.addAll(notifiers[0].getInvokeHelpers(), true);
 		} else {
-			Arrays.asList(notifiers).forEach(notifier -> invokeHelpers.addAllImpl(notifier.getInvokeHelpers(), true));
+			Arrays.asList(notifiers).forEach(notifier -> invokeHelpers.addAll(notifier.getInvokeHelpers(), true));
 		}
 		
 		invokeHelpers.sort(Comparator.comparing(InvokeHelper::getPriority));
@@ -102,25 +102,25 @@ public abstract class Reload {
 		EntityList helper = new EntityList();
 		for (Entity entity : needsBorderUpdate) {
 			entity.getTile().updateBorder();
-			helper.addImpl(entity);
+			helper.add(entity);
 		}
 		needsBorderUpdate.removeAll(helper);
 	}
 	
 	public static void requestFilterCheck(Collection<? extends Entity> c) {
-		needsFilterCheck.addAllImpl(c);
+		needsFilterCheck.addAll(c);
 	}
 	public static void requestFilterCheck(Entity entity) {
-		needsFilterCheck.addImpl(entity);
+		needsFilterCheck.add(entity);
 	}
 	public static BaseList<Entity> getNeedsFilterCheck() {
 		return needsFilterCheck;
 	}
 	
 	public static void requestBorderUpdate(Collection<? extends Entity> c) {
-		needsBorderUpdate.addAllImpl(c);
+		needsBorderUpdate.addAll(c);
 	}
 	public static void requestBorderUpdate(Entity entity) {
-		needsBorderUpdate.addImpl(entity);
+		needsBorderUpdate.add(entity);
 	}
 }

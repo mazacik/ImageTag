@@ -27,7 +27,7 @@ public abstract class SidePaneBase extends VBox {
 		listBox.setNodes(rootNodes);
 		
 		BaseList<String> openNodesHelper = new BaseList<>();
-		openNodes.forEach(tagNode -> openNodesHelper.addImpl(tagNode.getStringValue()));
+		openNodes.forEach(tagNode -> openNodesHelper.add(tagNode.getStringValue()));
 		openNodes.clear();
 		for (TagNode tagNode : getTagNodes()) {
 			if (openNodesHelper.contains(tagNode.getStringValue())) {
@@ -41,7 +41,7 @@ public abstract class SidePaneBase extends VBox {
 	private void createNode(Tag tag) {
 		//check root nodes
 		for (TagNode tagNode : rootNodes) {
-			if (tagNode.getText().equals(tag.getLevels().getFirstImpl())) {
+			if (tagNode.getText().equals(tag.getLevels().getFirst())) {
 				//root node found, continue with child nodes
 				createNodeRecursion(tagNode, tag);
 				return;
@@ -50,7 +50,7 @@ public abstract class SidePaneBase extends VBox {
 		
 		//root node not found, create
 		TagNode rootNode = new TagNode(this, tag, 0);
-		rootNodes.addImpl(rootNode);
+		rootNodes.add(rootNode);
 		
 		//continue with child nodes
 		createNodeRecursion(rootNode, tag);
@@ -77,7 +77,7 @@ public abstract class SidePaneBase extends VBox {
 		
 		//child node not found, create
 		TagNode newNode = new TagNode(this, tag, tagNode.getLevels().size());
-		tagNode.getChildrenDirect().addImpl(newNode);
+		tagNode.getChildrenDirect().add(newNode);
 		
 		//continue with continue with next level
 		createNodeRecursion(newNode, tag);
@@ -90,7 +90,7 @@ public abstract class SidePaneBase extends VBox {
 	}
 	private void getTagNodesRecursion(BaseList<TagNode> tagNodes, BaseList<TagNode> returnList) {
 		for (TagNode tagNode : tagNodes) {
-			returnList.addImpl(tagNode);
+			returnList.add(tagNode);
 			getTagNodesRecursion(tagNode.getChildrenDirect(), returnList);
 		}
 	}
