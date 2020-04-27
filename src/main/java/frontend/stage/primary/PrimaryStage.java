@@ -8,11 +8,13 @@ import frontend.decorator.DecoratorUtil;
 import frontend.stage.primary.scene.IntroScene;
 import frontend.stage.primary.scene.MainScene;
 import frontend.stage.primary.scene.ProjectScene;
+import javafx.animation.PauseTransition;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 import main.Main;
 import main.Root;
 
@@ -32,6 +34,10 @@ public class PrimaryStage extends Stage {
 	}
 	
 	public void showIntroScene() {
+		if (!this.isShowing()) {
+			this.setOpacity(0);
+		}
+		
 		Rectangle usableScreenBounds = DecoratorUtil.getUsableScreenBounds();
 		double width = usableScreenBounds.getWidth() / 2;
 		double height = usableScreenBounds.getHeight() / 2;
@@ -59,14 +65,14 @@ public class PrimaryStage extends Stage {
 		this.setScene(introScene);
 		this.setWidth(width);
 		this.setHeight(height);
-		//		this.setMinWidth(width);
-		//		this.setMinHeight(height);
 		this.centerOnScreen();
-		
 		this.setOnCloseRequest(event -> Settings.writeToDisk());
 		
 		if (!this.isShowing()) {
 			this.show();
+			PauseTransition pt = new PauseTransition(new Duration(100));
+			pt.setOnFinished(event -> this.setOpacity(1));
+			pt.play();
 		}
 	}
 	
@@ -98,21 +104,17 @@ public class PrimaryStage extends Stage {
 		this.setScene(projectScene);
 		this.setWidth(width);
 		this.setHeight(height);
-		//		this.setMinWidth(width);
-		//		this.setMinHeight(height);
 		this.centerOnScreen();
 		
 		this.setOnCloseRequest(event -> Settings.writeToDisk());
-		
-		if (!this.isShowing()) {
-			this.show();
-		}
 	}
 	
 	public void showMainScene() {
 		showMainScene(null);
 	}
 	public void showMainScene(Project project) {
+		this.setOpacity(0);
+		
 		if (project == null) {
 			Project.setFirstAsCurrent();
 		} else {
@@ -120,17 +122,6 @@ public class PrimaryStage extends Stage {
 		}
 		
 		Root.startProjectDatabaseLoading();
-		
-		//		if (Main.DEBUG_UI_SCALING) {
-		//			this.setWidth(DecoratorUtil.getUsableScreenWidth());
-		//			this.setHeight(DecoratorUtil.getUsableScreenHeight());
-		//			Root.GALLERY_PANE.widthProperty().addListener((observable, oldValue, newValue) -> {
-		//				double availableWidth = mainScene.getWidth() - newValue.doubleValue();
-		//				double width = availableWidth / 2;
-		////				Root.FILTER_PANE.setPrefWidth(width);
-		////				Root.SELECT_PANE.setPrefWidth(width);
-		//			});
-		//		}
 		
 		this.setTitle(FileUtil.APP_NAME);
 		this.setScene(mainScene);
@@ -142,6 +133,11 @@ public class PrimaryStage extends Stage {
 		
 		if (!this.isShowing()) {
 			this.show();
+			PauseTransition pt = new PauseTransition(new Duration(100));
+			pt.setOnFinished(event -> this.setOpacity(1));
+			pt.play();
+		} else {
+			this.setOpacity(1);
 		}
 	}
 	
