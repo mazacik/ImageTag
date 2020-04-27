@@ -538,8 +538,18 @@ public enum TextNodeTemplates {
 				entitiesInAppNotOnDisk.removeAll(entitiesOnDisk);
 				
 				if (!entitiesInAppNotOnDisk.isEmpty()) {
-					//todo fixme
-					Root.ENTITYLIST.removeAll(entitiesInAppNotOnDisk);
+					EntityList entitiesToRemove = new EntityList();
+					
+					entitiesInAppNotOnDisk.forEach(path -> {
+						for (Entity entity : Root.ENTITYLIST) {
+							if (FileUtil.getFileEntity(entity).equals(path)) {
+								entitiesToRemove.add(entity);
+								break;
+							}
+						}
+					});
+					
+					Root.ENTITYLIST.removeAll(entitiesToRemove);
 					
 					Reload.notify(Notifier.ENTITYLIST_CHANGED);
 				}
