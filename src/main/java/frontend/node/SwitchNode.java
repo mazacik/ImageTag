@@ -8,7 +8,6 @@ import javafx.geometry.Pos;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
-//todo rework to work off of properties
 public class SwitchNode extends VBox {
 	protected TextNode left;
 	protected TextNode right;
