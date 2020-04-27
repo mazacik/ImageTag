@@ -8,7 +8,6 @@ import backend.misc.Settings;
 import frontend.stage.SimpleMessageStage;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
-import javafx.geometry.Insets;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -37,7 +36,6 @@ public class GalleryPane extends ScrollPane {
 	
 	public GalleryPane() {
 		tilePane = new TilePane(GAP, GAP);
-		tilePane.setPadding(new Insets(GAP));
 		
 		double actualTileSize = Settings.GALLERY_TILE_SIZE.getInteger() + 2 * Tile.HIGHLIGHT_PADDING;
 		tilePane.setPrefTileWidth(actualTileSize);
@@ -261,7 +259,7 @@ public class GalleryPane extends ScrollPane {
 	public void moveViewportToTarget() {
 		if (this.getHeight() > 0) {
 			Entity currentTarget = Root.SELECT.getTarget();
-			if (!Root.PSC.MAIN_STAGE.isViewGallery() || currentTarget == null) return;
+			if (!Root.PRIMARY_STAGE.getMainScene().isViewGallery() || currentTarget == null) return;
 			if (currentTarget.hasCollection() && !currentTarget.getCollection().isOpen()) {
 				currentTarget = currentTarget.getCollection().getFirst();
 			}

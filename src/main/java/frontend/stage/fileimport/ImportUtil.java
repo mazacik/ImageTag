@@ -32,7 +32,7 @@ public abstract class ImportUtil {
 	}
 	
 	private static EntityList importFiles(ImportMode importMode, String directory, BaseList<File> fileList) {
-		Root.PSC.MAIN_STAGE.showLoadingBar(Thread.currentThread(), fileList.size());
+		Root.PRIMARY_STAGE.getMainScene().showLoadingBar(Thread.currentThread(), fileList.size());
 		
 		EntityList entityList = new EntityList();
 		for (File fileFrom : fileList) {
@@ -43,10 +43,10 @@ public abstract class ImportUtil {
 				entityList.add(entity);
 			}
 			
-			Root.PSC.MAIN_STAGE.advanceLoadingBar(Thread.currentThread());
+			Root.PRIMARY_STAGE.getMainScene().advanceLoadingBar(Thread.currentThread());
 		}
 		
-		Root.PSC.MAIN_STAGE.hideLoadingBar(Thread.currentThread());
+		Root.PRIMARY_STAGE.getMainScene().hideLoadingBar(Thread.currentThread());
 		
 		return entityList;
 	}

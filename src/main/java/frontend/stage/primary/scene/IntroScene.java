@@ -1,57 +1,32 @@
-package frontend.stage.primary;
+package frontend.stage.primary.scene;
 
-import backend.list.BaseList;
-import backend.misc.FileUtil;
 import backend.misc.Project;
-import backend.misc.Settings;
 import frontend.decorator.DecoratorTemplate;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.SeparatorNode;
 import frontend.node.override.HBox;
 import frontend.node.override.Scene;
 import frontend.node.override.VBox;
+import frontend.node.project.ProjectBox;
 import frontend.node.textnode.TextNode;
 import frontend.stage.SimpleMessageStage;
-import frontend.stage.primary.project.ProjectBox;
+import frontend.stage.primary.PrimaryStage;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import main.Root;
 
-import java.awt.*;
 import java.io.File;
 
-public class IntroStage extends Stage {
-	public IntroStage() {
-		Rectangle usableScreenBounds = DecoratorUtil.getUsableScreenBounds();
-		double width = usableScreenBounds.getWidth() / 2;
-		double height = usableScreenBounds.getHeight() / 2;
-		
-		Scene introScene = this.createIntroScene();
-		introScene.getRoot().requestFocus();
-		
-		this.getIcons().add(new Image("/logo-32px.png"));
-		this.setScene(introScene);
-		this.setWidth(width);
-		this.setHeight(height);
-		this.setMinWidth(width);
-		this.setMinHeight(height);
-		this.centerOnScreen();
-		
-		this.setOnCloseRequest(event -> Settings.writeToDisk());
-	}
-	
+public class IntroScene extends Scene {
 	private final ProjectBox projectBox = new ProjectBox();
 	
-	private Scene createIntroScene() {
+	public IntroScene(PrimaryStage primaryStage) {
 		TextNode applicationNameNode = new TextNode("Tagallery", false, false, false, true);
 		applicationNameNode.setFont(new Font(48));
 		applicationNameNode.setPadding(new javafx.geometry.Insets(-20, 0, 20, 0));
@@ -59,7 +34,7 @@ public class IntroStage extends Stage {
 		TextNode btnNewProject = new TextNode("Create a New Project", true, false, true, true);
 		btnNewProject.setMaxWidth(Double.MAX_VALUE);
 		//noinspection Convert2MethodRef
-		btnNewProject.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> Root.PSC.showProjectStage());
+		btnNewProject.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> primaryStage.showProjectScene());
 		
 		TextNode btnOpenProject = new TextNode("Open Project", true, false, true, true);
 		btnOpenProject.setMaxWidth(Double.MAX_VALUE);
@@ -67,7 +42,7 @@ public class IntroStage extends Stage {
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.setTitle("Open Project");
 			fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-			File file = fileChooser.showOpenDialog(Root.PSC.MAIN_STAGE);
+			File file = fileChooser.showOpenDialog(Root.PRIMARY_STAGE);
 			
 			Project project = null;
 			if (file != null) {
@@ -75,7 +50,7 @@ public class IntroStage extends Stage {
 			}
 			
 			if (project != null) {
-				Root.PSC.showMainStage(project);
+				primaryStage.showMainScene(project);
 			} else {
 				new SimpleMessageStage("Error", "Error opening project file.").showAndWait();
 			}
@@ -106,29 +81,12 @@ public class IntroStage extends Stage {
 		mainBox.setAlignment(Pos.TOP_CENTER);
 		VBox.setVgrow(mainBox, Priority.ALWAYS);
 		
-		this.setTitle("Welcome to " + FileUtil.APP_NAME);
 		mainBox.setBackground(DecoratorUtil.getBackgroundPrimary());
 		
-		this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-			switch (event.getCode()) {
-				case ENTER:
-					BaseList<Project> projects = FileUtil.getProjects();
-					if (!projects.isEmpty()) {
-						projects.sort(Project.getComparator());
-						Root.PSC.showMainStage(projects.getFirst());
-					} else {
-						Root.PSC.showProjectStage();
-					}
-					break;
-				default:
-					break;
-			}
-		});
-		
-		return new Scene(mainBox);
+		this.setRoot(mainBox);
 	}
 	
-	public void initNodes() {
+	public void refreshIntroBox() {
 		projectBox.refresh();
 	}
 }

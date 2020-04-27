@@ -45,7 +45,7 @@ public abstract class CacheLoader {
 	public static void startCacheThread(EntityList entityList, boolean recreate) {
 		if (Main.DEBUG_USE_CACHE) {
 			new Thread(() -> {
-				Root.PSC.MAIN_STAGE.showLoadingBar(Thread.currentThread(), entityList.size());
+				Root.PRIMARY_STAGE.getMainScene().showLoadingBar(Thread.currentThread(), entityList.size());
 				
 				for (Entity entity : new EntityList(entityList)) {
 					if (Thread.currentThread().isInterrupted()) {
@@ -53,10 +53,10 @@ public abstract class CacheLoader {
 					}
 					
 					entity.getTile().setImage(CacheLoader.get(entity, recreate));
-					Root.PSC.MAIN_STAGE.advanceLoadingBar(Thread.currentThread());
+					Root.PRIMARY_STAGE.getMainScene().advanceLoadingBar(Thread.currentThread());
 				}
 				
-				Root.PSC.MAIN_STAGE.hideLoadingBar(Thread.currentThread());
+				Root.PRIMARY_STAGE.getMainScene().hideLoadingBar(Thread.currentThread());
 			}).start();
 		}
 	}

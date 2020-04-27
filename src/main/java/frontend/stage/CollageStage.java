@@ -23,7 +23,7 @@ public class CollageStage extends Stage {
 			int miniW = (int) scaledImage.getWidth() / Settings.COLLAGE_SIZE.getInteger();
 			int miniH = (int) scaledImage.getHeight() / Settings.COLLAGE_SIZE.getInteger();
 			
-			Root.PSC.MAIN_STAGE.showLoadingBar(Thread.currentThread(), Root.FILTER.size());
+			Root.PRIMARY_STAGE.getMainScene().showLoadingBar(Thread.currentThread(), Root.FILTER.size());
 			
 			BaseList<CollagePiece> database = new BaseList<>();
 			for (Entity entity : Root.FILTER) {
@@ -31,10 +31,10 @@ public class CollageStage extends Stage {
 				Color averageColor = getAverageColor(image, 0, 0, image.getWidth(), image.getHeight());
 				database.add(new CollagePiece(image, averageColor));
 				
-				Root.PSC.MAIN_STAGE.advanceLoadingBar(Thread.currentThread());
+				Root.PRIMARY_STAGE.getMainScene().advanceLoadingBar(Thread.currentThread());
 			}
 			
-			Root.PSC.MAIN_STAGE.hideLoadingBar(Thread.currentThread());
+			Root.PRIMARY_STAGE.getMainScene().hideLoadingBar(Thread.currentThread());
 			
 			GridPane gridPane = new GridPane();
 			for (int y = 0; y < Settings.COLLAGE_SIZE.getInteger(); y++) {

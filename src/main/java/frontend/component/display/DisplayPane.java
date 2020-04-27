@@ -81,7 +81,7 @@ public class DisplayPane extends StackPane {
 	
 	public boolean reload() {
 		Entity currentTarget = Root.SELECT.getTarget();
-		if (!Root.PSC.MAIN_STAGE.isViewGallery() && currentTarget != null) {
+		if (!Root.PRIMARY_STAGE.getMainScene().isViewGallery() && currentTarget != null) {
 			switch (currentTarget.getEntityType()) {
 				case IMG:
 					reloadAsImage(currentTarget);
@@ -216,7 +216,7 @@ public class DisplayPane extends StackPane {
 				if (event.getClickCount() % 2 != 0) {
 					holderPane.requestFocus();
 				} else {
-					Root.PSC.MAIN_STAGE.viewGallery();
+					Root.PRIMARY_STAGE.getMainScene().viewGallery();
 					Reload.start();
 				}
 			}

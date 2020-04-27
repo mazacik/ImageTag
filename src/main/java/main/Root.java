@@ -18,7 +18,7 @@ import frontend.component.gallery.GalleryPane;
 import frontend.component.side.FilterPane;
 import frontend.component.side.SelectPane;
 import frontend.component.top.ToolbarPane;
-import frontend.stage.primary.PrimaryStageController;
+import frontend.stage.primary.PrimaryStage;
 
 import java.io.File;
 
@@ -38,7 +38,7 @@ public abstract class Root {
 	public static final FilterPane FILTER_PANE;
 	public static final SelectPane SELECT_PANE;
 	
-	public static final PrimaryStageController PSC;
+	public static final PrimaryStage PRIMARY_STAGE;
 	
 	static {
 		THREAD_MAIN = Thread.currentThread();
@@ -56,7 +56,7 @@ public abstract class Root {
 		FILTER_PANE = new FilterPane();
 		SELECT_PANE = new SelectPane();
 		
-		PSC = new PrimaryStageController();
+		PRIMARY_STAGE = new PrimaryStage();
 	}
 	
 	public static void startProjectDatabaseLoading() {

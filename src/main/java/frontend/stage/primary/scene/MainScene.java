@@ -1,4 +1,4 @@
-package frontend.stage.primary;
+package frontend.stage.primary.scene;
 
 import backend.control.reload.Notifier;
 import backend.control.reload.Reload;
@@ -13,100 +13,41 @@ import frontend.node.ProgressNode;
 import frontend.node.menu.ListMenu;
 import frontend.node.override.HBox;
 import frontend.node.override.Scene;
+import frontend.node.override.VBox;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
-import javafx.stage.Stage;
-import main.Main;
 import main.Root;
 
-public class MainStage extends Stage {
-	public MainStage() {
-		Scene mainScene = this.getMainScene();
-		
-		mainScene.getRoot().requestFocus();
-		mainScene.widthProperty().addListener((observable, oldValue, newValue) -> this.onStageWidthChange());
-		
-		if (Main.DEBUG_UI_SCALING) {
-			this.setWidth(DecoratorUtil.getUsableScreenWidth());
-			this.setHeight(DecoratorUtil.getUsableScreenHeight());
-			Root.GALLERY_PANE.widthProperty().addListener((observable, oldValue, newValue) -> {
-				double availableWidth = MainStage.this.getScene().getWidth() - newValue.doubleValue();
-				double width = availableWidth / 2;
-				Root.FILTER_PANE.setPrefWidth(width);
-				Root.SELECT_PANE.setPrefWidth(width);
-			});
-		}
-		
-		this.getIcons().add(new Image("/logo-32px.png"));
-		this.setScene(mainScene);
-		this.centerOnScreen();
-		this.setMaximized(true);
-		this.setOnCloseRequest(event -> Main.exitApplication());
-	}
+public class MainScene extends Scene {
+	private final VBox vBox;
+	private final HBox hBox;
+	private final ProgressNode loadingBar;
 	
-	private void onStageWidthChange() {
-		TilePane tiles = Root.GALLERY_PANE.getTilePane();
-		
-		double galleryTileSize = tiles.getPrefTileWidth();
-		double sceneWidth = MainStage.this.getScene().getWidth();
-		
-		double width = 0;
-		double availableWidth = sceneWidth - 2 * SidePaneBase.MIN_WIDTH;
-		
-		if (!Main.DEBUG_UI_SCALING) availableWidth = 300;
-		
-		double increment = galleryTileSize + tiles.getHgap();
-		while (width + increment <= availableWidth) width += increment;
-		
-		int prefColumnsNew = (int) (width / galleryTileSize);
-		int prefColumnsOld = tiles.getPrefColumns();
-		
-		if (prefColumnsNew <= 0) prefColumnsNew = 1;
-		
-		if (prefColumnsNew != prefColumnsOld) {
-			tiles.setPrefColumns(prefColumnsNew);
-			Root.GALLERY_PANE.setPrefViewportWidth(width);
-		}
-	}
-	
-	private BorderPane borderPane;
-	private ProgressNode loadingBar;
-	
-	private Scene getMainScene() {
+	public MainScene() {
 		loadingBar = new ProgressNode();
 		loadingBar.setVisible(false);
 		
-		borderPane = new BorderPane();
-		borderPane.setTop(Root.TOOLBAR_PANE);
-		borderPane.setLeft(Root.FILTER_PANE);
-		borderPane.setCenter(new HBox(Root.GALLERY_PANE));
-		HBox.setHgrow(Root.GALLERY_PANE, Priority.NEVER);
-		borderPane.setRight(Root.SELECT_PANE);
-		borderPane.setBackground(DecoratorUtil.getBackgroundPrimary());
+		hBox = new HBox(Root.FILTER_PANE, Root.GALLERY_PANE, Root.SELECT_PANE);
+		vBox = new VBox(Root.TOOLBAR_PANE, hBox);
+		vBox.setBackground(DecoratorUtil.getBackgroundPrimary());
 		
 		StackPane stackPane = new StackPane();
-		stackPane.getChildren().add(borderPane);
+		stackPane.getChildren().add(vBox);
 		stackPane.getChildren().add(loadingBar);
 		stackPane.setAlignment(Pos.BOTTOM_CENTER);
 		
-		Scene mainScene = new Scene(stackPane);
-		mainScene.getStylesheets().add("/css/Styles.css");
-		
-		this.initKeybinds(mainScene);
-		
-		return mainScene;
+		this.setRoot(stackPane);
+		this.getStylesheets().add("/css/Styles.css");
+		this.initKeybinds();
+		this.widthProperty().addListener((observable, oldValue, newValue) -> this.onStageWidthChange());
 	}
-	
-	private void initKeybinds(Scene mainScene) {
+	private void initKeybinds() {
 		this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-			if (mainScene.getFocusOwner() instanceof EditNode) {
-				keybindsEditNode(event, mainScene);
+			if (this.getFocusOwner() instanceof EditNode) {
+				keybindsEditNode(event);
 			} else {
 				keybindsGlobal(event);
 			}
@@ -131,7 +72,7 @@ public class MainStage extends Stage {
 				EntityDetailsUtil.show();
 				break;
 			case ESCAPE:
-				Root.PSC.MAIN_STAGE.viewGallery();
+				this.viewGallery();
 				Reload.start();
 				break;
 			case TAB:
@@ -178,21 +119,21 @@ public class MainStage extends Stage {
 				break;
 		}
 	}
-	private void keybindsEditNode(KeyEvent event, Scene mainScene) {
+	private void keybindsEditNode(KeyEvent event) {
 		switch (event.getCode()) {
 			case ESCAPE:
 			case TAB:
-				borderPane.requestFocus();
+				vBox.requestFocus();
 				event.consume();
 				break;
 			case UP:
-				if (mainScene.getFocusOwner() == Root.SELECT_PANE.getNodeSearch()) {
+				if (this.getFocusOwner() == Root.SELECT_PANE.getNodeSearch()) {
 					Root.SELECT_PANE.nextMatch(Direction.UP, event.isControlDown());
 					event.consume();
 				}
 				break;
 			case DOWN:
-				if (mainScene.getFocusOwner() == Root.SELECT_PANE.getNodeSearch()) {
+				if (this.getFocusOwner() == Root.SELECT_PANE.getNodeSearch()) {
 					Root.SELECT_PANE.nextMatch(Direction.DOWN, event.isControlDown());
 					event.consume();
 				}
@@ -204,7 +145,8 @@ public class MainStage extends Stage {
 		if (!isViewGallery()) {
 			Root.DISPLAY_PANE.interruptVideoPlayer();
 			
-			borderPane.setCenter(Root.GALLERY_PANE);
+			hBox.getChildren().setAll(Root.FILTER_PANE, Root.GALLERY_PANE, Root.SELECT_PANE);
+			
 			Root.GALLERY_PANE.requestFocus();
 			Root.GALLERY_PANE.moveViewportToTarget();
 			
@@ -213,7 +155,8 @@ public class MainStage extends Stage {
 	}
 	public void viewDisplay() {
 		if (isViewGallery()) {
-			borderPane.setCenter(Root.DISPLAY_PANE);
+			hBox.getChildren().setAll(Root.FILTER_PANE, Root.DISPLAY_PANE, Root.SELECT_PANE);
+			
 			Root.DISPLAY_PANE.requestFocus();
 			
 			Reload.notify(Notifier.VIEWMODE_CHANGED);
@@ -221,7 +164,7 @@ public class MainStage extends Stage {
 	}
 	
 	public boolean isViewGallery() {
-		return borderPane.getCenter() != Root.DISPLAY_PANE;
+		return hBox.getChildren().contains(Root.GALLERY_PANE);
 	}
 	
 	public void showLoadingBar(Thread caller, int total) {
@@ -247,6 +190,28 @@ public class MainStage extends Stage {
 			loadingBar.advance(caller);
 		} else {
 			Platform.runLater(() -> loadingBar.advance(caller));
+		}
+	}
+	
+	private void onStageWidthChange() {
+		double estimateAvailableWidth = this.getWidth() - 2 * SidePaneBase.MIN_WIDTH - 50;
+		
+		TilePane tilePane = Root.GALLERY_PANE.getTilePane();
+		double tileSize = tilePane.getPrefTileWidth();
+		double increment = tileSize + tilePane.getHgap();
+		
+		double calcViewportWidth = 0;
+		while (calcViewportWidth + increment <= estimateAvailableWidth) {
+			calcViewportWidth += increment;
+		}
+		
+		int prefColumnsNew = (int) (calcViewportWidth / tileSize);
+		int prefColumnsOld = tilePane.getPrefColumns();
+		
+		if (prefColumnsNew <= 0) prefColumnsNew = 1;
+		
+		if (prefColumnsNew != prefColumnsOld) {
+			tilePane.setPrefColumns(prefColumnsNew);
 		}
 	}
 }

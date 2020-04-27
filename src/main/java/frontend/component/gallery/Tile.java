@@ -143,7 +143,7 @@ public class Tile extends Pane {
 	
 	private void clickOnTile(MouseEvent event) {
 		if (event.getClickCount() % 2 == 0) {
-			Root.PSC.MAIN_STAGE.viewDisplay();
+			Root.PRIMARY_STAGE.getMainScene().viewDisplay();
 		} else {
 			if (event.isShiftDown()) {
 				Root.SELECT.shiftSelectTo(entity);

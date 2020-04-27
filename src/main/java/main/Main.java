@@ -23,9 +23,9 @@ public class Main extends Application {
 		Settings.readFromDisk();
 		
 		if (!DEBUG_AUTOLOAD_LATEST_PROJECT || FileUtil.getProjectFiles().isEmpty()) {
-			Root.PSC.showIntroStage();
+			Root.PRIMARY_STAGE.showIntroScene();
 		} else {
-			Root.PSC.showMainStage();
+			Root.PRIMARY_STAGE.showMainScene();
 		}
 	}
 	

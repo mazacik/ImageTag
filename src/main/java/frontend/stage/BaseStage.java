@@ -18,7 +18,7 @@ public abstract class BaseStage extends Stage {
 	private final HBox buttonBox;
 	
 	public BaseStage(String title) {
-		this(title, null, (Region) null);
+		this(title, null, (Region[]) null);
 	}
 	public BaseStage(String title, Region root, Region... buttons) {
 		if (buttons == null) {
@@ -35,7 +35,6 @@ public abstract class BaseStage extends Stage {
 			paneMain = new BorderPane(root);
 		}
 		paneMain.setBackground(DecoratorUtil.getBackgroundPrimary());
-		paneMain.setBorder(DecoratorUtil.getBorder(1));
 		paneMain.setBottom(buttonBox);
 		
 		this.setScene(new Scene(paneMain));

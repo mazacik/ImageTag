@@ -1,56 +1,30 @@
-package frontend.stage.primary.project;
+package frontend.stage.primary.scene;
 
 import backend.misc.FileUtil;
 import backend.misc.Project;
-import backend.misc.Settings;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.EditNode;
 import frontend.node.override.HBox;
 import frontend.node.override.Scene;
 import frontend.node.override.VBox;
 import frontend.node.textnode.TextNode;
+import frontend.stage.primary.PrimaryStage;
 import javafx.geometry.Pos;
-import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
-import javafx.stage.Stage;
-import main.Root;
 
-import java.awt.*;
 import java.io.File;
 
-public class ProjectStage extends Stage {
-	public ProjectStage() {
-		Rectangle usableScreenBounds = DecoratorUtil.getUsableScreenBounds();
-		double width = usableScreenBounds.getWidth() / 2;
-		double height = usableScreenBounds.getHeight() / 2;
-		
-		Scene projectScene = this.createProjectScene();
-		projectScene.getRoot().requestFocus();
-		
-		this.getIcons().add(new Image("/logo-32px.png"));
-		this.setScene(projectScene);
-		this.setWidth(width);
-		this.setHeight(height);
-		this.setMinWidth(width);
-		this.setMinHeight(height);
-		this.centerOnScreen();
-		
-		this.setOnCloseRequest(event -> Settings.writeToDisk());
-	}
-	
-	private EditNode editProjectName;
-	private EditNode editSourceDirectory;
-	private TextNode nodeError;
-	//	private TitleBar titleBar;
+public class ProjectScene extends Scene {
+	private final EditNode editProjectName;
+	private final EditNode editSourceDirectory;
+	private final TextNode nodeError;
 	
 	private Project project;
 	
-	private Scene createProjectScene() {
+	public ProjectScene(PrimaryStage primaryStage) {
 		TextNode nodeProjectName = new TextNode("Project Name:", false, false, false, false);
 		nodeProjectName.setAlignment(Pos.CENTER_LEFT);
 		editProjectName = new EditNode();
@@ -63,7 +37,7 @@ public class ProjectStage extends Stage {
 		TextNode nodeBrowseForDirectory = new TextNode("Browse", true, true, true, true);
 		nodeBrowseForDirectory.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
-				String path = FileUtil.directoryChooser(this.getScene());
+				String path = FileUtil.directoryChooser(this);
 				if (!path.isEmpty()) {
 					if (editProjectName.getText().isEmpty()) {
 						String name = new File(path).getName();
@@ -88,9 +62,9 @@ public class ProjectStage extends Stage {
 		nodeError.setTextFill(DecoratorUtil.getColorNegative());
 		
 		TextNode btnFinish = new TextNode("Finish", true, true, true, true);
-		btnFinish.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> this.tryFinish());
+		btnFinish.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> this.tryFinish(primaryStage));
 		TextNode btnCancel = new TextNode("Cancel", true, true, true, true);
-		btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> Root.PSC.showIntroStage());
+		btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> primaryStage.showIntroScene());
 		
 		VBox boxMain = new VBox(gridPane, nodeError, new HBox(btnCancel, btnFinish));
 		boxMain.setSpacing(5);
@@ -98,48 +72,35 @@ public class ProjectStage extends Stage {
 		boxMain.setFillWidth(false);
 		VBox.setVgrow(boxMain, Priority.ALWAYS);
 		
-		this.setTitle("Create a New Project");
 		boxMain.setBackground(DecoratorUtil.getBackgroundPrimary());
 		
-		this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-			if (event.getCode() == KeyCode.ENTER) {
-				this.tryFinish();
-			} else if (event.getCode() == KeyCode.ESCAPE) {
-				Root.PSC.showIntroStage();
-			}
-		});
-		
-		return new Scene(boxMain);
+		this.setRoot(boxMain);
 	}
 	
-	public void initNodes() {
-		project = null;
+	public void refreshProjectNodes() {
+		this.project = null;
 		
 		editProjectName.setText("");
 		editSourceDirectory.setText("");
 		nodeError.setText("");
-		
-		this.setTitle("Create a New Project");
 	}
-	public void initNodes(Project project) {
+	public void refreshProjectNodes(Project project) {
 		this.project = project;
 		
 		editProjectName.setText(project.getProjectName());
 		editSourceDirectory.setText(project.getDirectory());
 		nodeError.setText("");
-		
-		this.setTitle("Edit Project");
 	}
 	
-	private void tryFinish() {
+	public void tryFinish(PrimaryStage primaryStage) {
 		if (this.checkUserInput()) {
 			if (project == null) {
 				project = new Project(editProjectName.getText(), editSourceDirectory.getText());
 				project.writeToDisk();
-				Root.PSC.showMainStage(project);
+				primaryStage.showMainScene(project);
 			} else {
 				project.updateProject(editProjectName.getText(), editSourceDirectory.getText());
-				Root.PSC.showIntroStage();
+				primaryStage.showIntroScene();
 			}
 		}
 	}

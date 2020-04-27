@@ -289,7 +289,7 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				Root.PSC.MAIN_STAGE.viewGallery();
+				Root.PRIMARY_STAGE.getMainScene().viewGallery();
 				Root.FILTER.showSimilar(Root.SELECT.getTarget());
 				Reload.start();
 			});
@@ -574,7 +574,7 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				Root.THREADS.interrupt();
-				Root.PSC.showIntroStage();
+				Root.PRIMARY_STAGE.showIntroScene();
 			});
 			return textNode;
 		}
@@ -584,7 +584,7 @@ public enum TextNodeTemplates {
 			TextNode textNode = new TextNode("Exit", true, true, false, true, this);
 			setupNode(textNode);
 			//noinspection Convert2MethodRef
-			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Root.PSC.requestExit());
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Root.PRIMARY_STAGE.requestExit());
 			return textNode;
 		}
 	},

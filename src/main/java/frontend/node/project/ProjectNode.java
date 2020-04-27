@@ -1,4 +1,4 @@
-package frontend.stage.primary.project;
+package frontend.node.project;
 
 import backend.misc.FileUtil;
 import backend.misc.Project;
@@ -59,7 +59,7 @@ public class ProjectNode extends BorderPane {
 				Node pickResult = event.getPickResult().getIntersectedNode().getParent();
 				
 				if (pickResult.equals(nodeEdit)) {
-					Root.PSC.showProjectStage(project);
+					Root.PRIMARY_STAGE.showProjectScene(project);
 				} else if (pickResult.equals(nodeRemove)) {
 					String message = "Delete project data? The source directory will not be affected";
 					if (new ConfirmationStage(message).getResult()) {
@@ -68,7 +68,7 @@ public class ProjectNode extends BorderPane {
 					}
 				} else {
 					if (new File(project.getDirectory()).exists()) {
-						Root.PSC.showMainStage(project);
+						Root.PRIMARY_STAGE.showMainScene(project);
 					} else {
 						new SimpleMessageStage("Error", "The source directory of this project could not be found.\nDirectory: " + project.getDirectory()).show();
 					}
