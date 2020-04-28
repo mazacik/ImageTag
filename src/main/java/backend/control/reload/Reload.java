@@ -16,6 +16,7 @@ public abstract class Reload {
 	
 	static {
 		link(Notifier.ENTITYLIST_CHANGED,
+		     InvokeHelper.FILTER_REFRESH,
 		     InvokeHelper.PANE_GALLERY_RELOAD,
 		     InvokeHelper.PANE_FILTER_REFRESH
 		);
