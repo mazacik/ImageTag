@@ -203,7 +203,7 @@ public class Select extends EntityList {
 			randomEntity = Root.FILTER.getFirst();
 		} else if (Root.FILTER.size() > 1) {
 			do {
-				randomEntity = Root.FILTER.getRandom();
+				randomEntity = Root.FILTER.getRepresentingRandom();
 			} while (!Root.FILTER.isValid(randomEntity));
 		}
 		this.set(randomEntity);
