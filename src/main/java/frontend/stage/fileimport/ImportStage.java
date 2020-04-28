@@ -1,6 +1,8 @@
 package frontend.stage.fileimport;
 
 import backend.control.filter.FilterOption;
+import backend.control.reload.InvokeHelper;
+import backend.control.reload.Reload;
 import backend.list.BaseList;
 import backend.list.entity.EntityList;
 import backend.misc.FileUtil;
@@ -176,6 +178,9 @@ public class ImportStage extends BaseStage {
 					FilterOption.ENABLE_IMG.setValue(true);
 					FilterOption.ENABLE_VID.setValue(true);
 					FilterOption.LAST_IMPORT_ONLY.setValue(true);
+					
+					Reload.request(InvokeHelper.FILTER_REFRESH);
+					Reload.start();
 				}
 			} else {
 				new SimpleMessageStage("Import Result", message).show();

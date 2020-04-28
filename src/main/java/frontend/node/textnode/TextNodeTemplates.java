@@ -1,6 +1,7 @@
 package frontend.node.textnode;
 
 import backend.cache.CacheLoader;
+import backend.control.reload.InvokeHelper;
 import backend.control.reload.Notifier;
 import backend.control.reload.Reload;
 import backend.list.BaseList;
@@ -554,6 +555,7 @@ public enum TextNodeTemplates {
 					Reload.notify(Notifier.ENTITYLIST_CHANGED);
 				}
 				
+				Reload.request(InvokeHelper.FILTER_REFRESH);
 				Reload.start();
 			});
 			return textNode;
