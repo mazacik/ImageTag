@@ -41,13 +41,13 @@ public class BaseList<T> extends ArrayList<T> {
 		return super.addAll(c);
 	}
 	
-	public T getFirst() {
+	public final T getFirst() {
 		return (!this.isEmpty()) ? this.get(0) : null;
 	}
-	public T getLast() {
+	public final T getLast() {
 		return (!this.isEmpty()) ? this.get(this.size() - 1) : null;
 	}
-	public T getRandom() {
+	public final T getRandom() {
 		return (!this.isEmpty()) ? this.get(new Random().nextInt(this.size())) : null;
 	}
 }

@@ -28,15 +28,7 @@ public class EntityList extends BaseList<Entity> {
 		super.sort(Comparator.comparing(Entity::getName));
 	}
 	
-	public Entity getFirst() {
-		this.sort();
-		return (!this.isEmpty()) ? this.get(0) : null;
-	}
-	public Entity getLast() {
-		this.sort();
-		return (!this.isEmpty()) ? this.get(this.size() - 1) : null;
-	}
-	public Entity getRandom() {
+	public Entity getRepresentingRandom() {
 		Entity entity = this.getRepresentingEntityList().getRandom();
 		if (entity != null) {
 			if (entity.hasCollection()) {
