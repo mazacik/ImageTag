@@ -145,6 +145,11 @@ public class Select extends EntityList {
 				
 				if (entity.hasCollection()) {
 					entity.getCollection().remove(entity);
+					
+					if (target.getCollection().size() <= 1) {
+						target.getCollection().discard();
+					}
+					
 					Reload.notify(Notifier.TARGET_COLLECTION_CHANGED);
 				}
 				
@@ -334,6 +339,11 @@ public class Select extends EntityList {
 			
 			if (target.hasCollection()) {
 				target.getCollection().remove(target);
+				
+				if (target.getCollection().size() <= 1) {
+					target.getCollection().discard();
+				}
+				
 				Reload.notify(Notifier.TARGET_COLLECTION_CHANGED);
 			}
 			
