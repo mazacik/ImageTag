@@ -17,6 +17,7 @@ import frontend.node.override.VBox;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import main.Root;
@@ -31,6 +32,7 @@ public class MainScene extends Scene {
 		loadingBar.setVisible(false);
 		
 		hBox = new HBox(Root.FILTER_PANE, Root.GALLERY_PANE, Root.SELECT_PANE);
+		VBox.setVgrow(hBox, Priority.ALWAYS);
 		vBox = new VBox(Root.TOOLBAR_PANE, hBox);
 		vBox.setBackground(DecoratorUtil.getBackgroundPrimary());
 		
@@ -41,17 +43,14 @@ public class MainScene extends Scene {
 		
 		this.setRoot(stackPane);
 		this.getStylesheets().add("/css/Styles.css");
-		this.initKeybinds();
 		this.widthProperty().addListener((observable, oldValue, newValue) -> this.onStageWidthChange());
 	}
-	private void initKeybinds() {
-		this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-			if (this.getFocusOwner() instanceof EditNode) {
-				keybindsEditNode(event);
-			} else {
-				keybindsGlobal(event);
-			}
-		});
+	public void processKeyEvent(KeyEvent event) {
+		if (this.getFocusOwner() instanceof EditNode) {
+			keybindsEditNode(event);
+		} else {
+			keybindsGlobal(event);
+		}
 	}
 	private void keybindsGlobal(KeyEvent event) {
 		ListMenu.hideMenus();
@@ -94,7 +93,7 @@ public class MainScene extends Scene {
 				break;
 			case G:
 				if (Root.SELECT.getTarget().hasCollection()) {
-					Entity randomEntityFromCollection = Root.SELECT.getTarget().getCollection().getRandom();
+					Entity randomEntityFromCollection = Root.SELECT.getTarget().getCollection().getRepresentingRandom();
 					if (randomEntityFromCollection == null) {
 						int i = 0;
 					}

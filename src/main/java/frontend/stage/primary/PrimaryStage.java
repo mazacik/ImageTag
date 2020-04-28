@@ -1,6 +1,5 @@
 package frontend.stage.primary;
 
-import backend.list.BaseList;
 import backend.misc.FileUtil;
 import backend.misc.Project;
 import backend.misc.Settings;
@@ -10,7 +9,6 @@ import frontend.stage.primary.scene.MainScene;
 import frontend.stage.primary.scene.ProjectScene;
 import javafx.animation.PauseTransition;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -28,9 +26,23 @@ public class PrimaryStage extends Stage {
 	public PrimaryStage() {
 		this.getIcons().add(new Image("/logo-32px.png"));
 		
-		introScene = new IntroScene(this);
-		projectScene = new ProjectScene(this);
+		introScene = new IntroScene();
+		projectScene = new ProjectScene();
 		mainScene = new MainScene();
+		
+		initKeybinds();
+	}
+	
+	private void initKeybinds() {
+		this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+			if (this.getScene() == introScene) {
+				introScene.processKeyEvent(event);
+			} else if (this.getScene() == projectScene) {
+				projectScene.processKeyEvent(event);
+			} else if (this.getScene() == mainScene) {
+				mainScene.processKeyEvent(event);
+			}
+		});
 	}
 	
 	public void showIntroScene() {
@@ -46,21 +58,6 @@ public class PrimaryStage extends Stage {
 		introScene.refreshIntroBox();
 		
 		this.setTitle("Welcome to " + FileUtil.APP_NAME);
-		this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-			switch (event.getCode()) {
-				case ENTER:
-					BaseList<Project> projects = FileUtil.getProjects();
-					if (!projects.isEmpty()) {
-						projects.sort(Project.getComparator());
-						this.showMainScene(projects.getFirst());
-					} else {
-						this.showProjectScene();
-					}
-					break;
-				default:
-					break;
-			}
-		});
 		
 		this.setScene(introScene);
 		this.setWidth(width);
@@ -80,10 +77,6 @@ public class PrimaryStage extends Stage {
 		showProjectScene(null);
 	}
 	public void showProjectScene(Project project) {
-		Rectangle usableScreenBounds = DecoratorUtil.getUsableScreenBounds();
-		double width = usableScreenBounds.getWidth() / 2;
-		double height = usableScreenBounds.getHeight() / 2;
-		
 		projectScene.getRoot().requestFocus();
 		
 		if (project == null) {
@@ -93,19 +86,13 @@ public class PrimaryStage extends Stage {
 		}
 		
 		this.setTitle("Create a New Project");
-		this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-			if (event.getCode() == KeyCode.ENTER) {
-				projectScene.tryFinish(this);
-			} else if (event.getCode() == KeyCode.ESCAPE) {
-				this.showIntroScene();
-			}
-		});
-		
 		this.setScene(projectScene);
+		Rectangle usableScreenBounds = DecoratorUtil.getUsableScreenBounds();
+		double width = usableScreenBounds.getWidth() / 2;
+		double height = usableScreenBounds.getHeight() / 2;
 		this.setWidth(width);
 		this.setHeight(height);
 		this.centerOnScreen();
-		
 		this.setOnCloseRequest(event -> Settings.writeToDisk());
 	}
 	

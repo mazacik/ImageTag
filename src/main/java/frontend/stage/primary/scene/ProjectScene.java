@@ -8,12 +8,14 @@ import frontend.node.override.HBox;
 import frontend.node.override.Scene;
 import frontend.node.override.VBox;
 import frontend.node.textnode.TextNode;
-import frontend.stage.primary.PrimaryStage;
 import javafx.geometry.Pos;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import main.Root;
 
 import java.io.File;
 
@@ -24,7 +26,7 @@ public class ProjectScene extends Scene {
 	
 	private Project project;
 	
-	public ProjectScene(PrimaryStage primaryStage) {
+	public ProjectScene() {
 		TextNode nodeProjectName = new TextNode("Project Name:", false, false, false, false);
 		nodeProjectName.setAlignment(Pos.CENTER_LEFT);
 		editProjectName = new EditNode();
@@ -62,9 +64,9 @@ public class ProjectScene extends Scene {
 		nodeError.setTextFill(DecoratorUtil.getColorNegative());
 		
 		TextNode btnFinish = new TextNode("Finish", true, true, true, true);
-		btnFinish.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> this.tryFinish(primaryStage));
+		btnFinish.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> this.tryFinish());
 		TextNode btnCancel = new TextNode("Cancel", true, true, true, true);
-		btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> primaryStage.showIntroScene());
+		btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> Root.PRIMARY_STAGE.showIntroScene());
 		
 		VBox boxMain = new VBox(gridPane, nodeError, new HBox(btnCancel, btnFinish));
 		boxMain.setSpacing(5);
@@ -75,6 +77,14 @@ public class ProjectScene extends Scene {
 		boxMain.setBackground(DecoratorUtil.getBackgroundPrimary());
 		
 		this.setRoot(boxMain);
+	}
+	
+	public void processKeyEvent(KeyEvent event) {
+		if (event.getCode() == KeyCode.ENTER) {
+			this.tryFinish();
+		} else if (event.getCode() == KeyCode.ESCAPE) {
+			Root.PRIMARY_STAGE.showIntroScene();
+		}
 	}
 	
 	public void refreshProjectNodes() {
@@ -92,15 +102,15 @@ public class ProjectScene extends Scene {
 		nodeError.setText("");
 	}
 	
-	public void tryFinish(PrimaryStage primaryStage) {
+	public void tryFinish() {
 		if (this.checkUserInput()) {
 			if (project == null) {
 				project = new Project(editProjectName.getText(), editSourceDirectory.getText());
 				project.writeToDisk();
-				primaryStage.showMainScene(project);
+				Root.PRIMARY_STAGE.showMainScene(project);
 			} else {
 				project.updateProject(editProjectName.getText(), editSourceDirectory.getText());
-				primaryStage.showIntroScene();
+				Root.PRIMARY_STAGE.showIntroScene();
 			}
 		}
 	}

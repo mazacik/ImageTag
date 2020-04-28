@@ -1,5 +1,7 @@
 package frontend.stage.primary.scene;
 
+import backend.list.BaseList;
+import backend.misc.FileUtil;
 import backend.misc.Project;
 import frontend.decorator.DecoratorTemplate;
 import frontend.decorator.DecoratorUtil;
@@ -10,10 +12,10 @@ import frontend.node.override.VBox;
 import frontend.node.project.ProjectBox;
 import frontend.node.textnode.TextNode;
 import frontend.stage.SimpleMessageStage;
-import frontend.stage.primary.PrimaryStage;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Priority;
@@ -26,7 +28,7 @@ import java.io.File;
 public class IntroScene extends Scene {
 	private final ProjectBox projectBox = new ProjectBox();
 	
-	public IntroScene(PrimaryStage primaryStage) {
+	public IntroScene() {
 		TextNode applicationNameNode = new TextNode("Tagallery", false, false, false, true);
 		applicationNameNode.setFont(new Font(48));
 		applicationNameNode.setPadding(new javafx.geometry.Insets(-20, 0, 20, 0));
@@ -34,7 +36,7 @@ public class IntroScene extends Scene {
 		TextNode btnNewProject = new TextNode("Create a New Project", true, false, true, true);
 		btnNewProject.setMaxWidth(Double.MAX_VALUE);
 		//noinspection Convert2MethodRef
-		btnNewProject.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> primaryStage.showProjectScene());
+		btnNewProject.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> Root.PRIMARY_STAGE.showProjectScene());
 		
 		TextNode btnOpenProject = new TextNode("Open Project", true, false, true, true);
 		btnOpenProject.setMaxWidth(Double.MAX_VALUE);
@@ -50,7 +52,7 @@ public class IntroScene extends Scene {
 			}
 			
 			if (project != null) {
-				primaryStage.showMainScene(project);
+				Root.PRIMARY_STAGE.showMainScene(project);
 			} else {
 				new SimpleMessageStage("Error", "Error opening project file.").showAndWait();
 			}
@@ -84,6 +86,22 @@ public class IntroScene extends Scene {
 		mainBox.setBackground(DecoratorUtil.getBackgroundPrimary());
 		
 		this.setRoot(mainBox);
+	}
+	
+	public void processKeyEvent(KeyEvent event) {
+		switch (event.getCode()) {
+			case ENTER:
+				BaseList<Project> projects = FileUtil.getProjects();
+				if (!projects.isEmpty()) {
+					projects.sort(Project.getComparator());
+					Root.PRIMARY_STAGE.showMainScene(projects.getFirst());
+				} else {
+					Root.PRIMARY_STAGE.showProjectScene();
+				}
+				break;
+			default:
+				break;
+		}
 	}
 	
 	public void refreshIntroBox() {
