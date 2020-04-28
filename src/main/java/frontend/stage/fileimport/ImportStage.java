@@ -91,7 +91,7 @@ public class ImportStage extends BaseStage {
 		
 		CheckBox nodeEmptyFolders = new CheckBox("Remove Empty Folders", true);
 		
-		AtomicReference<ImportMode> importMode = new AtomicReference<>();
+		AtomicReference<ImportMode> importMode = new AtomicReference<>(ImportMode.MOVE);
 		SwitchNode nodeImportMode = new SwitchNode("Copy", "Move", 150);
 		nodeImportMode.getLeft().addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			importMode.set(ImportMode.COPY);
