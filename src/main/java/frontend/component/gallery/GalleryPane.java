@@ -68,7 +68,7 @@ public class GalleryPane extends ScrollPane {
 		this.getChildren().add(tilePane);
 		this.setBackground(Background.EMPTY);
 		this.setHbarPolicy(ScrollBarPolicy.NEVER);
-		this.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+		this.setVbarPolicy(ScrollBarPolicy.ALWAYS);
 		this.addEventFilter(ScrollEvent.SCROLL, this::onScroll);
 	}
 	
@@ -285,10 +285,14 @@ public class GalleryPane extends ScrollPane {
 				double tileTop = targetIndexTileBounds.getMinY();
 				double tileBottom = targetIndexTileBounds.getMaxY();
 				
+				double vValue = -1;
 				if (tileBottom > viewportBottom) {
-					this.setVvalue((targetRow + 1) * rowToContentRatio - viewportToContentRatio);
+					vValue = (targetRow + 1) * rowToContentRatio - viewportToContentRatio;
 				} else if (tileTop < viewportTop) {
-					this.setVvalue(targetRow * rowToContentRatio);
+					vValue = targetRow * rowToContentRatio;
+				}
+				if (vValue >= 0 && vValue <= 1) {
+					this.setVvalue(vValue);
 				}
 			}
 		}
