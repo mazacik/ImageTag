@@ -1,5 +1,7 @@
 package frontend.stage.primary;
 
+import backend.control.reload.Notifier;
+import backend.control.reload.Reload;
 import backend.misc.FileUtil;
 import backend.misc.Project;
 import backend.misc.Settings;
@@ -14,7 +16,6 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import main.Main;
-import main.Root;
 
 import java.awt.*;
 
@@ -97,18 +98,7 @@ public class PrimaryStage extends Stage {
 	}
 	
 	public void showMainScene() {
-		showMainScene(null);
-	}
-	public void showMainScene(Project project) {
 		this.setOpacity(0);
-		
-		if (project == null) {
-			Project.setFirstAsCurrent();
-		} else {
-			Project.setCurrent(project);
-		}
-		
-		Root.startProjectDatabaseLoading();
 		
 		this.setTitle(FileUtil.APP_NAME);
 		this.setScene(mainScene);
@@ -116,7 +106,7 @@ public class PrimaryStage extends Stage {
 		this.setMaximized(true);
 		this.setOnCloseRequest(event -> Main.exitApplication());
 		
-		Root.TOOLBAR_PANE.requestFocus();
+		Main.TOOLBAR_PANE.requestFocus();
 		
 		if (!this.isShowing()) {
 			this.show();
@@ -126,6 +116,9 @@ public class PrimaryStage extends Stage {
 		} else {
 			this.setOpacity(1);
 		}
+		
+		Reload.notify(Notifier.values());
+		Reload.start();
 	}
 	
 	public void requestExit() {

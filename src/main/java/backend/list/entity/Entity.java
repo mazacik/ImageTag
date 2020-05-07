@@ -1,14 +1,14 @@
 package backend.list.entity;
 
 import backend.list.BaseList;
-import backend.list.collection.Collection;
+import backend.list.group.Group;
 import backend.list.tag.Tag;
 import backend.list.tag.TagList;
 import backend.misc.EntityType;
 import backend.misc.FileUtil;
 import com.google.gson.annotations.SerializedName;
 import frontend.component.gallery.Tile;
-import main.Root;
+import main.Main;
 
 import java.io.File;
 
@@ -16,11 +16,11 @@ public class Entity {
 	@SerializedName("n") private String name;
 	@SerializedName("t") private final BaseList<Integer> tagIDs;
 	@SerializedName("s") private final long size;
-	@SerializedName("c") private int collectionID;
+	@SerializedName("g") private int groupID;
 	@SerializedName("f") private EntityType entityType;
 	@SerializedName("d") private long mediaDuration;
 	
-	private transient Collection collection;
+	private transient Group group;
 	private transient TagList tagList;
 	private transient Tile tile;
 	
@@ -28,11 +28,11 @@ public class Entity {
 		this.name = FileUtil.createEntityName(file);
 		this.tagIDs = new BaseList<>();
 		this.size = file.length();
-		this.collectionID = 0;
+		this.groupID = 0;
 		this.entityType = null;
 		this.mediaDuration = 0;
 		
-		this.collection = null;
+		this.group = null;
 		this.tile = null;
 	}
 	
@@ -41,14 +41,14 @@ public class Entity {
 		tagIDs.add(tag.getID());
 	}
 	public void addTag(int tagID) {
-		this.addTag(Root.TAGLIST.getTag(tagID));
+		this.addTag(Main.TAGLIST.getTag(tagID));
 	}
 	public void removeTag(Tag tag) {
 		getTagList().remove(tag);
 		tagIDs.remove((Integer) tag.getID());
 	}
 	public void removeTag(int tagID) {
-		this.removeTag(Root.TAGLIST.getTag(tagID));
+		this.removeTag(Main.TAGLIST.getTag(tagID));
 	}
 	public void removeTag(TagList tagList) {
 		tagList.forEach(this::removeTag);
@@ -60,24 +60,24 @@ public class Entity {
 	
 	public void initTags() {
 		for (int tagID : this.getTagIDList()) {
-			this.getTagList().add(Root.TAGLIST.getTag(tagID));
+			this.getTagList().add(Main.TAGLIST.getTag(tagID));
 		}
 	}
 	
 	public Entity getRepresentingEntity() {
-		if (this.hasCollection()) {
-			if (collection.isOpen()) {
+		if (this.hasGroup()) {
+			if (group.isOpen()) {
 				return this;
 			} else {
-				return Root.FILTER.getFilteredList(collection).getFirst();
+				return Main.FILTER.getFilteredList(group).getFirst();
 			}
 		} else {
 			return this;
 		}
 	}
 	
-	public boolean hasCollection() {
-		return collectionID != 0;
+	public boolean hasGroup() {
+		return groupID != 0;
 	}
 	
 	public String getName() {
@@ -89,8 +89,8 @@ public class Entity {
 	public long getSize() {
 		return size;
 	}
-	public int getCollectionID() {
-		return collectionID;
+	public int getGroupID() {
+		return groupID;
 	}
 	public EntityType getEntityType() {
 		if (entityType == null) {
@@ -101,8 +101,8 @@ public class Entity {
 	public long getMediaDuration() {
 		return mediaDuration;
 	}
-	public Collection getCollection() {
-		return collection;
+	public Group getGroup() {
+		return group;
 	}
 	public TagList getTagList() {
 		if (tagList == null) {
@@ -120,13 +120,13 @@ public class Entity {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public void setCollectionID(int collectionID) {
-		this.collectionID = collectionID;
+	public void setGroupID(int groupID) {
+		this.groupID = groupID;
 	}
 	public void setMediaDuration(long mediaDuration) {
 		this.mediaDuration = mediaDuration;
 	}
-	public void setCollection(Collection collection) {
-		this.collection = collection;
+	public void setGroup(Group group) {
+		this.group = group;
 	}
 }

@@ -1,9 +1,9 @@
 package backend.override;
 
-import main.Root;
+import main.Main;
 
 public class Thread extends java.lang.Thread {
 	public Thread(Runnable target) {
-		super(Root.THREADS, target);
+		super(Main.THREADS, target);
 	}
 }

@@ -16,7 +16,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
-import main.Root;
+import main.Main;
 
 import java.io.File;
 
@@ -59,7 +59,7 @@ public class ProjectNode extends BorderPane {
 				Node pickResult = event.getPickResult().getIntersectedNode().getParent();
 				
 				if (pickResult.equals(nodeEdit)) {
-					Root.PRIMARY_STAGE.showProjectScene(project);
+					Main.STAGE.showProjectScene(project);
 				} else if (pickResult.equals(nodeRemove)) {
 					String message = "Delete project data? The source directory will not be affected";
 					if (new ConfirmationStage(message).getResult()) {
@@ -68,7 +68,7 @@ public class ProjectNode extends BorderPane {
 					}
 				} else {
 					if (new File(project.getDirectory()).exists()) {
-						Root.PRIMARY_STAGE.showMainScene(project);
+						Main.startMain(project);
 					} else {
 						new SimpleMessageStage("Error", "The source directory of this project could not be found.\nDirectory: " + project.getDirectory()).show();
 					}

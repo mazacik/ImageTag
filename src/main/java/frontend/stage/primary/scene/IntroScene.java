@@ -21,7 +21,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
-import main.Root;
+import main.Main;
 
 import java.io.File;
 
@@ -36,7 +36,7 @@ public class IntroScene extends Scene {
 		TextNode btnNewProject = new TextNode("Create a New Project", true, false, true, true);
 		btnNewProject.setMaxWidth(Double.MAX_VALUE);
 		//noinspection Convert2MethodRef
-		btnNewProject.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> Root.PRIMARY_STAGE.showProjectScene());
+		btnNewProject.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> Main.STAGE.showProjectScene());
 		
 		TextNode btnOpenProject = new TextNode("Open Project", true, false, true, true);
 		btnOpenProject.setMaxWidth(Double.MAX_VALUE);
@@ -44,7 +44,7 @@ public class IntroScene extends Scene {
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.setTitle("Open Project");
 			fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-			File file = fileChooser.showOpenDialog(Root.PRIMARY_STAGE);
+			File file = fileChooser.showOpenDialog(Main.STAGE);
 			
 			Project project = null;
 			if (file != null) {
@@ -52,7 +52,7 @@ public class IntroScene extends Scene {
 			}
 			
 			if (project != null) {
-				Root.PRIMARY_STAGE.showMainScene(project);
+				Main.startMain(project);
 			} else {
 				new SimpleMessageStage("Error", "Error opening project file.").showAndWait();
 			}
@@ -94,9 +94,9 @@ public class IntroScene extends Scene {
 				BaseList<Project> projects = FileUtil.getProjects();
 				if (!projects.isEmpty()) {
 					projects.sort(Project.getComparator());
-					Root.PRIMARY_STAGE.showMainScene(projects.getFirst());
+					Main.startMain(null);
 				} else {
-					Root.PRIMARY_STAGE.showProjectScene();
+					Main.STAGE.showProjectScene();
 				}
 				break;
 			default:

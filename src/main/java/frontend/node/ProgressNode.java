@@ -6,7 +6,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import main.Root;
+import main.Main;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -59,7 +59,7 @@ public class ProgressNode extends StackPane {
 	}
 	
 	public void setup(Thread caller, double total) {
-		if (Thread.currentThread() != Root.THREAD_MAIN) {
+		if (Thread.currentThread() != Main.THREAD_MAIN) {
 			this.caller = caller;
 			this.total = total;
 			this.current = 0;

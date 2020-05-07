@@ -71,7 +71,7 @@ public abstract class ListMenu extends Popup {
 		       new SeparatorNode(),
 		       ArrowTextNodeTemplates.FILE_TAGS.get(),
 		       ArrowTextNodeTemplates.SELECTION_TAGS.get(),
-		       ArrowTextNodeTemplates.COLLECTION.get(),
+		       ArrowTextNodeTemplates.GROUP.get(),
 		       new SeparatorNode(),
 		       TextNodeTemplates.FILE_COPYFILENAME.get(),
 		       TextNodeTemplates.FILE_COPYFILEPATH.get(),
@@ -80,7 +80,8 @@ public abstract class ListMenu extends Popup {
 		),
 		TAG(TextNodeTemplates.TAG_CREATE_CHILD.get(),
 		    TextNodeTemplates.TAG_EDIT.get(),
-		    TextNodeTemplates.TAG_REMOVE.get()
+		    TextNodeTemplates.TAG_REMOVE_LEVEL.get(),
+		    TextNodeTemplates.TAG_REMOVE_CHILDREN.get()
 		),
 		;
 		

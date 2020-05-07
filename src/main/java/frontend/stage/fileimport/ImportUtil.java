@@ -1,6 +1,8 @@
 package frontend.stage.fileimport;
 
 import backend.cache.CacheLoader;
+import backend.control.reload.Notifier;
+import backend.control.reload.Reload;
 import backend.list.BaseList;
 import backend.list.entity.Entity;
 import backend.list.entity.EntityList;
@@ -8,7 +10,7 @@ import backend.misc.FileUtil;
 import backend.misc.Project;
 import backend.override.Thread;
 import javafx.application.Platform;
-import main.Root;
+import main.Main;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -21,18 +23,22 @@ public abstract class ImportUtil {
 			if (entityList != null && !entityList.isEmpty()) {
 				CacheLoader.startCacheThread(entityList);
 				
-				Root.ENTITYLIST.addAll(entityList);
-				Root.ENTITYLIST.sort();
+				Main.ENTITYLIST.addAll(entityList);
+				Main.ENTITYLIST.sort();
 				
-				Root.FILTER.getLastImport().setAll(entityList);
+				Main.FILTER.getLastImport().setAll(entityList);
 			}
 			
-			Platform.runLater(() -> ImportStage.displayResults(entityList));
+			Platform.runLater(() -> {
+				ImportStage.displayResults(entityList);
+				Reload.notify(Notifier.ENTITYLIST_CHANGED);
+				Reload.start();
+			});
 		}).start();
 	}
 	
 	private static EntityList importFiles(ImportMode importMode, String directory, BaseList<File> fileList) {
-		Root.PRIMARY_STAGE.getMainScene().showLoadingBar(Thread.currentThread(), fileList.size());
+		Main.STAGE.getMainScene().showLoadingBar(Thread.currentThread(), fileList.size());
 		
 		EntityList entityList = new EntityList();
 		for (File fileFrom : fileList) {
@@ -43,10 +49,10 @@ public abstract class ImportUtil {
 				entityList.add(entity);
 			}
 			
-			Root.PRIMARY_STAGE.getMainScene().advanceLoadingBar(Thread.currentThread());
+			Main.STAGE.getMainScene().advanceLoadingBar(Thread.currentThread());
 		}
 		
-		Root.PRIMARY_STAGE.getMainScene().hideLoadingBar(Thread.currentThread());
+		Main.STAGE.getMainScene().hideLoadingBar(Thread.currentThread());
 		
 		return entityList;
 	}

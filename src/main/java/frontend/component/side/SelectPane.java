@@ -12,7 +12,7 @@ import frontend.node.textnode.TextNode;
 import frontend.node.textnode.TextNodeTemplates;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Background;
-import main.Root;
+import main.Main;
 
 public class SelectPane extends SidePaneBase {
 	private final TextNode nodeText;
@@ -72,11 +72,11 @@ public class SelectPane extends SidePaneBase {
 				nodeSearch.clear();
 				searchLock = false;
 				
-				Tag tag = Root.TAGLIST.getTag(match.getStringValue());
-				if (Root.SELECT.getTagListIntersect().contains(tag)) {
-					Root.SELECT.removeTag(tag.getID());
+				Tag tag = Main.TAGLIST.getTag(match.getStringValue());
+				if (Main.SELECT.getTagListIntersect().contains(tag)) {
+					Main.SELECT.removeTag(tag.getID());
 				} else {
-					Root.SELECT.addTag(tag.getID());
+					Main.SELECT.addTag(tag.getID());
 				}
 				
 				Reload.start();
@@ -96,9 +96,9 @@ public class SelectPane extends SidePaneBase {
 		refreshTitle();
 		
 		BaseList<String> stringListIntersect = new BaseList<>();
-		Root.SELECT.getTagListIntersect().forEach(tag -> stringListIntersect.add(tag.getStringValue()));
+		Main.SELECT.getTagListIntersect().forEach(tag -> stringListIntersect.add(tag.getStringValue()));
 		BaseList<String> stringListUnion = new BaseList<>();
-		Root.SELECT.getTagList().forEach(tag -> stringListUnion.add(tag.getStringValue()));
+		Main.SELECT.getTagList().forEach(tag -> stringListUnion.add(tag.getStringValue()));
 		
 		getTagNodes().forEach(tagNode -> this.refreshNodeColor(tagNode, stringListIntersect, stringListUnion));
 		
@@ -122,13 +122,13 @@ public class SelectPane extends SidePaneBase {
 	}
 	private void refreshTitle() {
 		int hiddenTilesCount = 0;
-		for (Entity entity : Root.SELECT) {
-			if (!Root.FILTER.contains(entity)) {
+		for (Entity entity : Main.SELECT) {
+			if (!Main.FILTER.contains(entity)) {
 				hiddenTilesCount++;
 			}
 		}
 		
-		String text = "Selection: " + Root.SELECT.size();
+		String text = "Selection: " + Main.SELECT.size();
 		if (hiddenTilesCount > 0) text += " (" + hiddenTilesCount + " hidden)";
 		
 		nodeText.setText(text);

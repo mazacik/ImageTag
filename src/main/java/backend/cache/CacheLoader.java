@@ -16,7 +16,6 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import main.Main;
-import main.Root;
 
 import java.io.File;
 
@@ -45,7 +44,7 @@ public abstract class CacheLoader {
 	public static void startCacheThread(EntityList entityList, boolean recreate) {
 		if (Main.DEBUG_USE_CACHE) {
 			new Thread(() -> {
-				Root.PRIMARY_STAGE.getMainScene().showLoadingBar(Thread.currentThread(), entityList.size());
+				Main.STAGE.getMainScene().showLoadingBar(Thread.currentThread(), entityList.size());
 				
 				for (Entity entity : new EntityList(entityList)) {
 					if (Thread.currentThread().isInterrupted()) {
@@ -53,17 +52,17 @@ public abstract class CacheLoader {
 					}
 					
 					entity.getTile().setImage(CacheLoader.get(entity, recreate));
-					Root.PRIMARY_STAGE.getMainScene().advanceLoadingBar(Thread.currentThread());
+					Main.STAGE.getMainScene().advanceLoadingBar(Thread.currentThread());
 				}
 				
-				Root.PRIMARY_STAGE.getMainScene().hideLoadingBar(Thread.currentThread());
+				Main.STAGE.getMainScene().hideLoadingBar(Thread.currentThread());
 			}).start();
 		}
 	}
 	
 	public static void reset() {
-		Root.ENTITYLIST.forEach(entity -> entity.getTile().setImage(null));
-		CacheLoader.startCacheThread(Root.ENTITYLIST, true);
+		Main.ENTITYLIST.forEach(entity -> entity.getTile().setImage(null));
+		CacheLoader.startCacheThread(Main.ENTITYLIST, true);
 	}
 	
 	public static Image get(Entity entity) {

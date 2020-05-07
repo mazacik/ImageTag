@@ -6,7 +6,7 @@ import frontend.node.ListBox;
 import frontend.node.override.HBox;
 import frontend.node.override.VBox;
 import javafx.scene.layout.Priority;
-import main.Root;
+import main.Main;
 
 public abstract class SidePaneBase extends VBox {
 	public static final double MIN_WIDTH = 250;
@@ -28,7 +28,7 @@ public abstract class SidePaneBase extends VBox {
 	
 	public boolean reload() {
 		rootNodes.clear();
-		Root.TAGLIST.forEach(this::createNode);
+		Main.TAGLIST.forEach(this::createNode);
 		listBox.setNodes(rootNodes);
 		
 		BaseList<String> openNodesHelper = new BaseList<>();

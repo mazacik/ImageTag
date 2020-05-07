@@ -5,9 +5,9 @@ import backend.control.reload.InvokeHelper;
 import backend.control.reload.Notifier;
 import backend.control.reload.Reload;
 import backend.list.BaseList;
-import backend.list.collection.Collection;
 import backend.list.entity.Entity;
 import backend.list.entity.EntityList;
+import backend.list.group.Group;
 import backend.list.tag.TagList;
 import backend.list.tag.TagUtil;
 import backend.misc.FileUtil;
@@ -19,7 +19,7 @@ import frontend.stage.CollageStage;
 import frontend.stage.ConfirmationStage;
 import frontend.stage.SimpleMessageStage;
 import frontend.stage.fileimport.ImportStage;
-import frontend.stage.options.SettingsStage;
+import frontend.stage.settings.SettingsStage;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.input.Clipboard;
@@ -27,7 +27,7 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Pair;
-import main.Root;
+import main.Main;
 
 import java.awt.*;
 import java.io.File;
@@ -41,10 +41,12 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				try {
-					Desktop.getDesktop().open(new File(FileUtil.getFileEntity(Root.SELECT.getTarget())));
-				} catch (IOException e) {
-					e.printStackTrace();
+				if (Main.SELECT.getTarget() != null) {
+					try {
+						Desktop.getDesktop().open(new File(FileUtil.getFileEntity(Main.SELECT.getTarget())));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			});
 			return textNode;
@@ -57,10 +59,12 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				try {
-					Runtime.getRuntime().exec("mspaint.exe \"" + FileUtil.getFileEntity(Root.SELECT.getTarget()) + "\"");
-				} catch (IOException e) {
-					e.printStackTrace();
+				if (Main.SELECT.getTarget() != null) {
+					try {
+						Runtime.getRuntime().exec("mspaint.exe \"" + FileUtil.getFileEntity(Main.SELECT.getTarget()) + "\"");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			});
 			return textNode;
@@ -73,10 +77,12 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				try {
-					Runtime.getRuntime().exec("explorer.exe /select,\"" + FileUtil.getFileEntity(Root.SELECT.getTarget()) + "\"");
-				} catch (IOException e) {
-					e.printStackTrace();
+				if (Main.SELECT.getTarget() != null) {
+					try {
+						Runtime.getRuntime().exec("explorer.exe /select,\"" + FileUtil.getFileEntity(Main.SELECT.getTarget()) + "\"");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			});
 			return textNode;
@@ -89,9 +95,11 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				ClipboardContent content = new ClipboardContent();
-				content.putString(FileUtil.getFileEntity(Root.SELECT.getTarget()));
-				Clipboard.getSystemClipboard().setContent(content);
+				if (Main.SELECT.getTarget() != null) {
+					ClipboardContent content = new ClipboardContent();
+					content.putString(Main.SELECT.getTarget().getName());
+					Clipboard.getSystemClipboard().setContent(content);
+				}
 			});
 			return textNode;
 		}
@@ -103,9 +111,11 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				ClipboardContent content = new ClipboardContent();
-				content.putString(FileUtil.getFileEntity(Root.SELECT.getTarget()));
-				Clipboard.getSystemClipboard().setContent(content);
+				if (Main.SELECT.getTarget() != null) {
+					ClipboardContent content = new ClipboardContent();
+					content.putString(FileUtil.getFileEntity(Main.SELECT.getTarget()));
+					Clipboard.getSystemClipboard().setContent(content);
+				}
 			});
 			return textNode;
 		}
@@ -117,13 +127,15 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				Root.SELECT.deleteTarget();
-				Reload.start();
+				if (Main.SELECT.getTarget() != null) {
+					Main.SELECT.deleteTarget();
+					Reload.start();
+				}
 			});
 			return textNode;
 		}
 		@Override public boolean resolveVisible() {
-			return Root.SELECT.size() <= 1;
+			return Main.SELECT.size() <= 1;
 		}
 	},
 	
@@ -134,7 +146,9 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				TagUtil.setClipboard(new TagList(Root.SELECT.getTarget().getTagList()));
+				if (Main.SELECT.getTarget() != null) {
+					TagUtil.setClipboard(new TagList(Main.SELECT.getTarget().getTagList()));
+				}
 			});
 			return textNode;
 		}
@@ -146,11 +160,13 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				Root.SELECT.getTarget().clearTags();
-				TagUtil.getClipboard().forEach(tag -> Root.SELECT.getTarget().addTag(tag.getID()));
-				
-				Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
-				Reload.start();
+				if (Main.SELECT.getTarget() != null) {
+					Main.SELECT.getTarget().clearTags();
+					TagUtil.getClipboard().forEach(tag -> Main.SELECT.getTarget().addTag(tag.getID()));
+					
+					Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
+					Reload.start();
+				}
 			});
 			return textNode;
 		}
@@ -162,11 +178,13 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				if (new ConfirmationStage("Clear tags of \"" + Root.SELECT.getTarget().getName() + "\"?").getResult()) {
-					Root.SELECT.getTarget().getTagList().clear();
-					
-					Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
-					Reload.start();
+				if (Main.SELECT.getTarget() != null) {
+					if (new ConfirmationStage("Clear tags of \"" + Main.SELECT.getTarget().getName() + "\"?").getResult()) {
+						Main.SELECT.getTarget().getTagList().clear();
+						
+						Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
+						Reload.start();
+					}
 				}
 			});
 			return textNode;
@@ -180,34 +198,36 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				double maxSize = -1;
-				BaseList<Pair<Entity, Double>> pairs = new BaseList<>();
-				
-				for (Entity entity : Root.SELECT) {
-					Image image = new Image("file:" + FileUtil.getFileEntity(entity));
-					double size = image.getWidth() * image.getHeight();
+				if (Main.SELECT.size() > 1) {
+					double maxSize = -1;
+					BaseList<Pair<Entity, Double>> pairs = new BaseList<>();
 					
-					pairs.add(new Pair<>(entity, size));
+					for (Entity entity : Main.SELECT) {
+						Image image = new Image("file:" + FileUtil.getFileEntity(entity));
+						double size = image.getWidth() * image.getHeight();
+						
+						pairs.add(new Pair<>(entity, size));
+						
+						if (size > maxSize) {
+							maxSize = size;
+						}
+					}
 					
-					if (size > maxSize) {
-						maxSize = size;
+					for (Pair<Entity, Double> pair : pairs) {
+						if (pair.getValue() == maxSize) {
+							Main.SELECT.remove(pair.getKey());
+							Reload.requestBorderUpdate(pair.getKey());
+						}
 					}
+					
+					Reload.start();
 				}
-				
-				for (Pair<Entity, Double> pair : pairs) {
-					if (pair.getValue() == maxSize) {
-						Root.SELECT.remove(pair.getKey());
-						Reload.requestBorderUpdate(pair.getKey());
-					}
-				}
-				
-				Reload.start();
 			});
 			
 			return textNode;
 		}
 		@Override public boolean resolveVisible() {
-			return Root.SELECT.size() > 1;
+			return Main.SELECT.size() > 1;
 		}
 	},
 	
@@ -218,7 +238,7 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				TagUtil.setClipboard(new TagList(Root.SELECT.getTagList()));
+				TagUtil.setClipboard(new TagList(Main.SELECT.getTagList()));
 			});
 			return textNode;
 		}
@@ -230,8 +250,8 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				Root.SELECT.clearTags();
-				TagUtil.getClipboard().forEach(tag -> Root.SELECT.addTag(tag.getID()));
+				Main.SELECT.clearTags();
+				TagUtil.getClipboard().forEach(tag -> Main.SELECT.addTag(tag.getID()));
 				
 				Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
 				Reload.start();
@@ -239,6 +259,21 @@ public enum TextNodeTemplates {
 			return textNode;
 		}
 	},
+	SELECTION_TAGS_MERGE {
+		@Override public TextNode get() {
+			TextNode textNode = new TextNode("Merge", true, true, false, true, this);
+			setupNode(textNode);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ListMenu.hideMenus();
+				
+				Main.SELECT.mergeTags();
+				
+				Reload.start();
+			});
+			return textNode;
+		}
+	},
+	
 	SELECTION_TAGS_CLEAR {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Clear", true, true, false, true, this);
@@ -246,8 +281,8 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				if (new ConfirmationStage("Clear tags of " + Root.SELECT.size() + " entities?").getResult()) {
-					Root.SELECT.forEach(entity -> entity.getTagList().clear());
+				if (new ConfirmationStage("Clear tags of " + Main.SELECT.size() + " entities?").getResult()) {
+					Main.SELECT.forEach(entity -> entity.getTagList().clear());
 					
 					Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
 					Reload.start();
@@ -264,8 +299,10 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				HttpUtil.googleRIS(Root.SELECT.getTarget());
-				new SimpleMessageStage("Google RIS", "Request sent.").show();
+				if (Main.SELECT.getTarget() != null) {
+					HttpUtil.googleRIS(Main.SELECT.getTarget());
+					new SimpleMessageStage("Google RIS", "Request sent.").show();
+				}
 			});
 			return textNode;
 		}
@@ -277,12 +314,25 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				EntityDetailsUtil.show();
+				if (Main.SELECT.getTarget() != null) {
+					EntityDetailsUtil.show();
+				}
 			});
 			return textNode;
 		}
 	},
 	
+	FILTER_CREATE_PRESET {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Create Preset", true, true, false, true, this);
+			setupNode(textNode);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ListMenu.hideMenus();
+				
+			});
+			return textNode;
+		}
+	},
 	FILTER_SIMILAR {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Filter Similar", true, true, false, true, this);
@@ -290,9 +340,11 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				Root.PRIMARY_STAGE.getMainScene().viewGallery();
-				Root.FILTER.showSimilar(Root.SELECT.getTarget());
-				Reload.start();
+				if (Main.SELECT.getTarget() != null) {
+					Main.STAGE.getMainScene().viewGallery();
+					Main.FILTER.showSimilar(Main.SELECT.getTarget());
+					Reload.start();
+				}
 			});
 			return textNode;
 		}
@@ -304,7 +356,9 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				new CollageStage();
+				if (Main.SELECT.getTarget() != null) {
+					new CollageStage();
+				}
 			});
 			return textNode;
 		}
@@ -317,7 +371,7 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				Root.SELECT.setAll(Root.FILTER);
+				Main.SELECT.setAll(Main.FILTER);
 				Reload.start();
 			});
 			return textNode;
@@ -330,7 +384,7 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				Root.SELECT.clear();
+				Main.SELECT.clear();
 				Reload.start();
 			});
 			return textNode;
@@ -343,13 +397,13 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				Root.SELECT.deleteSelect();
+				Main.SELECT.deleteSelect();
 				Reload.start();
 			});
 			return textNode;
 		}
 		@Override public boolean resolveVisible() {
-			return Root.SELECT.size() > 1;
+			return Main.SELECT.size() > 1;
 		}
 	},
 	
@@ -395,9 +449,23 @@ public enum TextNodeTemplates {
 			return textNode;
 		}
 	},
-	TAG_REMOVE {
+	TAG_REMOVE_LEVEL {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Remove Tag", true, true, false, true, this);
+			TextNode textNode = new TextNode("Remove Level", true, true, false, true, this);
+			setupNode(textNode);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ListMenu.hideMenus();
+				
+				TagUtil.removeIntermediate();
+				
+				Reload.start();
+			});
+			return textNode;
+		}
+	},
+	TAG_REMOVE_CHILDREN {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Remove Tag(s)", true, true, false, true, this);
 			setupNode(textNode);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
@@ -410,32 +478,32 @@ public enum TextNodeTemplates {
 		}
 	},
 	
-	COLLECTION_CREATE {
+	GROUP_CREATE {
 		@Override public TextNode get() {
 			TextNode textNode = new TextNode("Create", true, true, false, true, this);
 			setupNode(textNode);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				Collection.create(Root.SELECT);
+				Group.create(Main.SELECT);
 				
 				Reload.start();
 			});
 			return textNode;
 		}
 		@Override public boolean resolveVisible() {
-			return !Root.SELECT.isCollection();
+			return !Main.SELECT.isGroup();
 		}
 	},
-	COLLECTION_DISCARD {
+	GROUP_DISCARD {
 		@Override public TextNode get() {
 			TextNode textNode = new TextNode("Discard", true, true, false, true, this);
 			setupNode(textNode);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				if (Root.SELECT.isCollection()) {
-					Root.SELECT.getFirst().getCollection().discard();
+				if (Main.SELECT.isGroup()) {
+					Main.SELECT.getFirst().getGroup().discard();
 				}
 				
 				Reload.start();
@@ -443,25 +511,25 @@ public enum TextNodeTemplates {
 			return textNode;
 		}
 		@Override public boolean resolveVisible() {
-			return Root.SELECT.isCollection();
+			return Main.SELECT.isGroup();
 		}
 	},
 	
-	COLLECTION_MERGE_TAGS {
+	GROUP_MERGE_TAGS {
 		@Override public TextNode get() {
 			TextNode textNode = new TextNode("Merge Tags", true, true, false, true, this);
 			setupNode(textNode);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				Root.SELECT.getTarget().getCollection().mergeTags();
+				Main.SELECT.getTarget().getGroup().mergeTags();
 				
 				Reload.start();
 			});
 			return textNode;
 		}
 		@Override public boolean resolveVisible() {
-			return Root.SELECT.isCollection();
+			return Main.SELECT.isGroup();
 		}
 	},
 	
@@ -511,7 +579,7 @@ public enum TextNodeTemplates {
 			setupNode(textNode);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				BaseList<String> entitiesInApp = new BaseList<>();
-				Root.ENTITYLIST.forEach(entity -> entitiesInApp.add(FileUtil.getFileEntity(entity)));
+				Main.ENTITYLIST.forEach(entity -> entitiesInApp.add(FileUtil.getFileEntity(entity)));
 				
 				BaseList<String> entitiesOnDisk = new BaseList<>();
 				File projectDirectory = new File(Project.getCurrent().getDirectory());
@@ -526,10 +594,10 @@ public enum TextNodeTemplates {
 					entitiesOnDiskNotInApp.forEach(path -> entityList.add(new Entity(new File(path))));
 					CacheLoader.startCacheThread(entityList);
 					
-					Root.ENTITYLIST.addAll(entityList);
-					Root.ENTITYLIST.sort();
+					Main.ENTITYLIST.addAll(entityList);
+					Main.ENTITYLIST.sort();
 					
-					Root.FILTER.getLastImport().setAll(entityList);
+					Main.FILTER.getLastImport().setAll(entityList);
 					
 					Reload.notify(Notifier.ENTITYLIST_CHANGED);
 				}
@@ -542,7 +610,7 @@ public enum TextNodeTemplates {
 					EntityList entitiesToRemove = new EntityList();
 					
 					entitiesInAppNotOnDisk.forEach(path -> {
-						for (Entity entity : Root.ENTITYLIST) {
+						for (Entity entity : Main.ENTITYLIST) {
 							if (FileUtil.getFileEntity(entity).equals(path)) {
 								entitiesToRemove.add(entity);
 								break;
@@ -550,7 +618,7 @@ public enum TextNodeTemplates {
 						}
 					});
 					
-					Root.ENTITYLIST.removeAll(entitiesToRemove);
+					Main.ENTITYLIST.removeAll(entitiesToRemove);
 					
 					Reload.notify(Notifier.ENTITYLIST_CHANGED);
 				}
@@ -575,8 +643,8 @@ public enum TextNodeTemplates {
 			setupNode(textNode);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
-				Root.THREADS.interrupt();
-				Root.PRIMARY_STAGE.showIntroScene();
+				Main.THREADS.interrupt();
+				Main.STAGE.showIntroScene();
 			});
 			return textNode;
 		}
@@ -586,7 +654,7 @@ public enum TextNodeTemplates {
 			TextNode textNode = new TextNode("Exit", true, true, false, true, this);
 			setupNode(textNode);
 			//noinspection Convert2MethodRef
-			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Root.PRIMARY_STAGE.requestExit());
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Main.STAGE.requestExit());
 			return textNode;
 		}
 	},

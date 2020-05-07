@@ -2,7 +2,7 @@ package frontend.node.textnode;
 
 import backend.misc.Direction;
 import frontend.node.menu.HoverMenu;
-import main.Root;
+import main.Main;
 
 public enum ArrowTextNodeTemplates {
 	FILE_TAGS {
@@ -17,7 +17,7 @@ public enum ArrowTextNodeTemplates {
 			return arrowTextNode;
 		}
 		@Override public boolean resolveVisible() {
-			return Root.SELECT.size() <= 1;
+			return Main.SELECT.size() <= 1;
 		}
 	},
 	SELECTION_TAGS {
@@ -27,28 +27,29 @@ public enum ArrowTextNodeTemplates {
 			HoverMenu.install(arrowTextNode, Direction.RIGHT
 					, TextNodeTemplates.SELECTION_TAGS_COPY.get()
 					, TextNodeTemplates.SELECTION_TAGS_PASTE.get()
+					, TextNodeTemplates.SELECTION_TAGS_MERGE.get()
 					, TextNodeTemplates.SELECTION_TAGS_CLEAR.get()
 			);
 			return arrowTextNode;
 		}
 		@Override public boolean resolveVisible() {
-			return Root.SELECT.size() > 1;
+			return Main.SELECT.size() > 1;
 		}
 	},
 	
-	COLLECTION {
+	GROUP {
 		@Override public ArrowTextNode get() {
-			ArrowTextNode arrowTextNode = new ArrowTextNode("Collection", true, true, false, true, this);
+			ArrowTextNode arrowTextNode = new ArrowTextNode("Group", true, true, false, true, this);
 			setupNode(arrowTextNode);
 			HoverMenu.install(arrowTextNode, Direction.RIGHT
-					, TextNodeTemplates.COLLECTION_MERGE_TAGS.get()
-					, TextNodeTemplates.COLLECTION_CREATE.get()
-					, TextNodeTemplates.COLLECTION_DISCARD.get()
+					, TextNodeTemplates.GROUP_MERGE_TAGS.get()
+					, TextNodeTemplates.GROUP_CREATE.get()
+					, TextNodeTemplates.GROUP_DISCARD.get()
 			);
 			return arrowTextNode;
 		}
 		@Override public boolean resolveVisible() {
-			return Root.SELECT.size() > 1;
+			return Main.SELECT.size() > 1;
 		}
 	},
 	

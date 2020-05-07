@@ -12,7 +12,7 @@ import javafx.geometry.Pos;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import main.Root;
+import main.Main;
 
 public class TagEditStage extends BaseStage {
 	private final BaseList<LevelNode> nodeList;
@@ -53,7 +53,7 @@ public class TagEditStage extends BaseStage {
 	
 	private TagList tagListToSearchIn;
 	public BaseList<String> showCreate(BaseList<String> levels) {
-		return show(Root.TAGLIST, levels, Mode.CREATE);
+		return show(Main.TAGLIST, levels, Mode.CREATE);
 	}
 	public BaseList<String> showEdit(TagList tagListToSearchIn, BaseList<String> levels) {
 		return show(tagListToSearchIn, levels, Mode.EDIT);

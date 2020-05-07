@@ -18,6 +18,8 @@ public class TextNode extends Label {
 	
 	private final TextNodeTemplates template;
 	
+	//todo add a way to lock background (use in SettingsStage)
+	
 	public TextNode(String text) {
 		this(text, false, false, false, false);
 	}
@@ -33,7 +35,6 @@ public class TextNode extends Label {
 		this.setFont(DecoratorUtil.getFont());
 		this.setBackground(Background.EMPTY);
 		this.setTextFill(DecoratorUtil.getColorPrimary());
-		//		this.minWidthProperty().bind(this.heightProperty());
 		
 		DecoratorUtil.getNodeList().add(this);
 		

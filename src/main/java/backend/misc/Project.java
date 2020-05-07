@@ -5,7 +5,7 @@ import backend.list.entity.EntityList;
 import backend.list.tag.TagList;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
-import main.Root;
+import main.Main;
 
 import java.io.File;
 import java.lang.reflect.Type;
@@ -37,8 +37,8 @@ public class Project {
 	}
 	public boolean writeToDisk() {
 		this.msLastAccess = System.currentTimeMillis();
-		this.entityList = Root.ENTITYLIST;
-		this.tagList = Root.TAGLIST;
+		this.entityList = Main.ENTITYLIST;
+		this.tagList = Main.TAGLIST;
 		return GsonUtil.write(this, typeToken, projectFile);
 	}
 	
@@ -94,7 +94,7 @@ public class Project {
 	public static void setCurrent(Project project) {
 		Project.current = project;
 	}
-	public static void setFirstAsCurrent() {
+	public static void setMostRecentAsCurrent() {
 		BaseList<Project> projects = FileUtil.getProjects();
 		projects.sort(Project.getComparator());
 		setCurrent(projects.getFirst());

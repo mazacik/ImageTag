@@ -1,7 +1,6 @@
 package frontend.component.top;
 
 import backend.control.reload.Reload;
-import backend.list.BaseList;
 import backend.list.entity.Entity;
 import backend.misc.Direction;
 import frontend.decorator.DecoratorUtil;
@@ -15,10 +14,10 @@ import javafx.geometry.Pos;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import main.Root;
+import main.Main;
 
 public class ToolbarPane extends BorderPane {
-	private TextNode nodeTarget;
+	private final TextNode nodeTarget;
 	
 	public ToolbarPane() {
 		TextNode nodeFile = new TextNode("File", true, true, false, true);
@@ -33,9 +32,16 @@ public class ToolbarPane extends BorderPane {
 		                  TextNodeTemplates.APPLICATION_EXIT.get()
 		);
 		
+		TextNode nodeFilter = new TextNode("Filter", true, true, false, true);
+		ClickMenu.install(nodeFilter, Direction.DOWN, MouseButton.PRIMARY,
+		                  TextNodeTemplates.FILTER_CREATE_PRESET.get(),
+		                  TextNodeTemplates.FILTER_SIMILAR.get(),
+		                  TextNodeTemplates.FILTER_COLLAGE.get()
+		);
+		
 		TextNode nodeRandom = new TextNode("Random", true, true, false, true);
 		nodeRandom.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-			Root.SELECT.setRandom();
+			Main.SELECT.setRandom();
 			Reload.start();
 		});
 		
@@ -51,15 +57,20 @@ public class ToolbarPane extends BorderPane {
 	}
 	
 	public boolean reload() {
-		Entity target = Root.SELECT.getTarget();
+		Entity target = Main.SELECT.getTarget();
 		if (target != null) {
-			if (target.hasCollection()) {
-				BaseList<Entity> collection = target.getCollection();
-				String collectionIndex = (collection.indexOf(target) + 1) + "/" + collection.size();
-				nodeTarget.setText("[" + collectionIndex + "] " + target.getName());
+			if (!nodeTarget.isVisible()) {
+				nodeTarget.setVisible(true);
+			}
+			
+			if (target.hasGroup()) {
+				String s = (target.getGroup().indexOf(target) + 1) + "/" + target.getGroup().size();
+				nodeTarget.setText("[" + s + "] " + target.getName());
 			} else {
 				nodeTarget.setText(target.getName());
 			}
+		} else {
+			nodeTarget.setVisible(false);
 		}
 		
 		return true;

@@ -22,22 +22,24 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import main.Root;
+import main.Main;
 
 public class Tile extends Pane {
 	public static final double HIGHLIGHT_PADDING = 5;
 	
-	private static final double collectionIconSize;
-	private static final double collectionIconX;
-	private static final double collectionIconY;
-	private static final Effect collectionIconPlus;
-	private static final Effect collectionIconMinus;
+	private static final double groupIconSize;
+	private static final double groupIconX;
+	private static final double groupIconY;
+	private static final Effect groupIconPlus;
+	private static final Effect groupIconMinus;
 	
 	private static final Background highlightHover;
 	private static final Background highlightSelect;
 	private static final Background highlightSelectHover;
 	
 	private static final Image loadingImage;
+	
+	private final ImageView imageView;
 	
 	static {
 		int tileSize = Settings.GALLERY_TILE_SIZE.getInteger();
@@ -47,13 +49,13 @@ public class Tile extends Pane {
 		
 		double tileSizeWithHighlight = tileSize + 2 * HIGHLIGHT_PADDING;
 		
-		collectionIconSize = imagePlus.getWidth();
-		collectionIconX = tileSizeWithHighlight - HIGHLIGHT_PADDING - imagePlus.getWidth() - 5;
-		collectionIconY = HIGHLIGHT_PADDING + 5;
+		groupIconSize = imagePlus.getWidth();
+		groupIconX = tileSizeWithHighlight - HIGHLIGHT_PADDING - imagePlus.getWidth() - 5;
+		groupIconY = HIGHLIGHT_PADDING + 5;
 		
 		ColorInput effectColor = new ColorInput(0, 0, tileSizeWithHighlight, tileSizeWithHighlight, Color.WHITE);
-		collectionIconPlus = new Blend(BlendMode.DIFFERENCE, new Blend(BlendMode.SRC_ATOP, new ImageInput(imagePlus, collectionIconX, collectionIconY), effectColor), null);
-		collectionIconMinus = new Blend(BlendMode.DIFFERENCE, new Blend(BlendMode.SRC_ATOP, new ImageInput(imageMinus, collectionIconX, collectionIconY), effectColor), null);
+		groupIconPlus = new Blend(BlendMode.DIFFERENCE, new Blend(BlendMode.SRC_ATOP, new ImageInput(imagePlus, groupIconX, groupIconY), effectColor), null);
+		groupIconMinus = new Blend(BlendMode.DIFFERENCE, new Blend(BlendMode.SRC_ATOP, new ImageInput(imageMinus, groupIconX, groupIconY), effectColor), null);
 		
 		highlightHover = new Background(new BackgroundFill(Color.rgb(90, 90, 90), null, null));
 		highlightSelect = new Background(new BackgroundFill(Color.rgb(120, 120, 120), null, null));
@@ -86,9 +88,9 @@ public class Tile extends Pane {
 		this.entity = entity;
 		
 		this.updateBorder();
-		this.updateCollectionIcon();
+		this.updateGroupIcon();
 		
-		ImageView imageView = new ImageView(loadingImage);
+		imageView = new ImageView(loadingImage);
 		imageView.setX(HIGHLIGHT_PADDING);
 		imageView.setY(HIGHLIGHT_PADDING);
 		
@@ -101,11 +103,11 @@ public class Tile extends Pane {
 					case PRIMARY:
 						ListMenu.hideMenus();
 						
-						boolean hitWidth = event.getX() >= collectionIconX && event.getX() <= collectionIconX + collectionIconSize;
-						boolean hitHeight = event.getY() <= collectionIconY + collectionIconSize && event.getY() >= collectionIconY;
+						boolean hitWidth = event.getX() >= groupIconX && event.getX() <= groupIconX + groupIconSize;
+						boolean hitHeight = event.getY() <= groupIconY + groupIconSize && event.getY() >= groupIconY;
 						
-						if (entity.hasCollection() && hitWidth && hitHeight) {
-							this.clickOnCollectionIcon();
+						if (entity.hasGroup() && hitWidth && hitHeight) {
+							this.clickOnGroupIcon();
 						} else {
 							this.clickOnTile(event);
 						}
@@ -115,8 +117,8 @@ public class Tile extends Pane {
 					case SECONDARY:
 						//additional functionality from ClickMenu
 						
-						if (!Root.SELECT.contains(entity)) Root.SELECT.set(entity);
-						Root.SELECT.setTarget(entity);
+						if (!Main.SELECT.contains(entity)) Main.SELECT.set(entity);
+						Main.SELECT.setTarget(entity);
 						
 						Reload.start();
 						break;
@@ -124,14 +126,14 @@ public class Tile extends Pane {
 			}
 		});
 		this.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
-			if (Root.SELECT.contains(entity)) {
+			if (Main.SELECT.contains(entity)) {
 				this.setBackground(highlightSelectHover);
 			} else {
 				this.setBackground(highlightHover);
 			}
 		});
 		this.addEventFilter(MouseEvent.MOUSE_EXITED, event -> {
-			if (Root.SELECT.contains(entity)) {
+			if (Main.SELECT.contains(entity)) {
 				this.setBackground(highlightSelect);
 			} else {
 				this.setBackground(null);
@@ -143,45 +145,45 @@ public class Tile extends Pane {
 	
 	private void clickOnTile(MouseEvent event) {
 		if (event.getClickCount() % 2 == 0) {
-			Root.PRIMARY_STAGE.getMainScene().viewDisplay();
+			Main.STAGE.getMainScene().viewDisplay();
 		} else {
 			if (event.isShiftDown()) {
-				Root.SELECT.shiftSelectTo(entity);
+				Main.SELECT.shiftSelectTo(entity);
 			} else if (event.isControlDown()) {
-				if (Root.SELECT.contains(entity)) {
-					Root.SELECT.remove(entity);
+				if (Main.SELECT.contains(entity)) {
+					Main.SELECT.remove(entity);
 				} else {
-					Root.SELECT.add(entity);
+					Main.SELECT.add(entity);
 				}
-				Root.SELECT.setupShiftSelect();
+				Main.SELECT.setupShiftSelect();
 			} else {
-				Root.SELECT.set(entity);
-				Root.SELECT.setupShiftSelect();
+				Main.SELECT.set(entity);
+				Main.SELECT.setupShiftSelect();
 			}
-			Root.SELECT.setTarget(entity);
+			Main.SELECT.setTarget(entity);
 		}
 	}
-	private void clickOnCollectionIcon() {
-		Root.SELECT.setTarget(entity);
-		//main.Root.SELECT.setAll(entity.getCollection());
-		if (entity.hasCollection()) {
-			entity.getCollection().toggle();
+	private void clickOnGroupIcon() {
+		Main.SELECT.setTarget(entity);
+		//main.Root.SELECT.setAll(entity.getGroup());
+		if (entity.hasGroup()) {
+			entity.getGroup().toggle();
 		}
 	}
 	
 	public void updateBorder() {
-		if (Root.SELECT.contains(entity)) {
+		if (Main.SELECT.contains(entity)) {
 			this.setBackground(highlightSelect);
 		} else {
 			this.setBackground(null);
 		}
 	}
-	public void updateCollectionIcon() {
-		if (entity.hasCollection()) {
-			if (entity.getCollection().isOpen()) {
-				this.setEffect(collectionIconMinus);
+	public void updateGroupIcon() {
+		if (entity.hasGroup()) {
+			if (entity.getGroup().isOpen()) {
+				this.setEffect(groupIconMinus);
 			} else {
-				this.setEffect(collectionIconPlus);
+				this.setEffect(groupIconPlus);
 			}
 		}
 	}
@@ -191,7 +193,6 @@ public class Tile extends Pane {
 	}
 	
 	public synchronized void setImage(Image image) {
-		ImageView imageView = ((ImageView) this.getChildren().get(0));
 		if (image != null) {
 			imageView.setImage(image);
 		} else {

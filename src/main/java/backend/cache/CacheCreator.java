@@ -6,7 +6,7 @@ import backend.misc.Settings;
 import frontend.component.display.VideoPlayer;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
-import main.Root;
+import main.Main;
 import org.apache.commons.lang3.StringUtils;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
@@ -22,8 +22,8 @@ import java.util.logging.Logger;
 
 abstract class CacheCreator {
 	static Image create(Entity entity) {
-		String entityIndex = StringUtils.right("00000000" + (Root.ENTITYLIST.indexOf(entity) + 1), String.valueOf(Root.ENTITYLIST.size()).length());
-		Logger.getGlobal().info(String.format("[%s/%s] %s", entityIndex, Root.ENTITYLIST.size(), entity.getName()));
+		String entityIndex = StringUtils.right("00000000" + (Main.ENTITYLIST.indexOf(entity) + 1), String.valueOf(Main.ENTITYLIST.size()).length());
+		Logger.getGlobal().info(String.format("[%s/%s] %s", entityIndex, Main.ENTITYLIST.size(), entity.getName()));
 		
 		switch (entity.getEntityType()) {
 			case IMG:

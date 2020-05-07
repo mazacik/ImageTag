@@ -4,11 +4,11 @@ import backend.control.reload.Reload;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.textnode.TextNode;
 import frontend.node.textnode.TextNodeTemplates;
-import frontend.stage.options.SettingsStage;
+import frontend.stage.settings.SettingsStage;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import main.Root;
+import main.Main;
 
 public class FilterPane extends SidePaneBase {
 	private final TextNode nodeText;
@@ -16,7 +16,7 @@ public class FilterPane extends SidePaneBase {
 	public FilterPane() {
 		TextNode btnReset = new TextNode("⟲", true, true, false, true);
 		btnReset.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-			Root.FILTER.reset();
+			Main.FILTER.reset();
 			Reload.start();
 		});
 		
@@ -40,7 +40,7 @@ public class FilterPane extends SidePaneBase {
 	}
 	
 	public boolean refresh() {
-		nodeText.setText("Filter: " + Root.FILTER.size());
+		nodeText.setText("Filter: " + Main.FILTER.size());
 		
 		return true;
 	}

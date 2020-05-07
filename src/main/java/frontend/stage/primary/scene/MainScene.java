@@ -20,7 +20,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
-import main.Root;
+import main.Main;
 
 public class MainScene extends Scene {
 	private final VBox vBox;
@@ -31,9 +31,9 @@ public class MainScene extends Scene {
 		loadingBar = new ProgressNode();
 		loadingBar.setVisible(false);
 		
-		hBox = new HBox(Root.FILTER_PANE, Root.GALLERY_PANE, Root.SELECT_PANE);
+		hBox = new HBox(Main.FILTER_PANE, Main.GALLERY_PANE, Main.SELECT_PANE);
 		VBox.setVgrow(hBox, Priority.ALWAYS);
-		vBox = new VBox(Root.TOOLBAR_PANE, hBox);
+		vBox = new VBox(Main.TOOLBAR_PANE, hBox);
 		vBox.setBackground(DecoratorUtil.getBackgroundPrimary());
 		
 		StackPane stackPane = new StackPane();
@@ -59,7 +59,7 @@ public class MainScene extends Scene {
 				
 				break;
 			case SHIFT:
-				Root.SELECT.setupShiftSelect();
+				Main.SELECT.setupShiftSelect();
 				break;
 			case F1:
 				LireUtil.index();
@@ -75,31 +75,31 @@ public class MainScene extends Scene {
 				Reload.start();
 				break;
 			case TAB:
-				Root.SELECT_PANE.getNodeSearch().requestFocus();
+				Main.SELECT_PANE.getNodeSearch().requestFocus();
 				break;
 			case DELETE:
-				Root.SELECT.deleteSelect();
+				Main.SELECT.deleteSelect();
 				Reload.start();
 				break;
 			case E:
-				if (Root.SELECT.getTarget().hasCollection()) {
-					Root.SELECT.getTarget().getCollection().toggle();
+				if (Main.SELECT.getTarget().hasGroup()) {
+					Main.SELECT.getTarget().getGroup().toggle();
 				}
 				Reload.start();
 				break;
 			case R:
-				Root.SELECT.setRandom();
+				Main.SELECT.setRandom();
 				Reload.start();
 				break;
 			case G:
-				if (Root.SELECT.getTarget().hasCollection()) {
-					Entity randomEntityFromCollection = Root.SELECT.getTarget().getCollection().getRepresentingRandom();
-					if (randomEntityFromCollection == null) {
+				if (Main.SELECT.getTarget().hasGroup()) {
+					Entity randomEntityFromGroup = Main.SELECT.getTarget().getGroup().getRepresentingRandom();
+					if (randomEntityFromGroup == null) {
 						int i = 0;
 					}
-					Root.SELECT.setTarget(randomEntityFromCollection);
-					if (!Root.SELECT.contains(randomEntityFromCollection)) {
-						Root.SELECT.set(randomEntityFromCollection);
+					Main.SELECT.setTarget(randomEntityFromGroup);
+					if (!Main.SELECT.contains(randomEntityFromGroup)) {
+						Main.SELECT.set(randomEntityFromGroup);
 					}
 					Reload.start();
 				}
@@ -110,10 +110,17 @@ public class MainScene extends Scene {
 				Reload.start();
 				break;
 			case W:
-			case A:
 			case S:
 			case D:
-				Root.SELECT.moveTarget(event);
+				Main.SELECT.moveTarget(event);
+				Reload.start();
+				break;
+			case A:
+				if (event.isControlDown()) {
+					Main.SELECT.setAll(Main.FILTER);
+				} else {
+					Main.SELECT.moveTarget(event);
+				}
 				Reload.start();
 				break;
 		}
@@ -126,14 +133,14 @@ public class MainScene extends Scene {
 				event.consume();
 				break;
 			case UP:
-				if (this.getFocusOwner() == Root.SELECT_PANE.getNodeSearch()) {
-					Root.SELECT_PANE.nextMatch(Direction.UP, event.isControlDown());
+				if (this.getFocusOwner() == Main.SELECT_PANE.getNodeSearch()) {
+					Main.SELECT_PANE.nextMatch(Direction.UP, event.isControlDown());
 					event.consume();
 				}
 				break;
 			case DOWN:
-				if (this.getFocusOwner() == Root.SELECT_PANE.getNodeSearch()) {
-					Root.SELECT_PANE.nextMatch(Direction.DOWN, event.isControlDown());
+				if (this.getFocusOwner() == Main.SELECT_PANE.getNodeSearch()) {
+					Main.SELECT_PANE.nextMatch(Direction.DOWN, event.isControlDown());
 					event.consume();
 				}
 				break;
@@ -142,28 +149,28 @@ public class MainScene extends Scene {
 	
 	public void viewGallery() {
 		if (!isViewGallery()) {
-			Root.DISPLAY_PANE.interruptVideoPlayer();
+			Main.DISPLAY_PANE.interruptVideoPlayer();
 			
-			hBox.getChildren().setAll(Root.FILTER_PANE, Root.GALLERY_PANE, Root.SELECT_PANE);
+			hBox.getChildren().setAll(Main.FILTER_PANE, Main.GALLERY_PANE, Main.SELECT_PANE);
 			
-			Root.GALLERY_PANE.requestFocus();
-			Root.GALLERY_PANE.moveViewportToTarget();
+			Main.GALLERY_PANE.requestFocus();
+			Main.GALLERY_PANE.moveViewportToTarget();
 			
 			Reload.notify(Notifier.VIEWMODE_CHANGED);
 		}
 	}
 	public void viewDisplay() {
 		if (isViewGallery()) {
-			hBox.getChildren().setAll(Root.FILTER_PANE, Root.DISPLAY_PANE, Root.SELECT_PANE);
+			hBox.getChildren().setAll(Main.FILTER_PANE, Main.DISPLAY_PANE, Main.SELECT_PANE);
 			
-			Root.DISPLAY_PANE.requestFocus();
+			Main.DISPLAY_PANE.requestFocus();
 			
 			Reload.notify(Notifier.VIEWMODE_CHANGED);
 		}
 	}
 	
 	public boolean isViewGallery() {
-		return hBox.getChildren().contains(Root.GALLERY_PANE);
+		return hBox.getChildren().contains(Main.GALLERY_PANE);
 	}
 	
 	public void showLoadingBar(Thread caller, int total) {
@@ -195,7 +202,7 @@ public class MainScene extends Scene {
 	private void onStageWidthChange() {
 		double estimateAvailableWidth = this.getWidth() - 2 * SidePaneBase.MIN_WIDTH - 50;
 		
-		TilePane tilePane = Root.GALLERY_PANE.getTilePane();
+		TilePane tilePane = Main.GALLERY_PANE.getTilePane();
 		double tileSize = tilePane.getPrefTileWidth();
 		double increment = tileSize + tilePane.getHgap();
 		

@@ -8,7 +8,7 @@ import backend.list.entity.EntityList;
 import backend.misc.Direction;
 import backend.misc.FileUtil;
 import javafx.scene.input.KeyEvent;
-import main.Root;
+import main.Main;
 
 import java.util.Collection;
 import java.util.List;
@@ -26,14 +26,14 @@ public class Select extends EntityList {
 		
 		int sizeOld = this.size();
 		
-		if (entity.hasCollection()) {
-			if (entity.getCollection().isOpen()) {
+		if (entity.hasGroup()) {
+			if (entity.getGroup().isOpen()) {
 				if (super.add(entity, checkDuplicates)) {
 					Reload.requestBorderUpdate(entity);
 				}
 			} else {
-				if (super.addAll(entity.getCollection(), checkDuplicates)) {
-					Reload.requestBorderUpdate(Root.FILTER.getFilteredList(entity.getCollection()));
+				if (super.addAll(entity.getGroup(), checkDuplicates)) {
+					Reload.requestBorderUpdate(Main.FILTER.getFilteredList(entity.getGroup()));
 				}
 			}
 		} else {
@@ -57,14 +57,14 @@ public class Select extends EntityList {
 		int sizeOld = this.size();
 		
 		for (Entity entity : c) {
-			if (entity.hasCollection()) {
-				if (entity.getCollection().isOpen()) {
+			if (entity.hasGroup()) {
+				if (entity.getGroup().isOpen()) {
 					if (super.add(entity, checkDuplicates)) {
 						Reload.requestBorderUpdate(entity);
 					}
 				} else {
-					EntityList afterFilter = Root.FILTER.getFilteredList(entity.getCollection());
-					if (super.addAll(afterFilter, checkDuplicates)) {
+					EntityList afterFilter = Main.FILTER.getFilteredList(entity.getGroup());
+					if (super.addAll(afterFilter, true)) {
 						Reload.requestBorderUpdate(afterFilter);
 					}
 				}
@@ -95,14 +95,14 @@ public class Select extends EntityList {
 	public boolean remove(Entity entity) {
 		int sizeOld = this.size();
 		
-		if (entity.hasCollection()) {
-			if (entity.getCollection().isOpen()) {
+		if (entity.hasGroup()) {
+			if (entity.getGroup().isOpen()) {
 				if (super.remove(entity)) {
 					Reload.requestBorderUpdate(entity);
 				}
 			} else {
-				if (super.removeAll(entity.getCollection())) {
-					Reload.requestBorderUpdate(Root.FILTER.getFilteredList(entity.getCollection()));
+				if (super.removeAll(entity.getGroup())) {
+					Reload.requestBorderUpdate(Main.FILTER.getFilteredList(entity.getGroup()));
 				}
 			}
 		} else {
@@ -143,14 +143,14 @@ public class Select extends EntityList {
 			if (FileUtil.deleteFile(FileUtil.getFileEntity(entity))) {
 				FileUtil.deleteFile(FileUtil.getFileCache(entity));
 				
-				if (entity.hasCollection()) {
-					entity.getCollection().remove(entity);
+				if (entity.hasGroup()) {
+					entity.getGroup().remove(entity);
 					
-					if (target.getCollection().size() <= 1) {
-						target.getCollection().discard();
+					if (target.getGroup().size() <= 1) {
+						target.getGroup().discard();
 					}
 					
-					Reload.notify(Notifier.TARGET_COLLECTION_CHANGED);
+					Reload.notify(Notifier.TARGET_GROUP_CHANGED);
 				}
 				
 				helper.add(entity);
@@ -159,8 +159,8 @@ public class Select extends EntityList {
 		
 		if (!helper.isEmpty()) {
 			this.removeAll(helper);
-			Root.FILTER.removeAll(helper);
-			Root.ENTITYLIST.removeAll(helper);
+			Main.FILTER.removeAll(helper);
+			Main.ENTITYLIST.removeAll(helper);
 			Reload.notify(Notifier.ENTITYLIST_CHANGED);
 			
 			this.restorePosition();
@@ -170,7 +170,7 @@ public class Select extends EntityList {
 	private Entity entityFrom = null;
 	private final EntityList selectBefore = new EntityList();
 	public void shiftSelectTo(Entity entityTo) {
-		BaseList<Entity> entities = Root.FILTER.getRepresentingEntityList();
+		BaseList<Entity> entities = Main.FILTER.getRepresentingEntityList();
 		
 		int indexFrom = entities.indexOf(entityFrom);
 		int indexTo = entities.indexOf(entityTo);
@@ -199,12 +199,12 @@ public class Select extends EntityList {
 	
 	public void setRandom() {
 		Entity randomEntity = null;
-		if (Root.FILTER.size() == 1) {
-			randomEntity = Root.FILTER.getFirst();
-		} else if (Root.FILTER.size() > 1) {
+		if (Main.FILTER.size() == 1) {
+			randomEntity = Main.FILTER.getFirst();
+		} else if (Main.FILTER.size() > 1) {
 			do {
-				randomEntity = Root.FILTER.getRepresentingRandom();
-			} while (!Root.FILTER.isValid(randomEntity));
+				randomEntity = Main.FILTER.getRepresentingRandom();
+			} while (!Main.FILTER.isValid(randomEntity));
 		}
 		this.set(randomEntity);
 		this.setTarget(randomEntity);
@@ -231,15 +231,18 @@ public class Select extends EntityList {
 		return target;
 	}
 	public void setTarget(Entity newTarget) {
-		if (newTarget != null && newTarget != target) {
+		if (newTarget != target) {
 			if (target != null) {
-				Root.FILTER.resolve();
+				Main.FILTER.resolve();
 				Reload.requestBorderUpdate(target);
 			}
 			
 			target = newTarget;
-			Reload.requestBorderUpdate(target);
-			Root.GALLERY_PANE.moveViewportToTarget();
+			
+			if (target != null) {
+				Reload.requestBorderUpdate(target);
+				Main.GALLERY_PANE.moveViewportToTarget();
+			}
 			
 			Reload.notify(Notifier.TARGET_CHANGED);
 		}
@@ -248,36 +251,36 @@ public class Select extends EntityList {
 	public void moveTarget(KeyEvent event) {
 		switch (event.getCode()) {
 			case W:
-				moveTarget(Direction.UP, event.isShiftDown(), event.isControlDown());
+				moveTarget(Direction.UP, event.isShiftDown());
 				break;
 			case A:
-				moveTarget(Direction.LEFT, event.isShiftDown(), event.isControlDown());
+				moveTarget(Direction.LEFT, event.isShiftDown());
 				break;
 			case S:
-				moveTarget(Direction.DOWN, event.isShiftDown(), event.isControlDown());
+				moveTarget(Direction.DOWN, event.isShiftDown());
 				break;
 			case D:
-				moveTarget(Direction.RIGHT, event.isShiftDown(), event.isControlDown());
+				moveTarget(Direction.RIGHT, event.isShiftDown());
 				break;
 		}
 	}
 	public void moveTarget(Direction direction) {
-		moveTarget(direction, false, false);
+		moveTarget(direction, false);
 	}
-	public void moveTarget(Direction direction, boolean isShiftDown, boolean isControlDown) {
+	public void moveTarget(Direction direction, boolean isShiftDown) {
 		if (target == null) return;
 		
-		EntityList entityList = Root.FILTER.getRepresentingEntityList();
+		EntityList entityList = Main.FILTER.getRepresentingEntityList();
 		if (entityList.isEmpty()) return;
 		
 		int currentTargetIndex;
-		if (target.hasCollection()) {
-			if (target.getCollection().isOpen()) {
+		if (target.hasGroup()) {
+			if (target.getGroup().isOpen()) {
 				currentTargetIndex = entityList.indexOf(target);
 			} else {
-				Entity collectionFirst = Root.FILTER.getFilteredList(target.getCollection()).getFirst();
-				if (entityList.contains(collectionFirst)) {
-					currentTargetIndex = entityList.indexOf(collectionFirst);
+				Entity groupFirst = Main.FILTER.getFilteredList(target.getGroup()).getFirst();
+				if (entityList.contains(groupFirst)) {
+					currentTargetIndex = entityList.indexOf(groupFirst);
 				} else {
 					currentTargetIndex = entityList.indexOf(target);
 				}
@@ -289,13 +292,13 @@ public class Select extends EntityList {
 		int newTargetIndex = currentTargetIndex;
 		switch (direction) {
 			case UP:
-				newTargetIndex -= Root.GALLERY_PANE.getTilePane().getPrefColumns();
+				newTargetIndex -= Main.GALLERY_PANE.getTilePane().getPrefColumns();
 				break;
 			case LEFT:
 				newTargetIndex -= 1;
 				break;
 			case DOWN:
-				newTargetIndex += Root.GALLERY_PANE.getTilePane().getPrefColumns();
+				newTargetIndex += Main.GALLERY_PANE.getTilePane().getPrefColumns();
 				break;
 			case RIGHT:
 				newTargetIndex += 1;
@@ -314,10 +317,6 @@ public class Select extends EntityList {
 			Entity entityTo = entityList.get(newTargetIndex);
 			this.shiftSelectTo(entityTo);
 			this.setTarget(entityTo);
-		} else if (isControlDown) {
-			this.setTarget(entityList.get(newTargetIndex));
-			this.add(target);
-			this.entityFrom = target;
 		} else {
 			this.setTarget(entityList.get(newTargetIndex));
 			this.set(target);
@@ -328,8 +327,8 @@ public class Select extends EntityList {
 	public void deleteTarget() {
 		Entity target = this.getTarget();
 		
-		if (Root.DISPLAY_PANE.getVideoPlayer().hasMedia()) {
-			Root.DISPLAY_PANE.getVideoPlayer().release();
+		if (Main.DISPLAY_PANE.getVideoPlayer().hasMedia()) {
+			Main.DISPLAY_PANE.getVideoPlayer().release();
 		}
 		
 		if (FileUtil.deleteFile(FileUtil.getFileEntity(target))) {
@@ -337,19 +336,19 @@ public class Select extends EntityList {
 			
 			this.storePosition();
 			
-			if (target.hasCollection()) {
-				target.getCollection().remove(target);
+			if (target.hasGroup()) {
+				target.getGroup().remove(target);
 				
-				if (target.getCollection().size() <= 1) {
-					target.getCollection().discard();
+				if (target.getGroup().size() <= 1) {
+					target.getGroup().discard();
 				}
 				
-				Reload.notify(Notifier.TARGET_COLLECTION_CHANGED);
+				Reload.notify(Notifier.TARGET_GROUP_CHANGED);
 			}
 			
 			this.remove(target);
-			Root.FILTER.remove(target);
-			Root.ENTITYLIST.remove(target);
+			Main.FILTER.remove(target);
+			Main.ENTITYLIST.remove(target);
 			
 			this.restorePosition();
 			
@@ -360,22 +359,27 @@ public class Select extends EntityList {
 	private Entity memEntity = null;
 	private int memIndex = -1;
 	public void storePosition() {
-		memEntity = Root.SELECT.getFirst();
-		memIndex = Root.FILTER.getRepresentingEntityList().indexOf(memEntity);
+		memEntity = Main.SELECT.getFirst();
+		memIndex = Main.FILTER.getRepresentingEntityList().indexOf(memEntity);
 	}
 	public void restorePosition() {
-		EntityList representingEntities = Root.FILTER.getRepresentingEntityList();
-		if (!representingEntities.isEmpty()) {
-			if (!representingEntities.contains(memEntity) && memIndex >= 0) {
-				if (memIndex <= representingEntities.size() - 1) {
-					this.setTarget(representingEntities.get(memIndex));
-				} else {
-					this.setTarget(representingEntities.getLast());
+		if (Main.FILTER.isEmpty()) {
+			this.clear();
+			this.setTarget(null);
+		} else {
+			EntityList representingEntities = Main.FILTER.getRepresentingEntityList();
+			if (!representingEntities.isEmpty()) {
+				if (!representingEntities.contains(memEntity) && memIndex >= 0) {
+					if (memIndex <= representingEntities.size() - 1) {
+						this.setTarget(representingEntities.get(memIndex));
+					} else {
+						this.setTarget(representingEntities.getLast());
+					}
 				}
-			}
-			
-			if (!Root.SELECT.contains(target)) {
-				this.set(target);
+				
+				if (!Main.SELECT.contains(target)) {
+					this.set(target);
+				}
 			}
 		}
 	}

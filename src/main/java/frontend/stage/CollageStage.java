@@ -12,29 +12,29 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import main.Root;
+import main.Main;
 
 public class CollageStage extends Stage {
 	public CollageStage() {
 		new Thread(() -> {
-			Image originImage = new Image("file:" + FileUtil.getFileEntity(Root.SELECT.getTarget()));
-			Image scaledImage = getSmallerImage("file:" + FileUtil.getFileEntity(Root.SELECT.getTarget()), originImage.getWidth(), originImage.getHeight(), 1800, 900);
+			Image originImage = new Image("file:" + FileUtil.getFileEntity(Main.SELECT.getTarget()));
+			Image scaledImage = getSmallerImage("file:" + FileUtil.getFileEntity(Main.SELECT.getTarget()), originImage.getWidth(), originImage.getHeight(), 1800, 900);
 			
 			int miniW = (int) scaledImage.getWidth() / Settings.COLLAGE_SIZE.getInteger();
 			int miniH = (int) scaledImage.getHeight() / Settings.COLLAGE_SIZE.getInteger();
 			
-			Root.PRIMARY_STAGE.getMainScene().showLoadingBar(Thread.currentThread(), Root.FILTER.size());
+			Main.STAGE.getMainScene().showLoadingBar(Thread.currentThread(), Main.FILTER.size());
 			
 			BaseList<CollagePiece> database = new BaseList<>();
-			for (Entity entity : Root.FILTER) {
+			for (Entity entity : Main.FILTER) {
 				Image image = new Image("file:" + FileUtil.getFileCache(entity), miniW, miniH, false, false);
 				Color averageColor = getAverageColor(image, 0, 0, image.getWidth(), image.getHeight());
 				database.add(new CollagePiece(image, averageColor));
 				
-				Root.PRIMARY_STAGE.getMainScene().advanceLoadingBar(Thread.currentThread());
+				Main.STAGE.getMainScene().advanceLoadingBar(Thread.currentThread());
 			}
 			
-			Root.PRIMARY_STAGE.getMainScene().hideLoadingBar(Thread.currentThread());
+			Main.STAGE.getMainScene().hideLoadingBar(Thread.currentThread());
 			
 			GridPane gridPane = new GridPane();
 			for (int y = 0; y < Settings.COLLAGE_SIZE.getInteger(); y++) {

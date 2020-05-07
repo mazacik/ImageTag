@@ -6,7 +6,7 @@ import backend.list.BaseList;
 import frontend.component.side.TagNode;
 import frontend.stage.ConfirmationStage;
 import frontend.stage.TagEditStage;
-import main.Root;
+import main.Main;
 
 public class TagUtil {
 	public static TagNode currentTagNode;
@@ -23,35 +23,49 @@ public class TagUtil {
 	public static void create(BaseList<String> levelsOld) {
 		BaseList<String> listLevelsNew = new TagEditStage().showCreate(levelsOld);
 		if (listLevelsNew != null && !listLevelsNew.isEmpty()) {
-			Root.TAGLIST.add(new Tag(listLevelsNew));
-			Root.TAGLIST.sort();
+			Main.TAGLIST.add(new Tag(listLevelsNew));
+			Main.TAGLIST.sort();
 			
 			Reload.notify(Notifier.TAGLIST_CHANGED);
 		}
 	}
 	public static void edit(String stringValueOld, int numLevelsOld) {
-		TagList affectedTags = Root.TAGLIST.getTagsStartingWith(stringValueOld);
-		TagList tagListHelper = new TagList(Root.TAGLIST);
+		TagList affectedTags = Main.TAGLIST.getTagsStartingWith(stringValueOld);
+		TagList tagListHelper = new TagList(Main.TAGLIST);
 		tagListHelper.removeAll(affectedTags);
 		
 		BaseList<String> listLevelsNew = new TagEditStage().showEdit(tagListHelper, currentTagNode.getLevels());
+		editImpl(affectedTags, stringValueOld, numLevelsOld, listLevelsNew);
+	}
+	private static void editImpl(TagList affectedTags, String stringValueOld, int numLevelsOld, BaseList<String> listLevelsNew) {
 		if (!listLevelsNew.isEmpty()) {
 			affectedTags.forEach(tag -> tag.replaceLevelsFromStart(numLevelsOld, listLevelsNew));
-			Root.TAGLIST.sort();
-			Root.FILTER.getFilterListManager().update(stringValueOld, numLevelsOld, listLevelsNew);
+			Main.TAGLIST.sort();
+			Main.FILTER.getFilterListManager().update(stringValueOld, numLevelsOld, listLevelsNew);
 			
 			Reload.notify(Notifier.TAGLIST_CHANGED);
 		}
 	}
 	public static void remove() {
 		if (new ConfirmationStage("Remove \"" + currentTagNode.getText() + "\" ?").getResult()) {
-			currentTagNode.getSubNodesDeepest().forEach(subNode -> Root.FILTER.getFilterListManager().unlist(subNode.getStringValue()));
+			currentTagNode.getSubNodesDeepest().forEach(subNode -> Main.FILTER.getFilterListManager().unlist(subNode.getStringValue()));
 			
-			TagList tagList = Root.TAGLIST.getTagsStartingWith(currentTagNode.getStringValue());
-			Root.ENTITYLIST.forEach(entity -> entity.removeTag(tagList));
-			Root.TAGLIST.removeAll(tagList);
+			TagList tagList = Main.TAGLIST.getTagsStartingWith(currentTagNode.getStringValue());
+			Main.ENTITYLIST.forEach(entity -> entity.removeTag(tagList));
+			Main.TAGLIST.removeAll(tagList);
 			
 			Reload.notify(Notifier.TAGLIST_CHANGED);
+		}
+	}
+	public static void removeIntermediate() {
+		if (new ConfirmationStage("Remove \"" + currentTagNode.getText() + "\" ?").getResult()) {
+			int index = currentTagNode.getLevels().size() - 1;
+			
+			TagList affectedTags = Main.TAGLIST.getTagsStartingWith(currentTagNode.getStringValue());
+			BaseList<String> listLevelsNew = new BaseList<>(currentTagNode.getLevels());
+			listLevelsNew.remove(index);
+			
+			editImpl(affectedTags, currentTagNode.getStringValue(), currentTagNode.getLevels().size(), listLevelsNew);
 		}
 	}
 	

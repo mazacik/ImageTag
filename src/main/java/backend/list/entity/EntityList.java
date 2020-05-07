@@ -1,9 +1,11 @@
 package backend.list.entity;
 
+import backend.control.reload.Notifier;
+import backend.control.reload.Reload;
 import backend.list.BaseList;
 import backend.list.tag.Tag;
 import backend.list.tag.TagList;
-import main.Root;
+import main.Main;
 
 import java.io.File;
 import java.util.Arrays;
@@ -31,8 +33,8 @@ public class EntityList extends BaseList<Entity> {
 	public Entity getRepresentingRandom() {
 		Entity entity = this.getRepresentingEntityList().getRandom();
 		if (entity != null) {
-			if (entity.hasCollection()) {
-				return Root.FILTER.getFilteredList(entity.getCollection()).getRandom();
+			if (entity.hasGroup()) {
+				return Main.FILTER.getFilteredList(entity.getGroup()).getRandom();
 			} else {
 				return entity;
 			}
@@ -48,6 +50,17 @@ public class EntityList extends BaseList<Entity> {
 	}
 	public void clearTags() {
 		this.forEach(Entity::clearTags);
+	}
+	
+	public void mergeTags() {
+		BaseList<Integer> tagIDs = this.getTagIDList();
+		
+		this.forEach(entity -> {
+			entity.getTagIDList().setAll(new BaseList<>(tagIDs));
+			entity.initTags();
+		});
+		
+		Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
 	}
 	
 	public BaseList<Integer> getTagIDList() {
@@ -108,14 +121,14 @@ public class EntityList extends BaseList<Entity> {
 		}
 	}
 	
-	public boolean isCollection() {
+	public boolean isGroup() {
 		if (this.isEmpty()) {
 			return false;
 		} else {
-			int collectionID = this.getFirst().getCollectionID();
-			if (collectionID == 0) return false;
+			int groupID = this.getFirst().getGroupID();
+			if (groupID == 0) return false;
 			for (Entity entity : this) {
-				if (entity.getCollectionID() != collectionID) {
+				if (entity.getGroupID() != groupID) {
 					return false;
 				}
 			}
@@ -124,16 +137,16 @@ public class EntityList extends BaseList<Entity> {
 	}
 	public EntityList getRepresentingEntityList() {
 		EntityList representingEntityList = new EntityList();
-		BaseList<Integer> collections = new BaseList<>();
+		BaseList<Integer> groups = new BaseList<>();
 		
 		for (Entity entity : this) {
-			if (entity.hasCollection()) {
-				if (!collections.contains(entity.getCollectionID())) {
-					if (entity.getCollection().isOpen()) {
-						collections.add(entity.getCollectionID());
-						representingEntityList.addAll(Root.FILTER.getFilteredList(entity.getCollection()));
+			if (entity.hasGroup()) {
+				if (!groups.contains(entity.getGroupID())) {
+					if (entity.getGroup().isOpen()) {
+						groups.add(entity.getGroupID());
+						representingEntityList.addAll(Main.FILTER.getFilteredList(entity.getGroup()));
 					} else {
-						collections.add(entity.getCollectionID());
+						groups.add(entity.getGroupID());
 						representingEntityList.add(entity);
 					}
 				}

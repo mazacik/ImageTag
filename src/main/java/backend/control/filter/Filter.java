@@ -7,8 +7,8 @@ import backend.list.entity.Entity;
 import backend.list.entity.EntityList;
 import backend.misc.EntityType;
 import backend.misc.FileUtil;
-import frontend.stage.options.FilterPreferences;
-import main.Root;
+import frontend.stage.settings.FilterSettingsPane;
+import main.Main;
 
 import java.util.Collection;
 
@@ -73,16 +73,16 @@ public class Filter extends EntityList {
 		Reload.notify(Notifier.FILTER_CHANGED);
 	}
 	public void refresh() {
-		Root.SELECT.storePosition();
+		Main.SELECT.storePosition();
 		
 		this.clear();
-		for (Entity entity : Root.ENTITYLIST) {
+		for (Entity entity : Main.ENTITYLIST) {
 			if (this.isValid(entity)) {
 				this.add(entity);
 			}
 		}
 		
-		Root.SELECT.restorePosition();
+		Main.SELECT.restorePosition();
 		Reload.notify(Notifier.FILTER_CHANGED);
 	}
 	
@@ -91,7 +91,7 @@ public class Filter extends EntityList {
 		Reload.getNeedsFilterCheck().clear();
 	}
 	public void resolve(Entity entity) {
-		if (Root.ENTITYLIST.contains(entity)) {
+		if (Main.ENTITYLIST.contains(entity)) {
 			boolean contains = this.contains(entity);
 			boolean valid = this.isValid(entity);
 			
@@ -103,10 +103,10 @@ public class Filter extends EntityList {
 		}
 	}
 	public boolean isValid(Entity entity) {
-		if (entity == null || !Root.ENTITYLIST.contains(entity)) return false;
+		if (entity == null || !Main.ENTITYLIST.contains(entity)) return false;
 		
-		if (!FilterPreferences.QUERY.isEmpty()) {
-			if (!entity.getName().toLowerCase().contains(FilterPreferences.QUERY.toLowerCase())) {
+		if (!FilterSettingsPane.QUERY.isEmpty()) {
+			if (!entity.getName().toLowerCase().contains(FilterSettingsPane.QUERY.toLowerCase())) {
 				return false;
 			}
 		}
@@ -155,13 +155,13 @@ public class Filter extends EntityList {
 			return false;
 		}
 		
-		if (!entity.hasCollection()) {
-			if (FilterOption.COLLECTION_SIZE_MIN.getIntValue() > 0) {
+		if (!entity.hasGroup()) {
+			if (FilterOption.GROUP_SIZE_MIN.getIntValue() > 0) {
 				return false;
 			}
 		} else {
-			int entityCollectionSize = entity.getCollection().size();
-			if (entityCollectionSize < FilterOption.COLLECTION_SIZE_MIN.getIntValue() || entityCollectionSize > FilterOption.COLLECTION_SIZE_MAX.getIntValue()) {
+			int entityGroupSize = entity.getGroup().size();
+			if (entityGroupSize < FilterOption.GROUP_SIZE_MIN.getIntValue() || entityGroupSize > FilterOption.GROUP_SIZE_MAX.getIntValue()) {
 				return false;
 			}
 		}
@@ -175,7 +175,7 @@ public class Filter extends EntityList {
 		this.clear();
 		
 		BaseList<Integer> query = entity.getTagIDList();
-		for (Entity iterator : Root.ENTITYLIST) {
+		for (Entity iterator : Main.ENTITYLIST) {
 			if (iterator.getTagIDList().size() != 0) {
 				BaseList<Integer> sameTags = new BaseList<>(query);
 				sameTags.retainAll(iterator.getTagIDList());

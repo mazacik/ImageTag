@@ -3,7 +3,7 @@ package backend.control.reload;
 import backend.list.BaseList;
 import backend.list.entity.Entity;
 import backend.list.entity.EntityList;
-import main.Root;
+import main.Main;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -48,7 +48,7 @@ public abstract class Reload {
 		     InvokeHelper.PANE_DISPLAY_RELOAD,
 		     InvokeHelper.PANE_SELECT_REFRESH
 		);
-		link(Notifier.TARGET_COLLECTION_CHANGED,
+		link(Notifier.TARGET_GROUP_CHANGED,
 		     InvokeHelper.PANE_TOOLBAR_RELOAD,
 		     InvokeHelper.PANE_GALLERY_RELOAD
 		);
@@ -87,14 +87,14 @@ public abstract class Reload {
 			invokeHelpers.remove(0).invoke();
 		}
 		
-		if (Root.SELECT.isEmpty()) {
-			Entity target = Root.FILTER.getFirst();
+		if (Main.SELECT.isEmpty()) {
+			Entity target = Main.FILTER.getFirst();
 			if (target != null) {
-				Root.SELECT.setTarget(target);
-				if (target.hasCollection()) {
-					Root.SELECT.setAll(target.getCollection());
+				Main.SELECT.setTarget(target);
+				if (target.hasGroup()) {
+					Main.SELECT.setAll(target.getGroup());
 				} else {
-					Root.SELECT.set(target);
+					Main.SELECT.set(target);
 				}
 			}
 		}

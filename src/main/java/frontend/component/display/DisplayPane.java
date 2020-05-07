@@ -18,7 +18,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
-import main.Root;
+import main.Main;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.util.Iterator;
 
 public class DisplayPane extends StackPane {
+	private static final boolean UPSCALE = false;
+	
 	private final Canvas canvas;
 	private final ImageView gifPlayer;
 	private final VideoPlayer videoPlayer;
@@ -45,8 +47,8 @@ public class DisplayPane extends StackPane {
 		holderPane = new BorderPane(canvas);
 		
 		gifPlayer = new ImageView();
-		gifPlayer.fitWidthProperty().bind(Root.GALLERY_PANE.widthProperty());
-		gifPlayer.fitHeightProperty().bind(Root.GALLERY_PANE.heightProperty());
+		gifPlayer.fitWidthProperty().bind(Main.GALLERY_PANE.widthProperty());
+		gifPlayer.fitHeightProperty().bind(Main.GALLERY_PANE.heightProperty());
 		
 		videoPlayer = VideoPlayer.create(canvas);
 		
@@ -80,8 +82,8 @@ public class DisplayPane extends StackPane {
 	}
 	
 	public boolean reload() {
-		Entity currentTarget = Root.SELECT.getTarget();
-		if (!Root.PRIMARY_STAGE.getMainScene().isViewGallery() && currentTarget != null) {
+		Entity currentTarget = Main.SELECT.getTarget();
+		if (!Main.STAGE.getMainScene().isViewGallery() && currentTarget != null) {
 			switch (currentTarget.getEntityType()) {
 				case IMG:
 					reloadAsImage(currentTarget);
@@ -111,8 +113,6 @@ public class DisplayPane extends StackPane {
 		double originHeight = 0;
 		double maxWidth = canvas.getWidth();
 		double maxHeight = canvas.getHeight();
-		
-		boolean upScale = true;
 		
 		double resultWidth;
 		double resultHeight;
@@ -151,7 +151,7 @@ public class DisplayPane extends StackPane {
 			originHeight = currentImage.getHeight();
 		}
 		
-		if (!upScale && originWidth < maxWidth && originHeight < maxHeight) {
+		if (!UPSCALE && originWidth < maxWidth && originHeight < maxHeight) {
 			// image is smaller than canvas or upscaling is off
 			resultWidth = originWidth;
 			resultHeight = originHeight;
@@ -205,8 +205,8 @@ public class DisplayPane extends StackPane {
 	}
 	
 	private void initEvents() {
-		canvas.widthProperty().bind(Root.GALLERY_PANE.widthProperty());
-		canvas.heightProperty().bind(Root.GALLERY_PANE.heightProperty());
+		canvas.widthProperty().bind(Main.GALLERY_PANE.widthProperty());
+		canvas.heightProperty().bind(Main.GALLERY_PANE.heightProperty());
 		
 		canvas.widthProperty().addListener((observable, oldValue, newValue) -> reload());
 		canvas.heightProperty().addListener((observable, oldValue, newValue) -> reload());
@@ -216,7 +216,7 @@ public class DisplayPane extends StackPane {
 				if (event.getClickCount() % 2 != 0) {
 					holderPane.requestFocus();
 				} else {
-					Root.PRIMARY_STAGE.getMainScene().viewGallery();
+					Main.STAGE.getMainScene().viewGallery();
 					Reload.start();
 				}
 			}

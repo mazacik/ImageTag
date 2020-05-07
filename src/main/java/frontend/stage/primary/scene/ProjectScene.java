@@ -15,7 +15,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
-import main.Root;
+import main.Main;
 
 import java.io.File;
 
@@ -66,7 +66,7 @@ public class ProjectScene extends Scene {
 		TextNode btnFinish = new TextNode("Finish", true, true, true, true);
 		btnFinish.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> this.tryFinish());
 		TextNode btnCancel = new TextNode("Cancel", true, true, true, true);
-		btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> Root.PRIMARY_STAGE.showIntroScene());
+		btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> Main.STAGE.showIntroScene());
 		
 		VBox boxMain = new VBox(gridPane, nodeError, new HBox(btnCancel, btnFinish));
 		boxMain.setSpacing(5);
@@ -83,7 +83,7 @@ public class ProjectScene extends Scene {
 		if (event.getCode() == KeyCode.ENTER) {
 			this.tryFinish();
 		} else if (event.getCode() == KeyCode.ESCAPE) {
-			Root.PRIMARY_STAGE.showIntroScene();
+			Main.STAGE.showIntroScene();
 		}
 	}
 	
@@ -107,10 +107,10 @@ public class ProjectScene extends Scene {
 			if (project == null) {
 				project = new Project(editProjectName.getText(), editSourceDirectory.getText());
 				project.writeToDisk();
-				Root.PRIMARY_STAGE.showMainScene(project);
+				Main.startMain(project);
 			} else {
 				project.updateProject(editProjectName.getText(), editSourceDirectory.getText());
-				Root.PRIMARY_STAGE.showIntroScene();
+				Main.STAGE.showIntroScene();
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-package frontend.stage.options;
+package frontend.stage.settings;
 
 import backend.control.filter.FilterOption;
 import backend.control.reload.Notifier;
@@ -15,21 +15,24 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.util.Pair;
 
-public class FilterPreferences extends VBox {
-	private BaseList<Pair<FilterOption, CheckBox>> checkBoxes = new BaseList<>();
-	private BaseList<Pair<FilterOption, EditNode>> editNodes = new BaseList<>();
+public class FilterSettingsPane extends HBox {
+	private final BaseList<Pair<FilterOption, CheckBox>> checkBoxes = new BaseList<>();
+	private final BaseList<Pair<FilterOption, EditNode>> editNodes = new BaseList<>();
 	
 	private EditNode editNodeString;
 	public static String QUERY = "";
 	
-	public FilterPreferences() {
-		this.getChildren().add(this.getPaneString());
-		this.getChildren().add(this.getPaneImages());
-		this.getChildren().add(this.getPaneVideos());
-		this.getChildren().add(this.getPaneTagCount());
-		this.getChildren().add(this.getPaneCollectionSize());
-		this.getChildren().add(this.getPaneMedia());
-		this.getChildren().add(this.getPaneOther());
+	public FilterSettingsPane() {
+		VBox boxTitlePanes = new VBox();
+		boxTitlePanes.getChildren().add(this.getPaneString());
+		boxTitlePanes.getChildren().add(this.getPaneImages());
+		boxTitlePanes.getChildren().add(this.getPaneVideos());
+		boxTitlePanes.getChildren().add(this.getPaneTagCount());
+		boxTitlePanes.getChildren().add(this.getPaneGroupSize());
+		boxTitlePanes.getChildren().add(this.getPaneMedia());
+		boxTitlePanes.getChildren().add(this.getPaneOther());
+		
+		this.getChildren().add(boxTitlePanes);
 	}
 	
 	private TitlePane getPaneString() {
@@ -127,27 +130,27 @@ public class FilterPreferences extends VBox {
 		
 		return titlePane;
 	}
-	private TitlePane getPaneCollectionSize() {
-		EditNode nodeCollectionSizeMin = new EditNode(String.valueOf(FilterOption.COLLECTION_SIZE_MIN.getIntValue()), EditNode.EditNodeType.NUMERIC_POSITIVE);
-		editNodes.add(new Pair<>(FilterOption.COLLECTION_SIZE_MIN, nodeCollectionSizeMin));
-		EditNode nodeCollectionSizeMax = new EditNode(String.valueOf(FilterOption.COLLECTION_SIZE_MAX.getIntValue()), EditNode.EditNodeType.NUMERIC_POSITIVE);
-		editNodes.add(new Pair<>(FilterOption.COLLECTION_SIZE_MAX, nodeCollectionSizeMax));
+	private TitlePane getPaneGroupSize() {
+		EditNode nodeGroupSizeMin = new EditNode(String.valueOf(FilterOption.GROUP_SIZE_MIN.getIntValue()), EditNode.EditNodeType.NUMERIC_POSITIVE);
+		editNodes.add(new Pair<>(FilterOption.GROUP_SIZE_MIN, nodeGroupSizeMin));
+		EditNode nodeGroupSizeMax = new EditNode(String.valueOf(FilterOption.GROUP_SIZE_MAX.getIntValue()), EditNode.EditNodeType.NUMERIC_POSITIVE);
+		editNodes.add(new Pair<>(FilterOption.GROUP_SIZE_MAX, nodeGroupSizeMax));
 		
-		TextNode nodeTagLimitMinText = new TextNode("Min");
-		TextNode nodeTagLimitMaxText = new TextNode("Max");
+		TextNode groupSizeMinText = new TextNode("Min");
+		TextNode groupSizeMaxText = new TextNode("Max");
 		
-		HBox boxCollectionSizeMin = new HBox(nodeTagLimitMinText, nodeCollectionSizeMin);
-		boxCollectionSizeMin.setSpacing(5);
-		boxCollectionSizeMin.setAlignment(Pos.CENTER);
-		HBox boxCollectionSizeMax = new HBox(nodeTagLimitMaxText, nodeCollectionSizeMax);
-		boxCollectionSizeMax.setSpacing(5);
-		boxCollectionSizeMax.setAlignment(Pos.CENTER);
+		HBox boxGroupSizeMin = new HBox(groupSizeMinText, nodeGroupSizeMin);
+		boxGroupSizeMin.setSpacing(5);
+		boxGroupSizeMin.setAlignment(Pos.CENTER);
+		HBox boxGroupSizeMax = new HBox(groupSizeMaxText, nodeGroupSizeMax);
+		boxGroupSizeMax.setSpacing(5);
+		boxGroupSizeMax.setAlignment(Pos.CENTER);
 		
-		HBox boxCollectionSize = new HBox(boxCollectionSizeMin, boxCollectionSizeMax);
-		boxCollectionSize.setSpacing(15);
-		boxCollectionSize.setPadding(new Insets(0, 5, 5, 7));
+		HBox boxGroupSize = new HBox(boxGroupSizeMin, boxGroupSizeMax);
+		boxGroupSize.setSpacing(15);
+		boxGroupSize.setPadding(new Insets(0, 5, 5, 7));
 		
-		TitlePane titlePane = new TitlePane("Collection Size", boxCollectionSize);
+		TitlePane titlePane = new TitlePane("Group Size", boxGroupSize);
 		titlePane.setPadding(new Insets(3, 5, 0, 5));
 		
 		return titlePane;

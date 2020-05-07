@@ -16,7 +16,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import main.Root;
+import main.Main;
 
 public class GalleryPane extends ScrollPane {
 	public static final double GAP = 1;
@@ -80,11 +80,11 @@ public class GalleryPane extends ScrollPane {
 		for (Tile tile : tiles) {
 			if (selectRectangle.localToScene(selectRectangle.getBoundsInLocal()).intersects(tile.localToScene(tile.getBoundsInLocal()))) {
 				Entity entity = tile.getEntity();
-				if (entity.hasCollection()) {
-					if (entity.getCollection().isOpen()) {
+				if (entity.hasGroup()) {
+					if (entity.getGroup().isOpen()) {
 						entityList.add(entity);
 					} else {
-						entityList.addAll(Root.FILTER.getFilteredList(entity.getCollection()));
+						entityList.addAll(Main.FILTER.getFilteredList(entity.getGroup()));
 					}
 				} else {
 					entityList.add(entity);
@@ -105,7 +105,7 @@ public class GalleryPane extends ScrollPane {
 				localCursorPositionX = x;
 				localCursorPositionY = y;
 				
-				selectRectangleHelper.setAll(Root.SELECT);
+				selectRectangleHelper.setAll(Main.SELECT);
 				break;
 			case SECONDARY:
 				break;
@@ -129,23 +129,23 @@ public class GalleryPane extends ScrollPane {
 				selectRectangle.setY(Math.min(selectRectangleY, localCursorPositionY));
 				
 				EntityList selectRectangleEntities = this.getSelectRectangleEntities();
-				Root.SELECT.clear();
+				Main.SELECT.clear();
 				
 				if (event.isControlDown()) {
-					Root.SELECT.addAll(selectRectangleHelper, true);
-					Root.SELECT.addAll(selectRectangleEntities, true);
-					for (Entity entity : new EntityList(Root.SELECT)) {
-						if (entity != Root.SELECT.getTarget() && selectRectangleHelper.contains(entity) && selectRectangleEntities.contains(entity)) {
-							Root.SELECT.remove(entity);
+					Main.SELECT.addAll(selectRectangleHelper, true);
+					Main.SELECT.addAll(selectRectangleEntities, true);
+					for (Entity entity : new EntityList(Main.SELECT)) {
+						if (entity != Main.SELECT.getTarget() && selectRectangleHelper.contains(entity) && selectRectangleEntities.contains(entity)) {
+							Main.SELECT.remove(entity);
 						}
 					}
 				} else if (event.isShiftDown()) {
 					selectRectangleHelper.removeAll(selectRectangleEntities);
-					Root.SELECT.addAll(selectRectangleHelper, true);
-					Root.SELECT.addAll(selectRectangleEntities, true);
+					Main.SELECT.addAll(selectRectangleHelper, true);
+					Main.SELECT.addAll(selectRectangleEntities, true);
 				} else {
 					selectRectangleHelper.removeAll(selectRectangleEntities);
-					Root.SELECT.addAll(selectRectangleEntities, true);
+					Main.SELECT.addAll(selectRectangleEntities, true);
 				}
 				
 				Reload.start();
@@ -234,7 +234,7 @@ public class GalleryPane extends ScrollPane {
 	}
 	
 	public boolean reload() {
-		EntityList representingEntityList = Root.FILTER.getRepresentingEntityList();
+		EntityList representingEntityList = Main.FILTER.getRepresentingEntityList();
 		if (representingEntityList.size() > TILE_LIMIT) {
 			tileEntities.setAll(representingEntityList.subList(0, TILE_LIMIT));
 			new SimpleMessageStage("Error", "Gallery reached a limit of " + TILE_LIMIT + " tiles.").show();
@@ -247,7 +247,7 @@ public class GalleryPane extends ScrollPane {
 		for (Entity entity : tileEntities) {
 			tiles.add(entity.getTile());
 			Reload.requestBorderUpdate(entity);
-			entity.getTile().updateCollectionIcon();
+			entity.getTile().updateGroupIcon();
 		}
 		
 		tilePane.getChildren().setAll(tiles);
@@ -258,10 +258,10 @@ public class GalleryPane extends ScrollPane {
 	}
 	public void moveViewportToTarget() {
 		if (this.getHeight() > 0) {
-			Entity currentTarget = Root.SELECT.getTarget();
-			if (!Root.PRIMARY_STAGE.getMainScene().isViewGallery() || currentTarget == null) return;
-			if (currentTarget.hasCollection() && !currentTarget.getCollection().isOpen()) {
-				currentTarget = currentTarget.getCollection().getFirst();
+			Entity currentTarget = Main.SELECT.getTarget();
+			if (!Main.STAGE.getMainScene().isViewGallery() || currentTarget == null) return;
+			if (currentTarget.hasGroup() && !currentTarget.getGroup().isOpen()) {
+				currentTarget = currentTarget.getGroup().getFirst();
 			}
 			int targetIndex = tileEntities.indexOf(currentTarget);
 			if (targetIndex >= 0) {
@@ -291,7 +291,7 @@ public class GalleryPane extends ScrollPane {
 				} else if (tileTop < viewportTop) {
 					vValue = targetRow * rowToContentRatio;
 				}
-				if (vValue >= 0 && vValue <= 1) {
+				if (vValue >= 0) {
 					this.setVvalue(vValue);
 				}
 			}

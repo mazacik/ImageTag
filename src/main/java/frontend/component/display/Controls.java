@@ -16,7 +16,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import main.Root;
+import main.Main;
 
 import java.io.File;
 
@@ -135,7 +135,7 @@ public class Controls extends BorderPane {
 			
 			btnMute.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, videoPlayer::swapMute);
 			btnSnapshot.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				Entity target = Root.SELECT.getTarget();
+				Entity target = Main.SELECT.getTarget();
 				File cacheFile = new File(FileUtil.getFileCache(target));
 				int tileSize = Settings.GALLERY_TILE_SIZE.getInteger();
 				videoPlayer.snapshot(cacheFile, tileSize, tileSize);
@@ -146,13 +146,13 @@ public class Controls extends BorderPane {
 		}
 		
 		btnPrevious.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-			Root.SELECT.moveTarget(Direction.LEFT);
-			Root.SELECT.set(Root.SELECT.getTarget());
+			Main.SELECT.moveTarget(Direction.LEFT);
+			Main.SELECT.set(Main.SELECT.getTarget());
 			Reload.start();
 		});
 		btnNext.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-			Root.SELECT.moveTarget(Direction.RIGHT);
-			Root.SELECT.set(Root.SELECT.getTarget());
+			Main.SELECT.moveTarget(Direction.RIGHT);
+			Main.SELECT.set(Main.SELECT.getTarget());
 			Reload.start();
 		});
 	}
@@ -181,8 +181,8 @@ public class Controls extends BorderPane {
 			this.setCenter(hBoxCenter);
 			this.setBottom(progressBar);
 		} else {
-			if (Root.DISPLAY_PANE.getVideoPlayer() != null)
-				Root.DISPLAY_PANE.getVideoPlayer().pause();
+			if (Main.DISPLAY_PANE.getVideoPlayer() != null)
+				Main.DISPLAY_PANE.getVideoPlayer().pause();
 			
 			this.setLeft(btnPrevious);
 			this.setRight(btnNext);

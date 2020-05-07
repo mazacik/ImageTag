@@ -16,7 +16,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
-import main.Root;
+import main.Main;
 
 public class TagNode extends VBox {
 	private static final int PADDING_DEFAULT = 10;
@@ -59,9 +59,9 @@ public class TagNode extends VBox {
 		boxMain = new HBox(toggleNode, textNode);
 		this.getChildren().add(boxMain);
 		
-		if (Root.FILTER.getFilterListManager().isWhitelisted(stringValue)) {
+		if (Main.FILTER.getFilterListManager().isWhitelisted(stringValue)) {
 			setTextFill(DecoratorUtil.getColorPositive());
-		} else if (Root.FILTER.getFilterListManager().isBlacklisted(stringValue)) {
+		} else if (Main.FILTER.getFilterListManager().isBlacklisted(stringValue)) {
 			setTextFill(DecoratorUtil.getColorNegative());
 		}
 		
@@ -78,9 +78,9 @@ public class TagNode extends VBox {
 		boxMain.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			switch (event.getButton()) {
 				case PRIMARY:
-					if (parentPane == Root.FILTER_PANE) {
+					if (parentPane == Main.FILTER_PANE) {
 						clickFilter(event);
-					} else if (parentPane == Root.SELECT_PANE) {
+					} else if (parentPane == Main.SELECT_PANE) {
 						clickSelect(event);
 					}
 					Reload.start();
@@ -96,14 +96,14 @@ public class TagNode extends VBox {
 	
 	private void clickFilter(MouseEvent event) {
 		if (event.getX() > toggleNode.getWidth()) {
-			if (Root.FILTER.getFilterListManager().isWhitelisted(stringValue)) {
-				Root.FILTER.getFilterListManager().blacklist(stringValue, getLevels().size());
+			if (Main.FILTER.getFilterListManager().isWhitelisted(stringValue)) {
+				Main.FILTER.getFilterListManager().blacklist(stringValue, getLevels().size());
 				setTextFill(DecoratorUtil.getColorNegative());
-			} else if (Root.FILTER.getFilterListManager().isBlacklisted(stringValue)) {
-				Root.FILTER.getFilterListManager().unlist(stringValue);
+			} else if (Main.FILTER.getFilterListManager().isBlacklisted(stringValue)) {
+				Main.FILTER.getFilterListManager().unlist(stringValue);
 				setTextFill(DecoratorUtil.getColorPrimary());
 			} else {
-				Root.FILTER.getFilterListManager().whitelist(stringValue, getLevels().size());
+				Main.FILTER.getFilterListManager().whitelist(stringValue, getLevels().size());
 				setTextFill(DecoratorUtil.getColorPositive());
 			}
 		} else {
@@ -125,9 +125,9 @@ public class TagNode extends VBox {
 	private void clickSelect(MouseEvent event) {
 		if (this.isLast()) {
 			if (textNode.getTextFill().equals(DecoratorUtil.getColorPositive()) || textNode.getTextFill().equals(DecoratorUtil.getColorUnion())) {
-				Root.SELECT.removeTag(Root.TAGLIST.getTag(this.getStringValue()).getID());
+				Main.SELECT.removeTag(Main.TAGLIST.getTag(this.getStringValue()).getID());
 			} else {
-				Root.SELECT.addTag(Root.TAGLIST.getTag(this.getStringValue()).getID());
+				Main.SELECT.addTag(Main.TAGLIST.getTag(this.getStringValue()).getID());
 			}
 		} else {
 			if (event.isShiftDown()) {
