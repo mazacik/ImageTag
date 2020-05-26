@@ -75,6 +75,13 @@ public class ClickMenu extends ListMenu {
 				clickMenu.show(root, event, direction, offsetX, offsetY);
 			}
 		});
+		root.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
+			ListMenu instanceShowing = ListMenu.getShowing();
+			if (instanceShowing != null && instanceShowing != clickMenu) {
+				instanceShowing.hide();
+				clickMenu.show(root, event, direction, offsetX, offsetY);
+			}
+		});
 		return clickMenu;
 	}
 	

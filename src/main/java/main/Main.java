@@ -17,7 +17,7 @@ import backend.misc.Settings;
 import frontend.component.display.DisplayPane;
 import frontend.component.gallery.GalleryPane;
 import frontend.component.side.FilterPane;
-import frontend.component.side.SelectPane;
+import frontend.component.side.select.SelectionPane;
 import frontend.component.top.ToolbarPane;
 import frontend.stage.primary.PrimaryStage;
 import javafx.application.Application;
@@ -27,7 +27,7 @@ import java.io.File;
 
 public class Main extends Application {
 	// CONST
-	public static final boolean DEBUG_AUTOLOAD_LATEST_PROJECT = true;
+	public static final boolean DEBUG_AUTOLOAD_LATEST_PROJECT = false;
 	public static final boolean DEBUG_USE_CACHE = true;
 	
 	public static final boolean DEBUG_FS_ALLOW_FILE_MOVE = true;
@@ -48,7 +48,7 @@ public class Main extends Application {
 	public static final GalleryPane GALLERY_PANE;
 	public static final DisplayPane DISPLAY_PANE;
 	public static final FilterPane FILTER_PANE;
-	public static final SelectPane SELECT_PANE;
+	public static final SelectionPane SELECT_PANE;
 	
 	public static final PrimaryStage STAGE;
 	
@@ -71,7 +71,7 @@ public class Main extends Application {
 		GALLERY_PANE = new GalleryPane();
 		DISPLAY_PANE = new DisplayPane();
 		FILTER_PANE = new FilterPane();
-		SELECT_PANE = new SelectPane();
+		SELECT_PANE = new SelectionPane();
 		
 		STAGE = new PrimaryStage();
 	}

@@ -24,6 +24,7 @@ public abstract class HttpUtil {
 				String site = response.getFirstHeader("location").getValue();
 				Runtime.getRuntime().exec("cmd /c start " + site);
 			} catch (IOException e) {
+				//todo show error
 				e.printStackTrace();
 			}
 		}).start();

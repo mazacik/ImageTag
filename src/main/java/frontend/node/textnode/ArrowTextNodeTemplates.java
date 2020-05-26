@@ -60,7 +60,6 @@ public enum ArrowTextNodeTemplates {
 			HoverMenu.install(arrowTextNode, Direction.RIGHT
 					, TextNodeTemplates.SELECTION_DESELECT_LARGEST.get()
 					, TextNodeTemplates.FILE_GOOGLE_RIS.get()
-					, TextNodeTemplates.FILE_DETAILS.get()
 			);
 			return arrowTextNode;
 		}

@@ -80,7 +80,7 @@ public class TagNode extends VBox {
 				case PRIMARY:
 					if (parentPane == Main.FILTER_PANE) {
 						clickFilter(event);
-					} else if (parentPane == Main.SELECT_PANE) {
+					} else if (parentPane == Main.SELECT_PANE.getSelectionTagsPane()) {
 						clickSelect(event);
 					}
 					Reload.start();

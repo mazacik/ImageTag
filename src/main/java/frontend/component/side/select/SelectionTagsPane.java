@@ -1,32 +1,24 @@
-package frontend.component.side;
+package frontend.component.side.select;
 
 import backend.control.reload.Reload;
 import backend.list.BaseList;
-import backend.list.entity.Entity;
 import backend.list.tag.Tag;
 import backend.misc.Direction;
+import frontend.component.side.SidePaneBase;
+import frontend.component.side.TagNode;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.EditNode;
-import frontend.node.menu.ClickMenu;
-import frontend.node.textnode.TextNode;
-import frontend.node.textnode.TextNodeTemplates;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Background;
 import main.Main;
 
-public class SelectPane extends SidePaneBase {
-	private final TextNode nodeText;
+public class SelectionTagsPane extends SidePaneBase {
 	private final EditNode nodeSearch;
 	
 	private TagNode match;
 	private String query;
 	private boolean searchLock = false;
 	
-	public SelectPane() {
-		nodeText = new TextNode("", true, true, false, true);
-		nodeText.setBorder(DecoratorUtil.getBorder(0, 0, 1, 0));
-		nodeText.setMaxWidth(Double.MAX_VALUE);
-		
+	public SelectionTagsPane() {
 		nodeSearch = new EditNode("", "Quick Search");
 		nodeSearch.setBorder(DecoratorUtil.getBorder(0, 0, 1, 0));
 		nodeSearch.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -83,18 +75,10 @@ public class SelectPane extends SidePaneBase {
 			}
 		});
 		
-		ClickMenu.install(nodeText, Direction.LEFT, MouseButton.PRIMARY, 0, -1,
-		                  TextNodeTemplates.SELECTION_SET_ALL.get(),
-		                  TextNodeTemplates.SELECTION_SET_NONE.get()
-		);
-		
-		this.setBorder(DecoratorUtil.getBorder(0, 0, 0, 1));
-		this.getChildren().addAll(nodeText, nodeSearch, listBox);
+		this.getChildren().addAll(nodeSearch, listBox);
 	}
 	
 	public boolean refresh() {
-		refreshTitle();
-		
 		BaseList<String> stringListIntersect = new BaseList<>();
 		Main.SELECT.getTagListIntersect().forEach(tag -> stringListIntersect.add(tag.getStringValue()));
 		BaseList<String> stringListUnion = new BaseList<>();
@@ -119,19 +103,6 @@ public class SelectPane extends SidePaneBase {
 			}
 		}
 		tagNode.setTextFill(DecoratorUtil.getColorPrimary());
-	}
-	private void refreshTitle() {
-		int hiddenTilesCount = 0;
-		for (Entity entity : Main.SELECT) {
-			if (!Main.FILTER.contains(entity)) {
-				hiddenTilesCount++;
-			}
-		}
-		
-		String text = "Selection: " + Main.SELECT.size();
-		if (hiddenTilesCount > 0) text += " (" + hiddenTilesCount + " hidden)";
-		
-		nodeText.setText(text);
 	}
 	
 	public void nextMatch(Direction searchDirection, boolean isControlDown) {

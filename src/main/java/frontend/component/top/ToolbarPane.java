@@ -32,6 +32,12 @@ public class ToolbarPane extends BorderPane {
 		                  TextNodeTemplates.APPLICATION_EXIT.get()
 		);
 		
+		TextNode nodeEdit = new TextNode("Edit", true, true, false, true);
+		ClickMenu.install(nodeEdit, Direction.DOWN, MouseButton.PRIMARY,
+		                  TextNodeTemplates.SELECT_ALL.get(),
+		                  TextNodeTemplates.SELECT_NONE.get()
+		);
+		
 		TextNode nodeFilter = new TextNode("Filter", true, true, false, true);
 		ClickMenu.install(nodeFilter, Direction.DOWN, MouseButton.PRIMARY,
 		                  TextNodeTemplates.FILTER_CREATE_PRESET.get(),
@@ -48,7 +54,7 @@ public class ToolbarPane extends BorderPane {
 		nodeTarget = new TextNode("", true, true, false, true);
 		ClickMenu.install(nodeTarget, Direction.DOWN, MouseButton.PRIMARY, ListMenu.Preset.ENTITY);
 		
-		HBox hBox = new HBox(nodeFile, nodeRandom);
+		HBox hBox = new HBox(nodeFile, nodeEdit, nodeRandom);
 		hBox.setAlignment(Pos.CENTER);
 		
 		this.setBorder(DecoratorUtil.getBorder(0, 0, 1, 0));

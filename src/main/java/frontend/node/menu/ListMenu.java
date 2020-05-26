@@ -62,6 +62,15 @@ public abstract class ListMenu extends Popup {
 		});
 	}
 	
+	public static ListMenu getShowing() {
+		for (ListMenu instance : instances) {
+			if (instance.isShowing()) {
+				return instance;
+			}
+		}
+		return null;
+	}
+	
 	public enum Preset {
 		ENTITY(TextNodeTemplates.FILE_OPEN.get(),
 		       TextNodeTemplates.FILE_EDIT.get(),

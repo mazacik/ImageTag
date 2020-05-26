@@ -3,13 +3,11 @@ package frontend.component.side;
 import backend.list.BaseList;
 import backend.list.tag.Tag;
 import frontend.node.ListBox;
-import frontend.node.override.HBox;
 import frontend.node.override.VBox;
-import javafx.scene.layout.Priority;
 import main.Main;
 
 public abstract class SidePaneBase extends VBox {
-	public static final double MIN_WIDTH = 250;
+	public static final double MIN_WIDTH = 300;
 	
 	protected final BaseList<TagNode> rootNodes;
 	protected final BaseList<TagNode> openNodes;
@@ -21,9 +19,6 @@ public abstract class SidePaneBase extends VBox {
 		openNodes = new BaseList<>();
 		
 		listBox = new ListBox();
-		
-		this.setMinWidth(MIN_WIDTH);
-		HBox.setHgrow(this, Priority.ALWAYS);
 	}
 	
 	public boolean reload() {

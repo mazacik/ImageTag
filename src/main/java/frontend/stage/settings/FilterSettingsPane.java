@@ -1,6 +1,7 @@
 package frontend.stage.settings;
 
 import backend.control.filter.FilterOption;
+import backend.control.reload.InvokeHelper;
 import backend.control.reload.Notifier;
 import backend.control.reload.Reload;
 import backend.list.BaseList;
@@ -208,6 +209,7 @@ public class FilterSettingsPane extends HBox {
 		});
 		
 		Reload.notify(Notifier.FILTER_NEEDS_REFRESH);
+		Reload.request(InvokeHelper.PANE_DISPLAY_RELOAD);
 		Reload.start();
 	}
 }

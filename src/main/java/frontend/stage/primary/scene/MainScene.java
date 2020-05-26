@@ -5,7 +5,6 @@ import backend.control.reload.Reload;
 import backend.lire.LireUtil;
 import backend.list.entity.Entity;
 import backend.misc.Direction;
-import frontend.EntityDetailsUtil;
 import frontend.component.side.SidePaneBase;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.EditNode;
@@ -67,15 +66,12 @@ public class MainScene extends Scene {
 			case F2:
 				LireUtil.echo(99);
 				break;
-			case I:
-				EntityDetailsUtil.show();
-				break;
 			case ESCAPE:
 				this.viewGallery();
 				Reload.start();
 				break;
 			case TAB:
-				Main.SELECT_PANE.getNodeSearch().requestFocus();
+				Main.SELECT_PANE.getSelectionTagsPane().getNodeSearch().requestFocus();
 				break;
 			case DELETE:
 				Main.SELECT.deleteSelect();
@@ -133,14 +129,14 @@ public class MainScene extends Scene {
 				event.consume();
 				break;
 			case UP:
-				if (this.getFocusOwner() == Main.SELECT_PANE.getNodeSearch()) {
-					Main.SELECT_PANE.nextMatch(Direction.UP, event.isControlDown());
+				if (this.getFocusOwner() == Main.SELECT_PANE.getSelectionTagsPane().getNodeSearch()) {
+					Main.SELECT_PANE.getSelectionTagsPane().nextMatch(Direction.UP, event.isControlDown());
 					event.consume();
 				}
 				break;
 			case DOWN:
-				if (this.getFocusOwner() == Main.SELECT_PANE.getNodeSearch()) {
-					Main.SELECT_PANE.nextMatch(Direction.DOWN, event.isControlDown());
+				if (this.getFocusOwner() == Main.SELECT_PANE.getSelectionTagsPane().getNodeSearch()) {
+					Main.SELECT_PANE.getSelectionTagsPane().nextMatch(Direction.DOWN, event.isControlDown());
 					event.consume();
 				}
 				break;

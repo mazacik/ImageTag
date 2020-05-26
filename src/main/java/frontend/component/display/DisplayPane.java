@@ -4,6 +4,8 @@ import backend.control.reload.Reload;
 import backend.list.entity.Entity;
 import backend.misc.Direction;
 import backend.misc.FileUtil;
+import backend.misc.Settings;
+import frontend.decorator.DecoratorUtil;
 import frontend.node.menu.ClickMenu;
 import frontend.node.menu.ListMenu;
 import frontend.node.textnode.TextNode;
@@ -28,8 +30,6 @@ import java.io.IOException;
 import java.util.Iterator;
 
 public class DisplayPane extends StackPane {
-	private static final boolean UPSCALE = false;
-	
 	private final Canvas canvas;
 	private final ImageView gifPlayer;
 	private final VideoPlayer videoPlayer;
@@ -41,6 +41,8 @@ public class DisplayPane extends StackPane {
 	
 	private Image currentImage = null;
 	private Entity currentEntity = null;
+	
+	private TextNode text = null;
 	
 	public DisplayPane() {
 		canvas = new Canvas();
@@ -74,8 +76,13 @@ public class DisplayPane extends StackPane {
 		controls.setOnMouseExited(event -> autoHideDelay.playFromStart());
 		/* Controls */
 		
+		text = new TextNode("TEST");
+		text.setFont(DecoratorUtil.getFont());
+		StackPane.setAlignment(text, Pos.TOP_LEFT);
+		
 		this.getChildren().add(holderPane);
 		this.getChildren().add(controls);
+		//this.getChildren().add(text);
 		this.setAlignment(Pos.TOP_CENTER);
 		
 		this.initEvents();
@@ -151,7 +158,7 @@ public class DisplayPane extends StackPane {
 			originHeight = currentImage.getHeight();
 		}
 		
-		if (!UPSCALE && originWidth < maxWidth && originHeight < maxHeight) {
+		if (!Settings.DISPLAY_UPSCALE.getBoolean() && originWidth < maxWidth && originHeight < maxHeight) {
 			// image is smaller than canvas or upscaling is off
 			resultWidth = originWidth;
 			resultHeight = originHeight;
@@ -169,6 +176,9 @@ public class DisplayPane extends StackPane {
 		
 		double resultX = maxWidth / 2 - resultWidth / 2;
 		double resultY = maxHeight / 2 - resultHeight / 2;
+		
+		text.setTranslateX(resultX);
+		text.setTranslateY(resultY);
 		
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		gc.clearRect(0, 0, maxWidth, maxHeight);

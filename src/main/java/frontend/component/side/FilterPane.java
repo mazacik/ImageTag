@@ -2,12 +2,14 @@ package frontend.component.side;
 
 import backend.control.reload.Reload;
 import frontend.decorator.DecoratorUtil;
+import frontend.node.override.HBox;
 import frontend.node.textnode.TextNode;
 import frontend.node.textnode.TextNodeTemplates;
 import frontend.stage.settings.SettingsStage;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Priority;
 import main.Main;
 
 public class FilterPane extends SidePaneBase {
@@ -34,6 +36,9 @@ public class FilterPane extends SidePaneBase {
 		
 		TextNode btnCreateNewTag = TextNodeTemplates.TAG_CREATE.get();
 		btnCreateNewTag.setBorder(DecoratorUtil.getBorder(0, 0, 1, 0));
+		
+		this.setMinWidth(MIN_WIDTH);
+		HBox.setHgrow(this, Priority.ALWAYS);
 		
 		this.setBorder(DecoratorUtil.getBorder(0, 1, 0, 0));
 		this.getChildren().addAll(paneTitle, btnCreateNewTag, listBox);

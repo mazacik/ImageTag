@@ -13,7 +13,7 @@ import backend.list.tag.TagUtil;
 import backend.misc.FileUtil;
 import backend.misc.HttpUtil;
 import backend.misc.Project;
-import frontend.EntityDetailsUtil;
+import backend.misc.Settings;
 import frontend.node.menu.ListMenu;
 import frontend.stage.CollageStage;
 import frontend.stage.ConfirmationStage;
@@ -307,20 +307,6 @@ public enum TextNodeTemplates {
 			return textNode;
 		}
 	},
-	FILE_DETAILS {
-		public TextNode get() {
-			TextNode textNode = new TextNode("Details", true, true, false, true, this);
-			setupNode(textNode);
-			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ListMenu.hideMenus();
-				
-				if (Main.SELECT.getTarget() != null) {
-					EntityDetailsUtil.show();
-				}
-			});
-			return textNode;
-		}
-	},
 	
 	FILTER_CREATE_PRESET {
 		public TextNode get() {
@@ -364,7 +350,7 @@ public enum TextNodeTemplates {
 		}
 	},
 	
-	SELECTION_SET_ALL {
+	SELECT_ALL {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Select All", true, true, false, true, this);
 			setupNode(textNode);
@@ -377,7 +363,7 @@ public enum TextNodeTemplates {
 			return textNode;
 		}
 	},
-	SELECTION_SET_NONE {
+	SELECT_NONE {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Select None", true, true, false, true, this);
 			setupNode(textNode);
@@ -553,10 +539,12 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
+				Settings.writeToDisk();
+				
 				if (Project.getCurrent().writeToDisk()) {
-					new SimpleMessageStage("Save", "Done.").showAndWait();
+					new SimpleMessageStage("Save", "OK").showAndWait();
 				} else {
-					new SimpleMessageStage("Save", "Error.").showAndWait();
+					new SimpleMessageStage("Save", "Error").showAndWait();
 				}
 			});
 			return textNode;
@@ -644,14 +632,19 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				Main.THREADS.interrupt();
-				Main.STAGE.showIntroScene();
+				
+				Settings.writeToDisk();
+				
+				if (Project.getCurrent().writeToDisk()) {
+					Main.STAGE.showIntroScene();
+				}
 			});
 			return textNode;
 		}
 	},
 	APPLICATION_EXIT {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Exit", true, true, false, true, this);
+			TextNode textNode = new TextNode("Save and Exit", true, true, false, true, this);
 			setupNode(textNode);
 			//noinspection Convert2MethodRef
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Main.STAGE.requestExit());

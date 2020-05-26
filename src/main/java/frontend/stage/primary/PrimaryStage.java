@@ -61,6 +61,7 @@ public class PrimaryStage extends Stage {
 		this.setTitle("Welcome to " + FileUtil.APP_NAME);
 		
 		this.setScene(introScene);
+		this.setMaximized(false);
 		this.setWidth(width);
 		this.setHeight(height);
 		this.centerOnScreen();
