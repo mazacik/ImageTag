@@ -53,10 +53,8 @@ public class MainScene extends Scene {
 	}
 	private void keybindsGlobal(KeyEvent event) {
 		ListMenu.hideMenus();
+		
 		switch (event.getCode()) {
-			case BACK_QUOTE:
-				
-				break;
 			case SHIFT:
 				Main.SELECT.setupShiftSelect();
 				break;
@@ -84,7 +82,7 @@ public class MainScene extends Scene {
 				Reload.start();
 				break;
 			case R:
-				Main.SELECT.setRandom();
+				Main.SELECT.setRandom(true);
 				Reload.start();
 				break;
 			case G:
@@ -93,7 +91,7 @@ public class MainScene extends Scene {
 					if (randomEntityFromGroup == null) {
 						int i = 0;
 					}
-					Main.SELECT.setTarget(randomEntityFromGroup);
+					Main.SELECT.setTarget(randomEntityFromGroup, true);
 					if (!Main.SELECT.contains(randomEntityFromGroup)) {
 						Main.SELECT.set(randomEntityFromGroup);
 					}

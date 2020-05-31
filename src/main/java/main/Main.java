@@ -109,7 +109,7 @@ public class Main extends Application {
 		
 		Entity target = ENTITYLIST.getFirst();
 		if (target != null) {
-			SELECT.setTarget(target);
+			SELECT.setTarget(target, true);
 			if (target.hasGroup()) {
 				SELECT.setAll(target.getGroup());
 			} else {

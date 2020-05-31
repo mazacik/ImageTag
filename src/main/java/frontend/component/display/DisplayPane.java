@@ -9,6 +9,7 @@ import frontend.decorator.DecoratorUtil;
 import frontend.node.menu.ClickMenu;
 import frontend.node.menu.ListMenu;
 import frontend.node.textnode.TextNode;
+import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
@@ -20,6 +21,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 import main.Main;
 
 import javax.imageio.ImageIO;
@@ -30,11 +32,11 @@ import java.io.IOException;
 import java.util.Iterator;
 
 public class DisplayPane extends StackPane {
-	private final Canvas canvas;
 	private final ImageView gifPlayer;
 	private final VideoPlayer videoPlayer;
 	private final Controls controls;
 	
+	private final StackPane canvasPane;
 	private final BorderPane holderPane;
 	
 	private final TextNode nodeNoLibsError;
@@ -45,19 +47,27 @@ public class DisplayPane extends StackPane {
 	private TextNode text = null;
 	
 	public DisplayPane() {
-		canvas = new Canvas();
-		holderPane = new BorderPane(canvas);
+		canvasPane = new StackPane(canvas1, canvas2);
+		holderPane = new BorderPane(canvasPane);
+		
+		fadeCanvas1 = new FadeTransition(transitionAnimationLength, canvas1);
+		fadeCanvas1.setFromValue(0);
+		fadeCanvas1.setToValue(1);
+		
+		fadeCanvas2 = new FadeTransition(transitionAnimationLength, canvas2);
+		fadeCanvas2.setFromValue(0);
+		fadeCanvas2.setToValue(1);
 		
 		gifPlayer = new ImageView();
 		gifPlayer.fitWidthProperty().bind(Main.GALLERY_PANE.widthProperty());
 		gifPlayer.fitHeightProperty().bind(Main.GALLERY_PANE.heightProperty());
 		
-		videoPlayer = VideoPlayer.create(canvas);
+		videoPlayer = VideoPlayer.create(canvas1);
 		
 		nodeNoLibsError = new TextNode("Error: libvlc.dll and libvlccore.dll not found.\nVLC Media Player is not installed.", false, false, false, false) {{
 			this.setFont(new Font(64));
-			this.minWidthProperty().bind(canvas.widthProperty());
-			this.minHeightProperty().bind(canvas.heightProperty());
+			this.minWidthProperty().bind(canvas1.widthProperty());
+			this.minHeightProperty().bind(canvas1.heightProperty());
 		}};
 		
 		/* Controls */
@@ -88,6 +98,55 @@ public class DisplayPane extends StackPane {
 		this.initEvents();
 	}
 	
+	private final Duration transitionAnimationLength = new Duration(1000);
+	private final Canvas canvas1 = new Canvas();
+	private final Canvas canvas2 = new Canvas();
+	private Canvas activeCanvas;
+	
+	private final FadeTransition fadeCanvas1;
+	private final FadeTransition fadeCanvas2;
+	private void prepareCanvas() {
+		if (holderPane.getCenter() != canvasPane) {
+			holderPane.setCenter(canvasPane);
+		}
+		
+		if (Main.SELECT.isSlideshowRunning()) {
+			if (activeCanvas == null || activeCanvas == canvas2) {
+				activeCanvas = canvas1;
+			} else {
+				activeCanvas = canvas2;
+			}
+		} else {
+			if (activeCanvas == null || activeCanvas == canvas2) {
+				activeCanvas = canvas1;
+				fadeIn(fadeCanvas1);
+				fadeOut(fadeCanvas2);
+			}
+		}
+	}
+	private void transitionCanvas() {
+		if (Main.SELECT.isSlideshowRunning()) {
+			if (activeCanvas == canvas1) {
+				fadeIn(fadeCanvas1);
+				fadeOut(fadeCanvas2);
+			} else {
+				fadeIn(fadeCanvas2);
+				fadeOut(fadeCanvas1);
+			}
+		}
+	}
+	
+	private void fadeIn(FadeTransition fadeTransition) {
+		fadeTransition.pause();
+		fadeTransition.setRate(1);
+		fadeTransition.play();
+	}
+	private void fadeOut(FadeTransition fadeTransition) {
+		fadeTransition.pause();
+		fadeTransition.setRate(-1);
+		fadeTransition.play();
+	}
+	
 	public boolean reload() {
 		Entity currentTarget = Main.SELECT.getTarget();
 		if (!Main.STAGE.getMainScene().isViewGallery() && currentTarget != null) {
@@ -112,14 +171,12 @@ public class DisplayPane extends StackPane {
 	private void reloadAsImage(Entity entity) {
 		controls.setVideoMode(false);
 		
-		if (holderPane.getCenter() != canvas) {
-			holderPane.setCenter(canvas);
-		}
+		this.prepareCanvas();
 		
 		double originWidth = 0;
 		double originHeight = 0;
-		double maxWidth = canvas.getWidth();
-		double maxHeight = canvas.getHeight();
+		double maxWidth = activeCanvas.getWidth();
+		double maxHeight = activeCanvas.getHeight();
 		
 		double resultWidth;
 		double resultHeight;
@@ -149,7 +206,7 @@ public class DisplayPane extends StackPane {
 			
 			String entityFilePath = FileUtil.getFileEntity(entity);
 			if (originWidth > 2 * maxWidth || originHeight > 2 * maxHeight) {
-				currentImage = new Image("file:" + entityFilePath, canvas.getWidth() * 1.5, canvas.getHeight() * 1.5, true, true);
+				currentImage = new Image("file:" + entityFilePath, activeCanvas.getWidth() * 1.5, activeCanvas.getHeight() * 1.5, true, true);
 			} else {
 				currentImage = new Image("file:" + entityFilePath);
 			}
@@ -180,9 +237,11 @@ public class DisplayPane extends StackPane {
 		text.setTranslateX(resultX);
 		text.setTranslateY(resultY);
 		
-		GraphicsContext gc = canvas.getGraphicsContext2D();
+		GraphicsContext gc = activeCanvas.getGraphicsContext2D();
 		gc.clearRect(0, 0, maxWidth, maxHeight);
 		gc.drawImage(currentImage, resultX, resultY, resultWidth, resultHeight);
+		
+		this.transitionCanvas();
 	}
 	private void reloadAsGif(Entity entity) {
 		controls.setVideoMode(false);
@@ -197,7 +256,7 @@ public class DisplayPane extends StackPane {
 		gifPlayer.setImage(currentImage);
 	}
 	private void reloadAsVideo(Entity entity) {
-		if (holderPane.getCenter() != canvas) holderPane.setCenter(canvas);
+		if (holderPane.getCenter() != canvas1) holderPane.setCenter(canvas1);
 		
 		if (VideoPlayer.hasLibs()) {
 			controls.setVideoMode(true);
@@ -215,11 +274,17 @@ public class DisplayPane extends StackPane {
 	}
 	
 	private void initEvents() {
-		canvas.widthProperty().bind(Main.GALLERY_PANE.widthProperty());
-		canvas.heightProperty().bind(Main.GALLERY_PANE.heightProperty());
+		canvas1.widthProperty().bind(Main.GALLERY_PANE.widthProperty());
+		canvas1.heightProperty().bind(Main.GALLERY_PANE.heightProperty());
 		
-		canvas.widthProperty().addListener((observable, oldValue, newValue) -> reload());
-		canvas.heightProperty().addListener((observable, oldValue, newValue) -> reload());
+		canvas1.widthProperty().addListener((observable, oldValue, newValue) -> reload());
+		canvas1.heightProperty().addListener((observable, oldValue, newValue) -> reload());
+		
+		canvas2.widthProperty().bind(Main.GALLERY_PANE.widthProperty());
+		canvas2.heightProperty().bind(Main.GALLERY_PANE.heightProperty());
+		
+		canvas2.widthProperty().addListener((observable, oldValue, newValue) -> reload());
+		canvas2.heightProperty().addListener((observable, oldValue, newValue) -> reload());
 		
 		holderPane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {

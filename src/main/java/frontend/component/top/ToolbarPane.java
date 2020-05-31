@@ -47,14 +47,24 @@ public class ToolbarPane extends BorderPane {
 		
 		TextNode nodeRandom = new TextNode("Random", true, true, false, true);
 		nodeRandom.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-			Main.SELECT.setRandom();
+			Main.SELECT.setRandom(true);
 			Reload.start();
+		});
+		
+		TextNode nodeSlideshow = new TextNode("Slideshow", true, true, false, true);
+		nodeSlideshow.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+			if (Main.SELECT.isSlideshowRunning()) {
+				Main.SELECT.slideshowStop();
+			} else {
+				Main.SELECT.slideshowStart();
+				Reload.start();
+			}
 		});
 		
 		nodeTarget = new TextNode("", true, true, false, true);
 		ClickMenu.install(nodeTarget, Direction.DOWN, MouseButton.PRIMARY, ListMenu.Preset.ENTITY);
 		
-		HBox hBox = new HBox(nodeFile, nodeEdit, nodeRandom);
+		HBox hBox = new HBox(nodeFile, nodeEdit, nodeRandom, nodeSlideshow);
 		hBox.setAlignment(Pos.CENTER);
 		
 		this.setBorder(DecoratorUtil.getBorder(0, 0, 1, 0));

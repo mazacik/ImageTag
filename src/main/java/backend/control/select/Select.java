@@ -7,7 +7,9 @@ import backend.list.entity.Entity;
 import backend.list.entity.EntityList;
 import backend.misc.Direction;
 import backend.misc.FileUtil;
+import javafx.animation.PauseTransition;
 import javafx.scene.input.KeyEvent;
+import javafx.util.Duration;
 import main.Main;
 
 import java.util.Collection;
@@ -15,7 +17,11 @@ import java.util.List;
 
 public class Select extends EntityList {
 	public Select() {
-	
+		slideshow.setOnFinished(event -> {
+			this.setRandom(false);
+			Reload.start();
+			slideshow.playFromStart();
+		});
 	}
 	
 	public boolean add(Entity entity) {
@@ -197,7 +203,7 @@ public class Select extends EntityList {
 		selectBefore.setAll(this);
 	}
 	
-	public void setRandom() {
+	public void setRandom(boolean userCall) {
 		Entity randomEntity = null;
 		if (Main.FILTER.size() == 1) {
 			randomEntity = Main.FILTER.getFirst();
@@ -207,7 +213,22 @@ public class Select extends EntityList {
 			} while (!Main.FILTER.isValid(randomEntity));
 		}
 		this.set(randomEntity);
-		this.setTarget(randomEntity);
+		this.setTarget(randomEntity, userCall);
+	}
+	
+	private final PauseTransition slideshow = new PauseTransition(new Duration(5000));
+	private boolean slideshowRunning = false;
+	public void slideshowStart() {
+		slideshowRunning = true;
+		this.setRandom(false);
+		slideshow.playFromStart();
+	}
+	public void slideshowStop() {
+		slideshowRunning = false;
+		slideshow.stop();
+	}
+	public boolean isSlideshowRunning() {
+		return slideshowRunning;
 	}
 	
 	public void addTag(Integer tagID) {
@@ -230,7 +251,11 @@ public class Select extends EntityList {
 	public Entity getTarget() {
 		return target;
 	}
-	public void setTarget(Entity newTarget) {
+	public void setTarget(Entity newTarget, boolean userCall) {
+		if (userCall && slideshowRunning) {
+			slideshowStop();
+		}
+		
 		if (newTarget != target) {
 			if (target != null) {
 				Main.FILTER.resolve();
@@ -316,9 +341,9 @@ public class Select extends EntityList {
 		if (isShiftDown) {
 			Entity entityTo = entityList.get(newTargetIndex);
 			this.shiftSelectTo(entityTo);
-			this.setTarget(entityTo);
+			this.setTarget(entityTo, true);
 		} else {
-			this.setTarget(entityList.get(newTargetIndex));
+			this.setTarget(entityList.get(newTargetIndex), true);
 			this.set(target);
 			this.entityFrom = target;
 		}
@@ -365,15 +390,15 @@ public class Select extends EntityList {
 	public void restorePosition() {
 		if (Main.FILTER.isEmpty()) {
 			this.clear();
-			this.setTarget(null);
+			this.setTarget(null, true);
 		} else {
 			EntityList representingEntities = Main.FILTER.getRepresentingEntityList();
 			if (!representingEntities.isEmpty()) {
 				if (!representingEntities.contains(memEntity) && memIndex >= 0) {
 					if (memIndex <= representingEntities.size() - 1) {
-						this.setTarget(representingEntities.get(memIndex));
+						this.setTarget(representingEntities.get(memIndex), true);
 					} else {
-						this.setTarget(representingEntities.getLast());
+						this.setTarget(representingEntities.getLast(), true);
 					}
 				}
 				

@@ -118,7 +118,7 @@ public class Tile extends Pane {
 						//additional functionality from ClickMenu
 						
 						if (!Main.SELECT.contains(entity)) Main.SELECT.set(entity);
-						Main.SELECT.setTarget(entity);
+						Main.SELECT.setTarget(entity, true);
 						
 						Reload.start();
 						break;
@@ -160,11 +160,11 @@ public class Tile extends Pane {
 				Main.SELECT.set(entity);
 				Main.SELECT.setupShiftSelect();
 			}
-			Main.SELECT.setTarget(entity);
+			Main.SELECT.setTarget(entity, true);
 		}
 	}
 	private void clickOnGroupIcon() {
-		Main.SELECT.setTarget(entity);
+		Main.SELECT.setTarget(entity, true);
 		//main.Root.SELECT.setAll(entity.getGroup());
 		if (entity.hasGroup()) {
 			entity.getGroup().toggle();

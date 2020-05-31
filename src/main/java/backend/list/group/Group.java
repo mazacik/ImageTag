@@ -31,7 +31,7 @@ public class Group extends EntityList {
 			entity.getTile().updateGroupIcon();
 		}
 		
-		Main.SELECT.setTarget(group.getFirst());
+		Main.SELECT.setTarget(group.getFirst(), true);
 		
 		Reload.notify(Notifier.TARGET_GROUP_CHANGED);
 		
