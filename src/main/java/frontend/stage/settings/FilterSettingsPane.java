@@ -182,13 +182,17 @@ public class FilterSettingsPane extends HBox {
 		return titlePane;
 	}
 	private TitlePane getPaneOther() {
-		CheckBox nodeLastImport = new CheckBox("Only Last Import", FilterOption.LAST_IMPORT_ONLY.getBooleanValue());
-		checkBoxes.add(new Pair<>(FilterOption.LAST_IMPORT_ONLY, nodeLastImport));
+		CheckBox nodeLastImport = new CheckBox("Only Last Import", FilterOption.ONLY_LAST_IMPORT.getBooleanValue());
+		checkBoxes.add(new Pair<>(FilterOption.ONLY_LAST_IMPORT, nodeLastImport));
+		
+		CheckBox nodeFavorites = new CheckBox("Only Favorites", FilterOption.ONLY_FAVORITES.getBooleanValue());
+		checkBoxes.add(new Pair<>(FilterOption.ONLY_FAVORITES, nodeFavorites));
 		
 		VBox boxSettings = new VBox();
 		boxSettings.setPadding(new Insets(0, 5, 5, 5));
 		boxSettings.setSpacing(3);
 		boxSettings.getChildren().add(nodeLastImport);
+		boxSettings.getChildren().add(nodeFavorites);
 		
 		TitlePane titlePane = new TitlePane("Other", boxSettings);
 		titlePane.setPadding(new Insets(3, 5, 0, 5));

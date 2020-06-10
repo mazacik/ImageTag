@@ -1,5 +1,6 @@
 package backend.control.reload;
 
+import frontend.UserInterface;
 import main.Main;
 
 import java.lang.reflect.InvocationTargetException;
@@ -8,15 +9,15 @@ import java.lang.reflect.Method;
 public enum InvokeHelper {
 	FILTER_REFRESH(1, Main.FILTER, method(Main.FILTER, "refresh")),
 	
-	PANE_FILTER_RELOAD(3, Main.FILTER_PANE, method(Main.FILTER_PANE, "reload")),
-	PANE_SELECT_RELOAD(3, Main.SELECT_PANE, method(Main.SELECT_PANE, "reload")),
+	PANE_FILTER_RELOAD(3, UserInterface.getFilterPane(), method(UserInterface.getFilterPane(), "reload")),
+	PANE_SELECT_RELOAD(3, UserInterface.getSelectPane(), method(UserInterface.getSelectPane(), "reload")),
 	
-	PANE_FILTER_REFRESH(4, Main.FILTER_PANE, method(Main.FILTER_PANE, "refresh")),
-	PANE_SELECT_REFRESH(4, Main.SELECT_PANE, method(Main.SELECT_PANE, "refresh")),
+	PANE_FILTER_REFRESH(4, UserInterface.getFilterPane(), method(UserInterface.getFilterPane(), "refresh")),
+	PANE_SELECT_REFRESH(4, UserInterface.getSelectPane(), method(UserInterface.getSelectPane(), "refresh")),
 	
-	PANE_TOOLBAR_RELOAD(5, Main.TOOLBAR_PANE, method(Main.TOOLBAR_PANE, "reload")),
-	PANE_GALLERY_RELOAD(5, Main.GALLERY_PANE, method(Main.GALLERY_PANE, "reload")),
-	PANE_DISPLAY_RELOAD(5, Main.DISPLAY_PANE, method(Main.DISPLAY_PANE, "reload")),
+	PANE_TOOLBAR_RELOAD(5, UserInterface.getToolbarPane(), method(UserInterface.getToolbarPane(), "reload")),
+	PANE_GALLERY_RELOAD(5, UserInterface.getGalleryPane(), method(UserInterface.getGalleryPane(), "reload")),
+	PANE_DISPLAY_RELOAD(5, UserInterface.getDisplayPane(), method(UserInterface.getDisplayPane(), "reload")),
 	;
 	
 	private static Method method(Object object, String methodName) {

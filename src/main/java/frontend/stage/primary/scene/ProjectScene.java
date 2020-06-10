@@ -2,6 +2,7 @@ package frontend.stage.primary.scene;
 
 import backend.misc.FileUtil;
 import backend.misc.Project;
+import frontend.UserInterface;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.EditNode;
 import frontend.node.override.HBox;
@@ -66,7 +67,7 @@ public class ProjectScene extends Scene {
 		TextNode btnFinish = new TextNode("Finish", true, true, true, true);
 		btnFinish.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> this.tryFinish());
 		TextNode btnCancel = new TextNode("Cancel", true, true, true, true);
-		btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> Main.STAGE.showIntroScene());
+		btnCancel.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> UserInterface.getStage().showIntroScene());
 		
 		VBox boxMain = new VBox(gridPane, nodeError, new HBox(btnCancel, btnFinish));
 		boxMain.setSpacing(5);
@@ -83,7 +84,7 @@ public class ProjectScene extends Scene {
 		if (event.getCode() == KeyCode.ENTER) {
 			this.tryFinish();
 		} else if (event.getCode() == KeyCode.ESCAPE) {
-			Main.STAGE.showIntroScene();
+			UserInterface.getStage().showIntroScene();
 		}
 	}
 	
@@ -110,7 +111,7 @@ public class ProjectScene extends Scene {
 				Main.startMain(project);
 			} else {
 				project.updateProject(editProjectName.getText(), editSourceDirectory.getText());
-				Main.STAGE.showIntroScene();
+				UserInterface.getStage().showIntroScene();
 			}
 		}
 	}

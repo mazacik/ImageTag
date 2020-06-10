@@ -5,6 +5,7 @@ import backend.control.reload.Reload;
 import backend.misc.FileUtil;
 import backend.misc.Project;
 import backend.misc.Settings;
+import frontend.UserInterface;
 import frontend.decorator.DecoratorUtil;
 import frontend.stage.primary.scene.IntroScene;
 import frontend.stage.primary.scene.MainScene;
@@ -107,7 +108,7 @@ public class PrimaryStage extends Stage {
 		this.setMaximized(true);
 		this.setOnCloseRequest(event -> Main.exitApplication());
 		
-		Main.TOOLBAR_PANE.requestFocus();
+		UserInterface.getToolbarPane().requestFocus();
 		
 		if (!this.isShowing()) {
 			this.show();

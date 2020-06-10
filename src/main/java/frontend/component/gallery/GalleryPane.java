@@ -5,6 +5,7 @@ import backend.list.BaseList;
 import backend.list.entity.Entity;
 import backend.list.entity.EntityList;
 import backend.misc.Settings;
+import frontend.UserInterface;
 import frontend.stage.SimpleMessageStage;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
@@ -37,6 +38,16 @@ public class GalleryPane extends ScrollPane {
 	public GalleryPane() {
 		tilePane = new TilePane(GAP, GAP);
 		
+		tileEntities = new EntityList();
+		tiles = new BaseList<>();
+		
+		selectRectangle = new Rectangle(0, 0, Color.GRAY);
+		
+		selectRectangleHelper = new EntityList();
+		
+	}
+	
+	public void initialize() {
 		double actualTileSize = Settings.GALLERY_TILE_SIZE.getInteger() + 2 * Tile.HIGHLIGHT_PADDING;
 		tilePane.setPrefTileWidth(actualTileSize);
 		tilePane.setPrefTileHeight(actualTileSize);
@@ -47,10 +58,6 @@ public class GalleryPane extends ScrollPane {
 		
 		tilePane.heightProperty().addListener((observable, oldValue, newValue) -> this.moveViewportToTarget());
 		
-		tileEntities = new EntityList();
-		tiles = new BaseList<>();
-		
-		selectRectangle = new Rectangle(0, 0, Color.GRAY);
 		selectRectangle.setStroke(Color.BLACK);
 		selectRectangle.setStrokeWidth(1);
 		selectRectangle.setOpacity(0.5);
@@ -60,12 +67,10 @@ public class GalleryPane extends ScrollPane {
 		localCursorPositionX = 0;
 		localCursorPositionY = 0;
 		
-		selectRectangleHelper = new EntityList();
-		
 		this.setMinViewportWidth(actualTileSize);
 		this.setMinViewportHeight(actualTileSize + 2 * GAP);
 		this.setContent(tilePane);
-		this.getChildren().add(tilePane);
+		//this.getChildren().add(tilePane);
 		this.setBackground(Background.EMPTY);
 		this.setHbarPolicy(ScrollBarPolicy.NEVER);
 		this.setVbarPolicy(ScrollBarPolicy.ALWAYS);
@@ -234,7 +239,7 @@ public class GalleryPane extends ScrollPane {
 	}
 	
 	public boolean reload() {
-		EntityList representingEntityList = Main.FILTER.getRepresentingEntityList();
+		EntityList representingEntityList = Main.FILTER.getRepresentingList();
 		if (representingEntityList.size() > TILE_LIMIT) {
 			tileEntities.setAll(representingEntityList.subList(0, TILE_LIMIT));
 			new SimpleMessageStage("Error", "Gallery reached a limit of " + TILE_LIMIT + " tiles.").show();
@@ -259,7 +264,7 @@ public class GalleryPane extends ScrollPane {
 	public void moveViewportToTarget() {
 		if (this.getHeight() > 0) {
 			Entity currentTarget = Main.SELECT.getTarget();
-			if (!Main.STAGE.getMainScene().isViewGallery() || currentTarget == null) return;
+			if (!UserInterface.getStage().getMainScene().isViewGallery() || currentTarget == null) return;
 			if (currentTarget.hasGroup() && !currentTarget.getGroup().isOpen()) {
 				currentTarget = currentTarget.getGroup().getFirst();
 			}

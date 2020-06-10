@@ -5,6 +5,7 @@ import backend.list.BaseList;
 import backend.list.tag.Tag;
 import backend.list.tag.TagUtil;
 import backend.misc.Direction;
+import frontend.UserInterface;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.menu.ClickMenu;
 import frontend.node.menu.ListMenu;
@@ -78,9 +79,9 @@ public class TagNode extends VBox {
 		boxMain.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			switch (event.getButton()) {
 				case PRIMARY:
-					if (parentPane == Main.FILTER_PANE) {
+					if (parentPane == UserInterface.getFilterPane()) {
 						clickFilter(event);
-					} else if (parentPane == Main.SELECT_PANE.getSelectionTagsPane()) {
+					} else if (parentPane == UserInterface.getSelectPane().getSelectionTagsPane()) {
 						clickSelect(event);
 					}
 					Reload.start();
@@ -125,9 +126,9 @@ public class TagNode extends VBox {
 	private void clickSelect(MouseEvent event) {
 		if (this.isLast()) {
 			if (textNode.getTextFill().equals(DecoratorUtil.getColorPositive()) || textNode.getTextFill().equals(DecoratorUtil.getColorUnion())) {
-				Main.SELECT.removeTag(Main.TAGLIST.getTag(this.getStringValue()).getID());
+				Main.SELECT.removeTag(Main.DB_TAG.getTag(this.getStringValue()).getID());
 			} else {
-				Main.SELECT.addTag(Main.TAGLIST.getTag(this.getStringValue()).getID());
+				Main.SELECT.addTag(Main.DB_TAG.getTag(this.getStringValue()).getID());
 			}
 		} else {
 			if (event.isShiftDown()) {

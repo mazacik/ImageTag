@@ -12,30 +12,34 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Priority;
 import main.Main;
 
-public class SelectionPane extends VBox {
+public class SelectPane extends VBox {
 	private final TextNode selectionTagsNode;
 	private final TextNode targetDetailsNode;
 	
 	private final SelectionTagsPane selectionTagsPane;
 	private final TargetDetailsPane targetDetailsPane;
 	
-	public SelectionPane() {
+	public SelectPane() {
 		selectionTagsPane = new SelectionTagsPane();
 		targetDetailsPane = new TargetDetailsPane();
 		
-		selectionTagsNode = new TextNode("Selection Tags", true, true, false, true);
-		
+		selectionTagsNode = new TextNode("", true, true, false, true);
+		targetDetailsNode = new TextNode("Details", true, true, false, true);
+	}
+	
+	public void initialize() {
 		selectionTagsNode.setBorder(DecoratorUtil.getBorder(0, 0, 1, 0));
 		selectionTagsNode.setMaxWidth(Double.MAX_VALUE);
 		selectionTagsNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			this.getChildren().set(1, selectionTagsPane);
+			this.refresh();
 		});
 		
-		targetDetailsNode = new TextNode("Target Details", true, true, false, true);
 		targetDetailsNode.setBorder(DecoratorUtil.getBorder(0, 0, 1, 0));
 		targetDetailsNode.setMaxWidth(Double.MAX_VALUE);
 		targetDetailsNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			this.getChildren().set(1, targetDetailsPane);
+			this.refresh();
 		});
 		
 		HBox boxTop = new HBox(selectionTagsNode, new SeparatorNode(), targetDetailsNode);
@@ -50,8 +54,6 @@ public class SelectionPane extends VBox {
 	}
 	
 	public boolean refresh() {
-		targetDetailsPane.refresh();
-		
 		int shown = 0;
 		int hidden = 0;
 		for (Entity entity : Main.SELECT) {
@@ -65,7 +67,13 @@ public class SelectionPane extends VBox {
 		if (hidden > 0) text += " (+" + hidden + " filtered out)";
 		selectionTagsNode.setText(text);
 		
-		return selectionTagsPane.refresh();
+		if (this.getChildren().contains(targetDetailsPane)) {
+			targetDetailsPane.refresh();
+		} else if (this.getChildren().contains(selectionTagsPane)) {
+			selectionTagsPane.refresh();
+		}
+		
+		return true;
 	}
 	public boolean reload() {
 		return selectionTagsPane.reload();

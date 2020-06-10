@@ -9,6 +9,7 @@ import backend.list.entity.EntityList;
 import backend.misc.FileUtil;
 import backend.misc.Project;
 import backend.override.Thread;
+import frontend.UserInterface;
 import javafx.application.Platform;
 import main.Main;
 
@@ -23,8 +24,8 @@ public abstract class ImportUtil {
 			if (entityList != null && !entityList.isEmpty()) {
 				CacheLoader.startCacheThread(entityList);
 				
-				Main.ENTITYLIST.addAll(entityList);
-				Main.ENTITYLIST.sort();
+				Main.DB_ENTITY.addAll(entityList);
+				Main.DB_ENTITY.sortByName();
 				
 				Main.FILTER.getLastImport().setAll(entityList);
 			}
@@ -38,7 +39,7 @@ public abstract class ImportUtil {
 	}
 	
 	private static EntityList importFiles(ImportMode importMode, String directory, BaseList<File> fileList) {
-		Main.STAGE.getMainScene().showLoadingBar(Thread.currentThread(), fileList.size());
+		UserInterface.getStage().getMainScene().showLoadingBar(Thread.currentThread(), fileList.size());
 		
 		EntityList entityList = new EntityList();
 		for (File fileFrom : fileList) {
@@ -49,10 +50,10 @@ public abstract class ImportUtil {
 				entityList.add(entity);
 			}
 			
-			Main.STAGE.getMainScene().advanceLoadingBar(Thread.currentThread());
+			UserInterface.getStage().getMainScene().advanceLoadingBar(Thread.currentThread());
 		}
 		
-		Main.STAGE.getMainScene().hideLoadingBar(Thread.currentThread());
+		UserInterface.getStage().getMainScene().hideLoadingBar(Thread.currentThread());
 		
 		return entityList;
 	}

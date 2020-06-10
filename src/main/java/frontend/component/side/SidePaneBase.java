@@ -23,7 +23,7 @@ public abstract class SidePaneBase extends VBox {
 	
 	public boolean reload() {
 		rootNodes.clear();
-		Main.TAGLIST.forEach(this::createNode);
+		Main.DB_TAG.forEach(this::createNode);
 		listBox.setNodes(rootNodes);
 		
 		BaseList<String> openNodesHelper = new BaseList<>();

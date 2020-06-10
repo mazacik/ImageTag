@@ -6,6 +6,7 @@ import backend.list.entity.Entity;
 import backend.misc.Direction;
 import backend.misc.FileUtil;
 import backend.misc.Settings;
+import frontend.UserInterface;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.override.HBox;
 import frontend.node.textnode.TextNode;
@@ -181,8 +182,8 @@ public class Controls extends BorderPane {
 			this.setCenter(hBoxCenter);
 			this.setBottom(progressBar);
 		} else {
-			if (Main.DISPLAY_PANE.getVideoPlayer() != null)
-				Main.DISPLAY_PANE.getVideoPlayer().pause();
+			if (UserInterface.getDisplayPane().getVideoPlayer() != null)
+				UserInterface.getDisplayPane().getVideoPlayer().pause();
 			
 			this.setLeft(btnPrevious);
 			this.setRight(btnNext);

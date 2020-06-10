@@ -177,7 +177,7 @@ public class ImportStage extends BaseStage {
 					
 					FilterOption.ENABLE_IMG.setValue(true);
 					FilterOption.ENABLE_VID.setValue(true);
-					FilterOption.LAST_IMPORT_ONLY.setValue(true);
+					FilterOption.ONLY_LAST_IMPORT.setValue(true);
 					
 					Reload.request(InvokeHelper.FILTER_REFRESH);
 					Reload.start();

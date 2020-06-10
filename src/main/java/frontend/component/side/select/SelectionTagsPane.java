@@ -21,72 +21,73 @@ public class SelectionTagsPane extends SidePaneBase {
 	public SelectionTagsPane() {
 		nodeSearch = new EditNode("", "Quick Search");
 		nodeSearch.setBorder(DecoratorUtil.getBorder(0, 0, 1, 0));
-		nodeSearch.textProperty().addListener((observable, oldValue, newValue) -> {
-			if (!searchLock) {
-				if (match != null) {
-					match.setBackground(Background.EMPTY);
-					match.setBackgroundLock(false);
-					match = null;
-				}
-				
-				closeNodes();
-				
-				if (newValue.length() > 0) {
-					query = newValue.toLowerCase();
-					
-					for (TagNode tagNode : this.getTagNodes()) {
-						if (tagNode.getText().toLowerCase().contains(query)) {
-							if (tagNode.isLast()) {
-								match = tagNode;
-								break;
-							} else if (match == null) {
-								match = tagNode;
-							}
-						}
-					}
-					
-					if (match != null) {
-						match.setBackground(DecoratorUtil.getBackgroundSecondary());
-						match.setBackgroundLock(true);
-						match.getParentNodes().forEach(TagNode::open);
-					}
-				} else {
-					match = null;
-				}
-			}
-		});
-		nodeSearch.setOnAction(event -> {
-			if (match != null) {
-				match.setBackground(Background.EMPTY);
-				match.setBackgroundLock(false);
-				
-				searchLock = true;
-				nodeSearch.clear();
-				searchLock = false;
-				
-				Tag tag = Main.TAGLIST.getTag(match.getStringValue());
-				if (Main.SELECT.getTagListIntersect().contains(tag)) {
-					Main.SELECT.removeTag(tag.getID());
-				} else {
-					Main.SELECT.addTag(tag.getID());
-				}
-				
-				Reload.start();
-			}
-		});
+		nodeSearch.textProperty().addListener((observable, oldValue, newValue) -> this.searchTextChangeHandler(newValue));
+		nodeSearch.setOnAction(event -> this.searchOnActionHandler());
 		
 		this.getChildren().addAll(nodeSearch, listBox);
 	}
 	
-	public boolean refresh() {
+	private void searchTextChangeHandler(String newValue) {
+		if (!searchLock) {
+			if (match != null) {
+				match.setBackground(Background.EMPTY);
+				match.setBackgroundLock(false);
+				match = null;
+			}
+			
+			closeNodes();
+			
+			if (newValue.length() > 0) {
+				query = newValue.toLowerCase();
+				
+				for (TagNode tagNode : this.getTagNodes()) {
+					if (tagNode.getText().toLowerCase().contains(query)) {
+						if (tagNode.isLast()) {
+							match = tagNode;
+							break;
+						} else if (match == null) {
+							match = tagNode;
+						}
+					}
+				}
+				
+				if (match != null) {
+					match.setBackground(DecoratorUtil.getBackgroundSecondary());
+					match.setBackgroundLock(true);
+					match.getParentNodes().forEach(TagNode::open);
+				}
+			} else {
+				match = null;
+			}
+		}
+	}
+	private void searchOnActionHandler() {
+		if (match != null) {
+			match.setBackground(Background.EMPTY);
+			match.setBackgroundLock(false);
+			
+			searchLock = true;
+			nodeSearch.clear();
+			searchLock = false;
+			
+			Tag tag = Main.DB_TAG.getTag(match.getStringValue());
+			if (Main.SELECT.getTagListIntersect().contains(tag)) {
+				Main.SELECT.removeTag(tag.getID());
+			} else {
+				Main.SELECT.addTag(tag.getID());
+			}
+			
+			Reload.start();
+		}
+	}
+	
+	public void refresh() {
 		BaseList<String> stringListIntersect = new BaseList<>();
 		Main.SELECT.getTagListIntersect().forEach(tag -> stringListIntersect.add(tag.getStringValue()));
 		BaseList<String> stringListUnion = new BaseList<>();
 		Main.SELECT.getTagList().forEach(tag -> stringListUnion.add(tag.getStringValue()));
 		
 		getTagNodes().forEach(tagNode -> this.refreshNodeColor(tagNode, stringListIntersect, stringListUnion));
-		
-		return true;
 	}
 	private void refreshNodeColor(TagNode tagNode, BaseList<String> stringListIntersect, BaseList<String> stringListUnion) {
 		String stringNode = tagNode.getStringValue();

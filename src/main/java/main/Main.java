@@ -14,12 +14,7 @@ import backend.list.tag.TagList;
 import backend.misc.FileUtil;
 import backend.misc.Project;
 import backend.misc.Settings;
-import frontend.component.display.DisplayPane;
-import frontend.component.gallery.GalleryPane;
-import frontend.component.side.FilterPane;
-import frontend.component.side.select.SelectionPane;
-import frontend.component.top.ToolbarPane;
-import frontend.stage.primary.PrimaryStage;
+import frontend.UserInterface;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -37,20 +32,12 @@ public class Main extends Application {
 	public static final Thread THREAD_MAIN;
 	public static final ThreadGroup THREADS;
 	
-	public static final EntityList ENTITYLIST;
-	public static final TagList TAGLIST;
+	public static final EntityList DB_ENTITY;
+	public static final TagList DB_TAG;
 	
+	// CONTROLLER
 	public static final Filter FILTER;
 	public static final Select SELECT;
-	
-	// GUI
-	public static final ToolbarPane TOOLBAR_PANE;
-	public static final GalleryPane GALLERY_PANE;
-	public static final DisplayPane DISPLAY_PANE;
-	public static final FilterPane FILTER_PANE;
-	public static final SelectionPane SELECT_PANE;
-	
-	public static final PrimaryStage STAGE;
 	
 	// STATIC
 	static {
@@ -61,19 +48,11 @@ public class Main extends Application {
 		THREAD_MAIN = Thread.currentThread();
 		THREADS = new ThreadGroup("ROOT");
 		
-		ENTITYLIST = new EntityList();
-		TAGLIST = new TagList();
+		DB_ENTITY = new EntityList();
+		DB_TAG = new TagList();
 		
 		FILTER = new Filter();
 		SELECT = new Select();
-		
-		TOOLBAR_PANE = new ToolbarPane();
-		GALLERY_PANE = new GalleryPane();
-		DISPLAY_PANE = new DisplayPane();
-		FILTER_PANE = new FilterPane();
-		SELECT_PANE = new SelectionPane();
-		
-		STAGE = new PrimaryStage();
 	}
 	
 	// MAIN
@@ -81,8 +60,10 @@ public class Main extends Application {
 		launch(args);
 	}
 	public void start(Stage stage) {
+		UserInterface.initialize();
+		
 		if (!DEBUG_AUTOLOAD_LATEST_PROJECT || FileUtil.getProjectFiles().isEmpty()) {
-			STAGE.showIntroScene();
+			UserInterface.getStage().showIntroScene();
 		} else {
 			Main.startMain(null);
 		}
@@ -97,9 +78,9 @@ public class Main extends Application {
 		
 		Main.initDatabase();
 		
-		STAGE.showMainScene();
+		UserInterface.getStage().showMainScene();
 		
-		CacheLoader.startCacheThread(Main.ENTITYLIST);
+		CacheLoader.startCacheThread(Main.DB_ENTITY);
 	}
 	
 	private static void initDatabase() {
@@ -107,7 +88,7 @@ public class Main extends Application {
 		initEntities();
 		initGroups();
 		
-		Entity target = ENTITYLIST.getFirst();
+		Entity target = DB_ENTITY.getFirst();
 		if (target != null) {
 			SELECT.setTarget(target, true);
 			if (target.hasGroup()) {
@@ -119,17 +100,17 @@ public class Main extends Application {
 	}
 	private static void initTags() {
 		TagList projectTags = Project.getCurrent().getTagList();
-		if (projectTags != null) TAGLIST.setAll(projectTags);
+		if (projectTags != null) DB_TAG.setAll(projectTags);
 		
-		TAGLIST.forEach(Tag::updateStringValue);
-		TAGLIST.sort();
+		DB_TAG.forEach(Tag::updateStringValue);
+		DB_TAG.sort();
 		
 		Reload.notify(Notifier.TAGLIST_CHANGED);
 	}
 	private static void initEntities() {
-		ENTITYLIST.setAll(Project.getCurrent().getEntityList());
+		DB_ENTITY.setAll(Project.getCurrent().getEntityList());
 		
-		EntityList entitiesWithoutFiles = new EntityList(ENTITYLIST);
+		EntityList entitiesWithoutFiles = new EntityList(DB_ENTITY);
 		BaseList<File> filesWithoutEntities = FileUtil.getFiles(new File(Project.getCurrent().getDirectory()), true);
 		
 		BaseList<String> newFileNames = new BaseList<>();
@@ -154,7 +135,7 @@ public class Main extends Application {
 			for (int j = 0; j < entitiesWithoutFiles.size(); j++) {
 				Entity orphanEntity = entitiesWithoutFiles.get(j);
 				if (newFileLength == orphanEntity.getSize()) {
-					/* rename the object and client.cache file */
+					/* rename the object and cache file */
 					File oldCacheFile = new File(FileUtil.getFileCache(orphanEntity));
 					orphanEntity.setName(FileUtil.createEntityName(newFile));
 					File newCacheFile = new File(FileUtil.getFileCache(orphanEntity));
@@ -171,22 +152,22 @@ public class Main extends Application {
 		}
 		
 		if (!entitiesWithoutFiles.isEmpty()) {
-			ENTITYLIST.removeAll(entitiesWithoutFiles);
+			DB_ENTITY.removeAll(entitiesWithoutFiles);
 		}
 		if (!filesWithoutEntities.isEmpty()) {
 			EntityList newEntities = new EntityList(filesWithoutEntities);
-			ENTITYLIST.addAll(newEntities);
+			DB_ENTITY.addAll(newEntities);
 			FILTER.getLastImport().addAll(newEntities);
-			ENTITYLIST.sort();
+			DB_ENTITY.sortByName();
 		}
 		
-		for (Entity entity : ENTITYLIST) {
+		for (Entity entity : DB_ENTITY) {
 			entity.initTags();
 		}
 	}
 	private static void initGroups() {
 		BaseList<Group> groups = new BaseList<>();
-		for (Entity entity : ENTITYLIST) {
+		for (Entity entity : DB_ENTITY) {
 			if (entity.hasGroup()) {
 				boolean groupExists = false;
 				for (Group group : groups) {
@@ -204,7 +185,7 @@ public class Main extends Application {
 				}
 			}
 		}
-		for (Entity entity : ENTITYLIST) {
+		for (Entity entity : DB_ENTITY) {
 			if (entity.hasGroup()) {
 				if (entity.getGroup().size() == 1) {
 					entity.setGroupID(0);
@@ -216,7 +197,7 @@ public class Main extends Application {
 	
 	public static void exitApplication() {
 		THREADS.interrupt();
-		DISPLAY_PANE.disposeVideoPlayer();
+		UserInterface.getDisplayPane().disposeVideoPlayer();
 		
 		Project.getCurrent().writeToDisk();
 		Settings.writeToDisk();

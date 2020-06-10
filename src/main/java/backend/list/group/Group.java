@@ -47,6 +47,15 @@ public class Group extends EntityList {
 		Reload.notify(Notifier.TARGET_GROUP_CHANGED);
 	}
 	
+	public Entity getRepresentingRandom() {
+		BaseList<Entity> filteredList = Main.FILTER.getFilteredList(this);
+		if (filteredList.isEmpty()) {
+			return null;
+		} else {
+			return filteredList.getRandom();
+		}
+	}
+	
 	public void toggle() {
 		if (openGroups.contains(this)) {
 			openGroups.remove(this);

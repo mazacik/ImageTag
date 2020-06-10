@@ -14,6 +14,7 @@ import backend.misc.FileUtil;
 import backend.misc.HttpUtil;
 import backend.misc.Project;
 import backend.misc.Settings;
+import frontend.UserInterface;
 import frontend.node.menu.ListMenu;
 import frontend.stage.CollageStage;
 import frontend.stage.ConfirmationStage;
@@ -327,7 +328,7 @@ public enum TextNodeTemplates {
 				ListMenu.hideMenus();
 				
 				if (Main.SELECT.getTarget() != null) {
-					Main.STAGE.getMainScene().viewGallery();
+					UserInterface.getStage().getMainScene().viewGallery();
 					Main.FILTER.showSimilar(Main.SELECT.getTarget());
 					Reload.start();
 				}
@@ -395,7 +396,7 @@ public enum TextNodeTemplates {
 	
 	TAG_CREATE {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Create a Tag", true, true, false, true, this);
+			TextNode textNode = new TextNode("+", true, true, false, true, this);
 			setupNode(textNode);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
@@ -437,7 +438,7 @@ public enum TextNodeTemplates {
 	},
 	TAG_REMOVE_LEVEL {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Remove Level", true, true, false, true, this);
+			TextNode textNode = new TextNode("Remove (this level)", true, true, false, true, this);
 			setupNode(textNode);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
@@ -451,13 +452,13 @@ public enum TextNodeTemplates {
 	},
 	TAG_REMOVE_CHILDREN {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Remove Tag(s)", true, true, false, true, this);
+			TextNode textNode = new TextNode("Remove (with children)", true, true, false, true, this);
 			setupNode(textNode);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
 				TagUtil.remove();
-				
+				//todo doesn't reset filter
 				Reload.start();
 			});
 			return textNode;
@@ -567,7 +568,7 @@ public enum TextNodeTemplates {
 			setupNode(textNode);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				BaseList<String> entitiesInApp = new BaseList<>();
-				Main.ENTITYLIST.forEach(entity -> entitiesInApp.add(FileUtil.getFileEntity(entity)));
+				Main.DB_ENTITY.forEach(entity -> entitiesInApp.add(FileUtil.getFileEntity(entity)));
 				
 				BaseList<String> entitiesOnDisk = new BaseList<>();
 				File projectDirectory = new File(Project.getCurrent().getDirectory());
@@ -582,8 +583,8 @@ public enum TextNodeTemplates {
 					entitiesOnDiskNotInApp.forEach(path -> entityList.add(new Entity(new File(path))));
 					CacheLoader.startCacheThread(entityList);
 					
-					Main.ENTITYLIST.addAll(entityList);
-					Main.ENTITYLIST.sort();
+					Main.DB_ENTITY.addAll(entityList);
+					Main.DB_ENTITY.sortByName();
 					
 					Main.FILTER.getLastImport().setAll(entityList);
 					
@@ -598,7 +599,7 @@ public enum TextNodeTemplates {
 					EntityList entitiesToRemove = new EntityList();
 					
 					entitiesInAppNotOnDisk.forEach(path -> {
-						for (Entity entity : Main.ENTITYLIST) {
+						for (Entity entity : Main.DB_ENTITY) {
 							if (FileUtil.getFileEntity(entity).equals(path)) {
 								entitiesToRemove.add(entity);
 								break;
@@ -606,7 +607,7 @@ public enum TextNodeTemplates {
 						}
 					});
 					
-					Main.ENTITYLIST.removeAll(entitiesToRemove);
+					Main.DB_ENTITY.removeAll(entitiesToRemove);
 					
 					Reload.notify(Notifier.ENTITYLIST_CHANGED);
 				}
@@ -636,7 +637,7 @@ public enum TextNodeTemplates {
 				Settings.writeToDisk();
 				
 				if (Project.getCurrent().writeToDisk()) {
-					Main.STAGE.showIntroScene();
+					UserInterface.getStage().showIntroScene();
 				}
 			});
 			return textNode;
@@ -647,7 +648,7 @@ public enum TextNodeTemplates {
 			TextNode textNode = new TextNode("Save and Exit", true, true, false, true, this);
 			setupNode(textNode);
 			//noinspection Convert2MethodRef
-			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> Main.STAGE.requestExit());
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> UserInterface.getStage().requestExit());
 			return textNode;
 		}
 	},

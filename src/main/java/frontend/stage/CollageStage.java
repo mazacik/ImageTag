@@ -5,6 +5,7 @@ import backend.list.entity.Entity;
 import backend.misc.FileUtil;
 import backend.misc.Settings;
 import backend.override.Thread;
+import frontend.UserInterface;
 import frontend.node.override.GridPane;
 import frontend.node.override.Scene;
 import javafx.application.Platform;
@@ -23,7 +24,7 @@ public class CollageStage extends Stage {
 			int miniW = (int) scaledImage.getWidth() / Settings.COLLAGE_SIZE.getInteger();
 			int miniH = (int) scaledImage.getHeight() / Settings.COLLAGE_SIZE.getInteger();
 			
-			Main.STAGE.getMainScene().showLoadingBar(Thread.currentThread(), Main.FILTER.size());
+			UserInterface.getStage().getMainScene().showLoadingBar(Thread.currentThread(), Main.FILTER.size());
 			
 			BaseList<CollagePiece> database = new BaseList<>();
 			for (Entity entity : Main.FILTER) {
@@ -31,10 +32,10 @@ public class CollageStage extends Stage {
 				Color averageColor = getAverageColor(image, 0, 0, image.getWidth(), image.getHeight());
 				database.add(new CollagePiece(image, averageColor));
 				
-				Main.STAGE.getMainScene().advanceLoadingBar(Thread.currentThread());
+				UserInterface.getStage().getMainScene().advanceLoadingBar(Thread.currentThread());
 			}
 			
-			Main.STAGE.getMainScene().hideLoadingBar(Thread.currentThread());
+			UserInterface.getStage().getMainScene().hideLoadingBar(Thread.currentThread());
 			
 			GridPane gridPane = new GridPane();
 			for (int y = 0; y < Settings.COLLAGE_SIZE.getInteger(); y++) {

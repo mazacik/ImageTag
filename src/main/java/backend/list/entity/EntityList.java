@@ -5,9 +5,13 @@ import backend.control.reload.Reload;
 import backend.list.BaseList;
 import backend.list.tag.Tag;
 import backend.list.tag.TagList;
+import backend.misc.FileUtil;
 import main.Main;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -26,20 +30,72 @@ public class EntityList extends BaseList<Entity> {
 		fileList.forEach(file -> this.add(new Entity(file)));
 	}
 	
-	public void sort() {
-		super.sort(Comparator.comparing(Entity::getName));
+	private final boolean ascending = true;
+	public void sortByName() {
+		if (ascending) {
+			super.sort(Comparator.comparing(Entity::getName));
+		} else {
+			super.sort(Comparator.comparing(Entity::getName).reversed());
+		}
+	}
+	public void sortByCreationDate() {
+		super.sort((o1, o2) -> {
+			long time1 = 0;
+			long time2 = 0;
+			try {
+				time1 = Files.readAttributes(new File(FileUtil.getFileEntity(o1)).toPath(), BasicFileAttributes.class).creationTime().toMillis();
+				time2 = Files.readAttributes(new File(FileUtil.getFileEntity(o2)).toPath(), BasicFileAttributes.class).creationTime().toMillis();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			if (ascending) {
+				return Long.compare(time2, time1);
+			} else {
+				return Long.compare(time1, time2);
+			}
+		});
+	}
+	public void sortByLastModifyDate() {
+		super.sort((o1, o2) -> {
+			long time1 = 0;
+			long time2 = 0;
+			try {
+				time1 = Files.readAttributes(new File(FileUtil.getFileEntity(o1)).toPath(), BasicFileAttributes.class).lastModifiedTime().toMillis();
+				time2 = Files.readAttributes(new File(FileUtil.getFileEntity(o2)).toPath(), BasicFileAttributes.class).lastModifiedTime().toMillis();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			if (ascending) {
+				return Long.compare(time2, time1);
+			} else {
+				return Long.compare(time1, time2);
+			}
+		});
 	}
 	
-	public Entity getRepresentingRandom() {
-		Entity entity = this.getRepresentingEntityList().getRandom();
-		if (entity != null) {
+	public EntityList createRepresentingList() {
+		EntityList representingEntityList = new EntityList();
+		BaseList<Integer> groups = new BaseList<>();
+		
+		for (Entity entity : this) {
 			if (entity.hasGroup()) {
-				return Main.FILTER.getFilteredList(entity.getGroup()).getRandom();
+				if (!groups.contains(entity.getGroupID())) {
+					if (entity.getGroup().isOpen()) {
+						groups.add(entity.getGroupID());
+						representingEntityList.addAll(Main.FILTER.getFilteredList(entity.getGroup()));
+					} else {
+						groups.add(entity.getGroupID());
+						representingEntityList.add(entity);
+					}
+				}
 			} else {
-				return entity;
+				representingEntityList.add(entity);
 			}
 		}
-		return null;
+		
+		return representingEntityList;
 	}
 	
 	public void addTag(Integer tagID) {
@@ -134,27 +190,5 @@ public class EntityList extends BaseList<Entity> {
 			}
 			return true;
 		}
-	}
-	public EntityList getRepresentingEntityList() {
-		EntityList representingEntityList = new EntityList();
-		BaseList<Integer> groups = new BaseList<>();
-		
-		for (Entity entity : this) {
-			if (entity.hasGroup()) {
-				if (!groups.contains(entity.getGroupID())) {
-					if (entity.getGroup().isOpen()) {
-						groups.add(entity.getGroupID());
-						representingEntityList.addAll(Main.FILTER.getFilteredList(entity.getGroup()));
-					} else {
-						groups.add(entity.getGroupID());
-						representingEntityList.add(entity);
-					}
-				}
-			} else {
-				representingEntityList.add(entity);
-			}
-		}
-		
-		return representingEntityList;
 	}
 }

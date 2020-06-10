@@ -5,6 +5,7 @@ import backend.control.reload.Reload;
 import backend.lire.LireUtil;
 import backend.list.entity.Entity;
 import backend.misc.Direction;
+import frontend.UserInterface;
 import frontend.component.side.SidePaneBase;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.EditNode;
@@ -30,9 +31,9 @@ public class MainScene extends Scene {
 		loadingBar = new ProgressNode();
 		loadingBar.setVisible(false);
 		
-		hBox = new HBox(Main.FILTER_PANE, Main.GALLERY_PANE, Main.SELECT_PANE);
+		hBox = new HBox(UserInterface.getFilterPane(), UserInterface.getGalleryPane(), UserInterface.getSelectPane());
 		VBox.setVgrow(hBox, Priority.ALWAYS);
-		vBox = new VBox(Main.TOOLBAR_PANE, hBox);
+		vBox = new VBox(UserInterface.getToolbarPane(), hBox);
 		vBox.setBackground(DecoratorUtil.getBackgroundPrimary());
 		
 		StackPane stackPane = new StackPane();
@@ -42,7 +43,7 @@ public class MainScene extends Scene {
 		
 		this.setRoot(stackPane);
 		this.getStylesheets().add("/css/Styles.css");
-		this.widthProperty().addListener((observable, oldValue, newValue) -> this.onStageWidthChange());
+		this.widthProperty().addListener((observable, oldValue, newValue) -> this.handleWidthChange());
 	}
 	public void processKeyEvent(KeyEvent event) {
 		if (this.getFocusOwner() instanceof EditNode) {
@@ -69,7 +70,7 @@ public class MainScene extends Scene {
 				Reload.start();
 				break;
 			case TAB:
-				Main.SELECT_PANE.getSelectionTagsPane().getNodeSearch().requestFocus();
+				UserInterface.getSelectPane().getSelectionTagsPane().getNodeSearch().requestFocus();
 				break;
 			case DELETE:
 				Main.SELECT.deleteSelect();
@@ -127,14 +128,14 @@ public class MainScene extends Scene {
 				event.consume();
 				break;
 			case UP:
-				if (this.getFocusOwner() == Main.SELECT_PANE.getSelectionTagsPane().getNodeSearch()) {
-					Main.SELECT_PANE.getSelectionTagsPane().nextMatch(Direction.UP, event.isControlDown());
+				if (this.getFocusOwner() == UserInterface.getSelectPane().getSelectionTagsPane().getNodeSearch()) {
+					UserInterface.getSelectPane().getSelectionTagsPane().nextMatch(Direction.UP, event.isControlDown());
 					event.consume();
 				}
 				break;
 			case DOWN:
-				if (this.getFocusOwner() == Main.SELECT_PANE.getSelectionTagsPane().getNodeSearch()) {
-					Main.SELECT_PANE.getSelectionTagsPane().nextMatch(Direction.DOWN, event.isControlDown());
+				if (this.getFocusOwner() == UserInterface.getSelectPane().getSelectionTagsPane().getNodeSearch()) {
+					UserInterface.getSelectPane().getSelectionTagsPane().nextMatch(Direction.DOWN, event.isControlDown());
 					event.consume();
 				}
 				break;
@@ -143,28 +144,28 @@ public class MainScene extends Scene {
 	
 	public void viewGallery() {
 		if (!isViewGallery()) {
-			Main.DISPLAY_PANE.interruptVideoPlayer();
+			UserInterface.getDisplayPane().interruptVideoPlayer();
 			
-			hBox.getChildren().setAll(Main.FILTER_PANE, Main.GALLERY_PANE, Main.SELECT_PANE);
+			hBox.getChildren().setAll(UserInterface.getFilterPane(), UserInterface.getGalleryPane(), UserInterface.getSelectPane());
 			
-			Main.GALLERY_PANE.requestFocus();
-			Main.GALLERY_PANE.moveViewportToTarget();
+			UserInterface.getGalleryPane().requestFocus();
+			UserInterface.getGalleryPane().moveViewportToTarget();
 			
 			Reload.notify(Notifier.VIEWMODE_CHANGED);
 		}
 	}
 	public void viewDisplay() {
 		if (isViewGallery()) {
-			hBox.getChildren().setAll(Main.FILTER_PANE, Main.DISPLAY_PANE, Main.SELECT_PANE);
+			hBox.getChildren().setAll(UserInterface.getFilterPane(), UserInterface.getDisplayPane(), UserInterface.getSelectPane());
 			
-			Main.DISPLAY_PANE.requestFocus();
+			UserInterface.getDisplayPane().requestFocus();
 			
 			Reload.notify(Notifier.VIEWMODE_CHANGED);
 		}
 	}
 	
 	public boolean isViewGallery() {
-		return hBox.getChildren().contains(Main.GALLERY_PANE);
+		return hBox.getChildren().contains(UserInterface.getGalleryPane());
 	}
 	
 	public void showLoadingBar(Thread caller, int total) {
@@ -193,10 +194,13 @@ public class MainScene extends Scene {
 		}
 	}
 	
-	private void onStageWidthChange() {
-		double estimateAvailableWidth = this.getWidth() - 2 * SidePaneBase.MIN_WIDTH - 50;
+	public void handleWidthChange() {
+		handleWidthChange(SidePaneBase.MIN_WIDTH, SidePaneBase.MIN_WIDTH);
+	}
+	public void handleWidthChange(double filterWidth, double selectWidth) {
+		double estimateAvailableWidth = this.getWidth() - filterWidth - selectWidth - 50;
 		
-		TilePane tilePane = Main.GALLERY_PANE.getTilePane();
+		TilePane tilePane = UserInterface.getGalleryPane().getTilePane();
 		double tileSize = tilePane.getPrefTileWidth();
 		double increment = tileSize + tilePane.getHgap();
 		

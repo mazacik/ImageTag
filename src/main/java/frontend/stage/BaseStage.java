@@ -41,8 +41,8 @@ public abstract class BaseStage extends Stage {
 		this.setTitle(title);
 		this.initModality(Modality.APPLICATION_MODAL);
 		this.setOnShown(event -> this.centerOnScreen());
-		this.setWidth(DecoratorUtil.getUsableScreenWidth() / 2);
-		this.setHeight(DecoratorUtil.getUsableScreenHeight() / 2);
+		this.setWidth(DecoratorUtil.getUsableScreenWidth() * 0.75);
+		this.setHeight(DecoratorUtil.getUsableScreenHeight() * 0.75);
 	}
 	
 	public void setRoot(Region root) {

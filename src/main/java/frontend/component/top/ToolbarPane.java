@@ -3,6 +3,7 @@ package frontend.component.top;
 import backend.control.reload.Reload;
 import backend.list.entity.Entity;
 import backend.misc.Direction;
+import frontend.UserInterface;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.SeparatorNode;
 import frontend.node.menu.ClickMenu;
@@ -17,9 +18,18 @@ import javafx.scene.layout.BorderPane;
 import main.Main;
 
 public class ToolbarPane extends BorderPane {
+	private final TextNode btnFavorite;
 	private final TextNode nodeTarget;
 	
+	private final String cFavoriteTrue = "♥";
+	private final String cFavoriteFalse = "♡";
+	
 	public ToolbarPane() {
+		btnFavorite = new TextNode("", true, true, false, true);
+		nodeTarget = new TextNode("", true, true, false, true);
+	}
+	
+	public void initialize() {
 		TextNode nodeFile = new TextNode("File", true, true, false, true);
 		ClickMenu.install(nodeFile, Direction.DOWN, MouseButton.PRIMARY,
 		                  TextNodeTemplates.APPLICATION_SAVE.get(),
@@ -61,15 +71,31 @@ public class ToolbarPane extends BorderPane {
 			}
 		});
 		
-		nodeTarget = new TextNode("", true, true, false, true);
+		HBox boxCenter = new HBox(nodeFile, nodeEdit, nodeRandom, nodeSlideshow);
+		boxCenter.setAlignment(Pos.CENTER);
+		
+		btnFavorite.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+			Entity target = Main.SELECT.getTarget();
+			
+			target.setFavorite(!target.isFavorite());
+			if (target.isFavorite()) {
+				btnFavorite.setText(cFavoriteTrue);
+			} else {
+				btnFavorite.setText(cFavoriteFalse);
+			}
+			
+			Reload.start();
+		});
+		
+		nodeTarget.setAlignment(Pos.CENTER_LEFT);
 		ClickMenu.install(nodeTarget, Direction.DOWN, MouseButton.PRIMARY, ListMenu.Preset.ENTITY);
 		
-		HBox hBox = new HBox(nodeFile, nodeEdit, nodeRandom, nodeSlideshow);
-		hBox.setAlignment(Pos.CENTER);
+		HBox boxRight = new HBox(btnFavorite, nodeTarget);
+		boxRight.prefWidthProperty().bind(UserInterface.getSelectPane().widthProperty());
 		
 		this.setBorder(DecoratorUtil.getBorder(0, 0, 1, 0));
-		this.setLeft(hBox);
-		this.setCenter(nodeTarget);
+		this.setLeft(boxCenter);
+		this.setRight(boxRight);
 	}
 	
 	public boolean reload() {
@@ -84,6 +110,12 @@ public class ToolbarPane extends BorderPane {
 				nodeTarget.setText("[" + s + "] " + target.getName());
 			} else {
 				nodeTarget.setText(target.getName());
+			}
+			
+			if (target.isFavorite()) {
+				btnFavorite.setText(cFavoriteTrue);
+			} else {
+				btnFavorite.setText(cFavoriteFalse);
 			}
 		} else {
 			nodeTarget.setVisible(false);

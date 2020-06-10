@@ -5,6 +5,7 @@ import backend.list.entity.EntityList;
 import backend.misc.FileUtil;
 import backend.misc.Settings;
 import backend.override.Thread;
+import frontend.UserInterface;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -44,7 +45,7 @@ public abstract class CacheLoader {
 	public static void startCacheThread(EntityList entityList, boolean recreate) {
 		if (Main.DEBUG_USE_CACHE) {
 			new Thread(() -> {
-				Main.STAGE.getMainScene().showLoadingBar(Thread.currentThread(), entityList.size());
+				UserInterface.getStage().getMainScene().showLoadingBar(Thread.currentThread(), entityList.size());
 				
 				for (Entity entity : new EntityList(entityList)) {
 					if (Thread.currentThread().isInterrupted()) {
@@ -52,17 +53,17 @@ public abstract class CacheLoader {
 					}
 					
 					entity.getTile().setImage(CacheLoader.get(entity, recreate));
-					Main.STAGE.getMainScene().advanceLoadingBar(Thread.currentThread());
+					UserInterface.getStage().getMainScene().advanceLoadingBar(Thread.currentThread());
 				}
 				
-				Main.STAGE.getMainScene().hideLoadingBar(Thread.currentThread());
+				UserInterface.getStage().getMainScene().hideLoadingBar(Thread.currentThread());
 			}).start();
 		}
 	}
 	
 	public static void reset() {
-		Main.ENTITYLIST.forEach(entity -> entity.getTile().setImage(null));
-		CacheLoader.startCacheThread(Main.ENTITYLIST, true);
+		Main.DB_ENTITY.forEach(entity -> entity.getTile().setImage(null));
+		CacheLoader.startCacheThread(Main.DB_ENTITY, true);
 	}
 	
 	public static Image get(Entity entity) {

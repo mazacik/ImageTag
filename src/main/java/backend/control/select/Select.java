@@ -7,6 +7,7 @@ import backend.list.entity.Entity;
 import backend.list.entity.EntityList;
 import backend.misc.Direction;
 import backend.misc.FileUtil;
+import frontend.UserInterface;
 import javafx.animation.PauseTransition;
 import javafx.scene.input.KeyEvent;
 import javafx.util.Duration;
@@ -166,7 +167,7 @@ public class Select extends EntityList {
 		if (!helper.isEmpty()) {
 			this.removeAll(helper);
 			Main.FILTER.removeAll(helper);
-			Main.ENTITYLIST.removeAll(helper);
+			Main.DB_ENTITY.removeAll(helper);
 			Reload.notify(Notifier.ENTITYLIST_CHANGED);
 			
 			this.restorePosition();
@@ -176,9 +177,9 @@ public class Select extends EntityList {
 	private Entity entityFrom = null;
 	private final EntityList selectBefore = new EntityList();
 	public void shiftSelectTo(Entity entityTo) {
-		BaseList<Entity> entities = Main.FILTER.getRepresentingEntityList();
+		BaseList<Entity> entities = Main.FILTER.getRepresentingList();
 		
-		int indexFrom = entities.indexOf(entityFrom);
+		int indexFrom = Main.FILTER.getRepresentingList().indexOf(entityFrom);
 		int indexTo = entities.indexOf(entityTo);
 		
 		int indexLower;
@@ -266,7 +267,7 @@ public class Select extends EntityList {
 			
 			if (target != null) {
 				Reload.requestBorderUpdate(target);
-				Main.GALLERY_PANE.moveViewportToTarget();
+				UserInterface.getGalleryPane().moveViewportToTarget();
 			}
 			
 			Reload.notify(Notifier.TARGET_CHANGED);
@@ -295,35 +296,20 @@ public class Select extends EntityList {
 	public void moveTarget(Direction direction, boolean isShiftDown) {
 		if (target == null) return;
 		
-		EntityList entityList = Main.FILTER.getRepresentingEntityList();
-		if (entityList.isEmpty()) return;
+		EntityList repreList = Main.FILTER.getRepresentingList();
+		if (repreList.isEmpty()) return;
 		
-		int currentTargetIndex;
-		if (target.hasGroup()) {
-			if (target.getGroup().isOpen()) {
-				currentTargetIndex = entityList.indexOf(target);
-			} else {
-				Entity groupFirst = Main.FILTER.getFilteredList(target.getGroup()).getFirst();
-				if (entityList.contains(groupFirst)) {
-					currentTargetIndex = entityList.indexOf(groupFirst);
-				} else {
-					currentTargetIndex = entityList.indexOf(target);
-				}
-			}
-		} else {
-			currentTargetIndex = entityList.indexOf(target);
-		}
+		int newTargetIndex = repreList.indexOf(target.getRepresentingEntity());
 		
-		int newTargetIndex = currentTargetIndex;
 		switch (direction) {
 			case UP:
-				newTargetIndex -= Main.GALLERY_PANE.getTilePane().getPrefColumns();
+				newTargetIndex -= UserInterface.getGalleryPane().getTilePane().getPrefColumns();
 				break;
 			case LEFT:
 				newTargetIndex -= 1;
 				break;
 			case DOWN:
-				newTargetIndex += Main.GALLERY_PANE.getTilePane().getPrefColumns();
+				newTargetIndex += UserInterface.getGalleryPane().getTilePane().getPrefColumns();
 				break;
 			case RIGHT:
 				newTargetIndex += 1;
@@ -334,16 +320,16 @@ public class Select extends EntityList {
 		
 		if (newTargetIndex < 0) {
 			newTargetIndex = 0;
-		} else if (newTargetIndex >= entityList.size()) {
-			newTargetIndex = entityList.size() - 1;
+		} else if (newTargetIndex >= repreList.size()) {
+			newTargetIndex = repreList.size() - 1;
 		}
 		
 		if (isShiftDown) {
-			Entity entityTo = entityList.get(newTargetIndex);
+			Entity entityTo = repreList.get(newTargetIndex);
 			this.shiftSelectTo(entityTo);
 			this.setTarget(entityTo, true);
 		} else {
-			this.setTarget(entityList.get(newTargetIndex), true);
+			this.setTarget(repreList.get(newTargetIndex), true);
 			this.set(target);
 			this.entityFrom = target;
 		}
@@ -352,8 +338,8 @@ public class Select extends EntityList {
 	public void deleteTarget() {
 		Entity target = this.getTarget();
 		
-		if (Main.DISPLAY_PANE.getVideoPlayer().hasMedia()) {
-			Main.DISPLAY_PANE.getVideoPlayer().release();
+		if (UserInterface.getDisplayPane().getVideoPlayer().hasMedia()) {
+			UserInterface.getDisplayPane().getVideoPlayer().release();
 		}
 		
 		if (FileUtil.deleteFile(FileUtil.getFileEntity(target))) {
@@ -373,7 +359,7 @@ public class Select extends EntityList {
 			
 			this.remove(target);
 			Main.FILTER.remove(target);
-			Main.ENTITYLIST.remove(target);
+			Main.DB_ENTITY.remove(target);
 			
 			this.restorePosition();
 			
@@ -385,14 +371,14 @@ public class Select extends EntityList {
 	private int memIndex = -1;
 	public void storePosition() {
 		memEntity = Main.SELECT.getFirst();
-		memIndex = Main.FILTER.getRepresentingEntityList().indexOf(memEntity);
+		memIndex = Main.FILTER.getRepresentingList().indexOf(memEntity);
 	}
 	public void restorePosition() {
 		if (Main.FILTER.isEmpty()) {
 			this.clear();
 			this.setTarget(null, true);
 		} else {
-			EntityList representingEntities = Main.FILTER.getRepresentingEntityList();
+			EntityList representingEntities = Main.FILTER.getRepresentingList();
 			if (!representingEntities.isEmpty()) {
 				if (!representingEntities.contains(memEntity) && memIndex >= 0) {
 					if (memIndex <= representingEntities.size() - 1) {

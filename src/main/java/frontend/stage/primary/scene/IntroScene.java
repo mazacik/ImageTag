@@ -3,6 +3,7 @@ package frontend.stage.primary.scene;
 import backend.list.BaseList;
 import backend.misc.FileUtil;
 import backend.misc.Project;
+import frontend.UserInterface;
 import frontend.decorator.DecoratorTemplate;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.SeparatorNode;
@@ -36,7 +37,7 @@ public class IntroScene extends Scene {
 		TextNode btnNewProject = new TextNode("Create a New Project", true, false, true, true);
 		btnNewProject.setMaxWidth(Double.MAX_VALUE);
 		//noinspection Convert2MethodRef
-		btnNewProject.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> Main.STAGE.showProjectScene());
+		btnNewProject.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> UserInterface.getStage().showProjectScene());
 		
 		TextNode btnOpenProject = new TextNode("Open Project", true, false, true, true);
 		btnOpenProject.setMaxWidth(Double.MAX_VALUE);
@@ -44,7 +45,7 @@ public class IntroScene extends Scene {
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.setTitle("Open Project");
 			fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-			File file = fileChooser.showOpenDialog(Main.STAGE);
+			File file = fileChooser.showOpenDialog(UserInterface.getStage());
 			
 			Project project = null;
 			if (file != null) {
@@ -96,7 +97,7 @@ public class IntroScene extends Scene {
 					projects.sort(Project.getComparator());
 					Main.startMain(null);
 				} else {
-					Main.STAGE.showProjectScene();
+					UserInterface.getStage().showProjectScene();
 				}
 				break;
 			default:

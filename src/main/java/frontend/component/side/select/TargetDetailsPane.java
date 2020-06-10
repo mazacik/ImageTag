@@ -1,11 +1,16 @@
 package frontend.component.side.select;
 
+import backend.misc.EntityType;
 import backend.misc.FileUtil;
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
+import com.drew.metadata.Directory;
+import com.drew.metadata.Metadata;
 import frontend.node.override.GridPane;
 import frontend.node.textnode.TextNode;
-import javafx.scene.image.Image;
 import main.Main;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -41,7 +46,7 @@ public class TargetDetailsPane extends GridPane {
 	}
 	
 	public void refresh() {
-		if (Main.SELECT.getTarget() == null) {
+		if (true || Main.SELECT.getTarget() == null || Main.SELECT.getTarget().getType() != EntityType.IMG) {
 			sizeNode.setText("-");
 			resolutionNode.setText("-");
 			dateCreatedNode.setText("-");
@@ -49,9 +54,25 @@ public class TargetDetailsPane extends GridPane {
 		} else {
 			String path = FileUtil.getFileEntity(Main.SELECT.getTarget());
 			
-			Image entityImage = new Image("file:" + path);
-			int width = (int) entityImage.getWidth();
-			int height = (int) entityImage.getHeight();
+			int width = 0;
+			int height = 0;
+			
+			try {
+				Metadata metadata = ImageMetadataReader.readMetadata(new File(path));
+				Directory directory = metadata.getDirectories().iterator().next();
+				
+				//  byte offsets - https://github.com/drewnoakes/metadata-extractor/wiki/SampleOutput
+				String ext = FileUtil.getFileExtension(Main.SELECT.getTarget()).toLowerCase();
+				if (ext.equals("jpg") || ext.equals("jpeg")) {
+					width = directory.getInteger(0x1);
+					height = directory.getInteger(0x3);
+				} else if (ext.equals("png")) {
+					width = directory.getInteger(0x1);
+					height = directory.getInteger(0x2);
+				}
+			} catch (ImageProcessingException | IOException e) {
+				e.printStackTrace();
+			}
 			
 			BasicFileAttributes attributes = null;
 			try {

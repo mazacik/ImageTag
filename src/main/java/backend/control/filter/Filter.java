@@ -16,6 +16,19 @@ public class Filter extends EntityList {
 	private final FilterListManager filterListManager = new FilterListManager();
 	private final EntityList lastImport = new EntityList();
 	
+	private final EntityList representingList = new EntityList();
+	public Entity getRepresentingRandom() {
+		Entity entity = representingList.getRandom();
+		if (entity != null) {
+			if (entity.hasGroup()) {
+				return Main.FILTER.getFilteredList(entity.getGroup()).getRandom();
+			} else {
+				return entity;
+			}
+		}
+		return null;
+	}
+	
 	public Filter() {
 	
 	}
@@ -68,30 +81,32 @@ public class Filter extends EntityList {
 		Reload.notify(Notifier.FILTER_CHANGED);
 	}
 	
-	public void reset() {
-		filterListManager.clear();
-		Reload.notify(Notifier.FILTER_CHANGED);
-	}
 	public void refresh() {
 		Main.SELECT.storePosition();
 		
 		this.clear();
-		for (Entity entity : Main.ENTITYLIST) {
+		for (Entity entity : Main.DB_ENTITY) {
 			if (this.isValid(entity)) {
 				this.add(entity);
 			}
 		}
+		
+		representingList.setAll(this.createRepresentingList());
 		
 		Main.SELECT.restorePosition();
 		Reload.notify(Notifier.FILTER_CHANGED);
 	}
 	
 	public void resolve() {
-		Reload.getNeedsFilterCheck().forEach(this::resolve);
-		Reload.getNeedsFilterCheck().clear();
+		if (!Reload.getNeedsFilterCheck().isEmpty()) {
+			Reload.getNeedsFilterCheck().forEach(this::resolve);
+			Reload.getNeedsFilterCheck().clear();
+			
+			representingList.setAll(this.createRepresentingList());
+		}
 	}
 	public void resolve(Entity entity) {
-		if (Main.ENTITYLIST.contains(entity)) {
+		if (Main.DB_ENTITY.contains(entity)) {
 			boolean contains = this.contains(entity);
 			boolean valid = this.isValid(entity);
 			
@@ -103,7 +118,7 @@ public class Filter extends EntityList {
 		}
 	}
 	public boolean isValid(Entity entity) {
-		if (entity == null || !Main.ENTITYLIST.contains(entity)) return false;
+		if (entity == null || !Main.DB_ENTITY.contains(entity)) return false;
 		
 		if (!FilterSettingsPane.QUERY.isEmpty()) {
 			if (!entity.getName().toLowerCase().contains(FilterSettingsPane.QUERY.toLowerCase())) {
@@ -111,7 +126,7 @@ public class Filter extends EntityList {
 			}
 		}
 		
-		if (entity.getEntityType() == EntityType.IMG) {
+		if (entity.getType() == EntityType.IMG) {
 			if (!FilterOption.ENABLE_IMG.getBooleanValue()) {
 				return false;
 			}
@@ -120,7 +135,7 @@ public class Filter extends EntityList {
 			if (!fs.getBooleanValue()) {
 				return false;
 			}
-		} else if (entity.getEntityType() == EntityType.GIF) {
+		} else if (entity.getType() == EntityType.GIF) {
 			if (!FilterOption.ENABLE_VID.getBooleanValue()) {
 				return false;
 			}
@@ -132,7 +147,7 @@ public class Filter extends EntityList {
 			if (entity.getMediaDuration() < FilterOption.MEDIA_LENGTH_MIN.getIntValue() || entity.getMediaDuration() > FilterOption.MEDIA_LENGTH_MAX.getIntValue()) {
 				return false;
 			}
-		} else if (entity.getEntityType() == EntityType.VID) {
+		} else if (entity.getType() == EntityType.VID) {
 			if (!FilterOption.ENABLE_VID.getBooleanValue()) {
 				return false;
 			}
@@ -146,7 +161,11 @@ public class Filter extends EntityList {
 			}
 		}
 		
-		if (FilterOption.LAST_IMPORT_ONLY.getBooleanValue() && !lastImport.contains(entity)) {
+		if (FilterOption.ONLY_LAST_IMPORT.getBooleanValue() && !lastImport.contains(entity)) {
+			return false;
+		}
+		
+		if (FilterOption.ONLY_FAVORITES.getBooleanValue() && !entity.isFavorite()) {
 			return false;
 		}
 		
@@ -175,7 +194,7 @@ public class Filter extends EntityList {
 		this.clear();
 		
 		BaseList<Integer> query = entity.getTagIDList();
-		for (Entity iterator : Main.ENTITYLIST) {
+		for (Entity iterator : Main.DB_ENTITY) {
 			if (iterator.getTagIDList().size() != 0) {
 				BaseList<Integer> sameTags = new BaseList<>(query);
 				sameTags.retainAll(iterator.getTagIDList());
@@ -200,5 +219,9 @@ public class Filter extends EntityList {
 	}
 	public EntityList getLastImport() {
 		return lastImport;
+	}
+	
+	public EntityList getRepresentingList() {
+		return representingList;
 	}
 }

@@ -53,7 +53,7 @@ public class TagEditStage extends BaseStage {
 	
 	private TagList tagListToSearchIn;
 	public BaseList<String> showCreate(BaseList<String> levels) {
-		return show(Main.TAGLIST, levels, Mode.CREATE);
+		return show(Main.DB_TAG, levels, Mode.CREATE);
 	}
 	public BaseList<String> showEdit(TagList tagListToSearchIn, BaseList<String> levels) {
 		return show(tagListToSearchIn, levels, Mode.EDIT);

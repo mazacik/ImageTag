@@ -37,8 +37,8 @@ public class Project {
 	}
 	public boolean writeToDisk() {
 		this.msLastAccess = System.currentTimeMillis();
-		this.entityList = Main.ENTITYLIST;
-		this.tagList = Main.TAGLIST;
+		this.entityList = Main.DB_ENTITY;
+		this.tagList = Main.DB_TAG;
 		return GsonUtil.write(this, typeToken, projectFile);
 	}
 	

@@ -1,6 +1,8 @@
 package frontend.component.side;
 
+import backend.control.reload.Notifier;
 import backend.control.reload.Reload;
+import frontend.UserInterface;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.override.HBox;
 import frontend.node.textnode.TextNode;
@@ -8,45 +10,77 @@ import frontend.node.textnode.TextNodeTemplates;
 import frontend.stage.settings.SettingsStage;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import main.Main;
 
 public class FilterPane extends SidePaneBase {
+	private boolean bHidden = false;
+	
 	private final TextNode nodeText;
 	
 	public FilterPane() {
+		nodeText = new TextNode("", false, false, false, true);
+	}
+	
+	public void initialize() {
 		TextNode btnReset = new TextNode("⟲", true, true, false, true);
 		btnReset.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-			Main.FILTER.reset();
+			Main.FILTER.getFilterListManager().clear();
+			Reload.notify(Notifier.FILTER_CHANGED);
 			Reload.start();
 		});
 		
-		nodeText = new TextNode("", false, false, false, true);
 		nodeText.setMaxWidth(Double.MAX_VALUE);
+		HBox.setHgrow(nodeText, Priority.ALWAYS);
 		
 		TextNode btnSettings = new TextNode("⁝", true, true, false, true);
 		btnSettings.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> new SettingsStage().showAndWait());
 		
-		BorderPane paneTitle = new BorderPane();
-		paneTitle.setBorder(DecoratorUtil.getBorder(0, 0, 1, 0));
-		paneTitle.setLeft(btnReset);
-		paneTitle.setCenter(nodeText);
-		paneTitle.setRight(btnSettings);
+		HBox boxButtons = new HBox();
+		boxButtons.setBorder(DecoratorUtil.getBorder(0, 0, 1, 0));
 		
-		TextNode btnCreateNewTag = TextNodeTemplates.TAG_CREATE.get();
-		btnCreateNewTag.setBorder(DecoratorUtil.getBorder(0, 0, 1, 0));
+		boxButtons.getChildren().add(btnReset);
+		boxButtons.getChildren().add(TextNodeTemplates.TAG_CREATE.get());
+		boxButtons.getChildren().add(nodeText);
+		boxButtons.getChildren().add(btnSettings);
+		
+		String cHide = "←";
+		String cShow = "→";
+		TextNode btnHide = new TextNode(cHide, true, true, false, true);
+		btnHide.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+			bHidden = !bHidden;
+			if (bHidden) {
+				btnHide.setText(cShow);
+				this.getChildren().setAll(btnHide);
+				this.setMinWidth(btnHide.getWidth());
+				this.setMaxWidth(btnHide.getWidth() + 1);
+				UserInterface.getStage().getMainScene().handleWidthChange(btnHide.getWidth(), MIN_WIDTH);
+			} else {
+				btnHide.setText(cHide);
+				this.getChildren().setAll(boxButtons, listBox);
+				boxButtons.getChildren().add(btnHide);
+				this.setMinWidth(MIN_WIDTH);
+				this.setMaxWidth(USE_COMPUTED_SIZE);
+				UserInterface.getStage().getMainScene().handleWidthChange(MIN_WIDTH, MIN_WIDTH);
+			}
+		});
+		
+		boxButtons.getChildren().add(btnHide);
 		
 		this.setMinWidth(MIN_WIDTH);
 		HBox.setHgrow(this, Priority.ALWAYS);
 		
 		this.setBorder(DecoratorUtil.getBorder(0, 1, 0, 0));
-		this.getChildren().addAll(paneTitle, btnCreateNewTag, listBox);
+		this.getChildren().addAll(boxButtons, listBox);
 	}
 	
 	public boolean refresh() {
 		nodeText.setText("Filter: " + Main.FILTER.size());
 		
 		return true;
+	}
+	
+	public boolean isHidden() {
+		return bHidden;
 	}
 }

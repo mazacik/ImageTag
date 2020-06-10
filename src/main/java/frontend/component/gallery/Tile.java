@@ -4,6 +4,7 @@ import backend.control.reload.Reload;
 import backend.list.entity.Entity;
 import backend.misc.Direction;
 import backend.misc.Settings;
+import frontend.UserInterface;
 import frontend.node.menu.ClickMenu;
 import frontend.node.menu.ListMenu;
 import javafx.geometry.Insets;
@@ -145,7 +146,7 @@ public class Tile extends Pane {
 	
 	private void clickOnTile(MouseEvent event) {
 		if (event.getClickCount() % 2 == 0) {
-			Main.STAGE.getMainScene().viewDisplay();
+			UserInterface.getStage().getMainScene().viewDisplay();
 		} else {
 			if (event.isShiftDown()) {
 				Main.SELECT.shiftSelectTo(entity);

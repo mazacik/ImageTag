@@ -24,7 +24,8 @@ public enum FilterOption {
 	MEDIA_LENGTH_MIN(0, 0, Integer.MAX_VALUE),
 	MEDIA_LENGTH_MAX(Integer.MAX_VALUE, 0, Integer.MAX_VALUE),
 	
-	LAST_IMPORT_ONLY(0, 0, 1),
+	ONLY_FAVORITES(0, 0, 1),
+	ONLY_LAST_IMPORT(0, 0, 1),
 	SIMILARITY_FACTOR(50, 0, 100);
 	
 	private int value;

@@ -13,23 +13,12 @@ import main.Main;
 import java.io.File;
 
 public class Entity {
-	@SerializedName("n") private String name;
-	@SerializedName("t") private final BaseList<Integer> tagIDs;
-	@SerializedName("s") private final long size;
-	@SerializedName("g") private int groupID;
-	@SerializedName("f") private EntityType entityType;
-	@SerializedName("d") private long mediaDuration;
-	
-	private transient Group group;
-	private transient TagList tagList;
-	private transient Tile tile;
-	
 	public Entity(File file) {
 		this.name = FileUtil.createEntityName(file);
-		this.tagIDs = new BaseList<>();
+		this.tagIDList = new BaseList<>();
 		this.size = file.length();
 		this.groupID = 0;
-		this.entityType = null;
+		this.type = null;
 		this.mediaDuration = 0;
 		
 		this.group = null;
@@ -38,17 +27,17 @@ public class Entity {
 	
 	public void addTag(Tag tag) {
 		getTagList().add(tag, true);
-		tagIDs.add(tag.getID());
+		tagIDList.add(tag.getID());
 	}
 	public void addTag(int tagID) {
-		this.addTag(Main.TAGLIST.getTag(tagID));
+		this.addTag(Main.DB_TAG.getTag(tagID));
 	}
 	public void removeTag(Tag tag) {
 		getTagList().remove(tag);
-		tagIDs.remove((Integer) tag.getID());
+		tagIDList.remove((Integer) tag.getID());
 	}
 	public void removeTag(int tagID) {
-		this.removeTag(Main.TAGLIST.getTag(tagID));
+		this.removeTag(Main.DB_TAG.getTag(tagID));
 	}
 	public void removeTag(TagList tagList) {
 		tagList.forEach(this::removeTag);
@@ -60,7 +49,7 @@ public class Entity {
 	
 	public void initTags() {
 		for (int tagID : this.getTagIDList()) {
-			this.getTagList().add(Main.TAGLIST.getTag(tagID));
+			this.getTagList().add(Main.DB_TAG.getTag(tagID));
 		}
 	}
 	
@@ -76,57 +65,80 @@ public class Entity {
 		}
 	}
 	
+	@SerializedName("n") private String name;
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	@SerializedName("t") private final BaseList<Integer> tagIDList;
+	public BaseList<Integer> getTagIDList() {
+		return tagIDList;
+	}
+	
+	@SerializedName("s") private final long size;
+	public long getSize() {
+		return size;
+	}
+	
+	@SerializedName("g") private int groupID;
+	public int getGroupID() {
+		return groupID;
+	}
+	public void setGroupID(int groupID) {
+		this.groupID = groupID;
+	}
 	public boolean hasGroup() {
 		return groupID != 0;
 	}
 	
-	public String getName() {
-		return name;
-	}
-	public BaseList<Integer> getTagIDList() {
-		return tagIDs;
-	}
-	public long getSize() {
-		return size;
-	}
-	public int getGroupID() {
-		return groupID;
-	}
-	public EntityType getEntityType() {
-		if (entityType == null) {
-			entityType = FileUtil.getMediaType(this);
+	@SerializedName("f") private EntityType type;
+	public EntityType getType() {
+		if (type == null) {
+			type = FileUtil.getMediaType(this);
 		}
-		return entityType;
+		return type;
 	}
+	
+	@SerializedName("d") private long mediaDuration;
 	public long getMediaDuration() {
 		return mediaDuration;
 	}
+	public void setMediaDuration(long mediaDuration) {
+		this.mediaDuration = mediaDuration;
+	}
+	
+	@SerializedName("fav") private boolean favorite;
+	public boolean isFavorite() {
+		return favorite;
+	}
+	public void setFavorite(boolean favorite) {
+		this.favorite = favorite;
+	}
+	
+	private transient Group group;
 	public Group getGroup() {
 		return group;
 	}
+	public void setGroup(Group group) {
+		this.group = group;
+	}
+	
+	private transient TagList tagList;
 	public TagList getTagList() {
 		if (tagList == null) {
 			tagList = new TagList();
 		}
 		return tagList;
 	}
+	
+	private transient Tile tile;
 	public Tile getTile() {
 		if (tile == null) {
 			tile = new Tile(this);
 		}
 		return tile;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
-	}
-	public void setGroupID(int groupID) {
-		this.groupID = groupID;
-	}
-	public void setMediaDuration(long mediaDuration) {
-		this.mediaDuration = mediaDuration;
-	}
-	public void setGroup(Group group) {
-		this.group = group;
 	}
 }

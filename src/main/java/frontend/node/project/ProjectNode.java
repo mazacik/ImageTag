@@ -2,6 +2,7 @@ package frontend.node.project;
 
 import backend.misc.FileUtil;
 import backend.misc.Project;
+import frontend.UserInterface;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.override.VBox;
 import frontend.node.textnode.TextNode;
@@ -59,7 +60,7 @@ public class ProjectNode extends BorderPane {
 				Node pickResult = event.getPickResult().getIntersectedNode().getParent();
 				
 				if (pickResult.equals(nodeEdit)) {
-					Main.STAGE.showProjectScene(project);
+					UserInterface.getStage().showProjectScene(project);
 				} else if (pickResult.equals(nodeRemove)) {
 					String message = "Delete project data? The source directory will not be affected";
 					if (new ConfirmationStage(message).getResult()) {
