@@ -1,11 +1,11 @@
-package backend.list.group;
+package backend.group;
 
-import backend.control.reload.InvokeHelper;
-import backend.control.reload.Notifier;
-import backend.control.reload.Reload;
-import backend.list.BaseList;
-import backend.list.entity.Entity;
-import backend.list.entity.EntityList;
+import backend.BaseList;
+import backend.entity.Entity;
+import backend.entity.EntityList;
+import backend.reload.InvokeHelper;
+import backend.reload.Notifier;
+import backend.reload.Reload;
 import main.Main;
 
 import java.util.Collection;

@@ -1,6 +1,6 @@
-package backend.control.reload;
+package backend.reload;
 
-import backend.list.BaseList;
+import backend.BaseList;
 
 public enum Notifier {
 	ENTITYLIST_CHANGED,

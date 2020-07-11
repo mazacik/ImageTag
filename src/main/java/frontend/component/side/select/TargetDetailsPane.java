@@ -1,6 +1,6 @@
 package frontend.component.side.select;
 
-import backend.misc.EntityType;
+import backend.entity.EntityType;
 import backend.misc.FileUtil;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;

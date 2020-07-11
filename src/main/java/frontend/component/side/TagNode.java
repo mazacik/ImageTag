@@ -1,10 +1,10 @@
 package frontend.component.side;
 
-import backend.control.reload.Reload;
-import backend.list.BaseList;
-import backend.list.tag.Tag;
-import backend.list.tag.TagUtil;
+import backend.BaseList;
 import backend.misc.Direction;
+import backend.reload.Reload;
+import backend.tag.Tag;
+import backend.tag.TagUtil;
 import frontend.UserInterface;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.menu.ClickMenu;

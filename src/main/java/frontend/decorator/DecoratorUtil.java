@@ -1,6 +1,6 @@
 package frontend.decorator;
 
-import backend.list.BaseList;
+import backend.BaseList;
 import backend.misc.Settings;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.TextInputControl;

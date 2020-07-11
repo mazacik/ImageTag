@@ -1,10 +1,9 @@
 package backend.cache;
 
-import backend.list.entity.Entity;
-import backend.list.entity.EntityList;
+import backend.entity.Entity;
+import backend.entity.EntityList;
 import backend.misc.FileUtil;
 import backend.misc.Settings;
-import backend.override.Thread;
 import frontend.UserInterface;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -44,7 +43,7 @@ public abstract class CacheLoader {
 	}
 	public static void startCacheThread(EntityList entityList, boolean recreate) {
 		if (Main.DEBUG_USE_CACHE) {
-			new Thread(() -> {
+			new Thread(Main.THREADS, () -> {
 				UserInterface.getStage().getMainScene().showLoadingBar(Thread.currentThread(), entityList.size());
 				
 				for (Entity entity : new EntityList(entityList)) {

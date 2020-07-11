@@ -1,6 +1,6 @@
-package backend.list.tag;
+package backend.tag;
 
-import backend.list.BaseList;
+import backend.BaseList;
 
 import java.util.Collection;
 import java.util.Comparator;

@@ -1,6 +1,6 @@
-package backend.control.filter;
+package backend.filter;
 
-import backend.list.BaseList;
+import backend.BaseList;
 
 public class FilterPreset {
 	private BaseList<Integer> whitelistIDs;

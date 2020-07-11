@@ -1,12 +1,12 @@
-package backend.control.select;
+package backend.select;
 
-import backend.control.reload.Notifier;
-import backend.control.reload.Reload;
-import backend.list.BaseList;
-import backend.list.entity.Entity;
-import backend.list.entity.EntityList;
+import backend.BaseList;
+import backend.entity.Entity;
+import backend.entity.EntityList;
 import backend.misc.Direction;
 import backend.misc.FileUtil;
+import backend.reload.Notifier;
+import backend.reload.Reload;
 import frontend.UserInterface;
 import javafx.animation.PauseTransition;
 import javafx.scene.input.KeyEvent;
@@ -177,9 +177,9 @@ public class Select extends EntityList {
 	private Entity entityFrom = null;
 	private final EntityList selectBefore = new EntityList();
 	public void shiftSelectTo(Entity entityTo) {
-		BaseList<Entity> entities = Main.FILTER.getRepresentingList();
+		BaseList<Entity> entities = Main.FILTER.createRepresentingList();
 		
-		int indexFrom = Main.FILTER.getRepresentingList().indexOf(entityFrom);
+		int indexFrom = entities.indexOf(entityFrom);
 		int indexTo = entities.indexOf(entityTo);
 		
 		int indexLower;
@@ -296,7 +296,7 @@ public class Select extends EntityList {
 	public void moveTarget(Direction direction, boolean isShiftDown) {
 		if (target == null) return;
 		
-		EntityList repreList = Main.FILTER.getRepresentingList();
+		EntityList repreList = Main.FILTER.createRepresentingList();
 		if (repreList.isEmpty()) return;
 		
 		int newTargetIndex = repreList.indexOf(target.getRepresentingEntity());
@@ -371,14 +371,14 @@ public class Select extends EntityList {
 	private int memIndex = -1;
 	public void storePosition() {
 		memEntity = Main.SELECT.getFirst();
-		memIndex = Main.FILTER.getRepresentingList().indexOf(memEntity);
+		memIndex = Main.FILTER.createRepresentingList().indexOf(memEntity);
 	}
 	public void restorePosition() {
 		if (Main.FILTER.isEmpty()) {
 			this.clear();
 			this.setTarget(null, true);
 		} else {
-			EntityList representingEntities = Main.FILTER.getRepresentingList();
+			EntityList representingEntities = Main.FILTER.createRepresentingList();
 			if (!representingEntities.isEmpty()) {
 				if (!representingEntities.contains(memEntity) && memIndex >= 0) {
 					if (memIndex <= representingEntities.size() - 1) {

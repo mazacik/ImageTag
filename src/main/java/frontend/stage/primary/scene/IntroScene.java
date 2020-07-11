@@ -1,6 +1,6 @@
 package frontend.stage.primary.scene;
 
-import backend.list.BaseList;
+import backend.BaseList;
 import backend.misc.FileUtil;
 import backend.misc.Project;
 import frontend.UserInterface;

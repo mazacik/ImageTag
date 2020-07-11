@@ -1,9 +1,9 @@
 package frontend.component.gallery;
 
-import backend.control.reload.Reload;
-import backend.list.entity.Entity;
+import backend.entity.Entity;
 import backend.misc.Direction;
 import backend.misc.Settings;
+import backend.reload.Reload;
 import frontend.UserInterface;
 import frontend.node.menu.ClickMenu;
 import frontend.node.menu.ListMenu;

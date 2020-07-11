@@ -1,7 +1,7 @@
 package frontend.component.side;
 
-import backend.control.reload.Notifier;
-import backend.control.reload.Reload;
+import backend.reload.Notifier;
+import backend.reload.Reload;
 import frontend.UserInterface;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.override.HBox;

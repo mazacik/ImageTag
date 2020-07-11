@@ -1,9 +1,9 @@
 package frontend.component.side.select;
 
-import backend.control.reload.Reload;
-import backend.list.BaseList;
-import backend.list.tag.Tag;
+import backend.BaseList;
 import backend.misc.Direction;
+import backend.reload.Reload;
+import backend.tag.Tag;
 import frontend.component.side.SidePaneBase;
 import frontend.component.side.TagNode;
 import frontend.decorator.DecoratorUtil;

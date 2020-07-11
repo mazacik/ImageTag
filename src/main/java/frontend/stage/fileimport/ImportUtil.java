@@ -1,14 +1,13 @@
 package frontend.stage.fileimport;
 
+import backend.BaseList;
 import backend.cache.CacheLoader;
-import backend.control.reload.Notifier;
-import backend.control.reload.Reload;
-import backend.list.BaseList;
-import backend.list.entity.Entity;
-import backend.list.entity.EntityList;
+import backend.entity.Entity;
+import backend.entity.EntityList;
 import backend.misc.FileUtil;
 import backend.misc.Project;
-import backend.override.Thread;
+import backend.reload.Notifier;
+import backend.reload.Reload;
 import frontend.UserInterface;
 import javafx.application.Platform;
 import main.Main;
@@ -18,7 +17,7 @@ import java.util.logging.Logger;
 
 public abstract class ImportUtil {
 	public static void startImportThread(ImportMode importMode, String directory, BaseList<File> fileList) {
-		new Thread(() -> {
+		new Thread(Main.THREADS, () -> {
 			EntityList entityList = ImportUtil.importFiles(importMode, directory, fileList);
 			
 			if (entityList != null && !entityList.isEmpty()) {

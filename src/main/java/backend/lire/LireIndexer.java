@@ -45,7 +45,7 @@
 
 package backend.lire;
 
-import backend.list.BaseList;
+import backend.BaseList;
 import backend.misc.FileUtil;
 import net.semanticmetadata.lire.builders.GlobalDocumentBuilder;
 import net.semanticmetadata.lire.imageanalysis.features.global.AutoColorCorrelogram;

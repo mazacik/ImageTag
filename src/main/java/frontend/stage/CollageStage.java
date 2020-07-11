@@ -1,10 +1,9 @@
 package frontend.stage;
 
-import backend.list.BaseList;
-import backend.list.entity.Entity;
+import backend.BaseList;
+import backend.entity.Entity;
 import backend.misc.FileUtil;
 import backend.misc.Settings;
-import backend.override.Thread;
 import frontend.UserInterface;
 import frontend.node.override.GridPane;
 import frontend.node.override.Scene;
@@ -17,7 +16,7 @@ import main.Main;
 
 public class CollageStage extends Stage {
 	public CollageStage() {
-		new Thread(() -> {
+		new Thread(Main.THREADS, () -> {
 			Image originImage = new Image("file:" + FileUtil.getFileEntity(Main.SELECT.getTarget()));
 			Image scaledImage = getSmallerImage("file:" + FileUtil.getFileEntity(Main.SELECT.getTarget()), originImage.getWidth(), originImage.getHeight(), 1800, 900);
 			

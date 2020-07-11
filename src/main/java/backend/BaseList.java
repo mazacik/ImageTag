@@ -1,4 +1,4 @@
-package backend.list;
+package backend;
 
 import java.util.ArrayList;
 import java.util.Arrays;

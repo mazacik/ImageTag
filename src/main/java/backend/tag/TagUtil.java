@@ -1,8 +1,8 @@
-package backend.list.tag;
+package backend.tag;
 
-import backend.control.reload.Notifier;
-import backend.control.reload.Reload;
-import backend.list.BaseList;
+import backend.BaseList;
+import backend.reload.Notifier;
+import backend.reload.Reload;
 import frontend.component.side.TagNode;
 import frontend.stage.TagEditStage;
 import main.Main;

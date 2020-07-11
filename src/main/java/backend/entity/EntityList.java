@@ -1,11 +1,11 @@
-package backend.list.entity;
+package backend.entity;
 
-import backend.control.reload.Notifier;
-import backend.control.reload.Reload;
-import backend.list.BaseList;
-import backend.list.tag.Tag;
-import backend.list.tag.TagList;
+import backend.BaseList;
 import backend.misc.FileUtil;
+import backend.reload.Notifier;
+import backend.reload.Reload;
+import backend.tag.Tag;
+import backend.tag.TagList;
 import main.Main;
 
 import java.io.File;

@@ -1,9 +1,9 @@
-package backend.control.filter;
+package backend.filter;
 
-import backend.control.reload.Notifier;
-import backend.control.reload.Reload;
-import backend.list.BaseList;
-import backend.list.entity.Entity;
+import backend.BaseList;
+import backend.entity.Entity;
+import backend.reload.Notifier;
+import backend.reload.Reload;
 
 public class FilterListManager {
 	private final BaseList<TagSimple> whitelist = new BaseList<>();

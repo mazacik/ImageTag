@@ -1,7 +1,7 @@
 package frontend.component.side;
 
-import backend.list.BaseList;
-import backend.list.tag.Tag;
+import backend.BaseList;
+import backend.tag.Tag;
 import frontend.node.ListBox;
 import frontend.node.override.VBox;
 import main.Main;

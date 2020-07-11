@@ -1,7 +1,8 @@
 package backend.misc;
 
-import backend.list.BaseList;
-import backend.list.entity.Entity;
+import backend.BaseList;
+import backend.entity.Entity;
+import backend.entity.EntityType;
 import com.sun.jna.platform.FileUtils;
 import frontend.stage.SimpleMessageStage;
 import javafx.scene.Scene;

@@ -1,7 +1,7 @@
 package frontend.stage;
 
-import backend.list.BaseList;
-import backend.list.tag.TagList;
+import backend.BaseList;
+import backend.tag.TagList;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.EditNode;
 import frontend.node.override.HBox;

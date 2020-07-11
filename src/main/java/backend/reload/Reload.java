@@ -1,8 +1,8 @@
-package backend.control.reload;
+package backend.reload;
 
-import backend.list.BaseList;
-import backend.list.entity.Entity;
-import backend.list.entity.EntityList;
+import backend.BaseList;
+import backend.entity.Entity;
+import backend.entity.EntityList;
 import main.Main;
 
 import java.util.Arrays;

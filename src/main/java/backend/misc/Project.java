@@ -1,8 +1,8 @@
 package backend.misc;
 
-import backend.list.BaseList;
-import backend.list.entity.EntityList;
-import backend.list.tag.TagList;
+import backend.BaseList;
+import backend.entity.EntityList;
+import backend.tag.TagList;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import main.Main;

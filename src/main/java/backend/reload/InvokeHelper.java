@@ -1,4 +1,4 @@
-package backend.control.reload;
+package backend.reload;
 
 import frontend.UserInterface;
 import main.Main;

@@ -1,10 +1,10 @@
 package frontend.stage.primary;
 
-import backend.control.reload.Notifier;
-import backend.control.reload.Reload;
 import backend.misc.FileUtil;
 import backend.misc.Project;
 import backend.misc.Settings;
+import backend.reload.Notifier;
+import backend.reload.Reload;
 import frontend.UserInterface;
 import frontend.decorator.DecoratorUtil;
 import frontend.stage.primary.scene.IntroScene;

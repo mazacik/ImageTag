@@ -1,6 +1,6 @@
 package frontend.node.menu;
 
-import backend.list.BaseList;
+import backend.BaseList;
 import backend.misc.Direction;
 import frontend.UserInterface;
 import frontend.decorator.DecoratorUtil;

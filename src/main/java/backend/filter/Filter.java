@@ -1,12 +1,12 @@
-package backend.control.filter;
+package backend.filter;
 
-import backend.control.reload.Notifier;
-import backend.control.reload.Reload;
-import backend.list.BaseList;
-import backend.list.entity.Entity;
-import backend.list.entity.EntityList;
-import backend.misc.EntityType;
+import backend.BaseList;
+import backend.entity.Entity;
+import backend.entity.EntityList;
+import backend.entity.EntityType;
 import backend.misc.FileUtil;
+import backend.reload.Notifier;
+import backend.reload.Reload;
 import frontend.stage.settings.FilterSettingsPane;
 import main.Main;
 
@@ -16,9 +16,8 @@ public class Filter extends EntityList {
 	private final FilterListManager filterListManager = new FilterListManager();
 	private final EntityList lastImport = new EntityList();
 	
-	private final EntityList representingList = new EntityList();
 	public Entity getRepresentingRandom() {
-		Entity entity = representingList.getRandom();
+		Entity entity = createRepresentingList().getRandom();
 		if (entity != null) {
 			if (entity.hasGroup()) {
 				return Main.FILTER.getFilteredList(entity.getGroup()).getRandom();
@@ -91,8 +90,6 @@ public class Filter extends EntityList {
 			}
 		}
 		
-		representingList.setAll(this.createRepresentingList());
-		
 		Main.SELECT.restorePosition();
 		Reload.notify(Notifier.FILTER_CHANGED);
 	}
@@ -101,8 +98,6 @@ public class Filter extends EntityList {
 		if (!Reload.getNeedsFilterCheck().isEmpty()) {
 			Reload.getNeedsFilterCheck().forEach(this::resolve);
 			Reload.getNeedsFilterCheck().clear();
-			
-			representingList.setAll(this.createRepresentingList());
 		}
 	}
 	public void resolve(Entity entity) {
@@ -219,9 +214,5 @@ public class Filter extends EntityList {
 	}
 	public EntityList getLastImport() {
 		return lastImport;
-	}
-	
-	public EntityList getRepresentingList() {
-		return representingList;
 	}
 }

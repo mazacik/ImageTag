@@ -1,6 +1,6 @@
 package frontend.component.side.select;
 
-import backend.list.entity.Entity;
+import backend.entity.Entity;
 import frontend.component.side.SidePaneBase;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.SeparatorNode;

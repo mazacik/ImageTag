@@ -1,6 +1,6 @@
 package frontend.node.menu;
 
-import backend.list.BaseList;
+import backend.BaseList;
 import frontend.node.SeparatorNode;
 import frontend.node.override.VBox;
 import frontend.node.textnode.ArrowTextNode;

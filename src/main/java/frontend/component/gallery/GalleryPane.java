@@ -1,10 +1,10 @@
 package frontend.component.gallery;
 
-import backend.control.reload.Reload;
-import backend.list.BaseList;
-import backend.list.entity.Entity;
-import backend.list.entity.EntityList;
+import backend.BaseList;
+import backend.entity.Entity;
+import backend.entity.EntityList;
 import backend.misc.Settings;
+import backend.reload.Reload;
 import frontend.UserInterface;
 import frontend.stage.SimpleMessageStage;
 import javafx.geometry.BoundingBox;
@@ -239,7 +239,7 @@ public class GalleryPane extends ScrollPane {
 	}
 	
 	public boolean reload() {
-		EntityList representingEntityList = Main.FILTER.getRepresentingList();
+		EntityList representingEntityList = Main.FILTER.createRepresentingList();
 		if (representingEntityList.size() > TILE_LIMIT) {
 			tileEntities.setAll(representingEntityList.subList(0, TILE_LIMIT));
 			new SimpleMessageStage("Error", "Gallery reached a limit of " + TILE_LIMIT + " tiles.").show();

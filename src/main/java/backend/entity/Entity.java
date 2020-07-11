@@ -1,11 +1,10 @@
-package backend.list.entity;
+package backend.entity;
 
-import backend.list.BaseList;
-import backend.list.group.Group;
-import backend.list.tag.Tag;
-import backend.list.tag.TagList;
-import backend.misc.EntityType;
+import backend.BaseList;
+import backend.group.Group;
 import backend.misc.FileUtil;
+import backend.tag.Tag;
+import backend.tag.TagList;
 import com.google.gson.annotations.SerializedName;
 import frontend.component.gallery.Tile;
 import main.Main;
@@ -94,6 +93,7 @@ public class Entity {
 		return groupID != 0;
 	}
 	
+	//todo do not serialize stuff that can be created on init and does not need to be serialized
 	@SerializedName("f") private EntityType type;
 	public EntityType getType() {
 		if (type == null) {

@@ -1,6 +1,6 @@
 package frontend.node.project;
 
-import backend.list.BaseList;
+import backend.BaseList;
 import backend.misc.FileUtil;
 import backend.misc.Project;
 import frontend.node.override.VBox;

@@ -1,4 +1,4 @@
-package backend.misc;
+package backend.entity;
 
 public enum EntityType {
 	IMG,

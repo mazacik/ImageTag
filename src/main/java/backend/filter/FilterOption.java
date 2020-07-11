@@ -1,4 +1,4 @@
-package backend.control.filter;
+package backend.filter;
 
 public enum FilterOption {
 	ENABLE_IMG(1, 0, 1),

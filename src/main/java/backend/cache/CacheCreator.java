@@ -1,6 +1,6 @@
 package backend.cache;
 
-import backend.list.entity.Entity;
+import backend.entity.Entity;
 import backend.misc.FileUtil;
 import backend.misc.Settings;
 import frontend.component.display.VideoPlayer;

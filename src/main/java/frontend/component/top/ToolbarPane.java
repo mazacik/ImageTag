@@ -1,8 +1,8 @@
 package frontend.component.top;
 
-import backend.control.reload.Reload;
-import backend.list.entity.Entity;
+import backend.entity.Entity;
 import backend.misc.Direction;
+import backend.reload.Reload;
 import frontend.UserInterface;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.SeparatorNode;

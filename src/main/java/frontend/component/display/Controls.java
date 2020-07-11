@@ -1,11 +1,11 @@
 package frontend.component.display;
 
 import backend.cache.CacheLoader;
-import backend.control.reload.Reload;
-import backend.list.entity.Entity;
+import backend.entity.Entity;
 import backend.misc.Direction;
 import backend.misc.FileUtil;
 import backend.misc.Settings;
+import backend.reload.Reload;
 import frontend.UserInterface;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.override.HBox;

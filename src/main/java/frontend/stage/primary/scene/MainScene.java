@@ -1,10 +1,10 @@
 package frontend.stage.primary.scene;
 
-import backend.control.reload.Notifier;
-import backend.control.reload.Reload;
+import backend.entity.Entity;
 import backend.lire.LireUtil;
-import backend.list.entity.Entity;
 import backend.misc.Direction;
+import backend.reload.Notifier;
+import backend.reload.Reload;
 import frontend.UserInterface;
 import frontend.component.side.SidePaneBase;
 import frontend.decorator.DecoratorUtil;

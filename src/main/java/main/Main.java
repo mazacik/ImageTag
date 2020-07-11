@@ -1,19 +1,19 @@
 package main;
 
+import backend.BaseList;
 import backend.cache.CacheLoader;
-import backend.control.filter.Filter;
-import backend.control.reload.Notifier;
-import backend.control.reload.Reload;
-import backend.control.select.Select;
-import backend.list.BaseList;
-import backend.list.entity.Entity;
-import backend.list.entity.EntityList;
-import backend.list.group.Group;
-import backend.list.tag.Tag;
-import backend.list.tag.TagList;
+import backend.entity.Entity;
+import backend.entity.EntityList;
+import backend.filter.Filter;
+import backend.group.Group;
 import backend.misc.FileUtil;
 import backend.misc.Project;
 import backend.misc.Settings;
+import backend.reload.Notifier;
+import backend.reload.Reload;
+import backend.select.Select;
+import backend.tag.Tag;
+import backend.tag.TagList;
 import frontend.UserInterface;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -164,6 +164,8 @@ public class Main extends Application {
 		for (Entity entity : DB_ENTITY) {
 			entity.initTags();
 		}
+		
+		//todo check every entity for size change, generate new cache if needed
 	}
 	private static void initGroups() {
 		BaseList<Group> groups = new BaseList<>();
