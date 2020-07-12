@@ -12,13 +12,12 @@ import backend.misc.Settings;
 import backend.reload.Notifier;
 import backend.reload.Reload;
 import backend.select.Select;
-import backend.tag.Tag;
-import backend.tag.TagList;
 import frontend.UserInterface;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.Comparator;
 
 public class Main extends Application {
 	// CONST
@@ -33,7 +32,7 @@ public class Main extends Application {
 	public static final ThreadGroup THREADS;
 	
 	public static final EntityList DB_ENTITY;
-	public static final TagList DB_TAG;
+	public static final BaseList<String> DB_TAG;
 	
 	// CONTROLLER
 	public static final Filter FILTER;
@@ -49,7 +48,7 @@ public class Main extends Application {
 		THREADS = new ThreadGroup("ROOT");
 		
 		DB_ENTITY = new EntityList();
-		DB_TAG = new TagList();
+		DB_TAG = new BaseList<>();
 		
 		FILTER = new Filter();
 		SELECT = new Select();
@@ -84,10 +83,10 @@ public class Main extends Application {
 	}
 	
 	private static void initDatabase() {
-		initTags();
 		initEntities();
 		initGroups();
-		
+		initTags();
+		//todo what if entitylist is empty
 		Entity target = DB_ENTITY.getFirst();
 		if (target != null) {
 			SELECT.setTarget(target, true);
@@ -97,15 +96,6 @@ public class Main extends Application {
 				SELECT.set(target);
 			}
 		}
-	}
-	private static void initTags() {
-		TagList projectTags = Project.getCurrent().getTagList();
-		if (projectTags != null) DB_TAG.setAll(projectTags);
-		
-		DB_TAG.forEach(Tag::updateStringValue);
-		DB_TAG.sort();
-		
-		Reload.notify(Notifier.TAGLIST_CHANGED);
 	}
 	private static void initEntities() {
 		DB_ENTITY.setAll(Project.getCurrent().getEntityList());
@@ -161,10 +151,6 @@ public class Main extends Application {
 			DB_ENTITY.sortByName();
 		}
 		
-		for (Entity entity : DB_ENTITY) {
-			entity.initTags();
-		}
-		
 		//todo check every entity for size change, generate new cache if needed
 	}
 	private static void initGroups() {
@@ -195,6 +181,13 @@ public class Main extends Application {
 				}
 			}
 		}
+	}
+	private static void initTags() {
+		//todo what if entitylist is empty
+		DB_TAG.setAll(DB_ENTITY.getTagList());
+		DB_TAG.sort(Comparator.naturalOrder());
+		
+		Reload.notify(Notifier.TAGLIST_CHANGED);
 	}
 	
 	public static void exitApplication() {

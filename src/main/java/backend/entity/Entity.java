@@ -3,8 +3,6 @@ package backend.entity;
 import backend.BaseList;
 import backend.group.Group;
 import backend.misc.FileUtil;
-import backend.tag.Tag;
-import backend.tag.TagList;
 import com.google.gson.annotations.SerializedName;
 import frontend.component.gallery.Tile;
 import main.Main;
@@ -14,7 +12,7 @@ import java.io.File;
 public class Entity {
 	public Entity(File file) {
 		this.name = FileUtil.createEntityName(file);
-		this.tagIDList = new BaseList<>();
+		this.tagList = new BaseList<>();
 		this.size = file.length();
 		this.groupID = 0;
 		this.type = null;
@@ -22,34 +20,6 @@ public class Entity {
 		
 		this.group = null;
 		this.tile = null;
-	}
-	
-	public void addTag(Tag tag) {
-		getTagList().add(tag, true);
-		tagIDList.add(tag.getID());
-	}
-	public void addTag(int tagID) {
-		this.addTag(Main.DB_TAG.getTag(tagID));
-	}
-	public void removeTag(Tag tag) {
-		getTagList().remove(tag);
-		tagIDList.remove((Integer) tag.getID());
-	}
-	public void removeTag(int tagID) {
-		this.removeTag(Main.DB_TAG.getTag(tagID));
-	}
-	public void removeTag(TagList tagList) {
-		tagList.forEach(this::removeTag);
-	}
-	public void clearTags() {
-		getTagList().clear();
-		tagList.clear();
-	}
-	
-	public void initTags() {
-		for (int tagID : this.getTagIDList()) {
-			this.getTagList().add(Main.DB_TAG.getTag(tagID));
-		}
 	}
 	
 	public Entity getRepresentingEntity() {
@@ -72,9 +42,9 @@ public class Entity {
 		this.name = name;
 	}
 	
-	@SerializedName("t") private final BaseList<Integer> tagIDList;
-	public BaseList<Integer> getTagIDList() {
-		return tagIDList;
+	@SerializedName("t") private final BaseList<String> tagList;
+	public BaseList<String> getTagList() {
+		return tagList;
 	}
 	
 	@SerializedName("s") private final long size;
@@ -124,14 +94,6 @@ public class Entity {
 	}
 	public void setGroup(Group group) {
 		this.group = group;
-	}
-	
-	private transient TagList tagList;
-	public TagList getTagList() {
-		if (tagList == null) {
-			tagList = new TagList();
-		}
-		return tagList;
 	}
 	
 	private transient Tile tile;

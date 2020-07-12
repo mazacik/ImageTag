@@ -7,6 +7,7 @@ import javafx.scene.Node;
 public class VBox extends javafx.scene.layout.VBox {
 	public VBox() {
 		super();
+		//todo why platform runlater
 		Platform.runLater(() -> DecoratorUtil.getNodeList().add(this));
 	}
 	public VBox(Node... children) {

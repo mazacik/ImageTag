@@ -25,8 +25,8 @@ public class ListBox extends ScrollPane {
 		this.setFitToWidth(true);
 		this.setFitToHeight(true);
 		this.setBackground(Background.EMPTY);
-		this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-		this.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+		this.setHbarPolicy(ScrollBarPolicy.NEVER);
+		this.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
 		this.addEventFilter(ScrollEvent.SCROLL, this::onScroll);
 	}
 	

@@ -3,7 +3,6 @@ package frontend.component.side.select;
 import backend.BaseList;
 import backend.misc.Direction;
 import backend.reload.Reload;
-import backend.tag.Tag;
 import frontend.component.side.SidePaneBase;
 import frontend.component.side.TagNode;
 import frontend.decorator.DecoratorUtil;
@@ -21,10 +20,10 @@ public class SelectionTagsPane extends SidePaneBase {
 	public SelectionTagsPane() {
 		nodeSearch = new EditNode("", "Quick Search");
 		nodeSearch.setBorder(DecoratorUtil.getBorder(0, 0, 1, 0));
-		nodeSearch.textProperty().addListener((observable, oldValue, newValue) -> this.searchTextChangeHandler(newValue));
+		nodeSearch.textProperty().addListener((observable, oldValue, newValue) -> searchTextChangeHandler(newValue));
 		nodeSearch.setOnAction(event -> this.searchOnActionHandler());
 		
-		this.getChildren().addAll(nodeSearch, listBox);
+		getChildren().addAll(nodeSearch, listBox);
 	}
 	
 	private void searchTextChangeHandler(String newValue) {
@@ -35,29 +34,16 @@ public class SelectionTagsPane extends SidePaneBase {
 				match = null;
 			}
 			
-			closeNodes();
-			
-			if (newValue.length() > 0) {
+			if (!newValue.isEmpty()) {
 				query = newValue.toLowerCase();
-				
-				for (TagNode tagNode : this.getTagNodes()) {
+				for (TagNode tagNode : tagNodes) {
 					if (tagNode.getText().toLowerCase().contains(query)) {
-						if (tagNode.isLast()) {
-							match = tagNode;
-							break;
-						} else if (match == null) {
-							match = tagNode;
-						}
+						match = tagNode;
+						match.setBackground(DecoratorUtil.getBackgroundSecondary());
+						match.setBackgroundLock(true);
+						break;
 					}
 				}
-				
-				if (match != null) {
-					match.setBackground(DecoratorUtil.getBackgroundSecondary());
-					match.setBackgroundLock(true);
-					match.getParentNodes().forEach(TagNode::open);
-				}
-			} else {
-				match = null;
 			}
 		}
 	}
@@ -70,11 +56,10 @@ public class SelectionTagsPane extends SidePaneBase {
 			nodeSearch.clear();
 			searchLock = false;
 			
-			Tag tag = Main.DB_TAG.getTag(match.getStringValue());
-			if (Main.SELECT.getTagListIntersect().contains(tag)) {
-				Main.SELECT.removeTag(tag.getID());
+			if (Main.SELECT.getTagListIntersect().contains(match.getText())) {
+				Main.SELECT.removeTag(match.getText());
 			} else {
-				Main.SELECT.addTag(tag.getID());
+				Main.SELECT.addTag(match.getText());
 			}
 			
 			Reload.start();
@@ -82,23 +67,20 @@ public class SelectionTagsPane extends SidePaneBase {
 	}
 	
 	public void refresh() {
-		BaseList<String> stringListIntersect = new BaseList<>();
-		Main.SELECT.getTagListIntersect().forEach(tag -> stringListIntersect.add(tag.getStringValue()));
-		BaseList<String> stringListUnion = new BaseList<>();
-		Main.SELECT.getTagList().forEach(tag -> stringListUnion.add(tag.getStringValue()));
+		BaseList<String> stringListIntersect = new BaseList<>(Main.SELECT.getTagListIntersect());
+		BaseList<String> stringListUnion = new BaseList<>(Main.SELECT.getTagList());
 		
-		getTagNodes().forEach(tagNode -> this.refreshNodeColor(tagNode, stringListIntersect, stringListUnion));
+		tagNodes.forEach(tagNode -> refreshNodeColor(tagNode, stringListIntersect, stringListUnion));
 	}
 	private void refreshNodeColor(TagNode tagNode, BaseList<String> stringListIntersect, BaseList<String> stringListUnion) {
-		String stringNode = tagNode.getStringValue();
 		for (String stringTag : stringListIntersect) {
-			if (stringTag.startsWith(stringNode)) {
+			if (stringTag.startsWith(tagNode.getText())) {
 				tagNode.setTextFill(DecoratorUtil.getColorPositive());
 				return;
 			}
 		}
 		for (String stringTag : stringListUnion) {
-			if (stringTag.startsWith(stringNode)) {
+			if (stringTag.startsWith(tagNode.getText())) {
 				tagNode.setTextFill(DecoratorUtil.getColorUnion());
 				return;
 			}
@@ -108,11 +90,10 @@ public class SelectionTagsPane extends SidePaneBase {
 	
 	public void nextMatch(Direction searchDirection, boolean isControlDown) {
 		if (match != null) {
-			BaseList<TagNode> tagNodes = getTagNodes();
 			int i = tagNodes.indexOf(match);
 			TagNode tagNode;
 			
-			while (true) {
+			do {
 				switch (searchDirection) {
 					case UP:
 						i--;
@@ -124,7 +105,7 @@ public class SelectionTagsPane extends SidePaneBase {
 						throw new IllegalArgumentException("Invalid search direction: " + searchDirection.name());
 				}
 				
-				if (i == 0) {
+				if (i < 0) {
 					i = tagNodes.size() - 1;
 				} else if (i == tagNodes.size()) {
 					i = 0;
@@ -132,29 +113,15 @@ public class SelectionTagsPane extends SidePaneBase {
 				
 				tagNode = tagNodes.get(i);
 				
-				if (isControlDown) {
-					if (tagNode == match || (tagNode.isLast() && tagNode.getText().toLowerCase().contains(query))) {
-						break;
-					}
-				} else {
-					if (tagNode == match || tagNode.isLast()) {
-						break;
-					}
-				}
-			}
+			} while (isControlDown && !tagNode.getText().toLowerCase().contains(query));
 			
-			closeNodes();
 			match.setBackground(Background.EMPTY);
 			match.setBackgroundLock(false);
 			
 			match = tagNode;
 			match.setBackground(DecoratorUtil.getBackgroundSecondary());
 			match.setBackgroundLock(true);
-			match.getParentNodes().forEach(TagNode::open);
 		}
-	}
-	public void closeNodes() {
-		new BaseList<>(openNodes).forEach(TagNode::close);
 	}
 	
 	public EditNode getNodeSearch() {

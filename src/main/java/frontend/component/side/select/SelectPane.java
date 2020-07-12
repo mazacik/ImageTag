@@ -1,7 +1,6 @@
 package frontend.component.side.select;
 
 import backend.entity.Entity;
-import frontend.component.side.SidePaneBase;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.SeparatorNode;
 import frontend.node.override.HBox;
@@ -30,6 +29,7 @@ public class SelectPane extends VBox {
 	public void initialize() {
 		selectionTagsNode.setBorder(DecoratorUtil.getBorder(0, 0, 1, 0));
 		selectionTagsNode.setMaxWidth(Double.MAX_VALUE);
+		HBox.setHgrow(selectionTagsNode, Priority.ALWAYS);
 		selectionTagsNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			this.getChildren().set(1, selectionTagsPane);
 			this.refresh();
@@ -37,18 +37,15 @@ public class SelectPane extends VBox {
 		
 		targetDetailsNode.setBorder(DecoratorUtil.getBorder(0, 0, 1, 0));
 		targetDetailsNode.setMaxWidth(Double.MAX_VALUE);
+		HBox.setHgrow(targetDetailsNode, Priority.ALWAYS);
 		targetDetailsNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			this.getChildren().set(1, targetDetailsPane);
 			this.refresh();
 		});
 		
 		HBox boxTop = new HBox(selectionTagsNode, new SeparatorNode(), targetDetailsNode);
-		HBox.setHgrow(selectionTagsNode, Priority.ALWAYS);
-		HBox.setHgrow(targetDetailsNode, Priority.ALWAYS);
 		
-		this.setMinWidth(SidePaneBase.MIN_WIDTH);
 		HBox.setHgrow(this, Priority.ALWAYS);
-		
 		this.setBorder(DecoratorUtil.getBorder(0, 0, 0, 1));
 		this.getChildren().addAll(boxTop, selectionTagsPane);
 	}

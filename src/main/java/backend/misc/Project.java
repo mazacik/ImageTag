@@ -2,7 +2,6 @@ package backend.misc;
 
 import backend.BaseList;
 import backend.entity.EntityList;
-import backend.tag.TagList;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import main.Main;
@@ -18,7 +17,6 @@ public class Project {
 	@SerializedName("a") private long msLastAccess;
 	@SerializedName("s") private String directory;
 	@SerializedName("e") private EntityList entityList;
-	@SerializedName("t") private TagList tagList;
 	
 	public Project(String projectName, String directory) {
 		this.projectName = projectName;
@@ -38,7 +36,6 @@ public class Project {
 	public boolean writeToDisk() {
 		this.msLastAccess = System.currentTimeMillis();
 		this.entityList = Main.DB_ENTITY;
-		this.tagList = Main.DB_TAG;
 		return GsonUtil.write(this, typeToken, projectFile);
 	}
 	
@@ -78,9 +75,6 @@ public class Project {
 	}
 	public EntityList getEntityList() {
 		return entityList;
-	}
-	public TagList getTagList() {
-		return tagList;
 	}
 	
 	public static String createProjectFilePath(String projectName) {

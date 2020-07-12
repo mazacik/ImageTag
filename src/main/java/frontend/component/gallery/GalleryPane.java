@@ -44,7 +44,6 @@ public class GalleryPane extends ScrollPane {
 		selectRectangle = new Rectangle(0, 0, Color.GRAY);
 		
 		selectRectangleHelper = new EntityList();
-		
 	}
 	
 	public void initialize() {

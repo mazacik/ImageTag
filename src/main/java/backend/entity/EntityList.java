@@ -4,8 +4,6 @@ import backend.BaseList;
 import backend.misc.FileUtil;
 import backend.reload.Notifier;
 import backend.reload.Reload;
-import backend.tag.Tag;
-import backend.tag.TagList;
 import main.Main;
 
 import java.io.File;
@@ -56,7 +54,7 @@ public class EntityList extends BaseList<Entity> {
 			}
 		});
 	}
-	public void sortByLastModifyDate() {
+	public void sortByLastModificationDate() {
 		super.sort((o1, o2) -> {
 			long time1 = 0;
 			long time2 = 0;
@@ -98,68 +96,47 @@ public class EntityList extends BaseList<Entity> {
 		return representingEntityList;
 	}
 	
-	public void addTag(Integer tagID) {
-		this.forEach(entity -> entity.addTag(tagID));
+	public void addTag(String tag) {
+		this.forEach(entity -> entity.getTagList().add(tag, true));
 	}
-	public void removeTag(Integer tagID) {
-		this.forEach(entity -> entity.removeTag(tagID));
-	}
-	public void clearTags() {
-		this.forEach(Entity::clearTags);
+	public void addTags(Collection<String> tags) {
+		this.forEach(entity -> entity.getTagList().addAll(tags, true));
 	}
 	
-	public void mergeTags() {
-		BaseList<Integer> tagIDs = this.getTagIDList();
-		
-		this.forEach(entity -> {
-			entity.getTagIDList().setAll(new BaseList<>(tagIDs));
-			entity.initTags();
-		});
-		
+	public void removeTag(String tag) {
+		this.forEach(entity -> entity.getTagList().remove(tag));
+	}
+	public void removeTags(Collection<String> tags) {
+		this.forEach(entity -> entity.getTagList().removeAll(tags));
+	}
+	
+	public void setTags(Collection<String> tags) {
+		this.clearTagList();
+		this.addTags(tags);
+	}
+	
+	public void clearTagList() {
+		this.forEach(entity -> entity.getTagList().clear());
+	}
+	
+	public void mergeTagList() {
+		this.forEach(entity -> entity.getTagList().setAll(this.getTagList()));
 		Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
 	}
 	
-	public BaseList<Integer> getTagIDList() {
-		BaseList<Integer> tagIDList = new BaseList<>();
-		this.forEach(entity -> tagIDList.addAll(entity.getTagIDList(), true));
-		return tagIDList;
-	}
-	public BaseList<Integer> getTagIDListIntersect() {
-		if (!this.isEmpty()) {
-			BaseList<Integer> tagIDList = new BaseList<>();
-			//check every tag of the first object
-			for (int tagID : this.getFirst().getTagIDList()) {
-				//check if all objects contain the tagID
-				for (Entity entity : this) {
-					if (entity.getTagIDList().contains(tagID)) {
-						//if the last object contains the tagID, all before do too, add
-						if (entity.equals(this.getLast())) {
-							tagIDList.add(tagID, true);
-						}
-					} else {
-						//if any of the objects doesn't contain the tag, break
-						break;
-					}
-				}
-			}
-			return tagIDList;
-		} else {
-			return new BaseList<>();
-		}
-	}
-	
-	public TagList getTagList() {
-		TagList tagList = new TagList();
+	public BaseList<String> getTagList() {
+		BaseList<String> tagList = new BaseList<>();
 		this.forEach(entity -> tagList.addAll(entity.getTagList(), true));
 		return tagList;
 	}
-	public TagList getTagListIntersect() {
+	public BaseList<String> getTagListIntersect() {
 		if (!this.isEmpty()) {
-			TagList tagListIntersect = new TagList();
+			EntityList helperThis = new EntityList(this); //avoids async ConcurrentModificationException
+			BaseList<String> tagListIntersect = new BaseList<>();
 			//check every tag of the first object
-			for (Tag tag : this.getFirst().getTagList()) {
+			for (String tag : this.getFirst().getTagList()) {
 				//check if all objects contain the tagID
-				for (Entity entity : new EntityList(this)) {
+				for (Entity entity : helperThis) {
 					if (entity.getTagList().contains(tag)) {
 						//if the last object contains the tag, all before do too, add
 						if (entity.equals(this.getLast())) {
@@ -173,7 +150,7 @@ public class EntityList extends BaseList<Entity> {
 			}
 			return tagListIntersect;
 		} else {
-			return new TagList();
+			return new BaseList<>();
 		}
 	}
 	

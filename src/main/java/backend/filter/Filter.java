@@ -164,7 +164,7 @@ public class Filter extends EntityList {
 			return false;
 		}
 		
-		int entityTagCount = entity.getTagIDList().size();
+		int entityTagCount = entity.getTagList().size();
 		if (entityTagCount < FilterOption.TAG_COUNT_MIN.getIntValue() || entityTagCount > FilterOption.TAG_COUNT_MAX.getIntValue()) {
 			return false;
 		}
@@ -180,7 +180,7 @@ public class Filter extends EntityList {
 			}
 		}
 		
-		return filterListManager.applyLists(entity);
+		return filterListManager.checkLists(entity);
 	}
 	
 	public void showSimilar(Entity entity) {
@@ -188,11 +188,11 @@ public class Filter extends EntityList {
 		filterListManager.clear();
 		this.clear();
 		
-		BaseList<Integer> query = entity.getTagIDList();
+		BaseList<String> query = entity.getTagList();
 		for (Entity iterator : Main.DB_ENTITY) {
-			if (iterator.getTagIDList().size() != 0) {
-				BaseList<Integer> sameTags = new BaseList<>(query);
-				sameTags.retainAll(iterator.getTagIDList());
+			if (iterator.getTagList().size() != 0) {
+				BaseList<String> sameTags = new BaseList<>(query);
+				sameTags.retainAll(iterator.getTagList());
 				
 				if (!sameTags.isEmpty()) {
 					double similarity = (double) sameTags.size() / (double) query.size();

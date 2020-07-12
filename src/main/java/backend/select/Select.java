@@ -232,18 +232,36 @@ public class Select extends EntityList {
 		return slideshowRunning;
 	}
 	
-	public void addTag(Integer tagID) {
-		super.addTag(tagID);
+	public void addTag(String tag) {
+		super.addTag(tag);
 		Reload.requestFilterCheck(this);
 		Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
 	}
-	public void removeTag(Integer tagID) {
-		super.removeTag(tagID);
+	public void addTags(Collection<String> tags) {
+		super.addTags(tags);
 		Reload.requestFilterCheck(this);
 		Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
 	}
-	public void clearTags() {
-		super.clearTags();
+	
+	public void removeTag(String tag) {
+		super.removeTag(tag);
+		Reload.requestFilterCheck(this);
+		Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
+	}
+	public void removeTags(Collection<String> tags) {
+		super.removeTags(tags);
+		Reload.requestFilterCheck(this);
+		Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
+	}
+	
+	public void setTags(Collection<String> tags) {
+		super.setTags(tags);
+		Reload.requestFilterCheck(this);
+		Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
+	}
+	
+	public void clearTagList() {
+		super.clearTagList();
 		Reload.requestFilterCheck(this);
 		Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
 	}

@@ -1,6 +1,7 @@
 package frontend.node.textnode;
 
 import backend.BaseList;
+import backend.TagUtil;
 import backend.cache.CacheLoader;
 import backend.entity.Entity;
 import backend.entity.EntityList;
@@ -12,8 +13,6 @@ import backend.misc.Settings;
 import backend.reload.InvokeHelper;
 import backend.reload.Notifier;
 import backend.reload.Reload;
-import backend.tag.TagList;
-import backend.tag.TagUtil;
 import frontend.UserInterface;
 import frontend.node.menu.ListMenu;
 import frontend.stage.CollageStage;
@@ -148,7 +147,7 @@ public enum TextNodeTemplates {
 				ListMenu.hideMenus();
 				
 				if (Main.SELECT.getTarget() != null) {
-					TagUtil.setClipboard(new TagList(Main.SELECT.getTarget().getTagList()));
+					TagUtil.setClipboard(Main.SELECT.getTarget().getTagList());
 				}
 			});
 			return textNode;
@@ -162,8 +161,7 @@ public enum TextNodeTemplates {
 				ListMenu.hideMenus();
 				
 				if (Main.SELECT.getTarget() != null) {
-					Main.SELECT.getTarget().clearTags();
-					TagUtil.getClipboard().forEach(tag -> Main.SELECT.getTarget().addTag(tag.getID()));
+					Main.SELECT.getTarget().getTagList().setAll(TagUtil.getClipboard());
 					
 					Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
 					Reload.start();
@@ -239,11 +237,12 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				TagUtil.setClipboard(new TagList(Main.SELECT.getTagList()));
+				TagUtil.setClipboard(Main.SELECT.getTagList());
 			});
 			return textNode;
 		}
 	},
+	//todo paste-merge (add clipboard to existing tags)
 	SELECTION_TAGS_PASTE {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Paste", true, true, false, true, this);
@@ -251,10 +250,8 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				Main.SELECT.clearTags();
-				TagUtil.getClipboard().forEach(tag -> Main.SELECT.addTag(tag.getID()));
+				Main.SELECT.setTags(TagUtil.getClipboard());
 				
-				Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
 				Reload.start();
 			});
 			return textNode;
@@ -267,7 +264,7 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				Main.SELECT.mergeTags();
+				Main.SELECT.mergeTagList();
 				
 				Reload.start();
 			});
@@ -315,7 +312,6 @@ public enum TextNodeTemplates {
 			setupNode(textNode);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
-				
 			});
 			return textNode;
 		}
@@ -408,20 +404,6 @@ public enum TextNodeTemplates {
 			return textNode;
 		}
 	},
-	TAG_CREATE_CHILD {
-		public TextNode get() {
-			TextNode textNode = new TextNode("Create a Tag", true, true, false, true, this);
-			setupNode(textNode);
-			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ListMenu.hideMenus();
-				
-				TagUtil.create(TagUtil.getCurrentTagNode().getLevels());
-				
-				Reload.start();
-			});
-			return textNode;
-		}
-	},
 	TAG_EDIT {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Edit Tag", true, true, false, true, this);
@@ -429,21 +411,7 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				TagUtil.edit(TagUtil.getCurrentTagNode().getStringValue(), TagUtil.getCurrentTagNode().getLevels().size());
-				
-				Reload.start();
-			});
-			return textNode;
-		}
-	},
-	TAG_REMOVE_LEVEL {
-		public TextNode get() {
-			TextNode textNode = new TextNode("Remove (this level)", true, true, false, true, this);
-			setupNode(textNode);
-			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-				ListMenu.hideMenus();
-				
-				TagUtil.removeIntermediate();
+				TagUtil.edit(TagUtil.getCurrentNode().getText());
 				
 				Reload.start();
 			});
@@ -509,7 +477,7 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				Main.SELECT.getTarget().getGroup().mergeTags();
+				Main.SELECT.getTarget().getGroup().mergeTagList();
 				
 				Reload.start();
 			});

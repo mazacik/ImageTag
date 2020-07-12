@@ -7,6 +7,7 @@ import backend.reload.Reload;
 import frontend.UserInterface;
 import frontend.node.menu.ClickMenu;
 import frontend.node.menu.ListMenu;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -77,7 +78,12 @@ public class Tile extends Pane {
 			
 			Scene scene = new Scene(new Group(label));
 			scene.setFill(Color.GRAY);
-			scene.snapshot(this);
+			
+			if (Thread.currentThread() == Main.THREAD_MAIN) {
+				scene.snapshot(this);
+			} else {
+				Platform.runLater(() -> scene.snapshot(this));
+			}
 		}};
 		
 		ClickMenu.register(Tile.class, ListMenu.Preset.ENTITY);

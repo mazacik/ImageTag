@@ -109,10 +109,10 @@ public abstract class Reload {
 	}
 	
 	public static void requestFilterCheck(Collection<? extends Entity> c) {
-		needsFilterCheck.addAll(c);
+		needsFilterCheck.addAll(c, true);
 	}
 	public static void requestFilterCheck(Entity entity) {
-		needsFilterCheck.add(entity);
+		needsFilterCheck.add(entity, true);
 	}
 	public static BaseList<Entity> getNeedsFilterCheck() {
 		return needsFilterCheck;

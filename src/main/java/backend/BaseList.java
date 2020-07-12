@@ -41,6 +41,18 @@ public class BaseList<T> extends ArrayList<T> {
 		return super.addAll(c);
 	}
 	
+	public void replace(T t1, T t2) {
+		int index = indexOf(t1);
+		if (index != -1) set(index, t2);
+	}
+	
+	public boolean containsAny(Collection<? extends T> c) {
+		for (T t : c)
+			if (contains(t))
+				return true;
+		return false;
+	}
+	
 	public final T getFirst() {
 		return (!this.isEmpty()) ? this.get(0) : null;
 	}

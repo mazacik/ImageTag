@@ -198,7 +198,7 @@ public class MainScene extends Scene {
 		handleWidthChange(SidePaneBase.MIN_WIDTH, SidePaneBase.MIN_WIDTH);
 	}
 	public void handleWidthChange(double filterWidth, double selectWidth) {
-		double estimateAvailableWidth = this.getWidth() - filterWidth - selectWidth - 50;
+		double estimateAvailableWidth = this.getWidth() - filterWidth - selectWidth;
 		
 		TilePane tilePane = UserInterface.getGalleryPane().getTilePane();
 		double tileSize = tilePane.getPrefTileWidth();
