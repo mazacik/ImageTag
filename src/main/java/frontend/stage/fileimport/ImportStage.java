@@ -39,7 +39,7 @@ public class ImportStage extends BaseStage {
 	private TextNode nodeImport;
 	
 	public ImportStage() {
-		super("Import");
+		super("Import", 0.75);
 		
 		this.getScene().getStylesheets().add("/css/Styles.css");
 		

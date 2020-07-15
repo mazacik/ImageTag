@@ -21,8 +21,7 @@ public abstract class SidePaneBase extends VBox {
 	
 	public boolean reload() {
 		tagNodes.clear();
-		//todo holy memory leak
-		Main.DB_TAG.forEach(tag -> tagNodes.add(new TagNode(this, tag)));
+		Main.DB_TAG.forEach(tag -> tagNodes.add(new TagNode(tag)));
 		listBox.setNodes(tagNodes);
 		
 		return true;

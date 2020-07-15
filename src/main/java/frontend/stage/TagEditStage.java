@@ -8,13 +8,14 @@ import javafx.geometry.Pos;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import main.Main;
 
 public class TagEditStage extends BaseStage {
 	private final EditNode editNode;
 	private String returnValue;
 	
 	public TagEditStage() {
-		super("Tag Editor");
+		super("Tag Editor", 0.15);
 		
 		editNode = new EditNode();
 		returnValue = "";
@@ -36,9 +37,6 @@ public class TagEditStage extends BaseStage {
 		TextNode nodeCancel = new TextNode("Cancel", true, true, false, true);
 		nodeCancel.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, this::closeCancel);
 		
-		this.setWidth(640);
-		this.setHeight(480);
-		
 		setRoot(boxMain);
 		setButtons(nodeOK, nodeCancel);
 	}
@@ -55,8 +53,22 @@ public class TagEditStage extends BaseStage {
 	}
 	
 	private void closeOk() {
-		//todo IMPORTANT checks
-		this.returnValue = editNode.getText();
+		String value = editNode.getText().trim();
+		
+		// can't be empty
+		if (value.isEmpty()) {
+			return;
+		}
+		
+		// can't already exist
+		String valueLowerCase = value.toLowerCase();
+		for (String tag : Main.DB_TAG) {
+			if (valueLowerCase.equals(tag.toLowerCase())) {
+				return;
+			}
+		}
+		
+		this.returnValue = value;
 		this.close();
 	}
 	private void closeCancel() {

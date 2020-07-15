@@ -299,7 +299,6 @@ public enum TextNodeTemplates {
 				
 				if (Main.SELECT.getTarget() != null) {
 					HttpUtil.googleRIS(Main.SELECT.getTarget());
-					new SimpleMessageStage("Google RIS", "Request sent.").show();
 				}
 			});
 			return textNode;

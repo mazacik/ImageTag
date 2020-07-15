@@ -35,14 +35,25 @@ public class TagUtil {
 				Main.DB_TAG.sort(Comparator.naturalOrder());
 				Main.DB_ENTITY.forEach(entity -> entity.getTagList().replace(tag, newTag));
 				
+				if (Main.FILTER.getFilterListManager().isWhite(tag)) {
+					Main.FILTER.getFilterListManager().unlist(tag);
+					Main.FILTER.getFilterListManager().whitelist(newTag);
+				} else if (Main.FILTER.getFilterListManager().isBlack(tag)) {
+					Main.FILTER.getFilterListManager().unlist(tag);
+					Main.FILTER.getFilterListManager().blacklist(newTag);
+				}
+				
 				Reload.notify(Notifier.TAGLIST_CHANGED);
 			}
 		}
 	}
 	public static void remove() {
-		if (Main.DB_TAG.contains(currentNode.getText())) {
-			Main.DB_TAG.remove(currentNode.getText());
-			Main.DB_ENTITY.forEach(entity -> entity.getTagList().remove(currentNode.getText()));
+		String tag = currentNode.getText();
+		if (Main.DB_TAG.contains(tag)) {
+			Main.DB_TAG.remove(tag);
+			Main.DB_ENTITY.forEach(entity -> entity.getTagList().remove(tag));
+			
+			Main.FILTER.getFilterListManager().unlist(tag);
 			
 			Reload.notify(Notifier.TAGLIST_CHANGED);
 		}

@@ -10,6 +10,7 @@ import frontend.node.menu.ListMenu;
 import frontend.node.textnode.TextNode;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -22,7 +23,7 @@ public class TagNode extends TextNode {
 		ClickMenu.register(TagNode.class, ListMenu.Preset.TAG);
 	}
 	
-	public TagNode(SidePaneBase parentPane, String tag) {
+	public TagNode(String tag) {
 		super(tag);
 		
 		if (Main.FILTER.getFilterListManager().isWhite(tag)) {
@@ -47,10 +48,10 @@ public class TagNode extends TextNode {
 		this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			switch (event.getButton()) {
 				case PRIMARY:
-					//todo try to get parentPane from event
+					Node parentPane = getParentPane(event);
 					if (parentPane == UserInterface.getFilterPane()) {
 						clickFilter();
-					} else if (parentPane == UserInterface.getSelectPane().getSelectionTagsPane()) {
+					} else if (parentPane == UserInterface.getSelectPane()) {
 						clickSelect();
 					}
 					Reload.start();
@@ -81,6 +82,15 @@ public class TagNode extends TextNode {
 			Main.SELECT.removeTag(getText());
 		} else {
 			Main.SELECT.addTag(getText());
+		}
+	}
+	
+	private Node getParentPane(MouseEvent event) {
+		Node node = (Node) event.getSource();
+		while (true) {
+			if (node == null) return null;
+			if (node == UserInterface.getFilterPane() || node == UserInterface.getSelectPane()) return node;
+			node = node.getParent();
 		}
 	}
 	

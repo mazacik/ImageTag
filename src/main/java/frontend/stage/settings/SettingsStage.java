@@ -13,7 +13,7 @@ public class SettingsStage extends BaseStage {
 	private final HBox hBoxMain;
 	
 	public SettingsStage() {
-		super("Settings");
+		super("Settings", 0.75);
 		
 		FilterSettingsPane filterSettingsPane = new FilterSettingsPane();
 		filterSettingsPane.setPrefWidth(600);

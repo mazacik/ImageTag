@@ -84,16 +84,18 @@ public class Main extends Application {
 	
 	private static void initDatabase() {
 		initEntities();
-		initGroups();
-		initTags();
-		//todo what if entitylist is empty
-		Entity target = DB_ENTITY.getFirst();
-		if (target != null) {
-			SELECT.setTarget(target, true);
-			if (target.hasGroup()) {
-				SELECT.setAll(target.getGroup());
-			} else {
-				SELECT.set(target);
+		if (!DB_ENTITY.isEmpty()) {
+			initGroups();
+			initTags();
+			
+			Entity target = DB_ENTITY.getFirst();
+			if (target != null) {
+				SELECT.setTarget(target, true);
+				if (target.hasGroup()) {
+					SELECT.setAll(target.getGroup());
+				} else {
+					SELECT.set(target);
+				}
 			}
 		}
 	}
@@ -183,7 +185,6 @@ public class Main extends Application {
 		}
 	}
 	private static void initTags() {
-		//todo what if entitylist is empty
 		DB_TAG.setAll(DB_ENTITY.getTagList());
 		DB_TAG.sort(Comparator.naturalOrder());
 		

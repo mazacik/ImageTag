@@ -17,23 +17,12 @@ public abstract class BaseStage extends Stage {
 	private final BorderPane paneMain;
 	private final HBox buttonBox;
 	
-	public BaseStage(String title) {
-		this(title, null, (Region[]) null);
-	}
-	public BaseStage(String title, Region root, Region... buttons) {
-		if (buttons == null) {
-			buttonBox = new HBox();
-		} else {
-			buttonBox = new HBox(buttons);
-		}
+	public BaseStage(String title, double sizeModifier) {
+		buttonBox = new HBox();
 		buttonBox.setAlignment(Pos.CENTER);
 		buttonBox.setPadding(new Insets(0, DEFAULT_PADDING, DEFAULT_PADDING, DEFAULT_PADDING));
 		
-		if (root == null) {
-			paneMain = new BorderPane();
-		} else {
-			paneMain = new BorderPane(root);
-		}
+		paneMain = new BorderPane();
 		paneMain.setBackground(DecoratorUtil.getBackgroundPrimary());
 		paneMain.setBottom(buttonBox);
 		
@@ -41,8 +30,8 @@ public abstract class BaseStage extends Stage {
 		this.setTitle(title);
 		this.initModality(Modality.APPLICATION_MODAL);
 		this.setOnShown(event -> this.centerOnScreen());
-		this.setWidth(DecoratorUtil.getUsableScreenWidth() * 0.75);
-		this.setHeight(DecoratorUtil.getUsableScreenHeight() * 0.75);
+		this.setWidth(DecoratorUtil.getUsableScreenWidth() * sizeModifier);
+		this.setHeight(DecoratorUtil.getUsableScreenHeight() * sizeModifier);
 	}
 	
 	public void setRoot(Region root) {

@@ -1,6 +1,7 @@
 package backend.misc;
 
 import backend.entity.Entity;
+import frontend.stage.SimpleMessageStage;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -10,6 +11,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.UnknownHostException;
 
 public abstract class HttpUtil {
 	public static void googleRIS(Entity entity) {
@@ -23,8 +25,11 @@ public abstract class HttpUtil {
 				HttpResponse response = HttpClientBuilder.create().build().execute(post);
 				String site = response.getFirstHeader("location").getValue();
 				Runtime.getRuntime().exec("cmd /c start " + site);
+			} catch (UnknownHostException e) {
+				new SimpleMessageStage("Error", "You are offline.");
+				e.printStackTrace();
 			} catch (IOException e) {
-				//todo show error
+				new SimpleMessageStage("Error", "An error occured while Reverse Image Search.");
 				e.printStackTrace();
 			}
 		}).start();

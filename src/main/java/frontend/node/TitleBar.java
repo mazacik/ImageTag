@@ -14,7 +14,7 @@ import javafx.stage.WindowEvent;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-class TitleBar extends BorderPane {
+public class TitleBar extends BorderPane {
 	private TextNode nodeTitle;
 	private TextNode nodeMinimize;
 	private TextNode nodeExit;

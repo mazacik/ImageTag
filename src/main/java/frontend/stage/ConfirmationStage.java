@@ -11,7 +11,7 @@ public class ConfirmationStage extends BaseStage {
 		this("Confirmation", message);
 	}
 	public ConfirmationStage(String title, String message) {
-		super(title);
+		super(title, 0.15);
 		
 		TextNode labelContent = new TextNode(message, false, false, false, true);
 		

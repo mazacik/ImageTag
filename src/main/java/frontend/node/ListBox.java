@@ -14,13 +14,6 @@ public class ListBox extends ScrollPane {
 	private final VBox vBox = new VBox();
 	
 	public ListBox() {
-		this(null);
-	}
-	public ListBox(Collection<? extends Node> collection) {
-		if (collection != null && !collection.isEmpty()) {
-			this.setNodes(collection);
-		}
-		
 		this.setContent(vBox);
 		this.setFitToWidth(true);
 		this.setFitToHeight(true);
@@ -41,7 +34,7 @@ public class ListBox extends ScrollPane {
 		event.consume();
 		
 		if (!this.getChildren().isEmpty()) {
-			Region region = (Region) this.getChildren().get(0);
+			Region region = (Region) vBox.getChildren().get(0);
 			double rowHeight = region.getHeight();
 			
 			double contentHeight = vBox.getHeight() - this.getViewportBounds().getHeight();
