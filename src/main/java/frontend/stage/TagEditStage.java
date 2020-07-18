@@ -62,7 +62,7 @@ public class TagEditStage extends BaseStage {
 		
 		// can't already exist
 		String valueLowerCase = value.toLowerCase();
-		for (String tag : Main.DB_TAG) {
+		for (String tag : Main.TAGLIST) {
 			if (valueLowerCase.equals(tag.toLowerCase())) {
 				return;
 			}

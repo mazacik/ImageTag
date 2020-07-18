@@ -5,12 +5,11 @@ import backend.cache.CacheLoader;
 import backend.entity.Entity;
 import backend.entity.EntityList;
 import backend.filter.Filter;
-import backend.group.Group;
+import backend.group.EntityGroup;
 import backend.misc.FileUtil;
-import backend.misc.Project;
 import backend.misc.Settings;
-import backend.reload.Notifier;
-import backend.reload.Reload;
+import backend.project.Project;
+import backend.project.ProjectUtil;
 import backend.select.Select;
 import frontend.UserInterface;
 import javafx.application.Application;
@@ -20,90 +19,73 @@ import java.io.File;
 import java.util.Comparator;
 
 public class Main extends Application {
-	// CONST
-	public static final boolean DEBUG_AUTOLOAD_LATEST_PROJECT = false;
-	public static final boolean DEBUG_USE_CACHE = true;
+	public static final boolean AUTOLOAD_LATEST_PROJECT = false;
 	
-	public static final boolean DEBUG_FS_ALLOW_FILE_MOVE = true;
-	public static final boolean DEBUG_FS_ALLOW_FILE_DELETE = true;
+	public static final ThreadGroup THREADGROUP = new ThreadGroup("MAIN");
+	public static final Thread THREAD_MAIN = Thread.currentThread();
 	
-	// DATABASE
-	public static final Thread THREAD_MAIN;
-	public static final ThreadGroup THREADS;
+	public static final EntityList ENTITYLIST = new EntityList();
+	public static final BaseList<String> TAGLIST = new BaseList<>();
 	
-	public static final EntityList DB_ENTITY;
-	public static final BaseList<String> DB_TAG;
+	public static final Filter FILTER = new Filter();
+	public static final Select SELECT = new Select();
 	
-	// CONTROLLER
-	public static final Filter FILTER;
-	public static final Select SELECT;
-	
-	// STATIC
-	static {
-		System.setProperty("java.util.logging.SimpleFormatter.format", "[%4$-7s] %5$s%n");
-		
-		Settings.readFromDisk();
-		
-		THREAD_MAIN = Thread.currentThread();
-		THREADS = new ThreadGroup("ROOT");
-		
-		DB_ENTITY = new EntityList();
-		DB_TAG = new BaseList<>();
-		
-		FILTER = new Filter();
-		SELECT = new Select();
-	}
-	
-	// MAIN
 	public static void main(String[] args) {
 		launch(args);
 	}
 	public void start(Stage stage) {
+		System.setProperty("java.util.logging.SimpleFormatter.format", "[%4$-7s] %5$s%n");
+		Settings.read();
 		UserInterface.initialize();
 		
-		if (!DEBUG_AUTOLOAD_LATEST_PROJECT || FileUtil.getProjectFiles().isEmpty()) {
+		if (AUTOLOAD_LATEST_PROJECT && !ProjectUtil.getProjectFiles().isEmpty()) {
+			startLoadingProject(null);
+		} else {
 			UserInterface.getStage().showIntroScene();
-		} else {
-			Main.startMain(null);
 		}
 	}
 	
-	public static void startMain(Project project) {
-		if (project == null) {
-			Project.setMostRecentAsCurrent();
-		} else {
-			Project.setCurrent(project);
-		}
+	public static void startLoadingProject(Project project) {
+		ProjectUtil.setCurrentProject(project);
 		
-		Main.initDatabase();
-		
-		UserInterface.getStage().showMainScene();
-		
-		CacheLoader.startCacheThread(Main.DB_ENTITY);
-	}
-	
-	private static void initDatabase() {
-		initEntities();
-		if (!DB_ENTITY.isEmpty()) {
-			initGroups();
-			initTags();
+		initEntityList();
+		if (!Main.ENTITYLIST.isEmpty()) {
+			BaseList<EntityGroup> entityGroups = new BaseList<>();
+			for (Entity entity : Main.ENTITYLIST) {
+				entity.initTile();
+				entity.initType();
+				initEntityGroup(entityGroups, entity);
+			}
+			for (EntityGroup entityGroup : entityGroups) {
+				if (entityGroup.size() == 1) {
+					entityGroup.discard();
+				}
+			}
 			
-			Entity target = DB_ENTITY.getFirst();
+			Main.TAGLIST.setAll(Main.ENTITYLIST.getTagList());
+			Main.TAGLIST.sort(Comparator.naturalOrder());
+			
+			Entity target = Main.ENTITYLIST.getFirst();
 			if (target != null) {
-				SELECT.setTarget(target, true);
+				Main.SELECT.setTarget(target);
 				if (target.hasGroup()) {
-					SELECT.setAll(target.getGroup());
+					Main.SELECT.setAll(target.getEntityGroup());
 				} else {
-					SELECT.set(target);
+					Main.SELECT.set(target);
 				}
 			}
 		}
-	}
-	private static void initEntities() {
-		DB_ENTITY.setAll(Project.getCurrent().getEntityList());
 		
-		EntityList entitiesWithoutFiles = new EntityList(DB_ENTITY);
-		BaseList<File> filesWithoutEntities = FileUtil.getFiles(new File(Project.getCurrent().getDirectory()), true);
+		UserInterface.getStage().showMainScene();
+		
+		CacheLoader.startCacheThread(Main.ENTITYLIST);
+	}
+	
+	private static void initEntityList() {
+		Main.ENTITYLIST.setAll(ProjectUtil.getCurrentProject().getEntityList());
+		
+		EntityList entitiesWithoutFiles = new EntityList(Main.ENTITYLIST);
+		BaseList<File> filesWithoutEntities = FileUtil.getFiles(new File(ProjectUtil.getCurrentProject().getDirectory()), true);
 		
 		BaseList<String> newFileNames = new BaseList<>();
 		filesWithoutEntities.forEach(file -> newFileNames.add(FileUtil.createEntityName(file)));
@@ -144,59 +126,29 @@ public class Main extends Application {
 		}
 		
 		if (!entitiesWithoutFiles.isEmpty()) {
-			DB_ENTITY.removeAll(entitiesWithoutFiles);
+			Main.ENTITYLIST.removeAll(entitiesWithoutFiles);
 		}
 		if (!filesWithoutEntities.isEmpty()) {
 			EntityList newEntities = new EntityList(filesWithoutEntities);
-			DB_ENTITY.addAll(newEntities);
-			FILTER.getLastImport().addAll(newEntities);
-			DB_ENTITY.sortByName();
+			Main.ENTITYLIST.addAll(newEntities);
+			Main.FILTER.getLastImport().addAll(newEntities);
+			Main.ENTITYLIST.sortByName();
 		}
-		
-		//todo check every entity for size change, generate new cache if needed
 	}
-	private static void initGroups() {
-		BaseList<Group> groups = new BaseList<>();
-		for (Entity entity : DB_ENTITY) {
-			if (entity.hasGroup()) {
-				boolean groupExists = false;
-				for (Group group : groups) {
-					if (group.getFirst().getGroupID() == entity.getGroupID()) {
-						group.add(entity);
-						entity.setGroup(group);
-						groupExists = true;
-						break;
-					}
-				}
-				if (!groupExists) {
-					Group group = new Group(entity);
-					entity.setGroup(group);
-					groups.add(group);
+	private static void initEntityGroup(BaseList<EntityGroup> entityGroups, Entity entity) {
+		if (entity.hasGroup()) {
+			for (EntityGroup entityGroup : entityGroups) {
+				if (entityGroup.getID() == entity.getEntityGroupID()) {
+					entityGroup.add(entity);
+					entity.setEntityGroup(entityGroup);
+					entity.getTile().updateGroupIcon();
+					return;
 				}
 			}
+			EntityGroup entityGroup = new EntityGroup(entity);
+			entity.setEntityGroup(entityGroup);
+			entity.getTile().updateGroupIcon();
+			entityGroups.add(entityGroup);
 		}
-		for (Entity entity : DB_ENTITY) {
-			if (entity.hasGroup()) {
-				if (entity.getGroup().size() == 1) {
-					entity.setGroupID(0);
-					entity.setGroup(null);
-				}
-			}
-		}
-	}
-	private static void initTags() {
-		DB_TAG.setAll(DB_ENTITY.getTagList());
-		DB_TAG.sort(Comparator.naturalOrder());
-		
-		Reload.notify(Notifier.TAGLIST_CHANGED);
-	}
-	
-	public static void exitApplication() {
-		THREADS.interrupt();
-		UserInterface.getDisplayPane().disposeVideoPlayer();
-		
-		Project.getCurrent().writeToDisk();
-		Settings.writeToDisk();
-		System.exit(0);
 	}
 }

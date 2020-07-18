@@ -22,8 +22,8 @@ import java.util.logging.Logger;
 
 abstract class CacheCreator {
 	static Image create(Entity entity) {
-		String entityIndex = StringUtils.right("00000000" + (Main.DB_ENTITY.indexOf(entity) + 1), String.valueOf(Main.DB_ENTITY.size()).length());
-		Logger.getGlobal().info(String.format("[%s/%s] %s", entityIndex, Main.DB_ENTITY.size(), entity.getName()));
+		String entityIndex = StringUtils.right("00000000" + (Main.ENTITYLIST.indexOf(entity) + 1), String.valueOf(Main.ENTITYLIST.size()).length());
+		Logger.getGlobal().info(String.format("[%s/%s] %s", entityIndex, Main.ENTITYLIST.size(), entity.getName()));
 		
 		switch (entity.getType()) {
 			case IMG:

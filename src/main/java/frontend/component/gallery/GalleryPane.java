@@ -85,10 +85,10 @@ public class GalleryPane extends ScrollPane {
 			if (selectRectangle.localToScene(selectRectangle.getBoundsInLocal()).intersects(tile.localToScene(tile.getBoundsInLocal()))) {
 				Entity entity = tile.getEntity();
 				if (entity.hasGroup()) {
-					if (entity.getGroup().isOpen()) {
+					if (entity.getEntityGroup().isOpen()) {
 						entityList.add(entity);
 					} else {
-						entityList.addAll(Main.FILTER.getFilteredList(entity.getGroup()));
+						entityList.addAll(Main.FILTER.getFilteredList(entity.getEntityGroup()));
 					}
 				} else {
 					entityList.add(entity);
@@ -264,8 +264,8 @@ public class GalleryPane extends ScrollPane {
 		if (this.getHeight() > 0) {
 			Entity currentTarget = Main.SELECT.getTarget();
 			if (!UserInterface.getStage().getMainScene().isViewGallery() || currentTarget == null) return;
-			if (currentTarget.hasGroup() && !currentTarget.getGroup().isOpen()) {
-				currentTarget = currentTarget.getGroup().getFirst();
+			if (currentTarget.hasGroup() && !currentTarget.getEntityGroup().isOpen()) {
+				currentTarget = currentTarget.getEntityGroup().getFirst();
 			}
 			int targetIndex = tileEntities.indexOf(currentTarget);
 			if (targetIndex >= 0) {

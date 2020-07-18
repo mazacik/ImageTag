@@ -1,7 +1,7 @@
 package frontend.stage.primary.scene;
 
 import backend.misc.FileUtil;
-import backend.misc.Project;
+import backend.project.Project;
 import frontend.UserInterface;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.EditNode;
@@ -107,8 +107,8 @@ public class ProjectScene extends Scene {
 		if (this.checkUserInput()) {
 			if (project == null) {
 				project = new Project(editProjectName.getText(), editSourceDirectory.getText());
-				project.writeToDisk();
-				Main.startMain(project);
+				project.write();
+				Main.startLoadingProject(project);
 			} else {
 				project.updateProject(editProjectName.getText(), editSourceDirectory.getText());
 				UserInterface.getStage().showIntroScene();

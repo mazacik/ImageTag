@@ -1,6 +1,6 @@
 package backend.lire;
 
-import backend.misc.Project;
+import backend.project.ProjectUtil;
 import javafx.scene.image.Image;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
@@ -17,7 +17,7 @@ public class LireUtil {
 	public static final String LIRE_INDEX_PATH = "lire_index";
 	
 	public static void index() {
-		index(Project.getCurrent().getDirectory());
+		index(ProjectUtil.getCurrentProject().getDirectory());
 	}
 	public static void index(String directory) {
 		File f = new File(directory);

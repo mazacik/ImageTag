@@ -90,9 +90,9 @@ public abstract class Reload {
 		if (Main.SELECT.isEmpty()) {
 			Entity target = Main.FILTER.getFirst();
 			if (target != null) {
-				Main.SELECT.setTarget(target, true);
+				Main.SELECT.setTarget(target);
 				if (target.hasGroup()) {
-					Main.SELECT.setAll(target.getGroup());
+					Main.SELECT.setAll(target.getEntityGroup());
 				} else {
 					Main.SELECT.set(target);
 				}

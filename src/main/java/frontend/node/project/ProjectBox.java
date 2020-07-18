@@ -1,8 +1,8 @@
 package frontend.node.project;
 
 import backend.BaseList;
-import backend.misc.FileUtil;
-import backend.misc.Project;
+import backend.project.Project;
+import backend.project.ProjectUtil;
 import frontend.node.override.VBox;
 import frontend.node.textnode.TextNode;
 import javafx.geometry.Insets;
@@ -16,12 +16,12 @@ public class ProjectBox extends VBox {
 	}
 	
 	public void refresh() {
-		BaseList<Project> projects = FileUtil.getProjects();
+		BaseList<Project> projects = ProjectUtil.getProjects();
 		
 		this.getChildren().clear();
 		
 		if (!projects.isEmpty()) {
-			projects.sort(Project.getComparator());
+			projects.sort(ProjectUtil.getComparatorLastAccessMs());
 			projects.forEach(project -> this.getChildren().add(new ProjectNode(project)));
 		} else {
 			this.setAlignment(Pos.CENTER);

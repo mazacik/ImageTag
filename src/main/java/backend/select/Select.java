@@ -8,9 +8,7 @@ import backend.misc.FileUtil;
 import backend.reload.Notifier;
 import backend.reload.Reload;
 import frontend.UserInterface;
-import javafx.animation.PauseTransition;
 import javafx.scene.input.KeyEvent;
-import javafx.util.Duration;
 import main.Main;
 
 import java.util.Collection;
@@ -18,11 +16,7 @@ import java.util.List;
 
 public class Select extends EntityList {
 	public Select() {
-		slideshow.setOnFinished(event -> {
-			this.setRandom(false);
-			Reload.start();
-			slideshow.playFromStart();
-		});
+		super();
 	}
 	
 	public boolean add(Entity entity) {
@@ -34,13 +28,13 @@ public class Select extends EntityList {
 		int sizeOld = this.size();
 		
 		if (entity.hasGroup()) {
-			if (entity.getGroup().isOpen()) {
+			if (entity.getEntityGroup().isOpen()) {
 				if (super.add(entity, checkDuplicates)) {
 					Reload.requestBorderUpdate(entity);
 				}
 			} else {
-				if (super.addAll(entity.getGroup(), checkDuplicates)) {
-					Reload.requestBorderUpdate(Main.FILTER.getFilteredList(entity.getGroup()));
+				if (super.addAll(entity.getEntityGroup(), checkDuplicates)) {
+					Reload.requestBorderUpdate(Main.FILTER.getFilteredList(entity.getEntityGroup()));
 				}
 			}
 		} else {
@@ -65,12 +59,12 @@ public class Select extends EntityList {
 		
 		for (Entity entity : c) {
 			if (entity.hasGroup()) {
-				if (entity.getGroup().isOpen()) {
+				if (entity.getEntityGroup().isOpen()) {
 					if (super.add(entity, checkDuplicates)) {
 						Reload.requestBorderUpdate(entity);
 					}
 				} else {
-					EntityList afterFilter = Main.FILTER.getFilteredList(entity.getGroup());
+					EntityList afterFilter = Main.FILTER.getFilteredList(entity.getEntityGroup());
 					if (super.addAll(afterFilter, true)) {
 						Reload.requestBorderUpdate(afterFilter);
 					}
@@ -103,13 +97,13 @@ public class Select extends EntityList {
 		int sizeOld = this.size();
 		
 		if (entity.hasGroup()) {
-			if (entity.getGroup().isOpen()) {
+			if (entity.getEntityGroup().isOpen()) {
 				if (super.remove(entity)) {
 					Reload.requestBorderUpdate(entity);
 				}
 			} else {
-				if (super.removeAll(entity.getGroup())) {
-					Reload.requestBorderUpdate(Main.FILTER.getFilteredList(entity.getGroup()));
+				if (super.removeAll(entity.getEntityGroup())) {
+					Reload.requestBorderUpdate(Main.FILTER.getFilteredList(entity.getEntityGroup()));
 				}
 			}
 		} else {
@@ -151,10 +145,10 @@ public class Select extends EntityList {
 				FileUtil.deleteFile(FileUtil.getFileCache(entity));
 				
 				if (entity.hasGroup()) {
-					entity.getGroup().remove(entity);
+					entity.getEntityGroup().remove(entity);
 					
-					if (target.getGroup().size() <= 1) {
-						target.getGroup().discard();
+					if (target.getEntityGroup().size() <= 1) {
+						target.getEntityGroup().discard();
 					}
 					
 					Reload.notify(Notifier.TARGET_GROUP_CHANGED);
@@ -167,7 +161,7 @@ public class Select extends EntityList {
 		if (!helper.isEmpty()) {
 			this.removeAll(helper);
 			Main.FILTER.removeAll(helper);
-			Main.DB_ENTITY.removeAll(helper);
+			Main.ENTITYLIST.removeAll(helper);
 			Reload.notify(Notifier.ENTITYLIST_CHANGED);
 			
 			this.restorePosition();
@@ -204,7 +198,7 @@ public class Select extends EntityList {
 		selectBefore.setAll(this);
 	}
 	
-	public void setRandom(boolean userCall) {
+	public void setRandom() {
 		Entity randomEntity = null;
 		if (Main.FILTER.size() == 1) {
 			randomEntity = Main.FILTER.getFirst();
@@ -214,22 +208,12 @@ public class Select extends EntityList {
 			} while (!Main.FILTER.isValid(randomEntity));
 		}
 		this.set(randomEntity);
-		this.setTarget(randomEntity, userCall);
+		this.setTarget(randomEntity);
 	}
 	
-	private final PauseTransition slideshow = new PauseTransition(new Duration(5000));
-	private boolean slideshowRunning = false;
-	public void slideshowStart() {
-		slideshowRunning = true;
-		this.setRandom(false);
-		slideshow.playFromStart();
-	}
-	public void slideshowStop() {
-		slideshowRunning = false;
-		slideshow.stop();
-	}
-	public boolean isSlideshowRunning() {
-		return slideshowRunning;
+	private final Slideshow slideshow = new Slideshow();
+	public Slideshow getSlideshow() {
+		return slideshow;
 	}
 	
 	public void addTag(String tag) {
@@ -260,8 +244,8 @@ public class Select extends EntityList {
 		Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
 	}
 	
-	public void clearTagList() {
-		super.clearTagList();
+	public void clearTags() {
+		super.clearTags();
 		Reload.requestFilterCheck(this);
 		Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
 	}
@@ -270,9 +254,9 @@ public class Select extends EntityList {
 	public Entity getTarget() {
 		return target;
 	}
-	public void setTarget(Entity newTarget, boolean userCall) {
-		if (userCall && slideshowRunning) {
-			slideshowStop();
+	public void setTarget(Entity newTarget) {
+		if (slideshow.isRunning() && !slideshow.isChanging()) {
+			slideshow.stop();
 		}
 		
 		if (newTarget != target) {
@@ -345,9 +329,9 @@ public class Select extends EntityList {
 		if (isShiftDown) {
 			Entity entityTo = repreList.get(newTargetIndex);
 			this.shiftSelectTo(entityTo);
-			this.setTarget(entityTo, true);
+			this.setTarget(entityTo);
 		} else {
-			this.setTarget(repreList.get(newTargetIndex), true);
+			this.setTarget(repreList.get(newTargetIndex));
 			this.set(target);
 			this.entityFrom = target;
 		}
@@ -366,10 +350,10 @@ public class Select extends EntityList {
 			this.storePosition();
 			
 			if (target.hasGroup()) {
-				target.getGroup().remove(target);
+				target.getEntityGroup().remove(target);
 				
-				if (target.getGroup().size() <= 1) {
-					target.getGroup().discard();
+				if (target.getEntityGroup().size() <= 1) {
+					target.getEntityGroup().discard();
 				}
 				
 				Reload.notify(Notifier.TARGET_GROUP_CHANGED);
@@ -377,7 +361,7 @@ public class Select extends EntityList {
 			
 			this.remove(target);
 			Main.FILTER.remove(target);
-			Main.DB_ENTITY.remove(target);
+			Main.ENTITYLIST.remove(target);
 			
 			this.restorePosition();
 			
@@ -394,15 +378,15 @@ public class Select extends EntityList {
 	public void restorePosition() {
 		if (Main.FILTER.isEmpty()) {
 			this.clear();
-			this.setTarget(null, true);
+			this.setTarget(null);
 		} else {
 			EntityList representingEntities = Main.FILTER.createRepresentingList();
 			if (!representingEntities.isEmpty()) {
 				if (!representingEntities.contains(memEntity) && memIndex >= 0) {
 					if (memIndex <= representingEntities.size() - 1) {
-						this.setTarget(representingEntities.get(memIndex), true);
+						this.setTarget(representingEntities.get(memIndex));
 					} else {
-						this.setTarget(representingEntities.getLast(), true);
+						this.setTarget(representingEntities.getLast());
 					}
 				}
 				

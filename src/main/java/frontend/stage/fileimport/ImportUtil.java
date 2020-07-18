@@ -5,7 +5,7 @@ import backend.cache.CacheLoader;
 import backend.entity.Entity;
 import backend.entity.EntityList;
 import backend.misc.FileUtil;
-import backend.misc.Project;
+import backend.project.ProjectUtil;
 import backend.reload.Notifier;
 import backend.reload.Reload;
 import frontend.UserInterface;
@@ -17,14 +17,14 @@ import java.util.logging.Logger;
 
 public abstract class ImportUtil {
 	public static void startImportThread(ImportMode importMode, String directory, BaseList<File> fileList) {
-		new Thread(Main.THREADS, () -> {
+		new Thread(Main.THREADGROUP, () -> {
 			EntityList entityList = ImportUtil.importFiles(importMode, directory, fileList);
 			
 			if (entityList != null && !entityList.isEmpty()) {
 				CacheLoader.startCacheThread(entityList);
 				
-				Main.DB_ENTITY.addAll(entityList);
-				Main.DB_ENTITY.sortByName();
+				Main.ENTITYLIST.addAll(entityList);
+				Main.ENTITYLIST.sortByName();
 				
 				Main.FILTER.getLastImport().setAll(entityList);
 			}
@@ -47,6 +47,8 @@ public abstract class ImportUtil {
 			Entity entity = ImportUtil.importFile(importMode, directory, fileFrom);
 			if (entity != null) {
 				entityList.add(entity);
+				entity.initTile();
+				entity.initType();
 			}
 			
 			UserInterface.getStage().getMainScene().advanceLoadingBar(Thread.currentThread());
@@ -58,7 +60,7 @@ public abstract class ImportUtil {
 	}
 	private static Entity importFile(ImportMode importMode, String directory, File fileFrom) {
 		String pathFrom = fileFrom.getAbsolutePath();
-		String pathTo = Project.getCurrent().getDirectory() + File.separator + FileUtil.createEntityName(fileFrom, directory);
+		String pathTo = ProjectUtil.getCurrentProject().getDirectory() + File.separator + FileUtil.createEntityName(fileFrom, directory);
 		
 		File fileTo = new File(pathTo);
 		
@@ -69,7 +71,7 @@ public abstract class ImportUtil {
 		} else {
 			if (fileTo.length() != fileFrom.length()) {
 				//it's a different file with the same name, prepend it with it's size and import it
-				pathTo = Project.getCurrent().getDirectory() + File.separator + fileFrom.length() + "-" + FileUtil.createEntityName(fileFrom, directory);
+				pathTo = ProjectUtil.getCurrentProject().getDirectory() + File.separator + fileFrom.length() + "-" + FileUtil.createEntityName(fileFrom, directory);
 				if (ImportUtil.doImport(importMode, pathFrom, pathTo)) {
 					return new Entity(new File(pathTo));
 				}

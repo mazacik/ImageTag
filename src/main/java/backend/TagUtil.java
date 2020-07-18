@@ -20,20 +20,20 @@ public class TagUtil {
 	public static void create() {
 		String newTag = new TagEditStage().create();
 		if (!newTag.isEmpty()) { //other checks in TagEditStage
-			Main.DB_TAG.add(newTag);
-			Main.DB_TAG.sort(Comparator.naturalOrder());
+			Main.TAGLIST.add(newTag);
+			Main.TAGLIST.sort(Comparator.naturalOrder());
 			
 			Reload.notify(Notifier.TAGLIST_CHANGED);
 		}
 	}
 	public static void edit(String tag) {
-		int index = Main.DB_TAG.indexOf(tag);
+		int index = Main.TAGLIST.indexOf(tag);
 		if (index != -1) {
 			String newTag = new TagEditStage().edit(tag);
 			if (!newTag.isEmpty()) { //other checks in TagEditStage
-				Main.DB_TAG.set(index, newTag);
-				Main.DB_TAG.sort(Comparator.naturalOrder());
-				Main.DB_ENTITY.forEach(entity -> entity.getTagList().replace(tag, newTag));
+				Main.TAGLIST.set(index, newTag);
+				Main.TAGLIST.sort(Comparator.naturalOrder());
+				Main.ENTITYLIST.forEach(entity -> entity.getTagList().replace(tag, newTag));
 				
 				if (Main.FILTER.getFilterListManager().isWhite(tag)) {
 					Main.FILTER.getFilterListManager().unlist(tag);
@@ -49,9 +49,9 @@ public class TagUtil {
 	}
 	public static void remove() {
 		String tag = currentNode.getText();
-		if (Main.DB_TAG.contains(tag)) {
-			Main.DB_TAG.remove(tag);
-			Main.DB_ENTITY.forEach(entity -> entity.getTagList().remove(tag));
+		if (Main.TAGLIST.contains(tag)) {
+			Main.TAGLIST.remove(tag);
+			Main.ENTITYLIST.forEach(entity -> entity.getTagList().remove(tag));
 			
 			Main.FILTER.getFilterListManager().unlist(tag);
 			

@@ -32,7 +32,7 @@ public enum Settings {
 		this.userModifiable = userModifiable;
 	}
 	
-	public static void readFromDisk() {
+	public static void read() {
 		File settingsFile = new File(FileUtil.getFileSettings());
 		if (!settingsFile.exists()) {
 			for (Settings setting : Settings.values()) setting.value = setting.valueDefault;
@@ -42,7 +42,7 @@ public enum Settings {
 			List<String> lines = Files.readAllLines(Paths.get(settingsFile.toURI()));
 			for (String line : lines) {
 				String[] strings = line.split(delimiter);
-				if (strings.length > 1) {
+				if (strings.length == 2) {
 					for (Settings setting : Settings.values()) {
 						if (setting.name.equals(strings[0])) {
 							setting.value = strings[1];
@@ -60,7 +60,7 @@ public enum Settings {
 			}
 		}
 	}
-	public static void writeToDisk() {
+	public static void write() {
 		File settingsFile = new File(FileUtil.getFileSettings());
 		if (settingsFile.exists()) {
 			settingsFile.delete();

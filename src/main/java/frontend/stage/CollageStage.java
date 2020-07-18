@@ -16,7 +16,7 @@ import main.Main;
 
 public class CollageStage extends Stage {
 	public CollageStage() {
-		new Thread(Main.THREADS, () -> {
+		new Thread(Main.THREADGROUP, () -> {
 			Image originImage = new Image("file:" + FileUtil.getFileEntity(Main.SELECT.getTarget()));
 			Image scaledImage = getSmallerImage("file:" + FileUtil.getFileEntity(Main.SELECT.getTarget()), originImage.getWidth(), originImage.getHeight(), 1800, 900);
 			

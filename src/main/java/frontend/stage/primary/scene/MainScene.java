@@ -78,21 +78,21 @@ public class MainScene extends Scene {
 				break;
 			case E:
 				if (Main.SELECT.getTarget().hasGroup()) {
-					Main.SELECT.getTarget().getGroup().toggle();
+					Main.SELECT.getTarget().getEntityGroup().toggle();
 				}
 				Reload.start();
 				break;
 			case R:
-				Main.SELECT.setRandom(true);
+				Main.SELECT.setRandom();
 				Reload.start();
 				break;
 			case G:
 				if (Main.SELECT.getTarget().hasGroup()) {
-					Entity randomEntityFromGroup = Main.SELECT.getTarget().getGroup().getRepresentingRandom();
+					Entity randomEntityFromGroup = Main.SELECT.getTarget().getEntityGroup().getRepresentingRandom();
 					if (randomEntityFromGroup == null) {
 						int i = 0;
 					}
-					Main.SELECT.setTarget(randomEntityFromGroup, true);
+					Main.SELECT.setTarget(randomEntityFromGroup);
 					if (!Main.SELECT.contains(randomEntityFromGroup)) {
 						Main.SELECT.set(randomEntityFromGroup);
 					}

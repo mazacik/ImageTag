@@ -26,7 +26,8 @@ public enum ArrowTextNodeTemplates {
 			setupNode(arrowTextNode);
 			HoverMenu.install(arrowTextNode, Direction.RIGHT
 					, TextNodeTemplates.SELECTION_TAGS_COPY.get()
-					, TextNodeTemplates.SELECTION_TAGS_PASTE.get()
+					, TextNodeTemplates.SELECTION_TAGS_PASTE_ADD.get()
+					, TextNodeTemplates.SELECTION_TAGS_PASTE_REPLACE.get()
 					, TextNodeTemplates.SELECTION_TAGS_MERGE.get()
 					, TextNodeTemplates.SELECTION_TAGS_CLEAR.get()
 			);

@@ -11,38 +11,36 @@ import main.Main;
 import java.util.Collection;
 import java.util.Random;
 
-public class Group extends EntityList {
-	private static final BaseList<Group> openGroups = new BaseList<>();
+public class EntityGroup extends EntityList {
+	private static final BaseList<EntityGroup> openEntityGroups = new BaseList<>();
 	
-	public Group(Entity... entities) {
-		super(entities);
+	private int id;
+	
+	public EntityGroup(Entity entity) {
+		super(entity);
+		this.id = entity.getEntityGroupID();
 	}
-	private Group(Collection<? extends Entity> c) {
+	private EntityGroup(Collection<? extends Entity> c) {
 		super(c);
 	}
 	
-	public static Group create(EntityList entityList) {
-		Group group = new Group(entityList);
-		int ID = new Random().nextInt();
+	public static EntityGroup createFrom(EntityList entityList) {
+		EntityGroup entityGroup = new EntityGroup(entityList);
+		entityGroup.id = new Random().nextInt();
 		
 		for (Entity entity : entityList) {
-			entity.setGroupID(ID);
-			entity.setGroup(group);
+			entity.setEntityGroupID(entityGroup.id);
+			entity.setEntityGroup(entityGroup);
 			entity.getTile().updateGroupIcon();
 		}
 		
-		Main.SELECT.setTarget(group.getFirst(), true);
-		
+		Main.SELECT.setTarget(entityGroup.getFirst());
 		Reload.notify(Notifier.TARGET_GROUP_CHANGED);
 		
-		return group;
+		return entityGroup;
 	}
 	public void discard() {
-		for (Entity entity : this) {
-			entity.setGroupID(0);
-			entity.setGroup(null);
-			entity.getTile().setEffect(null);
-		}
+		for (Entity entity : this) entity.discardGroup();
 		
 		Reload.notify(Notifier.TARGET_GROUP_CHANGED);
 	}
@@ -57,10 +55,10 @@ public class Group extends EntityList {
 	}
 	
 	public void toggle() {
-		if (openGroups.contains(this)) {
-			openGroups.remove(this);
+		if (openEntityGroups.contains(this)) {
+			openEntityGroups.remove(this);
 		} else {
-			openGroups.add(this);
+			openEntityGroups.add(this);
 		}
 		
 		this.forEach(entity -> entity.getTile().updateGroupIcon());
@@ -68,6 +66,10 @@ public class Group extends EntityList {
 		Reload.request(InvokeHelper.PANE_GALLERY_RELOAD);
 	}
 	public boolean isOpen() {
-		return openGroups.contains(this);
+		return openEntityGroups.contains(this);
+	}
+	
+	public int getID() {
+		return id;
 	}
 }

@@ -16,7 +16,7 @@ import java.util.Comparator;
 
 public class EntityList extends BaseList<Entity> {
 	public EntityList() {
-	
+		super();
 	}
 	public EntityList(Collection<? extends Entity> c) {
 		super(c);
@@ -79,12 +79,12 @@ public class EntityList extends BaseList<Entity> {
 		
 		for (Entity entity : this) {
 			if (entity.hasGroup()) {
-				if (!groups.contains(entity.getGroupID())) {
-					if (entity.getGroup().isOpen()) {
-						groups.add(entity.getGroupID());
-						representingEntityList.addAll(Main.FILTER.getFilteredList(entity.getGroup()));
+				if (!groups.contains(entity.getEntityGroupID())) {
+					if (entity.getEntityGroup().isOpen()) {
+						groups.add(entity.getEntityGroupID());
+						representingEntityList.addAll(Main.FILTER.getFilteredList(entity.getEntityGroup()));
 					} else {
-						groups.add(entity.getGroupID());
+						groups.add(entity.getEntityGroupID());
 						representingEntityList.add(entity);
 					}
 				}
@@ -111,15 +111,15 @@ public class EntityList extends BaseList<Entity> {
 	}
 	
 	public void setTags(Collection<String> tags) {
-		this.clearTagList();
+		this.clearTags();
 		this.addTags(tags);
 	}
 	
-	public void clearTagList() {
+	public void clearTags() {
 		this.forEach(entity -> entity.getTagList().clear());
 	}
 	
-	public void mergeTagList() {
+	public void mergeTags() {
 		this.forEach(entity -> entity.getTagList().setAll(this.getTagList()));
 		Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
 	}
@@ -158,10 +158,10 @@ public class EntityList extends BaseList<Entity> {
 		if (this.isEmpty()) {
 			return false;
 		} else {
-			int groupID = this.getFirst().getGroupID();
+			int groupID = this.getFirst().getEntityGroupID();
 			if (groupID == 0) return false;
 			for (Entity entity : this) {
-				if (entity.getGroupID() != groupID) {
+				if (entity.getEntityGroupID() != groupID) {
 					return false;
 				}
 			}

@@ -57,17 +57,16 @@ public class ToolbarPane extends BorderPane {
 		
 		TextNode nodeRandom = new TextNode("Random", true, true, false, true);
 		nodeRandom.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-			Main.SELECT.setRandom(true);
+			Main.SELECT.setRandom();
 			Reload.start();
 		});
 		
 		TextNode nodeSlideshow = new TextNode("Slideshow", true, true, false, true);
 		nodeSlideshow.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
-			if (Main.SELECT.isSlideshowRunning()) {
-				Main.SELECT.slideshowStop();
+			if (Main.SELECT.getSlideshow().isRunning()) {
+				Main.SELECT.getSlideshow().stop();
 			} else {
-				Main.SELECT.slideshowStart();
-				Reload.start();
+				Main.SELECT.getSlideshow().start();
 			}
 		});
 		
@@ -106,7 +105,7 @@ public class ToolbarPane extends BorderPane {
 			}
 			
 			if (target.hasGroup()) {
-				String s = (target.getGroup().indexOf(target) + 1) + "/" + target.getGroup().size();
+				String s = (target.getEntityGroup().indexOf(target) + 1) + "/" + target.getEntityGroup().size();
 				nodeTarget.setText("[" + s + "] " + target.getName());
 			} else {
 				nodeTarget.setText(target.getName());

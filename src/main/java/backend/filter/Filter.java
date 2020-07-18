@@ -16,20 +16,8 @@ public class Filter extends EntityList {
 	private final FilterListManager filterListManager = new FilterListManager();
 	private final EntityList lastImport = new EntityList();
 	
-	public Entity getRepresentingRandom() {
-		Entity entity = createRepresentingList().getRandom();
-		if (entity != null) {
-			if (entity.hasGroup()) {
-				return Main.FILTER.getFilteredList(entity.getGroup()).getRandom();
-			} else {
-				return entity;
-			}
-		}
-		return null;
-	}
-	
 	public Filter() {
-	
+		super();
 	}
 	
 	public boolean add(Entity entity) {
@@ -80,11 +68,11 @@ public class Filter extends EntityList {
 		Reload.notify(Notifier.FILTER_CHANGED);
 	}
 	
-	public void refresh() {
+	@SuppressWarnings("unused") public void refresh() {
 		Main.SELECT.storePosition();
 		
 		this.clear();
-		for (Entity entity : Main.DB_ENTITY) {
+		for (Entity entity : Main.ENTITYLIST) {
 			if (this.isValid(entity)) {
 				this.add(entity);
 			}
@@ -101,7 +89,7 @@ public class Filter extends EntityList {
 		}
 	}
 	public void resolve(Entity entity) {
-		if (Main.DB_ENTITY.contains(entity)) {
+		if (Main.ENTITYLIST.contains(entity)) {
 			boolean contains = this.contains(entity);
 			boolean valid = this.isValid(entity);
 			
@@ -113,7 +101,7 @@ public class Filter extends EntityList {
 		}
 	}
 	public boolean isValid(Entity entity) {
-		if (entity == null || !Main.DB_ENTITY.contains(entity)) return false;
+		if (entity == null || !Main.ENTITYLIST.contains(entity)) return false;
 		
 		if (!FilterSettingsPane.QUERY.isEmpty()) {
 			if (!entity.getName().toLowerCase().contains(FilterSettingsPane.QUERY.toLowerCase())) {
@@ -174,7 +162,7 @@ public class Filter extends EntityList {
 				return false;
 			}
 		} else {
-			int entityGroupSize = entity.getGroup().size();
+			int entityGroupSize = entity.getEntityGroup().size();
 			if (entityGroupSize < FilterOption.GROUP_SIZE_MIN.getIntValue() || entityGroupSize > FilterOption.GROUP_SIZE_MAX.getIntValue()) {
 				return false;
 			}
@@ -183,13 +171,25 @@ public class Filter extends EntityList {
 		return filterListManager.checkLists(entity);
 	}
 	
+	public Entity getRepresentingRandom() {
+		Entity entity = createRepresentingList().getRandom();
+		if (entity != null) {
+			if (entity.hasGroup()) {
+				return Main.FILTER.getFilteredList(entity.getEntityGroup()).getRandom();
+			} else {
+				return entity;
+			}
+		}
+		return null;
+	}
+	
 	public void showSimilar(Entity entity) {
 		filterListManager.clear();
 		filterListManager.clear();
 		this.clear();
 		
 		BaseList<String> query = entity.getTagList();
-		for (Entity iterator : Main.DB_ENTITY) {
+		for (Entity iterator : Main.ENTITYLIST) {
 			if (iterator.getTagList().size() != 0) {
 				BaseList<String> sameTags = new BaseList<>(query);
 				sameTags.retainAll(iterator.getTagList());

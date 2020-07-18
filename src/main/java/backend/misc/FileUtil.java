@@ -3,11 +3,11 @@ package backend.misc;
 import backend.BaseList;
 import backend.entity.Entity;
 import backend.entity.EntityType;
+import backend.project.ProjectUtil;
 import com.sun.jna.platform.FileUtils;
 import frontend.stage.SimpleMessageStage;
 import javafx.scene.Scene;
 import javafx.stage.DirectoryChooser;
-import main.Main;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -17,6 +17,9 @@ import java.nio.file.Paths;
 import java.util.logging.Logger;
 
 public abstract class FileUtil {
+	public static final boolean DEBUG_FS_ALLOW_FILE_MOVE = true;
+	public static final boolean DEBUG_FS_ALLOW_FILE_DELETE = true;
+	
 	public static final String APP_NAME = "Tagallery";
 	public static final String DIR_NAME_CACHE = "cache";
 	public static final String DIR_NAME_DATA = "data";
@@ -42,7 +45,7 @@ public abstract class FileUtil {
 	}
 	
 	public static boolean copyFile(String from, String to) {
-		if (Main.DEBUG_FS_ALLOW_FILE_MOVE) {
+		if (DEBUG_FS_ALLOW_FILE_MOVE) {
 			try {
 				new File(to).getParentFile().mkdirs();
 				Files.copy(Paths.get(from), Paths.get(to));
@@ -55,7 +58,7 @@ public abstract class FileUtil {
 		return true;
 	}
 	public static boolean moveFile(String from, String to) {
-		if (Main.DEBUG_FS_ALLOW_FILE_MOVE) {
+		if (DEBUG_FS_ALLOW_FILE_MOVE) {
 			try {
 				new File(to).getParentFile().mkdirs();
 				Files.move(Paths.get(from), Paths.get(to));
@@ -68,7 +71,7 @@ public abstract class FileUtil {
 		return true;
 	}
 	public static boolean deleteFile(String path) {
-		if (Main.DEBUG_FS_ALLOW_FILE_DELETE) {
+		if (DEBUG_FS_ALLOW_FILE_DELETE) {
 			int counterDone = 0;
 			int counterFail = 0;
 			File abstractFile = new File(path);
@@ -128,7 +131,7 @@ public abstract class FileUtil {
 		return path;
 	}
 	
-	private static final FileFilter fileFilter = file -> {
+	private static final FileFilter entityFileFilter = file -> {
 		if (file.isDirectory()) {
 			return true;
 		}
@@ -157,7 +160,7 @@ public abstract class FileUtil {
 		BaseList<File> abstractFiles;
 		
 		if (useFilter) {
-			abstractFiles = new BaseList<>(directory.listFiles(fileFilter));
+			abstractFiles = new BaseList<>(directory.listFiles(entityFileFilter));
 		} else {
 			abstractFiles = new BaseList<>(directory.listFiles());
 		}
@@ -173,30 +176,21 @@ public abstract class FileUtil {
 		return actualFiles;
 	}
 	
-	public static BaseList<Project> getProjects() {
-		BaseList<Project> projects = new BaseList<>();
-		FileUtil.getProjectFiles().forEach(projectFile -> projects.add(Project.readFromDisk(projectFile.getAbsolutePath())));
-		return projects;
-	}
-	public static BaseList<File> getProjectFiles() {
-		return new BaseList<>(new File(FileUtil.getDirectoryProject()).listFiles(file -> file.isFile() && file.getName().endsWith(".json")));
-	}
-	
 	public static String createEntityName(File file) {
-		return createEntityName(file, Project.getCurrent().getDirectory());
+		return createEntityName(file, ProjectUtil.getCurrentProject().getDirectory());
 	}
 	public static String createEntityName(File file, String directorySource) {
 		return file.getAbsolutePath().substring((directorySource + File.separator).length());
 	}
 	
 	public static String getFileEntity(Entity entity) {
-		return Project.getCurrent().getDirectory() + File.separator + entity.getName();
+		return ProjectUtil.getCurrentProject().getDirectory() + File.separator + entity.getName();
 	}
 	public static String getFileCache(Entity entity) {
-		return getDirectoryCache(Project.getCurrent().getProjectName()) + File.separator + entity.getName() + "-" + entity.getSize() + "." + EXT_CACHE;
+		return getDirectoryCache(ProjectUtil.getCurrentProject().getProjectName()) + File.separator + entity.getName() + "-" + entity.getSize() + "." + EXT_CACHE;
 	}
 	public static EntityType getMediaType(Entity entity) {
-		String ext = entity.getName().toLowerCase().substring(entity.getName().lastIndexOf('.') + 1);
+		String ext = entity.getName().substring(entity.getName().lastIndexOf('.') + 1).toLowerCase();
 		
 		for (String _ext : EXT_IMG) {
 			if (ext.equals(_ext)) {
@@ -233,7 +227,7 @@ public abstract class FileUtil {
 		return getDirectoryLocal() + File.separator + DIR_NAME_DATA;
 	}
 	public static String getDirectoryCache() {
-		return getDirectoryCache(Project.getCurrent().getProjectName());
+		return getDirectoryCache(ProjectUtil.getCurrentProject().getProjectName());
 	}
 	public static String getDirectoryCache(String projectName) {
 		return getDirectoryLocal() + File.separator + DIR_NAME_CACHE + File.separator + projectName;

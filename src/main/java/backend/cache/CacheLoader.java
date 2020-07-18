@@ -20,6 +20,8 @@ import main.Main;
 import java.io.File;
 
 public abstract class CacheLoader {
+	public static final boolean DEBUG_USE_CACHE = true;
+	
 	private static final Image placeholder = new WritableImage(Settings.GALLERY_TILE_SIZE.getInteger(), Settings.GALLERY_TILE_SIZE.getInteger()) {{
 		Label label = new Label("Placeholder");
 		label.setBackground(new Background(new BackgroundFill(Color.GRAY, null, null)));
@@ -42,8 +44,8 @@ public abstract class CacheLoader {
 		startCacheThread(entityList, false);
 	}
 	public static void startCacheThread(EntityList entityList, boolean recreate) {
-		if (Main.DEBUG_USE_CACHE) {
-			new Thread(Main.THREADS, () -> {
+		if (DEBUG_USE_CACHE) {
+			new Thread(Main.THREADGROUP, () -> {
 				UserInterface.getStage().getMainScene().showLoadingBar(Thread.currentThread(), entityList.size());
 				
 				for (Entity entity : new EntityList(entityList)) {
@@ -61,8 +63,8 @@ public abstract class CacheLoader {
 	}
 	
 	public static void reset() {
-		Main.DB_ENTITY.forEach(entity -> entity.getTile().setImage(null));
-		CacheLoader.startCacheThread(Main.DB_ENTITY, true);
+		Main.ENTITYLIST.forEach(entity -> entity.getTile().setImage(null));
+		CacheLoader.startCacheThread(Main.ENTITYLIST, true);
 	}
 	
 	public static Image get(Entity entity) {

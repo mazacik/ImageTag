@@ -5,11 +5,11 @@ import backend.TagUtil;
 import backend.cache.CacheLoader;
 import backend.entity.Entity;
 import backend.entity.EntityList;
-import backend.group.Group;
+import backend.group.EntityGroup;
 import backend.misc.FileUtil;
 import backend.misc.HttpUtil;
-import backend.misc.Project;
 import backend.misc.Settings;
+import backend.project.ProjectUtil;
 import backend.reload.InvokeHelper;
 import backend.reload.Notifier;
 import backend.reload.Reload;
@@ -242,10 +242,23 @@ public enum TextNodeTemplates {
 			return textNode;
 		}
 	},
-	//todo paste-merge (add clipboard to existing tags)
-	SELECTION_TAGS_PASTE {
+	SELECTION_TAGS_PASTE_ADD {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Paste", true, true, false, true, this);
+			TextNode textNode = new TextNode("Paste (Add)", true, true, false, true, this);
+			setupNode(textNode);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ListMenu.hideMenus();
+				
+				Main.SELECT.addTags(TagUtil.getClipboard());
+				
+				Reload.start();
+			});
+			return textNode;
+		}
+	},
+	SELECTION_TAGS_PASTE_REPLACE {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Paste (Replace)", true, true, false, true, this);
 			setupNode(textNode);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
@@ -264,7 +277,7 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				Main.SELECT.mergeTagList();
+				Main.SELECT.mergeTags();
 				
 				Reload.start();
 			});
@@ -419,13 +432,13 @@ public enum TextNodeTemplates {
 	},
 	TAG_REMOVE_CHILDREN {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Remove (with children)", true, true, false, true, this);
+			TextNode textNode = new TextNode("Remove", true, true, false, true, this);
 			setupNode(textNode);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
 				TagUtil.remove();
-				//todo doesn't reset filter
+				
 				Reload.start();
 			});
 			return textNode;
@@ -439,7 +452,7 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				Group.create(Main.SELECT);
+				EntityGroup.createFrom(Main.SELECT);
 				
 				Reload.start();
 			});
@@ -457,7 +470,7 @@ public enum TextNodeTemplates {
 				ListMenu.hideMenus();
 				
 				if (Main.SELECT.isGroup()) {
-					Main.SELECT.getFirst().getGroup().discard();
+					Main.SELECT.getFirst().getEntityGroup().discard();
 				}
 				
 				Reload.start();
@@ -476,7 +489,7 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				Main.SELECT.getTarget().getGroup().mergeTagList();
+				Main.SELECT.getTarget().getEntityGroup().mergeTags();
 				
 				Reload.start();
 			});
@@ -507,9 +520,9 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				Settings.writeToDisk();
+				Settings.write();
 				
-				if (Project.getCurrent().writeToDisk()) {
+				if (ProjectUtil.getCurrentProject().write()) {
 					new SimpleMessageStage("Save", "OK").showAndWait();
 				} else {
 					new SimpleMessageStage("Save", "Error").showAndWait();
@@ -535,10 +548,10 @@ public enum TextNodeTemplates {
 			setupNode(textNode);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				BaseList<String> entitiesInApp = new BaseList<>();
-				Main.DB_ENTITY.forEach(entity -> entitiesInApp.add(FileUtil.getFileEntity(entity)));
+				Main.ENTITYLIST.forEach(entity -> entitiesInApp.add(FileUtil.getFileEntity(entity)));
 				
 				BaseList<String> entitiesOnDisk = new BaseList<>();
-				File projectDirectory = new File(Project.getCurrent().getDirectory());
+				File projectDirectory = new File(ProjectUtil.getCurrentProject().getDirectory());
 				FileUtil.getFiles(projectDirectory, true).forEach(file -> entitiesOnDisk.add(file.getAbsolutePath()));
 				
 				//add entitiesOnDiskNotInApp
@@ -550,8 +563,8 @@ public enum TextNodeTemplates {
 					entitiesOnDiskNotInApp.forEach(path -> entityList.add(new Entity(new File(path))));
 					CacheLoader.startCacheThread(entityList);
 					
-					Main.DB_ENTITY.addAll(entityList);
-					Main.DB_ENTITY.sortByName();
+					Main.ENTITYLIST.addAll(entityList);
+					Main.ENTITYLIST.sortByName();
 					
 					Main.FILTER.getLastImport().setAll(entityList);
 					
@@ -566,7 +579,7 @@ public enum TextNodeTemplates {
 					EntityList entitiesToRemove = new EntityList();
 					
 					entitiesInAppNotOnDisk.forEach(path -> {
-						for (Entity entity : Main.DB_ENTITY) {
+						for (Entity entity : Main.ENTITYLIST) {
 							if (FileUtil.getFileEntity(entity).equals(path)) {
 								entitiesToRemove.add(entity);
 								break;
@@ -574,7 +587,7 @@ public enum TextNodeTemplates {
 						}
 					});
 					
-					Main.DB_ENTITY.removeAll(entitiesToRemove);
+					Main.ENTITYLIST.removeAll(entitiesToRemove);
 					
 					Reload.notify(Notifier.ENTITYLIST_CHANGED);
 				}
@@ -599,11 +612,11 @@ public enum TextNodeTemplates {
 			setupNode(textNode);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
-				Main.THREADS.interrupt();
+				Main.THREADGROUP.interrupt();
 				
-				Settings.writeToDisk();
+				Settings.write();
 				
-				if (Project.getCurrent().writeToDisk()) {
+				if (ProjectUtil.getCurrentProject().write()) {
 					UserInterface.getStage().showIntroScene();
 				}
 			});

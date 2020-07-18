@@ -1,8 +1,8 @@
 package frontend.stage.primary.scene;
 
 import backend.BaseList;
-import backend.misc.FileUtil;
-import backend.misc.Project;
+import backend.project.Project;
+import backend.project.ProjectUtil;
 import frontend.UserInterface;
 import frontend.decorator.DecoratorTemplate;
 import frontend.decorator.DecoratorUtil;
@@ -49,11 +49,11 @@ public class IntroScene extends Scene {
 			
 			Project project = null;
 			if (file != null) {
-				project = Project.readFromDisk(file.getAbsolutePath());
+				project = Project.read(file.getAbsolutePath());
 			}
 			
 			if (project != null) {
-				Main.startMain(project);
+				Main.startLoadingProject(project);
 			} else {
 				new SimpleMessageStage("Error", "Error opening project file.").showAndWait();
 			}
@@ -92,10 +92,10 @@ public class IntroScene extends Scene {
 	public void processKeyEvent(KeyEvent event) {
 		switch (event.getCode()) {
 			case ENTER:
-				BaseList<Project> projects = FileUtil.getProjects();
+				BaseList<Project> projects = ProjectUtil.getProjects();
 				if (!projects.isEmpty()) {
-					projects.sort(Project.getComparator());
-					Main.startMain(null);
+					projects.sort(ProjectUtil.getComparatorLastAccessMs());
+					Main.startLoadingProject(null);
 				} else {
 					UserInterface.getStage().showProjectScene();
 				}
@@ -105,7 +105,7 @@ public class IntroScene extends Scene {
 		}
 	}
 	
-	public void refreshIntroBox() {
-		projectBox.refresh();
+	public ProjectBox getProjectBox() {
+		return projectBox;
 	}
 }

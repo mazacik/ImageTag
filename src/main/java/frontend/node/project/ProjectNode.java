@@ -1,7 +1,7 @@
 package frontend.node.project;
 
 import backend.misc.FileUtil;
-import backend.misc.Project;
+import backend.project.Project;
 import frontend.UserInterface;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.override.VBox;
@@ -66,10 +66,11 @@ public class ProjectNode extends BorderPane {
 					if (new ConfirmationStage(message).getResult()) {
 						FileUtil.deleteFile(project.getProjectFile());
 						FileUtil.deleteFile(FileUtil.getDirectoryCache(project.getProjectName()));
+						UserInterface.getStage().getIntroScene().getProjectBox().refresh();
 					}
 				} else {
 					if (new File(project.getDirectory()).exists()) {
-						Main.startMain(project);
+						Main.startLoadingProject(project);
 					} else {
 						new SimpleMessageStage("Error", "The source directory of this project could not be found.\nDirectory: " + project.getDirectory()).show();
 					}

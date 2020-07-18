@@ -94,9 +94,6 @@ public class Tile extends Pane {
 	public Tile(Entity entity) {
 		this.entity = entity;
 		
-		this.updateBorder();
-		this.updateGroupIcon();
-		
 		imageView = new ImageView(loadingImage);
 		imageView.setX(HIGHLIGHT_PADDING);
 		imageView.setY(HIGHLIGHT_PADDING);
@@ -125,7 +122,7 @@ public class Tile extends Pane {
 						//additional functionality from ClickMenu
 						
 						if (!Main.SELECT.contains(entity)) Main.SELECT.set(entity);
-						Main.SELECT.setTarget(entity, true);
+						Main.SELECT.setTarget(entity);
 						
 						Reload.start();
 						break;
@@ -167,14 +164,13 @@ public class Tile extends Pane {
 				Main.SELECT.set(entity);
 				Main.SELECT.setupShiftSelect();
 			}
-			Main.SELECT.setTarget(entity, true);
+			Main.SELECT.setTarget(entity);
 		}
 	}
 	private void clickOnGroupIcon() {
-		Main.SELECT.setTarget(entity, true);
-		//main.Root.SELECT.setAll(entity.getGroup());
+		Main.SELECT.setTarget(entity);
 		if (entity.hasGroup()) {
-			entity.getGroup().toggle();
+			entity.getEntityGroup().toggle();
 		}
 	}
 	
@@ -187,7 +183,7 @@ public class Tile extends Pane {
 	}
 	public void updateGroupIcon() {
 		if (entity.hasGroup()) {
-			if (entity.getGroup().isOpen()) {
+			if (entity.getEntityGroup().isOpen()) {
 				this.setEffect(groupIconMinus);
 			} else {
 				this.setEffect(groupIconPlus);

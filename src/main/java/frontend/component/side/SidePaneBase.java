@@ -21,7 +21,7 @@ public abstract class SidePaneBase extends VBox {
 	
 	public boolean reload() {
 		tagNodes.clear();
-		Main.DB_TAG.forEach(tag -> tagNodes.add(new TagNode(tag)));
+		Main.TAGLIST.forEach(tag -> tagNodes.add(new TagNode(tag)));
 		listBox.setNodes(tagNodes);
 		
 		return true;

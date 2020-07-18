@@ -117,7 +117,7 @@ public class DisplayPane extends StackPane {
 			holderPane.setCenter(canvasPane);
 		}
 		
-		if (Main.SELECT.isSlideshowRunning()) {
+		if (Main.SELECT.getSlideshow().isRunning()) {
 			if (activeCanvas == null || activeCanvas == canvas2) {
 				activeCanvas = canvas1;
 			} else {
@@ -134,7 +134,7 @@ public class DisplayPane extends StackPane {
 		}
 	}
 	private void transitionCanvas() {
-		if (Main.SELECT.isSlideshowRunning()) {
+		if (Main.SELECT.getSlideshow().isRunning()) {
 			if (activeCanvas == canvas1) {
 				fadeIn(fadeCanvas1);
 				fadeOut(fadeCanvas2);

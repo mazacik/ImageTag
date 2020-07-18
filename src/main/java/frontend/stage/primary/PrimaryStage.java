@@ -1,8 +1,9 @@
 package frontend.stage.primary;
 
 import backend.misc.FileUtil;
-import backend.misc.Project;
 import backend.misc.Settings;
+import backend.project.Project;
+import backend.project.ProjectUtil;
 import backend.reload.Notifier;
 import backend.reload.Reload;
 import frontend.UserInterface;
@@ -57,7 +58,7 @@ public class PrimaryStage extends Stage {
 		double height = usableScreenBounds.getHeight() / 2;
 		
 		introScene.getRoot().requestFocus();
-		introScene.refreshIntroBox();
+		introScene.getProjectBox().refresh();
 		
 		this.setTitle("Welcome to " + FileUtil.APP_NAME);
 		
@@ -66,7 +67,7 @@ public class PrimaryStage extends Stage {
 		this.setWidth(width);
 		this.setHeight(height);
 		this.centerOnScreen();
-		this.setOnCloseRequest(event -> Settings.writeToDisk());
+		this.setOnCloseRequest(event -> Settings.write());
 		
 		if (!this.isShowing()) {
 			this.show();
@@ -96,7 +97,7 @@ public class PrimaryStage extends Stage {
 		this.setWidth(width);
 		this.setHeight(height);
 		this.centerOnScreen();
-		this.setOnCloseRequest(event -> Settings.writeToDisk());
+		this.setOnCloseRequest(event -> Settings.write());
 	}
 	
 	public void showMainScene() {
@@ -106,7 +107,14 @@ public class PrimaryStage extends Stage {
 		this.setScene(mainScene);
 		this.centerOnScreen();
 		this.setMaximized(true);
-		this.setOnCloseRequest(event -> Main.exitApplication());
+		this.setOnCloseRequest(event -> {
+			Main.THREADGROUP.interrupt();
+			UserInterface.getDisplayPane().disposeVideoPlayer();
+			
+			ProjectUtil.getCurrentProject().write();
+			Settings.write();
+			System.exit(0);
+		});
 		
 		UserInterface.getToolbarPane().requestFocus();
 		
@@ -127,6 +135,9 @@ public class PrimaryStage extends Stage {
 		this.fireEvent(new WindowEvent(null, WindowEvent.WINDOW_CLOSE_REQUEST));
 	}
 	
+	public IntroScene getIntroScene() {
+		return introScene;
+	}
 	public MainScene getMainScene() {
 		return mainScene;
 	}
