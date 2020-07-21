@@ -4,8 +4,6 @@ import backend.misc.FileUtil;
 import backend.misc.Settings;
 import backend.project.Project;
 import backend.project.ProjectUtil;
-import backend.reload.Notifier;
-import backend.reload.Reload;
 import frontend.UserInterface;
 import frontend.decorator.DecoratorUtil;
 import frontend.stage.primary.scene.IntroScene;
@@ -126,9 +124,6 @@ public class PrimaryStage extends Stage {
 		} else {
 			this.setOpacity(1);
 		}
-		
-		Reload.notify(Notifier.values());
-		Reload.start();
 	}
 	
 	public void requestExit() {

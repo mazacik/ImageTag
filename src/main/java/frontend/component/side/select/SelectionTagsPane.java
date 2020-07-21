@@ -41,6 +41,7 @@ public class SelectionTagsPane extends SidePaneBase {
 						match = tagNode;
 						match.setBackground(DecoratorUtil.getBackgroundSecondary());
 						match.setBackgroundLock(true);
+						listBox.moveViewportToMatch(tagNodes, match);
 						break;
 					}
 				}

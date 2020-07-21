@@ -10,9 +10,12 @@ import backend.misc.FileUtil;
 import backend.misc.Settings;
 import backend.project.Project;
 import backend.project.ProjectUtil;
+import backend.reload.Notifier;
+import backend.reload.Reload;
 import backend.select.Select;
 import frontend.UserInterface;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -46,41 +49,50 @@ public class Main extends Application {
 	}
 	
 	public static void startLoadingProject(Project project) {
-		ProjectUtil.setCurrentProject(project);
-		
-		initEntityList();
-		if (!Main.ENTITYLIST.isEmpty()) {
-			BaseList<EntityGroup> entityGroups = new BaseList<>();
-			for (Entity entity : Main.ENTITYLIST) {
-				entity.initTile();
-				entity.initType();
-				initEntityGroup(entityGroups, entity);
-			}
-			for (EntityGroup entityGroup : entityGroups) {
-				if (entityGroup.size() == 1) {
-					entityGroup.discard();
-				}
-			}
-			
-			Main.TAGLIST.setAll(Main.ENTITYLIST.getTagList());
-			Main.TAGLIST.sort(Comparator.naturalOrder());
-			
-			Entity target = Main.ENTITYLIST.getFirst();
-			if (target != null) {
-				Main.SELECT.setTarget(target);
-				if (target.hasGroup()) {
-					Main.SELECT.setAll(target.getEntityGroup());
-				} else {
-					Main.SELECT.set(target);
-				}
-			}
-		}
-		
+		startLoadingAsync(project);
 		UserInterface.getStage().showMainScene();
-		
-		CacheLoader.startCacheThread(Main.ENTITYLIST);
 	}
 	
+	private static void startLoadingAsync(Project project) {
+		new Thread(Main.THREADGROUP, () -> {
+			ProjectUtil.setCurrentProject(project);
+			
+			initEntityList();
+			if (!Main.ENTITYLIST.isEmpty()) {
+				BaseList<EntityGroup> entityGroups = new BaseList<>();
+				for (Entity entity : Main.ENTITYLIST) {
+					entity.initTile();
+					entity.initType();
+					initEntityGroup(entityGroups, entity);
+				}
+				for (EntityGroup entityGroup : entityGroups) {
+					if (entityGroup.size() == 1) {
+						entityGroup.discard();
+					}
+				}
+				
+				Main.TAGLIST.setAll(Main.ENTITYLIST.getTagList());
+				Main.TAGLIST.sort(Comparator.naturalOrder());
+				
+				Entity target = Main.ENTITYLIST.getFirst();
+				if (target != null) {
+					Main.SELECT.setTarget(target);
+					if (target.hasGroup()) {
+						Main.SELECT.setAll(target.getEntityGroup());
+					} else {
+						Main.SELECT.set(target);
+					}
+				}
+			}
+			
+			Platform.runLater(() -> {
+				Reload.notify(Notifier.values());
+				Reload.start();
+			});
+			
+			CacheLoader.startCacheThread(Main.ENTITYLIST);
+		}).start();
+	}
 	private static void initEntityList() {
 		Main.ENTITYLIST.setAll(ProjectUtil.getCurrentProject().getEntityList());
 		

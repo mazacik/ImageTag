@@ -69,7 +69,6 @@ public class GalleryPane extends ScrollPane {
 		this.setMinViewportWidth(actualTileSize);
 		this.setMinViewportHeight(actualTileSize + 2 * GAP);
 		this.setContent(tilePane);
-		//this.getChildren().add(tilePane);
 		this.setBackground(Background.EMPTY);
 		this.setHbarPolicy(ScrollBarPolicy.NEVER);
 		this.setVbarPolicy(ScrollBarPolicy.ALWAYS);

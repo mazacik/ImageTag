@@ -507,7 +507,7 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				CacheLoader.reset();
+				CacheLoader.recreate();
 			});
 			return textNode;
 		}

@@ -1,7 +1,10 @@
 package frontend.node;
 
+import backend.BaseList;
+import frontend.component.side.TagNode;
 import frontend.node.override.VBox;
 import javafx.collections.ObservableList;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.ScrollEvent;
@@ -30,6 +33,37 @@ public class ListBox extends ScrollPane {
 		vBox.getChildren().setAll(collection);
 	}
 	
+	public void moveViewportToMatch(BaseList<TagNode> tagNodes, TagNode match) {
+		if (this.getHeight() > 0) {
+			int matchIndex = tagNodes.indexOf(match);
+			if (matchIndex >= 0) {
+				Bounds viewportBounds = vBox.sceneToLocal(this.getViewportBounds());
+				Bounds matchBounds = match.getBoundsInParent();
+				
+				double viewportHeight = viewportBounds.getHeight();
+				double contentHeight = vBox.getHeight() - viewportHeight;
+				
+				double rowToContentRatio = match.getHeight() / contentHeight;
+				double viewportToContentRatio = viewportHeight / contentHeight;
+				
+				double viewportTop = viewportBounds.getMinY();
+				double viewportBottom = viewportBounds.getMaxY();
+				
+				double tileTop = matchBounds.getMinY();
+				double tileBottom = matchBounds.getMaxY();
+				
+				double vValue = -1;
+				if (tileBottom > viewportBottom) {
+					vValue = (matchIndex + 1) * rowToContentRatio - viewportToContentRatio;
+				} else if (tileTop < viewportTop) {
+					vValue = matchIndex * rowToContentRatio;
+				}
+				if (vValue >= 0) {
+					this.setVvalue(vValue);
+				}
+			}
+		}
+	}
 	private void onScroll(ScrollEvent event) {
 		event.consume();
 		

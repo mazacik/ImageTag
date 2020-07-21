@@ -5,6 +5,7 @@ import backend.entity.EntityList;
 import backend.misc.FileUtil;
 import backend.misc.Settings;
 import frontend.UserInterface;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -37,7 +38,12 @@ public abstract class CacheLoader {
 		
 		Scene scene = new Scene(new Group(label));
 		scene.setFill(Color.GRAY);
-		scene.snapshot(this);
+		
+		if (Thread.currentThread() == Main.THREAD_MAIN) {
+			scene.snapshot(this);
+		} else {
+			Platform.runLater(() -> scene.snapshot(this));
+		}
 	}};
 	
 	public static void startCacheThread(EntityList entityList) {
@@ -62,7 +68,7 @@ public abstract class CacheLoader {
 		}
 	}
 	
-	public static void reset() {
+	public static void recreate() {
 		Main.ENTITYLIST.forEach(entity -> entity.getTile().setImage(null));
 		CacheLoader.startCacheThread(Main.ENTITYLIST, true);
 	}
@@ -70,11 +76,11 @@ public abstract class CacheLoader {
 	public static Image get(Entity entity) {
 		return get(entity, false);
 	}
-	public static Image get(Entity entity, boolean forceCreate) {
+	public static Image get(Entity entity, boolean recreate) {
 		File cacheFile = new File(FileUtil.getFileCache(entity));
 		Image image;
 		
-		if (forceCreate || !cacheFile.exists()) {
+		if (recreate || !cacheFile.exists()) {
 			image = CacheCreator.create(entity);
 		} else {
 			image = new Image("file:" + cacheFile.getAbsolutePath());
