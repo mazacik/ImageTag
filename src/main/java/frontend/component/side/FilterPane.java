@@ -53,18 +53,21 @@ public class FilterPane extends SidePaneBase {
 				btnHide.setText(cShow);
 				this.getChildren().setAll(btnHide);
 				this.setMinWidth(btnHide.getWidth() + 1);
-				UserInterface.getStage().getMainScene().handleWidthChange(btnHide.getWidth() + 1, MIN_WIDTH);
+				this.setMaxWidth(btnHide.getWidth() + 1);
+				UserInterface.getStage().getMainScene().handleWidthChange(btnHide.getWidth() + 1, UserInterface.getSelectPane().getMinWidth());
 			} else {
 				btnHide.setText(cHide);
 				this.getChildren().setAll(boxButtons, listBox);
 				boxButtons.getChildren().add(btnHide);
 				this.setMinWidth(MIN_WIDTH);
-				UserInterface.getStage().getMainScene().handleWidthChange(MIN_WIDTH, MIN_WIDTH);
+				this.setMaxWidth(-1);
+				UserInterface.getStage().getMainScene().handleWidthChange(MIN_WIDTH, UserInterface.getSelectPane().getMinWidth());
 			}
 		});
 		
 		boxButtons.getChildren().add(btnHide);
 		
+		HBox.setHgrow(this, Priority.ALWAYS);
 		this.setBorder(DecoratorUtil.getBorder(0, 1, 0, 0));
 		this.getChildren().addAll(boxButtons, listBox);
 	}

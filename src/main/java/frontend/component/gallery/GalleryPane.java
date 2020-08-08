@@ -9,11 +9,14 @@ import frontend.UserInterface;
 import frontend.stage.SimpleMessageStage;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
+import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Background;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -50,6 +53,7 @@ public class GalleryPane extends ScrollPane {
 		double actualTileSize = Settings.GALLERY_TILE_SIZE.getInteger() + 2 * Tile.HIGHLIGHT_PADDING;
 		tilePane.setPrefTileWidth(actualTileSize);
 		tilePane.setPrefTileHeight(actualTileSize);
+		tilePane.setAlignment(Pos.CENTER);
 		
 		tilePane.addEventFilter(MouseEvent.MOUSE_PRESSED, this::onMousePress);
 		tilePane.addEventFilter(MouseEvent.MOUSE_DRAGGED, this::onMouseDrag);
@@ -298,6 +302,16 @@ public class GalleryPane extends ScrollPane {
 					this.setVvalue(vValue);
 				}
 			}
+		}
+	}
+	
+	public void setHGrow(boolean grow) {
+		if (grow) {
+			HBox.setHgrow(this, Priority.ALWAYS);
+			this.setFitToWidth(true);
+		} else {
+			HBox.setHgrow(this, Priority.NEVER);
+			this.setFitToWidth(false);
 		}
 	}
 	

@@ -1,6 +1,7 @@
 package frontend.component.side.select;
 
 import backend.entity.Entity;
+import frontend.UserInterface;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.SeparatorNode;
 import frontend.node.override.HBox;
@@ -11,12 +12,16 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Priority;
 import main.Main;
 
+import static frontend.component.side.SidePaneBase.MIN_WIDTH;
+
 public class SelectPane extends VBox {
 	private final TextNode selectionTagsNode;
 	private final TextNode targetDetailsNode;
 	
 	private final SelectionTagsPane selectionTagsPane;
 	private final TargetDetailsPane targetDetailsPane;
+	
+	private boolean bHidden = false;
 	
 	public SelectPane() {
 		selectionTagsPane = new SelectionTagsPane();
@@ -27,15 +32,14 @@ public class SelectPane extends VBox {
 	}
 	
 	public void initialize() {
-		selectionTagsNode.setBorder(DecoratorUtil.getBorder(0, 0, 1, 0));
 		selectionTagsNode.setMaxWidth(Double.MAX_VALUE);
+		selectionTagsNode.setBorder(DecoratorUtil.getBorder(0, 0, 0, 1));
 		HBox.setHgrow(selectionTagsNode, Priority.ALWAYS);
 		selectionTagsNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			this.getChildren().set(1, selectionTagsPane);
 			this.refresh();
 		});
 		
-		targetDetailsNode.setBorder(DecoratorUtil.getBorder(0, 0, 1, 0));
 		targetDetailsNode.setMaxWidth(Double.MAX_VALUE);
 		HBox.setHgrow(targetDetailsNode, Priority.ALWAYS);
 		targetDetailsNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
@@ -44,6 +48,30 @@ public class SelectPane extends VBox {
 		});
 		
 		HBox boxTop = new HBox(selectionTagsNode, new SeparatorNode(), targetDetailsNode);
+		boxTop.setBorder(DecoratorUtil.getBorder(0, 0, 1, 0));
+		
+		String cHide = "→";
+		String cShow = "←";
+		TextNode btnHide = new TextNode(cHide, true, true, false, true);
+		btnHide.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+			bHidden = !bHidden;
+			if (bHidden) {
+				btnHide.setText(cShow);
+				this.getChildren().setAll(btnHide);
+				this.setMinWidth(btnHide.getWidth() + 1);
+				this.setMaxWidth(btnHide.getWidth() + 1);
+				UserInterface.getStage().getMainScene().handleWidthChange(UserInterface.getFilterPane().getMinWidth(), btnHide.getWidth() + 1);
+			} else {
+				btnHide.setText(cHide);
+				this.getChildren().setAll(boxTop, selectionTagsPane);
+				boxTop.getChildren().add(0, btnHide);
+				this.setMinWidth(MIN_WIDTH);
+				this.setMaxWidth(-1);
+				UserInterface.getStage().getMainScene().handleWidthChange(UserInterface.getFilterPane().getMinWidth(), MIN_WIDTH);
+			}
+		});
+		
+		boxTop.getChildren().add(0, btnHide);
 		
 		HBox.setHgrow(this, Priority.ALWAYS);
 		this.setBorder(DecoratorUtil.getBorder(0, 0, 0, 1));

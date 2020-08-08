@@ -125,4 +125,7 @@ public abstract class DecoratorUtil {
 	public static Background getBackgroundSecondary() {
 		return decoratorTemplate.getBackgroundSecondary();
 	}
+	public static Background getBackground(Color color) {
+		return new Background(new BackgroundFill(color, null, null));
+	}
 }

@@ -13,9 +13,7 @@ public abstract class SidePaneBase extends VBox {
 	
 	protected SidePaneBase() {
 		tagNodes = new BaseList<>();
-		
 		listBox = new ListBox();
-		
 		this.setMinWidth(MIN_WIDTH);
 	}
 	

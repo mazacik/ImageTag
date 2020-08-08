@@ -47,9 +47,7 @@ public class PrimaryStage extends Stage {
 	}
 	
 	public void showIntroScene() {
-		if (!this.isShowing()) {
-			this.setOpacity(0);
-		}
+		this.setOpacity(0);
 		
 		Rectangle usableScreenBounds = DecoratorUtil.getUsableScreenBounds();
 		double width = usableScreenBounds.getWidth() / 2;
@@ -69,10 +67,11 @@ public class PrimaryStage extends Stage {
 		
 		if (!this.isShowing()) {
 			this.show();
-			PauseTransition pt = new PauseTransition(new Duration(100));
-			pt.setOnFinished(event -> this.setOpacity(1));
-			pt.play();
 		}
+		
+		PauseTransition pt = new PauseTransition(new Duration(100));
+		pt.setOnFinished(event -> this.setOpacity(1));
+		pt.play();
 	}
 	
 	public void showProjectScene() {
@@ -118,12 +117,11 @@ public class PrimaryStage extends Stage {
 		
 		if (!this.isShowing()) {
 			this.show();
-			PauseTransition pt = new PauseTransition(new Duration(100));
-			pt.setOnFinished(event -> this.setOpacity(1));
-			pt.play();
-		} else {
-			this.setOpacity(1);
 		}
+		
+		PauseTransition pt1 = new PauseTransition(new Duration(100));
+		pt1.setOnFinished(event -> this.setOpacity(1));
+		pt1.play();
 	}
 	
 	public void requestExit() {

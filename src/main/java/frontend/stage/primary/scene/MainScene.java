@@ -6,7 +6,6 @@ import backend.misc.Direction;
 import backend.reload.Notifier;
 import backend.reload.Reload;
 import frontend.UserInterface;
-import frontend.component.side.SidePaneBase;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.EditNode;
 import frontend.node.ProgressNode;
@@ -21,6 +20,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import main.Main;
+
+import static frontend.component.side.SidePaneBase.MIN_WIDTH;
 
 public class MainScene extends Scene {
 	private final VBox vBox;
@@ -195,9 +196,11 @@ public class MainScene extends Scene {
 	}
 	
 	public void handleWidthChange() {
-		handleWidthChange(SidePaneBase.MIN_WIDTH, SidePaneBase.MIN_WIDTH);
+		handleWidthChange(MIN_WIDTH, MIN_WIDTH);
 	}
 	public void handleWidthChange(double filterWidth, double selectWidth) {
+		//		UserInterface.getGalleryPane().setHGrow(filterWidth < MIN_WIDTH / 2 && selectWidth < MIN_WIDTH / 2);
+		
 		double estimateAvailableWidth = this.getWidth() - filterWidth - selectWidth;
 		
 		TilePane tilePane = UserInterface.getGalleryPane().getTilePane();
