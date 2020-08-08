@@ -8,8 +8,14 @@
 
 .scroll-bar {
     -fx-background-color: transparent;
-    -fx-pref-width: 16;
-    -fx-padding: 2 1 2 2;
+    -fx-pref-width: 10;
+    -fx-padding: 4 3 4 3;
+}
+
+.scroll-barx {
+    -fx-background-color: transparent;
+    -fx-pref-width: 10;
+    -fx-padding: 4 2 4 1;
 }
 
 .increment-button {

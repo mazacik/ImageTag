@@ -27,7 +27,7 @@ import javafx.scene.text.Font;
 import main.Main;
 
 public class Tile extends Pane {
-	public static final double HIGHLIGHT_PADDING = 5;
+	public static final double HIGHLIGHT_PADDING = 3;
 	
 	private static final double groupIconSize;
 	private static final double groupIconX;
@@ -49,12 +49,11 @@ public class Tile extends Pane {
 		Image imagePlus = new Image("/plus-16px.png");
 		Image imageMinus = new Image("/minus-16px.png");
 		
-		double tileSizeWithHighlight = tileSize + 2 * HIGHLIGHT_PADDING;
-		
 		groupIconSize = imagePlus.getWidth();
-		groupIconX = tileSizeWithHighlight - HIGHLIGHT_PADDING - imagePlus.getWidth() - 5;
+		groupIconX = tileSize + HIGHLIGHT_PADDING - imagePlus.getWidth() - 5;
 		groupIconY = HIGHLIGHT_PADDING + 5;
 		
+		double tileSizeWithHighlight = tileSize + 2 * HIGHLIGHT_PADDING;
 		ColorInput effectColor = new ColorInput(0, 0, tileSizeWithHighlight, tileSizeWithHighlight, Color.WHITE);
 		groupIconPlus = new Blend(BlendMode.DIFFERENCE, new Blend(BlendMode.SRC_ATOP, new ImageInput(imagePlus, groupIconX, groupIconY), effectColor), null);
 		groupIconMinus = new Blend(BlendMode.DIFFERENCE, new Blend(BlendMode.SRC_ATOP, new ImageInput(imageMinus, groupIconX, groupIconY), effectColor), null);

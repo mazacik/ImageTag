@@ -199,7 +199,10 @@ public class MainScene extends Scene {
 		handleWidthChange(MIN_WIDTH, MIN_WIDTH);
 	}
 	public void handleWidthChange(double filterWidth, double selectWidth) {
-		//		UserInterface.getGalleryPane().setHGrow(filterWidth < MIN_WIDTH / 2 && selectWidth < MIN_WIDTH / 2);
+		UserInterface.getGalleryPane().setHGrow(filterWidth < 100 && selectWidth < 100);
+		
+		if (filterWidth == MIN_WIDTH) filterWidth += 20;
+		if (selectWidth == MIN_WIDTH) selectWidth += 20;
 		
 		double estimateAvailableWidth = this.getWidth() - filterWidth - selectWidth;
 		
