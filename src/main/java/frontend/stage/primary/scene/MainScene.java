@@ -90,14 +90,13 @@ public class MainScene extends Scene {
 			case G:
 				if (Main.SELECT.getTarget().hasGroup()) {
 					Entity randomEntityFromGroup = Main.SELECT.getTarget().getEntityGroup().getRepresentingRandom();
-					if (randomEntityFromGroup == null) {
-						int i = 0;
+					if (randomEntityFromGroup != null) {
+						Main.SELECT.setTarget(randomEntityFromGroup);
+						if (!Main.SELECT.contains(randomEntityFromGroup)) {
+							Main.SELECT.set(randomEntityFromGroup);
+						}
+						Reload.start();
 					}
-					Main.SELECT.setTarget(randomEntityFromGroup);
-					if (!Main.SELECT.contains(randomEntityFromGroup)) {
-						Main.SELECT.set(randomEntityFromGroup);
-					}
-					Reload.start();
 				}
 				break;
 			case F:
