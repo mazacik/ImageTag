@@ -9,6 +9,7 @@ import frontend.UserInterface;
 import frontend.stage.SimpleMessageStage;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseButton;
@@ -60,6 +61,7 @@ public class GalleryPane extends ScrollPane {
 		tilePane.addEventFilter(MouseEvent.MOUSE_RELEASED, this::onMouseRelease);
 		
 		tilePane.heightProperty().addListener((observable, oldValue, newValue) -> this.moveViewportToTarget());
+		tilePane.setPadding(new Insets(0, 1, 0, 0));
 		
 		selectRectangle.setStroke(Color.BLACK);
 		selectRectangle.setStrokeWidth(1);

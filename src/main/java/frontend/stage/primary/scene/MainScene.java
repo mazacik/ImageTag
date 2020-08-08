@@ -201,9 +201,6 @@ public class MainScene extends Scene {
 	public void handleWidthChange(double filterWidth, double selectWidth) {
 		UserInterface.getGalleryPane().setHGrow(filterWidth < 100 && selectWidth < 100);
 		
-		if (filterWidth == MIN_WIDTH) filterWidth += 20;
-		if (selectWidth == MIN_WIDTH) selectWidth += 20;
-		
 		double estimateAvailableWidth = this.getWidth() - filterWidth - selectWidth;
 		
 		TilePane tilePane = UserInterface.getGalleryPane().getTilePane();
