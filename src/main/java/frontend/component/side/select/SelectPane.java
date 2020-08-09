@@ -12,7 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Priority;
 import main.Main;
 
-import static frontend.component.side.SidePaneBase.MIN_WIDTH;
+import static frontend.component.side.SidePaneBase.WIDTH;
 
 public class SelectPane extends VBox {
 	private final TextNode selectionTagsNode;
@@ -60,20 +60,19 @@ public class SelectPane extends VBox {
 				this.getChildren().setAll(btnHide);
 				this.setMinWidth(btnHide.getWidth() + 1);
 				this.setMaxWidth(btnHide.getWidth() + 1);
-				UserInterface.getStage().getMainScene().handleWidthChange(UserInterface.getFilterPane().getMinWidth(), btnHide.getWidth() + 1);
+				UserInterface.getStage().getMainScene().handleWidthChange(UserInterface.getFilterPane().getWidth(), btnHide.getWidth() + 1);
 			} else {
 				btnHide.setText(cHide);
 				this.getChildren().setAll(boxTop, selectionTagsPane);
 				boxTop.getChildren().add(0, btnHide);
-				this.setMinWidth(MIN_WIDTH);
-				this.setMaxWidth(-1);
-				UserInterface.getStage().getMainScene().handleWidthChange(UserInterface.getFilterPane().getMinWidth(), MIN_WIDTH);
+				this.setMinWidth(WIDTH);
+				this.setMaxWidth(WIDTH);
+				UserInterface.getStage().getMainScene().handleWidthChange(UserInterface.getFilterPane().getWidth(), WIDTH);
 			}
 		});
 		
 		boxTop.getChildren().add(0, btnHide);
 		
-		HBox.setHgrow(this, Priority.ALWAYS);
 		this.setBorder(DecoratorUtil.getBorder(0, 0, 0, 1));
 		this.getChildren().addAll(boxTop, selectionTagsPane);
 	}

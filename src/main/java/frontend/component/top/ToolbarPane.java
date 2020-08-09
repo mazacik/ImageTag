@@ -89,7 +89,7 @@ public class ToolbarPane extends BorderPane {
 		ClickMenu.install(nodeTarget, Direction.DOWN, MouseButton.PRIMARY, ListMenu.Preset.ENTITY);
 		
 		HBox boxRight = new HBox(btnFavorite, nodeTarget);
-//		todo boxRight.prefWidthProperty().bind(UserInterface.getSelectPane().widthProperty());
+		//		boxRight.prefWidthProperty().bind(UserInterface.getSelectPane().widthProperty());
 		
 		this.setBorder(DecoratorUtil.getBorder(0, 0, 1, 0));
 		this.setLeft(boxCenter);

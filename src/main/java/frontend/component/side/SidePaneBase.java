@@ -6,7 +6,7 @@ import frontend.node.override.VBox;
 import main.Main;
 
 public abstract class SidePaneBase extends VBox {
-	public static final double MIN_WIDTH = 200;
+	public static final double WIDTH = 242; //35 + 1 + 206
 	
 	protected final BaseList<TagNode> tagNodes;
 	protected final ListBox listBox;
@@ -14,7 +14,8 @@ public abstract class SidePaneBase extends VBox {
 	protected SidePaneBase() {
 		tagNodes = new BaseList<>();
 		listBox = new ListBox();
-		this.setMinWidth(MIN_WIDTH);
+		this.setMinWidth(WIDTH);
+		this.setMaxWidth(WIDTH);
 	}
 	
 	public boolean reload() {

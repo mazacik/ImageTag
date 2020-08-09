@@ -21,7 +21,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import main.Main;
 
-import static frontend.component.side.SidePaneBase.MIN_WIDTH;
+import static frontend.component.side.SidePaneBase.WIDTH;
 
 public class MainScene extends Scene {
 	private final VBox vBox;
@@ -195,12 +195,10 @@ public class MainScene extends Scene {
 	}
 	
 	public void handleWidthChange() {
-		handleWidthChange(MIN_WIDTH, MIN_WIDTH);
+		handleWidthChange(WIDTH, WIDTH);
 	}
 	public void handleWidthChange(double filterWidth, double selectWidth) {
-		UserInterface.getGalleryPane().setHGrow(filterWidth < 100 && selectWidth < 100);
-		
-		double estimateAvailableWidth = this.getWidth() - filterWidth - selectWidth;
+		double estimateAvailableWidth = this.getWidth() - filterWidth - selectWidth - 20;
 		
 		TilePane tilePane = UserInterface.getGalleryPane().getTilePane();
 		double tileSize = tilePane.getPrefTileWidth();

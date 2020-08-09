@@ -72,6 +72,9 @@ public class GalleryPane extends ScrollPane {
 		localCursorPositionX = 0;
 		localCursorPositionY = 0;
 		
+		HBox.setHgrow(this, Priority.ALWAYS);
+		this.setFitToWidth(true);
+		
 		this.setMinViewportWidth(actualTileSize);
 		this.setMinViewportHeight(actualTileSize + 2 * GAP);
 		this.setContent(tilePane);
@@ -304,16 +307,6 @@ public class GalleryPane extends ScrollPane {
 					this.setVvalue(vValue);
 				}
 			}
-		}
-	}
-	
-	public void setHGrow(boolean grow) {
-		if (grow) {
-			HBox.setHgrow(this, Priority.ALWAYS);
-			this.setFitToWidth(true);
-		} else {
-			HBox.setHgrow(this, Priority.NEVER);
-			this.setFitToWidth(false);
 		}
 	}
 	
