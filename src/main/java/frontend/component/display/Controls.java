@@ -182,8 +182,8 @@ public class Controls extends BorderPane {
 			this.setCenter(hBoxCenter);
 			this.setBottom(progressBar);
 		} else {
-			if (UserInterface.getDisplayPane().getVideoPlayer() != null)
-				UserInterface.getDisplayPane().getVideoPlayer().pause();
+			if (UserInterface.getCenterPane().getDisplayPane().getVideoPlayer() != null)
+				UserInterface.getCenterPane().getDisplayPane().getVideoPlayer().pause();
 			
 			this.setLeft(btnPrevious);
 			this.setRight(btnNext);

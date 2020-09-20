@@ -269,7 +269,7 @@ public class Select extends EntityList {
 			
 			if (target != null) {
 				Reload.requestBorderUpdate(target);
-				UserInterface.getGalleryPane().moveViewportToTarget();
+				UserInterface.getCenterPane().getGalleryPane().moveViewportToTarget();
 			}
 			
 			Reload.notify(Notifier.TARGET_CHANGED);
@@ -305,13 +305,13 @@ public class Select extends EntityList {
 		
 		switch (direction) {
 			case UP:
-				newTargetIndex -= UserInterface.getGalleryPane().getTilePane().getPrefColumns();
+				newTargetIndex -= UserInterface.getCenterPane().getGalleryPane().getTilePane().getPrefColumns();
 				break;
 			case LEFT:
 				newTargetIndex -= 1;
 				break;
 			case DOWN:
-				newTargetIndex += UserInterface.getGalleryPane().getTilePane().getPrefColumns();
+				newTargetIndex += UserInterface.getCenterPane().getGalleryPane().getTilePane().getPrefColumns();
 				break;
 			case RIGHT:
 				newTargetIndex += 1;
@@ -340,8 +340,8 @@ public class Select extends EntityList {
 	public void deleteTarget() {
 		Entity target = this.getTarget();
 		
-		if (UserInterface.getDisplayPane().getVideoPlayer().hasMedia()) {
-			UserInterface.getDisplayPane().getVideoPlayer().release();
+		if (UserInterface.getCenterPane().getDisplayPane().getVideoPlayer().hasMedia()) {
+			UserInterface.getCenterPane().getDisplayPane().getVideoPlayer().release();
 		}
 		
 		if (FileUtil.deleteFile(FileUtil.getFileEntity(target))) {

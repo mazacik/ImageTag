@@ -66,27 +66,27 @@ public class VideoPlayer {
 			@Override
 			public void timeChanged(MediaPlayer mediaPlayer, long newTime) {
 				super.timeChanged(mediaPlayer, newTime);
-				UserInterface.getDisplayPane().getControls().setTimeCurrent(newTime);
+				UserInterface.getCenterPane().getDisplayPane().getControls().setTimeCurrent(newTime);
 			}
 			@Override
 			public void positionChanged(MediaPlayer mediaPlayer, float newPosition) {
 				super.positionChanged(mediaPlayer, newPosition);
-				UserInterface.getDisplayPane().getControls().setVideoProgress(newPosition);
+				UserInterface.getCenterPane().getDisplayPane().getControls().setVideoProgress(newPosition);
 			}
 			@Override
 			public void lengthChanged(MediaPlayer mediaPlayer, long newLength) {
 				super.lengthChanged(mediaPlayer, newLength);
-				UserInterface.getDisplayPane().getControls().setTimeTotal(newLength);
+				UserInterface.getCenterPane().getDisplayPane().getControls().setTimeTotal(newLength);
 			}
 			@Override
 			public void opening(MediaPlayer mediaPlayer) {
 				super.opening(mediaPlayer);
-				UserInterface.getDisplayPane().getControls().setVideoProgress(0);
+				UserInterface.getCenterPane().getDisplayPane().getControls().setVideoProgress(0);
 			}
 			@Override
 			public void finished(MediaPlayer mediaPlayer) {
 				super.finished(mediaPlayer);
-				UserInterface.getDisplayPane().getControls().setVideoProgress(1);
+				UserInterface.getCenterPane().getDisplayPane().getControls().setVideoProgress(1);
 			}
 		});
 	}

@@ -106,7 +106,7 @@ public class PrimaryStage extends Stage {
 		this.setMaximized(true);
 		this.setOnCloseRequest(event -> {
 			Main.THREADGROUP.interrupt();
-			UserInterface.getDisplayPane().disposeVideoPlayer();
+			UserInterface.getCenterPane().getDisplayPane().disposeVideoPlayer();
 			
 			ProjectUtil.getCurrentProject().write();
 			Settings.write();

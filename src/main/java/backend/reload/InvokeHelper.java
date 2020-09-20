@@ -16,8 +16,8 @@ public enum InvokeHelper {
 	PANE_SELECT_REFRESH(4, UserInterface.getSelectPane(), method(UserInterface.getSelectPane(), "refresh")),
 	
 	PANE_TOOLBAR_RELOAD(5, UserInterface.getToolbarPane(), method(UserInterface.getToolbarPane(), "reload")),
-	PANE_GALLERY_RELOAD(5, UserInterface.getGalleryPane(), method(UserInterface.getGalleryPane(), "reload")),
-	PANE_DISPLAY_RELOAD(5, UserInterface.getDisplayPane(), method(UserInterface.getDisplayPane(), "reload")),
+	PANE_GALLERY_RELOAD(5, UserInterface.getCenterPane().getGalleryPane(), method(UserInterface.getCenterPane().getGalleryPane(), "reload")),
+	PANE_DISPLAY_RELOAD(5, UserInterface.getCenterPane().getDisplayPane(), method(UserInterface.getCenterPane().getDisplayPane(), "reload")),
 	;
 	
 	private static Method method(Object object, String methodName) {

@@ -73,14 +73,12 @@ public class DisplayPane extends StackPane {
 		fadeCanvas2.setFromValue(0);
 		fadeCanvas2.setToValue(1);
 		
-		gifPlayer.fitWidthProperty().bind(UserInterface.getGalleryPane().widthProperty());
-		gifPlayer.fitHeightProperty().bind(UserInterface.getGalleryPane().heightProperty());
-		
-		
+		//		gifPlayer.fitWidthProperty().bind(UserInterface.getCenterPane().getGalleryPane().widthProperty());
+		//		gifPlayer.fitHeightProperty().bind(UserInterface.getCenterPane().getGalleryPane().heightProperty());
 		
 		/* Controls */
 		controls.setVisible(false);
-		controls.prefWidthProperty().bind(this.widthProperty());
+		//		controls.prefWidthProperty().bind(this.widthProperty());
 		
 		PauseTransition autoHideDelay = new PauseTransition();
 		autoHideDelay.setOnFinished(event -> controls.setVisible(false));
@@ -158,7 +156,7 @@ public class DisplayPane extends StackPane {
 	
 	public boolean reload() {
 		Entity currentTarget = Main.SELECT.getTarget();
-		if (!UserInterface.getStage().getMainScene().isViewGallery() && currentTarget != null) {
+		if (UserInterface.getCenterPane().isViewDisplay() && currentTarget != null) {
 			switch (currentTarget.getType()) {
 				case IMG:
 					reloadAsImage(currentTarget);
@@ -283,14 +281,14 @@ public class DisplayPane extends StackPane {
 	}
 	
 	private void initEvents() {
-		canvas1.widthProperty().bind(UserInterface.getGalleryPane().widthProperty());
-		canvas1.heightProperty().bind(UserInterface.getGalleryPane().heightProperty());
+		canvas1.widthProperty().bind(UserInterface.getCenterPane().widthProperty());
+		canvas1.heightProperty().bind(UserInterface.getCenterPane().heightProperty());
 		
 		canvas1.widthProperty().addListener((observable, oldValue, newValue) -> reload());
 		canvas1.heightProperty().addListener((observable, oldValue, newValue) -> reload());
 		
-		canvas2.widthProperty().bind(UserInterface.getGalleryPane().widthProperty());
-		canvas2.heightProperty().bind(UserInterface.getGalleryPane().heightProperty());
+		canvas2.widthProperty().bind(UserInterface.getCenterPane().widthProperty());
+		canvas2.heightProperty().bind(UserInterface.getCenterPane().heightProperty());
 		
 		canvas2.widthProperty().addListener((observable, oldValue, newValue) -> reload());
 		canvas2.heightProperty().addListener((observable, oldValue, newValue) -> reload());
@@ -300,7 +298,7 @@ public class DisplayPane extends StackPane {
 				if (event.getClickCount() % 2 != 0) {
 					holderPane.requestFocus();
 				} else {
-					UserInterface.getStage().getMainScene().viewGallery();
+					UserInterface.getCenterPane().swapCurrentPane();
 					Reload.start();
 				}
 			}

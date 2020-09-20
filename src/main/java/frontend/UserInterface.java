@@ -1,7 +1,6 @@
 package frontend;
 
-import frontend.component.display.DisplayPane;
-import frontend.component.gallery.GalleryPane;
+import frontend.component.center.CenterPane;
 import frontend.component.side.FilterPane;
 import frontend.component.side.select.SelectPane;
 import frontend.component.top.ToolbarPane;
@@ -10,8 +9,7 @@ import frontend.stage.primary.PrimaryStage;
 public abstract class UserInterface {
 	public static void initialize() {
 		toolbarPane.initialize();
-		galleryPane.initialize();
-		displayPane.initialize();
+		centerPane.initialize();
 		filterPane.initialize();
 		selectPane.initialize();
 	}
@@ -21,14 +19,9 @@ public abstract class UserInterface {
 		return toolbarPane;
 	}
 	
-	private static final GalleryPane galleryPane = new GalleryPane();
-	public static GalleryPane getGalleryPane() {
-		return galleryPane;
-	}
-	
-	private static final DisplayPane displayPane = new DisplayPane();
-	public static DisplayPane getDisplayPane() {
-		return displayPane;
+	private static final CenterPane centerPane = new CenterPane();
+	public static CenterPane getCenterPane() {
+		return centerPane;
 	}
 	
 	private static final FilterPane filterPane = new FilterPane();

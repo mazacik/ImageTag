@@ -3,7 +3,6 @@ package frontend.stage.primary.scene;
 import backend.entity.Entity;
 import backend.lire.LireUtil;
 import backend.misc.Direction;
-import backend.reload.Notifier;
 import backend.reload.Reload;
 import frontend.UserInterface;
 import frontend.decorator.DecoratorUtil;
@@ -32,7 +31,7 @@ public class MainScene extends Scene {
 		loadingBar = new ProgressNode();
 		loadingBar.setVisible(false);
 		
-		hBox = new HBox(UserInterface.getFilterPane(), UserInterface.getGalleryPane(), UserInterface.getSelectPane());
+		hBox = new HBox(UserInterface.getFilterPane(), UserInterface.getCenterPane(), UserInterface.getSelectPane());
 		VBox.setVgrow(hBox, Priority.ALWAYS);
 		vBox = new VBox(UserInterface.getToolbarPane(), hBox);
 		vBox.setBackground(DecoratorUtil.getBackgroundPrimary());
@@ -67,7 +66,7 @@ public class MainScene extends Scene {
 				LireUtil.echo(99);
 				break;
 			case ESCAPE:
-				this.viewGallery();
+				UserInterface.getCenterPane().getGalleryPane().toBack(); // TODO test
 				Reload.start();
 				break;
 			case TAB:
@@ -100,8 +99,7 @@ public class MainScene extends Scene {
 				}
 				break;
 			case F:
-				if (this.isViewGallery()) this.viewDisplay();
-				else this.viewGallery();
+				UserInterface.getCenterPane().swapCurrentPane();
 				Reload.start();
 				break;
 			case W:
@@ -142,32 +140,6 @@ public class MainScene extends Scene {
 		}
 	}
 	
-	public void viewGallery() {
-		if (!isViewGallery()) {
-			UserInterface.getDisplayPane().interruptVideoPlayer();
-			
-			hBox.getChildren().setAll(UserInterface.getFilterPane(), UserInterface.getGalleryPane(), UserInterface.getSelectPane());
-			
-			UserInterface.getGalleryPane().requestFocus();
-			UserInterface.getGalleryPane().moveViewportToTarget();
-			
-			Reload.notify(Notifier.VIEWMODE_CHANGED);
-		}
-	}
-	public void viewDisplay() {
-		if (isViewGallery()) {
-			hBox.getChildren().setAll(UserInterface.getFilterPane(), UserInterface.getDisplayPane(), UserInterface.getSelectPane());
-			
-			UserInterface.getDisplayPane().requestFocus();
-			
-			Reload.notify(Notifier.VIEWMODE_CHANGED);
-		}
-	}
-	
-	public boolean isViewGallery() {
-		return hBox.getChildren().contains(UserInterface.getGalleryPane());
-	}
-	
 	public void showLoadingBar(Thread caller, int total) {
 		loadingBar.setup(caller, total);
 		
@@ -200,7 +172,7 @@ public class MainScene extends Scene {
 	public void handleWidthChange(double filterWidth, double selectWidth) {
 		double estimateAvailableWidth = this.getWidth() - filterWidth - selectWidth - 20;
 		
-		TilePane tilePane = UserInterface.getGalleryPane().getTilePane();
+		TilePane tilePane = UserInterface.getCenterPane().getGalleryPane().getTilePane();
 		double tileSize = tilePane.getPrefTileWidth();
 		double increment = tileSize + tilePane.getHgap();
 		

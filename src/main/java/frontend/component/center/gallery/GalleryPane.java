@@ -1,4 +1,4 @@
-package frontend.component.gallery;
+package frontend.component.center.gallery;
 
 import backend.BaseList;
 import backend.entity.Entity;
@@ -16,8 +16,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -72,9 +70,7 @@ public class GalleryPane extends ScrollPane {
 		localCursorPositionX = 0;
 		localCursorPositionY = 0;
 		
-		HBox.setHgrow(this, Priority.ALWAYS);
 		this.setFitToWidth(true);
-		
 		this.setMinViewportWidth(actualTileSize);
 		this.setMinViewportHeight(actualTileSize + 2 * GAP);
 		this.setContent(tilePane);
@@ -271,7 +267,7 @@ public class GalleryPane extends ScrollPane {
 	public void moveViewportToTarget() {
 		if (this.getHeight() > 0) {
 			Entity currentTarget = Main.SELECT.getTarget();
-			if (!UserInterface.getStage().getMainScene().isViewGallery() || currentTarget == null) return;
+			if (!UserInterface.getCenterPane().isViewGallery() || currentTarget == null) return;
 			if (currentTarget.hasGroup() && !currentTarget.getEntityGroup().isOpen()) {
 				currentTarget = currentTarget.getEntityGroup().getFirst();
 			}

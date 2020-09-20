@@ -1,4 +1,4 @@
-package frontend.component.gallery;
+package frontend.component.center.gallery;
 
 import backend.entity.Entity;
 import backend.misc.Direction;
@@ -148,7 +148,7 @@ public class Tile extends Pane {
 	
 	private void clickOnTile(MouseEvent event) {
 		if (event.getClickCount() % 2 == 0) {
-			UserInterface.getStage().getMainScene().viewDisplay();
+			UserInterface.getCenterPane().swapCurrentPane();
 		} else {
 			if (event.isShiftDown()) {
 				Main.SELECT.shiftSelectTo(entity);

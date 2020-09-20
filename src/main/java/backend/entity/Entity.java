@@ -4,7 +4,7 @@ import backend.BaseList;
 import backend.group.EntityGroup;
 import backend.misc.FileUtil;
 import com.google.gson.annotations.SerializedName;
-import frontend.component.gallery.Tile;
+import frontend.component.center.gallery.Tile;
 import main.Main;
 
 import java.io.File;
