@@ -51,6 +51,7 @@ public class DisplayPane extends StackPane {
 		canvasPane = new StackPane(canvas1, canvas2);
 		holderPane = new BorderPane(canvasPane);
 		
+		Duration transitionAnimationLength = new Duration(1000);
 		fadeCanvas1 = new FadeTransition(transitionAnimationLength, canvas1);
 		fadeCanvas2 = new FadeTransition(transitionAnimationLength, canvas2);
 		
@@ -73,12 +74,12 @@ public class DisplayPane extends StackPane {
 		fadeCanvas2.setFromValue(0);
 		fadeCanvas2.setToValue(1);
 		
-		//		gifPlayer.fitWidthProperty().bind(UserInterface.getCenterPane().getGalleryPane().widthProperty());
-		//		gifPlayer.fitHeightProperty().bind(UserInterface.getCenterPane().getGalleryPane().heightProperty());
+		gifPlayer.fitWidthProperty().bind(this.widthProperty());
+		gifPlayer.fitHeightProperty().bind(this.heightProperty());
 		
 		/* Controls */
 		controls.setVisible(false);
-		//		controls.prefWidthProperty().bind(this.widthProperty());
+		controls.prefWidthProperty().bind(this.widthProperty());
 		
 		PauseTransition autoHideDelay = new PauseTransition();
 		autoHideDelay.setOnFinished(event -> controls.setVisible(false));
@@ -103,7 +104,6 @@ public class DisplayPane extends StackPane {
 		this.initEvents();
 	}
 	
-	private final Duration transitionAnimationLength = new Duration(1000);
 	private final Canvas canvas1 = new Canvas();
 	private final Canvas canvas2 = new Canvas();
 	private Canvas activeCanvas;
@@ -196,7 +196,6 @@ public class DisplayPane extends StackPane {
 				Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
 				
 				if (readers.hasNext()) {
-					//Get the first available ImageReader
 					ImageReader reader = readers.next();
 					reader.setInput(iis, true);
 					
@@ -307,9 +306,6 @@ public class DisplayPane extends StackPane {
 		ClickMenu.install(holderPane, Direction.NONE, MouseButton.SECONDARY, ListMenu.Preset.ENTITY);
 	}
 	
-	public void interruptVideoPlayer() {
-		if (videoPlayer != null && videoPlayer.isPlaying()) videoPlayer.pause();
-	}
 	public void disposeVideoPlayer() {
 		if (videoPlayer != null) videoPlayer.dispose();
 	}

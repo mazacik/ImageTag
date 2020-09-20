@@ -66,7 +66,7 @@ public class MainScene extends Scene {
 				LireUtil.echo(99);
 				break;
 			case ESCAPE:
-				UserInterface.getCenterPane().getGalleryPane().toBack(); // TODO test
+				UserInterface.getCenterPane().showGalleryPane();
 				Reload.start();
 				break;
 			case TAB:

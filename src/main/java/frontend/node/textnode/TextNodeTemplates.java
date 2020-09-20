@@ -336,7 +336,7 @@ public enum TextNodeTemplates {
 				ListMenu.hideMenus();
 				
 				if (Main.SELECT.getTarget() != null) {
-					UserInterface.getCenterPane().getGalleryPane().toBack(); // TODO test
+					UserInterface.getCenterPane().showGalleryPane();
 					Main.FILTER.showSimilar(Main.SELECT.getTarget());
 					Reload.start();
 				}
