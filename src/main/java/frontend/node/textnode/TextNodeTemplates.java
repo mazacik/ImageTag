@@ -418,19 +418,19 @@ public enum TextNodeTemplates {
 	},
 	TAG_EDIT {
 		public TextNode get() {
-			TextNode textNode = new TextNode("Edit Tag", true, true, false, true, this);
+			TextNode textNode = new TextNode("Edit", true, true, false, true, this);
 			setupNode(textNode);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				TagUtil.edit(TagUtil.getCurrentNode().getText());
+				TagUtil.edit();
 				
 				Reload.start();
 			});
 			return textNode;
 		}
 	},
-	TAG_REMOVE_CHILDREN {
+	TAG_REMOVE {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Remove", true, true, false, true, this);
 			setupNode(textNode);
@@ -438,6 +438,20 @@ public enum TextNodeTemplates {
 				ListMenu.hideMenus();
 				
 				TagUtil.remove();
+				
+				Reload.start();
+			});
+			return textNode;
+		}
+	},
+	TAG_DELETE {
+		public TextNode get() {
+			TextNode textNode = new TextNode("Delete", true, true, false, true, this);
+			setupNode(textNode);
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ListMenu.hideMenus();
+				
+				TagUtil.delete();
 				
 				Reload.start();
 			});

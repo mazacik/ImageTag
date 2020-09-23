@@ -57,7 +57,7 @@ public class SelectPane extends VBox {
 	
 	private void initResizeHandlers() {
 		this.addEventFilter(MouseEvent.MOUSE_MOVED, event -> {
-			if (event.getY() <= DRAG_AREA_HEIGHT) {
+			if (event.getY() > this.getHeight() - DRAG_AREA_HEIGHT) {
 				UserInterface.getStage().getScene().setCursor(Cursor.N_RESIZE);
 			} else {
 				UserInterface.getStage().getScene().setCursor(Cursor.DEFAULT);
@@ -71,7 +71,7 @@ public class SelectPane extends VBox {
 		final double[] start = new double[]{-1, -1};
 		this.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
-				if (event.getY() <= DRAG_AREA_HEIGHT) {
+				if (event.getY() > this.getHeight() - DRAG_AREA_HEIGHT) {
 					start[0] = event.getSceneY();
 					start[1] = this.getHeight();
 				}
@@ -80,7 +80,7 @@ public class SelectPane extends VBox {
 		
 		this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
-				if (event.getY() <= DRAG_AREA_HEIGHT) {
+				if (event.getY() > this.getHeight() - DRAG_AREA_HEIGHT) {
 					event.consume();
 				}
 			}
@@ -89,7 +89,7 @@ public class SelectPane extends VBox {
 		this.addEventFilter(MouseEvent.MOUSE_DRAGGED, event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
 				if (start[0] > 0) {
-					double height = start[0] - event.getSceneY() + start[1];
+					double height = event.getSceneY() - start[0] + start[1];
 					if (height > DRAG_AREA_HEIGHT) this.setMinHeight(height);
 				}
 			}

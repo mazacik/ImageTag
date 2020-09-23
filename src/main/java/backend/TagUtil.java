@@ -26,7 +26,8 @@ public class TagUtil {
 			Reload.notify(Notifier.TAGLIST_CHANGED);
 		}
 	}
-	public static void edit(String tag) {
+	public static void edit() {
+		String tag = currentNode.getText();
 		int index = Main.TAGLIST.indexOf(tag);
 		if (index != -1) {
 			String newTag = new TagEditStage().edit(tag);
@@ -48,6 +49,12 @@ public class TagUtil {
 		}
 	}
 	public static void remove() {
+		String tag = currentNode.getText();
+		if (Main.TAGLIST.contains(tag)) {
+			Main.SELECT.removeTag(tag);
+		}
+	}
+	public static void delete() {
 		String tag = currentNode.getText();
 		if (Main.TAGLIST.contains(tag)) {
 			Main.TAGLIST.remove(tag);

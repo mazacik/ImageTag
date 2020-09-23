@@ -88,7 +88,8 @@ public abstract class ListMenu extends Popup {
 		       ArrowTextNodeTemplates.TOOLS.get()
 		),
 		TAG(TextNodeTemplates.TAG_EDIT.get(),
-		    TextNodeTemplates.TAG_REMOVE_CHILDREN.get()
+		    TextNodeTemplates.TAG_REMOVE.get(),
+		    TextNodeTemplates.TAG_DELETE.get()
 		),
 		;
 		

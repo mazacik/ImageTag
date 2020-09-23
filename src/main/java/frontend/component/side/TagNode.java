@@ -10,6 +10,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import main.Main;
 
@@ -41,6 +42,8 @@ public class TagNode extends BorderPane {
 					break;
 			}
 		});
+		this.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> this.setBackground(DecoratorUtil.getBackgroundSecondary()));
+		this.addEventFilter(MouseEvent.MOUSE_EXITED, event -> this.setBackground(Background.EMPTY));
 		
 		this.setLeft(tagNode);
 		this.setRight(countNode);
