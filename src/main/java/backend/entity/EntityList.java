@@ -1,6 +1,8 @@
 package backend.entity;
 
 import backend.BaseList;
+import backend.Pair;
+import backend.PairList;
 import backend.misc.FileUtil;
 import backend.reload.Notifier;
 import backend.reload.Reload;
@@ -124,6 +126,20 @@ public class EntityList extends BaseList<Entity> {
 		Reload.notify(Notifier.SELECT_TAGLIST_CHANGED);
 	}
 	
+	public PairList<String, Integer> getTagListWithCount() {
+		PairList<String, Integer> tagList = new PairList<>();
+		
+		this.forEach(entity -> entity.getTagList().forEach(tag -> {
+			Pair<String, Integer> pair = tagList.getPair(tag);
+			if (pair != null) {
+				pair.setValue(pair.getValue() + 1);
+			} else {
+				tagList.add(new Pair<>(tag, 1));
+			}
+		}));
+		
+		return tagList;
+	}
 	public BaseList<String> getTagList() {
 		BaseList<String> tagList = new BaseList<>();
 		this.forEach(entity -> tagList.addAll(entity.getTagList(), true));

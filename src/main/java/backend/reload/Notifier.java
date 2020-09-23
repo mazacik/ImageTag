@@ -18,7 +18,7 @@ public enum Notifier {
 	VIEWMODE_CHANGED,
 	;
 	
-	private BaseList<InvokeHelper> invokeHelpers;
+	private final BaseList<InvokeHelper> invokeHelpers;
 	
 	Notifier() {
 		this.invokeHelpers = new BaseList<>();

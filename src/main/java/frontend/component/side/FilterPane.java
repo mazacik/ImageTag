@@ -2,9 +2,10 @@ package frontend.component.side;
 
 import backend.reload.Notifier;
 import backend.reload.Reload;
-import frontend.UserInterface;
 import frontend.decorator.DecoratorUtil;
+import frontend.node.ListBox;
 import frontend.node.override.HBox;
+import frontend.node.override.VBox;
 import frontend.node.textnode.TextNode;
 import frontend.node.textnode.TextNodeTemplates;
 import frontend.stage.settings.SettingsStage;
@@ -13,13 +14,21 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Priority;
 import main.Main;
 
-public class FilterPane extends SidePaneBase {
+import static frontend.stage.primary.scene.MainScene.SIDEPANE_WIDTH;
+
+public class FilterPane extends VBox {
 	private boolean bHidden = false;
 	
 	private final TextNode nodeText;
 	
+	private final ListBox listBox;
+	
 	public FilterPane() {
 		nodeText = new TextNode("", false, false, false, true);
+		
+		listBox = new ListBox();
+		this.setMinWidth(SIDEPANE_WIDTH);
+		this.setMaxWidth(SIDEPANE_WIDTH);
 	}
 	
 	public void initialize() {
@@ -54,14 +63,14 @@ public class FilterPane extends SidePaneBase {
 				this.getChildren().setAll(btnHide);
 				this.setMinWidth(btnHide.getWidth() + 1);
 				this.setMaxWidth(btnHide.getWidth() + 1);
-				UserInterface.getStage().getMainScene().handleWidthChange(btnHide.getWidth() + 1, UserInterface.getSelectPane().getWidth());
+				//				UserInterface.getStage().getMainScene().handleWidthChange(btnHide.getWidth() + 1, UserInterface.getSelectPane().getWidth());
 			} else {
 				btnHide.setText(cHide);
 				this.getChildren().setAll(boxButtons, listBox);
 				boxButtons.getChildren().add(btnHide);
-				this.setMinWidth(WIDTH);
-				this.setMaxWidth(WIDTH);
-				UserInterface.getStage().getMainScene().handleWidthChange(WIDTH, UserInterface.getSelectPane().getWidth());
+				this.setMinWidth(SIDEPANE_WIDTH);
+				this.setMaxWidth(SIDEPANE_WIDTH);
+				//				UserInterface.getStage().getMainScene().handleWidthChange(SIDEPANE_WIDTH, UserInterface.getSelectPane().getWidth());
 			}
 		});
 		
@@ -69,6 +78,13 @@ public class FilterPane extends SidePaneBase {
 		
 		this.setBorder(DecoratorUtil.getBorder(0, 1, 0, 0));
 		this.getChildren().addAll(boxButtons, listBox);
+	}
+	
+	public boolean reload() {
+		listBox.getNodes().clear();
+		Main.TAGLIST.forEach(tag -> listBox.getNodes().add(new TagNode(tag, 123)));
+		
+		return true;
 	}
 	
 	public boolean refresh() {

@@ -16,8 +16,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class TitleBar extends BorderPane {
 	private TextNode nodeTitle;
-	private TextNode nodeMinimize;
-	private TextNode nodeExit;
+	private final TextNode nodeMinimize;
+	private final TextNode nodeExit;
 	
 	public TitleBar() {
 		this(null, "");

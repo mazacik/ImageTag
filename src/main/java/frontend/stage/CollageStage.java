@@ -129,8 +129,8 @@ public class CollageStage extends Stage {
 	}
 	
 	private static class CollagePiece {
-		private Image image;
-		private Color averageColor;
+		private final Image image;
+		private final Color averageColor;
 		
 		public CollagePiece(Image image, Color averageColor) {
 			this.image = image;

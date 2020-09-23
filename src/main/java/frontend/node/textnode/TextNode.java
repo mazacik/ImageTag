@@ -20,6 +20,9 @@ public class TextNode extends Label {
 	
 	//todo add a way to lock background (use in SettingsStage)
 	
+	public TextNode() {
+		this("");
+	}
 	public TextNode(String text) {
 		this(text, false, false, false, false);
 	}

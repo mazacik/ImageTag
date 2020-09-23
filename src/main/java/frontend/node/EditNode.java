@@ -20,7 +20,7 @@ public class EditNode extends TextField {
 	}
 	public EditNode(String text, String promptText, EditNodeType type) {
 		this.setFont(DecoratorUtil.getFont());
-		this.setBorder(DecoratorUtil.getBorder(1, 1, 1, 1));
+		this.setBorder(DecoratorUtil.getBorder(1));
 		if (!text.isEmpty()) this.setText(text);
 		if (!promptText.isEmpty()) this.setPromptText(promptText);
 		//this.skinProperty().addListener((observable, oldValue, newValue) -> setStyle("-fx-text-fill: " + Decorator.getColorAsStringForCss(ColorUtil.getColorPrimary()) + "; -fx-prompt-text-fill: gray;"));

@@ -156,7 +156,7 @@ public class ImportStage extends BaseStage {
 			nodes.add(checkBox);
 			nodes.add(new SeparatorNode());
 		});
-		listBoxFilesInDirectory.setNodes(nodes);
+		listBoxFilesInDirectory.getNodes().setAll(nodes);
 		
 		this.setRoot(boxListFilesToImport);
 		this.setButtons(nodeBack, nodeImport);

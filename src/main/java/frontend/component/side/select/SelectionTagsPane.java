@@ -3,129 +3,183 @@ package frontend.component.side.select;
 import backend.BaseList;
 import backend.misc.Direction;
 import backend.reload.Reload;
-import frontend.component.side.SidePaneBase;
 import frontend.component.side.TagNode;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.EditNode;
-import javafx.scene.layout.Background;
+import frontend.node.ListBox;
+import frontend.node.textnode.TextNode;
+import javafx.event.EventHandler;
+import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Popup;
 import main.Main;
 
-public class SelectionTagsPane extends SidePaneBase {
-	private final EditNode nodeSearch;
+import java.util.Comparator;
+
+public class SelectionTagsPane extends VBox {
+	private final EditNode searchNode;
+	private boolean textPropertyLock = false;
+	private final Popup searchPopup;
+	private final ListBox searchBox;
 	
-	private TagNode match;
-	private String query;
-	private boolean searchLock = false;
+	private final TilePane tilePane = new TilePane();
 	
 	public SelectionTagsPane() {
-		nodeSearch = new EditNode("", "Quick Search");
-		nodeSearch.setBorder(DecoratorUtil.getBorder(0, 0, 1, 0));
-		nodeSearch.textProperty().addListener((observable, oldValue, newValue) -> searchTextChangeHandler(newValue));
-		nodeSearch.setOnAction(event -> this.searchOnActionHandler());
+		searchNode = new EditNode();
+		searchNode.setPromptText("Quick Search");
+		searchNode.setPadding(new Insets(2));
 		
-		getChildren().addAll(nodeSearch, listBox);
+		searchBox = new ListBox();
+		searchBox.setMaxHeight(300);
+		searchBox.setBorder(DecoratorUtil.getBorder(1));
+		searchBox.setBackground(DecoratorUtil.getBackgroundPrimary());
+		searchBox.minWidthProperty().bind(searchNode.widthProperty());
+		
+		searchPopup = new Popup();
+		searchPopup.getContent().add(searchBox);
+		
+		tilePane.setVgap(3);
+		tilePane.setHgap(3);
+		tilePane.setAlignment(Pos.CENTER);
+		tilePane.setPadding(new Insets(3));
+		
+		initEvents();
+		getChildren().addAll(tilePane);
 	}
-	
-	private void searchTextChangeHandler(String newValue) {
-		if (!searchLock) {
-			if (match != null) {
-				match.setBackground(Background.EMPTY);
-				match.setBackgroundLock(false);
-				match = null;
+	private void initEvents() {
+		searchNode.boundsInParentProperty().addListener((observable, oldValue, newValue) -> {
+			// TODO when main window gets moved around, popup doesn't follow it
+			Bounds boundsOnScreen = searchNode.localToScreen(searchNode.parentToLocal(newValue));
+			searchPopup.setAnchorX(boundsOnScreen.getMinX());
+			searchPopup.setAnchorY(boundsOnScreen.getMaxY() - 1);
+		});
+		
+		searchNode.focusedProperty().addListener((observable, oldValue, newValue) -> {
+			if (!newValue) {
+				searchPopup.hide();
 			}
-			
-			if (!newValue.isEmpty()) {
-				query = newValue.toLowerCase();
-				for (TagNode tagNode : tagNodes) {
-					if (tagNode.getText().toLowerCase().contains(query)) {
-						match = tagNode;
-						match.setBackground(DecoratorUtil.getBackgroundSecondary());
-						match.setBackgroundLock(true);
-						listBox.moveViewportToMatch(tagNodes, match);
-						break;
+		});
+		
+		searchNode.textProperty().addListener((observable, oldValue, newValue) -> {
+			if (!textPropertyLock) {
+				searchBox.getNodes().clear();
+				
+				String newValueLowerCase = newValue.toLowerCase();
+				for (String tag : Main.TAGLIST) {
+					String tagLowerCase = tag.toLowerCase();
+					if (tagLowerCase.contains(newValueLowerCase)) {
+						addTextNode(tag);
 					}
 				}
+				searchBox.moveFocus(Direction.DOWN);
+				
+				showSearchPopup();
 			}
-		}
+		});
+		EventHandler<KeyEvent> keyPressEvent = event -> {
+			switch (event.getCode()) {
+				case ENTER:
+					event.consume();
+					Region region = searchBox.getCurrentFocus();
+					if (region instanceof TextNode) {
+						TextNode currentFocus = (TextNode) region;
+						if (searchPopup.isShowing()) {
+							textPropertyLock = true;
+							searchPopup.hide();
+							searchNode.setText(currentFocus.getText());
+							textPropertyLock = false;
+						} else {
+							String tag = currentFocus.getText();
+							if (Main.TAGLIST.contains(tag)) {
+								Main.SELECT.addTag(tag);
+								searchNode.clear();
+								Reload.start();
+							}
+						}
+					}
+					break;
+				case UP:
+					event.consume();
+					searchBox.moveFocus(Direction.UP);
+					break;
+				case TAB:
+				case DOWN:
+					event.consume();
+					searchBox.moveFocus(Direction.DOWN);
+					break;
+				default:
+					break;
+			}
+		};
+		
+		searchNode.addEventFilter(KeyEvent.KEY_PRESSED, keyPressEvent);
+		searchBox.addEventFilter(KeyEvent.KEY_PRESSED, keyPressEvent);
+		
+		searchNode.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+			searchNode.setText("");
+			showSearchPopup();
+		});
 	}
-	private void searchOnActionHandler() {
-		if (match != null) {
-			match.setBackground(Background.EMPTY);
-			match.setBackgroundLock(false);
-			
-			searchLock = true;
-			nodeSearch.clear();
-			searchLock = false;
-			
-			if (Main.SELECT.getTagListIntersect().contains(match.getText())) {
-				Main.SELECT.removeTag(match.getText());
-			} else {
-				Main.SELECT.addTag(match.getText());
+	
+	private void addTextNode(String tag) {
+		TextNode textNode = new TextNode(tag);
+		textNode.setAlignment(Pos.CENTER_LEFT);
+		textNode.setMaxWidth(Double.MAX_VALUE);
+		textNode.setPadding(new Insets(0, 5, 0, 5));
+		
+		textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+			textPropertyLock = true;
+			searchPopup.hide();
+			searchNode.setText(textNode.getText());
+			textPropertyLock = false;
+		});
+		textNode.addEventFilter(MouseEvent.MOUSE_MOVED, event -> {
+			if (textNode != searchBox.getCurrentFocus()) {
+				if (searchBox.getCurrentFocus() != null) {
+					searchBox.getCurrentFocus().setBackground(DecoratorUtil.getBackgroundPrimary());
+				}
+				searchBox.setCurrentFocus(textNode);
+				textNode.setBackground(DecoratorUtil.getBackgroundSecondary());
 			}
-			
-			Reload.start();
-		}
+		});
+		
+		searchBox.getNodes().add(textNode);
 	}
 	
 	public void refresh() {
-		BaseList<String> stringListIntersect = new BaseList<>(Main.SELECT.getTagListIntersect());
-		BaseList<String> stringListUnion = new BaseList<>(Main.SELECT.getTagList());
+		reload();
+	}
+	public boolean reload() {
+		BaseList<TagNode> tagNodes = new BaseList<>();
 		
-		tagNodes.forEach(tagNode -> refreshNodeColor(tagNode, stringListIntersect, stringListUnion));
-	}
-	private void refreshNodeColor(TagNode tagNode, BaseList<String> stringListIntersect, BaseList<String> stringListUnion) {
-		for (String stringTag : stringListIntersect) {
-			if (stringTag.startsWith(tagNode.getText())) {
-				tagNode.setTextFill(DecoratorUtil.getColorPositive());
-				return;
-			}
+		Main.SELECT.getTagListWithCount().forEach(pair -> tagNodes.add(new TagNode(pair.getKey(), pair.getValue())));
+		tagNodes.sort(Comparator.comparing(TagNode::getText));
+		
+		tilePane.getChildren().clear();
+		tilePane.getChildren().add(searchNode);
+		tilePane.getChildren().addAll(tagNodes);
+		
+		searchBox.getNodes().clear();
+		for (String tag : Main.TAGLIST) {
+			addTextNode(tag);
 		}
-		for (String stringTag : stringListUnion) {
-			if (stringTag.startsWith(tagNode.getText())) {
-				tagNode.setTextFill(DecoratorUtil.getColorUnion());
-				return;
-			}
-		}
-		tagNode.setTextFill(DecoratorUtil.getColorPrimary());
+		searchBox.moveFocus(Direction.DOWN);
+		
+		return true;
 	}
 	
-	public void nextMatch(Direction searchDirection, boolean isControlDown) {
-		if (match != null) {
-			int i = tagNodes.indexOf(match);
-			TagNode tagNode;
-			
-			do {
-				switch (searchDirection) {
-					case UP:
-						i--;
-						break;
-					case DOWN:
-						i++;
-						break;
-					default:
-						throw new IllegalArgumentException("Invalid search direction: " + searchDirection.name());
-				}
-				
-				if (i < 0) {
-					i = tagNodes.size() - 1;
-				} else if (i == tagNodes.size()) {
-					i = 0;
-				}
-				
-				tagNode = tagNodes.get(i);
-				
-			} while (isControlDown && !tagNode.getText().toLowerCase().contains(query));
-			
-			match.setBackground(Background.EMPTY);
-			match.setBackgroundLock(false);
-			
-			match = tagNode;
-			match.setBackground(DecoratorUtil.getBackgroundSecondary());
-			match.setBackgroundLock(true);
-		}
+	private void showSearchPopup() {
+		Bounds bounds = searchNode.localToScreen(searchNode.getBoundsInLocal());
+		searchPopup.show(searchNode, bounds.getMinX(), bounds.getMaxY() - 1);
 	}
 	
-	public EditNode getNodeSearch() {
-		return nodeSearch;
+	public EditNode getSearchNode() {
+		return searchNode;
 	}
 }

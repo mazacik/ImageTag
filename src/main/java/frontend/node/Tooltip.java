@@ -11,9 +11,9 @@ import javafx.stage.Popup;
 import javafx.util.Duration;
 
 public class Tooltip extends Popup {
-	private TextNode textNode;
+	private final TextNode textNode;
 	
-	private Timeline timeline;
+	private final Timeline timeline;
 	private double eventX;
 	private double eventY;
 	

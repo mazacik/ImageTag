@@ -5,7 +5,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
 public class SimpleMessageStage extends BaseStage {
-	private TextNode nodeMessage;
+	private final TextNode nodeMessage;
 	
 	public SimpleMessageStage(String title, String message) {
 		super("", 0.15);

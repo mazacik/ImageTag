@@ -2,18 +2,18 @@ package backend;
 
 import backend.reload.Notifier;
 import backend.reload.Reload;
-import frontend.node.textnode.TextNode;
+import frontend.component.side.TagNode;
 import frontend.stage.TagEditStage;
 import main.Main;
 
 import java.util.Comparator;
 
 public class TagUtil {
-	public static TextNode currentNode;
-	public static TextNode getCurrentNode() {
+	public static TagNode currentNode;
+	public static TagNode getCurrentNode() {
 		return currentNode;
 	}
-	public static void setCurrentNode(TextNode currentNode) {
+	public static void setCurrentNode(TagNode currentNode) {
 		TagUtil.currentNode = currentNode;
 	}
 	

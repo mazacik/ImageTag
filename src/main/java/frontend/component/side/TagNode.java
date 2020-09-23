@@ -2,99 +2,53 @@ package frontend.component.side;
 
 import backend.TagUtil;
 import backend.misc.Direction;
-import backend.reload.Reload;
-import frontend.UserInterface;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.menu.ClickMenu;
 import frontend.node.menu.ListMenu;
 import frontend.node.textnode.TextNode;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
+import javafx.scene.layout.BorderPane;
 import main.Main;
 
-public class TagNode extends TextNode {
-	private boolean backgroundLock = false;
+public class TagNode extends BorderPane {
+	private final TextNode tagNode = new TextNode();
+	private final TextNode countNode = new TextNode();
 	
 	static {
 		ClickMenu.register(TagNode.class, ListMenu.Preset.TAG);
 	}
 	
-	public TagNode(String tag) {
-		super(tag);
+	public TagNode(String tag, int count) {
+		tagNode.setText(tag);
+		tagNode.setAlignment(Pos.CENTER_LEFT);
 		
-		if (Main.FILTER.getFilterListManager().isWhite(tag)) {
-			setTextFill(DecoratorUtil.getColorPositive());
-		} else if (Main.FILTER.getFilterListManager().isBlack(tag)) {
-			setTextFill(DecoratorUtil.getColorNegative());
-		}
+		int percent = (int) Math.floor((double) count / (double) Main.SELECT.size() * 100);
+		countNode.setText(percent + "%");
+		countNode.setPrefWidth(50);
+		countNode.setAlignment(Pos.CENTER_RIGHT);
 		
-		this.setAlignment(Pos.CENTER_LEFT);
-		this.setPadding(new Insets(0, 0, 0, 10));
+		this.setMinWidth(200);
+		this.setPadding(new Insets(2, 5, 2, 5));
+		this.setBorder(DecoratorUtil.getBorder(1));
 		this.setMaxWidth(Double.MAX_VALUE);
-		this.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
-			if (!backgroundLock) {
-				this.setBackground(DecoratorUtil.getBackgroundSecondary());
-			}
-		});
-		this.addEventFilter(MouseEvent.MOUSE_EXITED, event -> {
-			if (!backgroundLock) {
-				this.setBackground(Background.EMPTY);
-			}
-		});
 		this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			switch (event.getButton()) {
-				case PRIMARY:
-					Node parentPane = getParentPane(event);
-					if (parentPane == UserInterface.getFilterPane()) {
-						clickFilter();
-					} else if (parentPane == UserInterface.getSelectPane()) {
-						clickSelect();
-					}
-					Reload.start();
-					break;
 				case SECONDARY:
 					TagUtil.setCurrentNode(this);
 					break;
 			}
 		});
 		
+		this.setLeft(tagNode);
+		this.setRight(countNode);
+		
 		ClickMenu.install(this, Direction.NONE, MouseButton.SECONDARY);
 	}
 	
-	private void clickFilter() {
-		if (Main.FILTER.getFilterListManager().isWhite(getText())) {
-			Main.FILTER.getFilterListManager().blacklist(getText());
-			setTextFill(DecoratorUtil.getColorNegative());
-		} else if (Main.FILTER.getFilterListManager().isBlack(getText())) {
-			Main.FILTER.getFilterListManager().unlist(getText());
-			setTextFill(DecoratorUtil.getColorPrimary());
-		} else {
-			Main.FILTER.getFilterListManager().whitelist(getText());
-			setTextFill(DecoratorUtil.getColorPositive());
-		}
-	}
-	private void clickSelect() {
-		if (getTextFill().equals(DecoratorUtil.getColorPositive()) || getTextFill().equals(DecoratorUtil.getColorUnion())) {
-			Main.SELECT.removeTag(getText());
-		} else {
-			Main.SELECT.addTag(getText());
-		}
-	}
-	
-	private Node getParentPane(MouseEvent event) {
-		Node node = (Node) event.getSource();
-		while (true) {
-			if (node == null) return null;
-			if (node == UserInterface.getFilterPane() || node == UserInterface.getSelectPane()) return node;
-			node = node.getParent();
-		}
-	}
-	
-	public void setBackgroundLock(boolean backgroundLock) {
-		this.backgroundLock = backgroundLock;
+	public String getText() {
+		return tagNode.getText();
 	}
 }

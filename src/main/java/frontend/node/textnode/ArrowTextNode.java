@@ -16,10 +16,10 @@ public class ArrowTextNode extends BorderPane {
 	private static final int PADDING_H = 10;
 	private static final Insets insets = new Insets(PADDING_V, PADDING_H, PADDING_V, PADDING_H);
 	
-	private ArrowTextNodeTemplates template;
+	private final ArrowTextNodeTemplates template;
 	
-	private Label nodeMain;
-	private Label nodeArrow;
+	private final Label nodeMain;
+	private final Label nodeArrow;
 	
 	public ArrowTextNode(String text, boolean hoverBackground, boolean hoverText, boolean hoverCursor, boolean defaultPadding) {
 		this(text, hoverBackground, hoverText, hoverCursor, defaultPadding, null);

@@ -12,7 +12,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 
 public class TitlePane extends BorderPane {
-	private TextNode titleNode;
+	private final TextNode titleNode;
 	
 	public TitlePane(String title, Node content) {
 		titleNode = new TextNode(title);

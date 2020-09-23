@@ -3,7 +3,6 @@ package frontend.component.top;
 import backend.entity.Entity;
 import backend.misc.Direction;
 import backend.reload.Reload;
-import frontend.decorator.DecoratorUtil;
 import frontend.node.SeparatorNode;
 import frontend.node.menu.ClickMenu;
 import frontend.node.menu.ListMenu;
@@ -91,7 +90,6 @@ public class ToolbarPane extends BorderPane {
 		HBox boxRight = new HBox(btnFavorite, nodeTarget);
 		//		boxRight.prefWidthProperty().bind(UserInterface.getSelectPane().widthProperty());
 		
-		this.setBorder(DecoratorUtil.getBorder(0, 0, 1, 0));
 		this.setLeft(boxCenter);
 		this.setRight(boxRight);
 	}

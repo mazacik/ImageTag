@@ -39,6 +39,7 @@ public class GalleryPane extends ScrollPane {
 	
 	public GalleryPane() {
 		tilePane = new TilePane(GAP, GAP);
+		tilePane.widthProperty().addListener((observable, oldValue, newValue) -> this.calcPrefColumns());
 		
 		tileEntities = new EntityList();
 		tiles = new BaseList<>();
@@ -303,6 +304,26 @@ public class GalleryPane extends ScrollPane {
 					this.setVvalue(vValue);
 				}
 			}
+		}
+	}
+	
+	public void calcPrefColumns() {
+		double tilePaneWidth = tilePane.getWidth();
+		double tileSize = tilePane.getPrefTileWidth();
+		double increment = tileSize + tilePane.getHgap();
+		
+		double calcViewportWidth = 0;
+		while (calcViewportWidth + increment <= tilePaneWidth) {
+			calcViewportWidth += increment;
+		}
+		
+		int prefColumnsNew = (int) (calcViewportWidth / tileSize);
+		int prefColumnsOld = tilePane.getPrefColumns();
+		
+		if (prefColumnsNew <= 0) prefColumnsNew = 1;
+		
+		if (prefColumnsNew != prefColumnsOld) {
+			tilePane.setPrefColumns(prefColumnsNew);
 		}
 	}
 	

@@ -2,38 +2,33 @@ package frontend.stage.primary.scene;
 
 import backend.entity.Entity;
 import backend.lire.LireUtil;
-import backend.misc.Direction;
 import backend.reload.Reload;
 import frontend.UserInterface;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.EditNode;
 import frontend.node.ProgressNode;
+import frontend.node.SeparatorNode;
 import frontend.node.menu.ListMenu;
-import frontend.node.override.HBox;
 import frontend.node.override.Scene;
 import frontend.node.override.VBox;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
+import javafx.scene.control.ComboBox;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.TilePane;
 import main.Main;
-
-import static frontend.component.side.SidePaneBase.WIDTH;
 
 public class MainScene extends Scene {
 	private final VBox vBox;
-	private final HBox hBox;
 	private final ProgressNode loadingBar;
+	
+	public static final double SIDEPANE_WIDTH = 300;
 	
 	public MainScene() {
 		loadingBar = new ProgressNode();
 		loadingBar.setVisible(false);
 		
-		hBox = new HBox(UserInterface.getFilterPane(), UserInterface.getCenterPane(), UserInterface.getSelectPane());
-		VBox.setVgrow(hBox, Priority.ALWAYS);
-		vBox = new VBox(UserInterface.getToolbarPane(), hBox);
+		vBox = new VBox(UserInterface.getToolbarPane(), new SeparatorNode(), UserInterface.getSelectPane(), new SeparatorNode(), UserInterface.getCenterPane());
 		vBox.setBackground(DecoratorUtil.getBackgroundPrimary());
 		
 		StackPane stackPane = new StackPane();
@@ -43,12 +38,9 @@ public class MainScene extends Scene {
 		
 		this.setRoot(stackPane);
 		this.getStylesheets().add("/css/Styles.css");
-		this.widthProperty().addListener((observable, oldValue, newValue) -> this.handleWidthChange());
 	}
 	public void processKeyEvent(KeyEvent event) {
-		if (this.getFocusOwner() instanceof EditNode) {
-			keybindsEditNode(event);
-		} else {
+		if (!(this.getFocusOwner() instanceof EditNode) && !(this.getFocusOwner() instanceof ComboBox)) {
 			keybindsGlobal(event);
 		}
 	}
@@ -70,7 +62,7 @@ public class MainScene extends Scene {
 				Reload.start();
 				break;
 			case TAB:
-				UserInterface.getSelectPane().getSelectionTagsPane().getNodeSearch().requestFocus();
+				UserInterface.getSelectPane().getTagsPane().getSearchNode().requestFocus();
 				break;
 			case DELETE:
 				Main.SELECT.deleteSelect();
@@ -118,27 +110,6 @@ public class MainScene extends Scene {
 				break;
 		}
 	}
-	private void keybindsEditNode(KeyEvent event) {
-		switch (event.getCode()) {
-			case ESCAPE:
-			case TAB:
-				vBox.requestFocus();
-				event.consume();
-				break;
-			case UP:
-				if (this.getFocusOwner() == UserInterface.getSelectPane().getSelectionTagsPane().getNodeSearch()) {
-					UserInterface.getSelectPane().getSelectionTagsPane().nextMatch(Direction.UP, event.isControlDown());
-					event.consume();
-				}
-				break;
-			case DOWN:
-				if (this.getFocusOwner() == UserInterface.getSelectPane().getSelectionTagsPane().getNodeSearch()) {
-					UserInterface.getSelectPane().getSelectionTagsPane().nextMatch(Direction.DOWN, event.isControlDown());
-					event.consume();
-				}
-				break;
-		}
-	}
 	
 	public void showLoadingBar(Thread caller, int total) {
 		loadingBar.setup(caller, total);
@@ -163,31 +134,6 @@ public class MainScene extends Scene {
 			loadingBar.advance(caller);
 		} else {
 			Platform.runLater(() -> loadingBar.advance(caller));
-		}
-	}
-	
-	public void handleWidthChange() {
-		handleWidthChange(WIDTH, WIDTH);
-	}
-	public void handleWidthChange(double filterWidth, double selectWidth) {
-		double estimateAvailableWidth = this.getWidth() - filterWidth - selectWidth - 20;
-		
-		TilePane tilePane = UserInterface.getCenterPane().getGalleryPane().getTilePane();
-		double tileSize = tilePane.getPrefTileWidth();
-		double increment = tileSize + tilePane.getHgap();
-		
-		double calcViewportWidth = 0;
-		while (calcViewportWidth + increment <= estimateAvailableWidth) {
-			calcViewportWidth += increment;
-		}
-		
-		int prefColumnsNew = (int) (calcViewportWidth / tileSize);
-		int prefColumnsOld = tilePane.getPrefColumns();
-		
-		if (prefColumnsNew <= 0) prefColumnsNew = 1;
-		
-		if (prefColumnsNew != prefColumnsOld) {
-			tilePane.setPrefColumns(prefColumnsNew);
 		}
 	}
 }
