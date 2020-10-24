@@ -84,7 +84,7 @@ public class IntroScene extends Scene {
 		mainBox.setAlignment(Pos.TOP_CENTER);
 		VBox.setVgrow(mainBox, Priority.ALWAYS);
 		
-		mainBox.setBackground(DecoratorUtil.getBackgroundPrimary());
+		mainBox.setBackground(DecoratorUtil.getBackgroundDefault());
 		
 		this.setRoot(mainBox);
 	}

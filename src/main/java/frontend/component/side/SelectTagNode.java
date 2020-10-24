@@ -1,11 +1,15 @@
 package frontend.component.side;
 
+import backend.misc.Direction;
+import frontend.node.menu.ListMenu;
+import frontend.node.menu.MenuPreset;
+
 public class SelectTagNode extends TagNode {
 	
 	public SelectTagNode(String tag) {
 		super(tag);
 		
-		//		ClickMenu.install(this, MenuPreset.TAG_FILTER, Direction.NONE, MouseButton.SECONDARY);
+		ListMenu.install(this, Direction.NONE, ListMenu.MenuTrigger.CLICK_RIGHT, MenuPreset.TAG_SELECT.getTemplate());
 	}
 	
 }

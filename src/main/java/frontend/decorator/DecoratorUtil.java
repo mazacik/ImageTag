@@ -52,10 +52,10 @@ public abstract class DecoratorUtil {
 		for (Region region : nodeList) {
 			Background background = region.getBackground();
 			if (background != null) {
-				if (background.equals(previousPreset.getBackgroundPrimary())) {
-					region.setBackground(getBackgroundPrimary());
-				} else if (background.equals(previousPreset.getBackgroundSecondary())) {
-					region.setBackground(getBackgroundSecondary());
+				if (background.equals(previousPreset.getBackgroundDefault())) {
+					region.setBackground(getBackgroundDefault());
+				} else if (background.equals(previousPreset.getBackgroundDefaultDark())) {
+					region.setBackground(getBackgroundDefaultDark());
 				}
 			}
 			
@@ -119,11 +119,11 @@ public abstract class DecoratorUtil {
 		return decoratorTemplate.getColorBorder();
 	}
 	
-	public static Background getBackgroundPrimary() {
-		return decoratorTemplate.getBackgroundPrimary();
+	public static Background getBackgroundDefault() {
+		return decoratorTemplate.getBackgroundDefault();
 	}
-	public static Background getBackgroundSecondary() {
-		return decoratorTemplate.getBackgroundSecondary();
+	public static Background getBackgroundDefaultDark() {
+		return decoratorTemplate.getBackgroundDefaultDark();
 	}
 	public static Background getBackground(Color color) {
 		return new Background(new BackgroundFill(color, null, null));

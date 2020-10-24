@@ -33,7 +33,7 @@ public class MainScene extends Scene {
 		boxDefault = new HBox(UserInterface.getFilterPane(), new SeparatorNode(), UserInterface.getCenterPane(), new SeparatorNode(), UserInterface.getSelectPane());
 		
 		vBox = new VBox(UserInterface.getToolbarPane(), new SeparatorNode(), boxDefault);
-		vBox.setBackground(DecoratorUtil.getBackgroundPrimary());
+		vBox.setBackground(DecoratorUtil.getBackgroundDefault());
 		
 		StackPane stackPane = new StackPane();
 		stackPane.getChildren().add(vBox);

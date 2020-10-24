@@ -38,7 +38,7 @@ public class ListMenu extends Popup {
 		vBox = new VBox();
 		vBox.setMinWidth(200);
 		vBox.setBorder(DecoratorUtil.getBorder(1));
-		vBox.setBackground(DecoratorUtil.getBackgroundPrimary());
+		vBox.setBackground(DecoratorUtil.getBackgroundDefault());
 		
 		this.getContent().setAll(vBox);
 		this.setAutoHide(true);

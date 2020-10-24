@@ -60,7 +60,7 @@ public class Controls extends BorderPane {
 		lblTimeCurrent = new TextNode("00:00:00", true, true, false, true);
 		lblTimeTotal = new TextNode("23:59:59", true, true, false, true);
 		
-		this.setBackground(DecoratorUtil.getBackgroundPrimary());
+		this.setBackground(DecoratorUtil.getBackgroundDefault());
 		this.maxHeightProperty().bind(btnPlayPause.heightProperty());
 		DecoratorUtil.getNodeList().add(this);
 		

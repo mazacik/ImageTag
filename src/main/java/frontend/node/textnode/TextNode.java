@@ -45,7 +45,7 @@ public class TextNode extends Label {
 		
 		this.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
 			if (hoverBackground) {
-				this.setBackground(DecoratorUtil.getBackgroundSecondary());
+				this.setBackground(DecoratorUtil.getBackgroundDefaultDark());
 			}
 			if (hoverText) {
 				this.setTextFill(DecoratorUtil.getColorSecondary());

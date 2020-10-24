@@ -83,7 +83,7 @@ public class FilterPane extends VBox {
 	
 	public boolean reload() {
 		listBox.getBox().getChildren().clear();
-		Main.TAGLIST.forEach(tag -> listBox.getBox().getChildren().add(new TagNode(tag)));
+		Main.TAGLIST.forEach(tag -> listBox.getBox().getChildren().add(new FilterTagNode(tag)));
 		
 		return true;
 	}

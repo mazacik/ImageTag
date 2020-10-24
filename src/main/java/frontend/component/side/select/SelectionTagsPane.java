@@ -3,6 +3,7 @@ package frontend.component.side.select;
 import backend.BaseList;
 import backend.misc.Direction;
 import backend.reload.Reload;
+import frontend.component.side.SelectTagNode;
 import frontend.component.side.TagNode;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.EditNode;
@@ -33,7 +34,7 @@ public class SelectionTagsPane extends VBox {
 		
 		searchBox = new ListBox();
 		searchBox.setBorder(DecoratorUtil.getBorder(1));
-		searchBox.setBackground(DecoratorUtil.getBackgroundPrimary());
+		searchBox.setBackground(DecoratorUtil.getBackgroundDefault());
 		
 		tagNodeBox.getBox().setSpacing(3);
 		tagNodeBox.getBox().setAlignment(Pos.CENTER);
@@ -125,10 +126,10 @@ public class SelectionTagsPane extends VBox {
 		textNode.addEventFilter(MouseEvent.MOUSE_MOVED, event -> {
 			if (textNode != searchBox.getCurrentFocus()) {
 				if (searchBox.getCurrentFocus() != null) {
-					searchBox.getCurrentFocus().setBackground(DecoratorUtil.getBackgroundPrimary());
+					searchBox.getCurrentFocus().setBackground(DecoratorUtil.getBackgroundDefault());
 				}
 				searchBox.setCurrentFocus(textNode);
-				textNode.setBackground(DecoratorUtil.getBackgroundSecondary());
+				textNode.setBackground(DecoratorUtil.getBackgroundDefaultDark());
 			}
 		});
 		
@@ -141,7 +142,18 @@ public class SelectionTagsPane extends VBox {
 	public boolean reload() {
 		BaseList<TagNode> tagNodes = new BaseList<>();
 		
-		Main.SELECT.getTagListWithCount().forEach(pair -> tagNodes.add(new TagNode(pair.getKey())));
+		BaseList<String> union = Main.SELECT.getTagList();
+		BaseList<String> intersection = Main.SELECT.getTagListIntersect();
+		
+		Main.SELECT.getTagListWithCount().forEach(pair -> {
+			String tag = pair.getKey();
+			SelectTagNode tagNode = new SelectTagNode(tag);
+			
+			if (union.contains(tag)) tagNode.getTextNode().setTextFill(DecoratorUtil.getColorUnion());
+			if (intersection.contains(tag)) tagNode.getTextNode().setTextFill(DecoratorUtil.getColorPositive());
+			
+			tagNodes.add(tagNode);
+		});
 		tagNodes.sort(Comparator.comparing(TagNode::getText));
 		
 		tagNodeBox.getBox().getChildren().clear();

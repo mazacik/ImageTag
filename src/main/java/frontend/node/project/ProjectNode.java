@@ -42,7 +42,7 @@ public class ProjectNode extends BorderPane {
 		vBoxButtons.setPadding(new Insets(-10, 0, 0, 0));
 		
 		this.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
-			this.setBackground(DecoratorUtil.getBackgroundSecondary());
+			this.setBackground(DecoratorUtil.getBackgroundDefaultDark());
 			this.setCursor(Cursor.HAND);
 			
 			nodeEdit.setVisible(true);

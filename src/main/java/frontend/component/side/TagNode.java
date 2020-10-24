@@ -10,15 +10,14 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 
 public class TagNode extends BorderPane {
-	
-	private final TextNode tagNode = new TextNode();
+	private final TextNode textNode = new TextNode();
 	
 	public TagNode(String tag) {
-		tagNode.setText(tag);
-		tagNode.setAlignment(Pos.CENTER_LEFT);
+		textNode.setText(tag);
+		textNode.setAlignment(Pos.CENTER_LEFT);
 		
-		this.setCenter(tagNode);
-		BorderPane.setAlignment(tagNode, Pos.CENTER_LEFT);
+		this.setCenter(textNode);
+		BorderPane.setAlignment(textNode, Pos.CENTER_LEFT);
 		
 		this.setPadding(new Insets(2, 5, 2, 5));
 		this.setBorder(DecoratorUtil.getBorder(1));
@@ -30,14 +29,14 @@ public class TagNode extends BorderPane {
 					break;
 			}
 		});
-		this.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> this.setBackground(DecoratorUtil.getBackgroundSecondary()));
+		this.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> this.setBackground(DecoratorUtil.getBackgroundDefaultDark()));
 		this.addEventFilter(MouseEvent.MOUSE_EXITED, event -> this.setBackground(Background.EMPTY));
-		
-		//		ClickMenu.install(this, Direction.NONE, MouseButton.SECONDARY);
 	}
 	
 	public String getText() {
-		return tagNode.getText();
+		return textNode.getText();
 	}
-	
+	public TextNode getTextNode() {
+		return textNode;
+	}
 }

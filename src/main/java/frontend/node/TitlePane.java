@@ -25,7 +25,7 @@ public class TitlePane extends BorderPane {
 		rectangle.setHeight(1);
 		rectangle.setTranslateX(4);
 		rectangle.setTranslateY(-1);
-		rectangle.setFill(DecoratorUtil.getBackgroundPrimary().getFills().get(0).getFill());
+		rectangle.setFill(DecoratorUtil.getBackgroundDefault().getFills().get(0).getFill());
 		StackPane.setAlignment(rectangle, Pos.TOP_LEFT);
 		
 		BorderPane contentOffsetHelper = new BorderPane(content);

@@ -75,7 +75,7 @@ public class ProjectScene extends Scene {
 		boxMain.setFillWidth(false);
 		VBox.setVgrow(boxMain, Priority.ALWAYS);
 		
-		boxMain.setBackground(DecoratorUtil.getBackgroundPrimary());
+		boxMain.setBackground(DecoratorUtil.getBackgroundDefault());
 		
 		this.setRoot(boxMain);
 	}

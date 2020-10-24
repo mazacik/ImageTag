@@ -38,7 +38,7 @@ public class ProgressNode extends StackPane {
 		this.setPadding(new Insets(5));
 		this.setMouseTransparent(true);
 		this.setOpacity(0);
-		this.setBackground(DecoratorUtil.getBackgroundPrimary());
+		this.setBackground(DecoratorUtil.getBackgroundDefault());
 		this.maxHeightProperty().bind(progressBar.heightProperty());
 		
 		this.setBarColor(DecoratorUtil.getColorPrimary());

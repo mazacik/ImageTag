@@ -82,14 +82,14 @@ public class ListBox extends ScrollPane {
 		if (currentFocus == null) {
 			newFocusIndex = 0;
 		} else {
-			currentFocus.setBackground(DecoratorUtil.getBackgroundPrimary());
+			currentFocus.setBackground(DecoratorUtil.getBackgroundDefault());
 			int currentFocusIndex = vBox.getChildren().indexOf(currentFocus);
 			newFocusIndex = calcNewFocusIndex(currentFocusIndex, direction);
 		}
 		Node newFocus = vBox.getChildren().get(newFocusIndex);
 		if (newFocus instanceof Region) {
 			Region region = (Region) newFocus;
-			region.setBackground(DecoratorUtil.getBackgroundSecondary());
+			region.setBackground(DecoratorUtil.getBackgroundDefaultDark());
 			currentFocus = region;
 			moveViewportToNode(region);
 		}

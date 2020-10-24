@@ -20,7 +20,7 @@ public class Tooltip extends Popup {
 	public Tooltip(String text, long delay) {
 		textNode = new TextNode(text, false, false, false, true);
 		textNode.setBorder(DecoratorUtil.getBorder(1));
-		textNode.setBackground(DecoratorUtil.getBackgroundPrimary());
+		textNode.setBackground(DecoratorUtil.getBackgroundDefault());
 		DecoratorUtil.getNodeList().add(textNode);
 		this.getContent().add(textNode);
 		

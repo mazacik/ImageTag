@@ -13,6 +13,15 @@ public class FilterListManager {
 		return entity.getTagList().containsAll(whitelist) && !entity.getTagList().containsAny(blacklist);
 	}
 	
+	public void advance(String tag) {
+		if (isWhite(tag)) {
+			blacklist(tag);
+		} else if (isBlack(tag)) {
+			unlist(tag);
+		} else {
+			whitelist(tag);
+		}
+	}
 	public void whitelist(String tag) {
 		whitelist.add(tag, true);
 		blacklist.remove(tag);

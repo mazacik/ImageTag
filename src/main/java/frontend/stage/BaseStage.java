@@ -23,7 +23,7 @@ public abstract class BaseStage extends Stage {
 		buttonBox.setPadding(new Insets(0, DEFAULT_PADDING, DEFAULT_PADDING, DEFAULT_PADDING));
 		
 		paneMain = new BorderPane();
-		paneMain.setBackground(DecoratorUtil.getBackgroundPrimary());
+		paneMain.setBackground(DecoratorUtil.getBackgroundDefault());
 		paneMain.setBottom(buttonBox);
 		
 		this.setScene(new Scene(paneMain));
