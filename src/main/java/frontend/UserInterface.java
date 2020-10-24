@@ -7,6 +7,8 @@ import frontend.component.top.ToolbarPane;
 import frontend.stage.primary.PrimaryStage;
 
 public abstract class UserInterface {
+	public static final int SIDE_WIDTH = 300;
+	
 	public static void initialize() {
 		toolbarPane.initialize();
 		centerPane.initialize();

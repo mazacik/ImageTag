@@ -3,8 +3,8 @@ package frontend.component.side;
 import backend.reload.Notifier;
 import backend.reload.Reload;
 import frontend.UserInterface;
+import frontend.decorator.DecoratorUtil;
 import frontend.node.ListBox;
-import frontend.node.SeparatorNode;
 import frontend.node.override.HBox;
 import frontend.node.override.VBox;
 import frontend.node.textnode.TextNode;
@@ -31,8 +31,8 @@ public class FilterPane extends VBox {
 		listBox.getBox().setAlignment(Pos.CENTER);
 		listBox.getBox().setPadding(new Insets(3));
 		
-		this.setMinWidth(200);
-		this.setMaxWidth(200);
+		this.setMinWidth(UserInterface.SIDE_WIDTH);
+		this.setMaxWidth(UserInterface.SIDE_WIDTH);
 	}
 	
 	public void initialize() {
@@ -50,6 +50,7 @@ public class FilterPane extends VBox {
 		btnSettings.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> UserInterface.getStage().getMainScene().setMode(MainSceneMode.SETTINGS));
 		
 		HBox boxButtons = new HBox();
+		boxButtons.setBorder(DecoratorUtil.getBorder(0, 0, 1, 0));
 		boxButtons.getChildren().add(btnReset);
 		boxButtons.getChildren().add(TextNodeTemplates.TAG_CREATE.get());
 		boxButtons.getChildren().add(nodeText);
@@ -65,20 +66,18 @@ public class FilterPane extends VBox {
 				this.getChildren().setAll(btnHide);
 				this.setMinWidth(btnHide.getWidth() + 1);
 				this.setMaxWidth(btnHide.getWidth() + 1);
-				//				UserInterface.getStage().getMainScene().handleWidthChange(btnHide.getWidth() + 1, UserInterface.getSelectPane().getWidth());
 			} else {
 				btnHide.setText(cHide);
 				this.getChildren().setAll(boxButtons, listBox);
 				boxButtons.getChildren().add(btnHide);
-				this.setMinWidth(200);
-				this.setMaxWidth(200);
-				//				UserInterface.getStage().getMainScene().handleWidthChange(SIDEPANE_WIDTH, UserInterface.getSelectPane().getWidth());
+				this.setMinWidth(UserInterface.SIDE_WIDTH);
+				this.setMaxWidth(UserInterface.SIDE_WIDTH);
 			}
 		});
 		
 		boxButtons.getChildren().add(btnHide);
 		
-		this.getChildren().addAll(boxButtons, new SeparatorNode(), listBox);
+		this.getChildren().addAll(boxButtons, listBox);
 	}
 	
 	public boolean reload() {

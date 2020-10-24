@@ -1,8 +1,8 @@
 package frontend.component.side.select;
 
 import backend.entity.Entity;
+import frontend.UserInterface;
 import frontend.decorator.DecoratorUtil;
-import frontend.node.SeparatorNode;
 import frontend.node.override.HBox;
 import frontend.node.override.VBox;
 import frontend.node.textnode.TextNode;
@@ -12,6 +12,8 @@ import javafx.scene.layout.Priority;
 import main.Main;
 
 public class SelectPane extends VBox {
+	private boolean bHidden = false;
+	
 	private final TextNode selectionTagsNode;
 	private final TextNode targetDetailsNode;
 	
@@ -41,12 +43,33 @@ public class SelectPane extends VBox {
 			this.refresh();
 		});
 		
-		HBox boxTop = new HBox(selectionTagsNode, new SeparatorNode(), targetDetailsNode);
+		HBox boxTop = new HBox();
 		boxTop.setBorder(DecoratorUtil.getBorder(0, 0, 1, 0));
 		
+		String cHide = "→";
+		String cShow = "←";
+		TextNode btnHide = new TextNode(cHide, true, true, false, true);
+		btnHide.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+			bHidden = !bHidden;
+			if (bHidden) {
+				btnHide.setText(cShow);
+				this.getChildren().setAll(btnHide);
+				this.setMinWidth(btnHide.getWidth() + 1);
+				this.setMaxWidth(btnHide.getWidth() + 1);
+			} else {
+				btnHide.setText(cHide);
+				this.getChildren().setAll(boxTop, tagsPane);
+				boxTop.getChildren().add(0, btnHide);
+				this.setMinWidth(UserInterface.SIDE_WIDTH);
+				this.setMaxWidth(UserInterface.SIDE_WIDTH);
+			}
+		});
+		
+		boxTop.getChildren().addAll(btnHide, selectionTagsNode, targetDetailsNode);
+		
 		this.getChildren().addAll(boxTop, tagsPane);
-		this.setMinWidth(200);
-		this.setMaxWidth(200);
+		this.setMinWidth(UserInterface.SIDE_WIDTH);
+		this.setMaxWidth(UserInterface.SIDE_WIDTH);
 	}
 	
 	public boolean refresh() {
