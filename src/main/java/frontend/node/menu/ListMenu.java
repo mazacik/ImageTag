@@ -20,16 +20,19 @@ import javafx.stage.PopupWindow;
 import java.util.ArrayList;
 
 public class ListMenu extends Popup {
+	private static final ArrayList<ListMenu> templates = new ArrayList<>();
 	private static final ArrayList<ListMenu> instances = new ArrayList<>();
-	public static ArrayList<ListMenu> getInstances() {
-		return instances;
+	public static ArrayList<ListMenu> getTemplates() {
+		return templates;
 	}
 	
 	private final BaseList<Region> children;
 	private final VBox vBox;
+	private final boolean transientFocus;
 	
-	public ListMenu(Region... children) {
+	public ListMenu(boolean transientFocus, Region... children) {
 		this.children = new BaseList<>(children);
+		this.transientFocus = transientFocus;
 		
 		vBox = new VBox();
 		vBox.setMinWidth(200);
@@ -43,41 +46,13 @@ public class ListMenu extends Popup {
 		instances.add(this);
 	}
 	
-	public static ListMenu install(
-			Region root,
-			Direction direction,
-			MenuTrigger trigger,
-			Region... regions
-	) {
-		return install(root, new ListMenu(regions), direction, trigger, 0, 0);
+	public static ListMenu install(Region root, Direction direction, MenuTrigger trigger, Region... regions) {
+		return install(root, direction, trigger, 0, 0, new ListMenu(true, regions));
 	}
-	public static ListMenu install(
-			Region root,
-			MenuPreset preset,
-			Direction direction,
-			MenuTrigger trigger
-	) {
-		return install(root, preset, direction, trigger, 0, 0);
+	public static ListMenu install(Region root, Direction direction, MenuTrigger trigger, ListMenu instance) {
+		return install(root, direction, trigger, 0, 0, instance);
 	}
-	public static ListMenu install(
-			Region root,
-			MenuPreset preset,
-			Direction direction,
-			MenuTrigger trigger,
-			double offsetX,
-			double offsetY
-	) {
-		return install(root, preset.getInstance(), direction, trigger, offsetX, offsetY);
-	}
-	
-	public static ListMenu install(
-			Region root,
-			ListMenu instance,
-			Direction direction,
-			MenuTrigger trigger,
-			double offsetX,
-			double offsetY
-	) {
+	public static ListMenu install(Region root, Direction direction, MenuTrigger trigger, double offsetX, double offsetY, ListMenu instance) {
 		switch (trigger) {
 			case CLICK_LEFT:
 			case CLICK_RIGHT:
@@ -87,9 +62,9 @@ public class ListMenu extends Popup {
 					}
 				});
 				root.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
-					ListMenu instanceShowing = ListMenu.getShowingInstance();
-					if (instanceShowing != null && instanceShowing != instance) {
-						instanceShowing.hide();
+					ListMenu showingInstance = getShowingInstance();
+					if (showingInstance != null && showingInstance != instance && showingInstance.transientFocus && instance.transientFocus) {
+						showingInstance.hide();
 						instance.showHover(root, event, direction, offsetX, offsetY);
 					}
 				});

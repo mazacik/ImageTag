@@ -140,7 +140,7 @@ public class Tile extends Pane {
 			}
 		});
 		
-		ListMenu.install(this, MenuPreset.ENTITY_TILE, Direction.NONE, ListMenu.MenuTrigger.CLICK_RIGHT);
+		ListMenu.install(this, Direction.NONE, ListMenu.MenuTrigger.CLICK_RIGHT, MenuPreset.ENTITY_TILE.getTemplate());
 	}
 	
 	private void clickOnTile(MouseEvent event) {

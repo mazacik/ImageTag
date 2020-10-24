@@ -303,7 +303,7 @@ public class DisplayPane extends StackPane {
 			}
 		});
 		
-		ListMenu.install(holderPane, MenuPreset.ENTITY_TILE, Direction.NONE, ListMenu.MenuTrigger.CLICK_RIGHT);
+		ListMenu.install(holderPane, Direction.NONE, ListMenu.MenuTrigger.CLICK_RIGHT, MenuPreset.ENTITY_TILE.getTemplate());
 	}
 	
 	public void disposeVideoPlayer() {

@@ -85,7 +85,7 @@ public class ToolbarPane extends BorderPane {
 		});
 		
 		nodeTarget.setAlignment(Pos.CENTER_LEFT);
-		ListMenu.install(nodeTarget, MenuPreset.ENTITY_TILE, Direction.DOWN, ListMenu.MenuTrigger.CLICK_LEFT);
+		ListMenu.install(nodeTarget, Direction.DOWN, ListMenu.MenuTrigger.CLICK_LEFT, MenuPreset.ENTITY_TILE.getTemplate());
 		
 		HBox boxRight = new HBox(btnFavorite, nodeTarget);
 		//		boxRight.prefWidthProperty().bind(UserInterface.getSelectPane().widthProperty());

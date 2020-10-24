@@ -35,7 +35,7 @@ public enum MenuPreset {
 	
 	static {
 		for (MenuPreset preset : values()) {
-			new ListMenu(preset.regions);
+			ListMenu.getTemplates().add(new ListMenu(false, preset.regions));
 		}
 	}
 	
@@ -43,7 +43,7 @@ public enum MenuPreset {
 		this.regions = regions;
 	}
 	
-	public ListMenu getInstance() {
-		return ListMenu.getInstances().get(this.ordinal());
+	public ListMenu getTemplate() {
+		return ListMenu.getTemplates().get(this.ordinal());
 	}
 }
