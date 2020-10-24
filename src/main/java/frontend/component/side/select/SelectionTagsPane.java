@@ -9,15 +9,12 @@ import frontend.node.EditNode;
 import frontend.node.ListBox;
 import frontend.node.textnode.TextNode;
 import javafx.event.EventHandler;
-import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Popup;
 import main.Main;
 
 import java.util.Comparator;
@@ -25,50 +22,36 @@ import java.util.Comparator;
 public class SelectionTagsPane extends VBox {
 	private final EditNode searchNode;
 	private boolean textPropertyLock = false;
-	private final Popup searchPopup;
 	private final ListBox searchBox;
 	
-	private final TilePane tilePane = new TilePane();
+	private final ListBox tagNodeBox = new ListBox();
 	
 	public SelectionTagsPane() {
 		searchNode = new EditNode();
 		searchNode.setPromptText("Quick Search");
-		searchNode.setPadding(new Insets(2));
+		searchNode.setPadding(new Insets(3));
 		
 		searchBox = new ListBox();
-		searchBox.setMaxHeight(300);
 		searchBox.setBorder(DecoratorUtil.getBorder(1));
 		searchBox.setBackground(DecoratorUtil.getBackgroundPrimary());
-		searchBox.minWidthProperty().bind(searchNode.widthProperty());
 		
-		searchPopup = new Popup();
-		searchPopup.getContent().add(searchBox);
-		
-		tilePane.setVgap(3);
-		tilePane.setHgap(3);
-		tilePane.setAlignment(Pos.CENTER);
-		tilePane.setPadding(new Insets(3));
+		tagNodeBox.getBox().setSpacing(3);
+		tagNodeBox.getBox().setAlignment(Pos.CENTER);
+		tagNodeBox.getBox().setPadding(new Insets(3));
 		
 		initEvents();
-		getChildren().addAll(tilePane);
+		getChildren().addAll(tagNodeBox);
 	}
 	private void initEvents() {
-		searchNode.boundsInParentProperty().addListener((observable, oldValue, newValue) -> {
-			// TODO when main window gets moved around, popup doesn't follow it
-			Bounds boundsOnScreen = searchNode.localToScreen(searchNode.parentToLocal(newValue));
-			searchPopup.setAnchorX(boundsOnScreen.getMinX());
-			searchPopup.setAnchorY(boundsOnScreen.getMaxY() - 1);
-		});
-		
 		searchNode.focusedProperty().addListener((observable, oldValue, newValue) -> {
 			if (!newValue) {
-				searchPopup.hide();
+				hideSearchPopup();
 			}
 		});
 		
 		searchNode.textProperty().addListener((observable, oldValue, newValue) -> {
 			if (!textPropertyLock) {
-				searchBox.getNodes().clear();
+				searchBox.getBox().getChildren().clear();
 				
 				String newValueLowerCase = newValue.toLowerCase();
 				for (String tag : Main.TAGLIST) {
@@ -89,9 +72,9 @@ public class SelectionTagsPane extends VBox {
 					Region region = searchBox.getCurrentFocus();
 					if (region instanceof TextNode) {
 						TextNode currentFocus = (TextNode) region;
-						if (searchPopup.isShowing()) {
+						if (getChildren().contains(searchBox)) {
 							textPropertyLock = true;
-							searchPopup.hide();
+							hideSearchPopup();
 							searchNode.setText(currentFocus.getText());
 							textPropertyLock = false;
 						} else {
@@ -135,7 +118,7 @@ public class SelectionTagsPane extends VBox {
 		
 		textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			textPropertyLock = true;
-			searchPopup.hide();
+			hideSearchPopup();
 			searchNode.setText(textNode.getText());
 			textPropertyLock = false;
 		});
@@ -149,7 +132,7 @@ public class SelectionTagsPane extends VBox {
 			}
 		});
 		
-		searchBox.getNodes().add(textNode);
+		searchBox.getBox().getChildren().add(textNode);
 	}
 	
 	public void refresh() {
@@ -158,14 +141,14 @@ public class SelectionTagsPane extends VBox {
 	public boolean reload() {
 		BaseList<TagNode> tagNodes = new BaseList<>();
 		
-		Main.SELECT.getTagListWithCount().forEach(pair -> tagNodes.add(new TagNode(pair.getKey(), pair.getValue())));
+		Main.SELECT.getTagListWithCount().forEach(pair -> tagNodes.add(new TagNode(pair.getKey())));
 		tagNodes.sort(Comparator.comparing(TagNode::getText));
 		
-		tilePane.getChildren().clear();
-		tilePane.getChildren().add(searchNode);
-		tilePane.getChildren().addAll(tagNodes);
+		tagNodeBox.getBox().getChildren().clear();
+		tagNodeBox.getBox().getChildren().add(searchNode);
+		tagNodeBox.getBox().getChildren().addAll(tagNodes);
 		
-		searchBox.getNodes().clear();
+		searchBox.getBox().getChildren().clear();
 		for (String tag : Main.TAGLIST) {
 			addTextNode(tag);
 		}
@@ -175,8 +158,14 @@ public class SelectionTagsPane extends VBox {
 	}
 	
 	private void showSearchPopup() {
-		Bounds bounds = searchNode.localToScreen(searchNode.getBoundsInLocal());
-		searchPopup.show(searchNode, bounds.getMinX(), bounds.getMaxY() - 1);
+		tagNodeBox.getBox().getChildren().clear();
+		tagNodeBox.getBox().getChildren().add(searchNode);
+		tagNodeBox.getBox().getChildren().addAll(searchBox);
+		
+		tagNodeBox.getBox().getChildren().set(tagNodeBox.getBox().getChildren().size() - 1, searchBox);
+	}
+	private void hideSearchPopup() {
+		reload();
 	}
 	
 	public EditNode getSearchNode() {

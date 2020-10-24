@@ -1,7 +1,7 @@
 package frontend.node.textnode;
 
 import backend.misc.Direction;
-import frontend.node.menu.HoverMenu;
+import frontend.node.menu.ListMenu;
 import main.Main;
 
 public enum ArrowTextNodeTemplates {
@@ -9,7 +9,7 @@ public enum ArrowTextNodeTemplates {
 		@Override public ArrowTextNode get() {
 			ArrowTextNode arrowTextNode = new ArrowTextNode("Tags", true, true, false, true, this);
 			setupNode(arrowTextNode);
-			HoverMenu.install(arrowTextNode, Direction.RIGHT
+			ListMenu.install(arrowTextNode, Direction.RIGHT, ListMenu.MenuTrigger.HOVER
 					, TextNodeTemplates.FILE_TAGS_COPY.get()
 					, TextNodeTemplates.FILE_TAGS_PASTE.get()
 					, TextNodeTemplates.FILE_TAGS_CLEAR.get()
@@ -24,7 +24,7 @@ public enum ArrowTextNodeTemplates {
 		@Override public ArrowTextNode get() {
 			ArrowTextNode arrowTextNode = new ArrowTextNode("Tags", true, true, false, true, this);
 			setupNode(arrowTextNode);
-			HoverMenu.install(arrowTextNode, Direction.RIGHT
+			ListMenu.install(arrowTextNode, Direction.RIGHT, ListMenu.MenuTrigger.HOVER
 					, TextNodeTemplates.SELECTION_TAGS_COPY.get()
 					, TextNodeTemplates.SELECTION_TAGS_PASTE_ADD.get()
 					, TextNodeTemplates.SELECTION_TAGS_PASTE_REPLACE.get()
@@ -42,7 +42,7 @@ public enum ArrowTextNodeTemplates {
 		@Override public ArrowTextNode get() {
 			ArrowTextNode arrowTextNode = new ArrowTextNode("Group", true, true, false, true, this);
 			setupNode(arrowTextNode);
-			HoverMenu.install(arrowTextNode, Direction.RIGHT
+			ListMenu.install(arrowTextNode, Direction.RIGHT, ListMenu.MenuTrigger.HOVER
 					, TextNodeTemplates.GROUP_MERGE_TAGS.get()
 					, TextNodeTemplates.GROUP_CREATE.get()
 					, TextNodeTemplates.GROUP_DISCARD.get()
@@ -58,7 +58,7 @@ public enum ArrowTextNodeTemplates {
 		@Override public ArrowTextNode get() {
 			ArrowTextNode arrowTextNode = new ArrowTextNode("Tools", true, true, false, true, this);
 			setupNode(arrowTextNode);
-			HoverMenu.install(arrowTextNode, Direction.RIGHT
+			ListMenu.install(arrowTextNode, Direction.RIGHT, ListMenu.MenuTrigger.HOVER
 					, TextNodeTemplates.SELECTION_DESELECT_LARGEST.get()
 					, TextNodeTemplates.FILE_GOOGLE_RIS.get()
 			);

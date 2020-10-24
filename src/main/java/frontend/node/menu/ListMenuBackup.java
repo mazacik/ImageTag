@@ -19,16 +19,16 @@ import javafx.stage.PopupWindow;
 
 import java.util.ArrayList;
 
-public class ListMenu extends Popup {
-	private static final ArrayList<ListMenu> instances = new ArrayList<>();
-	public static ArrayList<ListMenu> getInstances() {
+public class ListMenuBackup extends Popup {
+	private static final ArrayList<ListMenuBackup> instances = new ArrayList<>();
+	public static ArrayList<ListMenuBackup> getInstances() {
 		return instances;
 	}
 	
 	private final BaseList<Region> children;
 	private final VBox vBox;
 	
-	public ListMenu(Region... children) {
+	public ListMenuBackup(Region... children) {
 		this.children = new BaseList<>(children);
 		
 		vBox = new VBox();
@@ -43,15 +43,15 @@ public class ListMenu extends Popup {
 		instances.add(this);
 	}
 	
-	public static ListMenu install(
+	public static ListMenuBackup install(
 			Region root,
 			Direction direction,
 			MenuTrigger trigger,
 			Region... regions
 	) {
-		return install(root, new ListMenu(regions), direction, trigger, 0, 0);
+		return install(root, new ListMenuBackup(regions), direction, trigger, 0, 0);
 	}
-	public static ListMenu install(
+	public static ListMenuBackup install(
 			Region root,
 			MenuPreset preset,
 			Direction direction,
@@ -59,7 +59,7 @@ public class ListMenu extends Popup {
 	) {
 		return install(root, preset, direction, trigger, 0, 0);
 	}
-	public static ListMenu install(
+	public static ListMenuBackup install(
 			Region root,
 			MenuPreset preset,
 			Direction direction,
@@ -70,9 +70,9 @@ public class ListMenu extends Popup {
 		return install(root, preset.getInstance(), direction, trigger, offsetX, offsetY);
 	}
 	
-	public static ListMenu install(
+	public static ListMenuBackup install(
 			Region root,
-			ListMenu instance,
+			ListMenuBackup instance,
 			Direction direction,
 			MenuTrigger trigger,
 			double offsetX,
@@ -87,7 +87,7 @@ public class ListMenu extends Popup {
 					}
 				});
 				root.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
-					ListMenu instanceShowing = ListMenu.getShowingInstance();
+					ListMenuBackup instanceShowing = ListMenuBackup.getShowingInstance();
 					if (instanceShowing != null && instanceShowing != instance) {
 						instanceShowing.hide();
 						instance.showHover(root, event, direction, offsetX, offsetY);
@@ -243,7 +243,7 @@ public class ListMenu extends Popup {
 	public static void hideMenus() {
 		instances.forEach(PopupWindow::hide);
 	}
-	public static void hideMenus(ListMenu except) {
+	public static void hideMenus(ListMenuBackup except) {
 		instances.forEach(listMenu -> {
 			if (listMenu != except) {
 				listMenu.hide();
@@ -251,8 +251,8 @@ public class ListMenu extends Popup {
 		});
 	}
 	
-	public static ListMenu getShowingInstance() {
-		for (ListMenu instance : instances) {
+	public static ListMenuBackup getShowingInstance() {
+		for (ListMenuBackup instance : instances) {
 			if (instance.isShowing()) {
 				return instance;
 			}

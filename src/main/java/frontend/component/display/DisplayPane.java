@@ -7,8 +7,8 @@ import backend.misc.Settings;
 import backend.reload.Reload;
 import frontend.UserInterface;
 import frontend.decorator.DecoratorUtil;
-import frontend.node.menu.ClickMenu;
 import frontend.node.menu.ListMenu;
+import frontend.node.menu.MenuPreset;
 import frontend.node.textnode.TextNode;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
@@ -303,7 +303,7 @@ public class DisplayPane extends StackPane {
 			}
 		});
 		
-		ClickMenu.install(holderPane, Direction.NONE, MouseButton.SECONDARY, ListMenu.Preset.ENTITY);
+		ListMenu.install(holderPane, MenuPreset.ENTITY_TILE, Direction.NONE, ListMenu.MenuTrigger.CLICK_RIGHT);
 	}
 	
 	public void disposeVideoPlayer() {

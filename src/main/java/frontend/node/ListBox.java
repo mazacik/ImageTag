@@ -3,7 +3,6 @@ package frontend.node;
 import backend.misc.Direction;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.override.VBox;
-import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
@@ -28,7 +27,7 @@ public class ListBox extends ScrollPane {
 	private void onScroll(ScrollEvent event) {
 		event.consume();
 		
-		if (!this.getNodes().isEmpty()) {
+		if (!vBox.getChildren().isEmpty()) {
 			Region region = (Region) vBox.getChildren().get(0);
 			double rowHeight = region.getHeight();
 			
@@ -114,10 +113,9 @@ public class ListBox extends ScrollPane {
 		return 0;
 	}
 	
-	public ObservableList<Node> getNodes() {
-		return vBox.getChildren();
+	public VBox getBox() {
+		return vBox;
 	}
-	
 	public Region getCurrentFocus() {
 		return currentFocus;
 	}

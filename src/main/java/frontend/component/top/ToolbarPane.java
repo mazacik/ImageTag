@@ -4,8 +4,8 @@ import backend.entity.Entity;
 import backend.misc.Direction;
 import backend.reload.Reload;
 import frontend.node.SeparatorNode;
-import frontend.node.menu.ClickMenu;
 import frontend.node.menu.ListMenu;
+import frontend.node.menu.MenuPreset;
 import frontend.node.override.HBox;
 import frontend.node.textnode.TextNode;
 import frontend.node.textnode.TextNodeTemplates;
@@ -29,28 +29,28 @@ public class ToolbarPane extends BorderPane {
 	
 	public void initialize() {
 		TextNode nodeFile = new TextNode("File", true, true, false, true);
-		ClickMenu.install(nodeFile, Direction.DOWN, MouseButton.PRIMARY,
-		                  TextNodeTemplates.APPLICATION_SAVE.get(),
-		                  TextNodeTemplates.APPLICATION_IMPORT.get(),
-		                  TextNodeTemplates.APPLICATION_REFRESH.get(),
-		                  TextNodeTemplates.APPLICATION_SETTINGS.get(),
-		                  TextNodeTemplates.CACHE_RESET.get(),
-		                  new SeparatorNode(),
-		                  TextNodeTemplates.APPLICATION_SAVE_AND_CLOSE.get(),
-		                  TextNodeTemplates.APPLICATION_EXIT.get()
+		ListMenu.install(nodeFile, Direction.DOWN, ListMenu.MenuTrigger.CLICK_LEFT,
+		                 TextNodeTemplates.APPLICATION_SAVE.get(),
+		                 TextNodeTemplates.APPLICATION_IMPORT.get(),
+		                 TextNodeTemplates.APPLICATION_REFRESH.get(),
+		                 TextNodeTemplates.APPLICATION_SETTINGS.get(),
+		                 TextNodeTemplates.CACHE_RESET.get(),
+		                 new SeparatorNode(),
+		                 TextNodeTemplates.APPLICATION_SAVE_AND_CLOSE.get(),
+		                 TextNodeTemplates.APPLICATION_EXIT.get()
 		);
 		
 		TextNode nodeEdit = new TextNode("Edit", true, true, false, true);
-		ClickMenu.install(nodeEdit, Direction.DOWN, MouseButton.PRIMARY,
-		                  TextNodeTemplates.SELECT_ALL.get(),
-		                  TextNodeTemplates.SELECT_NONE.get()
+		ListMenu.install(nodeEdit, Direction.DOWN, ListMenu.MenuTrigger.CLICK_LEFT,
+		                 TextNodeTemplates.SELECT_ALL.get(),
+		                 TextNodeTemplates.SELECT_NONE.get()
 		);
 		
 		TextNode nodeFilter = new TextNode("Filter", true, true, false, true);
-		ClickMenu.install(nodeFilter, Direction.DOWN, MouseButton.PRIMARY,
-		                  TextNodeTemplates.FILTER_CREATE_PRESET.get(),
-		                  TextNodeTemplates.FILTER_SIMILAR.get(),
-		                  TextNodeTemplates.FILTER_COLLAGE.get()
+		ListMenu.install(nodeFilter, Direction.DOWN, ListMenu.MenuTrigger.CLICK_LEFT,
+		                 TextNodeTemplates.FILTER_CREATE_PRESET.get(),
+		                 TextNodeTemplates.FILTER_SIMILAR.get(),
+		                 TextNodeTemplates.FILTER_COLLAGE.get()
 		);
 		
 		TextNode nodeRandom = new TextNode("Random", true, true, false, true);
@@ -68,7 +68,7 @@ public class ToolbarPane extends BorderPane {
 			}
 		});
 		
-		HBox boxCenter = new HBox(nodeFile, nodeEdit, nodeRandom, nodeSlideshow);
+		HBox boxCenter = new HBox(nodeFile, nodeEdit, nodeRandom, nodeFilter, nodeSlideshow);
 		boxCenter.setAlignment(Pos.CENTER);
 		
 		btnFavorite.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
@@ -85,7 +85,7 @@ public class ToolbarPane extends BorderPane {
 		});
 		
 		nodeTarget.setAlignment(Pos.CENTER_LEFT);
-		ClickMenu.install(nodeTarget, Direction.DOWN, MouseButton.PRIMARY, ListMenu.Preset.ENTITY);
+		ListMenu.install(nodeTarget, MenuPreset.ENTITY_TILE, Direction.DOWN, ListMenu.MenuTrigger.CLICK_LEFT);
 		
 		HBox boxRight = new HBox(btnFavorite, nodeTarget);
 		//		boxRight.prefWidthProperty().bind(UserInterface.getSelectPane().widthProperty());

@@ -9,8 +9,10 @@ import frontend.node.EditNode;
 import frontend.node.ProgressNode;
 import frontend.node.SeparatorNode;
 import frontend.node.menu.ListMenu;
+import frontend.node.override.HBox;
 import frontend.node.override.Scene;
 import frontend.node.override.VBox;
+import frontend.stage.settings.SettingsPane;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.ComboBox;
@@ -22,13 +24,15 @@ public class MainScene extends Scene {
 	private final VBox vBox;
 	private final ProgressNode loadingBar;
 	
-	public static final double SIDEPANE_WIDTH = 300;
+	private final HBox boxDefault;
 	
 	public MainScene() {
 		loadingBar = new ProgressNode();
 		loadingBar.setVisible(false);
 		
-		vBox = new VBox(UserInterface.getToolbarPane(), new SeparatorNode(), UserInterface.getSelectPane(), new SeparatorNode(), UserInterface.getCenterPane());
+		boxDefault = new HBox(UserInterface.getFilterPane(), new SeparatorNode(), UserInterface.getCenterPane(), new SeparatorNode(), UserInterface.getSelectPane());
+		
+		vBox = new VBox(UserInterface.getToolbarPane(), new SeparatorNode(), boxDefault);
 		vBox.setBackground(DecoratorUtil.getBackgroundPrimary());
 		
 		StackPane stackPane = new StackPane();
@@ -39,6 +43,20 @@ public class MainScene extends Scene {
 		this.setRoot(stackPane);
 		this.getStylesheets().add("/css/Styles.css");
 	}
+	
+	public void setMode(MainSceneMode mode) {
+		switch (mode) {
+			case DEFAULT:
+				vBox.getChildren().set(vBox.getChildren().size() - 1, boxDefault);
+				break;
+			case SETTINGS:
+				vBox.getChildren().set(vBox.getChildren().size() - 1, new SettingsPane());
+				break;
+			default:
+				break;
+		}
+	}
+	
 	public void processKeyEvent(KeyEvent event) {
 		if (!(this.getFocusOwner() instanceof EditNode) && !(this.getFocusOwner() instanceof ComboBox)) {
 			keybindsGlobal(event);

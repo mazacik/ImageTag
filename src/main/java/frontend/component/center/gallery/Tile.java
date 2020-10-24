@@ -5,8 +5,8 @@ import backend.misc.Direction;
 import backend.misc.Settings;
 import backend.reload.Reload;
 import frontend.UserInterface;
-import frontend.node.menu.ClickMenu;
 import frontend.node.menu.ListMenu;
+import frontend.node.menu.MenuPreset;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -17,7 +17,6 @@ import javafx.scene.effect.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -84,8 +83,6 @@ public class Tile extends Pane {
 				Platform.runLater(() -> scene.snapshot(this));
 			}
 		}};
-		
-		ClickMenu.register(Tile.class, ListMenu.Preset.ENTITY);
 	}
 	
 	private final Entity entity;
@@ -143,7 +140,7 @@ public class Tile extends Pane {
 			}
 		});
 		
-		ClickMenu.install(this, Direction.NONE, MouseButton.SECONDARY);
+		ListMenu.install(this, MenuPreset.ENTITY_TILE, Direction.NONE, ListMenu.MenuTrigger.CLICK_RIGHT);
 	}
 	
 	private void clickOnTile(MouseEvent event) {

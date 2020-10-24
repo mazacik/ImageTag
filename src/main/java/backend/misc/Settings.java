@@ -12,7 +12,7 @@ public enum Settings {
 	COLOR_PRESET("ColorPreset", "0", true),
 	FONT_SIZE("FontSize", "16", true),
 	GALLERY_TILE_SIZE("GalleryTileSize", "200", true),
-	COLLAGE_SIZE("CollageSize", "50", true),
+	COLLAGE_SIZE("CollageSize", "100", true),
 	DISPLAY_UPSCALE("DisplayUpscale", "1", true),
 	
 	IMPORT_LAST_PATH("ImportLastPath", System.getProperty("user.dir"), false),

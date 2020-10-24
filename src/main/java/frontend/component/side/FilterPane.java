@@ -2,33 +2,37 @@ package frontend.component.side;
 
 import backend.reload.Notifier;
 import backend.reload.Reload;
-import frontend.decorator.DecoratorUtil;
+import frontend.UserInterface;
 import frontend.node.ListBox;
+import frontend.node.SeparatorNode;
 import frontend.node.override.HBox;
 import frontend.node.override.VBox;
 import frontend.node.textnode.TextNode;
 import frontend.node.textnode.TextNodeTemplates;
-import frontend.stage.settings.SettingsStage;
+import frontend.stage.primary.scene.MainSceneMode;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Priority;
 import main.Main;
 
-import static frontend.stage.primary.scene.MainScene.SIDEPANE_WIDTH;
-
 public class FilterPane extends VBox {
 	private boolean bHidden = false;
 	
 	private final TextNode nodeText;
-	
 	private final ListBox listBox;
 	
 	public FilterPane() {
 		nodeText = new TextNode("", false, false, false, true);
 		
 		listBox = new ListBox();
-		this.setMinWidth(SIDEPANE_WIDTH);
-		this.setMaxWidth(SIDEPANE_WIDTH);
+		listBox.getBox().setSpacing(3);
+		listBox.getBox().setAlignment(Pos.CENTER);
+		listBox.getBox().setPadding(new Insets(3));
+		
+		this.setMinWidth(200);
+		this.setMaxWidth(200);
 	}
 	
 	public void initialize() {
@@ -43,11 +47,9 @@ public class FilterPane extends VBox {
 		HBox.setHgrow(nodeText, Priority.ALWAYS);
 		
 		TextNode btnSettings = new TextNode("⁝", true, true, false, true);
-		btnSettings.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> new SettingsStage().showAndWait());
+		btnSettings.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> UserInterface.getStage().getMainScene().setMode(MainSceneMode.SETTINGS));
 		
 		HBox boxButtons = new HBox();
-		boxButtons.setBorder(DecoratorUtil.getBorder(0, 0, 1, 0));
-		
 		boxButtons.getChildren().add(btnReset);
 		boxButtons.getChildren().add(TextNodeTemplates.TAG_CREATE.get());
 		boxButtons.getChildren().add(nodeText);
@@ -68,21 +70,20 @@ public class FilterPane extends VBox {
 				btnHide.setText(cHide);
 				this.getChildren().setAll(boxButtons, listBox);
 				boxButtons.getChildren().add(btnHide);
-				this.setMinWidth(SIDEPANE_WIDTH);
-				this.setMaxWidth(SIDEPANE_WIDTH);
+				this.setMinWidth(200);
+				this.setMaxWidth(200);
 				//				UserInterface.getStage().getMainScene().handleWidthChange(SIDEPANE_WIDTH, UserInterface.getSelectPane().getWidth());
 			}
 		});
 		
 		boxButtons.getChildren().add(btnHide);
 		
-		this.setBorder(DecoratorUtil.getBorder(0, 1, 0, 0));
-		this.getChildren().addAll(boxButtons, listBox);
+		this.getChildren().addAll(boxButtons, new SeparatorNode(), listBox);
 	}
 	
 	public boolean reload() {
-		listBox.getNodes().clear();
-		Main.TAGLIST.forEach(tag -> listBox.getNodes().add(new TagNode(tag, 123)));
+		listBox.getBox().getChildren().clear();
+		Main.TAGLIST.forEach(tag -> listBox.getBox().getChildren().add(new TagNode(tag)));
 		
 		return true;
 	}

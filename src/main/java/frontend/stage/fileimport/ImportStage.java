@@ -121,7 +121,7 @@ public class ImportStage extends BaseStage {
 			BaseList<File> filesToImport = new BaseList<>();
 			BaseList<CheckBox> checkBoxes = new BaseList<>();
 			
-			listBoxFilesInDirectory.getNodes().forEach(node -> {
+			listBoxFilesInDirectory.getBox().getChildren().forEach(node -> {
 				if (node instanceof CheckBox) {
 					checkBoxes.add((CheckBox) node);
 				}
@@ -156,7 +156,7 @@ public class ImportStage extends BaseStage {
 			nodes.add(checkBox);
 			nodes.add(new SeparatorNode());
 		});
-		listBoxFilesInDirectory.getNodes().setAll(nodes);
+		listBoxFilesInDirectory.getBox().getChildren().setAll(nodes);
 		
 		this.setRoot(boxListFilesToImport);
 		this.setButtons(nodeBack, nodeImport);

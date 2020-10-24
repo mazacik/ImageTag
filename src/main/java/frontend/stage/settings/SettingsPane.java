@@ -1,20 +1,22 @@
 package frontend.stage.settings;
 
+import frontend.UserInterface;
 import frontend.node.SeparatorNode;
 import frontend.node.override.HBox;
 import frontend.node.override.VBox;
 import frontend.node.textnode.TextNode;
-import frontend.stage.BaseStage;
+import frontend.stage.primary.scene.MainSceneMode;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 
-public class SettingsStage extends BaseStage {
-	private final HBox hBoxMain;
+public class SettingsPane extends BorderPane {
+	private final HBox mainBox;
 	
-	public SettingsStage() {
-		super("Settings", 0.75);
-		
+	public SettingsPane() {
 		FilterSettingsPane filterSettingsPane = new FilterSettingsPane();
 		filterSettingsPane.setPrefWidth(600);
 		
@@ -32,21 +34,27 @@ public class SettingsStage extends BaseStage {
 		VBox hBoxLeft = new VBox(nodeFilterSettings, nodeFilterPresets);
 		hBoxLeft.setPrefWidth(150);
 		
-		hBoxMain = new HBox(hBoxLeft, new SeparatorNode(), filterSettingsPane);
+		mainBox = new HBox(hBoxLeft, new SeparatorNode(), filterSettingsPane);
 		
 		TextNode nodeApply = new TextNode("Apply", true, true, false, true);
 		nodeApply.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			filterSettingsPane.apply();
-			this.close();
+			UserInterface.getStage().getMainScene().setMode(MainSceneMode.DEFAULT);
 		});
 		TextNode nodeCancel = new TextNode("Cancel", true, true, false, true);
-		nodeCancel.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, this::close);
+		nodeCancel.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> UserInterface.getStage().getMainScene().setMode(MainSceneMode.DEFAULT));
 		
-		this.setRoot(hBoxMain);
-		this.setButtons(nodeApply, nodeCancel);
+		this.setCenter(mainBox);
+		
+		HBox buttonBox = new HBox(nodeApply, nodeCancel);
+		buttonBox.setAlignment(Pos.CENTER);
+		buttonBox.setPadding(new Insets(0, 3, 3, 3));
+		this.setBottom(buttonBox);
+		
+		mainBox.setAlignment(Pos.CENTER);
 	}
 	
 	private void setContent(Node content) {
-		hBoxMain.getChildren().set(2, content);
+		mainBox.getChildren().set(2, content);
 	}
 }

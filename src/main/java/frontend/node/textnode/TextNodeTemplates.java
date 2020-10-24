@@ -19,7 +19,7 @@ import frontend.stage.CollageStage;
 import frontend.stage.ConfirmationStage;
 import frontend.stage.SimpleMessageStage;
 import frontend.stage.fileimport.ImportStage;
-import frontend.stage.settings.SettingsStage;
+import frontend.stage.primary.scene.MainSceneMode;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.input.Clipboard;
@@ -561,6 +561,8 @@ public enum TextNodeTemplates {
 			TextNode textNode = new TextNode("Rescan", true, true, false, true, this);
 			setupNode(textNode);
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ListMenu.hideMenus();
+				
 				BaseList<String> entitiesInApp = new BaseList<>();
 				Main.ENTITYLIST.forEach(entity -> entitiesInApp.add(FileUtil.getFileEntity(entity)));
 				
@@ -616,7 +618,10 @@ public enum TextNodeTemplates {
 		public TextNode get() {
 			TextNode textNode = new TextNode("Settings", true, true, false, true, this);
 			setupNode(textNode);
-			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> new SettingsStage().show());
+			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+				ListMenu.hideMenus();
+				UserInterface.getStage().getMainScene().setMode(MainSceneMode.SETTINGS);
+			});
 			return textNode;
 		}
 	},
