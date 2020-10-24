@@ -1,5 +1,6 @@
 package frontend.node.menu;
 
+import backend.BaseList;
 import frontend.node.SeparatorNode;
 import frontend.node.textnode.ArrowTextNodeTemplates;
 import frontend.node.textnode.TextNodeTemplates;
@@ -35,7 +36,7 @@ public enum MenuPreset {
 	
 	static {
 		for (MenuPreset preset : values()) {
-			ListMenu.getTemplates().add(new ListMenu(false, preset.regions));
+			ListMenu.getTemplates().add(new ListMenu(new BaseList<>(preset.regions), false));
 		}
 	}
 	

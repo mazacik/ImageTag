@@ -26,12 +26,13 @@ public class ListMenu extends Popup {
 		return templates;
 	}
 	
+	private MenuTrigger trigger;
 	private final BaseList<Region> children;
 	private final VBox vBox;
 	private final boolean transientFocus;
 	
-	public ListMenu(boolean transientFocus, Region... children) {
-		this.children = new BaseList<>(children);
+	public ListMenu(BaseList<Region> children, boolean transientFocus) {
+		this.children = children;
 		this.transientFocus = transientFocus;
 		
 		vBox = new VBox();
@@ -47,33 +48,34 @@ public class ListMenu extends Popup {
 	}
 	
 	public static ListMenu install(Region root, Direction direction, MenuTrigger trigger, Region... regions) {
-		return install(root, direction, trigger, 0, 0, new ListMenu(true, regions));
+		return install(root, direction, trigger, 0, 0, new ListMenu(new BaseList<>(regions), true));
 	}
 	public static ListMenu install(Region root, Direction direction, MenuTrigger trigger, ListMenu instance) {
 		return install(root, direction, trigger, 0, 0, instance);
 	}
 	public static ListMenu install(Region root, Direction direction, MenuTrigger trigger, double offsetX, double offsetY, ListMenu instance) {
+		instance.trigger = trigger;
 		switch (trigger) {
 			case CLICK_LEFT:
 			case CLICK_RIGHT:
 				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 					if (event.getButton() == getMouseButton(trigger)) {
-						instance.showClick(root, event, direction, offsetX, offsetY);
+						hideMenus();
+						instance.show(root, event, direction, offsetX, offsetY);
 					}
 				});
 				root.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
 					ListMenu showingInstance = getShowingInstance();
 					if (showingInstance != null && showingInstance != instance && showingInstance.transientFocus && instance.transientFocus) {
-						showingInstance.hide();
-						instance.showHover(root, event, direction, offsetX, offsetY);
+						hideMenus();
+						instance.show(root, event, direction, offsetX, offsetY);
 					}
 				});
 				return instance;
 			case HOVER:
 				root.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
-					if (event.getButton() == getMouseButton(trigger)) {
-						instance.showHover(root, event, direction, offsetX, offsetY);
-					}
+					hideHoverMenus();
+					instance.show(root, event, direction, offsetX, offsetY);
 				});
 				return instance;
 			default:
@@ -92,53 +94,7 @@ public class ListMenu extends Popup {
 		}
 	}
 	
-	private void showClick(Region root, MouseEvent event, Direction direction, double offsetX, double offsetY) {
-		hideMenus();
-		resolveChildrenVisible();
-		
-		if (!this.isShowing()) {
-			Bounds onScreenBounds;
-			
-			double x;
-			double y;
-			
-			switch (direction) {
-				case NONE:
-					Point2D point = root.localToScreen(event.getX(), event.getY());
-					x = point.getX() + offsetX;
-					y = point.getY() + offsetY;
-					this.show(UserInterface.getStage(), x, y);
-					break;
-				case UP:
-					//onScreenBounds = root.localToScreen(root.getBoundsInLocal());
-					//x =
-					//y =
-					//this.show(main.Root.MAIN_STAGE, x, y);
-					break;
-				case DOWN:
-					onScreenBounds = root.localToScreen(root.getBoundsInLocal());
-					x = onScreenBounds.getMinX() + offsetX;
-					y = onScreenBounds.getMaxY() + offsetY;
-					this.show(UserInterface.getStage(), x, y);
-					break;
-				case LEFT:
-					onScreenBounds = root.localToScreen(root.getBoundsInLocal());
-					x = onScreenBounds.getMinX() + offsetX;
-					y = onScreenBounds.getMinY() + offsetY;
-					this.show(UserInterface.getStage(), x, y);
-					this.setAnchorX(this.getAnchorX() - this.getWidth());
-					break;
-				case RIGHT:
-					onScreenBounds = root.localToScreen(root.getBoundsInLocal());
-					x = onScreenBounds.getMaxX() + offsetX;
-					y = onScreenBounds.getMinY() + offsetY;
-					this.show(UserInterface.getStage(), x, y);
-					break;
-			}
-		}
-	}
-	private void showHover(Region root, MouseEvent event, Direction direction, double offsetX, double offsetY) {
-		hideMenus(this);
+	private void show(Region root, MouseEvent event, Direction direction, double offsetX, double offsetY) {
 		resolveChildrenVisible();
 		
 		if (!this.isShowing()) {
@@ -218,10 +174,10 @@ public class ListMenu extends Popup {
 	public static void hideMenus() {
 		instances.forEach(PopupWindow::hide);
 	}
-	public static void hideMenus(ListMenu except) {
-		instances.forEach(listMenu -> {
-			if (listMenu != except) {
-				listMenu.hide();
+	public static void hideHoverMenus() {
+		instances.forEach(instance -> {
+			if (instance.trigger == MenuTrigger.HOVER) {
+				instance.hide();
 			}
 		});
 	}
