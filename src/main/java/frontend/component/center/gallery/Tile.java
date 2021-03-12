@@ -2,8 +2,8 @@ package frontend.component.center.gallery;
 
 import backend.entity.Entity;
 import backend.misc.Direction;
-import backend.misc.Settings;
 import backend.reload.Reload;
+import backend.settings.Settings;
 import frontend.UserInterface;
 import frontend.node.menu.ListMenu;
 import frontend.node.menu.MenuPreset;
@@ -43,7 +43,7 @@ public class Tile extends Pane {
 	private final ImageView imageView;
 	
 	static {
-		int tileSize = Settings.GALLERY_TILE_SIZE.getInteger();
+		int tileSize = Settings.GALLERY_TILE_SIZE.getIntValue();
 		
 		Image imagePlus = new Image("/plus-16px.png");
 		Image imageMinus = new Image("/minus-16px.png");
@@ -166,7 +166,7 @@ public class Tile extends Pane {
 	private void clickOnGroupIcon() {
 		Main.SELECT.setTarget(entity);
 		if (entity.hasGroup()) {
-			entity.getEntityGroup().toggle();
+			entity.getGroup().toggle();
 		}
 	}
 	
@@ -179,7 +179,7 @@ public class Tile extends Pane {
 	}
 	public void updateGroupIcon() {
 		if (entity.hasGroup()) {
-			if (entity.getEntityGroup().isOpen()) {
+			if (entity.getGroup().isOpen()) {
 				this.setEffect(groupIconMinus);
 			} else {
 				this.setEffect(groupIconPlus);

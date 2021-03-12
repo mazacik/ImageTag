@@ -3,8 +3,8 @@ package frontend.component.center.gallery;
 import backend.BaseList;
 import backend.entity.Entity;
 import backend.entity.EntityList;
-import backend.misc.Settings;
 import backend.reload.Reload;
+import backend.settings.Settings;
 import frontend.UserInterface;
 import frontend.stage.SimpleMessageStage;
 import javafx.geometry.BoundingBox;
@@ -50,7 +50,7 @@ public class GalleryPane extends ScrollPane {
 	}
 	
 	public void initialize() {
-		double actualTileSize = Settings.GALLERY_TILE_SIZE.getInteger() + 2 * Tile.HIGHLIGHT_PADDING;
+		double actualTileSize = Settings.GALLERY_TILE_SIZE.getIntValue() + 2 * Tile.HIGHLIGHT_PADDING;
 		tilePane.setPrefTileWidth(actualTileSize);
 		tilePane.setPrefTileHeight(actualTileSize);
 		tilePane.setAlignment(Pos.CENTER);
@@ -90,10 +90,10 @@ public class GalleryPane extends ScrollPane {
 			if (selectRectangle.localToScene(selectRectangle.getBoundsInLocal()).intersects(tile.localToScene(tile.getBoundsInLocal()))) {
 				Entity entity = tile.getEntity();
 				if (entity.hasGroup()) {
-					if (entity.getEntityGroup().isOpen()) {
+					if (entity.getGroup().isOpen()) {
 						entityList.add(entity);
 					} else {
-						entityList.addAll(Main.FILTER.getFilteredList(entity.getEntityGroup()));
+						entityList.addAll(Main.FILTER.getFilteredList(entity.getGroup()));
 					}
 				} else {
 					entityList.add(entity);
@@ -269,8 +269,8 @@ public class GalleryPane extends ScrollPane {
 		if (this.getHeight() > 0) {
 			Entity currentTarget = Main.SELECT.getTarget();
 			if (!UserInterface.getCenterPane().isViewGallery() || currentTarget == null) return;
-			if (currentTarget.hasGroup() && !currentTarget.getEntityGroup().isOpen()) {
-				currentTarget = currentTarget.getEntityGroup().getFirst();
+			if (currentTarget.hasGroup() && !currentTarget.getGroup().isOpen()) {
+				currentTarget = currentTarget.getGroup().getFirst();
 			}
 			int targetIndex = tileEntities.indexOf(currentTarget);
 			if (targetIndex >= 0) {

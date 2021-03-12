@@ -3,7 +3,7 @@ package backend.cache;
 import backend.entity.Entity;
 import backend.entity.EntityList;
 import backend.misc.FileUtil;
-import backend.misc.Settings;
+import backend.settings.Settings;
 import frontend.UserInterface;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
@@ -23,14 +23,14 @@ import java.io.File;
 public abstract class CacheLoader {
 	public static final boolean DEBUG_USE_CACHE = true;
 	
-	private static final Image placeholder = new WritableImage(Settings.GALLERY_TILE_SIZE.getInteger(), Settings.GALLERY_TILE_SIZE.getInteger()) {{
+	private static final Image placeholder = new WritableImage(Settings.GALLERY_TILE_SIZE.getIntValue(), Settings.GALLERY_TILE_SIZE.getIntValue()) {{
 		Label label = new Label("Placeholder");
 		label.setBackground(new Background(new BackgroundFill(Color.GRAY, null, null)));
 		label.setWrapText(true);
 		label.setFont(new Font(26));
 		label.setAlignment(Pos.CENTER);
 		
-		int size = Settings.GALLERY_TILE_SIZE.getInteger();
+		int size = Settings.GALLERY_TILE_SIZE.getIntValue();
 		label.setMinWidth(size);
 		label.setMinHeight(size);
 		label.setMaxWidth(size);

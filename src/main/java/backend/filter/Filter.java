@@ -3,10 +3,11 @@ package backend.filter;
 import backend.BaseList;
 import backend.entity.Entity;
 import backend.entity.EntityList;
-import backend.entity.EntityType;
+import backend.misc.FileExtension;
 import backend.misc.FileUtil;
 import backend.reload.Notifier;
 import backend.reload.Reload;
+import backend.settings.Settings;
 import frontend.stage.settings.FilterSettingsPane;
 import main.Main;
 
@@ -109,61 +110,34 @@ public class Filter extends EntityList {
 			}
 		}
 		
-		if (entity.getType() == EntityType.IMG) {
-			if (!FilterOption.ENABLE_IMG.getBooleanValue()) {
-				return false;
-			}
-			String s = "ENABLE_IMG_" + FileUtil.getFileExtension(entity).toUpperCase();
-			FilterOption fs = FilterOption.valueOf(s);
-			if (!fs.getBooleanValue()) {
-				return false;
-			}
-		} else if (entity.getType() == EntityType.GIF) {
-			if (!FilterOption.ENABLE_VID.getBooleanValue()) {
-				return false;
-			}
-			String s = "ENABLE_VID_" + FileUtil.getFileExtension(entity).toUpperCase();
-			FilterOption fs = FilterOption.valueOf(s);
-			if (!fs.getBooleanValue()) {
-				return false;
-			}
-			if (entity.getMediaDuration() < FilterOption.MEDIA_LENGTH_MIN.getIntValue() || entity.getMediaDuration() > FilterOption.MEDIA_LENGTH_MAX.getIntValue()) {
-				return false;
-			}
-		} else if (entity.getType() == EntityType.VID) {
-			if (!FilterOption.ENABLE_VID.getBooleanValue()) {
-				return false;
-			}
-			String s = "ENABLE_VID_" + FileUtil.getFileExtension(entity).toUpperCase();
-			FilterOption fs = FilterOption.valueOf(s);
-			if (!fs.getBooleanValue()) {
-				return false;
-			}
-			if (entity.getMediaDuration() < FilterOption.MEDIA_LENGTH_MIN.getIntValue() || entity.getMediaDuration() > FilterOption.MEDIA_LENGTH_MAX.getIntValue()) {
-				return false;
-			}
-		}
-		
-		if (FilterOption.ONLY_LAST_IMPORT.getBooleanValue() && !lastImport.contains(entity)) {
+		if (!isMediaTypeValid(entity)) {
 			return false;
 		}
 		
-		if (FilterOption.ONLY_FAVORITES.getBooleanValue() && !entity.isFavorite()) {
+		if (!isFileExtensionValid(FileUtil.getFileExtension(entity))) {
+			return false;
+		}
+		
+		if (Settings.ONLY_LAST_IMPORT.getBooleanValue() && !lastImport.contains(entity)) {
+			return false;
+		}
+		
+		if (entity.getLikes() < Settings.MIN_LIKES.getIntValue() || entity.getLikes() > Settings.MAX_LIKES.getIntValue()) {
 			return false;
 		}
 		
 		int entityTagCount = entity.getTagList().size();
-		if (entityTagCount < FilterOption.TAG_COUNT_MIN.getIntValue() || entityTagCount > FilterOption.TAG_COUNT_MAX.getIntValue()) {
+		if (entityTagCount < Settings.MIN_TAG_COUNT.getIntValue() || entityTagCount > Settings.MAX_TAG_COUNT.getIntValue()) {
 			return false;
 		}
 		
 		if (!entity.hasGroup()) {
-			if (FilterOption.GROUP_SIZE_MIN.getIntValue() > 0) {
+			if (Settings.MIN_GROUP_SIZE.getIntValue() > 0) {
 				return false;
 			}
 		} else {
-			int entityGroupSize = entity.getEntityGroup().size();
-			if (entityGroupSize < FilterOption.GROUP_SIZE_MIN.getIntValue() || entityGroupSize > FilterOption.GROUP_SIZE_MAX.getIntValue()) {
+			int entityGroupSize = entity.getGroup().size();
+			if (entityGroupSize < Settings.MIN_GROUP_SIZE.getIntValue() || entityGroupSize > Settings.MAX_GROUP_SIZE.getIntValue()) {
 				return false;
 			}
 		}
@@ -171,11 +145,51 @@ public class Filter extends EntityList {
 		return filterListManager.checkLists(entity);
 	}
 	
+	private boolean isMediaTypeValid(Entity entity) {
+		switch (entity.getMediaType()) {
+			case IMG:
+				return Settings.ENABLE_IMG.getBooleanValue();
+			case GIF:
+			case VID:
+				return Settings.ENABLE_VID.getBooleanValue() &&
+				       entity.getMediaDuration() >= Settings.MIN_MEDIA_LENGTH.getIntValue() &&
+				       entity.getMediaDuration() <= Settings.MAX_MEDIA_LENGTH.getIntValue();
+			default:
+				return false;
+		}
+	}
+	private boolean isFileExtensionValid(FileExtension extension) {
+		switch (extension) {
+			case JPG:
+				return Settings.ENABLE_IMG_JPG.getBooleanValue();
+			case JPEG:
+				return Settings.ENABLE_IMG_JPEG.getBooleanValue();
+			case PNG:
+				return Settings.ENABLE_IMG_PNG.getBooleanValue();
+			case GIF:
+				return Settings.ENABLE_VID_GIF.getBooleanValue();
+			case MP4:
+				return Settings.ENABLE_VID_MP4.getBooleanValue();
+			case M4V:
+				return Settings.ENABLE_VID_M4V.getBooleanValue();
+			case MOV:
+				return Settings.ENABLE_VID_MOV.getBooleanValue();
+			case WMV:
+				return Settings.ENABLE_VID_WMV.getBooleanValue();
+			case AVI:
+				return Settings.ENABLE_VID_AVI.getBooleanValue();
+			case WEBM:
+				return Settings.ENABLE_VID_WEBM.getBooleanValue();
+			default:
+				return false;
+		}
+	}
+	
 	public Entity getRepresentingRandom() {
 		Entity entity = createRepresentingList().getRandom();
 		if (entity != null) {
 			if (entity.hasGroup()) {
-				return Main.FILTER.getFilteredList(entity.getEntityGroup()).getRandom();
+				return Main.FILTER.getFilteredList(entity.getGroup()).getRandom();
 			} else {
 				return entity;
 			}
@@ -196,7 +210,7 @@ public class Filter extends EntityList {
 				
 				if (!sameTags.isEmpty()) {
 					double similarity = (double) sameTags.size() / (double) query.size();
-					if (similarity >= FilterOption.SIMILARITY_FACTOR.getIntValue()) {
+					if (similarity >= Settings.SIMILARITY_FACTOR.getIntValue()) {
 						this.add(iterator);
 					}
 				}

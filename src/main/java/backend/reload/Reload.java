@@ -18,35 +18,33 @@ public abstract class Reload {
 		link(Notifier.ENTITYLIST_CHANGED,
 		     InvokeHelper.FILTER_REFRESH,
 		     InvokeHelper.PANE_GALLERY_RELOAD,
-		     InvokeHelper.PANE_FILTER_REFRESH
+		     InvokeHelper.PANE_FILTER_RELOAD
 		);
 		link(Notifier.TAGLIST_CHANGED,
 		     InvokeHelper.PANE_FILTER_RELOAD,
-		     InvokeHelper.PANE_SELECT_RELOAD,
-		     InvokeHelper.PANE_FILTER_REFRESH,
-		     InvokeHelper.PANE_SELECT_REFRESH
+		     InvokeHelper.PANE_SELECT_RELOAD
 		);
 		
 		link(Notifier.FILTER_CHANGED,
 		     InvokeHelper.PANE_GALLERY_RELOAD,
-		     InvokeHelper.PANE_FILTER_REFRESH,
-		     InvokeHelper.PANE_SELECT_REFRESH
+		     InvokeHelper.PANE_FILTER_RELOAD,
+		     InvokeHelper.PANE_SELECT_RELOAD
 		);
 		link(Notifier.FILTER_NEEDS_REFRESH,
 		     InvokeHelper.FILTER_REFRESH
 		);
 		
 		link(Notifier.SELECT_CHANGED,
-		     InvokeHelper.PANE_SELECT_REFRESH
+		     InvokeHelper.PANE_SELECT_RELOAD
 		);
 		link(Notifier.SELECT_TAGLIST_CHANGED,
-		     InvokeHelper.PANE_SELECT_REFRESH
+		     InvokeHelper.PANE_SELECT_RELOAD
 		);
 		
 		link(Notifier.TARGET_CHANGED,
 		     InvokeHelper.PANE_TOOLBAR_RELOAD,
 		     InvokeHelper.PANE_DISPLAY_RELOAD,
-		     InvokeHelper.PANE_SELECT_REFRESH
+		     InvokeHelper.PANE_SELECT_RELOAD
 		);
 		link(Notifier.TARGET_GROUP_CHANGED,
 		     InvokeHelper.PANE_TOOLBAR_RELOAD,
@@ -92,7 +90,7 @@ public abstract class Reload {
 			if (target != null) {
 				Main.SELECT.setTarget(target);
 				if (target.hasGroup()) {
-					Main.SELECT.setAll(target.getEntityGroup());
+					Main.SELECT.setAll(target.getGroup());
 				} else {
 					Main.SELECT.set(target);
 				}

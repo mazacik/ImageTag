@@ -7,12 +7,12 @@ import backend.entity.EntityList;
 import backend.filter.Filter;
 import backend.group.EntityGroup;
 import backend.misc.FileUtil;
-import backend.misc.Settings;
 import backend.project.Project;
 import backend.project.ProjectUtil;
 import backend.reload.Notifier;
 import backend.reload.Reload;
 import backend.select.Select;
+import backend.settings.Settings;
 import frontend.UserInterface;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -78,7 +78,7 @@ public class Main extends Application {
 				if (target != null) {
 					Main.SELECT.setTarget(target);
 					if (target.hasGroup()) {
-						Main.SELECT.setAll(target.getEntityGroup());
+						Main.SELECT.setAll(target.getGroup());
 					} else {
 						Main.SELECT.set(target);
 					}
@@ -150,15 +150,15 @@ public class Main extends Application {
 	private static void initEntityGroup(BaseList<EntityGroup> entityGroups, Entity entity) {
 		if (entity.hasGroup()) {
 			for (EntityGroup entityGroup : entityGroups) {
-				if (entityGroup.getID() == entity.getEntityGroupID()) {
+				if (entityGroup.getID() == entity.getGroupID()) {
 					entityGroup.add(entity);
-					entity.setEntityGroup(entityGroup);
+					entity.setGroup(entityGroup);
 					entity.getTile().updateGroupIcon();
 					return;
 				}
 			}
 			EntityGroup entityGroup = new EntityGroup(entity);
-			entity.setEntityGroup(entityGroup);
+			entity.setGroup(entityGroup);
 			entity.getTile().updateGroupIcon();
 			entityGroups.add(entityGroup);
 		}

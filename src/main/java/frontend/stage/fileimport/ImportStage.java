@@ -2,11 +2,10 @@ package frontend.stage.fileimport;
 
 import backend.BaseList;
 import backend.entity.EntityList;
-import backend.filter.FilterOption;
 import backend.misc.FileUtil;
-import backend.misc.Settings;
 import backend.reload.InvokeHelper;
 import backend.reload.Reload;
+import backend.settings.Settings;
 import frontend.node.*;
 import frontend.node.override.HBox;
 import frontend.node.override.VBox;
@@ -51,7 +50,7 @@ public class ImportStage extends BaseStage {
 	
 	private void createBrowseForDirectory() {
 		TextNode nodeTextPath = new TextNode("Import Directory", false, false, false, true);
-		EditNode nodeEditPath = new EditNode(Settings.IMPORT_LAST_PATH.getValue(), "");
+		EditNode nodeEditPath = new EditNode(Settings.IMPORT_LAST_PATH.getStringValue(), "");
 		nodeEditPath.setMinWidth(300);
 		TextNode nodeBrowse = new TextNode("Browse", true, true, true, true);
 		nodeBrowse.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
@@ -173,11 +172,12 @@ public class ImportStage extends BaseStage {
 			if (!entityList.isEmpty()) {
 				message += "\nSet filter to only show the imported files?";
 				if (new ConfirmationStage("Import Result", message).getResult()) {
-					FilterOption.reset();
-					
-					FilterOption.ENABLE_IMG.setValue(true);
-					FilterOption.ENABLE_VID.setValue(true);
-					FilterOption.ONLY_LAST_IMPORT.setValue(true);
+					// todo ?
+					//					FilterOption.reset();
+					//
+					//					Settings.getEnableImages().setValue(true);
+					//					FilterOption.ENABLE_VID.setValue(true);
+					//					FilterOption.ONLY_LAST_IMPORT.setValue(true);
 					
 					Reload.request(InvokeHelper.FILTER_REFRESH);
 					Reload.start();

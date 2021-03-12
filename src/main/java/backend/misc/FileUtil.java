@@ -4,6 +4,7 @@ import backend.BaseList;
 import backend.entity.Entity;
 import backend.entity.EntityType;
 import backend.project.ProjectUtil;
+import backend.settings.Settings;
 import com.sun.jna.platform.FileUtils;
 import frontend.stage.SimpleMessageStage;
 import javafx.scene.Scene;
@@ -121,10 +122,10 @@ public abstract class FileUtil {
 		}
 		return path;
 	}
-	public static String getFileExtension(Entity entity) {
-		return getFileExtension(FileUtil.getFileEntity(entity));
+	public static FileExtension getFileExtension(Entity entity) {
+		return FileExtension.of(getFileExtension(FileUtil.getFileEntity(entity)));
 	}
-	public static String getFileExtension(String path) {
+	private static String getFileExtension(String path) {
 		if (path.contains(".")) {
 			return path.substring(path.lastIndexOf(".") + 1);
 		}
@@ -212,11 +213,11 @@ public abstract class FileUtil {
 	}
 	
 	public static File getLastImportDirectory() {
-		File lastImportDirectory = new File(Settings.IMPORT_LAST_PATH.getValue());
+		File lastImportDirectory = new File(Settings.IMPORT_LAST_PATH.getStringValue());
 		if (lastImportDirectory.exists() && lastImportDirectory.isDirectory()) {
 			return lastImportDirectory;
 		} else {
-			return new File(Settings.IMPORT_LAST_PATH.resetValue());
+			return new File((String) Settings.IMPORT_LAST_PATH.resetValue());
 		}
 	}
 	

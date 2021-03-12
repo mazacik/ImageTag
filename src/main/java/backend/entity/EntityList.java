@@ -81,12 +81,12 @@ public class EntityList extends BaseList<Entity> {
 		
 		for (Entity entity : this) {
 			if (entity.hasGroup()) {
-				if (!groups.contains(entity.getEntityGroupID())) {
-					if (entity.getEntityGroup().isOpen()) {
-						groups.add(entity.getEntityGroupID());
-						representingEntityList.addAll(Main.FILTER.getFilteredList(entity.getEntityGroup()));
+				if (!groups.contains(entity.getGroupID())) {
+					if (entity.getGroup().isOpen()) {
+						groups.add(entity.getGroupID());
+						representingEntityList.addAll(Main.FILTER.getFilteredList(entity.getGroup()));
 					} else {
-						groups.add(entity.getEntityGroupID());
+						groups.add(entity.getGroupID());
 						representingEntityList.add(entity);
 					}
 				}
@@ -174,10 +174,10 @@ public class EntityList extends BaseList<Entity> {
 		if (this.isEmpty()) {
 			return false;
 		} else {
-			int groupID = this.getFirst().getEntityGroupID();
+			int groupID = this.getFirst().getGroupID();
 			if (groupID == 0) return false;
 			for (Entity entity : this) {
-				if (entity.getEntityGroupID() != groupID) {
+				if (entity.getGroupID() != groupID) {
 					return false;
 				}
 			}

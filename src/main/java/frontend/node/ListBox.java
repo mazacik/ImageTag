@@ -6,7 +6,6 @@ import frontend.node.override.VBox;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Region;
 
@@ -21,28 +20,7 @@ public class ListBox extends ScrollPane {
 		this.setFitToHeight(true);
 		this.setBackground(Background.EMPTY);
 		this.setHbarPolicy(ScrollBarPolicy.NEVER);
-		this.setVbarPolicy(ScrollBarPolicy.ALWAYS);
-		this.addEventFilter(ScrollEvent.SCROLL, this::onScroll);
-	}
-	private void onScroll(ScrollEvent event) {
-		event.consume();
-		
-		if (!vBox.getChildren().isEmpty()) {
-			Region region = (Region) vBox.getChildren().get(0);
-			double rowHeight = region.getHeight();
-			
-			double contentHeight = vBox.getHeight() - this.getViewportBounds().getHeight();
-			double rowToContentRatio = rowHeight / contentHeight;
-			double currentVvalue = this.getVvalue();
-			
-			if (event.getDeltaY() > 0) {
-				//mouse-scroll-up
-				this.setVvalue(currentVvalue - rowToContentRatio);
-			} else {
-				//mouse-scroll-down
-				this.setVvalue(currentVvalue + rowToContentRatio);
-			}
-		}
+		this.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
 	}
 	
 	public void moveViewportToNode(Region node) {
@@ -86,12 +64,14 @@ public class ListBox extends ScrollPane {
 			int currentFocusIndex = vBox.getChildren().indexOf(currentFocus);
 			newFocusIndex = calcNewFocusIndex(currentFocusIndex, direction);
 		}
-		Node newFocus = vBox.getChildren().get(newFocusIndex);
-		if (newFocus instanceof Region) {
-			Region region = (Region) newFocus;
-			region.setBackground(DecoratorUtil.getBackgroundDefaultDark());
-			currentFocus = region;
-			moveViewportToNode(region);
+		if (!vBox.getChildren().isEmpty()) {
+			Node newFocus = vBox.getChildren().get(newFocusIndex);
+			if (newFocus instanceof Region) {
+				Region region = (Region) newFocus;
+				region.setBackground(DecoratorUtil.getBackgroundDefaultDark());
+				currentFocus = region;
+				moveViewportToNode(region);
+			}
 		}
 	}
 	private int calcNewFocusIndex(int currentFocusIndex, Direction direction) {

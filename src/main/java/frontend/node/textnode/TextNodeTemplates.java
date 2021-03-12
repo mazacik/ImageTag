@@ -8,11 +8,11 @@ import backend.entity.EntityList;
 import backend.group.EntityGroup;
 import backend.misc.FileUtil;
 import backend.misc.HttpUtil;
-import backend.misc.Settings;
 import backend.project.ProjectUtil;
 import backend.reload.InvokeHelper;
 import backend.reload.Notifier;
 import backend.reload.Reload;
+import backend.settings.Settings;
 import frontend.UserInterface;
 import frontend.node.menu.ListMenu;
 import frontend.stage.CollageStage;
@@ -392,8 +392,9 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				Main.SELECT.deleteSelect();
-				Reload.start();
+				if (Main.SELECT.deleteSelect()) {
+					Reload.start();
+				}
 			});
 			return textNode;
 		}
@@ -451,9 +452,10 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				TagUtil.delete();
-				
-				Reload.start();
+				if (new ConfirmationStage("Delete: " + TagUtil.currentNode.getText(), "Are you sure?").getResult()) {
+					TagUtil.delete();
+					Reload.start();
+				}
 			});
 			return textNode;
 		}
@@ -484,7 +486,7 @@ public enum TextNodeTemplates {
 				ListMenu.hideMenus();
 				
 				if (Main.SELECT.isGroup()) {
-					Main.SELECT.getFirst().getEntityGroup().discard();
+					Main.SELECT.getFirst().getGroup().discard();
 				}
 				
 				Reload.start();
@@ -503,7 +505,7 @@ public enum TextNodeTemplates {
 			textNode.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				ListMenu.hideMenus();
 				
-				Main.SELECT.getTarget().getEntityGroup().mergeTags();
+				Main.SELECT.getTarget().getGroup().mergeTags();
 				
 				Reload.start();
 			});

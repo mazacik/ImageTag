@@ -58,7 +58,7 @@ public class ListMenu extends Popup {
 		switch (trigger) {
 			case CLICK_LEFT:
 			case CLICK_RIGHT:
-				root.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+				root.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 					if (event.getButton() == getMouseButton(trigger)) {
 						hideMenus();
 						instance.show(root, event, direction, offsetX, offsetY);
@@ -106,9 +106,11 @@ public class ListMenu extends Popup {
 			switch (direction) {
 				case NONE:
 					Point2D point = root.localToScreen(event.getX(), event.getY());
-					x = point.getX() + offsetX;
-					y = point.getY() + offsetY;
-					this.show(UserInterface.getStage(), x, y);
+					if (point != null) {
+						x = point.getX() + offsetX;
+						y = point.getY() + offsetY;
+						this.show(UserInterface.getStage(), x, y);
+					}
 					break;
 				case UP:
 					//onScreenBounds = root.localToScreen(root.getBoundsInLocal());

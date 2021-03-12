@@ -1,9 +1,9 @@
 package frontend.stage.primary;
 
 import backend.misc.FileUtil;
-import backend.misc.Settings;
 import backend.project.Project;
 import backend.project.ProjectUtil;
+import backend.settings.Settings;
 import frontend.UserInterface;
 import frontend.decorator.DecoratorUtil;
 import frontend.stage.primary.scene.IntroScene;

@@ -17,7 +17,7 @@ public abstract class BaseStage extends Stage {
 	private final BorderPane paneMain;
 	private final HBox buttonBox;
 	
-	public BaseStage(String title, double sizeModifier) {
+	public BaseStage(String title, double screenSizeModifier) {
 		buttonBox = new HBox();
 		buttonBox.setAlignment(Pos.CENTER);
 		buttonBox.setPadding(new Insets(0, DEFAULT_PADDING, DEFAULT_PADDING, DEFAULT_PADDING));
@@ -30,8 +30,8 @@ public abstract class BaseStage extends Stage {
 		this.setTitle(title);
 		this.initModality(Modality.APPLICATION_MODAL);
 		this.setOnShown(event -> this.centerOnScreen());
-		this.setWidth(DecoratorUtil.getUsableScreenWidth() * sizeModifier);
-		this.setHeight(DecoratorUtil.getUsableScreenHeight() * sizeModifier);
+		this.setWidth(DecoratorUtil.getUsableScreenWidth() * screenSizeModifier);
+		this.setHeight(DecoratorUtil.getUsableScreenHeight() * screenSizeModifier);
 	}
 	
 	public void setRoot(Region root) {

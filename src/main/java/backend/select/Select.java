@@ -8,6 +8,7 @@ import backend.misc.FileUtil;
 import backend.reload.Notifier;
 import backend.reload.Reload;
 import frontend.UserInterface;
+import frontend.stage.ConfirmationStage;
 import javafx.scene.input.KeyEvent;
 import main.Main;
 
@@ -28,13 +29,13 @@ public class Select extends EntityList {
 		int sizeOld = this.size();
 		
 		if (entity.hasGroup()) {
-			if (entity.getEntityGroup().isOpen()) {
+			if (entity.getGroup().isOpen()) {
 				if (super.add(entity, checkDuplicates)) {
 					Reload.requestBorderUpdate(entity);
 				}
 			} else {
-				if (super.addAll(entity.getEntityGroup(), checkDuplicates)) {
-					Reload.requestBorderUpdate(Main.FILTER.getFilteredList(entity.getEntityGroup()));
+				if (super.addAll(entity.getGroup(), checkDuplicates)) {
+					Reload.requestBorderUpdate(Main.FILTER.getFilteredList(entity.getGroup()));
 				}
 			}
 		} else {
@@ -59,12 +60,12 @@ public class Select extends EntityList {
 		
 		for (Entity entity : c) {
 			if (entity.hasGroup()) {
-				if (entity.getEntityGroup().isOpen()) {
+				if (entity.getGroup().isOpen()) {
 					if (super.add(entity, checkDuplicates)) {
 						Reload.requestBorderUpdate(entity);
 					}
 				} else {
-					EntityList afterFilter = Main.FILTER.getFilteredList(entity.getEntityGroup());
+					EntityList afterFilter = Main.FILTER.getFilteredList(entity.getGroup());
 					if (super.addAll(afterFilter, true)) {
 						Reload.requestBorderUpdate(afterFilter);
 					}
@@ -97,13 +98,13 @@ public class Select extends EntityList {
 		int sizeOld = this.size();
 		
 		if (entity.hasGroup()) {
-			if (entity.getEntityGroup().isOpen()) {
+			if (entity.getGroup().isOpen()) {
 				if (super.remove(entity)) {
 					Reload.requestBorderUpdate(entity);
 				}
 			} else {
-				if (super.removeAll(entity.getEntityGroup())) {
-					Reload.requestBorderUpdate(Main.FILTER.getFilteredList(entity.getEntityGroup()));
+				if (super.removeAll(entity.getGroup())) {
+					Reload.requestBorderUpdate(Main.FILTER.getFilteredList(entity.getGroup()));
 				}
 			}
 		} else {
@@ -135,36 +136,49 @@ public class Select extends EntityList {
 		super.clear();
 	}
 	
-	public void deleteSelect() {
-		EntityList helper = new EntityList();
+	public boolean deleteSelect() {
+		String s;
+		if (this.size() == 1) {
+			s = ": " + target.getName();
+		} else {
+			s = this.size() + " entries";
+		}
 		
-		this.storePosition();
-		
-		this.forEach(entity -> {
-			if (FileUtil.deleteFile(FileUtil.getFileEntity(entity))) {
-				FileUtil.deleteFile(FileUtil.getFileCache(entity));
-				
-				if (entity.hasGroup()) {
-					entity.getEntityGroup().remove(entity);
+		if (new ConfirmationStage("Delete " + s, "Are you sure?").getResult()) {
+			EntityList helper = new EntityList();
+			
+			this.storePosition();
+			
+			this.forEach(entity -> {
+				if (FileUtil.deleteFile(FileUtil.getFileEntity(entity))) {
+					FileUtil.deleteFile(FileUtil.getFileCache(entity));
 					
-					if (target.getEntityGroup().size() <= 1) {
-						target.getEntityGroup().discard();
+					if (entity.hasGroup()) {
+						entity.getGroup().remove(entity);
+						
+						if (target.getGroup().size() <= 1) {
+							target.getGroup().discard();
+						}
+						
+						Reload.notify(Notifier.TARGET_GROUP_CHANGED);
 					}
 					
-					Reload.notify(Notifier.TARGET_GROUP_CHANGED);
+					helper.add(entity);
 				}
-				
-				helper.add(entity);
-			}
-		});
-		
-		if (!helper.isEmpty()) {
-			this.removeAll(helper);
-			Main.FILTER.removeAll(helper);
-			Main.ENTITYLIST.removeAll(helper);
-			Reload.notify(Notifier.ENTITYLIST_CHANGED);
+			});
 			
-			this.restorePosition();
+			if (!helper.isEmpty()) {
+				this.removeAll(helper);
+				Main.FILTER.removeAll(helper);
+				Main.ENTITYLIST.removeAll(helper);
+				Reload.notify(Notifier.ENTITYLIST_CHANGED);
+				
+				this.restorePosition();
+			}
+			
+			return true;
+		} else {
+			return false;
 		}
 	}
 	
@@ -350,10 +364,10 @@ public class Select extends EntityList {
 			this.storePosition();
 			
 			if (target.hasGroup()) {
-				target.getEntityGroup().remove(target);
+				target.getGroup().remove(target);
 				
-				if (target.getEntityGroup().size() <= 1) {
-					target.getEntityGroup().discard();
+				if (target.getGroup().size() <= 1) {
+					target.getGroup().discard();
 				}
 				
 				Reload.notify(Notifier.TARGET_GROUP_CHANGED);

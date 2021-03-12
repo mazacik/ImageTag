@@ -36,7 +36,6 @@ public class IntroScene extends Scene {
 		
 		TextNode btnNewProject = new TextNode("Create a New Project", true, false, true, true);
 		btnNewProject.setMaxWidth(Double.MAX_VALUE);
-		//noinspection Convert2MethodRef
 		btnNewProject.addMouseEvent(MouseEvent.MOUSE_PRESSED, MouseButton.PRIMARY, () -> UserInterface.getStage().showProjectScene());
 		
 		TextNode btnOpenProject = new TextNode("Open Project", true, false, true, true);

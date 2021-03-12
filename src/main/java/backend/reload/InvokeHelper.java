@@ -12,9 +12,6 @@ public enum InvokeHelper {
 	PANE_FILTER_RELOAD(3, UserInterface.getFilterPane(), method(UserInterface.getFilterPane(), "reload")),
 	PANE_SELECT_RELOAD(3, UserInterface.getSelectPane(), method(UserInterface.getSelectPane(), "reload")),
 	
-	PANE_FILTER_REFRESH(4, UserInterface.getFilterPane(), method(UserInterface.getFilterPane(), "refresh")),
-	PANE_SELECT_REFRESH(4, UserInterface.getSelectPane(), method(UserInterface.getSelectPane(), "refresh")),
-	
 	PANE_TOOLBAR_RELOAD(5, UserInterface.getToolbarPane(), method(UserInterface.getToolbarPane(), "reload")),
 	PANE_GALLERY_RELOAD(5, UserInterface.getCenterPane().getGalleryPane(), method(UserInterface.getCenterPane().getGalleryPane(), "reload")),
 	PANE_DISPLAY_RELOAD(5, UserInterface.getCenterPane().getDisplayPane(), method(UserInterface.getCenterPane().getDisplayPane(), "reload")),

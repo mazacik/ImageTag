@@ -13,15 +13,6 @@ public class FilterListManager {
 		return entity.getTagList().containsAll(whitelist) && !entity.getTagList().containsAny(blacklist);
 	}
 	
-	public void advance(String tag) {
-		if (isWhite(tag)) {
-			blacklist(tag);
-		} else if (isBlack(tag)) {
-			unlist(tag);
-		} else {
-			whitelist(tag);
-		}
-	}
 	public void whitelist(String tag) {
 		whitelist.add(tag, true);
 		blacklist.remove(tag);
@@ -48,5 +39,12 @@ public class FilterListManager {
 	}
 	public boolean isBlack(String tag) {
 		return blacklist.contains(tag);
+	}
+	
+	public BaseList<String> getWhitelist() {
+		return whitelist;
+	}
+	public BaseList<String> getBlacklist() {
+		return blacklist;
 	}
 }

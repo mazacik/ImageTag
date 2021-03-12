@@ -27,42 +27,48 @@ public class TagUtil {
 		}
 	}
 	public static void edit() {
-		String tag = currentNode.getText();
-		int index = Main.TAGLIST.indexOf(tag);
-		if (index != -1) {
-			String newTag = new TagEditStage().edit(tag);
-			if (!newTag.isEmpty()) { //other checks in TagEditStage
-				Main.TAGLIST.set(index, newTag);
-				Main.TAGLIST.sort(Comparator.naturalOrder());
-				Main.ENTITYLIST.forEach(entity -> entity.getTagList().replace(tag, newTag));
-				
-				if (Main.FILTER.getFilterListManager().isWhite(tag)) {
-					Main.FILTER.getFilterListManager().unlist(tag);
-					Main.FILTER.getFilterListManager().whitelist(newTag);
-				} else if (Main.FILTER.getFilterListManager().isBlack(tag)) {
-					Main.FILTER.getFilterListManager().unlist(tag);
-					Main.FILTER.getFilterListManager().blacklist(newTag);
+		if (currentNode != null) {
+			String tag = currentNode.getText();
+			int index = Main.TAGLIST.indexOf(tag);
+			if (index != -1) {
+				String newTag = new TagEditStage().edit(tag);
+				if (!newTag.isEmpty()) { //other checks in TagEditStage
+					Main.TAGLIST.set(index, newTag);
+					Main.TAGLIST.sort(Comparator.naturalOrder());
+					Main.ENTITYLIST.forEach(entity -> entity.getTagList().replace(tag, newTag));
+					
+					if (Main.FILTER.getFilterListManager().isWhite(tag)) {
+						Main.FILTER.getFilterListManager().unlist(tag);
+						Main.FILTER.getFilterListManager().whitelist(newTag);
+					} else if (Main.FILTER.getFilterListManager().isBlack(tag)) {
+						Main.FILTER.getFilterListManager().unlist(tag);
+						Main.FILTER.getFilterListManager().blacklist(newTag);
+					}
+					
+					Reload.notify(Notifier.TAGLIST_CHANGED);
 				}
-				
-				Reload.notify(Notifier.TAGLIST_CHANGED);
 			}
 		}
 	}
 	public static void remove() {
-		String tag = currentNode.getText();
-		if (Main.TAGLIST.contains(tag)) {
-			Main.SELECT.removeTag(tag);
+		if (currentNode != null) {
+			String tag = currentNode.getText();
+			if (Main.TAGLIST.contains(tag)) {
+				Main.SELECT.removeTag(tag);
+			}
 		}
 	}
 	public static void delete() {
-		String tag = currentNode.getText();
-		if (Main.TAGLIST.contains(tag)) {
-			Main.TAGLIST.remove(tag);
-			Main.ENTITYLIST.forEach(entity -> entity.getTagList().remove(tag));
-			
-			Main.FILTER.getFilterListManager().unlist(tag);
-			
-			Reload.notify(Notifier.TAGLIST_CHANGED);
+		if (currentNode != null) {
+			String tag = currentNode.getText();
+			if (Main.TAGLIST.contains(tag)) {
+				Main.TAGLIST.remove(tag);
+				Main.ENTITYLIST.forEach(entity -> entity.getTagList().remove(tag));
+				
+				Main.FILTER.getFilterListManager().unlist(tag);
+				
+				Reload.notify(Notifier.TAGLIST_CHANGED);
+			}
 		}
 	}
 	

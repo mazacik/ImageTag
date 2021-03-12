@@ -18,8 +18,6 @@ public class TextNode extends Label {
 	
 	private final TextNodeTemplates template;
 	
-	//todo add a way to lock background (use in SettingsStage)
-	
 	public TextNode() {
 		this("");
 	}

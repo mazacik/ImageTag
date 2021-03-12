@@ -1,7 +1,7 @@
 package frontend.decorator;
 
 import backend.BaseList;
-import backend.misc.Settings;
+import backend.settings.Settings;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.*;
@@ -13,7 +13,7 @@ import java.awt.*;
 
 public abstract class DecoratorUtil {
 	/* Font */
-	private static final Font font = new Font(Settings.FONT_SIZE.getInteger());
+	private static final Font font = new Font(Settings.FONT_SIZE.getIntValue());
 	public static Font getFont() {
 		return font;
 	}
@@ -87,7 +87,7 @@ public abstract class DecoratorUtil {
 	}
 	
 	/* Color Preset */
-	private static DecoratorTemplate decoratorTemplate = DecoratorTemplate.values()[Settings.COLOR_PRESET.getInteger()];
+	private static DecoratorTemplate decoratorTemplate = DecoratorTemplate.values()[Settings.COLOR_PRESET.getIntValue()];
 	public static DecoratorTemplate getDecoratorTemplate() {
 		return decoratorTemplate;
 	}
@@ -95,7 +95,7 @@ public abstract class DecoratorUtil {
 		DecoratorTemplate previousPreset = DecoratorUtil.decoratorTemplate;
 		
 		DecoratorUtil.decoratorTemplate = decoratorTemplate;
-		Settings.COLOR_PRESET.setValue(String.valueOf(decoratorTemplate.ordinal()));
+		Settings.COLOR_PRESET.setValue(decoratorTemplate.ordinal());
 		
 		updateNodes(previousPreset);
 	}

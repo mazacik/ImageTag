@@ -1,49 +1,74 @@
 package backend.misc;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Paths;
+import java.util.List;
 import java.util.logging.Logger;
 
 public abstract class GsonUtil {
-	public static boolean write(Object object, Type type, String path) {
-		GsonBuilder GSONBuilder = new GsonBuilder();
-		String JSON = GSONBuilder.serializeNulls().setPrettyPrinting().create().toJson(object, type);
+	private static ObjectMapper getMapper() {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.disable(MapperFeature.AUTO_DETECT_CREATORS,
+		               MapperFeature.AUTO_DETECT_FIELDS,
+		               MapperFeature.AUTO_DETECT_GETTERS,
+		               MapperFeature.AUTO_DETECT_IS_GETTERS
+		);
+		// if you want to prevent an exception when classes have no annotated properties
+		// om.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+		return mapper;
+	}
+	
+	public static boolean write(Object object, String path) {
 		try {
-			new File(path).getParentFile().mkdirs();
-			BufferedWriter writer = new BufferedWriter(new FileWriter(path, false));
-			writer.write(JSON);
-			writer.close();
+			File file = new File(path);
+			file.getParentFile().mkdirs();
+			if (file.exists()) file.delete();
+			file.createNewFile();
+			
+			getMapper().writeValue(file, object);
+			
 			Logger.getGlobal().config("GSON WRITE \"" + path + "\" OK");
 			return true;
 		} catch (IOException e) {
-			Logger.getGlobal().severe("GSON WRITE \"" + path + "\" ERROR NO ACCESS");
+			e.printStackTrace();
 			return false;
 		}
 	}
-	public static <T> T read(Type type, String path) {
-		GsonBuilder GSONBuilder = new GsonBuilder();
-		Gson GSON = GSONBuilder.serializeNulls().setPrettyPrinting().create();
+	
+	public static <T> List<T> readList(TypeReference<List<T>> t, String path) {
 		try {
-			String JSON = new String(Files.readAllBytes(Paths.get(path)));
-			T fromJson = GSON.fromJson(JSON, type);
+			List<T> fromJson = getMapper().readValue(new File(path), t);
 			Logger.getGlobal().config("GSON READ \"" + path + "\" OK");
 			return fromJson;
-		} catch (NoSuchFileException e) {
-			Logger.getGlobal().severe("GSON READ \"" + path + "\" ERROR NOT FOUND");
 		} catch (IOException e) {
-			Logger.getGlobal().severe("GSON READ \"" + path + "\" ERROR NO ACCESS");
-		} catch (Exception e) {
-			Logger.getGlobal().severe("GSON READ \"" + path + "\" ERROR");
+			e.printStackTrace();
+			return null;
 		}
-		return null;
+		
 	}
+	public static <T> T read(TypeReference<T> t, String path) {
+		try {
+			T fromJson = getMapper().readValue(new File(path), t);
+			Logger.getGlobal().config("GSON READ \"" + path + "\" OK");
+			return fromJson;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public static <T> T read(Class<T> c, String path) {
+		try {
+			T fromJson = getMapper().readValue(new File(path), c);
+			Logger.getGlobal().config("GSON READ \"" + path + "\" OK");
+			return fromJson;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 }

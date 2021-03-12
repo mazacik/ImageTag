@@ -89,7 +89,7 @@ public class SelectPane extends VBox {
 		if (this.getChildren().contains(detailsPane)) {
 			detailsPane.refresh();
 		} else if (this.getChildren().contains(tagsPane)) {
-			tagsPane.refresh();
+			tagsPane.reload();
 		}
 		
 		return true;

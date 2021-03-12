@@ -1,6 +1,6 @@
 package frontend.component.display;
 
-import backend.misc.Settings;
+import backend.settings.Settings;
 import frontend.UserInterface;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
@@ -161,7 +161,7 @@ public class VideoPlayer {
 			double resultWidth;
 			double resultHeight;
 			
-			if (!Settings.DISPLAY_UPSCALE.getBoolean() && originWidth < maxWidth && originHeight < maxHeight) {
+			if (!Settings.IMAGE_UPSCALE.getBooleanValue() && originWidth < maxWidth && originHeight < maxHeight) {
 				// image is smaller than canvas or upscaling is off
 				resultWidth = originWidth;
 				resultHeight = originHeight;

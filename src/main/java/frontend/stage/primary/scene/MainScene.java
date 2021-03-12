@@ -48,6 +48,7 @@ public class MainScene extends Scene {
 		switch (mode) {
 			case DEFAULT:
 				vBox.getChildren().set(vBox.getChildren().size() - 1, boxDefault);
+				UserInterface.getCenterPane().requestFocus();
 				break;
 			case SETTINGS:
 				vBox.getChildren().set(vBox.getChildren().size() - 1, new SettingsPane());
@@ -83,12 +84,13 @@ public class MainScene extends Scene {
 				UserInterface.getSelectPane().getTagsPane().getSearchNode().requestFocus();
 				break;
 			case DELETE:
-				Main.SELECT.deleteSelect();
-				Reload.start();
+				if (Main.SELECT.deleteSelect()) {
+					Reload.start();
+				}
 				break;
 			case E:
 				if (Main.SELECT.getTarget().hasGroup()) {
-					Main.SELECT.getTarget().getEntityGroup().toggle();
+					Main.SELECT.getTarget().getGroup().toggle();
 				}
 				Reload.start();
 				break;
@@ -98,7 +100,7 @@ public class MainScene extends Scene {
 				break;
 			case G:
 				if (Main.SELECT.getTarget().hasGroup()) {
-					Entity randomEntityFromGroup = Main.SELECT.getTarget().getEntityGroup().getRepresentingRandom();
+					Entity randomEntityFromGroup = Main.SELECT.getTarget().getGroup().getRepresentingRandom();
 					if (randomEntityFromGroup != null) {
 						Main.SELECT.setTarget(randomEntityFromGroup);
 						if (!Main.SELECT.contains(randomEntityFromGroup)) {

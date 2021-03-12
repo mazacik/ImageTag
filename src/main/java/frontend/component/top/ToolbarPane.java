@@ -16,14 +16,11 @@ import javafx.scene.layout.BorderPane;
 import main.Main;
 
 public class ToolbarPane extends BorderPane {
-	private final TextNode btnFavorite;
+	private final TextNode btnLike;
 	private final TextNode nodeTarget;
 	
-	private final String cFavoriteTrue = "♥";
-	private final String cFavoriteFalse = "♡";
-	
 	public ToolbarPane() {
-		btnFavorite = new TextNode("", true, true, false, true);
+		btnLike = new TextNode("", true, true, false, true);
 		nodeTarget = new TextNode("", true, true, false, true);
 	}
 	
@@ -71,23 +68,25 @@ public class ToolbarPane extends BorderPane {
 		HBox boxCenter = new HBox(nodeFile, nodeEdit, nodeRandom, nodeFilter, nodeSlideshow);
 		boxCenter.setAlignment(Pos.CENTER);
 		
-		btnFavorite.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
+		btnLike.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 			Entity target = Main.SELECT.getTarget();
 			
-			target.setFavorite(!target.isFavorite());
-			if (target.isFavorite()) {
-				btnFavorite.setText(cFavoriteTrue);
-			} else {
-				btnFavorite.setText(cFavoriteFalse);
-			}
+			target.setLikes(target.getLikes() + 1);
+			btnLike.setText(Integer.toString(target.getLikes()));
 			
 			Reload.start();
+		});
+		btnLike.addMouseEvent(MouseEvent.MOUSE_ENTERED, MouseButton.NONE, () -> {
+			btnLike.setText("+1");
+		});
+		btnLike.addMouseEvent(MouseEvent.MOUSE_EXITED, MouseButton.NONE, () -> {
+			btnLike.setText(Integer.toString(Main.SELECT.getTarget().getLikes()));
 		});
 		
 		nodeTarget.setAlignment(Pos.CENTER_LEFT);
 		ListMenu.install(nodeTarget, Direction.DOWN, ListMenu.MenuTrigger.CLICK_LEFT, MenuPreset.ENTITY_TILE.getTemplate());
 		
-		HBox boxRight = new HBox(btnFavorite, nodeTarget);
+		HBox boxRight = new HBox(btnLike, nodeTarget);
 		//		boxRight.prefWidthProperty().bind(UserInterface.getSelectPane().widthProperty());
 		
 		this.setLeft(boxCenter);
@@ -102,17 +101,13 @@ public class ToolbarPane extends BorderPane {
 			}
 			
 			if (target.hasGroup()) {
-				String s = (target.getEntityGroup().indexOf(target) + 1) + "/" + target.getEntityGroup().size();
+				String s = (target.getGroup().indexOf(target) + 1) + "/" + target.getGroup().size();
 				nodeTarget.setText("[" + s + "] " + target.getName());
 			} else {
 				nodeTarget.setText(target.getName());
 			}
 			
-			if (target.isFavorite()) {
-				btnFavorite.setText(cFavoriteTrue);
-			} else {
-				btnFavorite.setText(cFavoriteFalse);
-			}
+			btnLike.setText(String.valueOf(target.getLikes()));
 		} else {
 			nodeTarget.setVisible(false);
 		}

@@ -18,7 +18,7 @@ public class EntityGroup extends EntityList {
 	
 	public EntityGroup(Entity entity) {
 		super(entity);
-		this.id = entity.getEntityGroupID();
+		this.id = entity.getGroupID();
 	}
 	private EntityGroup(Collection<? extends Entity> c) {
 		super(c);
@@ -29,8 +29,8 @@ public class EntityGroup extends EntityList {
 		entityGroup.id = new Random().nextInt();
 		
 		for (Entity entity : entityList) {
-			entity.setEntityGroupID(entityGroup.id);
-			entity.setEntityGroup(entityGroup);
+			entity.setGroupID(entityGroup.id);
+			entity.setGroup(entityGroup);
 			entity.getTile().updateGroupIcon();
 		}
 		

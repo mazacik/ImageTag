@@ -4,8 +4,8 @@ import backend.cache.CacheLoader;
 import backend.entity.Entity;
 import backend.misc.Direction;
 import backend.misc.FileUtil;
-import backend.misc.Settings;
 import backend.reload.Reload;
+import backend.settings.Settings;
 import frontend.UserInterface;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.override.HBox;
@@ -138,7 +138,7 @@ public class Controls extends BorderPane {
 			btnSnapshot.addMouseEvent(MouseEvent.MOUSE_CLICKED, MouseButton.PRIMARY, () -> {
 				Entity target = Main.SELECT.getTarget();
 				File cacheFile = new File(FileUtil.getFileCache(target));
-				int tileSize = Settings.GALLERY_TILE_SIZE.getInteger();
+				int tileSize = Settings.GALLERY_TILE_SIZE.getIntValue();
 				videoPlayer.snapshot(cacheFile, tileSize, tileSize);
 				
 				Image cache = CacheLoader.get(target);

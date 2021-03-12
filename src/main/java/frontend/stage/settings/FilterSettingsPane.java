@@ -1,11 +1,11 @@
 package frontend.stage.settings;
 
 import backend.BaseList;
-import backend.filter.FilterOption;
 import backend.misc.FileUtil;
 import backend.reload.InvokeHelper;
 import backend.reload.Notifier;
 import backend.reload.Reload;
+import backend.settings.Settings;
 import frontend.node.CheckBox;
 import frontend.node.EditNode;
 import frontend.node.TitlePane;
@@ -17,8 +17,8 @@ import javafx.geometry.Pos;
 import javafx.util.Pair;
 
 public class FilterSettingsPane extends HBox {
-	private final BaseList<Pair<FilterOption, CheckBox>> checkBoxes = new BaseList<>();
-	private final BaseList<Pair<FilterOption, EditNode>> editNodes = new BaseList<>();
+	private final BaseList<Pair<Settings, CheckBox>> checkBoxes = new BaseList<>();
+	private final BaseList<Pair<Settings, EditNode>> editNodes = new BaseList<>();
 	
 	private EditNode editNodeString;
 	public static String QUERY = "";
@@ -31,6 +31,7 @@ public class FilterSettingsPane extends HBox {
 		boxTitlePanes.getChildren().add(this.getPaneTagCount());
 		boxTitlePanes.getChildren().add(this.getPaneGroupSize());
 		boxTitlePanes.getChildren().add(this.getPaneMedia());
+		boxTitlePanes.getChildren().add(this.getPaneLikes());
 		boxTitlePanes.getChildren().add(this.getPaneOther());
 		
 		this.getChildren().add(boxTitlePanes);
@@ -48,8 +49,8 @@ public class FilterSettingsPane extends HBox {
 		return titlePane;
 	}
 	private TitlePane getPaneImages() {
-		CheckBox nodeImages = new CheckBox("Enable", FilterOption.ENABLE_IMG.getBooleanValue());
-		checkBoxes.add(new Pair<>(FilterOption.ENABLE_IMG, nodeImages));
+		CheckBox nodeImages = new CheckBox("Enable", Settings.ENABLE_IMG.getBooleanValue());
+		checkBoxes.add(new Pair<>(Settings.ENABLE_IMG, nodeImages));
 		
 		VBox boxSettings = new VBox();
 		boxSettings.setPadding(new Insets(0, 5, 5, 5));
@@ -61,9 +62,9 @@ public class FilterSettingsPane extends HBox {
 		boxSettings.getChildren().add(boxExtensions);
 		
 		for (String ext : FileUtil.EXT_IMG) {
-			FilterOption filterOption = FilterOption.valueOf("ENABLE_IMG_" + ext.toUpperCase());
-			CheckBox nodeExt = new CheckBox(ext, filterOption.getBooleanValue());
-			checkBoxes.add(new Pair<>(filterOption, nodeExt));
+			Settings setting = Settings.valueOf("ENABLE_IMG_" + ext.toUpperCase());
+			CheckBox nodeExt = new CheckBox(ext, setting.getBooleanValue());
+			checkBoxes.add(new Pair<>(setting, nodeExt));
 			nodeExt.disableProperty().bind(nodeImages.selectedProperty().not());
 			boxExtensions.getChildren().add(nodeExt);
 		}
@@ -74,8 +75,8 @@ public class FilterSettingsPane extends HBox {
 		return titlePane;
 	}
 	private TitlePane getPaneVideos() {
-		CheckBox nodeVideos = new CheckBox("Enable", FilterOption.ENABLE_VID.getBooleanValue());
-		checkBoxes.add(new Pair<>(FilterOption.ENABLE_VID, nodeVideos));
+		CheckBox nodeVideos = new CheckBox("Enable", Settings.ENABLE_VID.getBooleanValue());
+		checkBoxes.add(new Pair<>(Settings.ENABLE_VID, nodeVideos));
 		
 		VBox boxSettings = new VBox();
 		boxSettings.setPadding(new Insets(0, 5, 5, 5));
@@ -87,16 +88,16 @@ public class FilterSettingsPane extends HBox {
 		boxSettings.getChildren().add(boxExtensions);
 		
 		for (String ext : FileUtil.EXT_VID) {
-			FilterOption filterOption = FilterOption.valueOf("ENABLE_VID_" + ext.toUpperCase());
-			CheckBox nodeExt = new CheckBox(ext, filterOption.getBooleanValue());
-			checkBoxes.add(new Pair<>(filterOption, nodeExt));
+			Settings setting = Settings.valueOf("ENABLE_VID_" + ext.toUpperCase());
+			CheckBox nodeExt = new CheckBox(ext, setting.getBooleanValue());
+			checkBoxes.add(new Pair<>(setting, nodeExt));
 			nodeExt.disableProperty().bind(nodeVideos.selectedProperty().not());
 			boxExtensions.getChildren().add(nodeExt);
 		}
 		for (String ext : FileUtil.EXT_GIF) {
-			FilterOption filterOption = FilterOption.valueOf("ENABLE_VID_" + ext.toUpperCase());
-			CheckBox nodeExt = new CheckBox(ext, filterOption.getBooleanValue());
-			checkBoxes.add(new Pair<>(filterOption, nodeExt));
+			Settings setting = Settings.valueOf("ENABLE_VID_" + ext.toUpperCase());
+			CheckBox nodeExt = new CheckBox(ext, setting.getBooleanValue());
+			checkBoxes.add(new Pair<>(setting, nodeExt));
 			nodeExt.disableProperty().bind(nodeVideos.selectedProperty().not());
 			boxExtensions.getChildren().add(nodeExt);
 		}
@@ -107,10 +108,10 @@ public class FilterSettingsPane extends HBox {
 		return titlePane;
 	}
 	private TitlePane getPaneTagCount() {
-		EditNode nodeTagLimitMin = new EditNode(String.valueOf(FilterOption.TAG_COUNT_MIN.getIntValue()), EditNode.EditNodeType.NUMERIC_POSITIVE);
-		editNodes.add(new Pair<>(FilterOption.TAG_COUNT_MIN, nodeTagLimitMin));
-		EditNode nodeTagLimitMax = new EditNode(String.valueOf(FilterOption.TAG_COUNT_MAX.getIntValue()), EditNode.EditNodeType.NUMERIC_POSITIVE);
-		editNodes.add(new Pair<>(FilterOption.TAG_COUNT_MAX, nodeTagLimitMax));
+		EditNode nodeTagLimitMin = new EditNode(Settings.MIN_TAG_COUNT.getStringValue(), EditNode.EditNodeType.NUMERIC_POSITIVE);
+		editNodes.add(new Pair<>(Settings.MIN_TAG_COUNT, nodeTagLimitMin));
+		EditNode nodeTagLimitMax = new EditNode(Settings.MAX_TAG_COUNT.getStringValue(), EditNode.EditNodeType.NUMERIC_POSITIVE);
+		editNodes.add(new Pair<>(Settings.MAX_TAG_COUNT, nodeTagLimitMax));
 		
 		TextNode nodeTagLimitMinText = new TextNode("Min");
 		TextNode nodeTagLimitMaxText = new TextNode("Max");
@@ -132,10 +133,10 @@ public class FilterSettingsPane extends HBox {
 		return titlePane;
 	}
 	private TitlePane getPaneGroupSize() {
-		EditNode nodeGroupSizeMin = new EditNode(String.valueOf(FilterOption.GROUP_SIZE_MIN.getIntValue()), EditNode.EditNodeType.NUMERIC_POSITIVE);
-		editNodes.add(new Pair<>(FilterOption.GROUP_SIZE_MIN, nodeGroupSizeMin));
-		EditNode nodeGroupSizeMax = new EditNode(String.valueOf(FilterOption.GROUP_SIZE_MAX.getIntValue()), EditNode.EditNodeType.NUMERIC_POSITIVE);
-		editNodes.add(new Pair<>(FilterOption.GROUP_SIZE_MAX, nodeGroupSizeMax));
+		EditNode nodeGroupSizeMin = new EditNode(Settings.MIN_GROUP_SIZE.getStringValue(), EditNode.EditNodeType.NUMERIC_POSITIVE);
+		editNodes.add(new Pair<>(Settings.MIN_GROUP_SIZE, nodeGroupSizeMin));
+		EditNode nodeGroupSizeMax = new EditNode(Settings.MAX_GROUP_SIZE.getStringValue(), EditNode.EditNodeType.NUMERIC_POSITIVE);
+		editNodes.add(new Pair<>(Settings.MAX_GROUP_SIZE, nodeGroupSizeMax));
 		
 		TextNode groupSizeMinText = new TextNode("Min");
 		TextNode groupSizeMaxText = new TextNode("Max");
@@ -157,10 +158,10 @@ public class FilterSettingsPane extends HBox {
 		return titlePane;
 	}
 	private TitlePane getPaneMedia() {
-		EditNode nodeLengthLimitMin = new EditNode(String.valueOf(FilterOption.MEDIA_LENGTH_MIN.getIntValue()), EditNode.EditNodeType.NUMERIC_POSITIVE);
-		editNodes.add(new Pair<>(FilterOption.MEDIA_LENGTH_MIN, nodeLengthLimitMin));
-		EditNode nodeLengthLimitMax = new EditNode(String.valueOf(FilterOption.MEDIA_LENGTH_MAX.getIntValue()), EditNode.EditNodeType.NUMERIC_POSITIVE);
-		editNodes.add(new Pair<>(FilterOption.MEDIA_LENGTH_MAX, nodeLengthLimitMax));
+		EditNode nodeLengthLimitMin = new EditNode(Settings.MIN_MEDIA_LENGTH.getStringValue(), EditNode.EditNodeType.NUMERIC_POSITIVE);
+		editNodes.add(new Pair<>(Settings.MIN_MEDIA_LENGTH, nodeLengthLimitMin));
+		EditNode nodeLengthLimitMax = new EditNode(Settings.MAX_MEDIA_LENGTH.getStringValue(), EditNode.EditNodeType.NUMERIC_POSITIVE);
+		editNodes.add(new Pair<>(Settings.MAX_MEDIA_LENGTH, nodeLengthLimitMax));
 		
 		TextNode nodeTagLimitMinText = new TextNode("Min");
 		TextNode nodeTagLimitMaxText = new TextNode("Max");
@@ -181,18 +182,39 @@ public class FilterSettingsPane extends HBox {
 		
 		return titlePane;
 	}
-	private TitlePane getPaneOther() {
-		CheckBox nodeLastImport = new CheckBox("Only Last Import", FilterOption.ONLY_LAST_IMPORT.getBooleanValue());
-		checkBoxes.add(new Pair<>(FilterOption.ONLY_LAST_IMPORT, nodeLastImport));
+	private TitlePane getPaneLikes() {
+		EditNode nodeLikesMin = new EditNode(Settings.MIN_LIKES.getStringValue(), EditNode.EditNodeType.NUMERIC_POSITIVE);
+		editNodes.add(new Pair<>(Settings.MIN_LIKES, nodeLikesMin));
+		EditNode nodeLikesMax = new EditNode(Settings.MAX_LIKES.getStringValue(), EditNode.EditNodeType.NUMERIC_POSITIVE);
+		editNodes.add(new Pair<>(Settings.MAX_LIKES, nodeLikesMax));
 		
-		CheckBox nodeFavorites = new CheckBox("Only Favorites", FilterOption.ONLY_FAVORITES.getBooleanValue());
-		checkBoxes.add(new Pair<>(FilterOption.ONLY_FAVORITES, nodeFavorites));
+		TextNode nodeTagLimitMinText = new TextNode("Min");
+		TextNode nodeTagLimitMaxText = new TextNode("Max");
+		
+		HBox boxLikesMin = new HBox(nodeTagLimitMinText, nodeLikesMin);
+		boxLikesMin.setSpacing(5);
+		boxLikesMin.setAlignment(Pos.CENTER);
+		HBox boxLikesMax = new HBox(nodeTagLimitMaxText, nodeLikesMax);
+		boxLikesMax.setSpacing(5);
+		boxLikesMax.setAlignment(Pos.CENTER);
+		
+		HBox boxLikes = new HBox(boxLikesMin, boxLikesMax);
+		boxLikes.setSpacing(15);
+		boxLikes.setPadding(new Insets(0, 5, 5, 7));
+		
+		TitlePane titlePane = new TitlePane("Likes", boxLikes);
+		titlePane.setPadding(new Insets(3, 5, 0, 5));
+		
+		return titlePane;
+	}
+	private TitlePane getPaneOther() {
+		CheckBox nodeLastImport = new CheckBox("Only Last Import", Settings.ONLY_LAST_IMPORT.getBooleanValue());
+		checkBoxes.add(new Pair<>(Settings.ONLY_LAST_IMPORT, nodeLastImport));
 		
 		VBox boxSettings = new VBox();
 		boxSettings.setPadding(new Insets(0, 5, 5, 5));
 		boxSettings.setSpacing(3);
 		boxSettings.getChildren().add(nodeLastImport);
-		boxSettings.getChildren().add(nodeFavorites);
 		
 		TitlePane titlePane = new TitlePane("Other", boxSettings);
 		titlePane.setPadding(new Insets(3, 5, 0, 5));

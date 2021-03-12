@@ -3,20 +3,22 @@ package backend.project;
 import backend.entity.EntityList;
 import backend.misc.FileUtil;
 import backend.misc.GsonUtil;
-import com.google.gson.annotations.SerializedName;
-import com.google.gson.reflect.TypeToken;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import main.Main;
 
 import java.io.File;
-import java.lang.reflect.Type;
 
 public class Project {
-	@SerializedName("a") private long lastAccessMs;
-	@SerializedName("s") private String directory;
-	@SerializedName("e") private EntityList entityList;
+	
+	@JsonProperty("a") private long lastAccessMs;
+	@JsonProperty("s") private String directory;
+	@JsonProperty("e") private EntityList entityList;
 	
 	private transient String projectName;
 	private transient String projectFile;
+	
+	public Project() {
+	}
 	
 	public Project(String projectName, String directory) {
 		this.projectName = projectName;
@@ -24,9 +26,8 @@ public class Project {
 		this.directory = directory;
 	}
 	
-	private transient static final Type typeToken = new TypeToken<Project>() {}.getType();
 	public static Project read(String projectFile) {
-		Project project = GsonUtil.read(typeToken, projectFile);
+		Project project = GsonUtil.read(Project.class, projectFile);
 		if (project != null) {
 			project.projectName = FileUtil.getFileNameNoExtension(projectFile);
 			project.projectFile = projectFile;
@@ -36,7 +37,7 @@ public class Project {
 	public boolean write() {
 		this.lastAccessMs = System.currentTimeMillis();
 		this.entityList = Main.ENTITYLIST;
-		return GsonUtil.write(this, typeToken, projectFile);
+		return GsonUtil.write(this, projectFile);
 	}
 	
 	public void updateProject(String projectNameNew, String directorySourceNew) {
@@ -72,4 +73,5 @@ public class Project {
 	public EntityList getEntityList() {
 		return entityList;
 	}
+	
 }

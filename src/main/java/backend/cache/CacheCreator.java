@@ -2,7 +2,7 @@ package backend.cache;
 
 import backend.entity.Entity;
 import backend.misc.FileUtil;
-import backend.misc.Settings;
+import backend.settings.Settings;
 import frontend.component.display.VideoPlayer;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
@@ -25,7 +25,7 @@ abstract class CacheCreator {
 		String entityIndex = StringUtils.right("00000000" + (Main.ENTITYLIST.indexOf(entity) + 1), String.valueOf(Main.ENTITYLIST.size()).length());
 		Logger.getGlobal().info(String.format("[%s/%s] %s", entityIndex, Main.ENTITYLIST.size(), entity.getName()));
 		
-		switch (entity.getType()) {
+		switch (entity.getMediaType()) {
 			case IMG:
 				return fromImg(entity);
 			case GIF:
@@ -38,7 +38,7 @@ abstract class CacheCreator {
 	}
 	
 	private static Image fromImg(Entity entity) {
-		int thumbSize = Settings.GALLERY_TILE_SIZE.getInteger();
+		int thumbSize = Settings.GALLERY_TILE_SIZE.getIntValue();
 		Image image = new Image("file:" + FileUtil.getFileEntity(entity), thumbSize, thumbSize, false, false);
 		BufferedImage buffer = SwingFXUtils.fromFXImage(image, null);
 		
@@ -58,7 +58,7 @@ abstract class CacheCreator {
 	private static Image fromGif(Entity entity) {
 		GifDecoder gifDecoder = new GifDecoder();
 		gifDecoder.read(FileUtil.getFileEntity(entity));
-		int thumbSize = Settings.GALLERY_TILE_SIZE.getInteger();
+		int thumbSize = Settings.GALLERY_TILE_SIZE.getIntValue();
 		
 		java.awt.Image frame = gifDecoder.getFrame(gifDecoder.getFrameCount() / 2).getScaledInstance(thumbSize, thumbSize, java.awt.Image.SCALE_FAST);
 		BufferedImage buffer = new BufferedImage(thumbSize, thumbSize, BufferedImage.TYPE_INT_RGB);
@@ -121,7 +121,7 @@ abstract class CacheCreator {
 					mediaPlayer.controls().setPosition(mediaPosition);
 					inPositionLatch.await(); // might wait forever if error
 					
-					int thumbSize = Settings.GALLERY_TILE_SIZE.getInteger();
+					int thumbSize = Settings.GALLERY_TILE_SIZE.getIntValue();
 					mediaPlayer.snapshots().save(cacheFile, thumbSize, thumbSize);
 					snapshotTakenLatch.await(); // might wait forever if error
 				} catch (InterruptedException e) {

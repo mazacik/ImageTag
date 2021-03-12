@@ -3,38 +3,57 @@ package backend.entity;
 import backend.BaseList;
 import backend.group.EntityGroup;
 import backend.misc.FileUtil;
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import frontend.component.center.gallery.Tile;
 import main.Main;
 
 import java.io.File;
 
 public class Entity {
+	
+	@JsonProperty("n") private String name;
+	@JsonProperty("t") private BaseList<String> tagList;
+	@JsonProperty("s") private long size;
+	@JsonProperty("g") private int groupID;
+	@JsonProperty("d") private long mediaDuration;
+	@JsonProperty("c") private boolean keepCache;
+	@JsonProperty("i") private long importDate;
+	@JsonProperty("l") private int likes;
+	
+	private transient EntityType mediaType;
+	private transient EntityGroup group;
+	private transient Tile tile;
+	
+	public Entity() {
+	}
+	
 	public Entity(File file) {
 		this.name = FileUtil.createEntityName(file);
 		this.tagList = new BaseList<>();
 		this.size = file.length();
-		this.entityGroupID = 0;
-		this.type = null;
+		this.groupID = 0;
+		this.mediaType = null;
 		this.mediaDuration = 0;
+		this.keepCache = false;
+		this.importDate = 0;
+		this.likes = 0;
 		
-		this.entityGroup = null;
+		this.group = null;
 		this.tile = null;
 	}
 	
 	public Entity getRepresentingEntity() {
 		if (this.hasGroup()) {
-			if (entityGroup.isOpen()) {
+			if (group.isOpen()) {
 				return this;
 			} else {
-				return Main.FILTER.getFilteredList(entityGroup).getFirst();
+				return Main.FILTER.getFilteredList(group).getFirst();
 			}
 		} else {
 			return this;
 		}
 	}
 	
-	@SerializedName("n") private String name;
 	public String getName() {
 		return name;
 	}
@@ -42,33 +61,29 @@ public class Entity {
 		this.name = name;
 	}
 	
-	@SerializedName("t") private final BaseList<String> tagList;
 	public BaseList<String> getTagList() {
 		return tagList;
 	}
 	
-	@SerializedName("s") private final long size;
 	public long getSize() {
 		return size;
 	}
 	
-	@SerializedName("g") private int entityGroupID;
-	public int getEntityGroupID() {
-		return entityGroupID;
+	public int getGroupID() {
+		return groupID;
 	}
-	public void setEntityGroupID(int entityGroupID) {
-		this.entityGroupID = entityGroupID;
+	public void setGroupID(int groupID) {
+		this.groupID = groupID;
 	}
 	public boolean hasGroup() {
-		return entityGroupID != 0;
+		return groupID != 0;
 	}
 	public void discardGroup() {
-		entityGroupID = 0;
-		entityGroup = null;
+		groupID = 0;
+		group = null;
 		if (tile != null) tile.setEffect(null);
 	}
 	
-	@SerializedName("d") private long mediaDuration;
 	public long getMediaDuration() {
 		return mediaDuration;
 	}
@@ -76,35 +91,46 @@ public class Entity {
 		this.mediaDuration = mediaDuration;
 	}
 	
-	@SerializedName("f") private boolean favorite;
-	public boolean isFavorite() {
-		return favorite;
+	public boolean isKeepCache() {
+		return keepCache;
 	}
-	public void setFavorite(boolean favorite) {
-		this.favorite = favorite;
+	public void setKeepCache(boolean keepCache) {
+		this.keepCache = keepCache;
 	}
 	
-	private transient EntityType type;
-	public EntityType getType() {
-		return type;
+	public long getImportDate() {
+		return importDate;
+	}
+	public void setImportDate(long importDate) {
+		this.importDate = importDate;
+	}
+	
+	public int getLikes() {
+		return likes;
+	}
+	public void setLikes(int likes) {
+		this.likes = likes;
+	}
+	
+	public EntityType getMediaType() {
+		return mediaType;
 	}
 	public void initType() {
-		type = FileUtil.getMediaType(this);
+		mediaType = FileUtil.getMediaType(this);
 	}
 	
-	private transient EntityGroup entityGroup;
-	public EntityGroup getEntityGroup() {
-		return entityGroup;
+	public EntityGroup getGroup() {
+		return group;
 	}
-	public void setEntityGroup(EntityGroup entityGroup) {
-		this.entityGroup = entityGroup;
+	public void setGroup(EntityGroup group) {
+		this.group = group;
 	}
 	
-	private transient Tile tile;
 	public Tile getTile() {
 		return tile;
 	}
 	public void initTile() {
 		this.tile = new Tile(this);
 	}
+	
 }

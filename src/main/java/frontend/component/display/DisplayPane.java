@@ -3,8 +3,8 @@ package frontend.component.display;
 import backend.entity.Entity;
 import backend.misc.Direction;
 import backend.misc.FileUtil;
-import backend.misc.Settings;
 import backend.reload.Reload;
+import backend.settings.Settings;
 import frontend.UserInterface;
 import frontend.decorator.DecoratorUtil;
 import frontend.node.menu.ListMenu;
@@ -157,7 +157,7 @@ public class DisplayPane extends StackPane {
 	public boolean reload() {
 		Entity currentTarget = Main.SELECT.getTarget();
 		if (UserInterface.getCenterPane().isViewDisplay() && currentTarget != null) {
-			switch (currentTarget.getType()) {
+			switch (currentTarget.getMediaType()) {
 				case IMG:
 					reloadAsImage(currentTarget);
 					break;
@@ -221,7 +221,7 @@ public class DisplayPane extends StackPane {
 			originHeight = currentImage.getHeight();
 		}
 		
-		if (!Settings.DISPLAY_UPSCALE.getBoolean() && originWidth < maxWidth && originHeight < maxHeight) {
+		if (!Settings.IMAGE_UPSCALE.getBooleanValue() && originWidth < maxWidth && originHeight < maxHeight) {
 			// image is smaller than canvas or upscaling is off
 			resultWidth = originWidth;
 			resultHeight = originHeight;

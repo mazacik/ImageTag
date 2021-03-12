@@ -1,6 +1,7 @@
 package frontend.component.side.select;
 
 import backend.entity.EntityType;
+import backend.misc.FileExtension;
 import backend.misc.FileUtil;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
@@ -46,7 +47,8 @@ public class TargetDetailsPane extends GridPane {
 	}
 	
 	public void refresh() {
-		if (true || Main.SELECT.getTarget() == null || Main.SELECT.getTarget().getType() != EntityType.IMG) {
+		// todo ?
+		if (true || Main.SELECT.getTarget() == null || Main.SELECT.getTarget().getMediaType() != EntityType.IMG) {
 			sizeNode.setText("-");
 			resolutionNode.setText("-");
 			dateCreatedNode.setText("-");
@@ -62,13 +64,17 @@ public class TargetDetailsPane extends GridPane {
 				Directory directory = metadata.getDirectories().iterator().next();
 				
 				//  byte offsets - https://github.com/drewnoakes/metadata-extractor/wiki/SampleOutput
-				String ext = FileUtil.getFileExtension(Main.SELECT.getTarget()).toLowerCase();
-				if (ext.equals("jpg") || ext.equals("jpeg")) {
-					width = directory.getInteger(0x1);
-					height = directory.getInteger(0x3);
-				} else if (ext.equals("png")) {
-					width = directory.getInteger(0x1);
-					height = directory.getInteger(0x2);
+				FileExtension ext = FileUtil.getFileExtension(Main.SELECT.getTarget());
+				switch (ext) {
+					case JPG:
+					case JPEG:
+						width = directory.getInteger(0x1);
+						height = directory.getInteger(0x3);
+						break;
+					case PNG:
+						width = directory.getInteger(0x1);
+						height = directory.getInteger(0x2);
+						break;
 				}
 			} catch (ImageProcessingException | IOException e) {
 				e.printStackTrace();

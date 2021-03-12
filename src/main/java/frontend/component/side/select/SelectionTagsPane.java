@@ -3,6 +3,7 @@ package frontend.component.side.select;
 import backend.BaseList;
 import backend.misc.Direction;
 import backend.reload.Reload;
+import frontend.UserInterface;
 import frontend.component.side.SelectTagNode;
 import frontend.component.side.TagNode;
 import frontend.decorator.DecoratorUtil;
@@ -13,6 +14,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -22,7 +24,6 @@ import java.util.Comparator;
 
 public class SelectionTagsPane extends VBox {
 	private final EditNode searchNode;
-	private boolean textPropertyLock = false;
 	private final ListBox searchBox;
 	
 	private final ListBox tagNodeBox = new ListBox();
@@ -51,40 +52,42 @@ public class SelectionTagsPane extends VBox {
 		});
 		
 		searchNode.textProperty().addListener((observable, oldValue, newValue) -> {
-			if (!textPropertyLock) {
-				searchBox.getBox().getChildren().clear();
-				
-				String newValueLowerCase = newValue.toLowerCase();
-				for (String tag : Main.TAGLIST) {
-					String tagLowerCase = tag.toLowerCase();
-					if (tagLowerCase.contains(newValueLowerCase)) {
-						addTextNode(tag);
-					}
+			searchBox.getBox().getChildren().clear();
+			
+			String newValueLowerCase = newValue.toLowerCase();
+			for (String tag : Main.TAGLIST) {
+				String tagLowerCase = tag.toLowerCase();
+				if (tagLowerCase.contains(newValueLowerCase)) {
+					this.addTextNode(tag);
 				}
-				searchBox.moveFocus(Direction.DOWN);
-				
-				showSearchPopup();
 			}
+			searchBox.moveFocus(Direction.DOWN);
+			
+			showSearchPopup();
 		});
 		EventHandler<KeyEvent> keyPressEvent = event -> {
 			switch (event.getCode()) {
+				case ESCAPE:
+					event.consume();
+					UserInterface.getCenterPane().requestFocus();
+					break;
 				case ENTER:
 					event.consume();
 					Region region = searchBox.getCurrentFocus();
-					if (region instanceof TextNode) {
-						TextNode currentFocus = (TextNode) region;
-						if (getChildren().contains(searchBox)) {
-							textPropertyLock = true;
-							hideSearchPopup();
-							searchNode.setText(currentFocus.getText());
-							textPropertyLock = false;
-						} else {
-							String tag = currentFocus.getText();
-							if (Main.TAGLIST.contains(tag)) {
-								Main.SELECT.addTag(tag);
-								searchNode.clear();
-								Reload.start();
-							}
+					if (searchBox.getBox().getChildren().isEmpty()) {
+						String tag = searchNode.getText();
+						if (tag.length() > 0) {
+							Main.TAGLIST.add(tag);
+							Main.SELECT.addTag(tag);
+							searchNode.clear();
+							Reload.start();
+						}
+					} else if (region instanceof TextNode) {
+						String tag = ((TextNode) region).getText();
+						if (Main.TAGLIST.contains(tag)) {
+							Main.SELECT.addTag(tag);
+							searchNode.clear();
+							Reload.start();
 						}
 					}
 					break;
@@ -117,11 +120,14 @@ public class SelectionTagsPane extends VBox {
 		textNode.setMaxWidth(Double.MAX_VALUE);
 		textNode.setPadding(new Insets(0, 5, 0, 5));
 		
-		textNode.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-			textPropertyLock = true;
-			hideSearchPopup();
-			searchNode.setText(textNode.getText());
-			textPropertyLock = false;
+		textNode.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+			if (event.getButton() == MouseButton.PRIMARY) {
+				if (Main.TAGLIST.contains(tag)) {
+					Main.SELECT.addTag(tag);
+					searchNode.clear();
+					Reload.start();
+				}
+			}
 		});
 		textNode.addEventFilter(MouseEvent.MOUSE_MOVED, event -> {
 			if (textNode != searchBox.getCurrentFocus()) {
@@ -136,9 +142,6 @@ public class SelectionTagsPane extends VBox {
 		searchBox.getBox().getChildren().add(textNode);
 	}
 	
-	public void refresh() {
-		reload();
-	}
 	public boolean reload() {
 		BaseList<TagNode> tagNodes = new BaseList<>();
 		
@@ -161,20 +164,14 @@ public class SelectionTagsPane extends VBox {
 		tagNodeBox.getBox().getChildren().addAll(tagNodes);
 		
 		searchBox.getBox().getChildren().clear();
-		for (String tag : Main.TAGLIST) {
-			addTextNode(tag);
-		}
+		for (String tag : Main.TAGLIST) this.addTextNode(tag);
 		searchBox.moveFocus(Direction.DOWN);
 		
 		return true;
 	}
 	
 	private void showSearchPopup() {
-		tagNodeBox.getBox().getChildren().clear();
-		tagNodeBox.getBox().getChildren().add(searchNode);
-		tagNodeBox.getBox().getChildren().addAll(searchBox);
-		
-		tagNodeBox.getBox().getChildren().set(tagNodeBox.getBox().getChildren().size() - 1, searchBox);
+		tagNodeBox.getBox().getChildren().setAll(searchNode, searchBox);
 	}
 	private void hideSearchPopup() {
 		reload();
